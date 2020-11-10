@@ -1,0 +1,77 @@
+{$class_id = 't-releases-plugin-tasks-scope-tags'}
+{$wrapper_id = uniqid($class_id)}
+<script src="{$wa_url}wa-content/js/d3/d3.min.js?{$wa->version(true)}"></script>
+{if !empty($graph)}
+<div class="{$class_id}" id="{$wrapper_id}">
+    <div class="t-task-scope-tag-statistic">
+        <div class="t-scope-status">
+            {if $total_count}
+                <div class="t-scope-readiness">
+                    [`Readiness`]
+                    <span class="persent">{if !empty($statuses) && isset($statuses[-1].count)}{(($statuses[-1].count*100)/$total_count)|round:0}{else}0{/if}%</span>
+                </div>
+            {/if}
+        </div>
+
+        {if $scope.view.due_text}
+            <div class="t-scope-due-block">
+                <div class="t-scope-due-text {$scope.view.due_color_class}">
+                    {$scope.view.due_text}
+                </div>
+            </div>
+        {/if}
+
+        {if $statuses}
+            <div class="t-task-status">
+                <ul class="menu-v">
+                    {foreach $statuses as $_status}
+                        <li>{$_status.icon_html} {$_status.name|escape} - {$_status.count|default:0}</li>
+                    {/foreach}
+                </ul>
+            </div>
+        {/if}
+    </div>
+    {* BODY *}
+    <div class="t-stats-body">
+        <div class="t-graph-wrapper" id="t-graph-wrapper">
+            <div class="t-graph"></div>
+            <div class="t-hint-wrapper">
+                <div class="t-line">
+                    <span class="t-type"></span>: <span class="t-value"></span>
+                </div>
+                <div class="t-line">
+                    <span class="t-date"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        (function ($) {
+            new TasksReleasesPluginTasksScopeStats({
+                $container: $('.{$class_id}'),
+                $wrapper: $('#{$wrapper_id}'),
+                graph: {$graph|json_encode},
+                due_date: "{$scope.due_date}",
+                due_date_txt: "[`To`]: {$scope.due_date|wa_date:'humandate'}",
+                locales: {
+                dateFormat: "{waDateTime::getFormatJS('date')}",
+                    months: [
+                    "{_ws('January', 'January')}",
+                    "{_ws('February', 'February', 1)}",
+                    "{_ws('March', 'March')}",
+                    "{_ws('April', 'April')}",
+                    "{_ws('May', 'May')}",
+                    "{_ws('June', 'June')}",
+                    "{_ws('July', 'July')}",
+                    "{_ws('August', 'August')}",
+                    "{_ws('September', 'September')}",
+                    "{_ws('October', 'October')}",
+                    "{_ws('November', 'November')}",
+                    "{_ws('December', 'December')}"
+                ]
+            }
+            });
+        })(jQuery);
+    </script>
+</div>
+{/if}

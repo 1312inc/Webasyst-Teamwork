@@ -1,0 +1,14 @@
+<p>[`Task you're watching has been updated.`]</p>
+
+<p><a href="{$task.url}"><b>{$task.project_id}.{$task.number} {$task.name|escape}</b></a></p>
+
+<p>[`New status:`] {$status.name|escape}</p>
+
+{if !empty($log.text_html)}
+    <hr>
+    <p>
+        {$log.text_html}
+    </p>
+{/if}
+
+{$from.name|escape}

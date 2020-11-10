@@ -1,0 +1,20 @@
+{strip}
+{$_type = 'приложение'}
+{if $product.type == 'PLUGIN'}
+    {$_type = 'плагин'}
+{elseif $product.type == 'WIDGET'}
+    {$_type = 'виджет'}
+{elseif $product.type == 'THEME'}
+    {$_type = 'тему дизайна'}
+{/if}
+{/strip}
+#release
+
+Опубликовали {$_type}:
+<b>{$product.formatted_slug|escape}</b>
+
+Версия: <code>{$product.version|escape}</code>
+{if !empty($baza_url) || !empty($store_url)}
+
+Открыть:{if !empty($baza_url)} <a href="{$baza_url|escape}">🚩 База</a> {/if}{if !empty($store_url)} <a href="{$store_url|escape}">🛍 Магазин</a>{/if}
+{/if}

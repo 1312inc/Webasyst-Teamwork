@@ -1,0 +1,152 @@
+$white_color = #fff;
+$gray_color = #f7f7f7;
+$green_color = #f3ffe3;
+$blue_color = #f8ffff;
+$purple_color = #fcf3ff;
+$red_color = #fff1f1;
+$yellow_color = #ffffe3;
+
+.t-background-wrapper
+    display none
+    position fixed
+    top: 0
+    left: 0
+    width: 100%
+    height: 100%
+    background rgba(255,255,255,.66);
+
+    &.is-shown
+        display block
+
+.t-task-page-wrapper
+
+    &.is-single-page
+        position relative
+        z-index 1
+        box-shadow: 0 1px 5px rgba(0,0,0,0.13);
+
+    .t-task-page-block
+        padding: 1em
+
+        /* Project background colors */
+        &.t-white
+            background: $white_color;
+
+        &.t-gray
+            background: $gray_color;
+
+        &.t-green
+            background: $green_color;
+
+        &.t-blue
+            background: $blue_color;
+
+        &.t-purple
+            background: $purple_color;
+
+        &.t-red
+            background: $red_color;
+
+        &.t-yellow
+            background: $yellow_color;
+
+            .highlighted
+                background: #ff9;
+
+        .t-form-line
+            margin: 1em 0 0
+
+            &:first-child
+                margin-top: 0
+
+        .t-table-layout
+            display table
+            width 100%
+
+            & > .t-column
+                display table-cell
+                vertical-align top
+
+                &.t-column-3
+                    width 200px
+                    padding-left 14px
+                    text-align right
+                    vertical-align middle
+
+        .t-task-name-wrapper
+            input
+                width 100%
+                box-sizing border-box
+                font-size: 1.4rem
+
+        .t-description-wrapper
+            textarea
+                display block
+                width 100%
+                height 200px
+                resize vertical
+                box-sizing border-box
+
+        .t-attach-wrapper
+            margin 0
+
+            .t-attached-files-wrapper
+                display none
+
+                &.is-shown
+                    display block
+
+        .t-due-date-wrapper
+            input
+                min-width: 100px
+                width: 120px
+
+        .t-more-fields-wrapper
+            display none
+
+            &.is-shown
+                display block
+
+        .t-errors-block
+            min-height 20px
+
+        .t-buttons-block
+            margin: 1rem 0 0
+
+            .icon16
+                position relative
+                top 3px
+                vertical-align baseline
+                margin 0 .4em
+
+            .icon10
+                position relative
+                top 1px
+                vertical-align baseline
+                margin 0 .4em
+
+            input[type="checkbox"]
+                position relative
+                top 1px
+
+            input.button
+                    margin: 0 0 0 1rem
+                    cursor pointer
+
+                    &:first-child
+                        margin-left: 0
+
+            .notice-list-wrapper
+                display inline-block
+                margin: 0 0 0 2em
+
+            .more-fields-link
+                float right
+                display inline-block
+                padding: 0 .5em;
+                line-height: 34px;
+
+                &:after
+                    content ""
+                    display table
+                    clear both

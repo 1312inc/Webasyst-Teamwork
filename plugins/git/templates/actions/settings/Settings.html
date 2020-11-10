@@ -1,0 +1,102 @@
+{if $wa->user()->isAdmin('tasks')}
+{$_id = uniqid('git-settings')}
+<h1>[`Git`]</h1>
+<div class="fields" id="{$_id}">
+
+    <div class="field">
+        <div class="name">Git Web Hook URL</div>
+        <div class="value">
+            <b>{$commit_url|escape}</b>
+        </div>
+    </div>
+
+    <form>
+        <div class="field">
+            <div class="name">
+                Git CI Fail URL
+                <div class="hint">
+                    [`Урл для .gitlab-ci.yml`]
+                </div>
+            </div>
+            <div class="value">
+                <b>{$ci_fail_url|escape}</b>
+            </div>
+
+            <div class="value">
+
+                <div class="field">
+                    <div class="name">Telegram bot token</div>
+                    <div class="value">
+                        <input name="telegram_bot_token" value="{$telegram_bot_token|escape}" autocomplete="off" />
+                    </div>
+                </div>
+
+                <div class="field">
+                    <div class="name"><b>CI/CD Fail</b> chat id</div>
+                    <div class="value">
+                        <input name="telegram_ci_fail_chat_id" value="{$telegram_ci_fail_chat_id|escape}" autocomplete="off" />
+                    </div>
+                </div>
+
+                <div class="field">
+                    <div class="name"><b>Release</b> chat id</div>
+                    <div class="value">
+                        <input name="telegram_release_chat_id" value="{$telegram_release_chat_id|escape}" autocomplete="off" />
+                    </div>
+                </div>
+
+                <div class="field">
+                    <div class="name"><b>Archives</b> chat id</div>
+                    <div class="value">
+                        <input name="telegram_archives_chat_id" value="{$telegram_archives_chat_id|escape}" autocomplete="off" />
+                    </div>
+                </div>
+
+                <div class="field">
+                    <div class="name">HTTP Proxy host</div>
+                    <div class="value">
+                        <input name="http_proxy_host" value="{$http_proxy_host|escape}" autocomplete="off" />
+                    </div>
+                </div>
+
+                <div class="field">
+                    <div class="name">HTTP Proxy port</div>
+                    <div class="value">
+                        <input name="http_proxy_port" value="{$http_proxy_port|escape}" autocomplete="off" />
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="field">
+            <div class="value submit">
+                <input type="submit" class="js-save button green" value="[`Save`]">
+            </div>
+        </div>
+
+    </form>
+
+    <script src="{$wa_app_static_url}plugins/git/js/git.settings.js?v={$wa->version()}"></script>
+    <script>
+        (function ($) {
+            new GitSettings({
+                $wrapper: $("#{$_id}")
+            });
+        })(jQuery);
+    </script>
+
+</div>
+<div class="clear-left"></div>
+{else}
+<div class="block double-padded align-center gray">
+    <p>
+        <strong>{'[`Git`]'|string_format:'[s`Plugin %s is installed and working.`]'}</strong>
+        <br>
+        <br>
+        [s`No configuration options are available for this plugin.`]
+    </p>
+</div>
+{/if}
+

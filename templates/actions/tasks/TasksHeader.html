@@ -1,0 +1,212 @@
+{strip}
+
+{$_backend_tasks_hooks = $backend_tasks_hooks|default:[]}
+{$_backend_header_hooks = $backend_tasks_hooks.header|default:[]}
+
+<!-- plugin hook: 'backend_tasks.%plugin_id%.header.top' -->
+{* @event backend_tasks.%plugin_id%.header.top *}
+{foreach $_backend_header_hooks as $_}{$_.top|default:''}{/foreach}
+
+{$is_single = $is_single|default:false}
+
+<div class="t-general-menu is-shown">
+    <div class="t-menu-wrapper">
+        <div class="t-relative-wrapper">
+            <div class="t-preview-wrapper">
+                <div class="t-menu-item">
+                    <span class="t-preview-name">
+                        {if $is_in_my_list}
+                            {$list.name|escape}
+                        {/if}
+                    </span>
+                    <a class="show-tasks-filters inline-link" href="javascript:void(0);"><i><b>[`Filter tasks`]</b></i></a>
+                </div>
+
+                <!-- plugin hook: 'backend_tasks.%plugin_id%.header.preview' -->
+                {* @event backend_tasks.%plugin_id%.header.preview *}
+                {foreach $_backend_header_hooks as $_}{$_.preview|default:''}{/foreach}
+
+            </div>
+            <div class="t-filters-wrapper">
+                {if $is_single}
+                    <div class="t-menu-item">
+                        <a href="#/tasks/project/{$task.project.id}/" class="t-menu-name">
+                            {if !empty($task.project.icon_html)}
+                                {$task.project.icon_html}
+                            {/if}
+                            {$task.project.name|escape}
+                        </a>
+                    </div>
+                {elseif !empty($filter_types)}
+                    {include file="./includes/TasksHeaderFilters.inc.html" inline}
+                {/if}
+            </div>
+        </div>
+    </div>
+
+    <div class="t-right-column">
+
+        {if !$is_single}
+            <div class="t-toolbar-wrapper">
+                {function star_link id='' title=''}
+                    <div class="t-toolbar-item">
+                        <a href="javascript:void(0);" class="t-my-list-toggle"
+                           title="{$title|default:''|escape}"
+                           data-hash="{$hash}"
+                           data-order="{$current_sort}"
+                           data-id="{$id|default:''}">
+                            <i class="icon16 {if $id > 0}star{else}star-empty{/if} t-link-icon"></i>
+                            <i class="icon16 loading t-loading-icon" style="display: none;"></i>
+                        </a>
+                    </div>
+                {/function}
+
+                {if $list && $list.is_own}
+                    {star_link id=$list.id title='[`Remove from my lists`]'}
+                {else}
+                    {star_link title='[`Save in my lists`]'}
+                {/if}
+
+                <!-- plugin hook: 'backend_tasks.%plugin_id%.header.toolbar' -->
+                {* @event backend_tasks.%plugin_id%.header.toolbar *}
+                {foreach $_backend_header_hooks as $_}{$_.toolbar|default:''}{/foreach}
+            </div>
+        {/if}
+
+        {* List view type selector }
+        {if !empty($list_view_type)}
+            <div class="t-types-wrapper">
+                <a class="t-type-item t-detailed-type {if $list_view_type == "detailed"}is-active{/if}" data-view-type="detailed" href="javascript:void(0)"></a>
+                <a class="t-type-item t-table-type {if $list_view_type == "table"}is-active{/if}" data-view-type="table" href="javascript:void(0)"></a>
+            </div>
+        {/if}
+        *}
+
+        {if !$is_single}
+            <div class="t-order-wrapper">
+                <div class="t-menu-item t-order-selector js-dropdown-menu" data-id="order">
+
+                    {$sort_options = [
+                        'priority' => "[`Priority`]",
+                        'due' => "[`Due`]",
+                        'newest' => "[`Newest`]",
+                        'oldest' => "[`Oldest`]"
+                    ]}
+
+                    <ul class="menu-h dropdown is-right">
+                        <li>
+                            <a class="t-selected-item js-dropdown-menu-title" href="javascript:void(0);"></a>
+                            <ul class="menu-v with-icons">
+                                {foreach $sort_options as $o_id => $o_name}
+                                    <li class="t-nav-item js-dropdown-menu-item {if $o_id == $current_sort}js-dropdown-menu-item-selected{/if}" data-value="{$o_id}">
+                                        <a href="javascript:void(0);">
+                                            {$o_name|escape}
+                                        </a>
+                                    </li>
+                                {/foreach}
+
+                                <!-- plugin hook: 'backend_tasks.%plugin_id%.header.order_items' -->
+                                {* @event backend_tasks.%plugin_id%.header.order_items *}
+                                {foreach $_backend_header_hooks as $_}
+                                    {$_order_items = $_.order_items|default:[]}
+                                    {foreach $_order_items as $_item}
+                                        <li class="t-nav-item js-dropdown-menu-item" data-value="{$_item.id}">
+                                            <a href="javascript:void(0);">
+                                                {$_item.name|escape}
+                                            </a>
+                                        </li>
+                                    {/foreach}
+                                {/foreach}
+
+                            </ul>
+                        </li>
+                    </ul>
+
+            </div>
+            </div>
+        {/if}
+    </div>
+</div>
+
+{if !empty($list_view_type)}
+    {* Bulk action buttons when tasks are selected in the list *}
+    <div class="t-selection-menu">
+        <div class="t-menu-wrapper">
+            <span class="t-menu-item t-checkbox-wrapper">
+                <input class="t-checkbox" id="check-all-tasks" type="checkbox" name="">
+            </span>
+            <a class="t-menu-item t-done-link" href="javascript:void(0);">
+                <span class="t-menu-name">
+                    [`Done`]&nbsp;
+                    <span class="counter"></span>
+                </span>
+            </a>
+            <a class="t-menu-item t-delete-link" href="javascript:void(0);">
+                <span class="t-menu-name">
+                    [`Delete`]&nbsp;
+                    <span class="counter"></span>
+                </span>
+            </a>
+            <a class="t-menu-item t-forward-link" href="javascript:void(0);" title="[`Forward`]"></a>
+            <a class="t-menu-item set-priority-link" href="javascript:void(0);">[`Set priority`]&nbsp;<span class="counter"></span></a>
+            <a class="t-menu-item set-deadline-link" href="javascript:void(0);">[`Set deadline`]&nbsp;<span class="counter"></span></a>
+            <ul class="t-menu-item t-tags-dropdown menu-h dropdown">
+                <li>
+                    <a class="inline-link gray" href="javascript:void(0);">
+                        <b><i>[`Add tag`]</i></b>
+                        <span class="counter"></span>
+                    </a>
+
+                    <ul class="menu-v" style="width: 200px;">
+
+                        <li class="t-tags-cloud">
+                            {if count($tags_cloud) <= tasksTaskTagsModel::TAGS_MAX_COUNT}
+                                {foreach $tags_cloud as $tag}
+                                    <a style="font-size: {$tag.size}%; opacity: {$tag.opacity};color: green;text-decoration: underline;margin: 0px;padding: 3px;"
+                                            class="js-set-tag t-cloud-link t-set-tag"
+                                            data-id="{$tag.id}" href="javscript:void(0);">{$tag.name|escape}</a>
+                                {/foreach}
+
+                            {else}
+                                <span class="hint" style="margin: 1em 0;">{sprintf(_w('There are more than %u tags.'), tasksTaskTagsModel::TAGS_MAX_COUNT)}<br>
+                                    [`Start typing in the search field to find a tag.`]
+                                </span>
+                            {/if}
+                        </li>
+
+
+                        <li class="t-add-tag">
+                            <form action="?module=tags&action=set">
+                                <div class="t-input-wrapper">
+                                    <input type="text" class="t-input js-t-task-tags-autocomplete" name="tag_name"
+                                           autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true"
+                                           placeholder="[`Custom tag...`]">
+                                    <input type="submit" class="t-submit" value="[`Add`]">
+                                </div>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+
+            <!-- plugin hook: 'backend_tasks.%plugin_id%.header.bulk' -->
+            {* @event backend_tasks.%plugin_id%.header.bulk *}
+            {foreach $_backend_header_hooks as $_}{$_.bulk|default:''}{/foreach}
+
+        </div>
+    </div>
+
+    <div id="t-bulk-forward-dialog"></div>
+    <script>(function($) { "use strict";
+        $.wa.locale = $.extend($.wa.locale, {
+            /* Dialog header */
+            'Forward (%d)': '[`Forward (%d)`]'
+        });
+    })(jQuery);</script>
+{/if}
+
+<!-- plugin hook: 'backend_tasks.%plugin_id%.header.bottom' -->
+{* @event backend_tasks.%plugin_id%.header.bottom *}
+{foreach $_backend_header_hooks as $_}{$_.bottom|default:''}{/foreach}
+
+{/strip}

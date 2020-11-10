@@ -1,0 +1,13 @@
+{$wrapper_id = uniqid('t-releases-plugin-task-type-block')}
+<div class="t-releases-plugin-task-type-block" id="{$wrapper_id}">
+    <span class="t-type-text" style="color: #{$task_type.color|escape}; font-weight: bold;">{$task_type.name|escape}:&nbsp;</span>
+    <script>
+        (function () {
+            var $wrapper = $('#{$wrapper_id}'),
+                $type_text = $wrapper.find('.t-type-text'),
+                $task_name = $wrapper.closest('.t-task-header').find('.t-task-name-wrapper');
+            $type_text.insertBefore($task_name);
+            $wrapper.remove();
+        })(jQuery);
+    </script>
+</div>

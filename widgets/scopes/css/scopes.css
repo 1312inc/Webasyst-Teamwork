@@ -1,0 +1,154 @@
+.t-scopes-wrapper {
+    padding: 1em;
+}
+.t-scopes-wrapper .t-scopes-heading {
+    cursor: default;
+    padding-bottom: 8px;
+}
+.t-scopes-wrapper .t-scopes-list .t-scopes-item {
+    display: table;
+    width: 100%;
+    position: relative;
+    margin: 0.75em 0 0;
+}
+.t-scopes-wrapper .t-scopes-list .t-scopes-item:first-child {
+    margin-top: 0;
+}
+.t-scopes-wrapper .t-scopes-list .t-scopes-item > .left-column,
+.t-scopes-wrapper .t-scopes-list .t-scopes-item > .right-column {
+    display: table-cell;
+    vertical-align: middle;
+}
+.t-scopes-wrapper .t-scopes-list .t-scopes-item > .left-column {
+    width: 75px;
+}
+.t-scopes-wrapper .t-scopes-list .t-scopes-item > .right-column .t-scopes-progress .t-scopes-progress-value {
+    background: #a4cc9d;
+    font-size: 10px;
+    color: #333;
+}
+.t-scopes-wrapper .t-scopes-list .t-scopes-item > .right-column .t-scopes-progress {
+    margin-top: 3px;
+    border: 1px solid #a4cc9d;
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+}
+.t-scopes-wrapper .t-scopes-list .t-scopes-date {
+    padding: 0.5em 0;
+    width: 60px;
+    background: #616161;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    text-align: center;
+    color: #fff;
+}
+.t-scopes-wrapper .t-scopes-list .t-scopes-date.c-date-red {
+    background: #f00;
+}
+@-webkit-keyframes release-fail {
+    0% {
+        background-color: #f00;
+    }
+    50% {
+        background-color: rgba(255,0,0,0);
+    }
+    100% {
+        background-color: #f00;
+    }
+}
+.t-scopes-wrapper .t-scopes-list .t-scopes-date.c-date-fail {
+    -webkit-animation: release-fail 2s linear infinite;
+    animation: release-fail 2s linear infinite;
+}
+.t-scopes-wrapper .t-scopes-list .t-scopes-date .t-scopes-day {
+    font-size: 18px;
+    font-weight: bold;
+}
+.t-scopes-wrapper .t-scopes-list .t-scopes-date .t-scopes-mouth {
+    font-size: 0.8em;
+}
+@-moz-keyframes release-fail {
+    0% {
+        background-color: #f00;
+    }
+    50% {
+        background-color: rgba(255,0,0,0);
+    }
+    100% {
+        background-color: #f00;
+    }
+}
+@-webkit-keyframes release-fail {
+    0% {
+        background-color: #f00;
+    }
+    50% {
+        background-color: rgba(255,0,0,0);
+    }
+    100% {
+        background-color: #f00;
+    }
+}
+@-o-keyframes release-fail {
+    0% {
+        background-color: #f00;
+    }
+    50% {
+        background-color: rgba(255,0,0,0);
+    }
+    100% {
+        background-color: #f00;
+    }
+}
+@keyframes release-fail {
+    0% {
+        background-color: #f00;
+    }
+    50% {
+        background-color: rgba(255,0,0,0);
+    }
+    100% {
+        background-color: #f00;
+    }
+}
+.t-scopes-wrapper .t-scopes-list .t-scopes-wrapper {
+    display: table;
+    width: 100%;
+    padding: 0 0.5em 0 0;
+    table-layout: fixed;
+    box-sizing: border-box;
+}
+.t-scopes-wrapper .t-scopes-list .t-scopes-wrapper .t-scopes-image {
+    display: table-cell;
+    vertical-align: middle;
+    width: 25px;
+    border-radius: 50%;
+}
+.t-scopes-wrapper .t-scopes-list .t-product-wrapper .t-product-title {
+    font-size: 16px;
+    font-weight: bold;
+}
+.t-scopes-wrapper .t-scopes-list .t-no-scopes {
+    text-align: center;
+    color: #999;
+    margin-top: 40%;
+}
+.tv .t-scopes-wrapper .t-scopes-list .t-scopes-item > .right-column .t-scopes-progress .t-scopes-progress-value {
+    background: #44803c;
+    color: #fff;
+}
+.tv .t-scopes-wrapper .t-scopes-list .t-scopes-item > .right-column .t-scopes-progress {
+    border: 1px solid #44803c;
+}
+.tv .t-scopes-wrapper .t-scopes-list .t-scopes-date {
+    width: 80px;
+}
+.tv .t-scopes-wrapper .t-scopes-list .t-scopes-wrapper {
+    padding: 0 0.5em 0 0.75em;
+}
+.tv .t-scopes-wrapper .t-scopes-list .t-scopes-wrapper .t-product-title {
+    font-size: 26px;
+}
+.tv .t-scopes-widget-wrapper {
+    background: transparent;
+}

@@ -1,0 +1,29 @@
+<div class="block">
+    <i class="icon16 loading"></i>
+</div>
+
+<script>(function() { "use strict";
+
+    var data = {};
+    {$fields = ifempty($fields, ['name', 'text', 'params'])}
+    {foreach $fields as $f}{if !empty($task[$f])}
+        data['task[%s]'.replace('%s', {$f|json_encode})] = {$task[$f]|json_encode};
+    {/if}{/foreach}
+
+    var load_protector = $.tasks.load_protector = Math.random();
+    $.post('?module=tasks&action=edit&id=new', data, function(result) {
+        if (load_protector === $.tasks.load_protector) {
+            var $content = $("#content").empty();
+            var $div = $('<div></div>').html(result);
+            $.tasks.setTitle($div);
+            $content.append($div[0].childNodes);
+            $.tasks.forceHash('#/add/');
+            $(window).trigger($.Event('wa_loaded'));
+            $content.find('.t-close-link').click(function() {
+                $.wa.setHash('#/tasks/inbox/');
+                return false;
+            });
+        }
+    });
+
+})();</script>

@@ -1,0 +1,185 @@
+$border_color = #ddd;
+
+.t-settings-sidebar
+    h5
+        margin: 0 7px 5px;
+
+    ul.menu-v.stack
+        li
+            margin-bottom: 0;
+
+#project-ordering-form
+    position: relative;
+
+    #bottom-list
+    #top-list
+        min-width:400px;
+
+    #top-list
+        border-bottom: 1px solid #eee;
+
+        .drag-handle
+            cursor: move;
+
+    #bottom-list
+        .drag-handle
+            visibility: hidden;
+
+    .clone
+        background: white
+        width: 100%
+        visibility: visible !important
+        position: absolute !important
+
+.t-settings-wrapper
+
+    .t-settings-list
+
+        .t-settings-item
+            padding 0.2em 0
+            min-height: 2em
+
+            &:nth-child(even)
+                background: #f2f7ff;
+
+            &:hover
+                background #ffffe5
+
+            &:first-child
+                border-top: 0
+
+            .t-control-link
+                height: 2rem
+                line-height: 2rem
+                display: inline-block
+                vertical-align: middle
+                border-radius: 0.25rem
+                background-color: #f0f0f0
+                padding: 0 0.5rem 0 0.5rem
+                margin: 0 0 0 1rem
+
+            .t-settings-header
+                display table
+                width 100%
+                table-layout fixed
+                box-sizing border-box
+
+                .t-item-icon
+                .t-item-name
+                .t-buttons-block
+                    display table-cell
+                    vertical-align middle
+                    padding .25rem
+                    box-sizing border-box
+
+                .t-item-icon
+                    width: 32px
+                    cursor: move;
+                    text-align right
+
+                .t-item-name
+                    white-space nowrap
+                    text-overflow ellipsis
+                    overflow hidden
+                    .icon16
+                        vertical-align middle
+
+                    input
+                        margin 0 0 0 .25em
+                        width 20%
+                        box-sizing border-box
+
+                .t-buttons-block
+                    text-align right
+                    padding-right: 1rem
+                    width: 80px
+
+                    .t-button-item
+                        display inline-block
+                        vertical-align top
+                        margin: 0 0 0 1rem
+
+                        i
+                            margin: 0
+                            padding: 0
+
+            .t-hidden-block
+                float: left // hack
+                display none
+                padding: 10px;
+                background #fff
+                border-top: 1px solid $border_color
+                width: 100%
+
+            &.is-opened
+                .t-hidden-block
+                    display block
+                //.hide-when-opened
+                //    display: none !important
+
+            &.is-closed
+                .hide-when-closed
+                    display: none !important
+
+            &.ui-sortable-helper
+                .t-hidden-block
+                    background: white
+
+            &.is-special
+                .t-settings-header
+                    .t-item-icon
+                        cursor: default
+                        background: transparent
+
+            &.template
+                display: none !important
+
+
+
+    .t-add-settings-wrapper
+    .t-save-settings-wrapper
+        margin: 1rem 0 0
+
+        .t-add-settings-link
+        .t-save-settings-button
+            display inline-block
+            box-sizing border-box
+
+/* Info panel after successfull save */
+.t-saved
+    background: #dfd;
+    border-bottom: 1px solid rgba(0,0,0,0.13);
+
+.t-project-settings-colorbox
+    li
+        a
+            padding: 8px 10px;
+            border: 1px solid rgba(127,127,127,.2);
+
+        &.t-white
+            a
+                background: #fff;
+
+        &.t-gray
+            a
+                background: #eee;
+
+        &.t-yellow
+            a
+                background: #ffd;
+
+        &.t-green
+            a
+                background: #dfc;
+
+        &.t-blue
+            a
+                background: #cef;
+
+        &.t-red
+            a
+                background: #ffe7e7;
+
+        &.t-purple
+            a
+                background: #edf;

@@ -1,0 +1,28 @@
+{$wrapper_id = uniqid('t-templates-plugin-templates-header-link-wrapper')}
+<div class="t-templates-plugin-templates-header-link-wrapper" id="{$wrapper_id}">
+    <ul class="menu-h dropdown js-dropdown-menu ">
+        <li>
+            <a class="t-selected-item js-dropdown-menu-title" href="javascript:void(0);"><i class="icon16 notebook"></i></a>
+
+            <ul class="menu-v with-icons js-task-templates-menu">
+                {foreach $templates as $template}
+                    <li class="t-nav-item js-dropdown-menu-item">
+                        <a class="js-template-header-link t-template-link" href="#" title="{$template.name|escape}" data-template="{$template.id}">
+                            <i class="icon16 {$template.icon|escape} t-icon"></i><span class="t-name">{$template.name|escape}</span>
+                        </a>
+                    </li>
+                {/foreach}
+            </ul>
+        </li>
+    </ul>
+
+    <script>
+        (function ($) {
+            var $wrapper = $("#{$wrapper_id}");
+            new TasksTemplatesPluginTaskEdit({
+                $wrapper: $wrapper
+            });
+        })(jQuery);
+    </script>
+</div>
+

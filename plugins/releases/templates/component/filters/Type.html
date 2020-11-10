@@ -1,0 +1,12 @@
+{$types[''].name = '[`Any type`]'}
+{include file="./Filter.inc.html"
+    default_title = '[`Types`]'
+    filter_id = 'plugin.releases.type'
+    items = $types
+inline}
+<script>
+    (function () {
+        var milestones = {$milestones|json_encode};
+        TasksReleasesPlugin.initTaskListPageHeader(milestones);
+    })();
+</script>

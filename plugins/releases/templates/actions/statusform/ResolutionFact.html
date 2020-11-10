@@ -1,0 +1,13 @@
+<div class="field js-resolution-wrapper">
+    <div class="name">
+        {$field_names.resolution|default:''}
+    </div>
+    <div class="value">
+        <select name="task_plugin_releases_task_ext[resolution]" required>
+            <option value=""></option>
+            {foreach $resolutions as $resol_id => $resol_name}
+                <option value="{$resol_id}" {if $resol_id == $fact_resolution}selected{/if}>{$resol_name}</option>
+            {/foreach}
+        </select>
+    </div>
+</div>

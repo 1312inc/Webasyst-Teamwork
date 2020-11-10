@@ -1,0 +1,1051 @@
+$white_color = #fff;
+$gray_color = #f7f7f7;
+$green_color = #f3ffe3;
+$blue_color = #f8ffff;
+$purple_color = #fcf3ff;
+$red_color = #fff1f1;
+$yellow_color = #ffffe3;
+$animate_time = 666ms;
+$highlighted_color = #ffa;
+
+.t-tasks-wrapper
+    border-radius: 0 0 2px 2px
+
+    .t-task-outer-container
+        position relative
+        border-top: 1px solid #ddd
+        overflow hidden
+
+        &.is-overflow-disabled
+            overflow visible
+
+        &:first-child
+            border-top: 0
+
+        &.t-white
+            background: $white_color;
+
+            .t-task-wrapper
+                .t-content-column
+                    .t-task-header
+                        .t-controls-wrapper
+                            background: $white_color;
+
+        &.t-gray
+            background: $gray_color;
+
+            .t-task-wrapper
+                .t-content-column
+                    .t-task-header
+                        .t-controls-wrapper
+                            background: $gray_color;
+
+        &.t-green
+            background: $green_color;
+
+            .t-task-wrapper
+                .t-content-column
+                    .t-task-header
+                        .t-controls-wrapper
+                            background: $green_color;
+
+        &.t-blue
+            background: $blue_color;
+
+            .t-task-wrapper
+                .t-content-column
+                    .t-task-header
+                        .t-controls-wrapper
+                            background: $blue_color;
+
+        &.t-purple
+            background: $purple_color;
+
+            .t-task-wrapper
+                .t-content-column
+                    .t-task-header
+                        .t-controls-wrapper
+                            background: $purple_color;
+
+        &.t-red
+            background: $red_color;
+
+            .t-task-wrapper
+                .t-content-column
+                    .t-task-header
+                        .t-controls-wrapper
+                            background: $red_color;
+
+        &.t-yellow
+            background: $yellow_color;
+
+            .t-task-wrapper
+                .t-content-column
+                    .t-task-header
+                        .t-controls-wrapper
+                            background: $yellow_color;
+
+        &.highlighted
+        &.selected
+            background: $highlighted_color;
+
+            .t-task-wrapper
+                .t-content-column
+                    .t-task-header
+                        .t-controls-wrapper
+                            background: $highlighted_color;
+
+        &.is-archived
+            $archived_color = #888
+
+            .t-task-wrapper
+                color $archived_color
+
+                .t-content-column
+                    .t-task-header .t-task-name-wrapper
+                    .t-description-wrapper
+                        color $archived_color !important
+
+        &.half-moved-right
+            .t-task-wrapper
+                left 50%
+            .t-status-form-wrapper
+                left: 0
+                background rgba(0,0,0,.1)
+
+        &.moved-right
+            .t-task-wrapper
+                left 100%
+            .t-status-form-wrapper
+                left: 100%
+
+        &.half-moved-left
+            .t-task-wrapper
+                left -50%
+            .t-status-form-wrapper
+                &.is-right
+                    left 50%
+                    background rgba(0,0,0,.1)
+
+        &.moved-left
+            .t-task-wrapper
+                left: -100%
+            .t-status-form-wrapper
+                &.is-right
+                    left -50%
+
+        .t-status-form-wrapper
+            visibility hidden
+            position absolute
+            top: 0
+            left: -50%
+            min-height: 100%
+            width: 50%
+            padding 1em
+            box-sizing border-box
+
+            &.is-right
+                left: 100%
+
+            &.is-animated
+                transition left $animate_time ease-in-out, background $animate_time linear
+
+            &.is-shown
+                visibility visible
+
+            .field
+                .name
+                    width: 116px
+
+                .value
+                    margin-left: 130px
+
+            textarea
+                $line-height = 1.25rem
+                $padding = .25rem
+
+                min-width 1px
+                width 100%
+                height 5 * $line-height + $padding * 2
+                padding: $padding
+                box-sizing border-box
+                line-height $line-height
+
+            .t-buttons-block
+                .button
+                    margin: 0 0 0 1rem
+
+                    &:first-child
+                        margin-left: 0
+
+        .t-task-wrapper
+            position relative
+            left 0
+            display table
+            width: 100%
+            transition left $animate_time ease-in-out
+            table-layout: fixed; // need to IE break word
+            word-break: break-word;
+            word-wrap: break-word
+
+            .t-checkbox-column
+            .t-userpic-column
+            .t-content-column
+                display table-cell
+                vertical-align top
+
+            .t-checkbox-column
+                width: 2.5em
+                padding: 50px 0 0 0
+                text-align center
+
+                .t-checkbox-item
+                    margin: 0
+
+            .t-userpic-column
+                $image_size = 48px
+
+                width: $image_size
+                padding: .5rem * 3 .5rem
+
+                .t-userpics-wrapper
+                    $padding_size = 10px
+                    $lift_size = 10px
+
+                    position relative
+                    padding: $padding_size 0 0;
+
+                    &.is-animated-on-hover
+                        padding-left $padding_size
+
+                        .t-userpic-item
+                            &.is-assigned
+                                border-radius 50%
+                                border 2px solid #fff
+                                background #fff
+                                box-shadow: 0 1px 3px rgba(0,0,0,0.2)
+                                line-height: 0
+
+                        &:hover
+                            .t-userpic-item
+
+                                &.is-creator
+                                    position absolute
+                                    top: $padding_size - $lift_size * 2
+                                    left: $padding_size - $lift_size * 2
+
+                                &.is-assigned
+                                    position relative
+                                    top: $lift_size
+                                    left: $lift_size
+
+                    .t-userpic-item
+                        display block
+                        width $image_size
+                        cursor pointer
+                        transition all 200ms linear
+                        font-size: 0
+
+                        img
+                            width $image_size
+                            max-height $image_size
+                            border-radius 50%
+
+                        &.is-creator
+                            position absolute
+                            top: $padding_size - $lift_size
+                            left: $padding_size - $lift_size
+
+                        &.is-assigned
+                            position relative
+                            top: 0
+                            left: 0
+
+            .t-content-column
+                padding: .5rem * 2
+                height: 1px
+                transition height $animate_time ease-in-out
+                box-sizing border-box
+
+                .highlighted
+                    background $highlighted_color
+
+                .t-full-content
+                    margin 1em 0 0
+                    display none
+
+                .t-task-header
+                    position relative
+                    margin: 0 0 .5rem
+                    padding: 0 340px 0 0
+                    word-break: normal;
+
+                    .t-priority-changer-wrapper
+                        $padding = 10px
+                        display none
+                        position absolute
+                        top -($padding/2)
+                        left -($padding/2)
+                        width 400px
+                        background #fff
+                        padding $padding
+                        border 1px solid rgba(0,0,0,.1)
+
+                        &.is-shown
+                            display block
+
+                    .t-controls-wrapper
+                        position absolute
+                        top 0
+                        right 0
+                        text-align right
+                        white-space nowrap
+                        line-height: 1.5em;
+                        padding 0 .5em
+
+                        .t-hidden-block
+                            display inline-block
+                            margin 0 10px 0 0
+                            opacity 0
+                            transition opacity 200ms linear
+
+                            li
+                                margin 0 0 0 10px
+
+                                &:first-child
+                                    margin-left 0
+
+                                a
+                                    margin 0
+                                    padding 0
+
+                    .t-task-header-content
+                        margin: 0
+                        font-weight normal
+                        font-size 1.3em
+
+                    .t-project-icon
+                        margin 0 10px 0 0
+
+                        i
+                            margin 0
+                            vertical-align baseline
+                            position relative
+                            top 2px
+
+                    .t-priority-wrapper
+                        margin: 0 0.4em 0 -0.3em
+                        padding: 0.15em 0.3em 0.2em
+                        border-radius 0.2em
+
+                        //&.is-low
+
+                        //&.is-normal
+
+                        //&.is-high
+
+                        &.is-urgent
+                            font-weight bold
+                            padding .13em 0.4em
+                            background-color #e00
+                            border-radius 2px
+                            color #fff
+
+                        .icon16
+                            vertical-align baseline
+                            margin: 0 0 0 3px
+                            position: relative;
+                            top: 1px;
+
+                        &:hover
+                            background: #eed;
+
+                        &.is-urgent:hover
+                            background: #c00;
+
+                    .t-task-name-wrapper
+                        font-weight bold
+
+                    $_line_height = 24px
+                    $_border_height = ($_line_height/2)
+                    $_border_width = ($_line_height/4)
+
+                    .t-status-wrapper
+                        $_background_color = #abc
+
+                        display inline-block
+                        position relative
+                        padding: 0 $_border_width 0 $_border_width
+                        margin: 0 $_border_height 0 $_border_height
+                        background $_background_color
+                        border: 0 solid
+                        font-size: 1rem
+                        border-color: $_background_color
+                        line-height $_line_height
+
+                        &.is-new
+                            $color = #2bb316;
+                            border-color $color
+                            background $color
+                            color #fff
+
+                        &.is-done
+                            $color = #ccc;
+                            border-color $color
+                            background $color
+                            color #fff
+
+                        &.is-archived
+                            $color = #f0f0f0;
+                            border-color $color
+                            background $color
+                            color #aaa
+
+                        &:before
+                            content ""
+                            position absolute
+                            top: 0
+                            left: -($_border_width)
+                            width 0
+                            height 0
+                            border solid
+                            border-color inherit
+                            border-width $_border_height 0 $_border_height $_border_width
+                            border-left-color transparent
+
+                        &:after
+                            content ""
+                            position absolute
+                            top: 0
+                            right: -($_border_width)
+                            width 0
+                            height 0
+                            border-style solid
+                            border-color transparent
+                            border-width $_border_height 0 $_border_height $_border_width
+                            border-left-color inherit
+
+                    .t-tags-wrapper
+                        display inline
+                        margin: 0 0 0 0
+                        font-size: 1rem
+
+                        .dropdown
+                            .menu-v
+                                margin-top 0
+                                .t-tags-cloud .t-cloud-link:hover
+                                    background #e2e0e0
+                                    opacity 1!important
+                                .t-tags-cloud:hover
+                                    background none
+                                .t-tags-cloud
+                                    text-align:center
+                                    .t-cloud-link
+                                        display: inline-block
+                         &.is-shown
+                            .dropdown
+                                .menu-v
+                                    display block
+
+                        .t-tag-item
+                            display inline-block
+                            position relative
+                            color: green
+                            padding 0 1em 0 0
+                            margin 0 .5em 0 .5em
+
+                            &.is-template
+                                display none
+
+                            &:hover
+                                i
+                                    visibility visible
+
+                            i
+                                position absolute
+                                top: 6px
+                                right: 2px;
+                                visibility hidden
+                                vertical-align baseline
+                                margin: 0
+
+                        .dropdown
+                            display inline-block
+
+                            & > li
+                                margin: 0
+
+                                .menu-v
+                                    & > li
+                                        padding 6px 8px
+
+                                        a
+                                            color: green
+
+                        .t-add-tag
+                            .t-input-wrapper
+                                position relative
+
+                                .t-input
+                                .t-submit
+                                    display block
+                                    box-sizing border-box
+
+                                .t-input
+                                    width: 100%
+
+                                .t-submit
+                                    position absolute
+                                    top: 0
+                                    right: 0
+                                    height: 100%
+
+                    .t-date-wrapper
+                        display inline-block
+                        padding: 0;
+                        margin 0 10px 0 0
+                        color: #888
+
+                    .t-favorite-link
+                        display inline-block
+                        padding 0 .1em
+
+                        .icon16
+                            position relative
+                            top 2px
+                            vertical-align baseline
+                            margin: 0
+
+                    &.show-done-icon
+                        &:before
+                            $size = 340px
+                            content ""
+                            display block
+                            position absolute
+                            top 40px
+                            right 0
+                            width $size
+                            height $size
+                            background transparent url("../img/icons/done-icon.png") no-repeat;
+                            background-size $size
+                            opacity .05
+
+                .t-relations-wrapper
+                    .t-relations-hover-block
+                        font-family 'Helvetica Neue', 'Liberation Sans', 'Trebuchet MS', Arial, sans-serif
+                        padding 5px 0px 5px
+                        margin 0px
+                        cursor default
+
+                        li
+                            list-style none;
+                            margin-bottom 7px
+
+                            .t-relations-btn
+                                opacity 0
+                                transition opacity 200ms linear
+
+                        .t-relations-btn i
+                            margin-right 5px
+                            margin-top 5px
+
+                    .t-relations-status
+                        display inline-block
+                        position relative
+                        padding 0 3px 0 3px
+                        margin 0 10px 0 10px
+                        background #abc
+                        border 0 solid
+                        font-size 11px
+                        border-color #abc
+                        line-height 18px
+
+                        &:before
+                            content ""
+                            position absolute
+                            top 0
+                            left -6px
+                            width 0
+                            height 0
+                            border solid
+                            border-color inherit
+                            border-width 9px 0 9px 6px
+                            border-left-color transparent
+
+                        &:after
+                            content ""
+                            position absolute
+                            top 0
+                            right -6px
+                            width 0
+                            height 0
+                            border-style solid
+                            border-color transparent
+                            border-width 9px 0 9px 6px
+                            border-left-color inherit
+
+                    .t-relations-status0
+                        border-color #2bb316
+                        background #2bb316
+                        color #fff
+
+                    .t-relations-status-1
+                        border-color #ccc
+                        background #ccc
+                        color #fff
+
+                    .t-relations-status1
+                        border-color #ffdc2f
+                        background #ffdc2f
+                        color #333
+
+                .t-description-wrapper
+                    margin: .5em 0 0
+                    max-width 80%
+
+                    pre
+                        white-space pre-wrap
+                        line-height 19px
+
+                    ul li,
+                    ol li
+                        font-family: "Lucida Grande","Lucida Sans Unicode","Helvetica Neue",Arial,sans-serif;
+                        line-height: 1.5em;
+                        margin-bottom: 0.3em;
+
+                    .t-milestone-wrapper,
+                    .t-due-wrapper
+                        padding 2px 0 10px;
+
+                    .t-milestone-value,
+                    .t-due-date-value
+                        font-family 'Helvetica Neue', 'Liberation Sans', 'Trebuchet MS', Arial, sans-serif
+
+                    .t-milestone-value .green,
+                    .t-due-date-value .green
+                        color green;
+
+                    .t-milestone-value .orange,
+                    .t-due-date-value .orange
+                        color #e8842b;
+
+                    .t-milestone-due-date,
+                    .t-milestone-due-date
+                        font-size 11px
+
+                    .t-due-date-bl-green
+                        color #fff
+                        background #66aa66
+                        padding 1px 5px
+                        border-radius 2px
+
+                    .t-due-date-bl-red
+                        color #fff
+                        background #ff6666
+                        padding 1px 5px
+                        border-radius 2px
+
+                    .t-due-date-bl-orange
+                        color #fff
+                        background #e8842b
+                        padding 1px 5px
+                        border-radius 2px
+                    .prettyprint
+                        background: #eec
+                        border: 0px !important
+                        padding: 10px
+                .t-quote-wrapper
+                    margin: 1.5em 0 0
+                    padding: 1em
+
+                    .t-quote-header
+                        .t-quote-author
+                            font-weight bold
+
+                        .t-quote-date
+                            display inline-block
+                            margin: 0 0 0 .75em
+                            font-size: 0.9em
+                            color: #aaa
+
+                    .t-quote-text
+                        margin: .5em 0 0
+
+                        p
+                            margin 1.5em 0 0
+
+                            &:first-child
+                                margin-top 0
+                        .prettyprint
+                            border: 0px !important
+                    .t-attach-wrapper
+                        $image_size = 60px
+                        margin: 0
+
+                        .t-attached-files-wrapper
+                            .t-images-list
+                                .t-image-item
+                                    width: $image_size
+                                    .t-image-link
+                                        line-height $image_size
+                                        margin-bottom 0
+
+                                        img
+                                            max-height $image_size
+
+                                    .t-file-name
+                                        white-space nowrap
+                                        text-overflow ellipsis
+                                        max-width 100%
+                                        overflow: hidden;
+
+                .t-status-data-container
+                    padding: 0
+                    border: solid rgba(0,0,0,.1);
+                    border-width 0
+                    opacity 0
+                    transition opacity 200ms ease-in-out
+
+                    &.is-shown
+                        border-width: 1px 0;
+                        padding: 1em 0;
+                        opacity 1
+
+                .t-comments-list-wrapper
+                    margin .5rem * 3 0 0
+
+                    .t-comment-item
+                        padding .5em 0 1em
+
+                        .image
+                            font-size: 0
+
+                        .details
+                            min-height 32px
+
+                            .t-comment-assignment-change
+                                margin 4px 0 0;
+
+                        .t-comment-header
+                            .t-comment-author
+                            .t-comment-date
+                            .t-comment-action
+                                display inline-block
+                                vertical-align baseline
+                                margin: 0 .5rem 0 0
+                                line-height 20px
+
+                            .t-comment-author
+                                color: #777
+
+                            .t-comment-date
+                                font-size: 0.9rem;
+                                color: #aaa
+                            .t-assign-comment-link
+                                display: none
+                                .icon16
+                                    margin-top 1px
+                                .t-loading
+                                    display none
+                                .t-mark-icon
+                                    display inline-block
+                                &.selected
+                                    display inline-block
+                                &.in-process
+                                    cursor default
+                                    .t-loading
+                                        display inline-block
+                                    .t-mark-icon
+                                        display none
+                                &.disabled
+                                    cursor default
+                            .t-comment-delete-link
+                            .t-comment-edit-link
+                                display none
+                                font-size 0.9em
+                                color: #aaa
+                                text-decoration none
+                                margin-left 6px
+                                .icon10
+                                    margin-top 6px
+
+                        .t-comment-content
+                            margin: .2rem 0 0
+                            line-height 1.5rem
+                            font-size 0.95em
+
+                            p
+                                margin: .5rem 0 0
+                                padding: 0
+
+                                &:first-child
+                                    margin-top: 0
+                            .prettyprint
+                                border: 0px !important
+                                background: #eec
+                                padding: 10px
+                        .t-attach-wrapper
+                            $image_size = 60px
+                            margin: 0
+
+                            .t-attached-files-wrapper
+                                .t-images-list
+                                    .t-image-item
+                                        width: $image_size
+                                        .t-image-link
+                                            line-height $image_size
+                                            margin-bottom 0
+
+                                            img
+                                                max-height $image_size
+
+                                        .t-file-name
+                                            white-space nowrap
+                                            text-overflow ellipsis
+                                            max-width 100%
+                                            overflow: hidden;
+
+                        &:hover
+                            .t-assign-comment-link
+                            .t-comment-delete-link
+                            .t-comment-edit-link
+                                display inline
+                .t-comment-form
+                    $max_width = 75%
+                    $width = 600px
+                    padding .5rem 0 0
+                    margin: 0 0 0
+
+                    .line
+                        margin: 1em 0 0
+
+                        &:first-child
+                            margin-top: 0
+
+                    .t-textarea-wrapper
+                        max-width $max_width
+                        width $width
+
+                        textarea
+                            display block
+                            width 100%
+                            height 96px
+                            resize vertical
+                            box-sizing border-box
+                            border: 1px solid #ccc;
+                            padding: .5em
+                            border-radius 3px 3px 0 0
+
+                    .t-attach-wrapper
+                        margin 0
+
+                        .t-attach-droparea
+                            max-width $max_width
+                            width $width
+
+                        .t-attached-files-wrapper
+                            display none
+
+                            &.is-shown
+                                display block
+
+                            .t-images-list
+                                .t-image-item
+                                    $image_size = 100px
+                                    margin: 0 0.5rem * 2 0.5rem * 2 0
+                                    width: $image_size
+
+                                    .t-image-link
+                                        line-height $image_size
+                                        img
+                                            max-height $image_size
+
+                    .t-buttons-block
+                        .t-add-comment-button
+                            cursor pointer
+                            margin-left 2rem
+
+                .t-task-buttons
+                    margin 0.5em 0 0
+                    height 2.5em
+                    line-height 2em
+                    opacity 0
+                    transition opacity 200ms linear
+
+                    .t-visible-part
+                    .t-hidden-part
+                        display inline-block
+                        vertical-align top
+
+                    .t-hidden-part
+                        display none
+
+                    .t-task-controls
+                        display inline-block
+                        vertical-align top
+
+                        .t-control-link
+                            display inline-block
+                            vertical-align top
+                            height: 2.5em
+                            padding: .15em 1em;
+                            margin: 0 0 0 .5em
+                            border-radius .25em
+                            transition: background 200ms linear;
+                            box-sizing border-box
+                            font-weight: bold
+
+                            &:first-child
+                                margin-left: 0
+
+                            &.t-return-link
+                                width 3em
+                                background transparent url("../img/icons/arrow-left-icon.png") 50% no-repeat
+                                background-size 20px
+                                opacity 0.5
+
+                                &:hover
+                                    opacity 1
+
+                            &.t-forward-link
+                                width 3em
+                                background transparent url("../img/icons/arrow-right-icon.png") 50% no-repeat
+                                background-size 20px
+                                opacity 0.5
+
+                                &:hover
+                                    opacity 1
+
+                            &:hover
+                                background-color rgba(0,0,0,0.05)
+
+                        .t-change-status-link
+                            border: 1px solid rgba(0,0,0,0.1)
+
+                    .t-button-item
+                        display inline-block
+                        vertical-align top
+                        margin: 0.25em 0 0 1em
+                        white-space nowrap
+
+                    .t-postpone-wrapper
+                        margin 0.25em 0 0 1em
+
+                        .dropdown
+                            & > li
+                                min-width: 120px
+                                & > a
+                                    text-align right
+                                    white-space nowrap
+                                    color #aaa
+
+                                .menu-v
+                                    li
+                                        padding 6px 8px
+
+                                &:hover
+                                    background transparent
+
+            &.is-full
+                opacity 1
+
+                .t-content-column
+                    .t-description-wrapper
+                        height auto
+
+                        &:after
+                            display none
+
+                    .t-full-content
+                        display block
+
+                    .t-task-buttons
+                        .t-visible-part
+                            display none
+                        .t-hidden-part
+                            display inline-block
+
+        &.is-single
+            .t-task-wrapper
+                .t-checkbox-column
+                    display none
+
+                .t-userpic-column
+                    padding: 1.5rem 1rem 0 2rem
+
+                .t-content-column
+                    .t-task-buttons
+                        .t-link-item
+                            &.t-hide-full-content
+                                display none
+
+        &.is-single
+        .t-task-wrapper
+            .t-content-column
+                .t-relations-wrapper
+                    .t-relations-hover-block li:hover
+                        .t-relations-btn
+                            opacity 1
+
+
+        .t-task-wrapper:hover
+        .t-task-wrapper.is-full
+            .t-content-column
+                .t-task-header
+                    .t-controls-wrapper
+                        .t-hidden-block
+                            opacity 1
+
+                .t-task-buttons
+                    opacity 1
+
+        .t-status-comment-wrapper
+            max-width 600px
+
+            .t-textarea-wrapper
+
+                textarea
+                    display block
+                    width 100%
+                    height 92px
+                    resize vertical
+                    box-sizing border-box
+                    border: 1px solid #ccc;
+                    padding: .5em
+                    border-radius 3px 3px 0 0
+
+            .t-attach-wrapper
+                .t-attached-files-wrapper
+                    .t-images-list
+                        .t-image-item
+                            $image_size = 60px
+                            width: $image_size
+
+                            .t-image-link
+                                line-height $image_size
+
+                                img
+                                    max-height $image_size
+
+    &.is-table
+        @import "taskTableView.styl"
+
+    .show-done-icon
+        $size = 340px
+        display block
+        position absolute
+        top 54px
+        right 14px
+        width $size
+        height $size
+        background transparent url("../img/icons/done-icon.png") no-repeat;
+        background-size $size
+        opacity .05
+
+@media (min-width 1024px)
+    .t-tasks-wrapper
+        .t-task-outer-container
+            .t-task-wrapper
+                .t-content-column
+                    .t-description-wrapper
+                        width 80%

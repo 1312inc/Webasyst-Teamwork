@@ -1,0 +1,203 @@
+.logs-chart-wrapper
+    .axis
+        path
+        line
+            fill: none;
+            stroke: #999;
+            shape-rendering: crispEdges;
+
+        text
+            font-family: sans-serif;
+            font-size: 11px;
+            fill: #999;
+
+        &.x
+            line
+                display none
+
+        &.y
+            .domain
+                display none;
+
+            line
+                stroke: #999;
+
+            text
+                fill: #999;
+
+    .dot
+        stroke: #000;
+
+    .legend
+        padding: 5px;
+        font: 10px sans-serif;
+        background: yellow;
+        box-shadow: 2px 2px 1px #888;
+
+    .rgroups
+        rect
+            transition: all 300ms ease-in-out;
+            cursor pointer
+            shape-rendering: crispEdges;
+
+            &.is-hovered
+                opacity 1
+
+    .background
+        opacity 0.2
+
+        line
+            stroke: rgba(49, 139, 189, 0.11);
+            shape-rendering: optimizeQuality;
+
+            &:first-child
+                shape-rendering: auto;
+
+        rect
+            fill: #fcfeff
+
+.hint-wrapper
+    display none
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 6px;
+
+    background: #fff;
+
+    border: 1px solid #444;
+    border-radius: 3px;
+
+    font: normal 13px/1.5em "Arial", sans-serif;
+    color: #369;
+    z-index 1
+
+    /*-webkit-transition: opacity 100ms ease-in-out*/
+    /*-moz-transition: opacity 100ms ease-in-out*/
+    /*transition: opacity 100ms ease-in-out*/
+    /*opacity: 0;*/
+
+    &.is-shown
+        display block
+        /*opacity: 1;*/
+
+        .line
+
+            &.date
+                color: #999
+
+            &.sales
+                color: #a7e0a7
+
+            &.negative
+                color: #ae4410
+
+                .volume
+                    font-weight bold
+
+            &.profit
+                color: #10ae10
+
+                .volume
+                    font-weight bold
+
+.t-log-page
+    .t-header-wrapper
+        .t-logs-timeframe
+            & > li
+                margin 0 .5em 0 0
+                padding: 0
+                box-sizing border-box
+                vertical-align middle
+
+                &.t-custom-timeframe
+                    input
+                        width: 100px
+                        margin 0 .5em
+
+                &:hover
+                    background transparent
+
+                & > a
+                    margin 0
+                    padding 5px
+
+                .menu-v
+                    left auto
+                    right 0
+                    width: 210px
+                    margin: 0
+
+                    li
+                        padding 6px 8px
+
+    .t-logs-wrapper
+        border-top 1px solid rgba(127,127,127,0.1)
+
+        .t-comment-item
+            padding 1em 1em 0.5em
+
+            .image
+                font-size: 0
+
+            .details
+                min-height 32px
+
+            .t-comment-header
+                .t-comment-author
+                .t-comment-date
+                .t-comment-action
+                    display inline-block
+                    vertical-align baseline
+                    margin: 0 .5rem 0 0
+                    line-height 20px
+
+                .t-comment-author
+                    color: #777
+
+                .t-comment-date
+                    font-size: 0.9rem;
+                    color: #aaa
+
+            .t-comment-content
+            .t-comment-assignment-change
+                margin: .25em 0 0
+                line-height 1.5em
+
+                p
+                    margin: .5rem 0 0
+                    padding: 0
+
+                    &:first-child
+                        margin-top: 0
+
+            .t-comment-status-change
+                margin: .25em 0 0
+                
+                .t-color-point
+                    position relative
+                    top 1px
+                    display inline-block
+                    vertical-align baseline
+                    margin 0 4px
+                    width .8em
+                    height .8em
+                    border-radius 50%
+
+            .t-attach-wrapper
+                $image_size = 60px
+                margin: .75rem 0 0
+
+                .t-attached-files-wrapper
+                    .t-images-list
+                        .t-image-item
+                            width: $image_size
+                            .t-image-link
+                                line-height $image_size
+                                margin-bottom 0
+
+                                img
+                                    max-height $image_size
+
+                            .t-file-name
+                                display none

@@ -1,0 +1,1047 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: tasks\n"
+"POT-Creation-Date: 2015-11-28 20:34+0000\n"
+"PO-Revision-Date: \n"
+"Last-Translator: tasks\n"
+"Language-Team: tasks\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-Basepath: .\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: en_US\n"
+"X-Generator: Poedit 2.0.6\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPath-1: .\n"
+
+#: /wa-apps/tasks/templates/actions/backend/Backend.html:44
+#: /wa-apps/tasks/templates/actions/backend/Backend.html:45
+#: /wa-apps/tasks/templates/actions/log/Log.html:149
+#: /wa-apps/tasks/templates/actions/tasks/Tasks.html:22
+msgid "Loading..."
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/backend/Sidebar.html:30
+msgid "New task"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/backend/Sidebar.html:34
+msgid "Inbox"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/backend/Sidebar.html:38
+msgid "Hidden"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/backend/Sidebar.html:42
+msgid "Outbox"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/backend/Sidebar.html:46
+msgid "Favorites"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/backend/Sidebar.html:50
+#: /wa-apps/tasks/lib/config/config.php:76
+msgid "Urgent"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/backend/Sidebar.html:63
+#: /wa-apps/tasks/templates/actions/milestones/MilestonesDefault.html:5
+msgid "Milestones"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/backend/Sidebar.html:67
+msgid "Agile"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/backend/Sidebar.html:71
+msgid "Logs"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/backend/Sidebar.html:83
+#: /wa-apps/tasks/templates/actions/tasks/TasksForward.html:6
+#: /wa-apps/tasks/templates/actions/tasks/TasksReturn.html:6
+msgid "Status"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/backend/Sidebar.html:96
+#: /wa-apps/tasks/templates/actions/tasks/TasksEdit.html:207
+msgid "Unassigned"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/backend/Sidebar.html:103
+msgid "Team"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/backend/Sidebar.html:120
+#: /wa-apps/tasks/templates/actions/settings/SettingsSidebar.html:17
+msgid "Projects"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/backend/Sidebar.html:142
+#: /wa-apps/tasks/templates/actions/settings/SettingsSidebar.html:10
+msgid "Settings"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/log/Log.html:41
+msgid "from"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/log/Log.html:42
+msgid "to"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/log/Log.html:44
+msgid "by day"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/log/Log.html:45
+msgid "by month"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/log/Log.html:56
+msgid "All time"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/log/Log.html:57
+msgid "Select dates..."
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/log/Log.html:95
+#: /wa-apps/tasks/templates/actions/tasks/Task.html:316
+msgid "Status:"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/log/Log.html:100
+#: /wa-apps/tasks/templates/actions/tasks/Task.html:322
+msgid "Assigned:"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/log/Log.html:104
+msgid "Empty assignment"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/log/Log.html:145
+#: /wa-apps/tasks/templates/actions/tasks/Tasks.html:18
+msgid "%s of %d"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/log/Log.html:147
+#: /wa-apps/tasks/templates/actions/tasks/Tasks.html:20
+msgid "Load more..."
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/log/Log.html:53
+#: /wa-apps/tasks/templates/actions/log/Log.html:54
+#: /wa-apps/tasks/templates/actions/log/Log.html:55
+msgid "Last %d day"
+msgid_plural "Last %d days"
+msgstr[0] ""
+msgstr[1] ""
+
+#: /wa-apps/tasks/templates/actions/log/Log.html:145
+msgid "%d record"
+msgid_plural "%d records"
+msgstr[0] ""
+msgstr[1] ""
+
+#: /wa-apps/tasks/templates/actions/milestones/MilestonesDefault.html:12
+#: /wa-apps/tasks/templates/actions/tasks/TasksEdit.html:221
+#: /wa-apps/tasks/templates/actions/tasks/TasksHeader.html:72
+msgid "Due"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/milestones/MilestonesDefault.html:28
+msgid "New milestone"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/milestones/MilestonesEdit.html:2
+msgid "Milestone successfully saved"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/milestones/MilestonesEdit.html:6
+#: /wa-apps/tasks/templates/actions/projects/ProjectsEdit.html:42
+#: /wa-apps/tasks/templates/actions/settings/SettingsOrdering.html:33
+#: /wa-apps/tasks/templates/actions/settings/SettingsSidebar.html:23
+#: /wa-apps/tasks/templates/actions/settings/SettingsSidebar.html:38
+msgid "(no name)"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/milestones/MilestonesEdit.html:8
+msgid "Create milestone"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/milestones/MilestonesEdit.html:15
+#: /wa-apps/tasks/templates/actions/projects/ProjectsEdit.html:38
+#: /wa-apps/tasks/templates/actions/tasks/Task.html:170
+#: /wa-apps/tasks/templates/actions/tasks/TasksHeader.html:111
+msgid "Delete"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/milestones/MilestonesEdit.html:20
+msgid "Name"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/milestones/MilestonesEdit.html:24
+msgid "Description"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/milestones/MilestonesEdit.html:28
+msgid "Project"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/milestones/MilestonesEdit.html:38
+#: /wa-apps/tasks/templates/actions/tasks/TasksEdit.html:237
+msgid "Due date"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/milestones/MilestonesEdit.html:48
+msgid "Milestone is closed"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/milestones/MilestonesEdit.html:53
+#: /wa-apps/tasks/templates/actions/projects/ProjectsEdit.html:139
+#: /wa-apps/tasks/templates/actions/settings/Settings.html:166
+#: /wa-apps/tasks/templates/actions/settings/SettingsOrdering.html:21
+#: /wa-apps/tasks/templates/actions/settings/SettingsOrdering.html:39
+#: /wa-apps/tasks/templates/actions/tasks/TasksForward.html:68
+msgid "Save"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/milestones/MilestonesEdit.html:62
+#: /wa-apps/tasks/templates/actions/projects/ProjectsEdit.html:153
+#: /wa-apps/tasks/templates/actions/projects/ProjectsEdit.html:154
+#: /wa-apps/tasks/js/task.js:102 /wa-apps/tasks/js/task.js:675
+#: /wa-apps/tasks/js/taskEdit.js:524 /wa-apps/tasks/js/tasksHeader.js:177
+#: /wa-apps/tasks/js/tasksHeader.js:198
+msgid "Are you sure?"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/projects/ProjectsEdit.html:27
+#: /wa-apps/tasks/templates/actions/settings/Settings.html:148
+#: /wa-apps/tasks/templates/actions/settings/SettingsOrdering.html:15
+msgid "Settings successfully updated"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/projects/ProjectsEdit.html:34
+msgid "Archive datetime"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/projects/ProjectsEdit.html:36
+msgid "Archive"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/projects/ProjectsEdit.html:42
+msgid "New project"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/projects/ProjectsEdit.html:50
+#: /wa-apps/tasks/templates/actions/projects/ProjectsEdit.html:52
+msgid "Project name"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/projects/ProjectsEdit.html:60
+msgid "Color"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/projects/ProjectsEdit.html:77
+#: /wa-apps/tasks/templates/actions/settings/Settings.html:47
+msgid "Icon"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/projects/ProjectsEdit.html:89
+msgid "Or enter image URL (image will be scaled to 16x16px)"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/projects/ProjectsEdit.html:97
+msgid "Workflow"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/projects/ProjectsEdit.html:120
+msgid "Customize..."
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/settings/Settings.html:23
+msgid "Status name"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/settings/Settings.html:24
+msgid "Button label"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/settings/Settings.html:25
+msgid "Caption for the button that sends a task into this status"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/settings/Settings.html:61
+msgid "Task title style"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/settings/Settings.html:64
+msgid "Italic"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/settings/Settings.html:68
+msgid "Bold"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/settings/Settings.html:73
+msgid "Task title color"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/settings/Settings.html:81
+msgid "Button color"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/settings/Settings.html:92
+#: /wa-apps/tasks/templates/actions/tasks/TasksStatusform.html:11
+msgid "Assignment"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/settings/Settings.html:94
+msgid "Do not change assignment"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/settings/Settings.html:95
+msgid "Assign to user who created the task"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/settings/Settings.html:96
+msgid "Assign to specific user"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/settings/Settings.html:97
+msgid "Show assignment selector every time"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/settings/Settings.html:110
+#: /wa-apps/tasks/templates/actions/tasks/TasksStatusform.html:15
+msgid "Clear assignment"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/settings/Settings.html:120
+msgid "Allow to clear assignment"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/settings/Settings.html:129
+msgid "Comment form"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/settings/Settings.html:132
+msgid "Show comment form"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/settings/Settings.html:151
+msgid "Status settings"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/settings/Settings.html:162
+msgid "Add Status"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/settings/SettingsOrdering.html:18
+msgid "Project ordering"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/settings/SettingsOrdering.html:23
+msgid "Projects are sorted by name. You can select important projects to show them before everything else. Important projects can be manually reordered via drag-and-drop."
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/settings/SettingsSidebar.html:29
+msgid "Show %d archived project"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/settings/SettingsSidebar.html:29
+msgid "Show %d archived projects"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/settings/SettingsSidebar.html:48
+msgid "Manage project ordering"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/settings/SettingsSidebar.html:29
+msgid "[`Show %d archived project`]"
+msgid_plural "[`Show %d archived projects`]"
+msgstr[0] ""
+msgstr[1] ""
+
+#: /wa-apps/tasks/templates/actions/tasks/NoProjectsError.html:8
+msgid "Create a project first"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/Task.html:61
+#: /wa-apps/tasks/templates/actions/tasks/Task.html:62
+msgid "unassigned"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/Task.html:137
+msgid "Add tag"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/Task.html:151
+msgid "Custom tag..."
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/Task.html:152
+msgid "Add"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/Task.html:165
+msgid "Edit task"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/Task.html:180
+msgid "Set favorite"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/Task.html:256
+msgid "Comments"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/Task.html:286
+msgid "Hide"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/Task.html:326
+msgid "Assignment removed"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/Task.html:365
+msgid "There are no comments for this task yet."
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/Task.html:406
+msgid "Please click or drop image file here"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/Tasks.html:18
+msgid "%d task"
+msgid_plural "%d tasks"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "no tasks"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/TasksEdit.html:20
+msgid "You are about to abandon task editor without saving the task. All unsaved data will be lost. Are you sure?"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/TasksEdit.html:75
+msgid "Input task name"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/TasksEdit.html:120
+msgid "Input task description"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/TasksEdit.html:172
+msgid "Click to select files or drag them here"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/TasksEdit.html:179
+msgid "Assign to"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/TasksEdit.html:197
+msgid "me"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/TasksEdit.html:212
+msgid "Show all"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/TasksEdit.html:224
+#: /wa-apps/tasks/lib/actions/tasks/tasksTasks.action.php:146
+msgid "No milestone"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/TasksEdit.html:232
+msgid "Choose a date"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/TasksEdit.html:251
+msgid "Save task"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/TasksEdit.html:251
+#: /wa-apps/tasks/lib/handlers/hub.backend.handler.php:17
+msgid "Create task"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/TasksEdit.html:252
+#: /wa-apps/tasks/templates/actions/tasks/TasksForward.html:69
+#: /wa-apps/tasks/templates/actions/tasks/TasksReturn.html:28
+#: /wa-apps/tasks/templates/actions/tasks/TasksStatusform.html:37
+msgid "or"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/TasksEdit.html:253
+msgid "Cancel"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/TasksEdit.html:260
+msgid "Email"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/TasksEdit.html:267
+msgid "SMS"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/TasksEdit.html:272
+msgid "More fields"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/TasksForward.html:16
+msgid "Forward to"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/TasksForward.html:48
+msgid "Choose user"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/TasksForward.html:60
+#: /wa-apps/tasks/templates/actions/tasks/TasksReturn.html:17
+#: /wa-apps/tasks/templates/actions/tasks/TasksStatusform.html:27
+msgid "Comment"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/TasksForward.html:62
+#: /wa-apps/tasks/templates/actions/tasks/TasksReturn.html:21
+msgid "Input your comment"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/TasksForward.html:70
+#: /wa-apps/tasks/templates/actions/tasks/TasksReturn.html:29
+#: /wa-apps/tasks/templates/actions/tasks/TasksStatusform.html:38
+msgid "cancel"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/TasksHeader.html:57
+msgid "Search"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/TasksHeader.html:71
+msgid "Priority"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/TasksHeader.html:73
+msgid "Newest"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/TasksHeader.html:74
+msgid "Oldest"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/TasksHeader.html:105
+#: /wa-apps/tasks/lib/classes/tasksHelper.class.php:134
+#: /wa-apps/tasks/lib/classes/tasksHelper.class.php:135
+msgid "Done"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/TasksHeader.html:123
+#: /wa-apps/tasks/js/tasksHeader.js:219
+msgid "Forward (%d)"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/TasksReturn.html:10
+msgid "Return to"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/TasksReturn.html:27
+msgid "Return"
+msgstr ""
+
+#: /wa-apps/tasks/templates/mail/Assign.html:1
+msgid "A task has been assigned to you."
+msgstr ""
+
+#: /wa-apps/tasks/templates/mail/BulkAssign.html:3
+msgid "Go to inbox"
+msgstr ""
+
+#: /wa-apps/tasks/templates/mail/BulkAssign.html:1
+#: /wa-apps/tasks/lib/classes/tasksNotifications.class.php:36
+msgid "%d task has been assigned to you"
+msgid_plural "%d tasks has been assigned to you"
+msgstr[0] ""
+msgstr[1] ""
+
+#: /wa-apps/tasks/templates/mail/Done.html:1
+msgid "A task you created has been marked as done."
+msgstr ""
+
+#: /wa-apps/tasks/js/task.js:576
+msgid "Error Comment ID"
+msgstr ""
+
+#: /wa-apps/tasks/js/task.js:553
+msgid "Either text or attachment is required to add comment."
+msgstr ""
+
+#: /wa-apps/tasks/js/taskEdit.js:547
+msgid "Select Project"
+msgstr ""
+
+#: /wa-apps/tasks/js/taskEdit.js:166
+msgid "Your browser does not support File API!"
+msgstr ""
+
+#: /wa-apps/tasks/lib/actions/attachements/tasksAttachmentsDownload.controller.php:12
+msgid "File not found"
+msgstr ""
+
+#: /wa-apps/tasks/lib/actions/attachements/tasksAttachmentsUpload.controller.php:17
+#: /wa-apps/tasks/lib/actions/attachements/tasksAttachmentsUpload.controller.php:20
+msgid "Failed to upload file %s."
+msgstr ""
+
+#: /wa-apps/tasks/lib/actions/from/tasksFromHub.action.php:12
+msgid "Not found"
+msgstr ""
+
+#: /wa-apps/tasks/lib/actions/milestones/tasksMilestones.actions.php:55
+msgid "Milestone not found"
+msgstr ""
+
+#: /wa-apps/tasks/lib/actions/milestones/tasksMilestones.actions.php:69
+#: /wa-apps/tasks/lib/actions/milestones/tasksMilestones.actions.php:72
+msgid "This field is required."
+msgstr ""
+
+#: /wa-apps/tasks/lib/actions/tags/tasksTags.actions.php:107
+msgid "Access denied"
+msgstr ""
+
+#: /wa-apps/tasks/lib/actions/tasks/tasksTasks.action.php:115
+msgid "All projects"
+msgstr ""
+
+#: /wa-apps/tasks/lib/actions/tasks/tasksTasks.action.php:125
+msgid "All statuses"
+msgstr ""
+
+#: /wa-apps/tasks/lib/actions/tasks/tasksTasks.action.php:306
+msgid "All including closed"
+msgstr ""
+
+#: /wa-apps/tasks/lib/actions/tasks/tasksTasks.action.php:142
+msgid "Any milestone"
+msgstr ""
+
+#: /wa-apps/tasks/lib/actions/tasks/tasksTasks.action.php:156
+msgid "Everyone"
+msgstr ""
+
+#: /wa-apps/tasks/lib/actions/tasks/tasksTasks.action.php:175
+#: /wa-apps/tasks/lib/actions/tasks/tasksTasks.action.php:183
+msgid "Your inbox is empty"
+msgstr ""
+
+#: /wa-apps/tasks/lib/actions/tasks/tasksTasks.action.php:176
+#: /wa-apps/tasks/lib/actions/tasks/tasksTasks.action.php:184
+msgid "Inbox automatically collects all tasks assigned to you, and is currently empty."
+msgstr ""
+
+#: /wa-apps/tasks/lib/actions/tasks/tasksTasks.action.php:199
+msgid "Your favorites list is empty"
+msgstr ""
+
+#: /wa-apps/tasks/lib/actions/tasks/tasksTasks.action.php:200
+msgid "To add a task to your personal favorite list, click on a tiny star icon next to task name."
+msgstr ""
+
+#: /wa-apps/tasks/lib/actions/tasks/tasksTasks.action.php:221
+msgid "Task list is empty"
+msgstr ""
+
+#: /wa-apps/tasks/lib/actions/tasks/tasksTasks.action.php:222
+msgid "No tasks matching your search criteria."
+msgstr ""
+
+#: /wa-apps/tasks/lib/actions/tasks/tasksTasksEdit.action.php:112
+#: /wa-apps/tasks/lib/actions/tasks/tasksTasksForward.action.php:13
+#: /wa-apps/tasks/lib/actions/tasks/tasksTasksInfo.action.php:14
+#: /wa-apps/tasks/lib/actions/tasks/tasksTasksLog.actions.php:24
+#: /wa-apps/tasks/lib/actions/tasks/tasksTasksReturn.action.php:9
+#: /wa-apps/tasks/lib/actions/tasks/tasksTasksSave.controller.php:34
+#: /wa-apps/tasks/lib/actions/tasks/tasksTasksStatusform.action.php:9
+msgid "Task not found"
+msgstr ""
+
+#: /wa-apps/tasks/lib/actions/tasks/tasksTasksHide.controller.php:14
+msgid "You can't hide high priority task"
+msgstr ""
+
+#: /wa-apps/tasks/lib/actions/tasks/tasksTasksLog.actions.php:45
+msgid "Unable to return task because someome modified it."
+msgstr ""
+
+#: /wa-apps/tasks/lib/actions/tasks/tasksTasksReturn.action.php:12
+msgid "Unable to return task because contact has been deleted. Use forward action instead."
+msgstr ""
+
+#: /wa-apps/tasks/lib/classes/tasksHelper.class.php:365
+#: /wa-apps/tasks/lib/classes/tasksHelper.class.php:371
+msgid "%d min"
+msgid_plural "%d mins"
+msgstr[0] ""
+msgstr[1] ""
+
+#: /wa-apps/tasks/lib/classes/tasksHelper.class.php:374
+#: /wa-apps/tasks/lib/classes/tasksHelper.class.php:375
+msgid "%d hr"
+msgid_plural "%d hrs"
+msgstr[0] ""
+msgstr[1] ""
+
+#: /wa-apps/tasks/lib/classes/tasksHelper.class.php:382
+#: /wa-apps/tasks/lib/classes/tasksHelper.class.php:383
+msgid "%d mo"
+msgid_plural "%d mo"
+msgstr[0] ""
+msgstr[1] ""
+
+#: /wa-apps/tasks/lib/classes/tasksHelper.class.php:386
+#: /wa-apps/tasks/lib/classes/tasksHelper.class.php:387
+msgid "%d yr"
+msgid_plural "%d yrs"
+msgstr[0] ""
+msgstr[1] ""
+
+#: /wa-apps/tasks/lib/classes/tasksHelper.class.php:126
+msgid "New"
+msgstr ""
+
+#: /wa-apps/tasks/lib/classes/tasksHelper.class.php:136
+msgid "done"
+msgstr ""
+
+#: /wa-apps/tasks/lib/classes/tasksHelper.class.php:369
+msgid "Just now"
+msgstr ""
+
+#: /wa-apps/tasks/lib/classes/tasksHelper.class.php:378
+#: /wa-apps/tasks/lib/classes/tasksHelper.class.php:379
+msgid "%d d"
+msgstr ""
+
+#: /wa-apps/tasks/lib/classes/tasksNotifications.class.php:39
+msgid "%d task has been completed"
+msgid_plural "%d tasks has been completed"
+msgstr[0] ""
+msgstr[1] ""
+
+#: /wa-apps/tasks/lib/classes/tasksNotifications.class.php:86
+msgid "A task has been assigned to you"
+msgstr ""
+
+#: /wa-apps/tasks/lib/classes/tasksNotifications.class.php:89
+msgid "The task has been completed"
+msgstr ""
+
+#: /wa-apps/tasks/lib/config/config.php:82
+msgid "High"
+msgstr ""
+
+#: /wa-apps/tasks/lib/config/config.php:88
+msgid "Normal"
+msgstr ""
+
+#: /wa-apps/tasks/lib/config/config.php:94
+msgid "Low"
+msgstr ""
+
+#: /wa-apps/tasks/lib/config/tasksRightConfig.class.php:14
+msgid "Can manage projects"
+msgstr ""
+
+#: /wa-apps/tasks/lib/config/tasksRightConfig.class.php:18
+msgid "No access"
+msgstr ""
+
+#: /wa-apps/tasks/lib/config/tasksRightConfig.class.php:19
+msgid "View assigned tasks only"
+msgstr ""
+
+#: /wa-apps/tasks/lib/config/tasksRightConfig.class.php:20
+msgid "Full access"
+msgstr ""
+
+#: /wa-apps/tasks/lib/handlers/helpdesk.view_action.handler.php:18
+msgid "Create task from this"
+msgstr ""
+
+#: /wa-apps/tasks/lib/models/tasksTaskLog.model.php:159
+msgid "created"
+msgstr ""
+
+#: /wa-apps/tasks/lib/models/tasksTaskLog.model.php:160
+msgid "added comment"
+msgstr ""
+
+#: /wa-apps/tasks/lib/models/tasksTaskLog.model.php:161
+msgid "forwarded"
+msgstr ""
+
+#: /wa-apps/tasks/lib/models/tasksTaskLog.model.php:162
+msgid "returned"
+msgstr ""
+
+#: /wa-apps/tasks/lib/models/tasksTaskLog.model.php:163
+msgid "edited"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/backend/Backend.html:56
+msgid "Drop anywhere to upload"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/backend/Sidebar.html:126
+msgid "Use <b>Contacts app</b> to provide access to Tasks app for your teammates."
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/backend/Sidebar.html:156
+msgid "Create a project by clicking the green tiny icon above."
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/log/Log.html:38
+#: /wa-apps/tasks/templates/actions/tasks/TasksHeader.html:57
+msgid "Clear filters"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/milestones/MilestonesDefault.html:39
+msgid "Today"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/milestones/MilestonesEdit.html:22
+msgid "A tiny hint describing this milestone."
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/milestones/MilestonesEdit.html:48
+#: /wa-apps/tasks/templates/actions/tasks/Task.html:161
+msgid "Archived"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/milestones/MilestonesEdit.html:49
+msgid "Enable this when this milestone is not actual anymore."
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/settings/Settings.html:159
+msgid "New status"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/settings/Settings.html:164
+msgid "Task statuses"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/Task.html:91
+msgid "Edit"
+msgstr ""
+
+msgid "edit"
+msgstr ""
+
+msgid "Enter your comment"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/Task.html:119
+msgid "Double-click to change task priority"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/Task.html:288
+#: /wa-apps/tasks/templates/actions/tasks/TasksHeader.html:132
+msgid "Forward"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/Task.html:292
+msgid "History &amp; Comments"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/Task.html:295
+msgid "Hide history"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/Task.html:305
+#: /wa-apps/tasks/lib/actions/tasks/tasksTasksHide.controller.php:11
+msgid "You can only hide tasks assigned to you."
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/Task.html:312
+msgid "Hidden until"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/TasksForward.html:27
+msgid "Do not change"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/TasksHeader.html:9
+msgid "Filter tasks"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/TasksHeader.html:133
+#: /wa-apps/tasks/templates/actions/tasks/TasksPriorityForm.html:14
+msgid "Set priority"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/tasks/TasksPriorityForm.html:4
+msgid "Change priority"
+msgstr ""
+
+#: /wa-apps/tasks/templates/mail/Assign.html:1
+msgid "User %s sent you a new task"
+msgstr ""
+
+#: /wa-apps/tasks/templates/mail/Assign.html:15
+#: /wa-apps/tasks/templates/mail/BulkAssign.html:11
+#: /wa-apps/tasks/templates/mail/Comment.html:18
+#: /wa-apps/tasks/templates/mail/Done.html:15
+msgid "via Tasks app"
+msgstr ""
+
+#: /wa-apps/tasks/templates/mail/BulkAssign.html:1
+msgid "<a href=\"%s\">%d new task</a> from %s"
+msgid_plural "<a href=\"%s\">%d new tasks</a> from %s"
+msgstr[0] ""
+msgstr[1] ""
+
+#: /wa-apps/tasks/templates/mail/Comment.html:2
+msgid "User %s edited a task you are assigned to:"
+msgstr ""
+
+#: /wa-apps/tasks/templates/mail/Comment.html:4
+msgid "%s editoed a task you created:"
+msgstr ""
+
+#: /wa-apps/tasks/templates/mail/Done.html:1
+msgid "User %s has just completed a task"
+msgstr ""
+
+#: /wa-apps/tasks/lib/actions/tasks/tasksTasks.action.php:179
+#: /wa-apps/tasks/lib/actions/tasks/tasksTasks.action.php:187
+msgid "Inbox automatically collects all tasks assigned to you. No tasks are assigned to you right now :-)"
+msgstr ""
+
+#: /wa-apps/tasks/lib/actions/tasks/tasksTasks.action.php:202
+msgid "Your outbox is empty"
+msgstr ""
+
+#: /wa-apps/tasks/lib/actions/tasks/tasksTasks.action.php:203
+msgid "Outbox automatically collects all tasks you’ve created."
+msgstr ""
+
+#: /wa-apps/tasks/lib/actions/tasks/tasksTasks.action.php:209
+msgid "Your favorite task list is empty"
+msgstr ""
+
+#: /wa-apps/tasks/lib/actions/tasks/tasksTasks.action.php:217
+msgid "There are no tasks in this project."
+msgstr ""
+
+#: /wa-apps/tasks/lib/actions/tasks/tasksTasks.action.php:232
+msgid "No tasks match your search criteria."
+msgstr ""
+
+#: /wa-apps/tasks/lib/classes/tasksNotifications.class.php:36
+msgid "ASSIGNED: %d task was assigned to you"
+msgid_plural "ASSIGNED: %d tasks were assigned to you"
+msgstr[0] ""
+msgstr[1] ""
+
+#: /wa-apps/tasks/lib/classes/tasksNotifications.class.php:40
+msgid "DONE: %d task was completed"
+msgid_plural "DONE: %d tasks were completed"
+msgstr[0] ""
+msgstr[1] ""
+
+#: /wa-apps/tasks/lib/classes/tasksNotifications.class.php:87
+msgid "ASSIGNED: %s %s"
+msgstr ""
+
+#: /wa-apps/tasks/lib/classes/tasksNotifications.class.php:90
+msgid "DONE: %s was completed"
+msgstr ""
+
+#: /wa-apps/tasks/lib/classes/tasksNotifications.class.php:94
+msgid "EDIT: %s was edited"
+msgstr ""
+
+#: /wa-apps/tasks/lib/config/logs.php:5
+msgid "created a task"
+msgstr ""
+
+#: /wa-apps/tasks/lib/config/logs.php:8
+msgid "edited a task"
+msgstr ""
+
+#: /wa-apps/tasks/lib/config/logs.php:11
+msgid "deleted a task"
+msgstr ""
+
+#: /wa-apps/tasks/lib/config/logs.php:14
+msgid "forwarded a task"
+msgstr ""
+
+#: /wa-apps/tasks/lib/config/logs.php:17
+msgid "returned a task"
+msgstr ""
+
+#: /wa-apps/tasks/lib/config/logs.php:20
+msgid "performed action with a task"
+msgstr ""
+
+#: /wa-apps/tasks/lib/config/logs.php:23
+msgid "commented on a task"
+msgstr ""
+
+#: /wa-apps/tasks/lib/config/logs.php:26
+msgid "forwarded several tasks"
+msgstr ""
+
+#: /wa-apps/tasks/lib/config/logs.php:29
+msgid "marked several tasks as done"
+msgstr ""
+
+#: /wa-apps/tasks/lib/classes/tasksHelper.class.php:126
+msgid "Open"
+msgstr ""
+
+#: /wa-apps/tasks/lib/classes/tasksHelper.class.php:134
+#: /wa-apps/tasks/lib/classes/tasksHelper.class.php:135
+msgid "Closed"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/milestones/MilestonesDefault.html:30
+msgid "%d day left"
+msgid_plural "%d days left"
+msgstr[0] ""
+msgstr[1] ""
+
+#: /wa-apps/tasks/templates/actions/milestones/MilestonesDefault.html:32
+msgid "%d day overdue"
+msgid_plural "%d days overdue"
+msgstr[0] ""
+msgstr[1] ""
+
+#: /wa-apps/tasks/templates/actions/tasks/Task.html:321
+msgid "Unhide"
+msgstr ""
+
+#: /wa-apps/tasks/lib/config/install.php:22
+msgid "Testing"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/backend/Sidebar.html:80
+msgid "Logbook"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/projects/ProjectsEdit.html:34
+#: /wa-apps/tasks/templates/actions/projects/ProjectsEdit.html:160
+msgid "Archive this project"
+msgstr ""
+
+#: /wa-apps/tasks/templates/actions/settings/Settings.html:194
+msgid "You have unsaved changes. Are you sure you want to leave?"
+msgstr ""

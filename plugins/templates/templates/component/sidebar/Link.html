@@ -1,0 +1,48 @@
+{$wrapper_id = uniqid('t-templates-plugin-templates-link-wrapper')}
+<li class="t-templates-plugin-templates-link-wrapper" id="{$wrapper_id}">
+    <ul class="menu-h dropdown js-dropdown-menu t-templates-plugin-templates-menu">
+        <li>
+            <a class="t-selected-item js-dropdown-menu-title" href="javascript:void(0);"><i class="icon16 notebook"></i></a>
+            <ul class="menu-v with-icons js-task-templates-menu">
+                {foreach $templates as $template}
+                    <li class="t-nav-item js-dropdown-menu-item" data-value="{$template.id}">
+                        <a class="js-template-link t-template-link" href="#/add/{$template.id}/" title="{$template.name|escape}">
+                            <i class="icon16 {$template.icon|escape} t-icon"></i><span class="t-name">{$template.name|escape}</span>
+                        </a>
+                        <a class="js-edit-link t-template-edit-link" href="#/templates/edit/{$template.id}/" title="[`Edit`]">
+                            <i class="icon10 edit"></i>
+                        </a>
+                    </li>
+                {/foreach}
+
+                <li class="t-nav-item js-dropdown-menu-item js-is-template" data-value="" style="display: none;">
+                    <a class="js-template-link t-template-link" href="javascript:void(0);">
+                        <i class="icon16 t-icon"></i>
+                        <span class="t-name"></span>
+                    </a>
+                    <a class="js-edit-link t-template-edit-link" href="" title="[`Edit`]">
+                        <i class="icon10 edit"></i>
+                    </a>
+                </li>
+
+                <li class="t-nav-item js-dropdown-menu-item js-add-menu-item" data-value="">
+                    <a href="#/templates/add/">
+                        <i class="icon16 add" style="margin-right: 5px;"></i><span class="is-bold">[`Add template`]</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+
+    <script>
+        (function () {
+            $(function () {
+                // INIT plugin singleton object
+                TasksTemplatesPlugin.init({
+                    '$sidebar': $('#wa-app .t-sidebar-wrapper'),
+                    '$link_wrapper': $('#{$wrapper_id}')
+                });
+            });
+        })(jQuery);
+    </script>
+</li>

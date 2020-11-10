@@ -1,0 +1,25 @@
+{if !empty($errors[''])}
+    <div class="field">
+        <div class="value errormsg">
+            {$errors['']|escape|nl2br}
+        </div>
+    </div>
+{/if}
+{foreach $controls as $html}
+    {$html}
+{/foreach}
+<script type="text/javascript">
+    <!--
+    {if $validate}
+    if (plugin_migrate.validate) {
+        $("#t-plugin-migrate").submit();
+    } else {
+        plugin_migrate.validate = true;
+    }
+    {else}
+    plugin_migrate.validate = false;
+    {/if}
+
+    $('#plugin-migrate-transport-group').find(':input').attr('disabled', {var_export(!!$errors,true)|escape});
+    //-->
+</script>

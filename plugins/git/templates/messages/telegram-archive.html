@@ -1,0 +1,20 @@
+{strip}
+{$_type = 'приложения'}
+{if $product.type == 'PLUGIN'}
+    {$_type = 'плагина'}
+{elseif $product.type == 'WIDGET'}
+    {$_type = 'виджета'}
+{elseif $product.type == 'THEME'}
+    {$_type = 'темы дизайна'}
+{/if}
+{/strip}
+#archive
+
+Собрали архив {$_type}:
+<b>{$product.formatted_slug|escape}</b>
+
+Версия: <code>{$product.version|escape}</code>
+{if !empty($baza_changelog_url)}
+
+Заполнить <a href="{$baza_changelog_url|escape}">список изменений</a>
+{/if}

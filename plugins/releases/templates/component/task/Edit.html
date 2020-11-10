@@ -1,0 +1,97 @@
+{$wrapper_id = uniqid('t-releases-plugin-task-edit-block')}
+
+{$input_ns = 'task_plugin_releases_task_ext'}
+
+{function show_select id='' values=[] selected=''}
+    <select name="{$input_ns}[{$id}]">
+        <option value=""></option>
+        {foreach $values as $_value => $_name}
+            <option value="{$_value}" {if $selected == $_value}selected="selected"{/if}>{$_name|escape}</option>
+        {/foreach}
+    </select>
+{/function}
+
+<div class="t-releases-plugin-task-edit-block" id="{$wrapper_id}">
+
+    <a class="inline-link js-more-options t-releases-plugin-task-edit-block-more-options-link float-right">
+        <b>[`More options`]</b>
+        <i class="icon16 darr" style="display: none;"></i>
+        <i class="icon16 uarr" style="display: none;"></i>
+    </a>
+
+    <div class="t-fields-block" style="display: none;">
+        <div class="field js-gravity">
+            <div class="name">
+                {$field_names.gravity|default:''}
+            </div>
+            <div class="value">
+                {show_select id='gravity' values=$gravities selected=$ext_info.gravity}
+            </div>
+        </div>
+
+        <div class="field">
+            <div class="name">
+                {$field_names.timecosts_plan|default:''}
+            </div>
+            <div class="value">
+                {$_value = $ext_info.timecosts_plan}
+                <input type="text" class="short js-time-plan" value="{if !empty($_value)}{$_value}{/if}">
+                <select class="js-select-plan-period">
+                    <option value="1">[`hours`]</option>
+                    <option value="8" selected>[`days`]</option>
+                </select>
+                <input type="hidden" class="js-time-plan-hidden" name="{$input_ns}[timecosts_plan]" value="{if isset($_value)}{$_value}{/if}">
+            </div>
+        </div>
+
+        <div class="field">
+            <div class="name">
+                {$field_names.timecosts_fact|default:''}
+            </div>
+            <div class="value">
+                {$_value = $ext_info.timecosts_fact}
+
+                <input type="text" class="short js-time-fact" value="{if !empty($_value)}{$_value}{/if}">
+                <select class="js-select-fact-period">
+                    <option value="1">[`hours`]</option>
+                    <option value="8" selected>[`days`]</option>
+                </select>
+                <input type="hidden" class="js-time-fact-hidden" name="{$input_ns}[timecosts_fact]" value="{if isset($_value)}{$_value}{/if}">
+            </div>
+        </div>
+
+        <div class="field js-affected_version-wrapper">
+            <div class="name">
+                {$field_names.affected_version|default:''}
+            </div>
+            <div class="value">
+                <input type="text" class="short" name="{$input_ns}[affected_version]" value="{$ext_info.affected_version|escape|default:''}">
+            </div>
+        </div>
+
+        <div class="field js-resolution-wrapper">
+            <div class="name">
+                {$field_names.resolution|default:''}
+            </div>
+            <div class="value">
+                {show_select id='resolution' values=$resolutions selected=$ext_info.resolution}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        {$task_info = [
+            'id' => $task.id,
+            'milestone_id' => $task.milestone_id
+        ]}
+        (function ($) {
+            new TasksReleasesPluginTaskEdit({
+                '$wrapper': $('#{$wrapper_id}'),
+                '$editor': $('#t-edit-task-form'),
+                'milestones': {$milestones|json_encode},
+                'task': {$task_info|json_encode}
+            });
+        })(jQuery);
+    </script>
+
+</div>

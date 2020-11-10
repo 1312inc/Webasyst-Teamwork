@@ -1,0 +1,1055 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: tasks\n"
+"POT-Creation-Date: 2015-11-28 20:34+0000\n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: tasks\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=((((n%10)==1)&&((n%100)!=11))?(0):(((((n%10)>=2)&&((n%10)<=4))&&(((n%100)<10)||((n%100)>=20)))?(1):2));\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-Basepath: .\n"
+"Language: ru_RU\n"
+"X-Generator: Poedit 2.0.6\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPath-1: .\n"
+
+msgid "Tasks"
+msgstr "Задачи"
+
+msgid "Loading..."
+msgstr "Загрузка…"
+
+msgid "New task"
+msgstr "Новая задача"
+
+msgid "Inbox"
+msgstr "Входящие"
+
+msgid "Hidden"
+msgstr "Скрытые"
+
+msgid "Outbox"
+msgstr "Исходящие"
+
+msgid "Favorites"
+msgstr "Избранное"
+
+msgid "Urgent"
+msgstr "Срочно"
+
+msgid "Milestones"
+msgstr "Сроки"
+
+msgid "Scopes"
+msgstr "Работы"
+
+msgid "Scope"
+msgstr "Работа"
+
+msgid "Agile"
+msgstr ""
+
+msgid "Logs"
+msgstr "Журнал"
+
+msgid "Status"
+msgstr "Статус"
+
+msgid "Unassigned"
+msgstr "Без назначения"
+
+msgid "Team"
+msgstr "Команда"
+
+msgid "Projects"
+msgstr "Проекты"
+
+msgid "Settings"
+msgstr "Настройки"
+
+msgid "from"
+msgstr "от"
+
+msgid "to"
+msgstr "по"
+
+msgid "by day"
+msgstr "по дням"
+
+msgid "by month"
+msgstr "по месяцам"
+
+msgid "All time"
+msgstr "Все время"
+
+msgid "Select dates..."
+msgstr "Выбрать даты..."
+
+msgid "Status:"
+msgstr "Статус:"
+
+msgid "Assigned:"
+msgstr "Исполнитель:"
+
+msgid "Empty assignment"
+msgstr "Без назначения"
+
+msgid "%s of %d"
+msgstr "%s из %d"
+
+msgid "Load more..."
+msgstr "Показать еще..."
+
+msgid "Last %d day"
+msgid_plural "Last %d days"
+msgstr[0] "Последний %d день"
+msgstr[1] "Последние %d дня"
+msgstr[2] "Последние %d дней"
+
+msgid "%d record"
+msgid_plural "%d records"
+msgstr[0] "%d запись"
+msgstr[1] "%d записи"
+msgstr[2] "%d записей"
+
+msgid "Due"
+msgstr "Срок"
+
+msgid "New milestone"
+msgstr "Добавить срок"
+
+msgid "New scope"
+msgstr "Добавить работу"
+
+msgid "Milestone successfully saved"
+msgstr "Данные успешно сохранены"
+
+msgid "Scope successfully saved"
+msgstr "Данные успешно сохранены"
+
+msgid "(no name)"
+msgstr "(без названия)"
+
+msgid "Create milestone"
+msgstr "Новый срок"
+
+msgid "Create scope"
+msgstr "Новая работа"
+
+msgid "Delete"
+msgstr "Удалить"
+
+msgid "Name"
+msgstr "Название"
+
+msgid "Description"
+msgstr "Описание"
+
+msgid "Project"
+msgstr "Проект"
+
+msgid "Due date"
+msgstr "Срок"
+
+msgid "Milestone is closed"
+msgstr "Срок истек"
+
+msgid "Scope is closed"
+msgstr "Работа завершена"
+
+msgid "Save"
+msgstr "Сохранить"
+
+msgid "Are you sure?"
+msgstr "Вы уверены?"
+
+msgid "Settings successfully updated"
+msgstr "Настройки успешно обновлены"
+
+msgid "Archive datetime"
+msgstr "Время добавления в архив"
+
+msgid "Archive"
+msgstr "Архив"
+
+msgid "New project"
+msgstr "Новый проект"
+
+msgid "Project name"
+msgstr "Название проекта"
+
+msgid "Color"
+msgstr "Цвет"
+
+msgid "Icon"
+msgstr "Иконка"
+
+msgid "Or enter image URL (image will be scaled to 16x16px)"
+msgstr "или введите URL изображения (изображение будет автоматически уменьшено до 16х16 пикселей)"
+
+msgid "Workflow"
+msgstr "Процесс"
+
+msgid "Customize..."
+msgstr "Настроить..."
+
+msgid "Status name"
+msgstr "Название статуса"
+
+msgid "Button label"
+msgstr "Надпись на кнопке"
+
+msgid "Caption for the button that sends a task into this status"
+msgstr "Текст для кнопки, отправляющей задание в этот статус"
+
+msgid "Task title style"
+msgstr "Стиль надписи на кнопке"
+
+msgid "Italic"
+msgstr "Курсив"
+
+msgid "Bold"
+msgstr "Жирный"
+
+msgid "Task title color"
+msgstr "Цвет надписи на кнопке"
+
+msgid "Button color"
+msgstr "Цвет кнопки"
+
+msgid "Assignment"
+msgstr "Назначение"
+
+msgid "Do not change assignment"
+msgstr "Не менять назначение"
+
+msgid "Assign to user who created the task"
+msgstr "Назначать на автора задачи"
+
+msgid "Assign to specific user"
+msgstr "Назначать на указанного пользователя"
+
+msgid "Show assignment selector every time"
+msgstr "Каждый раз предлагать выбор исполнителя"
+
+msgid "Clear assignment"
+msgstr "Снимать назначение"
+
+msgid "Allow to clear assignment"
+msgstr "Разрешать снимать назначение"
+
+msgid "Comment form"
+msgstr "Поле для комментариев"
+
+msgid "Show comment form"
+msgstr "Показывать поле для ввода комментариев"
+
+msgid "Status settings"
+msgstr "Настройки статуса"
+
+msgid "Add Status"
+msgstr "Новый статус"
+
+msgid "Project ordering"
+msgstr "Сортировка проектов"
+
+msgid "Projects are sorted by name. You can select important projects to show them before everything else. Important projects can be manually reordered via drag-and-drop."
+msgstr "Проекты отсортированы по названиям. Вы можете выделить важные проекты, перенеся их в начало списка путем перетаскивания."
+
+msgid "Manage project ordering"
+msgstr "Изменить сортировку проектов"
+
+msgid "Create a project first"
+msgstr "Создайте хотя бы один проект"
+
+msgid "You need to %sadd your first project%s to be able to create tasks."
+msgstr "%sДобавьте свой первый проект%s, чтобы иметь возможность создавать задания."
+
+msgid "unassigned"
+msgstr "не назначено"
+
+msgid "Add tag"
+msgstr "Добавить тег"
+
+msgid "Custom tag..."
+msgstr "Другой тег..."
+
+msgid "Add"
+msgstr "Добавить"
+
+msgid "Edit task"
+msgstr "Редактировать задачу"
+
+msgid "Set favorite"
+msgstr "В избранные"
+
+msgid "Comments"
+msgstr "Комментарии"
+
+msgid "Hide"
+msgstr "Скрыть"
+
+msgid "Assignment removed"
+msgstr "Назначение снято"
+
+msgid "There are no comments for this task yet."
+msgstr "Нет комментариев к этой задаче."
+
+msgid "Please click or drop image file here"
+msgstr "Прикрепить файл к задаче"
+
+msgid "%d task"
+msgid_plural "%d tasks"
+msgstr[0] "%d задача"
+msgstr[1] "%d задачи"
+msgstr[2] "%d задач"
+
+msgid "no tasks"
+msgstr "нет задач"
+
+msgid "You are about to abandon task editor without saving the task. All unsaved data will be lost. Are you sure?"
+msgstr "Вы собираетесь покинуть страницу без сохранения задачи. Все несохраненные данные будут потеряны. Вы уверены?"
+
+msgid "You are about to leave the page without saving the task. Are you sure?"
+msgstr "Вы собираетесь покинуть страницу без сохранения задачи. Вы уверены?"
+
+msgid "Input task name"
+msgstr "Название задачи"
+
+msgid "Input task description"
+msgstr "Описание задачи"
+
+msgid "Click to select files or drag them here"
+msgstr "Прикрепить файл к задаче"
+
+msgid "Assign to"
+msgstr "Назначить"
+
+msgid "me"
+msgstr "себя"
+
+msgid "Show all"
+msgstr "Показать всех"
+
+msgid "No milestone"
+msgstr "Без указания срока"
+
+msgid "No scope"
+msgstr "Без указания работы"
+
+msgid "Choose a date"
+msgstr "Указать дату"
+
+msgid "Save task"
+msgstr "Сохранить"
+
+msgid "Create task"
+msgstr "Создать задачу"
+
+msgid "or"
+msgstr "или"
+
+msgid "Cancel"
+msgstr "Отмена"
+
+msgid "Email"
+msgstr ""
+
+msgid "SMS"
+msgstr ""
+
+msgid "More fields"
+msgstr "Еще"
+
+msgid "Forward to"
+msgstr "Переслать"
+
+msgid "Choose user"
+msgstr "Выберите пользователя"
+
+msgid "Comment"
+msgstr "Комментарий"
+
+msgid "Input your comment"
+msgstr "Напишите комментарий"
+
+msgid "cancel"
+msgstr "отмена"
+
+msgid "Search"
+msgstr "Поиск"
+
+msgid "Priority"
+msgstr "Приоритет"
+
+msgid "Newest"
+msgstr "Новые"
+
+msgid "Oldest"
+msgstr "Старые"
+
+msgid "Done"
+msgstr "Выполнено"
+
+msgid "Forward (%d)"
+msgstr "Переслать (%d)"
+
+msgid "Return to"
+msgstr "Вернуть"
+
+msgid "Return"
+msgstr "Вернуть"
+
+msgid "A task has been assigned to you."
+msgstr "Задача назначена на вас."
+
+msgid "A task you're assigned to has been updated."
+msgstr "Назначенная на вас задача обновлена."
+
+msgid "A task you created has been updated."
+msgstr "Созданная вами задача обновлена."
+
+msgid "Go to inbox"
+msgstr "Перейти во входящие"
+
+msgid "%d task has been assigned to you"
+msgid_plural "%d tasks has been assigned to you"
+msgstr[0] "%d задача назначена на вас"
+msgstr[1] "%d задачи назначены на вас"
+msgstr[2] "%d задач назначены на вас"
+
+msgid "A task you created has been marked as done."
+msgstr "Созданная вами задача отмечена как выполненная."
+
+msgid "Error Comment ID"
+msgstr "Ошибка в ID комментария"
+
+msgid "Either text or attachment is required to add comment."
+msgstr "Для добавления комментария необходим текст или файл."
+
+msgid "Select Project"
+msgstr "Выберите проект"
+
+msgid "Your browser does not support File API!"
+msgstr "Ваш браузер не поддерживает File API!"
+
+msgid "File not found"
+msgstr "Файл не найден"
+
+msgid "Failed to upload file %s."
+msgstr "Не удалось загрузить файл %s."
+
+msgid "Not found"
+msgstr "Не найдено"
+
+msgid "Milestone not found"
+msgstr "Срок не найден"
+
+msgid "Scope not found"
+msgstr "Работа не найдена"
+
+msgid "This field is required."
+msgstr "Это поле обязательное."
+
+msgid "Access denied"
+msgstr "Доступ запрещен"
+
+msgid "All projects"
+msgstr "Все проекты"
+
+msgid "All statuses"
+msgstr "Все статусы"
+
+msgid "All including closed"
+msgstr "Все, включая завершенные"
+
+msgid "Any milestone"
+msgstr "Все сроки"
+
+msgid "Any scope"
+msgstr "Все работы"
+
+msgid "Everyone"
+msgstr "Все пользователи"
+
+msgid "Your inbox is empty"
+msgstr "Входящих задач нет"
+
+msgid "Inbox automatically collects all tasks assigned to you, and is currently empty."
+msgstr "Раздел «Входящие» содержит все назначенные на вас задачи, и сейчас он пуст."
+
+msgid "Your favorites list is empty"
+msgstr "Ваш список избранных задач пуст"
+
+msgid "To add a task to your personal favorite list, click on a tiny star icon next to task name."
+msgstr "Чтобы добавить задачу в список избранных, щелкните по звездочке рядом с ее названием."
+
+msgid "Task list is empty"
+msgstr "Список задач пуст"
+
+msgid "No tasks matching your search criteria."
+msgstr "Нет задач, соответствующих критериям поиска."
+
+msgid "Task not found"
+msgstr "Задача не найдена"
+
+msgid "You can't hide high priority task"
+msgstr "Нельзя отложить задачу с высоким приоритетом."
+
+msgid "You can only hide tasks assigned to you."
+msgstr "Можно отложить только задачи, назначенные на вас."
+
+msgid "Unable to return task because someome modified it."
+msgstr "Невозможно вернуть задачу, т. к. она было кем-то изменена."
+
+msgid "Unable to return task because contact has been deleted. Use forward action instead."
+msgstr "Невозможно вернуть задачу, т. к. контакт удален. Используйте функцию перенаправления."
+
+msgid "%d min"
+msgid_plural "%d mins"
+msgstr[0] "%d мин"
+msgstr[1] "%d мин"
+msgstr[2] "%d мин"
+
+msgid "%d hr"
+msgid_plural "%d hrs"
+msgstr[0] "%d ч"
+msgstr[1] "%d ч"
+msgstr[2] "%d ч"
+
+msgid "%d mo"
+msgid_plural "%d mo"
+msgstr[0] "%d мес"
+msgstr[1] "%d мес"
+msgstr[2] "%d мес"
+
+msgid "%d yr"
+msgid_plural "%d yrs"
+msgstr[0] "%d г"
+msgstr[1] "%d г"
+msgstr[2] "%d г"
+
+msgid "New"
+msgstr "Новые"
+
+msgid "done"
+msgstr "выполнено"
+
+msgid "Just now"
+msgstr "Только что"
+
+msgid "%d d"
+msgstr "%d д"
+
+msgid "%d task has been completed"
+msgid_plural "%d tasks has been completed"
+msgstr[0] "%d задача выполнена"
+msgstr[1] "%d задачи выполнены"
+msgstr[2] "%d задач выполнены"
+
+msgid "A task has been assigned to you"
+msgstr "Задача назначена на вас."
+
+msgid "A task has been completed"
+msgstr "Задача выполнена."
+
+msgid "A task has been updated"
+msgstr "Задача обновлена."
+
+msgid "High"
+msgstr "Высокий"
+
+msgid "Normal"
+msgstr "Средний"
+
+msgid "Low"
+msgstr "Низкий"
+
+msgid "Can manage projects"
+msgstr "Управление проектами"
+
+msgid "No access"
+msgstr "Нет доступа"
+
+msgid "All <strong>%s</strong> in this project will be archived and won't be listed anymore. Are you sure?"
+msgstr "Все <strong>%s</strong>, принадлежащие проекту, попадут в архив и перестанут отображаться в списках. Вы уверены?"
+
+msgid "View assigned tasks only"
+msgstr "Просмотр только назначенных задач"
+
+msgid "Full access"
+msgstr "Полный доступ"
+
+msgid "Create task from this"
+msgstr "Создать из этого задачу"
+
+msgid "created"
+msgstr "создана"
+
+msgid "added comment"
+msgstr "добавлен комментарий"
+
+msgid "forwarded"
+msgstr "перенаправлена"
+
+msgid "returned"
+msgstr "возвращена"
+
+msgid "edited"
+msgstr "отредактирована"
+
+msgid "Drop anywhere to upload"
+msgstr "Перетащите в любое место, чтобы загрузить"
+
+msgid "Use <strong>app \"%s\"</strong> to provide access to Tasks app for your teammates."
+msgstr "Используйте <strong>приложение «%s»</strong> для предоставления доступа к задачам для сотрудников."
+
+msgid "Create a project by clicking the green tiny icon above."
+msgstr "Создайте проект с помощью зеленой иконки вверху."
+
+msgid "Clear filters"
+msgstr "Очистить фильтры"
+
+msgid "Today"
+msgstr "Сегодня"
+
+msgid "A tiny hint describing this milestone."
+msgstr "Короткое поясняющее описание"
+
+msgid "A tiny hint describing this scope."
+msgstr "Короткое поясняющее описание"
+
+msgid "Archived"
+msgstr "В архиве"
+
+msgid "Enable this when this milestone is not actual anymore."
+msgstr "Отметьте, когда этот срок более не будет актуальным."
+
+msgid "New status"
+msgstr "Новый статус"
+
+msgid "Task statuses"
+msgstr "Статусы задач"
+
+msgid "Edit"
+msgstr "Редактировать"
+
+msgid "edit"
+msgstr "отредактирована"
+
+msgid "Enter your comment"
+msgstr "Введите ваш комментарий"
+
+msgid "Double-click to change task priority"
+msgstr "Двойной щелчок, чтобы изменить приоритет задачи"
+
+msgid "Forward"
+msgstr "Перенаправить"
+
+msgid "History &amp; Comments"
+msgstr "История и комментарии"
+
+msgid "Hide history"
+msgstr "Скрыть историю"
+
+msgid "Hidden until"
+msgstr "Скрыта до"
+
+msgid "Do not change"
+msgstr "Не изменять"
+
+msgid "Filter tasks"
+msgstr "Фильтр задач"
+
+msgid "Set priority"
+msgstr "Установить приоритет"
+
+msgid "Change priority"
+msgstr "Изменить приоритет"
+
+msgid "User %s sent you a new task"
+msgstr "Пользователь %s отправил вам новую задачу"
+
+msgid "via Tasks app"
+msgstr "из приложения «Задачи»"
+
+msgid "%d new task"
+msgid_plural "%d new tasks"
+msgstr[0] "%d новая задача"
+msgstr[1] "%d новые задачи"
+msgstr[2] "%d новых задач"
+
+msgid "<a href=\"%s\">%s</a> from %s"
+msgstr "<a href=\"%s\">%s</a> от %s"
+
+msgid "User %s edited a task you are assigned to:"
+msgstr "Пользователь %s отредактировал назначенную на вас задачу:"
+
+msgid "User %s edited a task you created:"
+msgstr "Пользователь %s отредактировал созданную вами задачу:"
+
+msgid "User %s has just completed a task"
+msgstr "Пользователь %s только что выполнил задачу"
+
+msgid "Inbox automatically collects all tasks assigned to you. No tasks are assigned to you right now :-)"
+msgstr "Раздел «Входящие» содержит все назначенные на вас задачи. Сейчас на вас не назначено ни одной задачи :-)"
+
+msgid "Your outbox is empty"
+msgstr "Список исходящих пуст"
+
+msgid "Outbox automatically collects all tasks you’ve created."
+msgstr "Раздел «Исходящие» содержит все созданные вами задачи."
+
+msgid "Your favorite task list is empty"
+msgstr "Ваш список избранных задач пуст"
+
+msgid "There are no tasks in this project."
+msgstr "В этом проекте нет задач"
+
+msgid "No tasks match your search criteria."
+msgstr "Нет задач, соответствующих критериям поиска."
+
+msgid "ASSIGNED: %d task was assigned to you"
+msgid_plural "ASSIGNED: %d tasks were assigned to you"
+msgstr[0] "НАЗНАЧЕНО: %d задача была назначена на вас"
+msgstr[1] "НАЗНАЧЕНО: %d задачи были назначены на вас"
+msgstr[2] "НАЗНАЧЕНО: %d задач были назначены на вас"
+
+msgid "DONE: %d task was completed"
+msgid_plural "DONE: %d tasks were completed"
+msgstr[0] "ВЫПОЛНЕНО: %d задача была выполнена"
+msgstr[1] "ВЫПОЛНЕНЫ: %d задачи были выполнены"
+msgstr[2] "ВЫПОЛНЕНЫ: %d задач были выполнены"
+
+msgid "ASSIGNED: %s %s"
+msgstr "НАЗНАЧЕНО: %s %s"
+
+msgid "NEW: %s %s"
+msgstr "НОВОЕ: %s %s"
+
+msgid "DONE: %s was completed"
+msgstr "ВЫПОЛНЕНО: %s была выполнена"
+
+msgid "EDIT: %s was edited"
+msgstr "ОБНОВЛЕНО: %s была отредактирована"
+
+msgid "created a task"
+msgstr "создал задачу"
+
+msgid "edited a task"
+msgstr "изменил задачу"
+
+msgid "deleted a task"
+msgstr "удалил задачу"
+
+msgid "forwarded a task"
+msgstr "перенаправил задачу"
+
+msgid "returned a task"
+msgstr "вернул задачу"
+
+msgid "performed action with a task"
+msgstr "выполнил действие с задачей"
+
+msgid "commented on a task"
+msgstr "добавил комментарий к задаче"
+
+msgid "forwarded several tasks"
+msgstr "перенаправил несколько задач"
+
+msgid "marked several tasks as done"
+msgstr "отметил несколько задач как выполненные"
+
+msgid "Open"
+msgstr "В работе"
+
+msgid "Closed"
+msgstr "Завершено"
+
+msgid "%d day left"
+msgid_plural "%d days left"
+msgstr[0] "%d день"
+msgstr[1] "%d дня"
+msgstr[2] "%d дней"
+
+msgid "%d day overdue"
+msgid_plural "%d days overdue"
+msgstr[0] "Просрочено на %d день"
+msgstr[1] "Просрочено на %d дня"
+msgstr[2] "Просрочено на %d дней"
+
+msgid "Unhide"
+msgstr "Восстановить"
+
+msgid "Testing"
+msgstr "Проверяется"
+
+msgid "Logbook"
+msgstr "Журнал"
+
+msgid "Archive this project"
+msgstr "Отправить в архив"
+
+msgid "You have unsaved changes. Are you sure you want to leave?"
+msgstr "У вас есть несохраненные изменения на этой странице. Уйти, не сохранив изменения?"
+
+msgid "No tasks in %s project"
+msgstr "Нет задач в проекте «%s»"
+
+msgid "No tasks in %s status"
+msgstr "Нет задач в статусе «%s»"
+
+msgid "There are currently no tasks in %s status."
+msgstr "В статусе «%s» нет ни одной задачи."
+
+msgid "There are unsaved task draft."
+msgstr "Есть несохраненная задача."
+
+msgid "Do you want to continue editing?"
+msgstr "Вы хотите продолжить редактирование?"
+
+msgid "Edit template"
+msgstr "Редактировать шаблон"
+
+msgid "Readiness"
+msgstr "Готовность"
+
+msgid "To"
+msgstr "До"
+
+msgid "Add template"
+msgstr "Добавить шаблон"
+
+msgid "Create template"
+msgstr "Создать шаблон"
+
+msgid "Access"
+msgstr "Доступ"
+
+msgid "only me"
+msgstr "только для меня"
+
+msgid "all users"
+msgstr "для всех"
+
+msgid "Add comment"
+msgstr "Добавить комментарий"
+
+msgid "No tasks are assigned to %s right now."
+msgstr "В данный момент нет задач, назначенных на пользователя %s."
+
+msgid "%s's task list is empty"
+msgstr "Список задач пользователя %s пуст"
+
+msgid "My lists"
+msgstr "Мои списки"
+
+msgid "Tags"
+msgstr "Теги"
+
+msgid "Search tag..."
+msgstr "Поиск тега..."
+
+msgid "Show %d archived scope"
+msgid_plural "Show %d archived scopes"
+msgstr[0] "Показать %d архивную работу"
+msgstr[1] "Показать %d архивных работы"
+msgstr[2] "Показать %d архивных работ"
+
+msgid "Hide archived scope"
+msgid_plural "Hide archived scopes"
+msgstr[0] "Скрыть архивную работу"
+msgstr[1] "Скрыть архивные работы"
+msgstr[2] "Скрыть архивные работы"
+
+msgid "Show %d archived project"
+msgid_plural "Show %d archived projects"
+msgstr[0] "Показать %d архивный проект"
+msgstr[1] "Показать %d архивных проекта"
+msgstr[2] "Показать %d архивных проектов"
+
+msgid "Hide archived project"
+msgid_plural "Hide archived projects"
+msgstr[0] "Скрыть архивный проект"
+msgstr[1] "Скрыть архивные проекты"
+msgstr[2] "Скрыть архивные проекты"
+
+msgid "Archive this scope"
+msgstr "Отправить в архив"
+
+msgid "Restore this scope"
+msgstr "Восстановить из архива"
+
+msgid "Confirm the action"
+msgstr "Подтвердите действие"
+
+msgid "The task is assigned now to:"
+msgstr "В настоящий момент задача назначена на пользователя:"
+
+msgid "More options"
+msgstr "Дополнительные параметры"
+
+msgid "Parent task"
+msgstr "Родительская задача"
+
+msgid "Child task"
+msgstr "Дочерняя задача"
+
+msgid "invert"
+msgstr "инвертировать"
+
+msgid "remove link"
+msgstr "удалить связь"
+
+msgid "hours"
+msgstr "часов"
+
+msgid "days"
+msgstr "дней"
+
+msgid "%d day"
+msgid_plural "%d days"
+msgstr[0] "%d день"
+msgstr[1] "%d дня"
+msgstr[2] "%d дней"
+
+msgid "%d hour"
+msgid_plural "%d hours"
+msgstr[0] "%d час"
+msgstr[1] "%d часа"
+msgstr[2] "%d часов"
+
+msgid "User %s sent you your task."
+msgstr "Пользователь %s отправил вам вашу задачу."
+
+msgid "User %s sent you a task."
+msgstr "Пользователь %s отправил вам задачу."
+
+msgid "User %s sent a task to %s."
+msgstr "Пользователь %s отправил задачу пользователю %s."
+
+msgid "Personal settings"
+msgstr "Персональные настройки"
+
+msgid "Assigned to me"
+msgstr "Назначенные на меня"
+
+msgid "Created by me"
+msgstr "Созданные мной"
+
+msgid "Selected projects"
+msgstr "Выбранные проекты"
+
+msgid "Any action"
+msgstr "Любом действии"
+
+msgid "Assignment only"
+msgstr "Только при назначении"
+
+msgid "Switch off"
+msgstr "Отключить уведомления"
+
+msgid "Notifications"
+msgstr "Уведомления"
+
+msgid "Send me notification in case of"
+msgstr "Отправлять мне уведомление при"
+
+msgid "Notify me about next kind of tasks"
+msgstr "По каким задачам отправлять уведомления"
+
+msgid "Save settings"
+msgstr "Сохранить настройки"
+
+msgid "Set deadline"
+msgstr "Установить срок"
+
+msgid "Save in my lists"
+msgstr "Сохранить в моих списках"
+
+msgid "Remove from my lists"
+msgstr "Убрать из моих списков"
+
+msgid "User %s wrote a comment to a task you are assigned to:"
+msgstr "Пользователь %s добавил комментарий к назначенной на вас задаче:"
+
+msgid "User %s wrote a comment to a task you created:"
+msgstr "Пользователь %s добавил комментарий к созданной вами задаче:"
+
+msgid "User %s wrote a comment:"
+msgstr "Пользователь %s добавил комментарий:"
+
+msgid "Files"
+msgstr "Файлы"
+
+msgid "User %s sent you your task"
+msgstr "Пользователь %s отправил вам вашу задачу"
+
+msgid "User %s sent a new task to user %s"
+msgstr "Пользователь %s отправил новую задачу пользователю %s"
+
+msgid "User %s edited a task:"
+msgstr "Пользователь %s отредактировал задачу:"
+
+msgid "Date is not set."
+msgstr "Дата не указана."
+
+msgid "Scopes are not set."
+msgstr "Работы не указаны."
+
+msgid "Start typing in the search field to find a tag."
+msgstr "Начните писать в поле поиска, чтобы найти тег."
+
+msgid "There are more than %u tags."
+msgstr "Доступно более %u тегов."
+
+msgid "All"
+msgstr "Все"
+
+msgid "Confirm"
+msgstr "Подтвердить"
+
+msgid "Cannot create a list from another list."
+msgstr "Невозможно создать список из другого списка."
+
+msgid "Invalid date."
+msgstr "Неправильная дата."
+
+msgid "Save comment"
+msgstr "Сохранить комментарий"
+
+msgid "You do not have sufficient access rights to view this task."
+msgstr "У вас недостаточно прав доступа для просмотра этой задачи."
+
+msgid "Cannot return this task because another user has modified it."
+msgstr "Невозможно вернуть эту задачу, потому что её изменил другой пользователь."
+
+msgid "Helpdesk request: %s"
+msgstr "Запрос в «Поддержке»: %s"
+
+msgid "Hub topic: %s"
+msgstr "Тема «Хаба»: %s"
+
+msgid "Create list"
+msgstr "Создать список"
+
+msgid "A list name is required."
+msgstr "Введите название списка."
+
+msgid "Yesterday"
+msgstr "Вчера"
+
+msgid "Tomorrow"
+msgstr "Завтра"
+
+msgid "unknown status_id=%d"
+msgstr "неизвестный status_id=%d"
+
+msgid "edited comment"
+msgstr "отредактировал комментарий"
+
+msgid "Delete list “%s”"
+msgstr "Удалить список «%s»"
