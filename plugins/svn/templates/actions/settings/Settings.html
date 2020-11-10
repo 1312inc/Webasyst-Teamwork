@@ -1,0 +1,50 @@
+{if $wa->user()->isAdmin('tasks')}
+<h1>[`Subversion`]</h1>
+<div class="fields">
+    <div class="field">
+        <div class="name">SVN HOOK<br><b>post-commit</b></div>
+        <div class="value">
+            <p>
+            Log into your svn server, go to the repository directory, find the hooks subdirectory there:<br>
+            <code>cd /var/www/svn/[REPO]/hooks</code>
+            </p>
+            <p>
+            If it doesn't exist, create a new file called post-commit,
+            make sure it's executable by the user that the svn process runs as:<br>
+            <code>touch ./post-commit<br>
+            chmod 755 ./post-commit</code>
+            </p>
+
+            Add the following to the post-commit file:<br>
+            <pre><code>
+#!/bin/sh
+
+export LANG="ru_RU.UTF-8"
+
+REPOS="$1"
+REV="$2"
+LOG=$(svnlook log $REPOS -r $REV)
+CHANGED=$(svnlook changed $REPOS -r $REV)
+AUTHOR=$(svnlook author $REPOS -r $REV)
+DIFF=$(svnlook diff $REPOS -r $REV)
+
+/usr/bin/curl -s --data-urlencode rev="$REV" --data-urlencode comment="$LOG" --data-urlencode author="$AUTHOR" \
+    --data-urlencode changed="$CHANGED" --data-urlencode diff="$DIFF" \
+    {$url} > /dev/null &
+            </code></pre>
+            </p>
+        </div>
+    </div>
+</div>
+<div class="clear-left"></div>
+{else}
+<div class="block double-padded align-center gray">
+    <p>
+        <strong>{'[`Subversion`]'|string_format:'[s`Plugin %s is installed and working.`]'}</strong>
+        <br>
+        <br>
+        [s`No configuration options are available for this plugin.`]
+    </p>
+</div>
+{/if}
+

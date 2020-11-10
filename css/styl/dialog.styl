@@ -1,0 +1,31 @@
+.dialog-is-shown
+    position relative
+    height: auto
+
+    #wa
+        overflow hidden
+
+    .t-dialog-wrapper
+        display block
+
+.t-dialog-wrapper
+    display none
+    position absolute
+    top: 0
+    left: 0
+    width: 100%
+    padding: 0 10px 0 210px;
+    min-height: 100%
+    box-sizing border-box
+    transition background 200ms linear
+    z-index 1
+
+    &.has-ornament
+        background rgba(255,255,255,.66)
+
+    .t-dialog-content
+        position relative
+        top: 93px
+        width: 100%
+        margin: auto
+        background #fff

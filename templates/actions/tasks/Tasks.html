@@ -1,0 +1,78 @@
+{$is_in_my_list = $list && $list.is_own && $list.found_by_id}
+
+<div class="t-main-wrapper">
+
+    {$_backend_tasks_hooks = $backend_tasks_hooks|default:[]}
+    {$_backend_body_hooks = $backend_tasks_hooks.body|default:[]}
+
+    <!-- plugin hook: 'backend_tasks.%plugin_id%.body.top' -->
+    {* @event backend_tasks.%plugin_id%.body.top *}
+    {foreach $_backend_body_hooks as $_}{$_.top|default:''}{/foreach}
+
+    <header class="t-header-wrapper">
+        {include file="./TasksHeader.html" inline}
+    </header>
+    <script>(function() { "use strict";
+        window.Tasks = { };
+        window.tasksHeader = new TasksHeader({
+            total_count: {$total_count|json_encode},
+            is_in_my_list: {$is_in_my_list|json_encode},
+            messages: {
+                cant_create_list: "[`Cannot create a list from another list.`]",
+                tasks_count: {_w('%d task','%d tasks', $total_count)|json_encode},
+                no_tasks: {_w('no tasks')|json_encode},
+            }
+        });
+    })();</script>
+
+    {if $tasks}
+        <div class="t-tasks-wrapper is-{$list_view_type}" id="t-tasks-wrapper">
+            {foreach $tasks as $task}{strip}
+                {include file="./Task.html" inline}
+            {/strip}{/foreach}
+
+            <div id="end-of-tasks" class="block">
+                <p>
+                    <span class="js-tasks-list-counter">{sprintf("[`%s of %d`]", _w('%d task','%d tasks', $offset + $count), $total_count)}</span>
+                    {if $click_to_load_more && $next_page_url}
+                        <span class="click-to-load-more"><a href="javascript:void(0)">[`Load more...`]</a></span>
+                    {/if}
+                    <span class="hidden loading-indicator"><i class="icon16 loading"></i>&nbsp;[`Loading...`]</span>
+                </p>
+                <script>(function($) { "use strict";
+                    {* Note that this script has to be inside #t-tasks-wrapper for lazy loading to work correctly. *}
+                    $.tasks.initLazyloader({
+                        lazyloading_wrapper: $('#end-of-tasks'),
+                        next_page_url: {$next_page_url|json_encode},
+                        is_lazy: {if $click_to_load_more}false{else}true{/if},
+                        list_selector: '#t-tasks-wrapper',
+                        item_id_data_attr: 'task-id'
+                    });
+                    {* Init PrettyPrint on Tasks List *}
+                    $.tasks.initPrettyPrint();
+                })(jQuery);</script>
+            </div>
+        </div>
+    {else}
+        <div class="t-notice-list">
+            <div class="t-notice-wrapper {$emptymsg.name|escape} is-shown">
+                <div class="t-image">
+                    <img src="{$emptymsg.img_url|escape}" alt="">
+                </div>
+                <h3 class="t-header">{$emptymsg.title|escape}</h3>
+                <p class="t-desc">{$emptymsg.message|escape}</p>
+            </div>
+        </div>
+    {/if}
+
+    <!-- plugin hook: 'backend_tasks.%plugin_id%.body.bottom' -->
+    {* @event backend_tasks.%plugin_id%.body.bottom *}
+    {foreach $_backend_body_hooks as $_}{$_.bottom|default:''}{/foreach}
+
+</div>
+
+{if !empty($updater_url)}
+    <script data-updater-url="{$updater_url|escape}" id="task-list-updater-script">(function() { "use strict";
+        $.tasks.initTasksUpdater({$updater_url|json_encode});
+    })();</script>
+{/if}

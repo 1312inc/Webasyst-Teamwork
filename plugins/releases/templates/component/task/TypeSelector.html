@@ -1,0 +1,26 @@
+{$wrapper_id = uniqid('t-releases-plugin-task-type-selector-wrapper')}
+<div id="{$wrapper_id}" class="t-releases-plugin-task-type-selector-wrapper">
+    <div class="t-menu-item">
+        <ul class="menu-h dropdown t-custom-select">
+            <li class="t-task-type-selector js-selected-type">
+                <a class="t-selected-item js-selected-item selected-custom-item" href="javascript:void(0);">
+                    {if $ext_info.type}
+                        <span style="color:#{if !empty($types[$ext_info.type].color)}{$types[$ext_info.type].color|escape}{else}999{/if}">{$types[$ext_info.type].name|escape}</span>
+                    {else}
+                        [`Select Type`]
+                    {/if}
+                </a>
+                <ul class="menu-v js-task-types-list">
+                    {foreach $types as $_type}
+                        <li class="t-nav-item js-type-item">
+                            <a class="js-custom-select set-custom-select" href="javascript:void(0);" {if !empty($_type.color)}data-color="{$_type.color}"{/if} data-value="{$_type.id|escape}">
+                                <span style="color:#{if !empty($_type.color)}{$_type.color}{else}999{/if}">{$_type.name|escape}</span>
+                            </a>
+                        </li>
+                    {/foreach}
+                </ul>
+                <input type="hidden" name="task_plugin_releases_task_ext[type]" class="js-task-type-hidden" value="{$ext_info.type|escape}">
+            </li>
+        </ul>
+    </div>
+</div>

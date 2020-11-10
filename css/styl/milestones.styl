@@ -1,0 +1,102 @@
+.t-milestones-wrapper
+
+    .t-milestones-list
+        position relative
+        margin 1em 0 0
+
+        .t-milestone-item
+            position relative
+            border-bottom 1px solid rgba(0,0,0,.1)
+
+            &:first-child
+                border-top 1px solid rgba(0,0,0,.1)
+
+            //&:nth-child(even)
+                //background: #f2f7ff;
+
+            //&:hover
+            //    background #ffffe5
+
+            .table-layout
+                display table
+                width 100%
+
+                .left-column
+                .right-column
+                    display table-cell
+                    vertical-align top
+                    padding 1em
+
+                .right-column
+                    text-align right
+
+            .t-progress-bar
+                position absolute
+                top 0
+                left 0
+                height 100%
+                background #f3fbf3
+                border solid rgba(0,0,0,.1)
+                border-width 0 1px
+                box-sizing border-box
+
+            .t-segment-wrapper
+                position absolute
+                top 0
+                left 0
+                height 100%
+                background url("../img/patterns/segment-background.png") repeat;
+                padding-right: 1px;
+
+                &.t-red-ornament
+                    background-color #fbf3f3
+
+                &.t-orange-ornament
+                    background-color #fff6e5
+                    border-right 1px solid rgba(0,0,0,.1)
+
+            .t-milestone-text
+                position relative
+
+        .t-today-wrapper
+            $border_size = 2px
+            $size = 10px
+            $label_width = 100px
+
+            position absolute
+            top 0
+            left 50%
+            height 100%
+            width 0
+            padding 0
+            border-left $border_size solid rgba(0,0,0,0.2)
+
+            &:before
+                content: ""
+                position absolute
+                top 100%
+                left -(($size/2 + $border_size/2))
+                width 0
+                height 0
+                margin: -($size) 0 0
+                border solid transparent
+                border-width $size ($size/2)
+                border-bottom-color #666
+
+            .t-today-label
+                position relative
+                top 100%
+                left: -($label_width/2)
+                width $label_width
+                padding-top $size * 2
+                text-align center
+
+// common style for several pages
+
+.t-milestone-due-date
+    &.red-color
+        color red
+        font-weight bold
+
+    &.orange-color
+        color #e8842b;

@@ -1,0 +1,20 @@
+<div class="field">
+    <div class="name">
+        {$field_names.timecosts_fact|default:''}
+    </div>
+    <div class="value">
+        <input type="text" class="short js-time-fact" value="{$timecosts_fact}" id="js-time-value" required>
+        <select class="js-time-fact" id="js-time-scale">
+            <option value="1" {if $timecosts_fact % 8 != 0}selected{/if}>[`hours`]</option>
+            <option value="8" {if $timecosts_fact % 8 === 0}selected{/if}>[`days`]</option>
+        </select>
+        <input type="hidden" class="t-time-fact-hidden" name="task_plugin_releases_task_ext[timecosts_fact]" value="">
+    </div>
+</div>
+
+<script type="application/javascript">
+    $('.js-time-fact').on('change', function () {
+        var time = Number($('#js-time-value').val()) * Number($('#js-time-scale').val());
+        $('.t-time-fact-hidden').val(time);
+    })
+</script>

@@ -1,0 +1,42 @@
+{*Disabled statuses for which there are no editable fields*}
+{$disabled_statuses = [0=>true, -1=> true]}
+{foreach $statuses as $status_id => $data}
+    {if ifset($data,'params','assign',null) != 'select' && ifset($data,'params','allow_comment',null) != '1'}
+        {$disabled_statuses[$status_id] = true}
+    {/if}
+{/foreach}
+
+<h1>[`Releases`]</h1>
+<form action="?module=plugins&id=releases&action=save" method="post" id="plugins-settings-form" enctype="multipart/form-data" target="plugins-settings-iframe"
+      style="overflow: hidden;">
+    <div class="field">
+        <div class="name">
+            Select statuses
+        </div>
+        <div class="value">
+            {foreach $statuses as $status_id => $data}
+                <input type="checkbox" name="tasks_releases[show_statuses][{$status_id}]"
+                       {if isset($show_statuses[$status_id])}checked{/if}
+                        {if isset($disabled_statuses[$status_id])}disabled{/if}
+                       value="{$status_id}"
+                       class="groupbox checkbox"
+                       id="tasks_releases_show_statuses_{$status_id}"
+                       title="{$data.button|default:$data.name|escape}">
+                <label for="tasks_releases_show_statuses_{$status_id}">
+                    {$data.button|default:$data.name|escape}
+                    {if !isset($disabled_statuses[$status_id])}{/if}
+                </label>
+                <br>
+            {/foreach}
+            <br><span class="hint">[`For what actions should the actual work be specified.`]</span></div>
+    </div>
+
+    <div class="field">
+        <div class="value submit">
+            <input type="submit" class="button green" value="Сохранить">
+            <span id="plugins-settings-form-status" style=""></span>
+        </div>
+    </div>
+
+    {$wa->csrf()}
+</form>

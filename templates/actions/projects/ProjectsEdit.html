@@ -1,0 +1,280 @@
+<div class="shadowed">
+
+    {$sidebar_html|default:''}
+
+    <div class="t-project-page content left200px bordered-left blank" id="t-project-page">
+        <div class="hidden block double-padded t-saved bordered-bottom">
+            <i class="icon16 yes"></i>[`Settings successfully updated`]
+        </div>
+        <div class="block double-padded">
+
+            {if $project.id}
+                <div class="float-right block half-padded">
+                    <ul class="menu-h with-icons">
+                        <li>
+                            {if $project.archive_datetime}
+                            [`Archive datetime`]: {$project.archive_datetime|wa_datetime}
+                            {else}
+                            <a href="javascript:void(0)" id="project-archive-link"><i class="icon16 yes-bw"></i>[`Archive this project`]</a>
+                            {/if}
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)" id="project-delete-link"><i class="icon16 delete"></i>[`Delete`]</a>
+                        </li>
+                    </ul>
+                </div>
+            {/if}
+
+            <h1>{if !$project.id}[`New project`]{else}{$project.name|default:'[`(no name)`]'|escape}{/if}</h1>
+
+            <form action="?module=projects&action=edit" method="post" id="project-editor-form">
+                <div class="fields form">
+                    <input type="hidden" name="id" value="{ifempty($project.id, 'add')}">
+
+                    <div class="field-group">
+                        <div class="field">
+                            <div class="name">[`Project name`]</div>
+                            <div class="value bold">
+                                <input type="text" class="large" name="project[name]" value="{$project.name|escape}" placeholder="[`Project name`]">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="field-group">
+                        <div class="field">
+                            <div class="name">
+                                [`Color`]
+                            </div>
+                            <div class="value">
+                                <ul class="menu-h t-project-settings-colorbox">
+                                    {foreach $colors as $color}
+                                        <li class="{$color}"><a href="javascript:void(0)">
+                                            <input type="radio" name="project[color]" value="{$color|escape}"{if ($project.color == $color)} checked{/if}>
+                                        </a></li>
+                                    {/foreach}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="field-group">
+                        <div class="field">
+                            <div class="name">
+                                [`Icon`]
+                            </div>
+                            <div class="value">
+                                <ul class="menu-h" id="project-icon-selector">
+                                    {foreach $icons as $icon}
+                                        <li class="t-project-icon{if ($project.icon_class == $icon)} selected{/if}"><a href="javascript:void(0)">
+                                            <i class="icon16 {$icon|escape}"></i>
+                                        </a></li>
+                                    {/foreach}
+                                </ul>
+                                <input type="hidden" name="project[icon]" value="{$project.icon}">
+                                <br>
+                                <span class="small">[`Or enter image URL (image will be scaled to 16x16px)`]:</span><br>
+                                <input id="t-icon-url" type="text" value="{$project.icon_url|escape}" name="icon_url" class="long">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="field-group">
+                        <div class="field">
+                            <div class="name">[`Workflow`]</div>
+                            {foreach $workflows as $wf_id => $wf}
+                                <div class="value">
+                                    <label>
+                                        <input type="radio" name="workflow" value="{$wf_id}"{if $wf.selected} checked{/if}>
+                                        {foreach $wf.statuses as $status}
+                                            {if $status.button}
+                                                {$wa->tasks->statusButton($status)}
+                                                <span class="t-control-link t-forward-link"></span>
+                                            {/if}
+                                            <span class="t-status-name">{$status.name|escape}</span>
+                                            <span class="t-control-link t-forward-link"></span>
+                                        {/foreach}
+                                        <i class="icon16 archive"></i>
+                                    </label>
+                                    {if $wf.project.id != $project.id}
+                                        <span class="hint" style="margin-left:2em;">{$wf.project.name|escape}</span>
+                                    {/if}
+                                </div>
+                            {/foreach}
+                            <div class="value">
+                                <label>
+                                    <input type="radio" name="workflow" value="custom"{if !$workflows} checked{/if}>
+                                    [`Customize...`]
+                                </label>
+                            </div>
+                            <div class="hidden" id="customize-project-workflow">
+                                {foreach $statuses as $s}
+                                    <div class="value">
+                                        <label>
+                                            <input type="checkbox" name="custom_workflow[{$s.id}]" value="1"{if !empty($project_statuses[$s.id])} checked{/if}{if $s.special} disabled{/if}>
+                                            {$s.name|escape}
+                                        </label>
+                                    </div>
+                                {/foreach}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="field-group">
+                        <div class="field">
+                            <div class="value submit">
+                                <input type="submit" name="save" class="button green" value="[`Save`]">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="clear-both"></div>
+    </div>
+
+    <div id="archive-confirm-dialog" style="display: none;">
+        <h1>{$project.name|default:'[`(no name)`]'|escape}</h1>
+        <p>
+            {sprintf_wp("All <strong>%s</strong> in this project will be archived and won't be listed anymore. Are you sure?",
+                _w('%d task', '%d tasks', $project_tasks_count)
+            )}
+        </p>
+        <div class="buttons-wrapper">
+            <input type="submit" class="button gray" value="[`Archive this project`]">
+            [`or`]
+            <a href="javascript:void(0)" class="cancel">[`cancel`]</a>
+        </div>
+    </div>
+
+    <script>( function($) { "use strict";
+
+        var $form = $('#project-editor-form');
+        var delete_confirm_msg = "[`Are you sure?`]";
+
+        {if $project.id}
+            // Make sure the hash is correct after we saved a new project
+            $.tasks.forceHash('#/settings/project/{$project.id}/');
+        {/if}
+        {if !empty($saved)}
+            // Show 'saved' indicator briefly
+            var $hsaved = $('#content .t-saved').slideDown();
+            setTimeout(function() {
+                $hsaved.slideUp();
+            }, 3000);
+            $.tasks.reloadSidebar();
+        {elseif !empty($errors)}
+            // Show form validation errors
+            $.each({$errors|json_encode}, function(field_name, error) {
+                var $field = $form.find('[name="'+field_name+'"]:visible:first').addClass('error');
+                if (!$field.length) {
+                    $field = $form.find(':submit:first');
+                }
+                $field.after($('<em class="errormsg"></em>').text(error));
+            });
+        {/if}
+
+        // Submit form via ajax
+        $form.submit(function(e) {
+            e.preventDefault();
+            $form.showLoading();
+            $('#content .t-saved').slideUp();
+            $.post($form.attr('action'), $form.serialize(), function (html) {
+                $("#content").html(html);
+            });
+        });
+
+        // Deletion link
+        $('#project-delete-link').on('click', function() {
+            if (confirm(delete_confirm_msg)) {
+                $(this).find('.icon16').attr('class', 'icon16 loading');
+                $.post('?module=projects&action=delete', { id: $form.find('[name="id"]').val() }, function() {
+                    $.wa.setHash('#/settings/');
+                }, 'json');
+            }
+        });
+
+        // Archive link
+        $('#project-archive-link').on('click', function() {
+            var $buttons = $('#archive-confirm-dialog .buttons-wrapper');
+            $('#archive-confirm-dialog').show().waDialog({
+                width: '400px',
+                height: '200px',
+                buttons: $buttons
+            });
+
+            $buttons.find(':submit').click(function() {
+                $('#project-archive-link').find('.icon16').attr('class', 'icon16 loading');
+                $.post('?module=projects&action=archive', { id: $form.find('[name="id"]').val() }, function() {
+                    $.tasks.redispatch();
+                }, 'json');
+            });
+        });
+
+        // Show/hide custom workflow settings depending on radio selector
+        (function() {
+            var delay = 0;
+            $form.on('change', '[name="workflow"]', function() {
+                if ($form.find('[name="workflow"]:checked').val() == 'custom') {
+                    $('#customize-project-workflow').slideDown(delay);
+                } else {
+                    $('#customize-project-workflow').slideUp(delay);
+                }
+            }).find('[name="workflow"]:first').change();
+            delay = 300;
+        })();
+
+        // Change background when color selector changes
+        (function() {
+            var $wrapper = $("#t-project-page"),
+                $colorBox = $wrapper.find(".t-project-settings-colorbox"),
+                active_class = false;
+
+            // Event
+            $colorBox.on("click", "a", function() {
+                var color = $(this).find('input').attr('checked', true).val();
+                setColor( color );
+                return true;
+            });
+
+            // First Init
+            $colorBox.find("input:radio:checked").closest("a").click();
+
+            function setColor( color ) {
+                if (!active_class || color != active_class) {
+                    if (active_class) {
+                        $wrapper.removeClass(active_class);
+                    }
+                    $wrapper.addClass(color);
+                    active_class = color;
+                }
+            }
+        })();
+
+        // Project icon selector
+        (function() {
+            var $wrapper = $('#project-icon-selector');
+            var $hidden_input = $wrapper.closest('.field').find('[name="project[icon]"]');
+            var $text_input = $wrapper.closest('.field').find('[name="icon_url"]');
+            $wrapper.on('click', 'a', function() {
+                var $i = $(this).find('i');
+                $i.closest('li').addClass('selected').siblings('.selected').removeClass('selected');
+                $hidden_input.val($i.attr('class').replace('icon16 ', ''));
+                $text_input.val('');
+            });
+
+            $text_input.on('keypress', function() {
+                $wrapper.children('.selected').removeClass('selected');
+                $hidden_input.val('');
+            });
+        })();
+
+        $('#content input:visible:first').focus();
+
+        // sidebar
+        {if $project.id}
+            $('#t-settings-sidebar-wrapper').data('sidebar').selectItem('project', {$project.id});
+        {/if}
+
+    })(jQuery);</script>
+</div>

@@ -1,0 +1,142 @@
+.t-attach-wrapper
+
+    .t-attached-files-wrapper
+        margin: 1rem 0 0
+
+        .t-images-list
+            .t-image-item
+                position relative
+                $image_size = 180px
+                display inline-block
+                vertical-align top
+                margin: 0 .5rem * 2 .5rem * 2 0
+                width: $image_size
+
+                &.is-template
+                    display none
+
+                .t-image-link
+                    display block
+                    padding: 0
+                    margin: 0 0 .25rem
+                    text-align center
+                    line-height $image_size
+                    background #f7f7f7
+                    border: 1px solid rgba(127,127,127,.1);
+                    border-radius: 2px;
+                    font-size 0
+
+                    img
+                        max-width 100%
+                        max-height $image_size
+                        vertical-align middle
+
+                .t-file-name
+                .t-file-size
+                    display inline-block
+                    vertical-align baseline
+                    line-height 1.1em
+
+                .t-file-name
+                    margin: .3rem 0 0
+                    font-weight bold
+                    word-break: break-all;
+
+                .t-file-size
+                    display none
+                    font-size: .8rem
+                    color: #aaa
+
+                .t-file-delete
+                    $size = 20px
+                    display block
+                    position absolute
+                    top: -( $size / 2 )
+                    right: -( $size / 2 )
+                    width $size
+                    height $size
+
+                    border: 1px solid rgba(0,0,0,.33);
+                    border-radius 50%
+
+                    background #fff url("../img/icons/delete-icon.png") 50% no-repeat
+                    background-size ( $size / 2 )
+
+                .t-file-error
+                    margin-top 10px
+                    display none
+
+        .t-files-list
+            margin 1rem 0 2rem
+
+            .t-file-item
+                margin: .25rem 0 0
+
+                &.is-template
+                    display none
+
+                &:first-child
+                    margin-top: 0
+
+                .t-file-link
+                    display inline-block
+                    padding: .25em .5em
+
+                    .t-file-name
+                    .t-file-size
+                        display inline-block
+                        vertical-align baseline
+
+                    .t-file-name
+                        font-size: 1.1rem
+                        font-weight bold
+
+                    .t-file-size
+                        margin: 0 0 0 .5rem
+                        font-size: .8rem
+                        color: #aaa
+
+                .t-file-delete
+                    $delete_size = 20px
+
+                    display inline-block
+                    vertical-align bottom
+                    width $delete_size
+                    height $delete_size
+                    margin: 0 0 0 .5em
+
+                    border: 1px solid rgba(0,0,0,.33);
+                    border-radius 3px
+
+                    background #fff url("../img/icons/delete-icon.png") 50% no-repeat
+                    background-size ( $delete_size / 2 )
+
+                .t-file-error
+                    margin-top 10px
+                    display none
+
+    .t-attach-droparea
+        position relative
+        padding: 16px
+        border: 1px dashed #aaa
+        border-radius 0 0 3px 3px
+        border-top: none
+        text-align center
+        background #f3f3f3
+        color: #aaa;
+        transition background 200ms linear
+        box-sizing border-box
+
+        &.file-hover
+            background #ffa
+
+        input[type="file"]
+            position absolute
+            top: 0
+            left: 0
+            width: 100%
+            height: 100%
+            opacity 0
+            background #888
+            cursor pointer
+            text-indent: -9999px

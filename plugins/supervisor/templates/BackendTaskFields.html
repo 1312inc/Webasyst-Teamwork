@@ -1,0 +1,73 @@
+{*
+ * Supervisor control for task editor page. See plugin method backendTaskEdit()
+ *}
+
+<div class="t-form-line field t-supervisor-wrapper" id="{$uniqid}">
+    <div class="name">[`Supervisor`]</div>
+    <div class="value supervisor-control">
+        <select name="supervisor_id[]">
+            <option value=""></option>
+            {foreach $users as $u}
+                <option value="{$u.id}">{$u.name|escape}</option>
+            {/foreach}
+        </select>
+        <a href="javascript:void(0)" class="supervisor-del"><i class="icon10 delete-bw no-overhanging"></i></a>
+    </div>
+    <div class="value">
+        <a href="javascript:void(0)" class="supervisor-add small inline-link"><i class="icon10 add"></i> <b><i>[`Add supervisor`]</i></b></a>
+    </div>
+</div>
+
+<script>(function() { "use strict";
+
+    var $wrapper = $('#{$uniqid}');
+    var supervisors = {$supervisor_ids|json_encode};
+
+    var $add_button = $wrapper.find('.supervisor-add');
+    var $insert_place = $add_button.closest('.value');
+    var $select_tmpl = $wrapper.find('.supervisor-control').hide();
+
+    // Show supervisors of existing task we currently edit
+    supervisors.forEach(function(user_id) {
+        var $row = $select_tmpl.clone().insertBefore($insert_place).show();
+        $row.find('select').val(user_id);
+    });
+
+    // Update list of users in selectors when project_id changes
+    var $project_id_input = window.taskEdit.$menu.find('[name="data[project_id]"]').on('change', updateOptions);
+    updateOptions.call($project_id_input[0]);
+
+    // Button to add new control
+    $add_button.on('click', function() {
+        var $row = $select_tmpl.clone().insertBefore($insert_place).show();
+        $row.find('select').val('');
+        return false;
+    });
+
+    // Button to remove a single control
+    $wrapper.on('click', '.supervisor-del', function() {
+        $(this).closest('.supervisor-control').remove();
+        return false;
+    });
+
+    // Helper to update options in all slectors depending on current selected project
+    function updateOptions() {
+        var project_id = this.value;
+        var project_users = window.taskEdit.projects_users[project_id] || [];
+        if (project_users && project_users.length) {
+            var is_visible = { };
+            project_users.forEach(function(user_id) {
+                is_visible[user_id] = user_id;
+            });
+            $wrapper.find('select option').each(function() {
+                if (!this.value || this.selected || is_visible[this.value]) {
+                    this.style.display = ''; // show
+                } else {
+                    this.style.display = 'none'; // hide
+                }
+            });
+        } else {
+            $wrapper.find('select option').show();
+        }
+    }
+})();</script>

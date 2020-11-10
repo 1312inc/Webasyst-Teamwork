@@ -1,0 +1,427 @@
+@import "nib";
+
+input
+select
+textarea
+    outline: none
+
+form
+    overflow inherit
+
+input[type="submit"]
+input[type="button"]
+input[type="radio"]
+label
+    cursor pointer
+
+#wa-app
+    overflow inherit
+    display table
+    width: 100%
+    table-layout fixed
+
+    &:before
+    &:after
+        display none
+
+    .t-sidebar-wrapper
+        float: none
+        display table-cell
+        vertical-align top
+        margin: 0
+        padding: 35px 0 0
+        width 200px
+
+        .t-sidebar-block::-webkit-scrollbar
+            width 0px
+            background-color #fff
+
+        .t-sidebar-block
+
+            &.fixed-to-top
+                position fixed
+                left 0
+                top 0
+
+            &.fixed-to-bottom
+                position fixed
+                left 0
+                bottom 0
+            #t-scope-list-wrapper
+                .t-scopes
+                    .t-scope
+                        position:relative
+                        margin-right -5px
+                        .t-closed-percent
+                            position absolute
+                            top 5px
+                            right 5px
+
+                    .t-scope-title
+                        margin-right 30px
+
+                ul.menu-v li.selected a
+                    background transparent
+
+                ul.menu-v li.selected
+                    background: rgba(0,0,0,0.07);
+
+                .child-red > *
+                    color red
+        .add-task-wrapper
+            margin: 0 0 10px 0
+
+        .projects-list-wrapper
+            li
+                .count.show-on-hover
+                    display: none;
+
+                &:hover
+                    .count.show-on-hover
+                        display: inline-block;
+
+    .t-content-wrapper
+        float: none
+        display table-cell
+        margin: 0
+        padding: 0
+
+.t-tag-link
+    color green !important
+    text-decoration none
+
+.t-main-wrapper
+    border 1px solid #ddd
+    border-radius 2px
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.13)
+
+    @import "header.styl";
+
+@import "sidebar.styl"
+
+// ICONS
+
+.icon16.done
+.icon16.archive
+.icon16.done-bw
+.icon16.outbox
+.icon16.userpic-unassigned
+    background-image url("../img/icons/tasks-icons16.png");
+    background-size 128px 80px
+
+.icon16.done
+    background-position -16px 0
+
+.icon16.archive
+    background-position -32px 0
+
+.icon16.done-bw
+    background-position -48px 0
+
+.icon16.outbox
+    background-position -64px 0
+
+.icon16.userpic-unassigned
+    background-position -80px 0
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)
+    .icon16.done
+    .icon16.archive
+    .icon16.done-bw
+    .icon16.outbox
+    .icon16.userpic-unassigned
+        background-image url("../img/icons/tasks-icons16@2x.png");
+
+.icon10
+.icon16
+    &.color
+        margin: 0 0 0 4px !important
+        vertical-align baseline
+        border-radius 50%
+        box-sizing border-box
+
+        &.t-white
+            background: #fff;
+
+        &.t-gray
+            background: #ddd;
+
+        &.t-green
+            background: #cea;
+
+        &.t-blue
+            background: #bef;
+
+        &.t-purple
+            background: #dcf;
+
+        &.t-red
+            background: #fcc;
+
+        &.t-yellow
+            background: #fff7aa;
+
+// It need for inline-link
+.dropdown
+    &.is-right
+        .menu-v
+            left: auto
+            right: 0
+
+    .menu-v
+        a
+            b
+                font-weight: normal
+
+            i
+                font-style normal
+
+// PRIORITY CHANGER
+.t-priority-changer
+    display table
+    width 100%
+
+    .t-priority-text
+    .t-slider-wrapper
+        display table-cell
+        vertical-align middle
+        width 50%
+
+    .t-priority-text
+        text-align center
+        font-weight bold
+
+        &.color-1
+            color #81bbf5
+
+        &.color-2
+            color #989898
+
+        &.color-3
+            color #ffae22
+
+        &.color-4
+            color #dd301c
+
+    .t-slider-wrapper
+        .t-priority-slider
+            $height = 12px
+            $color = #989898
+
+            position relative
+            width auto
+            height $height
+            background transparent
+            border solid transparent
+            border-width 0 4px
+            border-radius ($height/2)
+
+            &:before
+                $size = 4px
+                content ""
+                position absolute
+                top 50%
+                left 0
+                width 100%
+                height $size
+                margin ($size/-2) 0 0 0
+                background $color
+
+            .ui-slider-handle
+                $width = 12px
+                position absolute
+                top ($height/2)
+                padding 0
+                width $width
+                height $width
+                margin ($width/-2) 0 0 ($width/-2)
+                border 1px solid $color
+                background red
+                border-radius 50%
+                box-sizing border-box
+                box-shadow none
+                cursor pointer
+
+                &.is-animated
+                    transition background 200ms linear, left 200ms linear
+
+                &.is-active
+                    $width = 24px
+                    width $width
+                    height $width
+                    margin ($width/-2) 0 0 ($width/-2)
+
+                &.color-1
+                    background #81bbf5
+
+                &.color-2
+                    background $color
+
+                &.color-3
+                    background #ffae22
+
+                &.color-4
+                    background #dd301c
+
+            .t-ornament
+                $width = 14px
+                position absolute
+                top ($height/2)
+                padding 0
+                width $width
+                height $width
+                margin ($width/-2) 0 0 ($width/-2)
+                border 1px solid $color
+                background #fff
+                border-radius 50%
+                box-sizing border-box
+                cursor pointer
+
+                &.is-active
+                    $width = 18px
+                    width $width
+                    height $width
+                    margin ($width/-2) 0 0 ($width/-2)
+
+// NOTICES
+.t-notice-wrapper
+
+    display none
+    padding 2em;
+    text-align center
+
+    &.user-assigned
+        .t-image
+            img
+                border-radius 50%
+
+    &.is-shown
+        display block
+
+    .t-image
+        width: 256px
+        margin: auto
+
+        img
+            width 100%
+            opacity .13
+
+    .t-header
+        margin: 12px 0 0
+        font-size: 1.5em
+        color: #000
+
+    .t-desc
+        margin: 12px 0 0
+        color: #aaa
+
+// DEEP DEEP MAGIC
+.not-implemented.not-implemented.not-implemented.not-implemented.not-implemented.not-implemented.not-implemented
+    border: 1px dashed orange
+    box-sizing border-box
+
+// Help message then dragover file
+#wa
+    &.file-hover
+        .f-file-dragover-wrapper
+            visibility visible
+            opacity 1
+
+    .f-file-dragover-wrapper
+        visibility hidden
+        position fixed
+        top 0
+        left 0
+        width 100%
+        height 100%
+        background rgba(255,255,255,.8)
+        text-align center
+        opacity 0
+        transition opacity 200ms linear
+
+        .f-message-wrapper
+            display inline-block
+            position relative
+            top 48%
+            color: #888
+            font-size 1.6em
+            background #fff
+            box-shadow: 0 0 60px 30px #fff;
+
+// DIALOG CHANGE PRIORITY
+.t-priority-multi-changer
+    padding 10px
+
+    .t-priority-changer
+        margin 4em 0
+
+    .buttons-wrapper
+        //position: absolute;
+        //bottom: 10px;
+        //right: 10px;
+        //z-index 1000;
+
+        input
+            margin 0 0 0 .5em
+            cursor pointer
+
+            &:first-child
+                margin-left 0
+
+// USER TEAM LIST
+
+.t-team-list-wrapper
+    .t-link-item
+        display none
+
+        &.is-shown
+            display block
+
+    ul.menu-v
+        margin-top: -5px
+
+    .t-user-item
+        display none
+
+        &.is-shown
+            display block
+
+        .t-user-label
+            input
+                position relative
+                top -1px
+
+            .userpic20
+                position relative
+                top -1px
+                display inline-block
+                vertical-align middle
+                margin: 0 .4em
+                border 1px solid rgba(0,0,0,.1)
+
+.t-task-forward-wrapper
+    select
+        max-width 400px
+        box-sizing border-box
+        
+@import "logs.styl";
+
+@import "task.styl";
+
+@import "editTask.styl";
+
+@import "dialog.styl";
+
+@import "attachList.styl";
+
+@import "settings.styl";
+
+@import "milestones.styl";
+
+@import "project.styl";
+
+@import "icons.styl"
+
+@import "list.styl"
+
+@import "confirm.styl"

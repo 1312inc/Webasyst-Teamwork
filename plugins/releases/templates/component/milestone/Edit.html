@@ -1,0 +1,35 @@
+{$wrapper_id = uniqid('t-releases-plugin-milestone-edit-block')}
+
+{$input_ns = 'tasks_plugin_releases_milestone_project'}
+
+<div class="t-releases-plugin-milestone-edit-block" id="{$wrapper_id}">
+
+    <div class="field">
+        <div class="value js-type-wrapper">
+            <ul class="menu-v with-icons">
+                {$_checked_map = array_fill_keys($related_projects, true)}
+                {foreach $projects as $_project}
+                    {$_checked = $_checked_map[$_project.id]|default:false}
+                    <li>
+                        <label>
+                            {$_project.icon_html|default:''}
+                            <input type="checkbox" name="{$input_ns}[]" value="{$_project.id|escape}" {if $_checked}checked="checked"{/if}>
+                            {$_project.name|escape|default:''}
+                        </label>
+                    </li>
+
+                {/foreach}
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        (function ($) {
+            new TasksReleasesPluginMilestoneEdit({
+                '$wrapper': $('#{$wrapper_id}'),
+                '$editor': $('#milestone-editor-form')
+            });
+        })(jQuery);
+    </script>
+
+</div>

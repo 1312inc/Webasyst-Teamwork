@@ -1,0 +1,57 @@
+{$time = time()}
+{strip}
+
+{function name="_renderItem" _item=[]}
+    <div class="t-scopes-item">
+        <div class="left-column">
+            <div class="t-scopes-date{if $time > strtotime($_item.due_date)} c-date-fail{elseif (strtotime($_item.due_date) - $time) < 691200 } c-date-red{/if}">
+                <div class="t-scopes-day">{waDateTime::date('j', $_item.due_date)}</div>
+                <div class="t-scopes-mouth">{waDateTime::date('f', $_item.due_date)}</div>
+            </div>
+        </div>
+        <div class="right-column">
+            <div class="t-scopes-wrapper">
+                {if !empty($_item.name)}
+                    <div class="t-scopes-title">
+                        {$_item.name|escape}<br/>
+                        <div class="t-scopes-progress">
+                            <div class="t-scopes-progress-value" style="width:{$_item.progress}%;">&nbsp;{$_item.progress}%</div>
+                        </div>
+                    </div>
+                {/if}
+            </div>
+        </div>
+    </div>
+{/function}
+
+<style>{include file='../css/scopes.css' inline}</style>
+
+<div class="t-scopes-wrapper">
+    <h6 class="heading t-scopes-heading">{$title}</h6>
+
+    <div class="t-scopes-list">
+        {if !empty($scopes)}
+            {foreach $scopes as $item}
+                {_renderItem _item=$item}
+            {/foreach}
+        {else}
+            <div class="t-no-scopes">
+                No scopes
+            </div>
+        {/if}
+    </div>
+</div>
+
+<script>
+    (function ($) {
+        $(function () {
+            setTimeout(function() {
+                try {
+                    DashboardWidgets[{$widget_id}].renderWidget();
+                } catch (e) { }
+            }, 60 * 1000);
+        });
+    })(jQuery)
+</script>
+
+{/strip}

@@ -1,0 +1,466 @@
+<div class="shadowed">
+
+    {function render_row status=[] class=''}{strip}
+        <div class="t-settings-item {$class}{if $status.special} is-special{/if}" data-id="{$status.id}">
+            <input type="hidden" name="status[{$status.id}][exists]" value="1">
+            <header class="t-settings-header">
+                <div class="t-item-icon">
+                    {if !$status.special}<i class="icon16 sort"></i>{/if}
+                </div>
+                <div class="t-item-name">
+                    {capture name="status_header"}
+                        {$status.icon_html}
+                        <span style="{tasksHelper::getStatusHeaderStyles($status)}">
+                            {$status.name|escape}
+                        </span>
+                        {if !empty($status.button)}
+                            <a href="javascript:void(0)" class="t-control-link" style="background:#{ifset($status.params.button_color, 'f0f0f0')|escape};">{$status.button|escape}</a>
+                        {/if}
+                    {/capture}
+                    {if $status.special}
+                        {$smarty.capture.status_header}
+                    {else}
+                        <span class="hide-when-opened">
+                            {$smarty.capture.status_header}
+                        </span>
+                        <span class="hide-when-closed">
+                            <input type="text" name="status[{$status.id}][name]" value="{$status.name|escape}" placeholder="[`Status name`]" class="t-control-status-name long bold">
+                            {if $wa->tasks->config('extended_status_settings')}
+                                <input class="t-control-link-input" type="text" name="status[{$status.id}][button]" value="{$status.button|escape}" placeholder="[`Button label`]">
+                                <span class="hint">[`Caption for the button that sends a task into this status`]</span>
+                            {else}
+                                <input type="hidden" name="status[{$status.id}][button]" value="{$status.button|escape}">
+                            {/if}
+                        </span>
+                    {/if}
+                </div>
+                <div class="t-buttons-block">
+                    {if !$status.special}
+                        <a href="javascript:void(0)" class="t-button-item edit-link hide-when-opened">
+                            <i class="icon16 edit"></i>
+                        </a>
+                        <a href="javascript:void(0)" class="t-button-item delete-link">
+                            <i class="icon16 delete"></i>
+                        </a>
+                    {/if}
+                </div>
+            </header>
+            {if !$status.special}
+                <div class="t-hidden-block status-editor-wrapper">
+                    <input type="hidden" name="status[{$status.id}][params][_exist]" value="1">
+                    <div class="fields form">
+
+                        <div class="field-group">
+                            <div class="field">
+                                <div class="name">[`Icon`]</div>
+                                <div class="value">
+                                    <ul class="menu-h status-icon-selector">
+                                        {foreach $icons as $icon}
+                                            <li{if ($status.icon_class == $icon)} class="selected"{/if}><a href="javascript:void(0)" class="t-status-icon">
+                                                <i class="icon16 {$icon|escape}"></i>
+                                            </a></li>
+                                        {/foreach}
+                                    </ul>
+                                    <input type="hidden" name="status[{$status.id}][icon]" value="{$status.icon}">
+                                </div>
+                            </div>
+
+                            {if $wa->tasks->config('extended_status_settings')}
+                                <div class="field">
+                                    <div class="name">[`Task title style`]</div>
+                                    <div class="value no-shift"><label style="font-style:italic;">
+                                        <input type="checkbox" name="status[{$status.id}][params][title_style_italic]" value="1"{if !empty($status.params.title_style_italic)} checked{/if}>
+                                        [`Italic`]
+                                    </label></div>
+                                    <div class="value no-shift"><label style="font-weight:bold;">
+                                        <input type="checkbox" name="status[{$status.id}][params][title_style_bold]" value="1"{if !empty($status.params.title_style_bold)} checked{/if}>
+                                        [`Bold`]
+                                    </label></div>
+                                </div>
+                            {/if}
+
+                            <div class="field">
+                                <div class="name">[`Task title color`]</div>
+                                <div class="value colorpicker">
+                                    #<input type="text" class="short" placeholder="f0f0f0" name="status[{$status.id}][params][title_color]" value="{ifset($status.params.title_color,'000000')|escape}">
+                                    <i class="icon16 color" style="background:#{ifset($status.params.title_color, '000000')|escape};"></i>
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <div class="name">[`Button color`]</div>
+                                <div class="value colorpicker">
+                                    #<input type="text" class="short" placeholder="f0f0f0" name="status[{$status.id}][params][button_color]" value="{ifset($status.params.button_color,'f0f0f0')|escape}">
+                                    <i class="icon16 color" style="background:#{ifset($status.params.button_color, 'f0f0f0')|escape};"></i>
+
+                                    <a href="javascript:void(0)" class="t-control-link color" style="background:#{ifset($status.params.button_color, 'f0f0f0')|escape};">{$status.button|escape}</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="field-group">
+                            <div class="field">
+                                <div class="name">[`Assignment`]</div>
+                                {$options = [
+                                    ''          => "[`Do not change assignment`]",
+                                    'author'    => "[`Assign to user who created the task`]",
+                                    'user'      => "[`Assign to specific user`]",
+                                    'select'    => "[`Show assignment selector every time`]"
+                                ]}
+                                {foreach $options as $value => $name}{strip}
+                                    <div class="value no-shift">
+                                        <label>
+                                            <input type="radio" name="status[{$status.id}][params][assign]" value="{$value|escape}"
+                                                {if ifempty($status.params.assign, '') == $value} checked{/if}
+                                            >
+                                            &nbsp;{$name|escape}
+                                        </label>
+
+                                        {if $value == 'user'}
+                                            <select name="status[{$status.id}][params][assign_user]" style="display:none;margin-left:1em;" class="show-when-selected">
+                                                <option value="">[`Clear assignment`]</option>
+                                                {foreach tasksHelper::getTeam() as $u}
+                                                    <option {if ifempty($status.params.assign_user, 0) == $u.id}selected{/if} value="{$u.id}">{$u.name|escape}</option>
+                                                {/foreach}
+                                            </select>
+                                        {elseif $value == 'select'}
+                                            <div class="show-when-selected" style="display:none;margin-left:1em;"><label>
+                                                <input type="checkbox" name="status[{$status.id}][params][allow_clear_assign]"
+                                                    {if !empty($status.params.allow_clear_assign)} checked{/if}
+                                                >
+                                                [`Allow to clear assignment`]
+                                            </label></div>
+                                        {/if}
+
+                                    </div>
+                               {/strip}{/foreach}
+                            </div>
+
+                            <div class="field">
+                                <div class="name">[`Comment form`]</div>
+                                <div class="value no-shift"><label>
+                                    <input type="checkbox" name="status[{$status.id}][params][allow_comment]" value="1"{if !empty($status.params.allow_comment)} checked{/if}>
+                                    [`Show comment form`]
+                                </label></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clear-left"></div>
+                </div>
+            {/if}
+        </div>
+    {/strip}{/function}
+
+    {$sidebar_html|default:''}
+
+    <div class="content left200px blank bordered-left">
+        <div class="hidden block double-padded t-saved bordered-bottom">
+            <i class="icon16 yes"></i>[`Settings successfully updated`]
+        </div>
+        <div class="block double-padded blank">
+            <h1>[`Task statuses`]</h1>
+
+            <div class="block not-padded t-add-settings-wrapper">
+                <ul class="menu-h with-icons" style="margin-top: 15px; margin-bottom: 20px;">
+                    <li>
+                        <a href="javascript:void(0)" id="t-add-status-button" class="bold">
+                            <i class="icon16 add"></i>[`New status`]
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <form action="?module=settings&action=save" method="post" id="settings-form">
+                <div class="t-settings-wrapper">
+                    <div class="t-settings-list" id="t-status-list">
+                        {foreach $statuses as $s}
+                            {render_row status=$s class="is-closed"}
+                        {/foreach}
+                        {render_row status=$empty_status class='is-opened template'}
+                    </div>
+                    <div class="t-save-settings-wrapper">
+                        <input type="submit" class="t-save-settings-button button green" value="[`Save`]">
+                    </div>
+                </div>
+
+            </form>
+        </div>
+
+        <div class="clear-both"></div>
+    </div>
+
+    <script>( function($) { "use strict";
+
+        var confirm_leaving_message = "[`You have unsaved changes. Are you sure you want to leave?`]";
+        var $form = $('#settings-form');
+
+        // Submit form via XHR
+        $form.submit(function(e) {
+            e.preventDefault();
+            $form.showLoading();
+            $('#content .t-saved').slideUp();
+            $.post($form.attr('action'), $form.serialize(), function (r) {
+                if (r.status == 'fail') {
+                    // Show form validation errors
+                    $.each(r.errors, function(field_name, error) {
+                        var $field = $form.find('[name="'+field_name+'"]:first').addClass('error');
+                        if ($field.length) {
+                            showStatusForm( $field.closest('.t-settings-item') );
+                        } else {
+                            $field = $form.find(':submit:first');
+                        }
+                        $field.after($('<em class="errormsg"></em>').text(error));
+                    });
+                    $form.hideLoading();
+                } else {
+                    // Reload the form and show success indicator
+                    $.tasks.reloadSidebar();
+                    $form.find('.button.yellow').removeClass('yellow').addClass('green');
+                    $.tasks.redispatch(function() {
+                        var $hsaved = $('#content .t-saved').slideDown();
+                        setTimeout(function() {
+                            $hsaved.slideUp();
+                        }, 3000);
+                    });
+                }
+            }, 'json');
+        });
+
+        // Controller for status list
+        (function() {
+            var $wrapper = $('#t-status-list');
+
+            // Click on an edit link opens the block
+            $wrapper.on('click', '.edit-link', function() {
+                showStatusForm($(this).closest('.t-settings-item'));
+            });
+
+            // Click on a delete link removes the status
+            $wrapper.on('click', '.delete-link', function() {
+                $(this).closest('.t-settings-item').remove();
+                $wrapper.sortable('refreshPositions');
+                $form.change();
+            });
+
+            // Click on add status button creates new row from template
+            (function() {
+                var counter = 0;
+                var template = $wrapper.find('.template').detach()[0].outerHTML;
+                $('#t-add-status-button').on('click', function() {
+                    counter++
+                    var html = template.replace(/%ID%/g, '__new'+counter);
+                    var $status_wrapper = $($.parseHTML(html)).removeClass('template');
+                    $status_wrapper.insertBefore($wrapper.children('.is-special:last'));
+                    $(window).scrollTop($status_wrapper.offset().top - 80);
+                    $wrapper.sortable('refresh');
+                    $form.change();
+                });
+            })();
+
+            // Make status list sortable
+            $wrapper.sortable({
+                axis: 'y',
+                items: '> .t-settings-item:not(.is-special)',
+                distance: 5,
+                containment: 'parent',
+                tolerance: 'pointer',
+                handle: '.t-item-icon',
+                update: function (e, ui) {
+                }
+            });
+
+            // When user changes button label, update preview
+            $wrapper.on('keyup', '.t-control-link-input', function() {
+                var $input = $(this);
+                $input.closest('.t-settings-item').find('.t-control-link.color').text($input.val());
+            });
+            $wrapper.on('keyup', '.t-control-status-name', function() {
+                var $input = $(this);
+                if (!$(this).parent().find('.t-control-link-input').length) {
+                    $(this).parent().find('[name$="[button]"]').val($input.val());
+                    $input.closest('.t-settings-item').find('.t-control-link.color').text($input.val());
+                }
+            });
+        })();
+
+        // Color picker for status editors
+        (function() {
+            var $status_list = $('#t-status-list');
+            var $wrapper = $('#t-status-list').closest('.t-settings-wrapper');
+            var $colorpicker_wrapper = $($.parseHTML('<div style="position:absolute;z-index:98;display:none;"></div>')).appendTo($wrapper);
+            var farbtastic = $.farbtastic($colorpicker_wrapper);
+
+            $status_list.on('click', '.colorpicker .color, .colorpicker input', function() {
+                var $field = $(this).closest('.colorpicker');
+                var $icon = $field.find('.color');
+                var $input = $field.find('input');
+
+                // Attach colorpicker position to this field
+                var pos = $field.position();
+                $colorpicker_wrapper.css({
+                    top: pos.top + $field.height(),
+                    left: pos.left + 130
+                });
+
+                // When user selects color, change colors in table cell
+                farbtastic.linkTo(function(new_color) {
+                    $icon.css('background', new_color);
+                    $input.val(new_color && new_color[0] == '#' ? new_color.substr(1) : new_color);
+                    $form.change();
+                });
+
+                setColor($input.val() || '#f0f0f0');
+
+                // Show the color picker
+                $colorpicker_wrapper.slideDown();
+
+                // Close the color picker when user clicks anywhere else
+                var attached_to_this = true;
+                $form.onWhile(function() {
+                    return attached_to_this;
+                }, 'click', detachFromThis);
+
+                // Close colorpicker when user clicks Esc
+                $(document).onWhile(function() {
+                    return attached_to_this;
+                }, 'keyup', function() {
+                    if (event.keyCode == "27") {
+                        detachFromThis();
+                    }
+                });
+
+                // Update color when user modifies value in input
+                $input.onWhile(function() {
+                    return attached_to_this;
+                }, 'keyup', function() {
+                    setColor($input.val());
+                });
+
+                return false;
+
+                function setColor(color) {
+                    if(!color || color[0] != '#') {
+                        color = '#' + color;
+                    }
+                    farbtastic.setColor(color);
+                }
+
+                function detachFromThis() {
+                    farbtastic.linkTo(function() { });
+                    $colorpicker_wrapper.slideUp();
+                    attached_to_this = false;
+                }
+            });
+
+            // Do not bubble click events so that colorpicker does not close when user clicks inside it
+            $colorpicker_wrapper.click(function() { return false; });
+
+        })();
+
+        // Icon selector in status editor
+        (function() {
+            var $wrapper = $('#t-status-list');
+            $wrapper.on('click', 'a.t-status-icon', function() {
+                var $i = $(this).find('i');
+                var $hidden_input = $i.closest('.field').find('[name$="[icon]"]');
+                $i.closest('li').addClass('selected').siblings('.selected').removeClass('selected');
+                $hidden_input.val($i.attr('class').replace('icon16 ', '')).change();
+            });
+        })();
+
+        // Assignment controller
+        (function() {
+
+            var $wrapper = $('#t-status-list');
+
+            // When user picks "assign to specific user", show the user selector
+            $wrapper.on('change', '[name$="[assign]"]', function() {
+                var $radio = $(this);
+                $radio.closest('.field').find('.show-when-selected').hide();
+                $radio.closest('.value').find('.show-when-selected').show();
+            });
+
+            // When user opens specific status form, make sure
+            // assignment selector for specific user is hidden/visible
+            // depending on radio button status
+            $wrapper.on('open', '.t-settings-item', function() {
+                $(this).find('[name$="[assign]"][checked]').change();
+            });
+
+        })();
+
+        // For new statuses, when user types into status name field, copy into button field automatically
+        (function() {
+            var timeout = null;
+            var $wrapper = $('#t-status-list');
+            $wrapper.on('keypress keydown', '[name$="[name]"]', function(e) {
+                var $input_name = $(this);
+                var $input_button = $input_name.parent().find('[name$="[button]"]');
+                if ($input_button.length && $input_name.val() == $input_button.val()) {
+                    timeout && clearTimeout(timeout);
+                    timeout = setTimeout(function() {
+                        $input_button.val($input_name.val());
+                    }, 50);
+                }
+            });
+        })();
+
+        // Indicator that something's changed in the form
+        (function() {
+            var timeout = null;
+            var $button = $('#settings-form .button.green');
+            var initial_form_state = $form.serialize();
+            $form.on('change keyup', function() {
+                $button.removeClass('green').addClass('yellow');
+                timeout && clearTimeout(timeout);
+                timeout = setTimeout(function() {
+                    timeout = null;
+                    var form_state = $form.serialize();
+                    if (initial_form_state == form_state) {
+                        $button.removeClass('yellow').addClass('green');
+                    } else {
+                        $button.removeClass('green').addClass('yellow');
+                    }
+                }, 300);
+            });
+
+            // Prevent movement to another page if there's something unsaved
+            $(window).onWhile(function() {
+                return $.contains(document, $button[0]);
+            }, 'wa_before_dispatched', function(e) {
+                if ($button.is('.yellow')) {
+                    if (!confirm(confirm_leaving_message)) {
+                        e.preventDefault();
+                        return false;
+                    }
+                }
+            });
+        })();
+
+        function showStatusForm($status_wrapper) {
+            var $hiddenBlock = $status_wrapper.find('.t-hidden-block'),
+                active_class = "is-opened",
+                inactive_class = "is-closed",
+                is_active = ( $status_wrapper.hasClass(active_class) );
+
+            if (is_active) {
+                $hiddenBlock.slideUp();
+                $status_wrapper
+                    .addClass(inactive_class)
+                    .removeClass(active_class);
+
+            } else {
+                $hiddenBlock.slideDown();
+                $status_wrapper
+                    .removeClass(inactive_class)
+                    .addClass(active_class);
+                $status_wrapper.trigger("open");
+            }
+        }
+
+        // sidebar
+        $('#t-settings-sidebar-wrapper').data('sidebar').selectItem('statuses');
+
+    } )(jQuery);</script>
+
+</div>

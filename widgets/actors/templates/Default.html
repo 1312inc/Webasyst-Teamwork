@@ -1,0 +1,42 @@
+{strip}
+
+<style>{include file='../css/actors.css' inline}</style>
+
+<div class="t-actors-widget-wrapper">
+    <div class="text-wrapper">
+        <h6 class="heading nowrap">{$title}</h6>
+
+        <ul class="t-actors-list">
+            {foreach $stats as $item}
+                <li class="h-author-wrapper">
+                    <div class="h-outer-chart" style="width: {$item.total_loading}%">
+                        <div class="h-inner-chart" style="width: {$item.relative_overdue_loading}%"></div>
+                    </div>
+                    <div class="h-author">
+                        <span class="h-icon" style="background-image: url('{$item.contact.photo_url}')"></span>
+                        <span class="h-name">{$item.contact.name|escape}</span>
+                        <span class="h-count">
+                            {waLocale::format($item.total_count, 0)}{if $item.overdue_count}&nbsp;/&nbsp;<strong class="red">{waLocale::format($item.overdue_count, 0)}</strong>{/if}
+                        </span>
+                    </div>
+                </li>
+            {/foreach}
+        </ul>
+
+    </div>
+
+    <script>
+        (function ($) {
+            $(function () {
+                setTimeout(function() {
+                    try {
+                        DashboardWidgets[{$widget_id}].renderWidget();
+                    } catch (e) { }
+                }, 60 * 1000);
+            });
+        })(jQuery)
+    </script>
+
+</div>
+
+{/strip}

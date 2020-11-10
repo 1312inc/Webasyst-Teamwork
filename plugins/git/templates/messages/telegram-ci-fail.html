@@ -1,0 +1,12 @@
+{strip}
+{function getRandom array=[]}{$array[$array|@array_rand]}{/function}
+{capture assign="_emoji1"}{getRandom array=['💩', '👻', '🤯', '🤬', '😡', '🤪', '🧐', '🔥', '💥']}{/capture}
+{capture assign="_emoji2"}{getRandom array=['😘', '😜', '😈', '🐶', '🐼', '🐥', '💔']}{/capture}
+{capture assign="_phrase1"}{getRandom array=['Тесты всё :(', 'Верните тесты!', 'Сломали тесты!', 'Ну вот опять..', 'Что-то не так с тестами.', 'Упали тесты!', 'Тесты сломались.', 'Опять этот умник сломал тесты.']}{/capture}
+{capture assign="_phrase2"}{getRandom array=['Не надо так!', 'Сколько вас учить можно?', 'Не надо так!', 'Завязывайте!', 'Соберитесь!', 'Когда там релиз?', 'Путин, введи войска!']}{/capture}
+{/strip}
+{$_emoji1} {$_phrase1} {$_phrase2}
+
+Автор: {if !empty($telegram_login)}@{$telegram_login|escape}{else}{$GITLAB_USER_NAME|escape}{/if} {$_emoji2}
+<b>{$CI_PROJECT_NAME|escape}</b> / <b>{$CI_COMMIT_REF_NAME|escape}</b> / <a href="{$CI_PROJECT_URL|escape}/commit/{$CI_COMMIT_SHA|escape}">{$CI_COMMIT_SHORT_SHA|escape}</a>
+Job: <a href="{$CI_JOB_URL|escape}">{$CI_JOB_ID|escape}</a>

@@ -1,0 +1,56 @@
+.t-sidebar-block
+    position relative
+
+    &.fixed-to-top
+        z-index 1
+
+    &.fixed-to-bottom
+        z-index 1
+
+    .t-tags-wrapper
+        .t-tag-selected
+            background #e2e0e0
+            padding 0 5px
+
+// COLLAPSIBLE SECTIONS IN SIDEBAR
+.block.collapsed
+    .hide-when-collapsed
+        display: none
+
+    .heading i.icon16.darr
+        background-position: -144px 0 // .rarr
+
+.t-view-list
+    li
+        a
+            white-space nowrap
+
+.t-search-wrapper .t-search-block
+    position relative;
+
+.t-search-wrapper .t-search-block .t-sidebar-search-submit
+    position absolute;
+    top 0;
+    left 0;
+    border 0;
+    border-radius 3px 0 0 3px;
+    cursor pointer;
+    width 30px;
+    height 100%;
+    background transparent url(../img/icons/search-icon.png) 50% no-repeat;
+    opacity .4;
+
+.t-search-wrapper .t-search-block .t-search-input
+    display: inline-block;
+    vertical-align top;
+    margin 0;
+    padding 3px 5px;
+    border 1px solid #ccc;
+    background transparent;
+    font-size 1rem;
+    line-height 1.25em;
+    box-sizing border-box;
+    outline none;
+    border-radius 3px;
+    width 100%;
+    padding-left 30px;

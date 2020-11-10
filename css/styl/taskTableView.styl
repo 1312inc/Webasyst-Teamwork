@@ -1,0 +1,72 @@
+.t-task-outer-container
+    position: relative
+
+    .t-open-task-link
+        display none
+        position absolute
+        top: 0
+        left: 0
+        width: 100%
+        height 100%
+        background transparent
+        cursor pointer
+
+    .t-task-wrapper
+        $padding = 1em
+        cursor pointer
+
+        .t-userpic-column
+        .t-content-column
+            padding $padding $padding $padding 0
+            vertical-align middle
+
+        .t-checkbox-column
+            display none
+
+        .t-userpic-column
+            $image_size = 16px
+            width: $image_size
+            padding: 0 0 0 $padding
+
+            .t-userpics-wrapper
+                $padding_size = 5px
+                $lift_size = 5px
+                padding 0
+
+                &.is-animated-on-hover
+                    padding: $padding_size 0 0 $padding_size;
+
+                    .t-userpic-item
+                        &.is-assigned
+                            border-width 0
+
+                .t-userpic-item
+                    width $image_size
+
+                    img
+                        width $image_size
+                        max-height $image_size
+
+                    &.is-creator
+                        top: $padding_size - $lift_size
+                        left: $padding_size - $lift_size
+
+        .t-content-column
+            .t-task-header
+                margin: 0
+
+                .t-left-column
+                    .t-tag-wrapper
+                        display none
+
+                .t-right-column
+                    .t-visible-block
+                        display block
+
+                    .t-hidden-block
+                        display none
+
+            .t-description-wrapper
+            .t-attach-wrapper
+            .t-task-buttons
+                display none

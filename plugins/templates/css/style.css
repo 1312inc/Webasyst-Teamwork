@@ -1,0 +1,51 @@
+.t-templates-plugin-templates-link-wrapper, .t-templates-plugin-templates-header-link-wrapper{
+    position: absolute!important;
+    top: 15px;
+    right: 0px;
+    min-width: auto!important;
+    margin: 0!important;
+    padding: 0!important;
+}
+.t-templates-plugin-templates-menu .menu-v .t-template-edit-link  {
+    display: inline !important;
+    float: right!important;
+    padding-right: 0px!important;
+}
+.t-templates-plugin-templates-menu .menu-v .t-template-link i {
+    margin-right: 5px!important;
+}
+.t-templates-plugin-templates-menu .menu-v .t-template-link  {
+    display: inline-block !important;
+    max-width: 180px;
+}
+.t-templates-plugin-templates-menu .menu-v {
+    width: 220px!important;
+}
+.t-templates-plugin-templates-header-link-wrapper .menu-v {
+    width: auto!important;
+    left: auto!important;
+    right: 0;
+}
+
+.t-templates-plugin-templates-menu li {
+    min-width: auto!important;
+    margin: 0!important;
+}
+.t-templates-plugin-templates-menu .menu-v li.selected {
+    background: rgba(0,0,0,0.07)!important;
+}
+.t-templates-plugin-templates-menu .menu-v li.selected a {
+    background: transparent!important;
+}
+
+.t-templates-plugin-template-edit-wrapper .t-template-value {
+    margin-left: 0px!important;
+}
+.t-templates-plugin-template-edit-wrapper .t-template-name {
+    padding-right: 1px!important;
+}
+.t-templates-plugin-template-edit-wrapper .t-template-name,
+.t-templates-plugin-template-edit-wrapper .t-template-description {
+    width: 99%!important;
+    padding: 3px;
+}
