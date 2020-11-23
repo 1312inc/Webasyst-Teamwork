@@ -153,7 +153,7 @@
             </ul>
         {else}
             <div class="block align-center collapsible hide-when-collapsed">
-                <p class="hint">[`Scopes are not set.`]</p>
+                <span class="hint">[`No active work scopes are set defined.`]</span>
             </div>
         {/if}
     </div>
@@ -266,7 +266,7 @@
     <div class="block">
         <ul class="menu-v with-icons">
             <li>
-                <a href="#/personal-settings/"><i class="icon10 settings"></i>[`Personal settings`]</a>
+                <a href="#/personal-settings/"><i class="icon16 userpic20" style="background-image: url('{$wa->user()->getPhoto(20)}');"></i>[`My preferences`]</a>
             </li>
             {if $is_admin}
                 <li>

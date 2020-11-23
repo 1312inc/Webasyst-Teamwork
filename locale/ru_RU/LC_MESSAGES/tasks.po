@@ -329,7 +329,7 @@ msgid "Assign to"
 msgstr "Назначить"
 
 msgid "me"
-msgstr "себя"
+msgstr "себе"
 
 msgid "Show all"
 msgstr "Показать всех"
