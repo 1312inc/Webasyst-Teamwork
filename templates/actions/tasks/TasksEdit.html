@@ -100,7 +100,7 @@
                 <div class="t-form-line t-table-layout">
                     <div class="t-column">
                         <div class="t-task-name-wrapper">
-                            <input type="text" name="data[name]" class="t-task-name-input" value="{$task.name|escape}" placeholder="[`Input task name`]" tabindex="1">
+                            <input type="text" name="data[name]" class="t-task-name-input bold" value="{$task.name|escape}" placeholder="[`Task title`]" tabindex="1">
 
                             <!-- plugin hook: 'backend_task_edit.%plugin_id.name' -->
                             {* @event backend_task_edit.%plugin_id%.name *}
@@ -236,7 +236,7 @@
                                         <i class="icon16 userpic20" style="background-image: url({$user.photo_url})"></i>
                                         {$user.name|escape}
                                         {if ($user.id == $wa->user('id'))}
-                                            &nbsp;([`me`])
+                                            &nbsp;<span class="gray">([`me`])</span>
                                         {/if}
                                     </label>
                                 </li>
@@ -246,7 +246,7 @@
                                 <label class="t-user-label set-task-user">
                                     <input type="radio" name="data[assigned_contact_id]" value="0"{if !$_is_something_checked} checked{/if}>
                                     <i class="icon16 userpic20" style="background-image: url('{$wa_url}wa-content/img/userpic96.jpg')"></i>
-                                    [`Unassigned`]
+                                    <span class="gray">[`Unassigned`]</span>
                                 </label>
                             </li>
 
