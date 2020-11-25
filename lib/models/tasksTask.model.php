@@ -252,5 +252,31 @@ class tasksTaskModel extends waModel
 
         return $result;
     }
+
+    /**
+     * @param string $q
+     * @param int    $limit
+     * @param false  $full
+     *
+     * @return array
+     */
+    public function getAutocomplete($q, $limit, $full = false)
+    {
+        $q = $this->escape($q, 'like');
+
+        if ($full) {
+            $q = '%' . $q . '%';
+        } else {
+            $q .= "%";
+        }
+
+        $sql = "SELECT t.* 
+                FROM {$this->table} AS t
+                WHERE concat(t.project_id, '.', t.number, t.name)  LIKE '$q'
+                ORDER BY t.id ASC
+                LIMIT $limit";
+
+        return $this->query($sql)->fetchAll();
+    }
 }
 
