@@ -1,10 +1,12 @@
 <?php
+
 class tasksTaskModel extends waModel
 {
     protected $table = 'tasks_task';
 
     /**
      * @param array $data
+     *
      * @return array
      * @throws waException
      */
@@ -32,7 +34,7 @@ class tasksTaskModel extends waModel
         }
 
         if (isset($data['milestone_id']) && wa_is_int($data['milestone_id'])) {
-            $data['milestone_id'] = (int)$data['milestone_id'];
+            $data['milestone_id'] = (int) $data['milestone_id'];
         } else {
             $data['milestone_id'] = null;
         }
@@ -75,7 +77,7 @@ class tasksTaskModel extends waModel
             $changed = $this->changeProject($id, $task['project_id'], $project_id);
             if ($changed) {
                 $log_model = new tasksTaskLogModel();
-                $log_model->updateByField('task_id', $id, array('project_id' => $project_id));
+                $log_model->updateByField('task_id', $id, ['project_id' => $project_id]);
             }
         }
 
@@ -97,12 +99,16 @@ class tasksTaskModel extends waModel
 
         // keeping fresh tasks_number
         $number = $new_project['tasks_number'] + 1;
-        $this->updateById($task_id, array(
-            'project_id' => $new_project_id,
-            'number' => $number
-        ));
+        $this->updateById(
+            $task_id,
+            [
+                'project_id' => $new_project_id,
+                'number' => $number,
+            ]
+        );
 
         $project_model->recountTasksNumber($new_project_id);
+
         return true;
 
     }
@@ -110,7 +116,7 @@ class tasksTaskModel extends waModel
     public function updateById($id, $data, $options = null, $return_object = false)
     {
         if (array_key_exists('update_datetime', $data)) {
-            if(!$data['update_datetime']) {
+            if (!$data['update_datetime']) {
                 unset($data['update_datetime']);
             }
         } else {
@@ -119,18 +125,19 @@ class tasksTaskModel extends waModel
 
         if (array_key_exists('milestone_id', $data)) {
             if (wa_is_int($data['milestone_id'])) {
-                $data['milestone_id'] = (int)$data['milestone_id'];
+                $data['milestone_id'] = (int) $data['milestone_id'];
             } else {
                 $data['milestone_id'] = null;
             }
         }
+
         return parent::updateById($id, $data, $options, $return_object);
     }
 
 
     public function delete($ids)
     {
-        $ids = (array)$ids;
+        $ids = (array) $ids;
 
         foreach ($ids as $id) {
             try {
@@ -139,11 +146,11 @@ class tasksTaskModel extends waModel
             }
         }
 
-        foreach (array(
-            new tasksAttachmentModel(),
-            new tasksTaskLogModel(),
-            new tasksTaskLogParamsModel()
-            ) as $model) {
+        foreach ([
+                     new tasksAttachmentModel(),
+                     new tasksTaskLogModel(),
+                     new tasksTaskLogParamsModel(),
+                 ] as $model) {
             /**
              * @var waModel $model
              */
@@ -156,13 +163,13 @@ class tasksTaskModel extends waModel
     /** Count favorite tasks of current user: total and highext priority  */
     public function getFavoritesCounts()
     {
-        $result = array(
+        $result = [
             'count' => 0,
             'total' => 0,
             'text_color' => '#999',
             'bg_color' => 'transparent',
             'value' => -100500,
-        );
+        ];
         $priorities = wa('tasks')->getConfig()->getOption('priorities');
         $sql = "SELECT t.priority, count(*) AS `count`
                 FROM {$this->table} AS t
@@ -171,7 +178,7 @@ class tasksTaskModel extends waModel
                 WHERE t.status_id > -1
                     AND f.contact_id=?
                 GROUP BY t.priority";
-        foreach($this->query($sql, wa()->getUser()->getId()) as $row) {
+        foreach ($this->query($sql, wa()->getUser()->getId()) as $row) {
             if (empty($priorities[$row['priority']])) {
                 continue;
             }
@@ -181,13 +188,14 @@ class tasksTaskModel extends waModel
 
             $result['total'] += $row['count'];
         }
+
         return $result;
     }
 
     /** Count non-done tasks for all projects: total and highest priority. */
     public function getProjectCounts()
     {
-        $result = array();
+        $result = [];
         $priorities = wa('tasks')->getConfig()->getOption('priorities');
 
         // For the purpose of sidebar counts we only differentiate
@@ -198,24 +206,27 @@ class tasksTaskModel extends waModel
                 FROM {$this->table} t JOIN tasks_project p ON t.project_id = p.id
                 WHERE t.status_id > -1 AND p.archive_datetime IS NULL
                 GROUP BY t.project_id, {$priority_field}";
-        foreach($this->query($sql) as $row) {
+        foreach ($this->query($sql) as $row) {
             if (empty($result[$row['project_id']])) {
-                $result[$row['project_id']] = $priorities[$row['priority']] + $row + array(
-                    'total' => 0,
-                );
-            } else if ($result[$row['project_id']]['value'] < $row['priority']) {
-                $result[$row['project_id']] = $priorities[$row['priority']] + $row + $result[$row['project_id']];
+                $result[$row['project_id']] = $priorities[$row['priority']] + $row + [
+                        'total' => 0,
+                    ];
+            } else {
+                if ($result[$row['project_id']]['value'] < $row['priority']) {
+                    $result[$row['project_id']] = $priorities[$row['priority']] + $row + $result[$row['project_id']];
+                }
             }
 
             $result[$row['project_id']]['total'] += $row['count'];
         }
+
         return $result;
     }
 
     /** Count assigned tasks for all users: total and highest priority. */
     public function getTeamCounts()
     {
-        $result = array();
+        $result = [];
         $priorities = wa('tasks')->getConfig()->getOption('priorities');
 
         // For the purpose of sidebar counts we only differentiate
@@ -226,29 +237,35 @@ class tasksTaskModel extends waModel
                 FROM {$this->table} t JOIN tasks_project p ON t.project_id = p.id
                 WHERE t.status_id > -1 AND p.archive_datetime IS NULL
                 GROUP BY t.assigned_contact_id, {$priority_field}";
-        foreach($this->query($sql) as $row) {
+        foreach ($this->query($sql) as $row) {
             if (empty($result[$row['assigned_contact_id']])) {
-                $result[$row['assigned_contact_id']] = $priorities[$row['priority']] + $row + array(
-                    'total' => 0,
-                );
-            } else if ($result[$row['assigned_contact_id']]['value'] < $row['priority']) {
-                $result[$row['assigned_contact_id']] = $priorities[$row['priority']] + $row + $result[$row['assigned_contact_id']];
+                $result[$row['assigned_contact_id']] = $priorities[$row['priority']] + $row + [
+                        'total' => 0,
+                    ];
+            } else {
+                if ($result[$row['assigned_contact_id']]['value'] < $row['priority']) {
+                    $result[$row['assigned_contact_id']] = $priorities[$row['priority']] + $row + $result[$row['assigned_contact_id']];
+                }
             }
 
             $result[$row['assigned_contact_id']]['total'] += $row['count'];
         }
+
         return $result;
     }
 
     /**
      * Get count open and closed task on scopes
+     *
      * @return array
      */
     public function getCountTasksInScope()
     {
-        $result = $this->query("SELECT milestone_id, SUM(IF(status_id<0, 1, 0)) AS closed, count(*) AS total
+        $result = $this->query(
+            "SELECT milestone_id, SUM(IF(status_id<0, 1, 0)) AS closed, count(*) AS total
                                     FROM tasks_task WHERE milestone_id > 0
-                                    GROUP BY milestone_id")->fetchAll();
+                                    GROUP BY milestone_id"
+        )->fetchAll();
 
         return $result;
     }
@@ -260,7 +277,7 @@ class tasksTaskModel extends waModel
      *
      * @return array
      */
-    public function getAutocomplete($q, $limit, $full = false)
+    public function getAutocomplete($q, $limit, $full = false, $offset = 0)
     {
         $q = $this->escape($q, 'like');
 
@@ -270,11 +287,17 @@ class tasksTaskModel extends waModel
             $q .= "%";
         }
 
-        $sql = "SELECT t.* 
-                FROM {$this->table} AS t
-                WHERE concat(t.project_id, '.', t.number, t.name)  LIKE '$q'
+        $sql = sprintf(
+            "SELECT t.* 
+                FROM %s AS t
+                WHERE concat(t.project_id, '.', t.number, t.name)  LIKE '%s'
                 ORDER BY t.id ASC
-                LIMIT $limit";
+                LIMIT %d, %d",
+            $this->table,
+            $q,
+            $offset,
+            $limit
+        );
 
         return $this->query($sql)->fetchAll();
     }
