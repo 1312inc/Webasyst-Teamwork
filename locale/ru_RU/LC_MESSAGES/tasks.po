@@ -12,7 +12,7 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Basepath: .\n"
 "Language: ru_RU\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 2.3\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPath-1: .\n"
 
@@ -497,7 +497,7 @@ msgid "Task not found"
 msgstr "Задача не найдена"
 
 msgid "You can't hide high priority task"
-msgstr "Нельзя отложить задачу с высоким приоритетом."
+msgstr "Нельзя отложить задачу с высоким приоритетом"
 
 msgid "You can only hide tasks assigned to you."
 msgstr "Можно отложить только задачи, назначенные на вас."
@@ -551,13 +551,13 @@ msgstr[1] "%d задачи выполнены"
 msgstr[2] "%d задач выполнены"
 
 msgid "A task has been assigned to you"
-msgstr "Задача назначена на вас."
+msgstr "Задача назначена на вас"
 
 msgid "A task has been completed"
-msgstr "Задача выполнена."
+msgstr "Задача выполнена"
 
 msgid "A task has been updated"
-msgstr "Задача обновлена."
+msgstr "Задача обновлена"
 
 msgid "High"
 msgstr "Высокий"
@@ -707,7 +707,7 @@ msgid "Your favorite task list is empty"
 msgstr "Ваш список избранных задач пуст"
 
 msgid "There are no tasks in this project."
-msgstr "В этом проекте нет задач"
+msgstr "В этом проекте нет задач."
 
 msgid "No tasks match your search criteria."
 msgstr "Нет задач, соответствующих критериям поиска."
@@ -1053,3 +1053,15 @@ msgstr "отредактировал комментарий"
 
 msgid "Delete list “%s”"
 msgstr "Удалить список «%s»"
+
+msgid "My preferences"
+msgstr "Мои настройки"
+
+msgid "Actions"
+msgstr "Действия"
+
+msgid "Task title"
+msgstr "Заголовок"
+
+msgid "No active work scopes are defined."
+msgstr "Текущие работы не заданы."
