@@ -8,5 +8,6 @@ return array(
     'plugins' => true,
     'csrf'    => true,
     'license'     => 'commercial',
-    'sash_color' => '#e81a3d'
+    'sash_color' => '#e81a3d',
+    'ui' => '1.3, 2.0'
 );

@@ -1,0 +1,105 @@
+<!-- hooks var -->
+{$_backend_milestone_edit = $backend_milestone_edit|default:[]}
+
+<div class="shadowed" id="t-milestone-page-wrapper">
+    {$sidebar_html|default:''}
+
+    <div class="t-milestone-page content left200px bordered-left blank" id="t-milestone-page">
+
+        <div class="hidden block double-padded t-saved bordered-bottom">
+            <i class="icon16 yes"></i>[`Scope successfully saved`]
+        </div>
+
+
+        <div class="block double-padded">
+
+            {if $milestone.id}
+
+                <div class="float-right block half-padded">
+                    <ul class="menu-h with-icons">
+                        <li>
+                            {if $milestone.closed}
+                                <a href="javascript:void(0)" class="t-scope-restore-link"><i class="icon16 rotate-left"></i>[`Restore this scope`]</a>
+                            {else}
+                                <a href="javascript:void(0)" class="t-scope-archive-link"><i class="icon16 yes-bw"></i>[`Archive this scope`]</a>
+                            {/if}
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)" class="t-scope-delete-link"><i class="icon16 delete"></i>[`Delete`]</a>
+                        </li>
+                    </ul>
+                </div>
+
+            {/if}
+
+            {if $milestone.id}
+                <h1>{$milestone.name|escape|default:"[`(no name)`]"}</h1>
+            {else}
+                <h1>[`New scope`]</h1>
+            {/if}
+
+            <form action="?module=milestones&action=edit" id="milestone-editor-form">
+        <div class="fields form">
+            <div class="field-group">
+                <input type="hidden" name="id" value="{ifempty($milestone.id, 'new')}">
+                <div class="field">
+                    <div class="name">[`Name`]</div>
+                    <div class="value"><input type="text" name="milestone[name]" class="bold long" value="{$milestone.name|escape}"></div>
+                </div>
+                <div class="field">
+                    <div class="name">[`Description`]</div>
+                    <div class="value"><textarea name="milestone[description]">{$milestone.description|escape}</textarea><br>
+                        <span class="hint">[`A tiny hint describing this scope.`]</span>
+                    </div>
+                </div>
+                <div class="field t-milestone-project-field">
+                    <div class="name">[`Project`]</div>
+                    <div class="value no-shift">
+                        <select name="milestone[project_id]">
+                            {foreach $projects as $p}
+                                <option value="{$p.id}"{if $p.id == $milestone.project_id} selected{/if}>{$p.name|escape}</option>
+                            {/foreach}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="field-group">
+                <div class="field">
+                    <div class="name">[`Due date`]</div>
+                    <div class="value">
+                        <input type="text" class="datepicker-due-date bold">
+                        <input type="hidden" name="milestone[due_date]" value="{$milestone.due_date|escape}"><i class="icon16 calendar"></i>
+                    </div>
+                </div>
+
+                <div class="t-more-fields">
+                    <!-- plugin hook: 'backend_milestone_edit.%plugin_id%.more' -->
+                    {* @event backend_milestone_edit.%plugin_id%.more *}
+                    {foreach $_backend_milestone_edit as $_}{$_.more|default:''}{/foreach}
+                </div>
+
+            </div>
+            <div class="field">
+                <div class="value">
+                    <input type="submit" class="button green" value="[`Save`]">
+                </div>
+            </div>
+        </div>
+    </form>
+        </div>
+        <div class="clear-both"></div>
+    </div>
+
+    <script>(function() { "use strict";
+        new TasksScopeEdit({
+            '$wrapper': $('#t-milestone-page-wrapper'),
+            'scope': {$milestone|json_encode},
+            'just_saved': {$saved|default:false|json_encode},
+            'errors': {$errors|default:[]|json_encode},
+            'messages': {
+                'delete_confirm': "[`Are you sure?`]"
+            }
+        });
+    })();</script>
+
+</div>

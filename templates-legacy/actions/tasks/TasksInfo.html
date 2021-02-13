@@ -1,0 +1,22 @@
+{strip}
+
+{* INIT HEADER *}
+<script>( function($) {
+    window.Tasks = { };
+    window.tasksHeader = new TasksHeader();
+    $.tasks.forceHash("#/task/{$task.project_id}.{$task.number}/");
+    $.tasks.setTitle({$task.name|json_encode});
+})(jQuery);
+</script>
+
+<div class="t-main-wrapper">
+    <header class="t-header-wrapper">
+        {include file="./TasksHeader.html" is_single=true inline}
+    </header>
+
+    <div class="t-tasks-wrapper t-single-task-wrapper">
+        {include file="./Task.html" is_single="true" inline}
+    </div>
+</div>
+
+{/strip}

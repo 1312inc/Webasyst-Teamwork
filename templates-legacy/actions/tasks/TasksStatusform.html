@@ -1,0 +1,52 @@
+{strip}
+<div class="t-status-form-block">
+    <form action="?module=tasksLog">
+        <div class="fields" style="float: none;">
+
+            <input type="hidden" name="id" value="{$task.id}">
+            <input type="hidden" name="status_id" value="{$next_status.id}">
+
+            {if ifempty($next_status.params.assign) == 'select'}
+                <div class="field">
+                    <div class="name">[`Assignment`]</div>
+                    <div class="value">
+                        <select name="assigned_contact_id">
+                            {if !empty($next_status.params.allow_clear_assign)}
+                                <option value="0">[`Clear assignment`]</option>
+                            {/if}
+                            {foreach tasksHelper::getTeam($task.project_id) as $u}
+                                <option value="{$u.id}"{if $u.id == $task.contact_id} selected{/if}>{$u.name|escape}</option>
+                            {/foreach}
+                        </select>
+                    </div>
+                </div>
+            {/if}
+
+            {if !empty($next_status.params.allow_comment)}
+                <div class="field">
+                    <div class="name">[`Comment`]</div>
+                    <div class="value">
+
+                        {include file="./TaskStatusForm.DropArea.html" inline}
+
+                    </div>
+                </div>
+            {/if}
+            {if !empty($custom_html)}
+                {foreach $custom_html as $plugin_id => $variants}
+                    {foreach $variants as $variant}
+                        {$variant}
+                    {/foreach}
+                {/foreach}
+            {/if}
+            <div class="field">
+                <div class="value">
+                    <input type="submit" class="button green" value="{$next_status.button|escape}">
+                    &nbsp;[`or`]&nbsp;
+                    <a class="t-hiddenform-cancel-link" href="javascript:void(0);">[`cancel`]</a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{/strip}

@@ -1,0 +1,38 @@
+{function action_li_item label='' id=''}
+    <label>
+        <input type="radio" name="settings[notification][action]" value="{$id}" class="js-settings-notification"
+               {if $settings.notification.action == $id}checked="checked"{/if}>
+        {$label}
+    </label>
+{/function}
+
+{function task_li_item label='' id='' disabled=false}
+    <label>
+        <input class="js-settings-checkbox t-{$id}-checkbox"
+           type="checkbox" name="settings[notification][task][]"
+           value="{$id}"
+           {if in_array($id, $settings.notification.task)}checked="checked"{/if}
+           {if $settings.notification.action === 'off'}disabled="disabled"{/if}>
+        {$label}
+    </label>
+{/function}
+
+{function project_list}
+    {$_projects = $projects|default:[]}
+    {if (!in_array("project", $settings.notification.task))}{$_disabled = 'disabled="disabled"'}{/if}
+    {$settings_projects = $settings.notification.project|array_fill_keys:true}
+    {if $_projects}
+        <ul class="menu-v t-project-list" style="margin-left: 20px;{if isset($_disabled)}display:none;{/if}">
+            {foreach $_projects as $_project}
+                <li>
+                    <label>
+                        <input type="checkbox" name="settings[notification][project][]" class="js-project-list-item" value="{$_project.id}"
+                            {if isset($_disabled)}{$_disabled}{/if}
+                            {if $settings_projects[$_project.id]|default:''}checked="checked"{/if}
+                        > {$_project.name|escape}
+                    </label>
+                </li>
+            {/foreach}
+        </ul>
+    {/if}
+{/function}
