@@ -1,0 +1,61 @@
+{$wrapper_id = uniqid('t-settings-wrapper-')}
+
+{include file="./SettingsPersonalHelpers.inc.html" inline}
+
+<div class="block bordered-left blank shadowed double-padded" id="{$wrapper_id}">
+    <h1>[`Personal settings`]</h1>
+    <div class="block not-padded">
+        <form action="?module=settingsPersonal&action=save" class="t-setting-form">
+            <input type="hidden" name="settings[notification][]" value="">
+            <div class="block t-settings-fields">
+                <div><h2>[`Notifications`]</h2></div>
+                <div><h3>[`Send me notification in case of`]</h3></div>
+                <div>
+                    <ul class="menu-v">
+                        {$_items = [
+                            'always' => '[`Any action`]',
+                            'assign' => '[`Assignment only`]',
+                            'off' => '[`Switch off`]'
+                        ]}
+                        {foreach $_items as $_id => $_label}
+                            <li>{action_li_item label=$_label id=$_id}</li>
+                        {/foreach}
+                    </ul>
+                </div>
+                <div><h3>[`Notify me about next kind of tasks`]</h3></div>
+                <div>
+                    <ul class="menu-v t-settings-list">
+                        {$_items = [
+                            'assigned_to_me' => '[`Assigned to me`]',
+                            'created_by_me' => '[`Created by me`]',
+                            'favorites' => '[`Favorites`]',
+                            'project' => '[`Selected projects`]'
+                        ]}
+                        {foreach $_items as $_id => $_label}
+                            <li>
+                                {task_li_item label=$_label id=$_id}
+                                {if $_id == 'project'}
+                                    {project_list}
+                                {/if}
+                            </li>
+                        {/foreach}
+                    </ul>
+                </div>
+            </div>
+            <div class="block t-settings-buttons">
+                <input type="submit" class="button green" value="[`Save settings`]">
+                <i class="icon16 loading t-loading" style="margin-top: 6px; display: none;"></i>
+            </div>
+        </form>
+    </div>
+    <div class="clear"></div>
+
+    <script>
+        (function ($) {
+            new TasksSettingsPersonal({
+                $wrapper: $('#{$wrapper_id}')
+            });
+        })(jQuery);
+    </script>
+
+</div>

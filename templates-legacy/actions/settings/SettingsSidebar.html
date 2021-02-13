@@ -1,0 +1,108 @@
+{$_backend_sidebar = $backend_settings_sidebar|default:[]}
+
+<div class="sidebar left200px t-settings-sidebar" id="t-settings-sidebar-wrapper">
+    <ul class="menu-v stack with-icons">
+
+        <li class="top-padded" data-item-type="statuses">
+            <a href="#/settings/">
+                <i class="icon16 done"></i>[`Task statuses`]
+            </a>
+        </li>
+
+        <!-- plugin hook: 'backend_settings_sidebar.top_li' -->
+        {* @event backend_settings_sidebar.%plugin_id%.top_li *}
+        {foreach $_backend_sidebar as $_}{ifset($_.top_li)}{/foreach}
+
+    </ul>
+
+    <h5 class="heading">
+        <a href="#/settings/project/add/" class="count"><i class="icon16 add"></i></a>
+        [`Projects`]
+    </h5>
+    <ul class="menu-v stack with-icons" id="t-projects-list-settings">
+        {foreach $projects as $p}
+            <li data-id="{$p.id}" data-item-type="project">
+                <a href="#/settings/project/{$p.id}/">{strip}
+                    {$p.icon_html}
+                    <span class="js-project-name">{$p.name|default:'[`(no name)`]'|escape}</span>
+                    {if !empty($p.color) && ($p.color != "t-white")}
+                        <i class="icon10 no-overhanging color {$p.color}"></i>
+                    {/if}
+                {/strip}</a>
+            </li>
+        {/foreach}
+
+        {if $archive_projects}
+            <li id="t-show-archived-projects">
+                {$_count = count($archive_projects)}
+                {$_text_hidden = _w('Show %d archived project', 'Show %d archived projects', $_count)}
+                {$_text_shown = _w('Hide archived project', 'Hide archived projects', $_count)}
+                <a href="javascript:void(0);" class="hint js-archived-item-list-toggle"
+                   data-list-type="projects" data-text-shown="{$_text_shown}" data-text-hidden="{$_text_hidden}">{$_text_hidden}</a>
+            </li>
+        {/if}
+
+    </ul>
+
+    {if $archive_projects}
+        <ul class="menu-v stack with-icons js-archived-item-list" id="archived-projects-list" data-list-type="projects" {if empty($project.archive_datetime)}style="display: none"{/if}>
+            {foreach $archive_projects as $p}
+                <li data-id="{$p.id}" data-item-type="project" data-is-archived="1">
+                    <a href="#/settings/project/{$p.id}/">
+                        <span class="gray js-project-name">{$p.name|default:'[`(no name)`]'|escape}</span>
+                    </a>
+                </li>
+            {/foreach}
+        </ul>
+    {/if}
+
+    <h5 class="heading">
+        <a href="#/settings/scope/add/" class="count"><i class="icon16 add"></i></a>
+        [`Scopes`]
+    </h5>
+    <ul class="menu-v stack with-icons t-scopes-list-wrapper">
+
+        {foreach $scopes as $_scope}
+            <li data-id="{$_scope.id}" data-item-type="scope">
+                <a href="#/settings/scope/{$_scope.id}/">{strip}
+                    {$_scope.project.icon_html}
+                    <span class="t-scope-name js-scope-name">{$_scope.name|default:'[`(no name)`]'|escape}</span>
+                {/strip}</a>
+            </li>
+        {/foreach}
+
+        {if $archive_scopes}
+            <li class="js-show-archived-scopes">
+                {$_count = count($archive_scopes)}
+                {$_text_hidden = _w('Show %d archived scope', 'Show %d archived scopes', $_count)}
+                {$_text_shown = _w('Hide archived scope', 'Hide archived scopes', $_count)}
+                <a href="javascript:void(0);" class="hint js-archived-item-list-toggle"
+                   data-list-type="scopes"  data-text-shown="{$_text_shown}" data-text-hidden="{$_text_hidden}">{$_text_hidden}</a>
+            </li>
+        {/if}
+
+    </ul>
+
+    {if $archive_scopes}
+        <ul class="menu-v stack with-icons js-archived-item-list" data-list-type="scopes" style="display: none;">
+            {foreach $archive_scopes as $_scope}
+                <li data-id="{$_scope.id}" data-item-type="scope" data-is-archived="1">
+                    <a href="#/settings/scope/{$_scope.id}/">
+                        <span class="gray js-scope-name t-scope-name">{$_scope.name|default:'[`(no name)`]'|escape}</span>
+                    </a>
+                </li>
+            {/foreach}
+        </ul>
+    {/if}
+
+    <!-- plugin hook: 'backend_settings_sidebar.section' -->
+    {* @event backend_settings_sidebar.%plugin_id%.section *}
+    {foreach $_backend_sidebar as $_}{ifset($_.section)}{/foreach}
+
+</div>
+
+<script>(function($) {
+    new TasksSettingsSidebar({
+        '$wrapper': $('#t-settings-sidebar-wrapper')
+    });
+})(jQuery);</script>

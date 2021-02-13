@@ -1,0 +1,326 @@
+{*
+ * This script should be above everything else so that TaskEdit initialization happens before any plugin code.
+ * (Note that DOM is ready anyway since everything is loaded via XHR and executed by jQuery.)
+ *}
+
+{$is_page = !$wa->get("is_dialog")}
+
+<script>(function($) { "use strict";
+    {if $task.id}
+        $.tasks.setTitle({$task.name|json_encode});
+    {/if}
+
+    {$_files_hash = md5(uniqid($task.name, true))}
+
+    window.taskEdit = new TaskEdit({
+        $task: $(".t-task-page-wrapper"),
+        task_id: {$task.id|default:'null'},
+        is_page: {if $is_page}true{else}false{/if},
+        priority: "{$task.priority}",
+        project_color: "{$project.color}",
+        project_id: "{$task.project_id}",
+        projects_users: {json_encode($projects_users)},
+        projects_priority_users: {json_encode($projects_priority_users)},
+        files_hash: {$_files_hash|json_encode},
+        messages: {
+            date_invalid: {_w('Invalid date.')|json_encode}
+        }
+    });
+
+    $.wa.locale = $.extend($.wa.locale || {}, {
+        "unsaved_data": "[`You are about to abandon task editor without saving the task. All unsaved data will be lost. Are you sure?`]",
+        "saved_data_draft": "[`You are about to leave the page without saving the task. Are you sure?`]",
+        "unsaved_task": "[`There are unsaved task draft.`]",
+        "continue_editing": "[`Do you want to continue editing?`]"
+    });
+})(jQuery);</script>
+
+{strip}
+
+<div class="t-main-wrapper">
+    {if $is_page}
+        <div class="t-background-wrapper is-shown"></div>
+    {/if}
+
+    {* TASK EDIT CONTENT *}
+    <div class="t-task-page-wrapper {if $is_page}is-single-page{else}is-dialog-content{/if}">
+        <form id="t-edit-task-form" action="?module=tasks&action=save&id={$task.id}" method="post" data-n="{$task.project_id}.{$task.number}">
+
+            <!-- plugin hook: 'backend_task_edit.%plugin_id.before_header' -->
+            {* @event backend_task_edit.%plugin_id%.before_header *}
+            {foreach $backend_task_edit as $_}{ifset($_.before_header)}{/foreach}
+
+            {* HEADER *}
+            <header class="t-header-wrapper">
+                <div class="t-general-menu is-shown">
+                    <div class="t-menu-wrapper">
+
+                        {* PROJECT SELECTOR *}
+                        <div class="t-menu-item">
+                            <ul class="menu-h dropdown t-custom-select t-project-select"><li>
+                                <a class="t-selected-item selected-custom-item js-selected-project" href="javascript:void(0);">
+                                    {$project.icon_html}
+                                    {$project.name|escape}
+                                </a>
+                                <ul class="menu-v with-icons js-project-list">
+                                    {foreach $projects as $p}
+                                        <li class="t-nav-item">
+                                            <a class="set-custom-select js-project-select" href="javascript:void(0);" data-value="{$p.id}" {if !empty($p.color)}data-project_color_class="{$p.color}"{/if}>
+                                                {$p.icon_html}
+                                                {$p.name|escape}
+                                            </a>
+                                        </li>
+                                    {/foreach}
+                                </ul>
+                                <input type="hidden" name="data[project_id]" value="{$task.project_id}">
+                            </li></ul>
+                        </div>
+
+                        {include file="./includes/TasksTaskMilestoneSelector.inc.html" inline}
+                    </div>
+                </div>
+                <!-- plugin hook: 'backend_task_edit.%plugin_id.header' -->
+                {* @event backend_task_edit.%plugin_id%.header *}
+                {foreach $backend_task_edit as $_}{ifset($_.header)}{/foreach}
+
+            </header>
+
+            <!-- plugin hook: 'backend_task_edit.%plugin_id.after_header' -->
+            {* @event backend_task_edit.%plugin_id%.after_header *}
+            {foreach $backend_task_edit as $_}{ifset($_.after_header)}{/foreach}
+
+            {* EDIT CONTENT *}
+            <div class="t-task-page-block {if !empty($project.color)}{$project.color}{/if}">
+
+                <!-- plugin hook: 'backend_task_edit.%plugin_id.before_name' -->
+                {* @event backend_task_edit.%plugin_id%.before_name *}
+                {foreach $backend_task_edit as $_}{ifset($_.before_name)}{/foreach}
+
+                {* NAME && PRIORITY *}
+                <div class="t-form-line t-table-layout">
+                    <div class="t-column">
+                        <div class="t-task-name-wrapper">
+                            <input type="text" name="data[name]" class="t-task-name-input" value="{$task.name|escape}" placeholder="[`Input task name`]" tabindex="1">
+
+                            <!-- plugin hook: 'backend_task_edit.%plugin_id.name' -->
+                            {* @event backend_task_edit.%plugin_id%.name *}
+                            {foreach $backend_task_edit as $_}{ifset($_.name)}{/foreach}
+
+                        </div>
+                    </div>
+                    <div class="t-column t-column-3">
+
+                        <div class="t-priority-changer">
+                            <div class="t-slider-wrapper">
+                                <div class="t-priority-slider"></div>
+                                <input class="t-input" type="hidden" name="data[priority]" value="{$task.priority}">
+                            </div>
+                            <div class="t-priority-text"></div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- plugin hook: 'backend_task_edit.%plugin_id.after_name' -->
+                {* @event backend_task_edit.%plugin_id%.after_name *}
+                {foreach $backend_task_edit as $_}{ifset($_.after_name)}{/foreach}
+
+                <!-- plugin hook: 'backend_task_edit.%plugin_id.before_description' -->
+                {* @event backend_task_edit.%plugin_id%.before_description *}
+                {foreach $backend_task_edit as $_}{ifset($_.before_description)}{/foreach}
+
+                {* CONTENT *}
+                <div class="t-form-line t-description-wrapper">
+                    <textarea name="data[text]" cols="1" rows="1" tabindex="2" placeholder="[`Input task description`]">{$task.text|escape}</textarea>
+
+                    <!-- plugin hook: 'backend_task_edit.%plugin_id.description' -->
+                    {* @event backend_task_edit.%plugin_id%.description *}
+                    {foreach $backend_task_edit as $_}{ifset($_.description)}{/foreach}
+
+                </div>
+
+                <!-- plugin hook: 'backend_task_edit.%plugin_id.after_description' -->
+                {* @event backend_task_edit.%plugin_id%.after_description *}
+                {foreach $backend_task_edit as $_}{ifset($_.after_description)}{/foreach}
+
+                {* ATTACH *}
+
+                <!-- plugin hook: 'backend_task_edit.%plugin_id.before_attachments' -->
+                {* @event backend_task_edit.%plugin_id%.before_attachments *}
+                {foreach $backend_task_edit as $_}{ifset($_.before_attachments)}{/foreach}
+
+                <div class="t-form-line t-attach-wrapper">
+                    {* Droparea *}
+                    <div class="t-attach-droparea" id="t-attach-droparea">
+                        <div class="t-droparea-hint">[`Click to select files or drag them here`]</div>
+                        <input type="file" name="files[]" multiple="true" />
+                    </div>
+                    {* Container For Attached Files*}
+                    <div class="t-attached-files-wrapper {if !empty($task.attachments)}is-shown{/if}" id="t-attached-files-wrapper">
+                        <div class="t-images-list">
+
+                            {foreach $task.images as $image}
+                                <div class="t-image-item" data-file-ident="{$image.id}">
+                                    <a class="t-image-link" href="?module=attachments&action=download&id={$image.id}" title="{$image.name|escape}">
+                                        <img src="?module=attachments&action=download&id={$image.id}" alt="{$image.name|escape}">
+                                    </a>
+                                    <div class="t-file-name">{$image.name|escape}</div>
+                                    <div class="t-file-size">{$image.size|wa_format_file_size}</div>
+                                    <a class="t-file-delete" href="javascript:void(0);"></a>
+                                </div>
+                            {/foreach}
+
+                            <div class="t-image-item is-template">
+                                <div class="t-image-link">
+                                    <img src="" alt="">
+                                </div>
+                                <div class="t-file-name"></div>
+                                <div class="t-file-size"></div>
+                                <a class="t-file-delete" href="javascript:void(0);"></a>
+                                <div class="t-file-error"></div>
+                            </div>
+                        </div>
+                        <div class="t-files-list">
+                            {foreach $task.files as $file}
+                                <div class="t-file-item" data-file-ident="{$file.id}">
+                                    <a class="t-file-link" href="?module=attachments&action=download&id={$file.id}" title="{$file.name|escape}">
+                                        <i class="icon16 attachment"></i>
+                                        <span class="t-file-name">{$file.name|escape}</span>
+                                        <span class="t-file-size">{$file.size|wa_format_file_size}</span>
+                                    </a>
+                                    <a class="t-file-delete" href="javascript:void(0);"></a>
+                                </div>
+                            {/foreach}
+
+                            <div class="t-file-item is-template">
+                                <div class="t-file-link">
+                                    <i class="icon16 attachment"></i>
+                                    <span class="t-file-name"></span>
+                                    <span class="t-file-size"></span>
+                                </div>
+                                <a class="t-file-delete" href="javascript:void(0);"></a>
+                                <div class="t-file-error"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- plugin hook: 'backend_task_edit.%plugin_id.attachments' -->
+                    {* @event backend_task_edit.%plugin_id%.attachments *}
+                    {foreach $backend_task_edit as $_}{ifset($_.attachments)}{/foreach}
+
+                </div>
+
+                <!-- plugin hook: 'backend_task_edit.%plugin_id.after_attachments' -->
+                {* @event backend_task_edit.%plugin_id%.after_attachments *}
+                {foreach $backend_task_edit as $_}{ifset($_.after_attachments)}{/foreach}
+
+                <!-- plugin hook: 'backend_task_edit.%plugin_id.before_fields' -->
+                {* @event backend_task_edit.%plugin_id%.before_fields *}
+                {foreach $backend_task_edit as $_}{ifset($_.before_fields)}{/foreach}
+
+                {* ASSIGN *}
+                <div class="t-form-line field t-team-list-wrapper">
+                    <div class="name">[`Assign to`]</div>
+                    <div class="value">
+                        <ul class="menu-v js-task-users-list">
+                            {$_count = 0}
+                            {$_is_something_checked = false}
+                            {foreach $users as $user}
+                                {$_is_checked = !$task.assigned_contact_id && $user@iteration == 1 && !$task.id}
+                                {$_is_checked = $_is_checked || $user.id == $task.assigned_contact_id}
+                                {$_is_something_checked = $_is_something_checked || $_is_checked}
+
+                                <li class="t-user-item is-shown" data-user-id="{$user.id}">
+                                    <label class="t-user-label set-task-user">
+                                        <input type="radio" name="data[assigned_contact_id]" value="{$user.id}" {if $_is_checked}checked{/if}>
+                                        <i class="icon16 userpic20" style="background-image: url({$user.photo_url})"></i>
+                                        {$user.name|escape}
+                                        {if ($user.id == $wa->user('id'))}
+                                            &nbsp;([`me`])
+                                        {/if}
+                                    </label>
+                                </li>
+                            {/foreach}
+
+                            <li class="t-user-item is-unassigned is-shown" data-user-id="">
+                                <label class="t-user-label set-task-user">
+                                    <input type="radio" name="data[assigned_contact_id]" value="0"{if !$_is_something_checked} checked{/if}>
+                                    <i class="icon16 userpic20" style="background-image: url('{$wa_url}wa-content/img/userpic96.jpg')"></i>
+                                    [`Unassigned`]
+                                </label>
+                            </li>
+
+                            <li class="t-link-item">
+                                <a class="show-team-users inline-link" href="javascript:void(0);"><b><i>[`Show all`]</i></b></a>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+
+                <div class="t-form-line field t-due-date-wrapper">
+                    <div class="name">[`Due date`]</div>
+                    <div class="value">
+                        <input type="text" class="t-datepicker-due-date bold">
+                        <input type="hidden" name="data[due_date]" value="{$task.due_date|escape}"><i class="icon16 calendar"></i>
+                    </div>
+                </div>
+
+                {* HIDDEN FIELDS *}
+                <div class="t-form-line t-more-fields-wrapper">
+                    <!-- plugin hook: 'backend_task_edit.%plugin_id.more' -->
+                    {* @event backend_task_edit.%plugin_id%.more *}
+                    {foreach $backend_task_edit as $_}{ifset($_.more)}{/foreach}
+                </div>
+
+                <!-- plugin hook: 'backend_task_edit.%plugin_id.after_fields' -->
+                {* @event backend_task_edit.%plugin_id%.after_fields *}
+                {foreach $backend_task_edit as $_}{ifset($_.after_fields)}{/foreach}
+
+                <!-- plugin hook: 'backend_task_edit.%plugin_id.before_buttons' -->
+                {* @event backend_task_edit.%plugin_id%.before_buttons *}
+                {foreach $backend_task_edit as $_}{ifset($_.before_buttons)}{/foreach}
+
+                {* BUTTONS *}
+                <div class="t-errors-block js-errors-block"></div>
+                <div class="t-form-line t-buttons-block">
+                    <input class="button green t-save-task-link" type="submit" value="{if !empty($task.id)}[`Save task`]{else}[`Create task`]{/if}">
+                    &nbsp;[`or`]&nbsp;
+                    <a class="t-close-link" href="javascript:void(0);">[`cancel`]</a>
+
+                    {*
+                    <ul class="menu-h notice-list-wrapper">
+                        <li>
+                            <label>
+                                <input type="checkbox" name="data[email_notice]">
+                                <i class="icon16 email"></i>
+                                [`Email`]
+                            </label>
+                        </li>
+                        <li>
+                            <label>
+                                <input type="checkbox" name="data[sms_notice]">
+                                <i class="icon16 email"></i>
+                                [`SMS`]
+                            </label>
+                        </li>
+                    </ul>
+
+                    <a class="more-fields-link show-more-fields inline-link" href="javascript:void(0);"><b><i>[`More fields`]</i></b><i class="icon10 darr"></i></a>
+                    *}
+
+                    <!-- plugin hook: 'backend_task_edit.%plugin_id.buttons' -->
+                    {* @event backend_task_edit.%plugin_id%.buttons *}
+                    {foreach $backend_task_edit as $_}{ifset($_.buttons)}{/foreach}
+
+                </div>
+
+                <!-- plugin hook: 'backend_task_edit.%plugin_id.after_buttons' -->
+                {* @event backend_task_edit.%plugin_id%.after_buttons *}
+                {foreach $backend_task_edit as $_}{ifset($_.after_buttons)}{/foreach}
+
+            </div>
+        </form>
+    </div>
+</div>
+{/strip}
