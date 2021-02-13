@@ -1,0 +1,25 @@
+{include file="./Helpers.inc.html" inline}
+
+{if $to.id == $log.assigned_contact_id}
+    {sprintf("[`User %s wrote a comment to a task you are assigned to:`]", $from.name|escape)}
+{elseif $to.id == $task.create_contact_id}
+    {sprintf("[`User %s wrote a comment to a task you created:`]", $from.name|escape)}
+{else}
+    {sprintf("[`User %s wrote a comment:`]", $from.name|escape)}
+{/if}
+
+<br>
+<br>
+
+{project_title}
+{task_title}
+{priority_title}
+{tags_title}
+
+{task_block}
+
+{log_block}
+
+<br>
+<br>
+[`via Tasks app`]

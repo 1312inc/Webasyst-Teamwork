@@ -1,0 +1,89 @@
+<div class="t-milestones-wrapper">
+    <h1>[`Scopes`]</h1>
+
+    <ul class="menu-h with-icons" style="margin-top: 15px">
+        <li><a href="#/milestone/add/" class="bold"><i class="icon16 add"></i>[`New scope`]</a></li>
+    </ul>
+
+    <div class="t-milestones-list">
+        {foreach $milestones as $m}
+            
+            <div class="t-milestone-item">
+
+                {foreach $m.statuses as $s}
+                    {*{$s.percent}*}
+                    {*{$s.bg_color|escape}*}
+
+                    {* WIDTH *}
+                    {$_percent = 0}
+                    {$_days_after = 30}
+                    {$_days_before = -30}
+                    {$_middle_percent = 50}
+                    {$_orange_zone = 7}
+                    {$_segment_width = null}
+                    {$_segment_class = null}
+                    {$_segment_left = null}
+
+                    {if $m.days_left > 0}
+                        {if $m.days_left < $_days_after}
+                            {$_percent = $_middle_percent + (100 - $_middle_percent) * ($m.days_left/$_days_after)}
+
+                            {if $m.days_left < $_orange_zone}
+                                {$_segment_width = $_percent - $_middle_percent}
+                                {$_segment_class = "t-orange-ornament"}
+                                {$_segment_left = $_middle_percent}
+                            {/if}
+
+                        {else}
+                            {$_percent = 100}
+                        {/if}
+                    {else}
+                        {if $m.days_left > $_days_before}
+                            {$_percent = $_middle_percent * (1 - $m.days_left/$_days_before)}
+
+                            {$_segment_left = $_percent}
+                            {$_segment_width = $_middle_percent - $_percent}
+                            {$_segment_class = "t-red-ornament"}
+
+                        {else}
+                            {$_percent = 0}
+                        {/if}
+                    {/if}
+
+                    {* COLOR *}
+                    {$_color_class = "is-green"}
+                    {if ($m.days_left > 0)}
+                        {$_color_class = "is-green"}
+                    {/if}
+
+                    <div class="t-progress-bar {$_color_class}" style="width:{$_percent}%;" title="{$s.name|escape}"></div>
+
+                    {if !(empty($_segment_class) || empty($_segment_width) || empty($_segment_left))}
+                        <div class="t-segment-wrapper {$_segment_class}" style="width: {$_segment_width}%; left: {$_segment_left}%;"></div>
+                    {/if}
+                {/foreach}
+
+                <div class="t-milestone-text">
+                    <div class="table-layout">
+                        <div class="left-column">
+                            <a href="#/milestone/edit/{$m.id}/">{if !empty($m.project.icon_html)}{$m.project.icon_html}{/if} {$m.name|escape}</a>
+                            <span class="hint" title="[`Due`]">{wa_date('humandate', $m.due_date, waDateTime::getDefaultTimeZone())}</span>
+                        </div>
+                        <div class="right-column">
+                            {if $m.due_date}
+                                <span class="t-milestone-due-date {$m.view.due_color_class}">{$m.view.due_text}</span>
+                            {/if}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        {/foreach}
+
+        {* TODO: after release *}
+        <div class="t-today-wrapper">
+            <div class="t-today-label">[`Today`]</div>
+        </div>
+    </div>
+
+</div>

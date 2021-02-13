@@ -1,0 +1,12 @@
+{$tasks_count_str = _w('%d new task', '%d new tasks', $count)}
+{sprintf_wp('<a href="%s">%s</a> from %s', $inbox_url, $tasks_count_str, $from.name|escape)}
+<br>
+<br>
+{if !empty($comment)}
+    <blockquote style="background: #ffc; padding: 10px;">
+        {$comment}
+    </blockquote>
+{/if}
+<br>
+<br>
+[`via Tasks app`]
