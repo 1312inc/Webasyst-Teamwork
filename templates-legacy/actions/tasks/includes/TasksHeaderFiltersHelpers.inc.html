@@ -1,0 +1,92 @@
+{***
+ * HELPER FUNCTIONS INCLUDE
+ * This utility file with filters helper functions
+**}
+
+{function show_userpic o=[]}
+    {$_userpic = "{$wa_url}wa-content/img/userpic96.jpg"}
+    {if !empty($o.id) && !empty($o.photo)}
+        {$_userpic = waContact::getPhotoUrl($o.id, $o.photo, 40, 40, 'person', 0)}
+    {/if}
+    <i class="icon16 userpic20" style="background-image: url({$_userpic|escape})"></i>
+{/function}
+
+{function print_option_data_attrs o=[] keys=[]}
+    {$_values = [
+        'value' => $o.id,
+        'op' => $o.op|default:'='
+    ]}
+    {foreach $keys as $_key}
+        {if isset($o[$_key])}
+            {$_values[$_key] = $o[$_key]}
+        {/if}
+    {/foreach}
+    {foreach $_values as $_key => $_value}
+        data-{$_key}="{$_value}"
+    {/foreach}
+{/function}
+
+{function show_filter filter=[] class='' data_keys=[]}{strip}
+    <div class="t-menu-item js-dropdown-menu {$class|default:''}" data-id="{$filter.id}" data-hash="{$filter.hash|default:''}">
+        <ul class="menu-h dropdown">
+            <li>
+                <a class="t-selected-item js-dropdown-menu-title" href="javascript:void(0);">&nbsp;</a>
+                <ul class="menu-v with-icons">
+                    {foreach $filter.options as $o}
+                        <li class="t-nav-item js-dropdown-menu-item
+                            {if $o.is_empty|default:false} is-empty{/if}
+                            {if $o.selected|default:''} js-dropdown-menu-item-selected{/if}"
+                            {print_option_data_attrs o=$o keys=$data_keys}>
+                                <a href="javascript:void(0);">
+
+                                    {if !empty($o.icon_html) && ifempty($o.icon) != 'unknown'}
+                                        {$o.icon_html}
+                                    {/if}
+
+                                    {if array_key_exists('photo', $o)}
+                                        {show_userpic o=$o}
+                                    {/if}
+
+                                    <span class="{if $o@index > 0}is-bold{/if}">{$o.name|escape}</span>
+                                </a>
+                        </li>
+                    {/foreach}
+                </ul>
+            </li>
+        </ul>
+    </div>
+{/strip}{/function}
+
+{function showTagsCloud class='' cloud=[]}
+    <div class="t-menu-item {$class|default:''}" data-id="tag" data-hash="tag">
+        <ul class="menu-h dropdown">
+            <li>
+                {$_title = '[`Tags`]'}
+                <a class="t-selected-item js-title" href="javascript:void(0);" data-default-title="{$_title}">{$_title}</a>
+                <ul class="menu-v with-icons t-tags-cloud">
+                    <li class="js-show-all" style="display: none;">
+                        <a href="javascript:void(0);" class="js-tag-link" data-id="" data-value="">[`Show all`]</a>
+                    </li>
+                    <li class="t-nav-item t-nav-tags-item">
+                        {if count($cloud) <= tasksTaskTagsModel::TAGS_MAX_COUNT}
+                            {foreach $cloud as $tag}
+                                <a href="javascript:void(0)"
+                                   class="js-tag-link t-tag-link"
+                                   data-id="{$tag.id}"
+                                   data-value="{$tag.name|escape}"
+                                   style="font-size: {$tag.size}%; opacity: {$tag.opacity};color: green;text-decoration: underline;">{$tag.name|escape}</a>
+                            {/foreach}
+                        {else}
+                            <span class="hint" style="margin: 1em 0;">{sprintf(_w('There are more than %u tags.'), tasksTaskTagsModel::TAGS_MAX_COUNT)}<br>
+                                [`Start typing in the search field to find a tag.`]
+                            </span>
+                        {/if}
+                    </li>
+                    <li>
+                        <input value="" class="t-input js-t-header-tags-autocomplete" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true" placeholder="[`Search tag...`]">
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+{/function}

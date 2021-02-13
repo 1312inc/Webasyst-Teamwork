@@ -1,0 +1,111 @@
+{function project_title}
+    {$_project = $task.project|default:null}
+    {if $_project}
+        <a href="{$app_backend_url}#/tasks/project/{$_project.id}/">
+            {$_project.icon_html}
+            <b>{$_project.name|escape}</b>
+        </a><br>
+    {/if}
+{/function}
+
+{function task_title}
+    {$_task_id = $task.project_id|cat:'.':$task.number}
+    <a href="{$app_backend_url}#/task/{$_task_id}/"><b>{$_task_id} {$task.name|escape}</b></a><br>
+{/function}
+
+{function priority_title}
+    {$_icon = ""}
+    {if !empty($task.priority)}
+        {if $task.priority == '-1'}
+            {$_icon = "<i class=\"icon16 status-blue-tiny\"></i>"}
+            {$_title = '[`Low`]'}
+            {$_color = '#81bbf5'}
+        {/if}
+        {if $task.priority == '1'}
+            {$_icon = "<i class=\"icon16 exclamation-red\"></i>"}
+            {$_title = '[`High`]'}
+            {$_color = '#ffae22'}
+        {/if}
+        {if $task.priority == '2'}
+            {$_icon = "<i class=\"icon16 exclamation\"></i>"}
+            {$_title = '[`Urgent`]'}
+            {$_color = '#dd301c'}
+        {/if}
+    {/if}
+    {if $_icon}
+        <span style="color: {$_color}; font-weight: bold;">{$_icon} {$_title}</span><br>
+    {/if}
+{/function}
+
+{function tags_title}
+    {$tags = $task.side_tags|default:[]}
+    {foreach $tags as $tag}
+        <a href="{$app_backend_url}#tasks/tag/{$tag|escape}" style="color: #008000;">#{$tag|escape}</a>
+    {/foreach}
+    {if $tags}<br>{/if}
+{/function}
+
+{function show_images images=[]}
+    {foreach $images as $image}
+        <div>
+            <a href="{$app_backend_url}?module=attachments&action=download&id={$image.id}" title="{$image.name|escape}">
+                <img src="{tasksHelper::getAttachPreviewUrl($image, true)}" alt="{$image.name|escape}">
+            </a>
+            <div>{$image.name|escape}</div>
+        </div>
+    {/foreach}
+    {if $images}<br>{/if}
+{/function}
+
+{function task_images}
+    {show_images images=$task.images|default:[]}
+{/function}
+
+{function log_images}
+    {show_images images=$log.images|default:[]}
+{/function}
+
+{function show_files files=[]}
+    {if $files}
+        <div>[`Files`]:</div>
+    {/if}
+    {foreach $files as $file}
+        <div>
+            &nbsp;<a href="{$app_backend_url}?module=attachments&action=download&id={$file.id}" title="{$file.name|escape}">
+                <span>{$file.name|escape}</span>&nbsp;<span>({$file.size|wa_format_file_size})</span>&nbsp;<b>&darr;</b>
+            </a>
+        </div>
+    {/foreach}
+    {if $files}<br>{/if}
+{/function}
+
+{function task_files}
+    {show_files files=$task.files|default:[]}
+{/function}
+
+{function log_files}
+    {show_files files=$log.files|default:[]}
+{/function}
+
+{function log_block}
+    {$_images_count = count($log.images|default:[])}
+    {$_files_count = count($log.files|default:[])}
+    {$_log_text_len = strlen($log.text)}
+    {if $_log_text_len > 0 || $_images_count > 0 || $_files_count > 0}
+        <blockquote style="background: #ffc; padding: 10px;">
+            {if $_log_text_len > 0}
+                {$log.text_formatted}
+            {/if}
+            {log_images}
+            {log_files}
+        </blockquote>
+    {/if}
+{/function}
+
+{function task_text}<p>{$task.text_formatted}</p>{/function}
+
+{function task_block}
+    {task_text}
+    {task_images}
+    {task_files}
+{/function}

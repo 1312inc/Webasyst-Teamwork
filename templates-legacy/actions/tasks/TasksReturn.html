@@ -1,0 +1,37 @@
+{strip}
+<div class="t-return-form-block">
+    <form method="post" action="?module=tasksLog&action=return&id={$task.id}">
+    <div class="">
+        <div class="field">
+            <div class="name">[`Status`]</div>
+            <div class="value">{$task.return_status.name|escape}</div>
+        </div>
+        <div class="field">
+            <div class="name">[`Return to`]</div>
+            <div class="value">
+                <i class="icon16 userpic20" style="background-image: url({$task.return_actor->getPhoto(40, 40)})"></i>
+                {$task.return_actor->getName()|escape}
+            </div>
+        </div>
+        <div class="field">
+            <div class="name">[`Comment`]</div>
+            <div class="value">
+                <input type="hidden" name="prev_status_id" value="{$task.return_status.id}">
+                <input type="hidden" name="prev_actor_contact_id" value="{$task.return_actor.id}">
+
+                {include file="./TaskStatusForm.DropArea.html" inline}
+
+            </div>
+        </div>
+        <div class="field t-buttons-block">
+            <div class="name"></div>
+            <div class="value">
+                <input type="submit" class="button green" value="[`Return`]">
+                &nbsp;[`or`]&nbsp;
+                <a class="t-hiddenform-cancel-link" href="javascript:void(0);">[`cancel`]</a>
+            </div>
+        </div>
+    </div>
+    </form>
+</div>
+{/strip}

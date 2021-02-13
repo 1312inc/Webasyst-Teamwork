@@ -1,0 +1,143 @@
+<div class="shadowed">
+
+    {include file="./SettingsSidebar.html" inline}
+
+    <div class="content left200px blank bordered-left">
+        <div class="hidden block double-padded t-saved bordered-bottom">
+            <i class="icon16 yes"></i>[`Settings successfully updated`]
+        </div>
+        <div class="block double-padded blank">
+            <h1>[`Project ordering`]</h1>
+            <form action="?module=settings&action=ordering" method="post" id="project-ordering-form">
+                <p>
+                    <input type="submit" class="green button" value="[`Save`]" disabled>
+                </p>
+                <p class="hint">[`Projects are sorted by name. You can select important projects to show them before everything else. Important projects can be manually reordered via drag-and-drop.`]</p>
+                <ul class="menu-v" id="top-list"></ul>
+                <ul class="menu-v" id="bottom-list"></ul>
+                <ul class="hidden" id="initial-data">
+                    {* Rows will be distributed between #top-list and #bottom-list with JS *}
+                    {foreach $projects as $p}
+                        <li>
+                            <i class="icon16 sort drag-handle"></i>
+                            <label>
+                                <input type="checkbox" name="project_ids[]" value="{$p.id}"{if $p.sort} checked{/if}>
+                                <span class="js-project-name">{$p.name|default:"[`(no name)`]"|escape}</span>
+                            </label>
+                        </li>
+                    {/foreach}
+                </ul>
+                <p>
+                    <input type="submit" class="green button" value="[`Save`]" disabled>
+                </p>
+            </form>
+        </div>
+        <div class="clear-both"></div>
+    </div>
+
+    <script>( function($) { "use strict";
+
+        {if !empty($saved)}
+            (function() {
+                $.tasks.reloadSidebar();
+                var $hsaved = $('#content .t-saved').slideDown();
+                setTimeout(function() {
+                    $hsaved.slideUp();
+                }, 3000);
+            })();
+        {/if}
+
+        var $form = $('#project-ordering-form');
+        var $top_list = $('#top-list');
+        var $bottom_list = $('#bottom-list');
+        var $submit = $form.find(':submit');
+
+        // Submit form via XHR
+        $form.submit(function(e) {
+            e.preventDefault();
+            $form.showLoading();
+            $.tasks.showLoading();
+            $('#content .t-saved').slideUp();
+            $.post($form.attr('action'), $form.serialize(), function (r) {
+                $('#content').html(r);
+            });
+        });
+
+        // Distribute rows between top and bottom lists initially
+        $('#initial-data li').each(function() {
+            var $li = $(this);
+            if ($li.find('input[type="checkbox"]').prop('checked')) {
+                $li.appendTo($top_list);
+            } else {
+                $li.appendTo($bottom_list);
+            }
+        });
+
+        // Checkbox controls where the project goes: top list or bottom list
+        $form.on('change', 'input[type="checkbox"]:not(.clone)', function() {
+            var $checkbox = $(this);
+            var $li = $checkbox.closest('li');
+
+            // Something has to be changed at all?
+            if ($checkbox[0].checked && $.contains($top_list[0], $checkbox[0])) {
+                return;
+            } else if (!$checkbox[0].checked && !$.contains($top_list[0], $checkbox[0])) {
+                return;
+            }
+
+            $submit.prop('disabled', false);
+
+            // Replace $li with an absolute-positioned clone
+            var initial_position = $li.position();
+            var $li_clone = $li.clone().addClass('clone').css({
+                top: initial_position.top,
+                left: initial_position.left
+            }).insertAfter($li);
+            $li.detach().css('visibility', 'hidden');
+
+            // Attach hidden $li immidiately to destination
+            if ($checkbox[0].checked) {
+                $li.appendTo($top_list);
+            } else {
+                // Find appropriate place for the $li respecting ordering by project name
+                var project_name = $li.find('.js-project-name').html();
+                $bottom_list.children().each(function() {
+                    var $sibling = $(this);
+                    var sibling_project_name = $sibling.find('.js-project-name').html();
+                    if (sibling_project_name > project_name) {
+                        $li.insertBefore($sibling);
+                        return false;
+                    }
+                });
+                if (!$li.parent().length) {
+                    $li.appendTo($bottom_list);
+                }
+            }
+
+            // Run animation on a clone from its current position to $li,
+            var final_position = $li.position();
+            $li_clone.animate({
+                top: final_position.top,
+                left: final_position.left
+            }, 300, function() {
+                $li_clone.remove();
+                $li.css('visibility', 'visible');
+            });
+        });
+
+        // Drag-and-drop in top list
+        $top_list.sortable({
+            axis: 'y',
+            items: 'li:not(.clone)',
+            distance: 5,
+            containment: 'parent',
+            tolerance: 'pointer',
+            handle: '.drag-handle',
+            update: function (e, ui) {
+                $submit.prop('disabled', false);
+            }
+        });
+
+    })(jQuery);</script>
+
+</div>
