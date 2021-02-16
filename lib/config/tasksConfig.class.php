@@ -109,9 +109,9 @@ class tasksConfig extends waAppConfig
     /**
      * @param string $entity
      *
-     * @return mixed|tasksBaseRepository
+     * @return tasksEntityRepositoryInterface
      */
-    public function getEntityRepository(string $entity)
+    public function getEntityRepository(string $entity): tasksEntityRepositoryInterface
     {
         if (isset($this->repositories[$entity])) {
             return $this->repositories[$entity]->resetLimitAndOffset();
