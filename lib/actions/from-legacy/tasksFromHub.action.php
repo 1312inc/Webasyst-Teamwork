@@ -26,10 +26,7 @@ class tasksFromHubAction extends waViewAction
         //    'hub_topic_id' => $topic_id,
         //);
 
-        $path = wa()->whichUI('tasks') === '2.0'
-            ? wa('tasks')->getAppPath('templates/actions/from/Reloader.html')
-            : wa('tasks')->getAppPath('templates/actions-legacy/from/Reloader.html');
-        $this->setTemplate($path);
+        $this->setTemplate(wa('tasks')->getAppPath('templates/actions/from/Reloader.html'));
         $this->view->assign(array(
             'task' => $task,
         ));

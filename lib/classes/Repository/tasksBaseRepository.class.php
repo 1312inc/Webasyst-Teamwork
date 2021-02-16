@@ -3,7 +3,7 @@
 /**
  * Class tasksBaseRepository
  */
-class tasksBaseRepository
+class tasksBaseRepository implements tasksEntityRepositoryInterface
 {
     const DEFAULT_LIMIT  = 30;
     const DEFAULT_OFFSET = 0;
@@ -199,6 +199,16 @@ class tasksBaseRepository
         $this->cache = $cache;
 
         return $this;
+    }
+
+    public function save(tasksPersistableInterface $entity, ...$params): bool
+    {
+        return tsks()->getPersister()->save($entity);
+    }
+
+    public function delete(tasksPersistableInterface $entity, ...$params): bool
+    {
+        return tsks()->getPersister()->delete($entity);
     }
 
     /**

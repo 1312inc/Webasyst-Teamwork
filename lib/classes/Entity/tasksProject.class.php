@@ -1,6 +1,6 @@
 <?php
 
-class tasksProject implements tasksHydratableInterface
+class tasksProject implements tasksPersistableInterface
 {
     /**
      * @var int|null
@@ -59,7 +59,10 @@ class tasksProject implements tasksHydratableInterface
         $this->create_datetime = new DateTimeImmutable();
     }
 
-    public function getId(): ?int
+    /**
+     * @return int|null
+     */
+    public function getId()
     {
         return $this->id;
     }
@@ -114,18 +117,13 @@ class tasksProject implements tasksHydratableInterface
      *
      * @return tasksProject
      */
-    public function setId(?int $id): tasksProject
+    public function setId($id): tasksProject
     {
         $this->id = $id;
 
         return $this;
     }
 
-    /**
-     * @param string $name
-     *
-     * @return tasksProject
-     */
     public function setName(string $name): tasksProject
     {
         $this->name = $name;
@@ -133,11 +131,6 @@ class tasksProject implements tasksHydratableInterface
         return $this;
     }
 
-    /**
-     * @param int $contact_id
-     *
-     * @return tasksProject
-     */
     public function setContactId(int $contact_id): tasksProject
     {
         $this->contact_id = $contact_id;
@@ -145,11 +138,6 @@ class tasksProject implements tasksHydratableInterface
         return $this;
     }
 
-    /**
-     * @param DateTimeImmutable $create_datetime
-     *
-     * @return tasksProject
-     */
     public function setCreateDatetime(DateTimeImmutable $create_datetime): tasksProject
     {
         $this->create_datetime = $create_datetime;
@@ -157,11 +145,6 @@ class tasksProject implements tasksHydratableInterface
         return $this;
     }
 
-    /**
-     * @param int $tasks_number
-     *
-     * @return tasksProject
-     */
     public function setTasksNumber(int $tasks_number): tasksProject
     {
         $this->tasks_number = $tasks_number;
@@ -169,11 +152,6 @@ class tasksProject implements tasksHydratableInterface
         return $this;
     }
 
-    /**
-     * @param string $icon
-     *
-     * @return tasksProject
-     */
     public function setIcon(string $icon): tasksProject
     {
         $this->icon = $icon;
@@ -181,11 +159,6 @@ class tasksProject implements tasksHydratableInterface
         return $this;
     }
 
-    /**
-     * @param string $color
-     *
-     * @return tasksProject
-     */
     public function setColor(string $color): tasksProject
     {
         $this->color = $color;
@@ -193,11 +166,6 @@ class tasksProject implements tasksHydratableInterface
         return $this;
     }
 
-    /**
-     * @param DateTimeImmutable|null $archive_datetime
-     *
-     * @return tasksProject
-     */
     public function setArchiveDatetime(?DateTimeImmutable $archive_datetime): tasksProject
     {
         $this->archive_datetime = $archive_datetime;
@@ -205,11 +173,6 @@ class tasksProject implements tasksHydratableInterface
         return $this;
     }
 
-    /**
-     * @param int $sort
-     *
-     * @return tasksProject
-     */
     public function setSort(int $sort): tasksProject
     {
         $this->sort = $sort;
@@ -217,11 +180,6 @@ class tasksProject implements tasksHydratableInterface
         return $this;
     }
 
-    /**
-     * @param waContact $contact
-     *
-     * @return tasksProject
-     */
     public function setContact(waContact $contact): tasksProject
     {
         $this->contact = $contact;

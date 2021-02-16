@@ -5,10 +5,7 @@ class tasksBackendAction extends waViewAction
     public function execute()
     {
         if (waRequest::get('sidebar')) {
-            $path = wa()->whichUI('tasks') === '2.0'
-                ? wa('tasks')->getAppPath('templates/actions/backend/Sidebar.html')
-                : wa('tasks')->getAppPath('templates/actions-legacy/backend/Sidebar.html')
-            $this->setTemplate($path);
+            $this->setTemplate(wa('tasks')->getAppPath('templates/actions/backend/Sidebar.html'));
         } else {
             $this->view->assign(array(
                 'app_icons' => self::getAppIcons(),
