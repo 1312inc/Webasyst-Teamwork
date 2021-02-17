@@ -1,6 +1,6 @@
 <?php
 
-final class tasksApiProjectAddResponse implements tasksApiResponseInterface
+final class tasksApiProjectResponse implements tasksApiResponseInterface
 {
     /**
      * @var tasksApiProjectVo
@@ -8,7 +8,7 @@ final class tasksApiProjectAddResponse implements tasksApiResponseInterface
     private $project;
 
     /**
-     * tasksApiProjectAddResponse constructor.
+     * tasksApiProjectResponse constructor.
      *
      * @param tasksProject $project
      */
@@ -19,7 +19,7 @@ final class tasksApiProjectAddResponse implements tasksApiResponseInterface
 
     public function getStatus(): int
     {
-        return 200;
+        return self::HTTP_OK;
     }
 
     public function getResponseBody(): tasksApiProjectVo

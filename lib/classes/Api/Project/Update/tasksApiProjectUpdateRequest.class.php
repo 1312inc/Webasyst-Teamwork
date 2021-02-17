@@ -1,16 +1,21 @@
 <?php
 
-final class tasksApiProjectAddRequest
+final class tasksApiProjectUpdateRequest
 {
+    /**
+     * @var int
+     */
+    private $id;
+
     /**
      * @var string
      */
     private $name;
 
     /**
-     * @var string|null
+     * @var string
      */
-    private $icon;
+    private $icon = '';
 
     /**
      * @var string|null
@@ -20,7 +25,7 @@ final class tasksApiProjectAddRequest
     /**
      * @var string|null
      */
-    private $color;
+    private $color = '';
 
     /**
      * @var int|null
@@ -33,8 +38,9 @@ final class tasksApiProjectAddRequest
     private $workflow;
 
     /**
-     * tasksApiProjectAddRequest constructor.
+     * tasksApiProjectUpdateRequest constructor.
      *
+     * @param int                    $id
      * @param string                 $name
      * @param string|null            $icon
      * @param string|null            $color
@@ -43,6 +49,7 @@ final class tasksApiProjectAddRequest
      * @param array|null             $workflow
      */
     public function __construct(
+        int $id,
         string $name,
         ?string $icon,
         ?string $color,
@@ -51,11 +58,12 @@ final class tasksApiProjectAddRequest
         ?array $workflow
     ) {
         $this->name = $name;
-        $this->icon = $icon;
-        $this->color = $color;
+        $this->icon = $icon ?? '';
+        $this->color = $color ?? '';
         $this->sort = $sort;
         $this->icon_url = $icon_url;
         $this->workflow = $workflow;
+        $this->id = $id;
     }
 
     public function getName(): string
@@ -63,12 +71,12 @@ final class tasksApiProjectAddRequest
         return $this->name;
     }
 
-    public function getIcon(): ?string
+    public function getIcon(): string
     {
         return $this->icon;
     }
 
-    public function getColor(): ?string
+    public function getColor(): string
     {
         return $this->color;
     }
@@ -86,5 +94,10 @@ final class tasksApiProjectAddRequest
     public function getWorkflow(): ?array
     {
         return $this->workflow;
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
     }
 }

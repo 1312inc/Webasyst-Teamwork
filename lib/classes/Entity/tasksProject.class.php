@@ -201,6 +201,10 @@ class tasksProject implements tasksPersistableInterface
 
     public function convertToPhpValues(array &$dbValues): void
     {
+        $dbValues['id'] = (int) $dbValues['id'];
+        $dbValues['contact_id'] = (int) $dbValues['contact_id'];
+        $dbValues['sort'] = (int) $dbValues['sort'];
+        $dbValues['tasks_number'] = (int) $dbValues['tasks_number'];
         $dbValues['create_datetime'] = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $dbValues['create_datetime']);
 
         if (!empty($dbValues['archive_datetime'])) {

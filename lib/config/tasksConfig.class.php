@@ -29,6 +29,11 @@ class tasksConfig extends waAppConfig
      */
     private $repositories = [];
 
+    /**
+     * @var tasksRightsResolver
+     */
+    private $rightResolver;
+
     public function getHydrator(): tasksHydratorInterface
     {
         if ($this->hydrator === null) {
@@ -52,10 +57,22 @@ class tasksConfig extends waAppConfig
         parent::init();
 
         $this->models[''] = new tasksModel();
-        $this->repositories[''] = new tasksBaseRepository();
+        $this->repositories[''] = new tasksBaseRepository('');
         $this->entityFactories[''] = new tasksBaseFactory();
 
         $this->registerGlobal();
+    }
+
+    /**
+     * @return tasksRightsResolver
+     */
+    public function getRightResolver(): tasksRightsResolver
+    {
+        if ($this->rightResolver === null) {
+            $this->rightResolver = new tasksRightsResolver();
+        }
+
+        return $this->rightResolver;
     }
 
     /**
@@ -122,7 +139,7 @@ class tasksConfig extends waAppConfig
             return $this->repositories['']->setEntity($entity);
         }
 
-        $this->repositories[$entity] = new $repositoryClass();
+        $this->repositories[$entity] = new $repositoryClass($entity);
 
         return $this->repositories[$entity];
     }

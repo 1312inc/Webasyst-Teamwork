@@ -28,6 +28,11 @@ class tasksBaseRepository implements tasksEntityRepositoryInterface
      */
     protected $cache = [];
 
+    public function __construct(string $entity)
+    {
+        $this->entity = $entity;
+    }
+
     public function getLimit(): ?int
     {
         return $this->limit;

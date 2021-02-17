@@ -6,10 +6,16 @@ final class tasksApiProjectAddHandler
      * @param tasksApiProjectAddRequest $addRequest
      *
      * @return tasksProject
+     * @throws tasksAccessException
      * @throws tasksException
+     * @throws waException
      */
     public function add(tasksApiProjectAddRequest $addRequest): tasksProject
     {
+        if (!tsks()->getRightResolver()->contactCanAddProject(wa()->getUser())) {
+            throw new tasksAccessException();
+        }
+
         $project = tsks()->getEntityFactory(tasksProject::class)->createFromApiVo($addRequest);
 
         $statuses = tasksHelper::getStatuses(null, false);
@@ -19,8 +25,9 @@ final class tasksApiProjectAddHandler
                 $newStatuses[$s['id']] = $s['id'];
             }
         }
+
         if (!tsks()->getEntityRepository(tasksProject::class)->save($project, $newStatuses)) {
-            throw new tasksException('Error on project save');
+            throw new tasksException('Error on project add');
         }
 
         return $project;
