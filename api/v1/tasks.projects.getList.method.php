@@ -2,8 +2,11 @@
 
 class tasksProjectsGetListMethod extends tasksApiAbstractMethod
 {
+    /**
+     * @return tasksApiResponseInterface
+     */
     public function run(): tasksApiResponseInterface
     {
-        return new tasksApiProjectGetListResponse((new tasksApiProjectGetListHandler())->getProjects());
+        return new tasksApiProjectsResponse((new tasksApiProjectGetListHandler())->getProjects());
     }
 }

@@ -22,7 +22,6 @@ class tasksProjectFactory extends tasksBaseFactory
 
         $project
             ->setColor($addRequest->getColor() ?: self::DEFAULT_COLOR)
-            ->setArchiveDatetime($addRequest->getArchiveDatetime() ?: null)
             ->setContactId(wa()->getUser()->getId())
             ->setCreateDatetime(new DateTimeImmutable())
             ->setName($addRequest->getName())

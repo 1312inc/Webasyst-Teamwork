@@ -38,7 +38,7 @@ abstract class tasksApiAbstractMethod extends waAPIMethod
      */
     public function get($name, $required = false)
     {
-        if (isset($this->jsonParams[$name])) {
+        if (array_key_exists($name, $this->jsonParams)) {
             return $this->jsonParams[$name];
         }
 
@@ -58,7 +58,7 @@ abstract class tasksApiAbstractMethod extends waAPIMethod
      */
     public function post($name, $required = false)
     {
-        if (isset($this->jsonParams[$name])) {
+        if (array_key_exists($name, $this->jsonParams)) {
             return $this->jsonParams[$name];
         }
 
@@ -96,7 +96,7 @@ abstract class tasksApiAbstractMethod extends waAPIMethod
      */
     protected function param($name, $required = false)
     {
-        if (isset($this->jsonParams[$name])) {
+        if (array_key_exists($name, $this->jsonParams)) {
             return $this->jsonParams[$name];
         }
 

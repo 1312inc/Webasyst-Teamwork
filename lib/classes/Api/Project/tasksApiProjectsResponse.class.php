@@ -1,6 +1,6 @@
 <?php
 
-final class tasksApiProjectGetListResponse implements tasksApiResponseInterface
+final class tasksApiProjectsResponse implements tasksApiResponseInterface
 {
     /**
      * @var array<tasksApiProjectVo>
@@ -8,7 +8,7 @@ final class tasksApiProjectGetListResponse implements tasksApiResponseInterface
     private $projects = [];
 
     /**
-     * tasksApiProjectGetListResponse constructor.
+     * tasksApiProjectsResponse constructor.
      *
      * @param array<tasksProject> $projects
      */
@@ -21,7 +21,7 @@ final class tasksApiProjectGetListResponse implements tasksApiResponseInterface
 
     public function getStatus(): int
     {
-        return 200;
+        return self::HTTP_OK;
     }
 
     public function getResponseBody(): array
