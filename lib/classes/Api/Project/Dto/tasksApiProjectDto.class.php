@@ -1,6 +1,6 @@
 <?php
 
-final class tasksApiProjectVo implements JsonSerializable
+final class tasksApiProjectDto implements JsonSerializable
 {
     use tasksApiJsonSerializableTrait;
 
@@ -15,7 +15,7 @@ final class tasksApiProjectVo implements JsonSerializable
     private $name;
 
     /**
-     * @var tasksApiContactVo
+     * @var tasksApiContactDto
      */
     private $contact;
 
@@ -62,7 +62,7 @@ final class tasksApiProjectVo implements JsonSerializable
     ) {
         $this->id = $id;
         $this->name = $name;
-        $this->contact = tasksApiContactVo::fromContactId($contact_id);
+        $this->contact = tasksApiContactDto::fromContactId($contact_id);
         $this->create_datetime = $create_datetime->format('Y-m-d H:i:s');
         $this->tasks_number = $tasks_number;
         $this->icon = $icon;
@@ -96,7 +96,7 @@ final class tasksApiProjectVo implements JsonSerializable
         return $this->name;
     }
 
-    public function getContact(): tasksApiContactVo
+    public function getContact(): tasksApiContactDto
     {
         return $this->contact;
     }
