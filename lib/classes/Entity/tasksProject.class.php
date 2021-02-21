@@ -187,7 +187,7 @@ class tasksProject implements tasksPersistableInterface
         return $this;
     }
 
-    public function convertToSqlValues(array &$fields): array
+    public function convertToSqlValues(array $fields): array
     {
         $converted = [];
         $converted['create_datetime'] = $this->create_datetime->format('Y-m-d H:i:s');

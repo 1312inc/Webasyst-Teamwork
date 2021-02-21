@@ -3,7 +3,7 @@
 final class tasksApiProjectResponse implements tasksApiResponseInterface
 {
     /**
-     * @var tasksApiProjectVo
+     * @var tasksApiProjectDto
      */
     private $project;
 
@@ -14,7 +14,7 @@ final class tasksApiProjectResponse implements tasksApiResponseInterface
      */
     public function __construct(tasksProject $project)
     {
-        $this->project = tasksApiProjectVo::fromEntity($project);
+        $this->project = tasksApiProjectDto::fromEntity($project);
     }
 
     public function getStatus(): int
@@ -22,7 +22,7 @@ final class tasksApiProjectResponse implements tasksApiResponseInterface
         return self::HTTP_OK;
     }
 
-    public function getResponseBody(): tasksApiProjectVo
+    public function getResponseBody(): tasksApiProjectDto
     {
         return $this->project;
     }

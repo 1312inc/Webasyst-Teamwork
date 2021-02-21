@@ -3,7 +3,7 @@
 final class tasksApiProjectsResponse implements tasksApiResponseInterface
 {
     /**
-     * @var array<tasksApiProjectVo>
+     * @var array<tasksApiProjectDto>
      */
     private $projects = [];
 
@@ -15,7 +15,7 @@ final class tasksApiProjectsResponse implements tasksApiResponseInterface
     public function __construct(array $projects)
     {
         foreach ($projects as $project) {
-            $this->projects[] = tasksApiProjectVo::fromEntity($project);
+            $this->projects[] = tasksApiProjectDto::fromEntity($project);
         }
     }
 

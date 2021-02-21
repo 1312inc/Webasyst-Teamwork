@@ -1,6 +1,6 @@
 <?php
 
-final class tasksApiContactVo implements JsonSerializable
+final class tasksApiContactDto implements JsonSerializable
 {
     use tasksApiJsonSerializableTrait;
 

@@ -12,7 +12,7 @@ interface tasksHydratableInterface
      *
      * @return array
      */
-    public function convertToSqlValues(array &$fields): array;
+    public function convertToSqlValues(array $fields): array;
 
     /**
      * Подготавливает данные из бд для сеттеров в сущность
