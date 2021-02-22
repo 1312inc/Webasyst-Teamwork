@@ -18,10 +18,6 @@ final class tasksApiMilestoneAddHandler
 
         $milestone = tsks()->getEntityFactory(tasksMilestone::class)->createFromApiVo($addRequest);
 
-        if (!tsks()->getEntityRepository(tasksProject::class)->findById($milestone->getProjectId())) {
-            throw new tasksException('No project with such id');
-        }
-
         if (!tsks()->getEntityRepository(tasksMilestone::class)->save($milestone)) {
             throw new tasksException('Error on milestone add');
         }

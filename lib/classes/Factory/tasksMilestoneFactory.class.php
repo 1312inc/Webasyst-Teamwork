@@ -13,6 +13,9 @@ class tasksMilestoneFactory extends tasksBaseFactory
      */
     protected $entity = tasksMilestone::class;
 
+    /**
+     * @throws tasksValidationException
+     */
     public function createFromApiVo(tasksApiMilestoneAddRequest $addRequest): tasksMilestone
     {
         $milestone = $this->createNew();
@@ -21,6 +24,8 @@ class tasksMilestoneFactory extends tasksBaseFactory
             ->setDescription($addRequest->getDescription())
             ->setDueDate($addRequest->getDueDate())
             ->setProjectId($addRequest->getProjectId());
+
+        (new tasksMilestoneValidator())->isValid($milestone);
 
         return $milestone;
     }

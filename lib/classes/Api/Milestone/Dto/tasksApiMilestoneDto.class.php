@@ -82,7 +82,7 @@ final class tasksApiMilestoneDto implements JsonSerializable
             $milestone->getName(),
             $milestone->getProjectId(),
             $milestone->getDescription(),
-            $milestone->getDueDate(),
+            $milestone->getDueDate() ? $milestone->getDueDate()->format('Y-m-d') : null,
             $milestone->isClosed()
         );
     }
