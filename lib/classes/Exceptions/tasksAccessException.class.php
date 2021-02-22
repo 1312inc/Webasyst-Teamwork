@@ -1,6 +1,6 @@
 <?php
 
-class tasksAccessException extends Exception
+class tasksAccessException extends tasksException
 {
     public function __construct($message = 'No access', Throwable $previous = null)
     {

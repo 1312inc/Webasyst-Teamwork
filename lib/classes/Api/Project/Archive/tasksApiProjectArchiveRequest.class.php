@@ -13,15 +13,22 @@ final class tasksApiProjectArchiveRequest
     private $archive_datetime;
 
     /**
+     * @var bool
+     */
+    private $archive;
+
+    /**
      * tasksApiProjectArchiveRequest constructor.
      *
      * @param int               $id
+     * @param bool              $archive
      * @param DateTimeImmutable $archive_datetime
      */
-    public function __construct(int $id, DateTimeImmutable $archive_datetime)
+    public function __construct(int $id, bool $archive, DateTimeImmutable $archive_datetime)
     {
         $this->id = $id;
         $this->archive_datetime = $archive_datetime;
+        $this->archive = $archive;
     }
 
     public function getId(): int
@@ -32,5 +39,10 @@ final class tasksApiProjectArchiveRequest
     public function getArchiveDatetime(): DateTimeImmutable
     {
         return $this->archive_datetime;
+    }
+
+    public function isArchive(): bool
+    {
+        return $this->archive;
     }
 }
