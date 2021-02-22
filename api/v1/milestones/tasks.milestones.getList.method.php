@@ -7,5 +7,6 @@ class tasksMilestonesGetListMethod extends tasksApiAbstractMethod
      */
     public function run(): tasksApiResponseInterface
     {
+        return new tasksApiMilestonesResponse((new tasksApiMilestoneGetListHandler())->getMilestones());
     }
 }

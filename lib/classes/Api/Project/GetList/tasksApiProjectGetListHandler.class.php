@@ -7,9 +7,9 @@ final class tasksApiProjectGetListHandler
      */
     public function getProjects(): array
     {
-        /** @var tasksProject[] $tasks */
-        $tasks = tsks()->getEntityRepository(tasksProject::class)->findAll();
+        /** @var tasksProject[] $projects */
+        $projects = tsks()->getEntityRepository(tasksProject::class)->findAll();
 
-        return $tasks;
+        return $projects;
     }
 }
