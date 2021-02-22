@@ -15,15 +15,21 @@ final class tasksApiProjectArchiveHandler
             throw new tasksException('Project not found', 404);
         }
 
+        $repository = tsks()->getEntityRepository(tasksProject::class);
+
         /** @var tasksProject $project */
-        $project = tsks()->getEntityRepository(tasksProject::class)->findById($archiveRequest->getId());
+        $project = $repository->findById($archiveRequest->getId());
         if (!$project) {
             throw new tasksException('Project not found', 404);
         }
 
-        $project->setArchiveDatetime($archiveRequest->getArchiveDatetime());
+        if ($archiveRequest->isArchive()) {
+            $project->setArchiveDatetime($archiveRequest->getArchiveDatetime());
+        } else {
+            $project->setArchiveDatetime(null);
+        }
 
-        if (!tsks()->getEntityRepository(tasksProject::class)->save($project)) {
+        if (!$repository->save($project)) {
             throw new tasksException('Error on project update');
         }
 

@@ -1,24 +1,24 @@
 <?php
 
-class tasksProjectsArchiveMethod extends tasksApiAbstractMethod
+class tasksMilestonesArchiveMethod extends tasksApiAbstractMethod
 {
     protected $method = self::METHOD_POST;
 
     /**
      * @return tasksApiResponseInterface
+     * @throws tasksAccessException
      * @throws tasksApiMissingParamException
      * @throws tasksException
      * @throws waException
      */
     public function run(): tasksApiResponseInterface
     {
-        $request = new tasksApiProjectArchiveRequest(
+        $request = new tasksApiMilestoneArchiveRequest(
             (int) $this->post('id', true),
-            (bool) $this->post('archive', true),
-            new DateTimeImmutable()
+            (bool) $this->post('archive')
         );
 
-        (new tasksApiProjectArchiveHandler())->archive($request);
+        (new tasksApiMilestoneArchiveHandler())->archive($request);
 
         return new tasksApiResponse();
     }
