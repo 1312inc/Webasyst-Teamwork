@@ -41,6 +41,10 @@ class tasksProjectRepository extends tasksBaseRepository
         // delete related data
         tsks()->getModel('tasksProjectStatuses')->deleteByField(['project_id' => $project->getId()]);
         tsks()->getModel('tasksProjectStatusParams')->deleteByField(['project_id' => $project->getId()]);
+        $this->getModel()->exec(
+            'delete from tasks_releases_milestone_projects where project_id = i:id',
+            ['id' => $project->getId()]
+        );
 
         return true;
     }
