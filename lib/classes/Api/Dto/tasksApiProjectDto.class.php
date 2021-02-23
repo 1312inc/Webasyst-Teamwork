@@ -62,28 +62,13 @@ final class tasksApiProjectDto implements JsonSerializable
     ) {
         $this->id = $id;
         $this->name = $name;
-        $this->contact = tasksApiContactDto::fromContactId($contact_id);
+        $this->contact = tasksApiContactDtoFactory::fromContactId($contact_id);
         $this->create_datetime = $create_datetime->format('Y-m-d H:i:s');
         $this->tasks_number = $tasks_number;
         $this->icon = $icon;
         $this->color = $color;
         $this->archive_datetime = $archive_datetime;
         $this->sort = $sort;
-    }
-
-    public static function fromEntity(tasksProject $project): self
-    {
-        return new self(
-            (int) $project->getId(),
-            $project->getName(),
-            $project->getContactId(),
-            $project->getCreateDatetime(),
-            $project->getTasksNumber(),
-            $project->getIcon(),
-            $project->getColor(),
-            $project->getArchiveDatetime(),
-            $project->getSort()
-        );
     }
 
     public function getId(): int

@@ -15,7 +15,7 @@ final class tasksApiProjectsResponse implements tasksApiResponseInterface
     public function __construct(array $projects)
     {
         foreach ($projects as $project) {
-            $this->projects[] = tasksApiProjectDto::fromEntity($project);
+            $this->projects[] = tasksApiProjectDtoFactory::fromEntity($project);
         }
     }
 

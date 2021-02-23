@@ -14,7 +14,7 @@ final class tasksApiProjectResponse implements tasksApiResponseInterface
      */
     public function __construct(tasksProject $project)
     {
-        $this->project = tasksApiProjectDto::fromEntity($project);
+        $this->project = tasksApiProjectDtoFactory::fromEntity($project);
     }
 
     public function getStatus(): int
