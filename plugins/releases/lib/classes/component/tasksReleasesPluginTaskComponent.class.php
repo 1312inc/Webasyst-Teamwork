@@ -7,12 +7,12 @@ class tasksReleasesPluginTaskComponent extends tasksReleasesPluginComponent
     public function __construct($task, $options = array())
     {
         if (wa_is_int($task)) {
-            $task = new tasksTask($task);
+            $task = new tasksTaskObj($task);
         } elseif (is_array($task)) {
-            $task = new tasksTask($task);
+            $task = new tasksTaskObj($task);
         }
-        if (!($task instanceof tasksTask)) {
-            $task = new tasksTask();
+        if (!($task instanceof tasksTaskObj)) {
+            $task = new tasksTaskObj();
         }
         $this->task = $task;
     }

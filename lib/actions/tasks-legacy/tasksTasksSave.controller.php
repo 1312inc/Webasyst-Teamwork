@@ -59,7 +59,7 @@ class tasksTasksSaveController extends waJsonController
 
         //If have prev version, need search tags which set in autocomplete and resave them
         if (!empty($prev_task['id'])) {
-            $parse_old_tags = tasksTask::extractTags($prev_task['text']);
+            $parse_old_tags = tasksTaskObj::extractTags($prev_task['text']);
             $old_tags = $tasks_task_tags_model->getByTasks(array($prev_task));
 
             if (!empty($old_tags[$prev_task['id']])) {
@@ -77,7 +77,7 @@ class tasksTasksSaveController extends waJsonController
             }
         }
 
-        $parse_new_tags = tasksTask::extractTags($task['text']);
+        $parse_new_tags = tasksTaskObj::extractTags($task['text']);
         $new_tags = array_merge($parse_new_tags, $collect_header_tags);
 
         $tasks_task_tags_model->save($task['id'], $new_tags);
@@ -93,11 +93,11 @@ class tasksTasksSaveController extends waJsonController
     protected function saveTaskRelations($task, $prev_task = array())
     {
         $task_relation_model = new tasksTaskRelationsModel();
-        $tasks_number = tasksTask::extractTaskNumbers(ifset($task, 'text', null));
+        $tasks_number = tasksTaskObj::extractTaskNumbers(ifset($task, 'text', null));
         $new_ids = $this->parseTaskNumberAndGetTaskId($tasks_number);
 
         if (!empty($prev_task)) {
-            $prev_task_number = tasksTask::extractTaskNumbers($prev_task['text']);
+            $prev_task_number = tasksTaskObj::extractTaskNumbers($prev_task['text']);
             $old_ids = $this->parseTaskNumberAndGetTaskId($prev_task_number);
         }
 
