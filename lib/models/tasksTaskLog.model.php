@@ -206,7 +206,7 @@ class tasksTaskLogModel extends waModel
         return $this->deleteById($id);
     }
 
-    public function getData(tasksTask $task)
+    public function getData(tasksTaskObj $task)
     {
         $logs = $this->getByTasks(array($task));
         return ifempty($logs[$task['id']], array());

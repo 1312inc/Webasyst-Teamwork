@@ -24,7 +24,7 @@ class tasksTasksCommentEditAction extends waViewAction
             $this->accessDenied();
         }
 
-        $task = new tasksTask($log['task_id']);
+        $task = new tasksTaskObj($log['task_id']);
         $attachments = $task->getLogAttachments($log['id']);
         $log['images'] = $attachments['images'];
         $log['files'] = $attachments['files'];

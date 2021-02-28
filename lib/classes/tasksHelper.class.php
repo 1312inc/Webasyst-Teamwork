@@ -520,7 +520,7 @@ class tasksHelper
 
     /**
      * Work up list of tasks before send to view layer
-     * @param array[]|tasksTask[] $tasks
+     * @param array[]|tasksTaskObj[] $tasks
      */
     public static function workupTasksForView(&$tasks)
     {

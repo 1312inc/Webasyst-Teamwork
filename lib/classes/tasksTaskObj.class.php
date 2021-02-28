@@ -13,7 +13,7 @@
  * @property waContact $contact
  * @property array $attachments
  */
-class tasksTask implements ArrayAccess
+class tasksTaskObj implements ArrayAccess
 {
     protected $data;
     /**
@@ -680,7 +680,7 @@ class tasksTask implements ArrayAccess
     {
         $all_tags = $this->getTags();
 
-        $inline_tags = tasksTask::extractTags($this['text']);
+        $inline_tags = tasksTaskObj::extractTags($this['text']);
         $inline_tags = array_fill_keys($inline_tags, true);
 
         $side_tags = array();
@@ -701,7 +701,7 @@ class tasksTask implements ArrayAccess
     {
         $all_tags = $this->getTags();
 
-        $inline_tag_names = tasksTask::extractTags($this['text']);
+        $inline_tag_names = tasksTaskObj::extractTags($this['text']);
         $inline_tag_names = array_fill_keys($inline_tag_names, true);
 
         $inline_tags = array();
