@@ -1,0 +1,97 @@
+@import "nib"
+
+body.wa-gallery-is-shown
+    overflow: hidden
+
+.wa-gallery-preview
+    position absolute
+    top 0
+    left 0
+    display block
+    width: 0
+    height: 0
+    border: 1px solid rgba(0,0,0,.1)
+    box-sizing border-box
+
+    &.is-animated
+        transition all 333ms ease-in-out
+
+    &.is-invisible
+        opacity 0
+        z-index -1
+
+    &.is-shown
+        border: 0
+
+    .wa-gallery-item
+        position absolute
+        top: 0
+        left: 0
+        display block
+        width: 100%
+        height: 100%
+        background #fff 50% no-repeat
+        background-size: contain
+        cursor pointer
+        opacity 0
+
+        img
+            position absolute
+            top: 0
+            left: 0
+            width: 100%
+            height: 100%
+            opacity 0
+
+        &.is-active
+            z-index 1
+            opacity 1
+            transition opacity 300ms linear
+
+    .wa-gallery-controls
+        position absolute
+        width: 100%
+        left: 0
+        z-index 2
+        background rgba(127,127,127,.2)
+        opacity .66
+        text-align right
+        transition opacity 333ms linear
+
+        &:hover
+            opacity 1
+
+        &.top
+            top: 0
+
+        &.bottom
+            bottom 0
+
+        .wa-gallery-close
+        .wa-gallery-download
+        .wa-gallery-arrow
+            display inline-block
+            vertical-align top
+            width: 56px
+            height: 56px
+            background transparent 50% no-repeat
+            background-size auto 28px
+            opacity .33
+            transition all 333ms linear
+
+            &:hover
+                background-color rgba(0,0,0,.1)
+                opacity: .66
+
+        .wa-gallery-close
+            background-image url("close-button.png")
+
+        .wa-gallery-download
+            background-image url("download-button.png")
+
+        .wa-gallery-arrow
+            &.right
+                background-image url("right-arrow.png")
+
+            &.left
+                background-image url("left-arrow.png")
