@@ -7,7 +7,7 @@ class tasksFromHelpdeskAction extends waViewAction
         $request_id = waRequest::request('id', 0, 'int');
         $request = new helpdeskRequest($request_id);
 
-        $task = new tasksTaskObj();
+        $task = new tasksTask();
         $task['name'] = $request->summary;
         $task['text'] = $request->text."\n\n".sprintf('[%s](%s)',
             // Link text

@@ -12,7 +12,7 @@ class tasksFromHubAction extends waViewAction
             throw new waException(_w('Not found'), 404);
         }
 
-        $task = new tasksTaskObj();
+        $task = new tasksTask();
         $task['name'] = $topic['title'];
         $task['text'] = strip_tags($topic['content'])."\n\n".sprintf('[%s](%s)',
             // Link text
@@ -26,7 +26,7 @@ class tasksFromHubAction extends waViewAction
         //    'hub_topic_id' => $topic_id,
         //);
 
-        $this->setTemplate(wa('tasks')->getAppPath('templates/actions/from/Reloader.html'));
+        $this->setTemplate(wa('tasks')->getAppPath('templates/actions-legacy/from/Reloader.html'));
         $this->view->assign(array(
             'task' => $task,
         ));

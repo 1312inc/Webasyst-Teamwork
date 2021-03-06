@@ -5,12 +5,12 @@ final class tasksApiTasksAddHandler
     /**
      * @param tasksApiTasksAddRequest $addRequest
      *
-     * @return tasksTaskObj
+     * @return tasksTask
      * @throws tasksAccessException
      * @throws tasksException
      * @throws waException
      */
-    public function add(tasksApiTasksAddRequest $addRequest): tasksTaskObj
+    public function add(tasksApiTasksAddRequest $addRequest): tasksTask
     {
         if (!tsks()->getRightResolver()->contactCanAccessToProject(wa()->getUser(), $addRequest->getProjectId())) {
             throw new tasksAccessException();
@@ -18,7 +18,7 @@ final class tasksApiTasksAddHandler
 
 
 
-        $project = tsks()->getEntityFactory(tasksTaskObj::class)->createFromApiVo($addRequest);
+        $project = tsks()->getEntityFactory(tasksTask::class)->createFromApiVo($addRequest);
 
         $statuses = tasksHelper::getStatuses(null, false);
         $newStatuses = [];

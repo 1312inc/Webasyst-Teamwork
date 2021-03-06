@@ -29,7 +29,7 @@ class tasksTasksAction extends waViewAction
         $tasks = array();
         $logs_by_task = array();
         foreach ($task_rows as $t) {
-            $tasks[$t['id']] = new tasksTaskObj($t);
+            $tasks[$t['id']] = new tasksTask($t);
             if (!empty($t['log'])) {
                 $logs_by_task[$t['id']] = $t['log'];
             }
@@ -165,7 +165,7 @@ class tasksTasksAction extends waViewAction
          *
          * @event backend_tasks
          *
-         * @param int[]|array[]|tasksTaskObj[] $tasks
+         * @param int[]|array[]|tasksTask[] $tasks
          * @param string $hash
          * @param string $filters
          * @param string $order

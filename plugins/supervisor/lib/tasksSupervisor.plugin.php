@@ -105,7 +105,7 @@ class tasksSupervisorPlugin extends waPlugin
         //$task['text_html'] = tasksTask::formatText($task['text']);
         $task['url'] = wa()->getRootUrl(true).wa()->getConfig()->getBackendUrl(false).'/tasks/#/task/'.$task['project_id'].'.'.$task['number'].'/';
         if (!empty($log['text'])) {
-            $log['text_html'] = tasksTaskObj::formatText($log['text']);
+            $log['text_html'] = tasksTask::formatText($log['text']);
         }
 
         $statuses = tasksHelper::getStatuses(null, false);

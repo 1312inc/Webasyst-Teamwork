@@ -4,7 +4,7 @@ class tasksTasksReturnAction extends waViewAction
     public function execute()
     {
         $id = waRequest::request('id', 0, 'int');
-        $task = new tasksTaskObj($id);
+        $task = new tasksTask($id);
         if (!$task->exists()) {
             throw new waException(_w('Task not found'), 404);
         }

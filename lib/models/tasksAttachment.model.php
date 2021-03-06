@@ -3,7 +3,7 @@ class tasksAttachmentModel extends waModel
 {
     protected $table = 'tasks_attachment';
 
-    public function getData(tasksTaskObj $task)
+    public function getData(tasksTask $task)
     {
         return $this->getByField('task_id', $task['id'], 'id');
     }

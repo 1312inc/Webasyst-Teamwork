@@ -18,7 +18,7 @@ class tasksNotifications
         }
 
         if ($comment) {
-            $comment = tasksTaskObj::formatText($comment);
+            $comment = tasksTask::formatText($comment);
         }
 
         $body = self::renderTemplate($template_path, array(
@@ -52,7 +52,7 @@ class tasksNotifications
         $root_url = wa()->getRootUrl(true);
         $backend_url = wa()->getConfig()->getBackendUrl();
         $app_url = "{$root_url}{$backend_url}/tasks";
-        return tasksTaskObj::formatText($text, array(
+        return tasksTask::formatText($text, array(
             'wrap_tags_in_links' => array(
                 'url_pattern' => $app_url.'/#/tasks/tag/{$tag}/'
             ),
@@ -95,7 +95,7 @@ class tasksNotifications
         $log['text_formatted'] = self::formatText($log['text']);
 
         $all_tags = $task->getTags();
-        $inline_tags = tasksTaskObj::extractTags($task['text']);
+        $inline_tags = tasksTask::extractTags($task['text']);
         $inline_tags = array_fill_keys($inline_tags, true);
         $side_tags = array();
         foreach ($all_tags as $tag_id => $tag_name) {
@@ -144,7 +144,7 @@ class tasksNotifications
      * @param $task
      * @param int $contact_id For what contact get TASK
      *
-     * @return null|tasksTaskObj
+     * @return null|tasksTask
      */
     protected static function getTask($task, $contact_id)
     {
@@ -164,7 +164,7 @@ class tasksNotifications
         if (!$task) {
             return null;
         }
-        $task = new tasksTaskObj($task);
+        $task = new tasksTask($task);
         return $task;
     }
 

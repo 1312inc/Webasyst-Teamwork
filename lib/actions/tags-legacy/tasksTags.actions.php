@@ -54,7 +54,7 @@ class tasksTagsActions extends waActions
             return;
         }
 
-        $task = new tasksTaskObj($task_id);
+        $task = new tasksTask($task_id);
         if (!$task->exists()) {
             return;
         }

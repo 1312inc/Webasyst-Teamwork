@@ -10,7 +10,7 @@ class tasksTasksInfoAction extends waViewAction
         $n = waRequest::get('n');
         $id = waRequest::get('id', 0, 'int');
 
-        $task = new tasksTaskObj(ifempty($id, $n));
+        $task = new tasksTask(ifempty($id, $n));
         $tasks_tags_model = new tasksTaskTagsModel();
 
         if (!$task->exists()) {
@@ -25,7 +25,7 @@ class tasksTasksInfoAction extends waViewAction
 
             //If moved reinitialize task class
             if (!empty($log['task_id'])) {
-                $task = new tasksTaskObj($log['task_id']);
+                $task = new tasksTask($log['task_id']);
             }
         }
 
@@ -74,7 +74,7 @@ class tasksTasksInfoAction extends waViewAction
          * Each key represents location where corresponding html peace will be placed
          *
          * @event backend_task
-         * @param int|array|tasksTaskObj $task
+         * @param int|array|tasksTask $task
          * @return array[string]array $return[%plugin_id%] array of html output
          *
          * @return string $return[%plugin_id%]['before_header'] html

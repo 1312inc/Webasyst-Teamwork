@@ -3,8 +3,8 @@
 /**
  * Class tasksTaskFactory
  *
- * @method tasksTaskObj createNew()
- * @method tasksTaskObj createNewWithData()
+ * @method tasksTask createNew()
+ * @method tasksTask createNewWithData()
  */
 class tasksTaskFactory extends tasksBaseFactory
 {
@@ -14,15 +14,15 @@ class tasksTaskFactory extends tasksBaseFactory
     /**
      * @var string
      */
-    protected $entity = tasksTaskObj::class;
+//    protected $entity = tasksTask::class;
 
-    public function createFromApiVo(tasksApiTasksAddRequest $addRequest): tasksTaskObj
+    public function createFromApiVo(tasksApiTasksAddRequest $addRequest)
     {
-        $task = $this->createNew();
+//        $task = $this->createNew();
 
-        $task->set;
+//        $task->set;
 
 
-        return $task;
+//        return $task;
     }
 }
