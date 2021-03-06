@@ -7,7 +7,7 @@ class tasksFromHelpdeskAction extends waViewAction
         $request_id = waRequest::request('id', 0, 'int');
         $request = new helpdeskRequest($request_id);
 
-        $task = new tasksTaskObj();
+        $task = new tasksTask();
         $task['name'] = $request->summary;
         $task['text'] = $request->text."\n\n".sprintf('[%s](%s)',
             // Link text
@@ -21,7 +21,7 @@ class tasksFromHelpdeskAction extends waViewAction
         //    'helpdesk_request_id' => $request_id,
         //);
 
-        $this->setTemplate(wa('tasks')->getAppPath('templates/actions/from/Reloader.html'));
+        $this->setTemplate(wa('tasks')->getAppPath('templates/actions-legacy/from/Reloader.html'));
         $this->view->assign(array(
             'task' => $task,
         ));

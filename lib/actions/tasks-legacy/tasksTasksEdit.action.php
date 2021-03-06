@@ -16,7 +16,7 @@ class tasksTasksEditAction extends waViewAction
     {
         $this->projects = $projects = tasksHelper::getProjects();
         if (!$projects) {
-            $this->setTemplate(wa('tasks')->getAppPath('templates/actions/tasks/NoProjectsError.html'));
+            $this->setTemplate(wa('tasks')->getAppPath('templates/actions-legacy/tasks/NoProjectsError.html'));
             return;
         }
 
@@ -91,7 +91,7 @@ class tasksTasksEditAction extends waViewAction
         $n = waRequest::get('n');
         $id = waRequest::get('id', 0, 'int');
         if (!$id && !$n) {
-            $task = new tasksTaskObj();
+            $task = new tasksTask();
             if (!$projects) {
                 throw new waException('No projects', 500);
             } else {
@@ -99,7 +99,7 @@ class tasksTasksEditAction extends waViewAction
                 $task['project_id'] = $p['id'];
             }
         } else {
-            $task = new tasksTaskObj(ifempty($id, $n));
+            $task = new tasksTask(ifempty($id, $n));
             if (!$task->exists()) {
                 throw new waException(_w('Task not found'), 404);
             }
@@ -121,7 +121,7 @@ class tasksTasksEditAction extends waViewAction
     {
         /**
          * @event backend_task_edit
-         * @param int|array|tasksTaskObj $task
+         * @param int|array|tasksTask $task
          * @return array[string]array $return[%plugin_id%] array of html output
          *
          * @return string $return[%plugin_id%]['before_header'] html

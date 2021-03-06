@@ -132,7 +132,7 @@ class tasksTaskTagsModel extends waModel
         return $tags;
     }
 
-    public function getData(tasksTaskObj $task)
+    public function getData(tasksTask $task)
     {
         $tags = $this->getByTasks(array($task));
         return ifempty($tags[$task['id']], array());

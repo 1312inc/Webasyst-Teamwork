@@ -12,7 +12,7 @@ class tasksFromHubAction extends waViewAction
             throw new waException(_w('Not found'), 404);
         }
 
-        $task = new tasksTaskObj();
+        $task = new tasksTask();
         $task['name'] = $topic['title'];
         $task['text'] = strip_tags($topic['content'])."\n\n".sprintf('[%s](%s)',
             // Link text

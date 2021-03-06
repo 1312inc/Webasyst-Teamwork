@@ -36,7 +36,7 @@ class tasksPreviewPluginTaskInfoAction extends tasksTasksInfoAction
 
     protected function applyNewTags(&$task)
     {
-        $tag_names = tasksTaskObj::extractTags($task['text']);
+        $tag_names = tasksTask::extractTags($task['text']);
         $tags = $this->getTagsByNames($tag_names);
         $task_tags = $task['tags'];
         foreach ($tags as $tag_id => $tag_name) {

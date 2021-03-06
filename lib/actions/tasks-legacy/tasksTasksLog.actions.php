@@ -51,7 +51,7 @@ class tasksTasksLogActions extends waJsonActions
         $status_id = waRequest::post('prev_status_id', 0, 'int');
         $prev_actor_id = waRequest::post('prev_actor_contact_id', 0, 'int');
 
-        $task = new tasksTaskObj($this->task);
+        $task = new tasksTask($this->task);
         if ($status_id != $task['return_status']['id'] || $prev_actor_id != $task['return_actor']['id']) {
             $this->errors[] = _w('Cannot return this task because another user has modified it.');
             return;
