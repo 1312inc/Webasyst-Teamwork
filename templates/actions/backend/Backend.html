@@ -49,19 +49,21 @@
         {$sidebar_width = 200}
     {/if}
     <div id="wa">
-        {$wa->header()|replace:'></script>':' async></script>'}
+        {$wa->header('task list global view toggle')|replace:'></script>':' async></script>'}
         <div id="wa-app">
-            {* SIDEBAR *}
-            <aside class="t-sidebar-wrapper sidebar left{$sidebar_width}px">
-                {include file="./Sidebar.html" inline}
-            </aside>
+            <div class="flexbox wrap-mobile">
+                {* SIDEBAR *}
+                <aside class="t-sidebar-wrapper sidebar width-16rem flexbox">
+                    {include file="./Sidebar.html" inline}
+                </aside>
 
-            {* MAIN CONTENT *}
-            <main class="t-content-wrapper content left{$sidebar_width}px">
-                <div class="block" id="content" data-loading-string="[`Loading...`]">
-                    [`Loading...`]<i class="icon16 loading"></i>
-                </div>
-            </main>
+                {* MAIN CONTENT *}
+                <main class="t-content-wrapper content blank">
+                    <div class="block" id="content" data-loading-string="[`Loading...`]">
+                        [`Loading...`]<i class="icon16 loading"></i>
+                    </div>
+                </main>
+            </div>
         </div>
         {* DRAGOVER NOTICE *}
         <div class="f-file-dragover-wrapper">
