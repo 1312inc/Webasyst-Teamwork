@@ -121,7 +121,7 @@ class tasksTasksEditAction extends waViewAction
     {
         /**
          * @event backend_task_edit
-         * @param int|array|taskTask $task
+         * @param int|array|tasksTask $task
          * @return array[string]array $return[%plugin_id%] array of html output
          *
          * @return string $return[%plugin_id%]['before_header'] html

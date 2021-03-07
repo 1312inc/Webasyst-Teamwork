@@ -7,7 +7,7 @@ class tasksRights
     const PROJECT_ACCESS_FULL = 2;
 
     /**
-     * @param taskTask[]|array[] $tasks
+     * @param tasksTask[]|array[] $tasks
      * @param int|int[] $contact_id
      */
     public function extendTasksByRightsInfo(&$tasks, $contact_id = null)
@@ -132,7 +132,7 @@ class tasksRights
     }
 
     /**
-     * @param array|taskTask|int $task
+     * @param array|tasksTask|int $task
      * @param int|waContact|null $contact
      * @param array $options
      *   'can_view_clarify' bool If need clarify can_view right
@@ -197,7 +197,7 @@ class tasksRights
     }
 
     /**
-     * @param array|taskTask|int $task
+     * @param array|tasksTask|int $task
      * @param int|waContact|null $contact
      * @param $clarify bool Extra checking for clarify right
      * @return bool
@@ -215,7 +215,7 @@ class tasksRights
     }
 
     /**
-     * @param array|taskTask|int $task
+     * @param array|tasksTask|int $task
      * @param int|waContact|null $contact
      * @return bool
      */
@@ -226,7 +226,7 @@ class tasksRights
     }
 
     /**
-     * @param array|taskTask|int $task
+     * @param array|tasksTask|int $task
      * @param int|waContact|null $contact
      * @return bool
      */
@@ -237,7 +237,7 @@ class tasksRights
     }
 
     /**
-     * @param array|taskTask|int $task
+     * @param array|tasksTask|int $task
      * @param int|waContact|null $contact
      * @return bool
      */

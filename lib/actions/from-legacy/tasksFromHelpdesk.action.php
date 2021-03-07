@@ -21,7 +21,7 @@ class tasksFromHelpdeskAction extends waViewAction
         //    'helpdesk_request_id' => $request_id,
         //);
 
-        $this->setTemplate(wa('tasks')->getAppPath('templates/actions/from/Reloader.html'));
+        $this->setTemplate(wa('tasks')->getAppPath('templates/actions-legacy/from/Reloader.html'));
         $this->view->assign(array(
             'task' => $task,
         ));

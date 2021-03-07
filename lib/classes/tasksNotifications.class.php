@@ -140,8 +140,10 @@ class tasksNotifications
 
     /**
      * Get task for this contact
+     *
      * @param $task
      * @param int $contact_id For what contact get TASK
+     *
      * @return null|tasksTask
      */
     protected static function getTask($task, $contact_id)

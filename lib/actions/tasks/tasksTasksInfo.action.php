@@ -74,7 +74,7 @@ class tasksTasksInfoAction extends waViewAction
          * Each key represents location where corresponding html peace will be placed
          *
          * @event backend_task
-         * @param int|array|taskTask $task
+         * @param int|array|tasksTask $task
          * @return array[string]array $return[%plugin_id%] array of html output
          *
          * @return string $return[%plugin_id%]['before_header'] html
