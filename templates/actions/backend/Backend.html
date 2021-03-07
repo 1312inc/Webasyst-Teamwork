@@ -45,21 +45,18 @@
 
 </head>
 <body>
-    {if empty($sidebar_width)}
-        {$sidebar_width = 200}
-    {/if}
     <div id="wa">
-        {$wa->header('task list global view toggle')|replace:'></script>':' async></script>'}
+        {$wa->header()|replace:'></script>':' async></script>'}
         <div id="wa-app">
             <div class="flexbox wrap-mobile">
                 {* SIDEBAR *}
-                <aside class="t-sidebar-wrapper sidebar width-16rem flexbox">
+                <aside class="t-sidebar-wrapper sidebar width-15rem flexbox">
                     {include file="./Sidebar.html" inline}
                 </aside>
 
                 {* MAIN CONTENT *}
                 <main class="t-content-wrapper content blank">
-                    <div class="block" id="content" data-loading-string="[`Loading...`]">
+                    <div id="content" data-loading-string="[`Loading...`]">
                         [`Loading...`]<i class="icon16 loading"></i>
                     </div>
                 </main>

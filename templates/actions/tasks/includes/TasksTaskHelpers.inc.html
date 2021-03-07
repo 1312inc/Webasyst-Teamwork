@@ -6,13 +6,15 @@
     {* ASSIGNED CONTACT *}
     {$_assigned_contact = $task.assigned_contact}
 
+    <i class="userpic userpic48" style="background-image: url('{waContact::getPhotoUrl($_assignment_creator.id, $_assignment_creator.photo, 96)}')"></i>
+
+{*
     <div class="t-userpics-wrapper is-animated-on-hover">
-        
+
         <a class="t-userpic-item is-creator" href="{tasksHelper::getProfileURL($_assignment_creator.id)}" title="{$_assignment_creator.name|escape}">
             <img src="{waContact::getPhotoUrl($_assignment_creator.id, $_assignment_creator.photo, 96)}" alt="{$_assignment_creator.name|escape}">
         </a>
 
-        {*If a contact is attached and it is not deleted*}
         {if empty($_assigned_contact.delete)}
             <a class="t-userpic-item is-assigned" href="{tasksHelper::getProfileURL($_assigned_contact.id)}" title="{$_assigned_contact.name|escape}">
                 <img src="{waContact::getPhotoUrl($_assigned_contact.id, $_assigned_contact.photo, 96)}" alt="{$_assigned_contact.name|escape}">
@@ -23,4 +25,6 @@
             </a>
         {/if}
     </div>
+*}
+
 {/function}

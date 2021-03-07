@@ -918,7 +918,7 @@ msgid "No active work scopes are defined."
 msgstr ""
 
 msgid "Use <strong>app \"%s\"</strong> to provide access to Tasks app for your teammates."
-msgstr ""
+msgstr "Use <strong>the %s app</strong> to provide access to tasks for your teammates."
 
 msgid "New scope"
 msgstr ""
