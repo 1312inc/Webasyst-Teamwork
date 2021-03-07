@@ -16,7 +16,7 @@ class tasksTasksEditAction extends waViewAction
     {
         $this->projects = $projects = tasksHelper::getProjects();
         if (!$projects) {
-            $this->setTemplate(wa('tasks')->getAppPath('templates/actions/tasks/NoProjectsError.html'));
+            $this->setTemplate(wa('tasks')->getAppPath('templates/actions-legacy/tasks/NoProjectsError.html'));
             return;
         }
 
@@ -121,7 +121,7 @@ class tasksTasksEditAction extends waViewAction
     {
         /**
          * @event backend_task_edit
-         * @param int|array|taskTask $task
+         * @param int|array|tasksTask $task
          * @return array[string]array $return[%plugin_id%] array of html output
          *
          * @return string $return[%plugin_id%]['before_header'] html

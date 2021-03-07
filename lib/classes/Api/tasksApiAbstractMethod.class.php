@@ -10,6 +10,12 @@ abstract class tasksApiAbstractMethod extends waAPIMethod
     public const METHOD_DELETE = 'DELETE';
     public const METHOD_PUT    = 'PUT';
 
+    public const CAST_INT      = 1;
+    public const CAST_FLOAT    = 2;
+    public const CAST_ARRAY    = 3;
+    public const CAST_STRING   = 4;
+    public const CAST_DATETIME = 5;
+
     /**
      * @var array
      */
@@ -30,42 +36,60 @@ abstract class tasksApiAbstractMethod extends waAPIMethod
     }
 
     /**
-     * @param string $name
-     * @param bool   $required
+     * @param string   $name
+     * @param bool     $required
+     * @param int|null $type
+     * @param string   $format
      *
      * @return array|int|mixed|null
      * @throws tasksApiMissingParamException
+     * @throws tasksApiWrongParamException
      */
-    public function get($name, $required = false)
+    public function get($name, $required = false, ?int $type = null, string $format = '')
     {
         if ($this->jsonParams && array_key_exists($name, $this->jsonParams)) {
-            return $this->jsonParams[$name];
+            $value = $this->jsonParams[$name];
+        } else {
+            try {
+                return $this->fromGet($name, $required);
+            } catch (waAPIException $exception) {
+                throw new tasksApiMissingParamException($name);
+            }
         }
 
         try {
-            return $this->fromGet($name, $required);
-        } catch (waAPIException $exception) {
-            throw new tasksApiMissingParamException($name);
+            return $value === null ? $value : $this->cast($value, $type, $format);
+        } catch (tasksException $exception) {
+            throw new tasksApiWrongParamException($name, $exception->getMessage());
         }
     }
 
     /**
-     * @param string $name
-     * @param bool   $required
+     * @param string   $name
+     * @param bool     $required
+     * @param null|int $type
+     * @param string   $format
      *
      * @return array|int|mixed|null
      * @throws tasksApiMissingParamException
+     * @throws tasksApiWrongParamException
      */
-    public function post($name, $required = false)
+    public function post($name, $required = false, ?int $type = null, string $format = '')
     {
         if ($this->jsonParams && array_key_exists($name, $this->jsonParams)) {
-            return $this->jsonParams[$name];
+            $value = $this->jsonParams[$name];
+        } else {
+            try {
+                $value = $this->fromPost($name, $required);
+            } catch (waAPIException $exception) {
+                throw new tasksApiMissingParamException($name);
+            }
         }
 
         try {
-            return $this->fromPost($name, $required);
-        } catch (waAPIException $exception) {
-            throw new tasksApiMissingParamException($name);
+            return $value === null ? $value : $this->cast($value, $type, $format);
+        } catch (tasksException $exception) {
+            throw new tasksApiWrongParamException($name, $exception->getMessage());
         }
     }
 
@@ -88,32 +112,39 @@ abstract class tasksApiAbstractMethod extends waAPIMethod
     abstract function run(): tasksApiResponseInterface;
 
     /**
-     * @param string $name
-     * @param bool   $required
+     * @param string   $name
+     * @param bool     $required
+     * @param int|null $type
+     * @param string   $format
      *
      * @return array|int|mixed|null
      * @throws tasksApiMissingParamException
+     * @throws tasksApiWrongParamException
      */
-    protected function param($name, $required = false)
+    protected function param($name, $required = false, ?int $type = null, string $format = '')
     {
         if ($this->jsonParams && array_key_exists($name, $this->jsonParams)) {
-            return $this->jsonParams[$name];
+            $param = $this->jsonParams[$name];
+        } else {
+            $param = null;
+            try {
+                $param = $this->fromPost($name, $required);
+            } catch (waAPIException $exception) {
+            }
+
+            if ($param === null) {
+                try {
+                    $param = $this->fromGet($name, $required);
+                } catch (waAPIException $exception) {
+                    throw new tasksApiMissingParamException($name);
+                }
+            }
         }
 
-        $param = null;
         try {
-            $param = $this->fromPost($name, $required);
-        } catch (waAPIException $exception) {
-        }
-
-        if ($param !== null) {
-            return $param;
-        }
-
-        try {
-            return $this->fromGet($name, $required);
-        } catch (waAPIException $exception) {
-            throw new tasksApiMissingParamException($name);
+            return $param === null ? $param : $this->cast($param, $type, $format);
+        } catch (tasksException $exception) {
+            throw new tasksApiWrongParamException($name, $exception->getMessage());
         }
     }
 
@@ -138,18 +169,38 @@ abstract class tasksApiAbstractMethod extends waAPIMethod
     }
 
     /**
-     * @param object $requestDto
+     * @param        $var
+     * @param int    $type
+     * @param string $format
      *
-     * @return object
-     * @throws waAPIException
+     * @return array|DateTimeImmutable|float|int|string
+     * @throws tasksException
      */
-    protected function fillRequestWithParams($requestDto)
+    private function cast($var, int $type, string $format = '')
     {
-        foreach (get_object_vars($requestDto) as $prop => $value) {
-            $requestDto->$prop = $this->param($prop, $value !== null);
+        switch ($type) {
+            case self::CAST_INT:
+                return (int) $var;
+
+            case self::CAST_FLOAT:
+                return (float) $var;
+
+            case self::CAST_ARRAY:
+                return (array) $var;
+
+            case self::CAST_STRING:
+                return (string) $var;
+
+            case self::CAST_DATETIME:
+                $var = DateTimeImmutable::createFromFormat($format, $var);
+                if ($var === false) {
+                    throw new tasksException(sprintf('Wrong format %s for value %s', $format, $var));
+                }
+
+                return $var;
         }
 
-        return $requestDto;
+        return $var;
     }
 
     /**

@@ -165,7 +165,7 @@ class tasksTasksAction extends waViewAction
          *
          * @event backend_tasks
          *
-         * @param int[]|array[]|taskTask[] $tasks
+         * @param int[]|array[]|tasksTask[] $tasks
          * @param string $hash
          * @param string $filters
          * @param string $order
