@@ -1,74 +1,164 @@
 {$is_in_my_list = $list && $list.is_own && $list.found_by_id}
 
-<div class="t-main-wrapper">
+<div class="flexbox">
+    <div class="sidebar blank width-25rem bordered-right">
 
-    {$_backend_tasks_hooks = $backend_tasks_hooks|default:[]}
-    {$_backend_body_hooks = $backend_tasks_hooks.body|default:[]}
+        <div class="t-main-wrapper">
 
-    <!-- plugin hook: 'backend_tasks.%plugin_id%.body.top' -->
-    {* @event backend_tasks.%plugin_id%.body.top *}
-    {foreach $_backend_body_hooks as $_}{$_.top|default:''}{/foreach}
+            {$_backend_tasks_hooks = $backend_tasks_hooks|default:[]}
+            {$_backend_body_hooks = $backend_tasks_hooks.body|default:[]}
 
-    <header class="t-header-wrapper">
-        {include file="./TasksHeader.html" inline}
-    </header>
-    <script>(function() { "use strict";
-        window.Tasks = { };
-        window.tasksHeader = new TasksHeader({
-            total_count: {$total_count|json_encode},
-            is_in_my_list: {$is_in_my_list|json_encode},
-            messages: {
-                cant_create_list: "[`Cannot create a list from another list.`]",
-                tasks_count: {_w('%d task','%d tasks', $total_count)|json_encode},
-                no_tasks: {_w('no tasks')|json_encode},
-            }
-        });
-    })();</script>
+            <!-- plugin hook: 'backend_tasks.%plugin_id%.body.top' -->
+            {* @event backend_tasks.%plugin_id%.body.top *}
+            {foreach $_backend_body_hooks as $_}{$_.top|default:''}{/foreach}
 
-    {if $tasks}
-        <div class="t-tasks-wrapper is-{$list_view_type}" id="t-tasks-wrapper">
-            {foreach $tasks as $task}{strip}
-                {include file="./Task.html" inline}
-            {/strip}{/foreach}
+            <header class="t-header-wrapper">
+                {include file="./TasksHeader.html" inline}
+            </header>
+            <script>(function() { "use strict";
+                window.Tasks = { };
+                window.tasksHeader = new TasksHeader({
+                    total_count: {$total_count|json_encode},
+                    is_in_my_list: {$is_in_my_list|json_encode},
+                    messages: {
+                        cant_create_list: "[`Cannot create a list from another list.`]",
+                        tasks_count: {_w('%d task','%d tasks', $total_count)|json_encode},
+                        no_tasks: {_w('no tasks')|json_encode},
+                    }
+                });
+            })();</script>
 
-            <div id="end-of-tasks" class="block">
-                <p>
-                    <span class="js-tasks-list-counter">{sprintf("[`%s of %d`]", _w('%d task','%d tasks', $offset + $count), $total_count)}</span>
-                    {if $click_to_load_more && $next_page_url}
-                        <span class="click-to-load-more"><a href="javascript:void(0)">[`Load more...`]</a></span>
-                    {/if}
-                    <span class="hidden loading-indicator"><i class="icon16 loading"></i>&nbsp;[`Loading...`]</span>
-                </p>
-                <script>(function($) { "use strict";
-                    {* Note that this script has to be inside #t-tasks-wrapper for lazy loading to work correctly. *}
-                    $.tasks.initLazyloader({
-                        lazyloading_wrapper: $('#end-of-tasks'),
-                        next_page_url: {$next_page_url|json_encode},
-                        is_lazy: {if $click_to_load_more}false{else}true{/if},
-                        list_selector: '#t-tasks-wrapper',
-                        item_id_data_attr: 'task-id'
-                    });
-                    {* Init PrettyPrint on Tasks List *}
-                    $.tasks.initPrettyPrint();
-                })(jQuery);</script>
-            </div>
-        </div>
-    {else}
-        <div class="t-notice-list">
-            <div class="t-notice-wrapper {$emptymsg.name|escape} is-shown">
-                <div class="t-image">
-                    <img src="{$emptymsg.img_url|escape}" alt="">
+            {if $tasks}
+                <div class="t-tasks-wrapper is-{$list_view_type}" id="t-tasks-wrapper">
+                    <ul class="list">
+                    {foreach $tasks as $task}{strip}
+
+                        {include file="./includes/TasksTaskHelpers.inc.html" inline}
+
+                        {$_task_link = '#/task/'|cat:$task.project_id|cat:'.'|cat:$task.number|cat:'/'}
+                        <li class="item">
+                            <a href="{$_task_link}" class="image">
+
+                                {task_userpics_block}
+
+                            </a>
+                            <a href="{$_task_link}" class="details">
+                                <div class="tablebox">
+                                    {* PROJECT ICON *}
+                                    {if !empty($task.project.icon_html)}
+                                        <span class="t-project-icon">
+                                            {$task.project.icon_html}
+                                        </span>
+                                    {/if}
+
+
+                                    <span>
+                                        {$task.project_id}.{$task.number}
+                                        <span class="semibold" style="{$task->titleStyle()}">{$task.name|escape|default:"(no name)"}</span>
+
+                                        {* STATUS *}
+                                        {if !empty($task.status.name)}
+                                            {* DATA *}
+                                            {$_status_class_array = []}
+                                            {$_styles_array = []}
+
+                                            {if !$task.project.archive_datetime}
+                                                {if !empty($task.status.params.title_color)}
+                                                    {$_color = $task.status.params.title_color}
+                                                    {$_styles_array[] = "color: #{$_color};"}
+                                                {/if}
+                                                {if !empty($task.status.params.button_color)}
+                                                    {$_background = $task.status.params.button_color}
+                                                    {$_styles_array[] = "border-color: #{$_background};"}
+                                                    {$_styles_array[] = "background: #{$_background};"}
+                                                {/if}
+                                            {/if}
+
+                                            {if $task.project.archive_datetime}
+                                                {$_status_class_array[] = "is-archived"}
+                                            {elseif $task.status_id == -1}
+                                                {$_status_class_array[] = "is-done"}
+                                            {elseif $task.status_id == 0}
+                                                {$_status_class_array[] = "is-new"}
+                                            {elseif $task.status_id > 0}
+                                                {$_status_class_array[] = "is-custom"}
+                                            {/if}
+
+                                            {* RENDER *}
+                                            <span class="t-status-wrapper {$_status_class_array|join:" "}" style="{$_styles_array|join:""}" title="[`Status`]">
+                                                <span style="position:absolute;left:-100500px;"> (</span>
+                                                {if $task.project.archive_datetime}[`Archived`]{else}{$task.status.name}{/if}
+                                                <span style="position:absolute;left:-100500px;">) </span>
+                                            </span>
+                                        {/if}
+
+                                    </span>
+
+                                    <span class="count align-right">
+                                        {* This vars will be mutated by tasksHelper::getDatetime, must be inited first because of Smary & PHP 7.4 cause the warnings otherwise *}
+                                        {$time_since_update_period = null}
+                                        {$time_since_update_template = null}
+                                        {$time_since_update_str = tasksHelper::getDatetime($task.update_datetime, $time_since_update_period, $time_since_update_template)}
+
+                                        {$time_since_update_str}
+
+                                    </span>
+                                </div>
+                                <p class="hint">{$task.text|truncate:128}</p>
+                            </a>
+                        </li>
+
+
+                    {/strip}{/foreach}
+                    </ul>
+
+                    <div id="end-of-tasks" class="block">
+                        <p>
+                            <span class="js-tasks-list-counter">{sprintf("[`%s of %d`]", _w('%d task','%d tasks', $offset + $count), $total_count)}</span>
+                            {if $click_to_load_more && $next_page_url}
+                                <span class="click-to-load-more"><a href="javascript:void(0)">[`Load more...`]</a></span>
+                            {/if}
+                            <span class="hidden loading-indicator"><i class="icon16 loading"></i>&nbsp;[`Loading...`]</span>
+                        </p>
+                        <script>(function($) { "use strict";
+                            {* Note that this script has to be inside #t-tasks-wrapper for lazy loading to work correctly. *}
+                            $.tasks.initLazyloader({
+                                lazyloading_wrapper: $('#end-of-tasks'),
+                                next_page_url: {$next_page_url|json_encode},
+                                is_lazy: {if $click_to_load_more}false{else}true{/if},
+                                list_selector: '#t-tasks-wrapper',
+                                item_id_data_attr: 'task-id'
+                            });
+                            {* Init PrettyPrint on Tasks List *}
+                            $.tasks.initPrettyPrint();
+                        })(jQuery);</script>
+                    </div>
                 </div>
-                <h3 class="t-header">{$emptymsg.title|escape}</h3>
-                <p class="t-desc">{$emptymsg.message|escape}</p>
-            </div>
+            {else}
+                <div class="t-notice-list">
+                    <div class="t-notice-wrapper {$emptymsg.name|escape} is-shown">
+                        <div class="t-image">
+                            <img src="{$emptymsg.img_url|escape}" alt="">
+                        </div>
+                        <h3 class="t-header">{$emptymsg.title|escape}</h3>
+                        <p class="t-desc">{$emptymsg.message|escape}</p>
+                    </div>
+                </div>
+            {/if}
+
+            <!-- plugin hook: 'backend_tasks.%plugin_id%.body.bottom' -->
+            {* @event backend_tasks.%plugin_id%.body.bottom *}
+            {foreach $_backend_body_hooks as $_}{$_.bottom|default:''}{/foreach}
+
         </div>
-    {/if}
 
-    <!-- plugin hook: 'backend_tasks.%plugin_id%.body.bottom' -->
-    {* @event backend_tasks.%plugin_id%.body.bottom *}
-    {foreach $_backend_body_hooks as $_}{$_.bottom|default:''}{/foreach}
 
+    </div>
+    <div class="content">
+
+        please select a task
+
+    </div>
 </div>
 
 {if !empty($updater_url)}

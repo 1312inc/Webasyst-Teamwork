@@ -30,6 +30,12 @@
 <div class="sidebar-body t-sidebar-block" id="t-sidebar">
 
     <div class="box custom-mt-4">
+        <a id="add-task-link" class="button align-center width-90" href="#/add/">
+            <i class="fas fa-plus-circle"></i><span>[`New task`]</span>
+        </a>
+    </div>
+
+    <div class="box custom-mt-4">
         <div class="state-with-inner-icon left width-100">
             <span class="icon"><i class="fas fa-search"></i></span>
             <input class="solid" id="t-search-input" type="search" placeholder="[`Search`]"{if !empty($search_value)} value="{$search_value|escape}"{/if}>
@@ -59,10 +65,25 @@
     </div>
 
     <ul class="menu">
+        {if $is_admin}
+            <li>
+                <a href="#/log/">
+                    <i class="fas fa-bolt" style="color: gold;"></i>
+                    <span>[`Updates`]</span>
+                </a>
+            </li>
+            <li>
+                <a href="#/kanban/">
+                    <i class="fas fa-columns"></i>
+                    <span>[`Kanban`]</span>
+                </a>
+            </li>
+        {/if}
+    </ul>
 
-                    <li class="add-task-wrapper">
-                        <a id="add-task-link" class="add-task-link bold" href="#/add/"><i class="fas fa-plus-circle"></i><span>[`New task`]</span></a>
-                    </li>
+    <ul class="menu">
+
+
 
                     <li class="inbox-hidden small gray"{if !$hidden_count} style="display: none"{/if}>
                         <span class="count">{$hidden_count}</span>
@@ -79,7 +100,7 @@
             {/if}
             <a href="#/tasks/favorites/">
                 <i class="fas fa-star"></i>
-                <span>[`Favorites`]</span>
+                <span>[`My favorites`]</span>
                 <span class="count">{counts_pair total=$favorites_counts.total count=$favorites_counts.count bg_color=$favorites_counts.bg_color text_color=$favorites_counts.text_color}</span>
             </a>
         </li>
@@ -112,7 +133,7 @@
                 <i class="icon16 darr"></i>
                 <a href="javascript:void(0);">[`My lists`]</a>
             </h5>
-            <ul class="menu t-view-list collapsible hide-when-collapsed">
+            <ul class="menu t-view-list hide-when-collapsed">
 
                 {foreach $lists as $_list}
                     <li data-id="{$_list.id}">
@@ -156,18 +177,21 @@
             <ul class="t-scopes menu hide-when-collapsed">
                 {foreach $scopes as $scope}
                     <li class="t-scope {if !empty($scope.due_date) && $scope.due_date < date('Y-m-d')}child-red{/if}">
-                        <span class="count"></span>
                         <a href="#/tasks/scope/{$scope.id}/"{if isset($scope.closed_percent)}class="t-scope-title"{/if}>
-                            {$scope.project.icon_html}{$scope.name|escape}
-                            <span class="hint" style="display: block;">
-                                {if !empty($scope.due_date)}
-                                    {$scope.due_date|wa_datetime:"humandate"}
-                                {else}
-                                    [`Date is not set.`]
-                                {/if}
+                            <span class="icon"><i class="fas fa-fire"></i>{$scope.project.icon_html}</span>
+                            <span>
+                                {$scope.name|escape}
+                                <span class="hint" style="display: block;">
+                                    {if !empty($scope.due_date)}
+                                        {$scope.due_date|wa_datetime:"humandate"}
+                                    {else}
+                                        [`Date is not set.`]
+                                    {/if}
+                                </span>
                             </span>
+                            <span class="count">{if isset($scope.closed_percent)}{$scope.closed_percent}%{/if}</span>
                         </a>
-                        <span class="hint t-closed-percent">{if isset($scope.closed_percent)}{$scope.closed_percent}%{/if}</span>
+                        <span class="hint t-closed-percent"></span>
                     </li>
                 {/foreach}
             </ul>
@@ -194,7 +218,7 @@
             {foreach tasksHelper::getStatuses() as $s}
                 <li>
                     <a href="#/tasks/status/{$s.id}/">
-                        {$s.icon_html}
+                        <span class="icon">{$s.icon_html}</span>
                         <span>{$s.name|escape}</span>
                         {if $status_counts}
                         <span class="count">{ifset($status_counts[$s.id], 0)}</span>{/if}
@@ -205,7 +229,7 @@
                 <a href="#/tasks/unassigned/">
                     <i class="icon16 userpic-unassigned"></i>
                     <span>[`Unassigned`]</span>
-                    {user_count user_id=''}
+                    <span class="count">{user_count user_id=''}</span>
                 </a>
             </li>
         </ul>
@@ -220,7 +244,7 @@
         </h5>
         {$_users = tasksHelper::getTeam(null, true)}
         {if !empty($_users)}
-            <ul class="menu collapsible hide-when-collapsed">
+            <ul class="menu hide-when-collapsed">
                 {foreach $_users as $user}
                     <li>
                         {user_count user_id=$user.id}
@@ -247,7 +271,7 @@
                 {/if}
             </h5>
             {if $projects}
-                <ul class="menu collapsible hide-when-collapsed">
+                <ul class="menu hide-when-collapsed">
                     {foreach $projects as $project}
                         <li>
                             <a href="#/tasks/project/{$project.id}/">
@@ -297,10 +321,14 @@
                         [`Tags`]
                     </span>
                 </h5>
-                <div class="box align-center t-tags-wrapper js-tags-wrapper collapsible hide-when-collapsed">
-                    {foreach $cloud as $tag}
-                        <a style="font-size: {$tag.size}%; opacity: {$tag.opacity};color: green;text-decoration: underline;" data-id="{$tag.id}" data-value="{$tag.name|escape}" href="#/tasks/tag/{$tag.name|escape}/">{$tag.name|escape}</a>
-                    {/foreach}
+                <div class="box align-center t-tags-wrapper js-tags-wrapper hide-when-collapsed">
+                    <ul class="chips tags small">
+                        {foreach $cloud as $tag}
+                            <li>
+                                <a style="opacity: {$tag.opacity};" data-id="{$tag.id}" data-value="{$tag.name|escape}" href="#/tasks/tag/{$tag.name|escape}/"><i class="fas fa-hashtag"></i> {$tag.name|escape}</a>
+                            </li>
+                        {/foreach}
+                    </ul>
                 </div>
             </div>
         {/if}
