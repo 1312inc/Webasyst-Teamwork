@@ -7,6 +7,7 @@
 
 <!-- HASH FILTER -->
 
+<ul class="chips">
 {show_filter
     class='t-tasks-hash-type-filter js-header-title-participant'
     filter=[
@@ -31,6 +32,7 @@
         ]
     ]
 }
+
 
 <!-- OTHER SELECTOR FILTERS -->
 {foreach $filter_types as $id => $filter}
@@ -59,9 +61,9 @@
     <div class="t-menu-item">
         <span class="t-menu-name">
             <a href="{$no_filters_hash}" class="t-remove-filters-link">
-                <i class="icon16 t-clear-filters" style="vertical-align: middle; margin: 0;" title="[`Clear filters`]"></i>
+                <i class="fas fa-times-circle" style="vertical-align: middle; margin: 0;" title="[`Clear filters`]"></i>
             </a>
         </span>
     </div>
 {/if}
-
+</ul>
