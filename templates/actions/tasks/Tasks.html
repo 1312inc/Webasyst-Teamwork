@@ -36,7 +36,10 @@
                         {include file="./includes/TasksTaskHelpers.inc.html" inline}
 
                         {$_task_link = '#/task/'|cat:$task.project_id|cat:'.'|cat:$task.number|cat:'/'}
-                        <li class="item">
+                        <li class="item t-task-outer-container" id="task-{$task.id}" data-task-id="{$task.id}">
+                            <div class="t-checkbox-column">
+                                <input type="checkbox" class="t-checkbox-item">
+                            </div>
                             <a href="{$_task_link}" class="image">
 
                                 {task_userpics_block}
