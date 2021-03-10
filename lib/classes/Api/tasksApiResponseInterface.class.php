@@ -5,7 +5,7 @@
  */
 interface tasksApiResponseInterface
 {
-    const HTTP_OK = 200;
+    public const HTTP_OK = 200;
 
     /**
      * @return int

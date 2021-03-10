@@ -3,10 +3,10 @@
 /**
  * Class tasksTaskFactory
  *
- * @method tasksTask createNew()
- * @method tasksTask createNewWithData()
+ * @method tasksTask2 createNew()
+ * @method tasksTask2 createNewWithData()
  */
-class tasksTaskFactory extends tasksBaseFactory
+class tasksTask2Factory extends tasksBaseFactory
 {
     public const DEFAULT_ICON  = 'blog';
     public const DEFAULT_COLOR = 't-white';
@@ -14,11 +14,11 @@ class tasksTaskFactory extends tasksBaseFactory
     /**
      * @var string
      */
-//    protected $entity = tasksTask::class;
+    protected $entity = tasksTask2::class;
 
     public function createFromApiVo(tasksApiTasksAddRequest $addRequest)
     {
-//        $task = $this->createNew();
+        $task = $this->createNew();
 
 //        $task->set;
 
