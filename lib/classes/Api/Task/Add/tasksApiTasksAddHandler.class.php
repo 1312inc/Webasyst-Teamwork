@@ -18,20 +18,10 @@ final class tasksApiTasksAddHandler
 
 
 
-        $project = tsks()->getEntityFactory(tasksTask::class)->createFromApiVo($addRequest);
-
-        $statuses = tasksHelper::getStatuses(null, false);
-        $newStatuses = [];
-        foreach ($statuses as $s) {
-            if (empty($s['special']) && !empty($addRequest->getWorkflow()[$s['id']])) {
-                $newStatuses[$s['id']] = $s['id'];
-            }
+        if (!tsks()->getEntityRepository(tasksTask2::class)->save()) {
+            throw new tasksException('Error on task add');
         }
 
-        if (!tsks()->getEntityRepository(tasksTasks::class)->save($project, $newStatuses)) {
-            throw new tasksException('Error on project add');
-        }
-
-        return $project;
+        return ;
     }
 }

@@ -55,7 +55,8 @@ class tasksProject implements tasksPersistableInterface
     /**
      * tasksProject constructor.
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->create_datetime = new DateTimeImmutable();
     }
 
@@ -208,7 +209,10 @@ class tasksProject implements tasksPersistableInterface
         $dbValues['create_datetime'] = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $dbValues['create_datetime']);
 
         if (!empty($dbValues['archive_datetime'])) {
-            $dbValues['archive_datetime'] = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $dbValues['archive_datetime']);
+            $dbValues['archive_datetime'] = DateTimeImmutable::createFromFormat(
+                'Y-m-d H:i:s',
+                $dbValues['archive_datetime']
+            );
         }
     }
 }

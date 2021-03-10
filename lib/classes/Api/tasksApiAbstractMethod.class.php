@@ -10,11 +10,12 @@ abstract class tasksApiAbstractMethod extends waAPIMethod
     public const METHOD_DELETE = 'DELETE';
     public const METHOD_PUT    = 'PUT';
 
-    public const CAST_INT      = 1;
-    public const CAST_FLOAT    = 2;
-    public const CAST_ARRAY    = 3;
-    public const CAST_STRING   = 4;
-    public const CAST_DATETIME = 5;
+    public const CAST_INT         = 1;
+    public const CAST_FLOAT       = 2;
+    public const CAST_ARRAY       = 3;
+    public const CAST_STRING      = 4;
+    public const CAST_STRING_TRIM = 5;
+    public const CAST_DATETIME    = 6;
 
     /**
      * @var array
@@ -190,6 +191,9 @@ abstract class tasksApiAbstractMethod extends waAPIMethod
 
             case self::CAST_STRING:
                 return (string) $var;
+
+            case self::CAST_STRING_TRIM:
+                return trim((string) $var);
 
             case self::CAST_DATETIME:
                 $var = DateTimeImmutable::createFromFormat($format, $var);

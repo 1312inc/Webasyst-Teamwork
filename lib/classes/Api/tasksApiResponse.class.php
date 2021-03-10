@@ -3,7 +3,7 @@
 final class tasksApiResponse implements tasksApiResponseInterface
 {
     /**
-     * @var string
+     * @var mixed
      */
     private $response;
 
@@ -12,16 +12,16 @@ final class tasksApiResponse implements tasksApiResponseInterface
      */
     private $status;
 
-    public function __construct(int $status = self::HTTP_OK, string $response = 'ok')
+    public function __construct(int $status = self::HTTP_OK, $response = 'ok')
     {
         $this->status = $status;
         $this->response = $response;
     }
 
     /**
-     * @return string
+     * @return mixed
      */
-    public function getResponseBody(): string
+    public function getResponseBody()
     {
         return $this->response;
     }
