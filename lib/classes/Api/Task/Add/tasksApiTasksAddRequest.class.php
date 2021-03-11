@@ -48,9 +48,20 @@ final class tasksApiTasksAddRequest
     private $due_date;
 
     /**
+     * @var string|null
+     */
+    private $files_hash;
+
+    /**
+     * @var int
+     */
+    private $create_contact_id;
+
+    /**
      * tasksApiTasksAddRequest constructor.
      *
      * @param string                 $name
+     * @param int                    $create_contact_id
      * @param string|null            $text
      * @param int|null               $assigned_contact_id
      * @param int|null               $project_id
@@ -59,9 +70,11 @@ final class tasksApiTasksAddRequest
      * @param int|null               $status_id
      * @param int|null               $hidden_timestamp
      * @param DateTimeImmutable|null $due_date
+     * @param string|null            $files_hash
      */
     public function __construct(
         string $name,
+        int $create_contact_id,
         ?string $text,
         ?int $assigned_contact_id,
         ?int $project_id,
@@ -69,7 +82,8 @@ final class tasksApiTasksAddRequest
         ?int $priority,
         ?int $status_id,
         ?int $hidden_timestamp,
-        ?DateTimeImmutable $due_date
+        ?DateTimeImmutable $due_date,
+        ?string $files_hash
     ) {
         $this->name = $name;
         $this->text = $text;
@@ -80,77 +94,62 @@ final class tasksApiTasksAddRequest
         $this->status_id = $status_id;
         $this->hidden_timestamp = $hidden_timestamp;
         $this->due_date = $due_date;
+        $this->files_hash = $files_hash;
+        $this->create_contact_id = $create_contact_id;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @return string|null
-     */
     public function getText(): ?string
     {
         return $this->text;
     }
 
-    /**
-     * @return int|null
-     */
     public function getAssignedContactId(): ?int
     {
         return $this->assigned_contact_id;
     }
 
-    /**
-     * @return int|null
-     */
     public function getProjectId(): ?int
     {
         return $this->project_id;
     }
 
-    /**
-     * @return int|null
-     */
     public function getMilestoneId(): ?int
     {
         return $this->milestone_id;
     }
 
-    /**
-     * @return int|null
-     */
     public function getPriority(): ?int
     {
         return $this->priority;
     }
 
-    /**
-     * @return int|null
-     */
     public function getStatusId(): ?int
     {
         return $this->status_id;
     }
 
-    /**
-     * @return int|null
-     */
     public function getHiddenTimestamp(): ?int
     {
         return $this->hidden_timestamp;
     }
 
-    /**
-     * @return DateTimeImmutable|null
-     */
     public function getDueDate(): ?DateTimeImmutable
     {
         return $this->due_date;
+    }
+
+    public function getFilesHash(): ?string
+    {
+        return $this->files_hash;
+    }
+
+    public function getCreateContactId(): int
+    {
+        return $this->create_contact_id;
     }
 }

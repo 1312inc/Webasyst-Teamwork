@@ -92,6 +92,11 @@ class tasksTask2 implements tasksPersistableInterface
      */
     private $due_date;
 
+    /**
+     * @var tasksTask
+     */
+    private $legacy_task;
+
     public function __construct()
     {
         $this->create_datetime = new DateTimeImmutable();
@@ -117,19 +122,11 @@ class tasksTask2 implements tasksPersistableInterface
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     *
-     * @return tasksTask2
-     */
     public function setName(string $name): tasksTask2
     {
         $this->name = $name;
@@ -137,19 +134,11 @@ class tasksTask2 implements tasksPersistableInterface
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getText(): string
     {
         return $this->text;
     }
 
-    /**
-     * @param string $text
-     *
-     * @return tasksTask2
-     */
     public function setText(string $text): tasksTask2
     {
         $this->text = $text;
@@ -157,19 +146,11 @@ class tasksTask2 implements tasksPersistableInterface
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getProjectId(): int
     {
         return $this->project_id;
     }
 
-    /**
-     * @param int $project_id
-     *
-     * @return tasksTask2
-     */
     public function setProjectId(int $project_id): tasksTask2
     {
         $this->project_id = $project_id;
@@ -177,19 +158,11 @@ class tasksTask2 implements tasksPersistableInterface
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getCreateContactId(): int
     {
         return $this->create_contact_id;
     }
 
-    /**
-     * @param int $create_contact_id
-     *
-     * @return tasksTask2
-     */
     public function setCreateContactId(int $create_contact_id): tasksTask2
     {
         $this->create_contact_id = $create_contact_id;
@@ -197,19 +170,11 @@ class tasksTask2 implements tasksPersistableInterface
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getAssignedContactId(): int
     {
         return $this->assigned_contact_id;
     }
 
-    /**
-     * @param int $assigned_contact_id
-     *
-     * @return tasksTask2
-     */
     public function setAssignedContactId(int $assigned_contact_id): tasksTask2
     {
         $this->assigned_contact_id = $assigned_contact_id;
@@ -217,19 +182,11 @@ class tasksTask2 implements tasksPersistableInterface
         return $this;
     }
 
-    /**
-     * @return int|null
-     */
     public function getMilestoneId(): ?int
     {
         return $this->milestone_id;
     }
 
-    /**
-     * @param int|null $milestone_id
-     *
-     * @return tasksTask2
-     */
     public function setMilestoneId(?int $milestone_id): tasksTask2
     {
         $this->milestone_id = $milestone_id;
@@ -237,19 +194,11 @@ class tasksTask2 implements tasksPersistableInterface
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getNumber(): int
     {
         return $this->number;
     }
 
-    /**
-     * @param int $number
-     *
-     * @return tasksTask2
-     */
     public function setNumber(int $number): tasksTask2
     {
         $this->number = $number;
@@ -257,19 +206,11 @@ class tasksTask2 implements tasksPersistableInterface
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getStatusId(): int
     {
         return $this->status_id;
     }
 
-    /**
-     * @param int $status_id
-     *
-     * @return tasksTask2
-     */
     public function setStatusId(int $status_id): tasksTask2
     {
         $this->status_id = $status_id;
@@ -277,19 +218,11 @@ class tasksTask2 implements tasksPersistableInterface
         return $this;
     }
 
-    /**
-     * @return int|null
-     */
     public function getParentId(): ?int
     {
         return $this->parent_id;
     }
 
-    /**
-     * @param int|null $parent_id
-     *
-     * @return tasksTask2
-     */
     public function setParentId(?int $parent_id): tasksTask2
     {
         $this->parent_id = $parent_id;
@@ -297,19 +230,11 @@ class tasksTask2 implements tasksPersistableInterface
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getPriority(): int
     {
         return $this->priority;
     }
 
-    /**
-     * @param int $priority
-     *
-     * @return tasksTask2
-     */
     public function setPriority(int $priority): tasksTask2
     {
         $this->priority = $priority;
@@ -317,19 +242,11 @@ class tasksTask2 implements tasksPersistableInterface
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getAssignLogId(): int
     {
         return $this->assign_log_id;
     }
 
-    /**
-     * @param int $assign_log_id
-     *
-     * @return tasksTask2
-     */
     public function setAssignLogId(int $assign_log_id): tasksTask2
     {
         $this->assign_log_id = $assign_log_id;
@@ -337,19 +254,11 @@ class tasksTask2 implements tasksPersistableInterface
         return $this;
     }
 
-    /**
-     * @return int|null
-     */
     public function getContactId(): ?int
     {
         return $this->contact_id;
     }
 
-    /**
-     * @param int|null $contact_id
-     *
-     * @return tasksTask2
-     */
     public function setContactId(?int $contact_id): tasksTask2
     {
         $this->contact_id = $contact_id;
@@ -357,19 +266,11 @@ class tasksTask2 implements tasksPersistableInterface
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getHiddenTimestamp(): int
     {
         return $this->hidden_timestamp;
     }
 
-    /**
-     * @param int $hidden_timestamp
-     *
-     * @return tasksTask2
-     */
     public function setHiddenTimestamp(int $hidden_timestamp): tasksTask2
     {
         $this->hidden_timestamp = $hidden_timestamp;
@@ -377,19 +278,11 @@ class tasksTask2 implements tasksPersistableInterface
         return $this;
     }
 
-    /**
-     * @return int|null
-     */
     public function getCommentLogId(): ?int
     {
         return $this->comment_log_id;
     }
 
-    /**
-     * @param int|null $comment_log_id
-     *
-     * @return tasksTask2
-     */
     public function setCommentLogId(?int $comment_log_id): tasksTask2
     {
         $this->comment_log_id = $comment_log_id;
@@ -397,19 +290,11 @@ class tasksTask2 implements tasksPersistableInterface
         return $this;
     }
 
-    /**
-     * @return DateTimeImmutable
-     */
     public function getCreateDatetime(): DateTimeImmutable
     {
         return $this->create_datetime;
     }
 
-    /**
-     * @param DateTimeImmutable $create_datetime
-     *
-     * @return tasksTask2
-     */
     public function setCreateDatetime(DateTimeImmutable $create_datetime): tasksTask2
     {
         $this->create_datetime = $create_datetime;
@@ -417,19 +302,11 @@ class tasksTask2 implements tasksPersistableInterface
         return $this;
     }
 
-    /**
-     * @return DateTimeImmutable|null
-     */
     public function getUpdateDatetime(): ?DateTimeImmutable
     {
         return $this->update_datetime;
     }
 
-    /**
-     * @param DateTimeImmutable|null $update_datetime
-     *
-     * @return tasksTask2
-     */
     public function setUpdateDatetime(?DateTimeImmutable $update_datetime): tasksTask2
     {
         $this->update_datetime = $update_datetime;
@@ -437,19 +314,11 @@ class tasksTask2 implements tasksPersistableInterface
         return $this;
     }
 
-    /**
-     * @return DateTimeImmutable|null
-     */
     public function getDueDate(): ?DateTimeImmutable
     {
         return $this->due_date;
     }
 
-    /**
-     * @param DateTimeImmutable|null $due_date
-     *
-     * @return tasksTask2
-     */
     public function setDueDate(?DateTimeImmutable $due_date): tasksTask2
     {
         $this->due_date = $due_date;
@@ -477,5 +346,41 @@ class tasksTask2 implements tasksPersistableInterface
         if (!empty($dbValues['due_date'])) {
             $dbValues['due_date'] = DateTimeImmutable::createFromFormat('Y-m-d|', $dbValues['due_date']);
         }
+    }
+
+    public function getLegacyTask(): tasksTask
+    {
+        return $this->legacy_task;
+    }
+
+    public function setLegacyTask(tasksTask $legacy_task): tasksTask2
+    {
+        $this->legacy_task = $legacy_task;
+
+        return $this;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'text' => $this->text,
+            'create_contact_id' => $this->create_contact_id,
+            'create_datetime' => $this->create_datetime->format('Y-m-d H:i:s'),
+            'update_datetime' => $this->update_datetime ? $this->update_datetime->format('Y-m-d H:i:s') : '',
+            'assigned_contact_id' => $this->assigned_contact_id,
+            'project_id' => $this->project_id,
+            'milestone_id' => $this->milestone_id,
+            'number' => $this->number,
+            'status_id' => $this->status_id,
+            'parent_id' => $this->parent_id,
+            'priority' => $this->priority,
+            'assign_log_id' => $this->assigned_contact_id,
+            'contact_id' => $this->contact_id,
+            'hidden_timestamp' => $this->hidden_timestamp,
+            'due_date' => $this->due_date ? $this->due_date->format('Y-m-d H:i:s') : '',
+            'comment_log_id' => $this->comment_log_id,
+        ];
     }
 }
