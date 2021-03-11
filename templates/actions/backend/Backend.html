@@ -68,9 +68,9 @@
         </div>
     </div>
 
-    {if method_exists($wa->installer, 'reviewWidget')}
+    {* if method_exists($wa->installer, 'reviewWidget')}
         {$wa->installer->reviewWidget('app/tasks')}
-    {/if}
+    {/if *}
 
     <script>$.wa.locale = $.extend($.wa.locale || {}, {
         'Search': "[`Search`]",

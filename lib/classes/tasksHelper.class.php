@@ -180,11 +180,18 @@ class tasksHelper
                 $color = 'eeeeee';
             }
 
-            $status['view']['button_html'] = '<a '.
-                'href="javascript:void(0);" '.
-                'class="t-control-link t-change-status-link" data-status-id="'.$status['id'].'"'.
-                'style="background-color:#'.$color.'"'.
-                '><span class="t-change-status-link-label">'.htmlspecialchars($status['button']).'</span></a>';
+            if (wa()->whichUI() == '2.0')
+                $status['view']['button_html'] = '<a '.
+                    'href="javascript:void(0);" '.
+                    'class="button rounded t-control-link t-change-status-link" data-status-id="'.$status['id'].'"'.
+                    'style="background-color:#'.$color.'"'.
+                    '><span class="t-change-status-link-label">'.htmlspecialchars($status['button']).'</span></a>';
+            else
+                $status['view']['button_html'] = '<a '.
+                    'href="javascript:void(0);" '.
+                    'class="t-control-link t-change-status-link" data-status-id="'.$status['id'].'"'.
+                    'style="background-color:#'.$color.'"'.
+                    '><span class="t-change-status-link-label">'.htmlspecialchars($status['button']).'</span></a>';
         }
         unset($status);
     }
@@ -505,7 +512,7 @@ class tasksHelper
         if ((!$log['action'] || $log['action'] == 'forward' || $log['action'] == 'return') && $task['contact_id'] != $contact_id) {
             $update['contact_id'] = $contact_id;
         }
-        
+
         if ($update) {
             if ($do_not_update_datetime) {
                 $update['update_datetime'] = false;

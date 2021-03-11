@@ -3,11 +3,11 @@
 <div class="t-comment-form">
     <form {if $post_action_url|default:''}action="{$post_action_url}"{/if} method="post">
 
-        <div class="profile image32px">
+        <div class="flexbox space-12">
             <div class="image">
-                <img src="{$wa->user()->getPhoto(64)}" alt="" class="userpic">
+                <img src="{$wa->user()->getPhoto(64)}" alt="" class="userpic userpic-48">
             </div>
-            <div class="details">
+            <div class="wide">
                 {* TEXTAREA *}
                 <div class="line t-textarea-wrapper">
                     {$_text = $comment.text|default:''}
