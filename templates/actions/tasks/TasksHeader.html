@@ -14,65 +14,65 @@
         <div class="t-rel111111ative-wrapper">
             <div class="t-p1111111review-wrapper">
                 <div class="t-111111menu-item box">
-                    <div class="flexbox">
-                        <h4 class="wide">
+                    <div class="flexbox space-12">
+                        <h3 class="wide">
                             <span class="t-preview-name">
-                            {if $is_in_my_list}
-                                {$list.name|escape}
-                            {/if}
+                                {if $is_in_my_list}
+                                    {$list.name|escape}
+                                {/if}
                             </span>
-                            <a class="show-tasks-filters" href="javascript:void(0);" title="[`Filter tasks`]"><i class="fas fa-filter"></i></a>
-                            <a class="show-tasks-checkboxes" href="javascript:void(0);" title="[`Select tasks`]"><i class="fas fa-check-square"></i></a>
-                        </h4>
+                            {if !$is_single}
+                                <div class="t-order-wrap1111per">
+                                    <div class="dropdown t-menu-it1111111em t-order-selector js-dropdown-menu" data-id="order" id="t-menu-dropdown-order">
 
-                        {if !$is_single}
-                            <div class="t-order-wrap1111per">
-                                <div class="dropdown t-menu-it1111111em t-order-selector js-dropdown-menu" data-id="order" id="t-menu-dropdown-order">
-
-                                    {$sort_options = [
-                                        'priority' => "[`Priority`]",
-                                        'due' => "[`Due`]",
-                                        'newest' => "[`Newest`]",
-                                        'oldest' => "[`Oldest`]"
-                                    ]}
+                                        {$sort_options = [
+                                            'priority' => "[`Priority`]",
+                                            'due' => "[`Due`]",
+                                            'newest' => "[`Newest`]",
+                                            'oldest' => "[`Oldest`]"
+                                        ]}
 
 
-                                    <a class="dropdown-toggle t-selected-item js-dropdown-menu-title" href="javascript:void(0);"></a>
-                                    <div class="dropdown-body">
-                                        <ul class="menu">
-                                            {foreach $sort_options as $o_id => $o_name}
-                                                <li class="t-nav-item js-dropdown-menu-item {if $o_id == $current_sort}js-dropdown-menu-item-selected{/if}" data-value="{$o_id}">
-                                                    <a href="javascript:void(0);">
-                                                        {$o_name|escape}
-                                                    </a>
-                                                </li>
-                                            {/foreach}
-
-                                            <!-- plugin hook: 'backend_tasks.%plugin_id%.header.order_items' -->
-                                            {* @event backend_tasks.%plugin_id%.header.order_items *}
-                                            {foreach $_backend_header_hooks as $_}
-                                                {$_order_items = $_.order_items|default:[]}
-                                                {foreach $_order_items as $_item}
-                                                    <li class="t-nav-item js-dropdown-menu-item" data-value="{$_item.id}">
+                                        <a class="dropdown-toggle t-selected-item js-dropdown-menu-title gray smaller" href="javascript:void(0);"></a>
+                                        <div class="dropdown-body">
+                                            <ul class="menu">
+                                                {foreach $sort_options as $o_id => $o_name}
+                                                    <li class="t-nav-item js-dropdown-menu-item {if $o_id == $current_sort}js-dropdown-menu-item-selected{/if}" data-value="{$o_id}">
                                                         <a href="javascript:void(0);">
-                                                            {$_item.name|escape}
+                                                            {$o_name|escape}
                                                         </a>
                                                     </li>
                                                 {/foreach}
-                                            {/foreach}
 
-                                        </ul>
-                                    </div>
+                                                <!-- plugin hook: 'backend_tasks.%plugin_id%.header.order_items' -->
+                                                {* @event backend_tasks.%plugin_id%.header.order_items *}
+                                                {foreach $_backend_header_hooks as $_}
+                                                    {$_order_items = $_.order_items|default:[]}
+                                                    {foreach $_order_items as $_item}
+                                                        <li class="t-nav-item js-dropdown-menu-item" data-value="{$_item.id}">
+                                                            <a href="javascript:void(0);">
+                                                                {$_item.name|escape}
+                                                            </a>
+                                                        </li>
+                                                    {/foreach}
+                                                {/foreach}
 
-                                    <script>
-                                        ( function($) {
-                                            $("#t-menu-dropdown-order").waDropdown();
-                                        })(jQuery);
-                                    </script>
+                                            </ul>
+                                        </div>
 
-                            </div>
-                            </div>
-                        {/if}
+                                        <script>
+                                            ( function($) {
+                                                $("#t-menu-dropdown-order").waDropdown();
+                                            })(jQuery);
+                                        </script>
+
+                                </div>
+                                </div>
+                            {/if}
+                        </h3>
+                        <a class="show-tasks-filters" href="javascript:void(0);" title="[`Filter tasks`]"><i class="fas fa-filter"></i></a>
+                        <a class="show-tasks-checkboxes" href="javascript:void(0);" title="[`Select tasks`]"><i class="fas fa-check-square"></i></a>
+
                     </div>
                 </div>
 

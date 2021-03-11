@@ -57,7 +57,7 @@
 
                                     <span>
                                         {$task.project_id}.{$task.number}
-                                        <span class="semibold" style="{$task->titleStyle()}">{$task.name|escape|default:"(no name)"}</span>
+                                        <span class="semibold" style="{$task->titleStyle()}">{$task.name|escape|default:"(no name)"|truncate:64}</span>
 
                                         {* STATUS *}
                                         {if !empty($task.status.name)}
