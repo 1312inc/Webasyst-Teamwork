@@ -1,23 +1,22 @@
 <?php
 
-class tasksMilestoneRepository extends tasksBaseRepository
+class tasksTasks2Repository extends tasksBaseRepository
 {
     /**
-     * @param tasksMilestone|tasksPersistableInterface $milestone
-     * @param mixed                                    ...$params
+     * @param tasksTask2|tasksPersistableInterface $task2
+     * @param mixed                                ...$params
      *
      * @return bool
      */
-    public function delete(tasksPersistableInterface $milestone, ...$params): bool
+    public function save(tasksPersistableInterface $task2, ...$params): bool
     {
-        if (!parent::delete($milestone, $params)) {
+        if (!parent::save($task2, $params)) {
             return false;
         }
 
-        $this->getModel()->exec(
-            'delete from tasks_releases_milestone_projects where milestone_id = i:id',
-            ['id' => $milestone->getId()]
-        );
+        tsks()->getModel(tasksProject::class)->recountTasksNumber($task2->getId());
+
+        $task2->setLegacyTask(new tasksTask($this->getModel()->getById($task2->getId())));
 
         return true;
     }
