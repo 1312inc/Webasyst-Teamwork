@@ -27,13 +27,13 @@
 {/function}
 
 {function show_filter filter=[] class='' data_keys=[]}{strip}
-    <li class="dropdown t-menu-it111111em js-dropdown-menu {$class|default:''}" data-id="{$filter.id}" data-hash="{$filter.hash|default:''}" id="t-menu-dropdown-{$filter.id}">
+    <li class="dropdown js-dropdown-menu {$class|default:''}" data-id="{$filter.id}" data-hash="{$filter.hash|default:''}" id="t-menu-dropdown-{$filter.id}">
 
         <a class="t-selected-item js-dropdown-menu-title dropdown-toggle" href="javascript:void(0);">&nbsp;</a>
         <div class="dropdown-body">
             <ul class="menu">
                 {foreach $filter.options as $o}
-                    <li class="t-nav-it11111em js-dropdown-menu-item
+                    <li class="js-dropdown-menu-item
                         {if $o.is_empty|default:false} is-empty{/if}
                         {if $o.selected|default:''} js-dropdown-menu-item-selected{/if}"
                         {print_option_data_attrs o=$o keys=$data_keys}>
@@ -64,35 +64,35 @@
 {/strip}{/function}
 
 {function showTagsCloud class='' cloud=[]}
-    <li class="dropdown t-menu-it1111111em {$class|default:''}" data-id="tag" data-hash="tag" id="t-menu-dropdown-tag">
+    <li class="dropdown {$class|default:''}" data-id="tag" data-hash="tag" id="t-menu-dropdown-tag">
 
         {$_title = '[`Tags`]'}
         <a class="dropdown-toggle t-selected-item js-title" href="javascript:void(0);" data-default-title="{$_title}">{$_title}</a>
 
         <div class="dropdown-body">
-            <div class="box">
-                <ul class="chips small tag  s t-tags-cloud">
-                    <li class="js-show-all" style="display: none;">
-                        <a href="javascript:void(0);" class="js-tag-link" data-id="" data-value="">[`Show all`]</a>
-                    </li>
-                    <li class="t-nav-it11111em t-nav-tags-item">
-                        {if count($cloud) <= tasksTaskTagsModel::TAGS_MAX_COUNT}
-                            {foreach $cloud as $tag}
-                                <a href="javascript:void(0)"
-                                   class="js-tag-link t-tag-link"
-                                   data-id="{$tag.id}"
-                                   data-value="{$tag.name|escape}"
-                                   style="font-size: {$tag.size}%; opacity: {$tag.opacity};color: green;text-decoration: underline;"><i class="fas fa-hashtag"></i><span>{$tag.name|escape}</span></a>
-                            {/foreach}
-                        {else}
-                            <span class="hint" style="margin: 1em 0;">{sprintf(_w('There are more than %u tags.'), tasksTaskTagsModel::TAGS_MAX_COUNT)}<br>
-                                [`Start typing in the search field to find a tag.`]
-                            </span>
-                        {/if}
-                    </li>
-                </ul>
-                <input value="" class="t-input js-t-header-tags-autocomplete" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true" placeholder="[`Search tag...`]">
-            </div>
+            <ul class="menu t-tags-cloud">
+                <li class="js-show-all" style="display: none;">
+                    <a href="javascript:void(0);" class="js-tag-link" data-id="" data-value="">[`Show all`]</a>
+                </li>
+                <li class="t-nav-tags-item">
+                    {if count($cloud) <= tasksTaskTagsModel::TAGS_MAX_COUNT}
+                        {foreach $cloud as $tag}
+                            <a href="javascript:void(0)"
+                               class="js-tag-link t-tag-link"
+                               data-id="{$tag.id}"
+                               data-value="{$tag.name|escape}"
+                               ><i class="fas fa-hashtag"></i><span>{$tag.name|escape}</span></a>
+                        {/foreach}
+                    {else}
+                        <span class="hint" style="margin: 1em 0;">{sprintf(_w('There are more than %u tags.'), tasksTaskTagsModel::TAGS_MAX_COUNT)}<br>
+                            [`Start typing in the search field to find a tag.`]
+                        </span>
+                    {/if}
+                </li>
+                <li>
+                    <input value="" class="t-input js-t-header-tags-autocomplete" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true" placeholder="[`Search tag...`]">
+                </li>
+            </ul>
         </div>
 
         <script>

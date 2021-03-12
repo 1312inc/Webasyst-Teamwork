@@ -73,6 +73,13 @@
 
 
 
+                                    <a href="#/tasks/project/{$task.project.id}/" class="t-menu-name">
+                                        {if !empty($task.project.icon_html)}
+                                            {$task.project.icon_html}
+                                        {/if}
+                                        {$task.project.name|escape}
+                                    </a>
+                                
 
 
 

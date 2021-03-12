@@ -130,8 +130,10 @@
     {if $lists}
         <div class="t-view-list-wrapper block" id="t-view-list-wrapper">
             <h5 class="heading">
-                <i class="icon16 darr"></i>
-                <a href="javascript:void(0);">[`My lists`]</a>
+                <span>
+                    <span class="caret"><i class="fas fa-caret-down"></i></span>
+                    [`My lists`]
+                </span>
             </h5>
             <ul class="menu t-view-list hide-when-collapsed">
 
@@ -151,7 +153,8 @@
 
                         {$_href = "#/tasks/{$_params_str}/"}
                         <a title="{$_list.name|escape}" href="{$_href}">
-                            <i class="icon16 {$_list.icon|default:'contact'|escape}"></i>
+                            <!-- <i class="icon16 {$_list.icon|default:'contact'|escape}"></i> -->
+                            <i class="fas fa-bug {$_list.icon|default:'contact'|escape}"></i>
                             <span>{$_list.name|truncate:18:'...':true|escape}</span>
                             <span class="count">{$_list.count|default:0}</span>
                         </a>
