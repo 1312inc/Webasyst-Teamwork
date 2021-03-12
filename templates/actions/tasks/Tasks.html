@@ -103,7 +103,7 @@
                                         {$time_since_update_template = null}
                                         {$time_since_update_str = tasksHelper::getDatetime($task.update_datetime, $time_since_update_period, $time_since_update_template)}
 
-                                        {$time_since_update_str}
+                                        <span class="small gray nowrap">{$time_since_update_str}</span>
 
                                     </span>
                                 </div>
@@ -115,7 +115,7 @@
                     {/strip}{/foreach}
                     </ul>
 
-                    <div id="end-of-tasks" class="block">
+                    <div id="end-of-tasks" class="box hint align-center">
                         <p>
                             <span class="js-tasks-list-counter">{sprintf("[`%s of %d`]", _w('%d task','%d tasks', $offset + $count), $total_count)}</span>
                             {if $click_to_load_more && $next_page_url}
@@ -159,7 +159,9 @@
     </div>
     <div class="content">
 
-        please select a task
+            <div class="box align-center" style="margin-top: 30vh;">
+                <span style="opacity: 0.1; font-size: 20rem;"><i class="fas fa-tasks"></i></span>
+            </div>
 
     </div>
 </div>
