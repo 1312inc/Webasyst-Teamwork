@@ -1,3 +1,30 @@
+.t-general-menu
+    padding 1rem 1rem 0.5rem
+
+    #t-filters-toggle
+        svg
+            transition 0.2s
+        &.upsidedown
+            svg
+                transform rotate(180deg)
+
+    .t-filters-wrapper
+        display none
+
+        &.is-shown
+            display block
+
+.t-selection-menu
+    padding 1rem 1.25rem 0
+    display none
+
+    &.is-shown
+        display block
+
+.t-selected-item
+    .is-bold
+        font-weight bold
+
 /******
 LEGACY -- REMOVE
 

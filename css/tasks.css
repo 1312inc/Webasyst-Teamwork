@@ -16,14 +16,41 @@ label {
 #wa-app:after {
   display: none;
 }
-.t-tag-link {
-  color: #008000 !important;
-  text-decoration: none;
+/***
+LEGACY
+.t-tag-link
+    color green !important
+    text-decoration none
+
+.t-main-wrapper
+    border 1px solid #ddd
+    border-radius 2px
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.13)
+***/
+.t-general-menu {
+  padding: 1rem 1rem 0.5rem;
 }
-.t-main-wrapper {
-  border: 1px solid #ddd;
-  border-radius: 2px;
-  box-shadow: 0 1px 5px rgba(0,0,0,0.13);
+.t-general-menu #t-filters-toggle svg {
+  transition: 0.2s;
+}
+.t-general-menu #t-filters-toggle.upsidedown svg {
+  transform: rotate(180deg);
+}
+.t-general-menu .t-filters-wrapper {
+  display: none;
+}
+.t-general-menu .t-filters-wrapper.is-shown {
+  display: block;
+}
+.t-selection-menu {
+  padding: 1rem 1.25rem 0;
+  display: none;
+}
+.t-selection-menu.is-shown {
+  display: block;
+}
+.t-selected-item .is-bold {
+  font-weight: bold;
 }
 .t-sidebar-block {
   position: relative;
@@ -509,6 +536,13 @@ label {
 }
 .t-log-page .t-logs-wrapper .t-comment-item .t-attach-wrapper .t-attached-files-wrapper .t-images-list .t-image-item .t-file-name {
   display: none;
+}
+.t-tasks-wrapper .t-checkbox-column {
+  display: none;
+  padding: 1.25rem 0.5rem 1.25rem 1.25rem;
+}
+.t-tasks-wrapper.t-selection-checkboxes-visible .t-checkbox-column {
+  display: block;
 }
 .t-background-wrapper {
   display: none;
