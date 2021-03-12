@@ -35,8 +35,13 @@
 
                         {include file="./includes/TasksTaskHelpers.inc.html" inline}
 
-                        {$_task_link = '#/task/'|cat:$task.project_id|cat:'.'|cat:$task.number|cat:'/'}
-                        <li class="item t-task-outer-container" id="task-{$task.id}" data-task-id="{$task.id}">
+                        {$_task_number = $task.project_id|cat:'.'|cat:$task.number}
+                        {$_task_link = '#/task/'|cat:$_task_number|cat:'/'}
+                        <li class="item t-task-outer-container"
+                            id="task-{$task.id}"
+                            data-task-id="{$task.id}"
+                            data-task-number="{$_task_number}"
+                        >
                             <div class="t-checkbox-column">
                                 <input type="checkbox" class="t-checkbox-item">
                             </div>
@@ -157,7 +162,7 @@
 
 
     </div>
-    <div class="content">
+    <div class="content" id="task-preview-wrapper">
 
             <div class="box align-center" style="margin-top: 30vh;">
                 <span style="opacity: 0.1; font-size: 20rem;"><i class="fas fa-tasks"></i></span>
@@ -171,3 +176,22 @@
         $.tasks.initTasksUpdater({$updater_url|json_encode});
     })();</script>
 {/if}
+
+<script>
+    (function (){
+        $('.t-tasks-wrapper').on('click', '.item[data-task-number]', function (e) {
+            e.preventDefault();
+            var $link = $(this),
+                number = $link.data('task-number'),
+                $taskWrapper = $('#task-preview-wrapper');
+
+            $taskWrapper.html('Загрузка...');
+
+            $.get('?module=tasks&action=info&n=' + number, function (html) {
+                $taskWrapper.html(html);
+                window.TasksController.skipDispatch = 1;
+                window.TasksController.setHash('/task/' + number + '/');
+            });
+        })
+    }())
+</script>
