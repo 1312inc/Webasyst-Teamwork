@@ -4,11 +4,10 @@
         {if !$count}
             {$total}
         {elseif $count == $total}
-            <span class="{if $bg_color == '#ff0000'} indicator{/if}" style="background:{ifempty($bg_color, 'transparent')};color:{ifempty($text_color, '#999')}">{$count}</span>
+            <span class="{if $bg_color == '#ff0000'}badge{/if}" style="background:{ifempty($bg_color, 'transparent')};color:{ifempty($text_color, '#999')}">{$count}</span>
         {else}
+            <span class="badge custom-mr-4" style="background:{ifempty($bg_color, 'transparent')};color:{ifempty($text_color, '#999')}">{$count}</span>
             {$total}
-            <span class="badge red" style="margin-right: 4px; background:{ifempty($bg_color, 'transparent')};color:{ifempty($text_color, '#999')}">{$count}</span>
-
         {/if}
     {/function}
 
@@ -28,13 +27,6 @@
 ]}
 
 <div class="sidebar-body t-sidebar-block" id="t-sidebar">
-
-    <div class="box custom-mt-4">
-        <a id="add-task-link" class="button align-center width-90" href="#/add/">
-            <i class="fas fa-plus-circle"></i><span>[`New task`]</span>
-        </a>
-    </div>
-
     <div class="box custom-mt-4">
         <div class="state-with-inner-icon left width-100">
             <span class="icon"><i class="fas fa-search"></i></span>
@@ -42,6 +34,14 @@
         </div>
         <!-- <input class="t-sidebar-search-submit js-search-submit" type="button" value=""> -->
     </div>
+    <div class="box custom-mt-4">
+        <a id="add-task-link" class="button align-center width-90" href="#/add/">
+            <i class="fas fa-plus-circle"></i>
+            <span>[`New task`]</span>
+        </a>
+    </div>
+
+
 
     <div class="bricks custom-mt-4">
         <a href="#/tasks/inbox/" class="brick selected">

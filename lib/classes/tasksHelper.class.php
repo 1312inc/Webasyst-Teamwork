@@ -93,11 +93,21 @@ class tasksHelper
         if (strpos($item['icon'], '.')) {
             $item['icon_class'] = false;
             $item['icon_url'] = $item['icon'];
-            $item['icon_html'] = '<i class="icon16" style="background-image: url(\''.$item['icon'].'\'); background-repeat: no-repeat; background-size: 16px; background-position: center center;"'.$title.'></i>';
+            if (wa()->whichUI() == '2.0') {
+                $item['icon_html'] = '<i class="icon" style="background-image: url(\''.$item['icon'].'\'); background-repeat: no-repeat; background-size: 16px; background-position: center center;"'.$title.'></i>';
+            }
+            else {
+                $item['icon_html'] = '<i class="icon16" style="background-image: url(\''.$item['icon'].'\'); background-repeat: no-repeat; background-size: 16px; background-position: center center;"'.$title.'></i>';
+            }
         } else {
             $item['icon_url'] = false;
             $item['icon_class'] = $item['icon'];
-            $item['icon_html'] = '<i class="icon16 '.$item['icon'].'"'.$title.'></i>';
+            if (wa()->whichUI() == '2.0') {
+                $item['icon_html'] = '<i class="icon '.$item['icon'].'"'.$title.'></i>';
+            }
+            else {
+                $item['icon_html'] = '<i class="icon16 '.$item['icon'].'"'.$title.'></i>';
+            }
         }
         return $item;
     }

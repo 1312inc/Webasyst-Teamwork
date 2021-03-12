@@ -4,11 +4,11 @@
 **}
 
 {function show_userpic o=[]}
-    {$_userpic = "{$wa_url}wa-content/img/userpic96.jpg"}
+    {$_userpic = "{$wa_url}wa-content/img/userpic.svg"}
     {if !empty($o.id) && !empty($o.photo)}
         {$_userpic = waContact::getPhotoUrl($o.id, $o.photo, 40, 40, 'person', 0)}
     {/if}
-    <i class="icon16 userpic20" style="background-image: url({$_userpic|escape})"></i>
+    <i class="userpic userpic-20" style="background-image: url({$_userpic|escape})"></i>
 {/function}
 
 {function print_option_data_attrs o=[] keys=[]}
@@ -71,7 +71,7 @@
 
         <div class="dropdown-body">
             <div class="box">
-                <ul class="chips small tags t-tags-cloud">
+                <ul class="chips small tag  s t-tags-cloud">
                     <li class="js-show-all" style="display: none;">
                         <a href="javascript:void(0);" class="js-tag-link" data-id="" data-value="">[`Show all`]</a>
                     </li>
