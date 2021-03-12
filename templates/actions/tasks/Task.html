@@ -79,7 +79,7 @@
                                         {/if}
                                         {$task.project.name|escape}
                                     </a>
-                                
+
 
 
 
@@ -133,7 +133,7 @@
                             {/if}
 
                             {* RENDER *}
-                            <span class="t-status-wrapper {$_status_class_array|join:" "}" style="{$_styles_array|join:""}" title="[`Status`]">
+                            <span class="badge t-status-wrapper {$_status_class_array|join:" "}" style="{$_styles_array|join:""}" title="[`Status`]">
                                 <span style="position:absolute;left:-100500px;"> (</span>
                                 {if $task.project.archive_datetime}[`Archived`]{else}{$task.status.name}{/if}
                                 <span style="position:absolute;left:-100500px;">) </span>
