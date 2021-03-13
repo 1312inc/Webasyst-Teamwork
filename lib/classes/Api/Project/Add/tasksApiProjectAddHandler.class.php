@@ -33,6 +33,7 @@ final class tasksApiProjectAddHandler
         }
 
         $task = tsks()->getEntityFactory(tasksTask2::class)->createFromApiVo($addRequest);
+        $task->setProject($project);
 
         if (!tsks()->getEntityRepository(tasksTask2::class)->save($task)) {
             throw new tasksException('Error on task add');
@@ -44,15 +45,15 @@ final class tasksApiProjectAddHandler
 
         (new tasksTagSaveHandler())->handle($task);
         (new tasksRelationsSaveHandler())->handle($task);
-        (new tasksLogItemHandler())->logAdd($task, null, tasksLogItemHandler::ACTION_ADD);
+        (new tasksLogItemHandler())->log($task, null, tasksLogItemHandler::ACTION_ADD);
 
         (new tasksWaLogManager())->lodAdd($task);
 
-//        (new tasksEventTriggerHandler())->triggerAdd($task);
-//        if ($task->getAssignedContactId()) {
-//            $sender = new tasksNotificationsSender($task->toArray(), 'new');
-//            $sender->send();
-//        }
+        (new tasksEventTriggerHandler())->triggerAdd($task);
+        if ($task->getAssignedContactId()) {
+            $sender = new tasksNotificationsSender($task->toArray(), 'new');
+            $sender->send();
+        }
 
         return $task;
     }
