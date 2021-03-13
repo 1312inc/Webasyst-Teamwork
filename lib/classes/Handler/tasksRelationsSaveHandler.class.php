@@ -22,7 +22,7 @@ final class tasksRelationsSaveHandler
         return $tasksTaskRelationsModel->save($task->getId(), $newIds, $oldIds);
     }
 
-    protected function parseTaskNumberAndGetTaskId($tasksNumber = [], $fetch = 'id')
+    protected function parseTaskNumberAndGetTaskId($tasksNumber = [], $fetch = 'id'): array
     {
         if (!$tasksNumber) {
             return [];

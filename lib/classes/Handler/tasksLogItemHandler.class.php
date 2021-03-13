@@ -4,7 +4,7 @@ final class tasksLogItemHandler
 {
     public const ACTION_ADD = 'add';
 
-    public function logAdd(tasksTask2 $task, $beforeStatusId, $action): ?array
+    public function log(tasksTask2 $task, $beforeStatusId, $action): ?array
     {
         $logModel = new tasksTaskLogModel();
         $logItem = [
