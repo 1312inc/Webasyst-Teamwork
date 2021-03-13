@@ -21,7 +21,7 @@ class tasksWaLogManager
      */
     public function logAction(
         string $action,
-        array $params = null,
+        $params = null,
         int $subject_contact_id = null,
         int $contact_id = null
     ) {
@@ -31,7 +31,7 @@ class tasksWaLogManager
             }
 
             return tsks()->getModel('waLog')->add($action, $params, $subject_contact_id, $contact_id);
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             waLog::log($ex->getMessage(), 'tasks2.log');
         }
 

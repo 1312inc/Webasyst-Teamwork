@@ -28,7 +28,7 @@ class tasksTask2 implements tasksPersistableInterface
     private $create_contact_id;
 
     /**
-     * @var int
+     * @var ?int
      */
     private $assigned_contact_id;
 
@@ -38,7 +38,7 @@ class tasksTask2 implements tasksPersistableInterface
     private $milestone_id;
 
     /**
-     * @var int
+     * @var ?int
      */
     private $number;
 
@@ -58,7 +58,7 @@ class tasksTask2 implements tasksPersistableInterface
     private $priority = 0;
 
     /**
-     * @var int
+     * @var ?int
      */
     private $assign_log_id;
 
@@ -93,13 +93,19 @@ class tasksTask2 implements tasksPersistableInterface
     private $due_date;
 
     /**
-     * @var tasksTask
+     * @var ?tasksTask
      */
     private $legacy_task;
+
+    /**
+     * @var tasksProject
+     */
+    private $project;
 
     public function __construct()
     {
         $this->create_datetime = new DateTimeImmutable();
+        $this->update_datetime = new DateTimeImmutable();
     }
 
     /**
@@ -158,6 +164,22 @@ class tasksTask2 implements tasksPersistableInterface
         return $this;
     }
 
+    public function setProject(tasksProject $project): tasksTask2
+    {
+        $this->project = $project;
+        $this->project_id = $project->getId();
+
+        return $this;
+    }
+
+    /**
+     * @return tasksProject
+     */
+    public function getProject(): tasksProject
+    {
+        return $this->project;
+    }
+
     public function getCreateContactId(): int
     {
         return $this->create_contact_id;
@@ -170,12 +192,12 @@ class tasksTask2 implements tasksPersistableInterface
         return $this;
     }
 
-    public function getAssignedContactId(): int
+    public function getAssignedContactId(): ?int
     {
         return $this->assigned_contact_id;
     }
 
-    public function setAssignedContactId(int $assigned_contact_id): tasksTask2
+    public function setAssignedContactId(?int $assigned_contact_id): tasksTask2
     {
         $this->assigned_contact_id = $assigned_contact_id;
 
@@ -194,7 +216,7 @@ class tasksTask2 implements tasksPersistableInterface
         return $this;
     }
 
-    public function getNumber(): int
+    public function getNumber(): ?int
     {
         return $this->number;
     }
@@ -242,7 +264,7 @@ class tasksTask2 implements tasksPersistableInterface
         return $this;
     }
 
-    public function getAssignLogId(): int
+    public function getAssignLogId(): ?int
     {
         return $this->assign_log_id;
     }
@@ -333,6 +355,10 @@ class tasksTask2 implements tasksPersistableInterface
         if ($this->due_date) {
             $converted['due_date'] = $this->due_date->format('Y-m-d');
         }
+        if ($this->update_datetime) {
+            $converted['update_datetime'] = $this->update_datetime->format('Y-m-d H:i:s');
+        }
+        $converted['create_datetime'] = $this->create_datetime->format('Y-m-d');
 
         return $converted;
     }
@@ -348,7 +374,7 @@ class tasksTask2 implements tasksPersistableInterface
         }
     }
 
-    public function getLegacyTask(): tasksTask
+    public function getLegacyTask(): ?tasksTask
     {
         return $this->legacy_task;
     }
