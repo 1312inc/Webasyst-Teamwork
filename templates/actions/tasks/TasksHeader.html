@@ -65,6 +65,16 @@
 
     </div>
 
+    <!-- plugin hook: 'backend_tasks.%plugin_id%.header.preview' -->
+    {* @event backend_tasks.%plugin_id%.header.preview *}
+    {foreach $_backend_header_hooks as $_}{$_.preview|default:''}{/foreach}
+
+    <div class="t-filters-wrapper" id="t-filters-menu">
+        {if !empty($filter_types)}
+            {include file="./includes/TasksHeaderFilters.inc.html" inline}
+        {/if}
+    </div>
+
     <div class="box align-center t-my-lists-wrapper" id="t-my-lists-box">
         {function star_link id='' title=''}
             <a href="javascript:void(0);" class="t-my-list-toggle button outlined"
@@ -93,16 +103,6 @@
         <!-- plugin hook: 'backend_tasks.%plugin_id%.header.toolbar' -->
         {* @event backend_tasks.%plugin_id%.header.toolbar *}
         {foreach $_backend_header_hooks as $_}{$_.toolbar|default:''}{/foreach}
-    </div>
-
-    <!-- plugin hook: 'backend_tasks.%plugin_id%.header.preview' -->
-    {* @event backend_tasks.%plugin_id%.header.preview *}
-    {foreach $_backend_header_hooks as $_}{$_.preview|default:''}{/foreach}
-
-    <div class="t-filters-wrapper" id="t-filters-menu">
-        {if !empty($filter_types)}
-            {include file="./includes/TasksHeaderFilters.inc.html" inline}
-        {/if}
     </div>
 
 </div>
@@ -221,9 +221,16 @@
 <script>
     ( function($) {
         $('#t-filters-toggle').click(function() {
-            $('#t-filters-menu').slideToggle(100);
-            $('#t-selection-menu').slideToggle(100);
-            $('#t-my-lists-box').slideToggle(100);
+            if ($('#t-my-lists-box').is(":hidden")) {
+                $('#t-filters-menu').slideDown(100);
+                $('#t-selection-menu').slideDown(100);
+                $('#t-my-lists-box').slideDown(100);
+            }
+            else {
+                $('#t-filters-menu').slideUp(100);
+                $('#t-selection-menu').slideUp(100);
+                $('#t-my-lists-box').slideUp(100);
+            }
             $('#t-tasks-wrapper').toggleClass('t-selection-checkboxes-visible');
             $(this).toggleClass('upsidedown');
             return false;

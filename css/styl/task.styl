@@ -5,9 +5,83 @@
         padding 1.25rem 0.5rem 1.25rem 1.25rem
 
     &.t-selection-checkboxes-visible
-    
+
         .t-checkbox-column
             display block
+
+.t-status-wrapper
+    white-space nowrap
+    font-size 0.875em
+    margin-left 0.25em
+
+    &.is-new
+        $color = #2bb316;
+        border-color $color
+        background $color
+        color #fff
+
+    &.is-done
+        $color = #ccc;
+        border-color $color
+        background $color
+        color #fff
+
+    &.is-archived
+        $color = #f0f0f0;
+        border-color $color
+        background $color
+        color #aaa
+
+
+.t-priority-wrapper
+    position relative
+    margin: 0 0.4em 0 -0.3em
+    padding: 0.15em 0.3em 0.2em
+    border-radius 0.2em
+
+    //&.is-low
+
+    //&.is-normal
+
+    //&.is-high
+
+    &.is-urgent
+        font-weight bold
+        padding .13em 0.4em
+        background-color #e00
+        border-radius 2px
+        color #fff
+
+    .icon16
+        vertical-align baseline
+        margin: 0 0 0 3px
+        position: relative;
+        top: 1px;
+
+    &:hover
+        background: #eed;
+
+    &.is-urgent:hover
+        background: #c00;
+
+
+
+.t-priority-changer-wrapper
+    $padding = 10px
+    display none
+    position absolute
+    top -($padding/2)
+    left -($padding/2)
+    width 400px
+    background #fff
+    padding $padding
+    border 1px solid rgba(0,0,0,.1)
+
+    &.is-shown
+        display block
+
+
+
 
 
 
