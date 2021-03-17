@@ -2,6 +2,8 @@
 
 class tasksCollection
 {
+    public const FIELDS_TO_GET = '*,log,create_contact,assigned_contact,attachments,tags,project,favorite,relations';
+
     protected $filtered = false;
     protected $prepared;
 

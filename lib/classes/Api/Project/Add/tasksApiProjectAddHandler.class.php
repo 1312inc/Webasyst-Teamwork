@@ -3,58 +3,33 @@
 final class tasksApiProjectAddHandler
 {
     /**
-     * @param tasksApiTasksAddRequest $addRequest
+     * @param tasksApiProjectAddRequest $addRequest
      *
      * @return tasksProject
      * @throws tasksAccessException
      * @throws tasksException
      * @throws waException
      */
-    public function add(tasksApiTasksAddRequest $addRequest): tasksProject
+    public function add(tasksApiProjectAddRequest $addRequest): tasksProject
     {
-        if ($addRequest->getProjectId()) {
-            $project = tsks()->getEntityRepository(tasksProject::class)->findById($addRequest->getProjectId());
-
-            if (!$project) {
-                throw new tasksException('Project not found', 404);
-            }
-
-            if (!tsks()->getRightResolver()->contactCanAddProject(wa()->getUser())) {
-                throw new tasksAccessException();
-            }
+        if (!tsks()->getRightResolver()->contactCanAddProject(wa()->getUser())) {
+            throw new tasksAccessException();
         }
 
-        if ($addRequest->getMilestoneId()) {
-            $milestone = tsks()->getEntityRepository(tasksMilestone::class)->findById($addRequest->getMilestoneId());
+        $project = tsks()->getEntityFactory(tasksProject::class)->createFromApiVo($addRequest);
 
-            if (!$milestone) {
-                throw new tasksException('Milestone not found', 404);
+        $statuses = tasksHelper::getStatuses(null, false);
+        $newStatuses = [];
+        foreach ($statuses as $s) {
+            if (empty($s['special']) && !empty($addRequest->getWorkflow()[$s['id']])) {
+                $newStatuses[$s['id']] = $s['id'];
             }
         }
 
-        $task = tsks()->getEntityFactory(tasksTask2::class)->createFromApiVo($addRequest);
-        $task->setProject($project);
-
-        if (!tsks()->getEntityRepository(tasksTask2::class)->save($task)) {
-            throw new tasksException('Error on task add');
+        if (!tsks()->getEntityRepository(tasksProject::class)->save($project, $newStatuses)) {
+            throw new tasksException('Error on project add');
         }
 
-        if ($addRequest->getFilesHash()) {
-            (new tasksAttachmentModel())->addAttachmentsByHash($task->getId(), null, $addRequest->getFilesHash());
-        }
-
-        (new tasksTagSaveHandler())->handle($task);
-        (new tasksRelationsSaveHandler())->handle($task);
-        (new tasksLogItemHandler())->log($task, null, tasksLogItemHandler::ACTION_ADD);
-
-        (new tasksWaLogManager())->lodAdd($task);
-
-        (new tasksEventTriggerHandler())->triggerAdd($task);
-        if ($task->getAssignedContactId()) {
-            $sender = new tasksNotificationsSender($task->toArray(), 'new');
-            $sender->send();
-        }
-
-        return $task;
+        return $project;
     }
 }

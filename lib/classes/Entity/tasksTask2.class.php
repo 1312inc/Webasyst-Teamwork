@@ -269,7 +269,7 @@ class tasksTask2 implements tasksPersistableInterface
         return $this->assign_log_id;
     }
 
-    public function setAssignLogId(int $assign_log_id): tasksTask2
+    public function setAssignLogId(?int $assign_log_id): tasksTask2
     {
         $this->assign_log_id = $assign_log_id;
 
@@ -367,10 +367,26 @@ class tasksTask2 implements tasksPersistableInterface
     {
         $dbValues['id'] = (int) $dbValues['id'];
         $dbValues['project_id'] = (int) $dbValues['project_id'];
-        $dbValues['closed'] = (int) $dbValues['closed'];
+        $dbValues['create_contact_id'] = (int) $dbValues['create_contact_id'];
+        $dbValues['number'] = (int) $dbValues['number'];
+        $dbValues['status_id'] = (int) $dbValues['status_id'];
+        $dbValues['parent_id'] = (int) $dbValues['parent_id'];
+        $dbValues['contact_id'] = (int) $dbValues['contact_id'];
+        $dbValues['priority'] = (int) $dbValues['priority'];
+        $dbValues['hidden_timestamp'] = (int) $dbValues['hidden_timestamp'];
+        $dbValues['assigned_contact_id'] = !empty($dbValues['assigned_contact_id']) ? (int) $dbValues['assigned_contact_id'] : null;
+        $dbValues['milestone_id'] = !empty($dbValues['milestone_id']) ? (int) $dbValues['milestone_id'] : null;
+        $dbValues['assign_log_id'] = !empty($dbValues['assign_log_id']) ? (int) $dbValues['assign_log_id'] : null;
+        $dbValues['comment_log_id'] = !empty($dbValues['comment_log_id']) ? (int) $dbValues['assigned_contact_id'] : null;
 
         if (!empty($dbValues['due_date'])) {
             $dbValues['due_date'] = DateTimeImmutable::createFromFormat('Y-m-d|', $dbValues['due_date']);
+        }
+        if (!empty($dbValues['create_datetime'])) {
+            $dbValues['create_datetime'] = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $dbValues['create_datetime']);
+        }
+        if (!empty($dbValues['update_datetime'])) {
+            $dbValues['update_datetime'] = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $dbValues['update_datetime']);
         }
     }
 

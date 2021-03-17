@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @method tasksProjectModel getModel()
+ */
 class tasksProjectRepository extends tasksBaseRepository
 {
     /**

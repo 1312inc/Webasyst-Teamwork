@@ -19,7 +19,7 @@ final class tasksApiTaskGetListHandler
 
         $totalCount = null;
         $taskRows = $collection->getTasks(
-            '*,log,create_contact,assigned_contact,attachments,tags,project,favorite, relations',
+            tasksCollection::FIELDS_TO_GET,
             $filter->getOffset(),
             $filter->getLimit(),
             $totalCount
