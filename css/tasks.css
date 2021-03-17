@@ -546,6 +546,64 @@ LEGACY
 .t-tasks-wrapper.t-selection-checkboxes-visible .t-checkbox-column {
   display: block;
 }
+.t-status-wrapper {
+  white-space: nowrap;
+  font-size: 0.875em;
+  margin-left: 0.25em;
+}
+.t-status-wrapper.is-new {
+  border-color: #2bb316;
+  background: #2bb316;
+  color: #fff;
+}
+.t-status-wrapper.is-done {
+  border-color: #ccc;
+  background: #ccc;
+  color: #fff;
+}
+.t-status-wrapper.is-archived {
+  border-color: #f0f0f0;
+  background: #f0f0f0;
+  color: #aaa;
+}
+.t-priority-wrapper {
+  position: relative;
+  margin: 0 0.4em 0 -0.3em;
+  padding: 0.15em 0.3em 0.2em;
+  border-radius: 0.2em;
+}
+.t-priority-wrapper.is-urgent {
+  font-weight: bold;
+  padding: 0.13em 0.4em;
+  background-color: #e00;
+  border-radius: 2px;
+  color: #fff;
+}
+.t-priority-wrapper .icon16 {
+  vertical-align: baseline;
+  margin: 0 0 0 3px;
+  position: relative;
+  top: 1px;
+}
+.t-priority-wrapper:hover {
+  background: #eed;
+}
+.t-priority-wrapper.is-urgent:hover {
+  background: #c00;
+}
+.t-priority-changer-wrapper {
+  display: none;
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  width: 400px;
+  background: #fff;
+  padding: 10px;
+  border: 1px solid rgba(0,0,0,0.1);
+}
+.t-priority-changer-wrapper.is-shown {
+  display: block;
+}
 .t-background-wrapper {
   display: none;
   position: fixed;

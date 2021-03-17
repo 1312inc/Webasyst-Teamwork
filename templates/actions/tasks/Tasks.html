@@ -28,6 +28,26 @@
                 });
             })();</script>
 
+
+                                        {$_priority_class_array = [
+                                        "-1" => "is-low",
+                                        "0" => "is-normal",
+                                        "1" => "is-high",
+                                        "2" => "is-urgent"
+                                        ]}
+                                        {$_priority_icon = ""}
+                                        {if !empty($task.priority)}
+                                            {if $task.priority == '-1'}
+                                                {$_priority_icon = "<i class=\"icon16 status-blue-tiny\"></i>"}
+                                            {/if}
+                                            {if $task.priority == '1'}
+                                                {$_priority_icon = "<i class=\"icon16 exclamation-red\"></i>"}
+                                            {/if}
+                                            {if $task.priority == '2'}
+                                                {$_priority_icon = "<i class=\"icon16 exclamation\"></i>"}
+                                            {/if}
+                                        {/if}
+
             {if $tasks}
                 <div class="t-tasks-wrapper is-{$list_view_type}" id="t-tasks-wrapper">
                     <ul class="list">
@@ -61,8 +81,15 @@
 
 
                                     <span>
-                                        {$task.project_id}.{$task.number}
-                                        <span class="semibold" style="{$task->titleStyle()}">{$task.name|escape|default:"(no name)"|truncate:64}</span>
+
+                                        {* PRIORITY *}
+                                        <span class="t-priority-wrapper {ifset($_priority_class_array[$task.priority])}" title="task_id={$task.id}" title="[`Double-click to change task priority`]">
+                                            {$task.project_id}.{$task.number}
+                                            {$_priority_icon}
+                                        </span>
+
+                                        {* TITLE *}
+                                        <span class="semibold">{$task.name|escape|default:"(no name)"|truncate:64}</span>
 
                                         {* STATUS *}
                                         {if !empty($task.status.name)}
@@ -93,7 +120,7 @@
                                             {/if}
 
                                             {* RENDER *}
-                                            <span class="t-status-wrapper {$_status_class_array|join:" "}" style="{$_styles_array|join:""}" title="[`Status`]">
+                                            <span class="badge t-status-wrapper {$_status_class_array|join:" "}" style="{$_styles_array|join:""}" title="[`Status`]">
                                                 <span style="position:absolute;left:-100500px;"> (</span>
                                                 {if $task.project.archive_datetime}[`Archived`]{else}{$task.status.name}{/if}
                                                 <span style="position:absolute;left:-100500px;">) </span>
@@ -112,6 +139,8 @@
 
                                     </span>
                                 </div>
+
+                                {* PREVIEW *}
                                 <p class="hint">{$task.text|truncate:128}</p>
                             </a>
                         </li>
@@ -120,7 +149,7 @@
                     {/strip}{/foreach}
                     </ul>
 
-                    <div id="end-of-tasks" class="box hint align-center">
+                    <div id="end-of-tasks" class="box small gray align-center">
                         <p>
                             <span class="js-tasks-list-counter">{sprintf("[`%s of %d`]", _w('%d task','%d tasks', $offset + $count), $total_count)}</span>
                             {if $click_to_load_more && $next_page_url}
