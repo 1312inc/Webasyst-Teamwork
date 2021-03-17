@@ -2,11 +2,17 @@
 
 class tasksWaLogManager
 {
-    private const LOG_ADD = 'task_add';
+    private const LOG_ADD  = 'task_add';
+    private const LOG_EDIT = 'task_edit';
 
     public function lodAdd(tasksTask2 $task2): void
     {
         $this->logAction(self::LOG_ADD, $task2->getId());
+    }
+
+    public function lodEdit(tasksTask2 $task2, int $logItemId): void
+    {
+        $this->logAction(self::LOG_EDIT, $task2->getId() . ':' . $logItemId);
     }
 
     /**

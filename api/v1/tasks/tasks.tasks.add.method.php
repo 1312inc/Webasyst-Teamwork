@@ -19,7 +19,7 @@ class tasksTasksAddMethod extends tasksApiAbstractMethod
             wa()->getUser()->getId(),
             $this->post('text', false, self::CAST_STRING),
             $this->post('assigned_contact_id', false, self::CAST_INT),
-            $this->post('project_id', false, self::CAST_INT),
+            $this->post('project_id', true, self::CAST_INT),
             $this->post('milestone_id', false, self::CAST_INT),
             $this->post('priority', false, self::CAST_INT) ?? 0,
             $this->post('status_id', false, self::CAST_INT) ?? 0,
@@ -28,6 +28,11 @@ class tasksTasksAddMethod extends tasksApiAbstractMethod
             $this->post('files_hash', false, self::CAST_STRING_TRIM)
         );
 
-        return new tasksApiProjectResponse((new tasksApiProjectAddHandler())->add($request));
+        $task = (new tasksApiTasksAddHandler())->add($request);
+
+        $collection = new tasksCollection([$task->getId()]);
+        $tasks = $collection->getTasks(tasksCollection::FIELDS_TO_GET);
+
+        return new tasksApiTaskResponse(reset($tasks));
     }
 }

@@ -3,6 +3,7 @@
 final class tasksLogItemHandler
 {
     public const ACTION_ADD = 'add';
+    public const ACTION_EDIT = 'edit';
 
     public function log(tasksTask2 $task, $beforeStatusId, $action): ?array
     {

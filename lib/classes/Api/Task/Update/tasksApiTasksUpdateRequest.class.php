@@ -1,7 +1,12 @@
 <?php
 
-final class tasksApiTasksAddRequest
+final class tasksApiTasksUpdateRequest
 {
+    /**
+     * @var int
+     */
+    private $id;
+
     /**
      * @var string
      */
@@ -18,7 +23,7 @@ final class tasksApiTasksAddRequest
     private $assigned_contact_id;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $project_id;
 
@@ -53,15 +58,10 @@ final class tasksApiTasksAddRequest
     private $files_hash;
 
     /**
-     * @var int
-     */
-    private $create_contact_id;
-
-    /**
      * tasksApiTasksAddRequest constructor.
      *
+     * @param int                    $id
      * @param string                 $name
-     * @param int                    $create_contact_id
      * @param string|null            $text
      * @param int|null               $assigned_contact_id
      * @param int|null               $project_id
@@ -73,8 +73,8 @@ final class tasksApiTasksAddRequest
      * @param string|null            $files_hash
      */
     public function __construct(
+        int $id,
         string $name,
-        int $create_contact_id,
         ?string $text,
         ?int $assigned_contact_id,
         ?int $project_id,
@@ -95,7 +95,7 @@ final class tasksApiTasksAddRequest
         $this->hidden_timestamp = $hidden_timestamp;
         $this->due_date = $due_date;
         $this->files_hash = $files_hash;
-        $this->create_contact_id = $create_contact_id;
+        $this->id = $id;
     }
 
     public function getName(): string
@@ -113,7 +113,7 @@ final class tasksApiTasksAddRequest
         return $this->assigned_contact_id;
     }
 
-    public function getProjectId(): int
+    public function getProjectId(): ?int
     {
         return $this->project_id;
     }
@@ -148,8 +148,8 @@ final class tasksApiTasksAddRequest
         return $this->files_hash;
     }
 
-    public function getCreateContactId(): int
+    public function getId(): int
     {
-        return $this->create_contact_id;
+        return $this->id;
     }
 }

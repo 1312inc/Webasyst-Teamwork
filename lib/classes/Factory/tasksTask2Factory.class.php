@@ -4,7 +4,6 @@
  * Class tasksTaskFactory
  *
  * @method tasksTask2 createNew()
- * @method tasksTask2 createNewWithData()
  */
 class tasksTask2Factory extends tasksBaseFactory
 {
@@ -51,5 +50,18 @@ class tasksTask2Factory extends tasksBaseFactory
             ->setStatusId(!empty($legacyTask->getStatus()) ? $legacyTask->getStatus() : null);
 
         return $task;
+    }
+
+    /**
+     * @return tasksHydratableInterface|tasksTask2
+     */
+    public function createNewWithData(array $data): tasksHydratableInterface
+    {
+        /** @var tasksTask2 $task2 */
+        $task2 = parent::createNewWithData($data);
+
+        $task2->setLegacyTask(new tasksTask($data));
+
+        return $task2;
     }
 }
