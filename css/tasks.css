@@ -1,3 +1,10 @@
+ul.chips > li > a svg:last-child {
+  margin-left: 0.25rem;
+  margin-right: 0;
+}
+.badge.squared {
+  border-radius: 0.25em;
+}
 input,
 select,
 textarea {
@@ -351,6 +358,24 @@ LEGACY
   max-width: 400px;
   box-sizing: border-box;
 }
+.text-red {
+  color: var(--red);
+}
+.text-green {
+  color: var(--green);
+}
+.text-blue {
+  color: var(--blue);
+}
+.text-yellow {
+  color: var(--yellow);
+}
+.text-orange {
+  color: var(--orange);
+}
+.text-purple {
+  color: var(--purple);
+}
 .logs-chart-wrapper .axis path,
 .logs-chart-wrapper .axis line {
   fill: none;
@@ -550,6 +575,9 @@ LEGACY
   white-space: nowrap;
   font-size: 0.875em;
   margin-left: 0.25em;
+}
+h2 .t-status-wrapper {
+  font-size: 0.75em;
 }
 .t-status-wrapper.is-new {
   border-color: #2bb316;
