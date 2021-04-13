@@ -2,20 +2,22 @@
 
 {$ident = rand(0, 1024)}
 
-<div class="t-task-forward-wrapper" id="forward-wrapper-{$ident}">
+<div class="t-task-forward-wrapper card custom-p-20" id="forward-wrapper-{$ident}">
     <form method="post" action="{$form_url}">
-    <div class="">
+    <div class="fields">
 
         {if !empty($projects)}
             <div class="field">
                 <div class="name">[`Project`]</div>
                 <div class="value">
-                    <select name="project_id">
-                        <option value=""></option>
-                        {foreach $projects as $p}
-                            <option value="{$p.id}">{$p.name|escape}</option>
-                        {/foreach}
-                    </select>
+                    <div class="wa-select">
+                        <select name="project_id">
+                            <option value=""></option>
+                            {foreach $projects as $p}
+                                <option value="{$p.id}">{$p.name|escape}</option>
+                            {/foreach}
+                        </select>
+                    </div>
                 </div>
             </div>
         {/if}
@@ -23,12 +25,14 @@
         <div class="field">
             <div class="name">[`Status`]</div>
             <div class="value">
-                <select name="status_id">
-                    <option>[`Do not change`]</option>
-                    {foreach $statuses as $s_id => $s}
-                        <option {if isset($selected_status_id) && $selected_status_id == $s_id}selected{/if} value="{$s_id}">{$s.name|escape}</option>
-                    {/foreach}
-                </select>
+                <div class="wa-select">
+                    <select name="status_id">
+                        <option>[`Do not change`]</option>
+                        {foreach $statuses as $s_id => $s}
+                            <option {if isset($selected_status_id) && $selected_status_id == $s_id}selected{/if} value="{$s_id}">{$s.name|escape}</option>
+                        {/foreach}
+                    </select>
+                </div>
             </div>
         </div>
         <div class="field">
@@ -75,7 +79,7 @@
                         {/if}
 
                         <li class="t-user-item {if $_is_shown}is-shown{/if}" data-user-id="{$user.id}">
-                            <label class="t-user-label">
+                            <label class="t-user-label flexbox middle">
                                 <input type="radio" name="assigned_contact_id" value="{$user.id}" {if ($selected_user == $user.id)}checked="checked"{/if}>
                                 <i class="icon16 userpic20" style="background-image: url({$_userpic});"></i>
                                 {$user.name|escape}
@@ -87,7 +91,7 @@
                     {/foreach}
 
                     <li class="t-user-item is-unassigned {if $_count < $_visible_team_count}is-shown{/if}" data-user-id="">
-                        <label class="t-user-label">
+                        <label class="t-user-label flexbox middle">
                             <input type="radio" name="assigned_contact_id" value="0">
                             <i class="icon16 userpic20" style="background-image: url('{$wa_url}wa-content/img/userpic96.jpg')"></i>
                             [`Unassigned`]

@@ -1,13 +1,13 @@
 <div class="t-status-comment-wrapper">
 
-    <div class="profile image32px">
+    <div class="profile image32px flexbox space-12">
         <div class="image">
             <img src="{$wa->user()->getPhoto(40)}" alt="" class="userpic">
         </div>
-        <div class="details">
+        <div class="details wide">
             {* TEXTAREA *}
             <div class="t-textarea-wrapper">
-                <textarea name="text" cols="" rows="" placeholder="[`Input your comment`]"></textarea>
+                <textarea name="text" cols="" rows="" class="width-100" placeholder="[`Input your comment`]"></textarea>
             </div>
 
             {if empty($is_bulk)}

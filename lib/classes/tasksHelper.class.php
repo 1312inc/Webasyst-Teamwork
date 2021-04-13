@@ -186,15 +186,17 @@ class tasksHelper
 
             if (!empty($status['params']['button_color'])) {
                 $color = $status['params']['button_color'];
+                $buttonClassName = 'yellow';
             } else {
                 $color = 'eeeeee';
+                $buttonClassName = 'light-gray';
             }
 
             if (wa()->whichUI() == '2.0')
                 $status['view']['button_html'] = '<a '.
                     'href="javascript:void(0);" '.
-                    'class="button rounded t-control-link t-change-status-link" data-status-id="'.$status['id'].'"'.
-                    'style="background-color:#'.$color.'"'.
+                    'class="button t-control-link t-change-status-link '.$buttonClassName.'" data-status-id="'.$status['id'].'"'.
+                    // 'style="background-color:#'.$color.'"'.
                     '><span class="t-change-status-link-label">'.htmlspecialchars($status['button']).'</span></a>';
             else
                 $status['view']['button_html'] = '<a '.
