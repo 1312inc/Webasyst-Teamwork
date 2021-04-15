@@ -62,6 +62,7 @@ var Task = ( function($) {
         // DYNAMIC VARS
         that.is_opened = false;
         that.is_status_opened = false;
+        that.drawer = null
 
         if (that.is_single) {
             that.$statusWrapper = that.$task.find(".t-status-data-container");
@@ -914,11 +915,39 @@ var Task = ( function($) {
                 .addClass(storage.shown_class);
 
             $deferred.done( function(html) {
-                $statusWrapper
-                    .html( html );
+                // $statusWrapper
+                //     .html( html );
+
+                var wrappedHtml = `
+                    <div class="drawer" id="">
+                    <div class="drawer-background"></div>
+                    <div class="drawer-body">
+                        <a href="#" class="drawer-close js-close-drawer"><i class="fas fa-times"></i></a>
+                        <div class="drawer-block">
+                            <header class="drawer-header"><h1>Header</h1></header>
+                            <div class="drawer-content">
+                                ${html}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                    `;
+                
+                that.drawer = $.waDrawer({
+                    html: wrappedHtml,
+                    direction: "right",
+                    onOpen: function ($drawer) {
+                        $drawer.find("textarea").focus();
+                        $drawer.find(".t-hiddenform-cancel-link").on('click', function() {
+                            if(that.drawer) {
+                                that.drawer.close();
+                            }
+                        })
+                    }
+                });
 
                 // Focus
-                $statusWrapper.find("textarea").focus();
+                // $statusWrapper.find("textarea").focus();
 
                 commentFileEvents();
             });
