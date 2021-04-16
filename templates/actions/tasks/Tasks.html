@@ -58,7 +58,6 @@
                         {$_task_number = $task.project_id|cat:'.'|cat:$task.number}
                         {$_task_link = '#/task/'|cat:$_task_number|cat:'/'}
                         <li class="item t-task-outer-container"
-                            id="task-{$task.id}"
                             data-task-id="{$task.id}"
                             data-task-number="{$_task_number}"
                         >

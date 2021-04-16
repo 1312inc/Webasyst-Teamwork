@@ -53,27 +53,42 @@
             {* HEADER *}
             <header class="t-header-wrapper">
                 <div class="t-general-menu is-shown">
-                    <div class="t-menu-wrapper">
+                    <div class="t-menu-wrapper flexbox space-20">
 
                         {* PROJECT SELECTOR *}
                         <div class="t-menu-item">
-                            <ul class="menu-h dropdown t-custom-select t-project-select"><li>
-                                <a class="t-selected-item selected-custom-item js-selected-project" href="javascript:void(0);">
+                            <div class="menu-h dropdown t-custom-select t-project-select" id="projectSelect">
+                                
+                                <button class="dropdown-toggle button light-gray t-selected-item selected-custom-item js-selected-project">
                                     {$project.icon_html}
-                                    {$project.name|escape}
-                                </a>
-                                <ul class="menu-v with-icons js-project-list">
-                                    {foreach $projects as $p}
-                                        <li class="t-nav-item">
-                                            <a class="set-custom-select js-project-select" href="javascript:void(0);" data-value="{$p.id}" {if !empty($p.color)}data-project_color_class="{$p.color}"{/if}>
-                                                {$p.icon_html}
-                                                {$p.name|escape}
-                                            </a>
-                                        </li>
-                                    {/foreach}
-                                </ul>
+                                    <span>{$project.name|escape}</span>
+                                </button>
+                                <div class="dropdown-body">
+                                    <ul class="menu menu-v with-icons js-project-list">
+                                        {foreach $projects as $p}
+                                            <li class="t-nav-item">
+                                                <a class="set-custom-select js-project-select" href="javascript:void(0);" data-value="{$p.id}" {if !empty($p.color)}data-project_color_class="{$p.color}"{/if}>
+                                                    {$p.icon_html}
+                                                    <span>{$p.name|escape}</span>
+                                                </a>
+                                            </li>
+                                        {/foreach}
+                                    </ul>
+                                </div>
                                 <input type="hidden" name="data[project_id]" value="{$task.project_id}">
-                            </li></ul>
+                                
+                                <script>
+                                    ( function($) {
+                                        $("#projectSelect").waDropdown({
+                                            hover: false,
+                                            items: ".menu > li > a",
+                                            change: function(event, target, dropdown) {
+                                                $("[name=\"data[project_id]\"]").val( $(target).data("value") );
+                                            }
+                                        });
+                                    })(jQuery);
+                                </script>
+                            </div>
                         </div>
 
                         {include file="./includes/TasksTaskMilestoneSelector.inc.html" inline}
@@ -218,6 +233,9 @@
                 {* @event backend_task_edit.%plugin_id%.before_fields *}
                 {foreach $backend_task_edit as $_}{ifset($_.before_fields)}{/foreach}
 
+                <div class="fields custom-mt-40">
+                    <div class="fields-group">
+                        
                 {* ASSIGN *}
                 <div class="t-form-line field t-team-list-wrapper">
                     <div class="name">[`Assign to`]</div>
@@ -258,6 +276,8 @@
 
                 </div>
 
+                    
+
                 <div class="t-form-line field t-due-date-wrapper">
                     <div class="name">[`Due date`]</div>
                     <div class="value">
@@ -265,6 +285,9 @@
                         <input type="hidden" name="data[due_date]" value="{$task.due_date|escape}"><i class="icon16 calendar"></i>
                     </div>
                 </div>
+
+            </div>
+        </div>
 
                 {* HIDDEN FIELDS *}
                 <div class="t-form-line t-more-fields-wrapper">

@@ -155,14 +155,20 @@ var Dialog = ( function($) { "use strict";
                 });
 
             // NEW
-            } else {
-                // place for dialog content
-                $tasksWrapper.animate({
-                    "padding-top": block_height
-                }, time, easing, function() {
+            } 
 
-                });
-            }
+            // VERSION 2 CHANGES START
+
+            // else {
+            //     // place for dialog content
+            //     $tasksWrapper.animate({
+            //         "padding-top": block_height
+            //     }, time, easing, function() {
+
+            //     });
+            // }
+
+            // VERSION 2 CHANGES END
 
             // show dialog content
             $block.slideDown(time, easing, function() {
@@ -204,16 +210,28 @@ var Dialog = ( function($) { "use strict";
 
         // NEW
         } else {
-            $tasksWrapper.animate({
-                "padding-top": 0
-            },time ,easing, function() {
-                if ($.contains(document, $dialog[0])) {
-                    $dialog.remove();
-                    $(this).removeAttr("style");
-                    that.$body.removeClass(that.storage.showClass);
-                }
-                that.cancelCallback();
-            });
+
+            // VERSION 2 CHANGES START
+
+            // $tasksWrapper.animate({
+            //     "padding-top": 0
+            // },time ,easing, function() {
+            //     if ($.contains(document, $dialog[0])) {
+            //         $dialog.remove();
+            //         $(this).removeAttr("style");
+            //         that.$body.removeClass(that.storage.showClass);
+            //     }
+            //     that.cancelCallback();
+            // });
+            if ($.contains(document, $dialog[0])) {
+                $dialog.remove();
+                $(this).removeAttr("style");
+                that.$body.removeClass(that.storage.showClass);
+            }
+            that.cancelCallback();
+
+            // VERSION 2 CHANGES END
+
         }
     };
 

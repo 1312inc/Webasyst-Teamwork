@@ -62,7 +62,6 @@ var Task = ( function($) {
         // DYNAMIC VARS
         that.is_opened = false;
         that.is_status_opened = false;
-        that.drawer = null
 
         if (that.is_single) {
             that.$statusWrapper = that.$task.find(".t-status-data-container");
@@ -524,29 +523,29 @@ var Task = ( function($) {
                 return false;
             });
 
-            $task.on("click", ".t-hiddenform-cancel-link", function() {
-                if (that.is_single) {
-                    hideHiddenContainer();
-                } else {
-                    hideHiddenForm();
-                }
-                return false;
-            });
+            // $task.on("click", ".t-hiddenform-cancel-link", function() {
+            //     if (that.is_single) {
+            //         hideHiddenContainer();
+            //     } else {
+            //         hideHiddenForm();
+            //     }
+            //     return false;
+            // });
 
-            $task.on("submit", ".t-return-form-block form", function() {
-                onStatusSubmit($(this), "left");
-                return false;
-            });
+            // $task.on("submit", ".t-return-form-block form", function() {
+            //     onStatusSubmit($(this), "left");
+            //     return false;
+            // });
 
-            $task.on("submit", ".t-task-forward-wrapper form", function() {
-                onStatusSubmit($(this), "right");
-                return false;
-            });
+            // $task.on("submit", ".t-task-forward-wrapper form", function() {
+            //     onStatusSubmit($(this), "right");
+            //     return false;
+            // });
 
-            $task.on("submit", ".t-status-form-block form", function() {
-                onStatusSubmit($(this), "right");
-                return false;
-            });
+            // $task.on("submit", ".t-status-form-block form", function() {
+            //     onStatusSubmit($(this), "right");
+            //     return false;
+            // });
 
             $statusForm.on("onResize", function() {
                 resizeHiddenForm();
@@ -630,7 +629,7 @@ var Task = ( function($) {
                     $deferred.resolve(html);
                 });
 
-                showHiddenContainer($deferred);
+                showHiddenContainer($deferred, "forward", "left");
 
             } else {
 
@@ -658,7 +657,7 @@ var Task = ( function($) {
                     $deferred.resolve(html);
                 });
 
-                showHiddenContainer($deferred);
+                showHiddenContainer($deferred, "return");
 
             } else {
 
@@ -766,7 +765,7 @@ var Task = ( function($) {
                         $deferred.resolve(html);
                     });
 
-                    showHiddenContainer($deferred);
+                    showHiddenContainer($deferred, "status");
 
                 } else {
 
@@ -907,12 +906,12 @@ var Task = ( function($) {
             }
         };
 
-        var showHiddenContainer = function( $deferred ) {
-            var $statusWrapper = that.$statusWrapper;
-
-            $statusWrapper
-                .html('<i class="icon16 loading" />')
-                .addClass(storage.shown_class);
+        var showHiddenContainer = function( $deferred, name = '', direction = 'right') {
+            // var $statusWrapper = that.$statusWrapper;
+            
+            // $statusWrapper
+            //     .html('<i class="icon16 loading" />')
+            //     .addClass(storage.shown_class);
 
             $deferred.done( function(html) {
                 // $statusWrapper
@@ -924,7 +923,11 @@ var Task = ( function($) {
                     <div class="drawer-body">
                         <a href="#" class="drawer-close js-close-drawer"><i class="fas fa-times"></i></a>
                         <div class="drawer-block">
-                            <header class="drawer-header"><h1>Header</h1></header>
+                            <header class="drawer-header">
+                                <h1>
+                                    ${$.wa.locale[name]}
+                                </h1>
+                            </header>
                             <div class="drawer-content">
                                 ${html}
                             </div>
@@ -933,21 +936,27 @@ var Task = ( function($) {
                 </div>
                     `;
                 
-                that.drawer = $.waDrawer({
+                $.waDrawer({
                     html: wrappedHtml,
-                    direction: "right",
-                    onOpen: function ($drawer) {
+                    direction: direction,
+                    onOpen: function ($drawer, drawer_instance) {
+                        // Focus
                         $drawer.find("textarea").focus();
+                        // Handle close
                         $drawer.find(".t-hiddenform-cancel-link").on('click', function() {
-                            if(that.drawer) {
-                                that.drawer.close();
-                            }
+                            drawer_instance.close();
                         })
+                        // Handle submit
+                        $drawer.find("form").on("submit", function(e) {
+                            e.preventDefault()
+                            onStatusSubmit($(this), direction);
+                            drawer_instance.close();
+                        });
+                    },
+                    onClose: function () {
+                        that.is_status_opened = false;
                     }
                 });
-
-                // Focus
-                // $statusWrapper.find("textarea").focus();
 
                 commentFileEvents();
             });
@@ -955,13 +964,13 @@ var Task = ( function($) {
             that.is_status_opened = true;
         };
 
-        var hideHiddenContainer = function() {
-            that.$statusWrapper
-                .removeClass(storage.shown_class)
-                .html("");
+        // var hideHiddenContainer = function() {
+        //     that.$statusWrapper
+        //         .removeClass(storage.shown_class)
+        //         .html("");
 
-            that.is_status_opened = false;
-        };
+        //     that.is_status_opened = false;
+        // };
 
         bindEvents();
 
