@@ -1,9 +1,10 @@
 {* MILESTONE SELECTOR *}
 <div class="t-menu-item t-milestone-wrapper js-dropdown-menu" data-milestone-id="{$task.milestone_id}" style="margin-left: -1px;">
-    <ul class="menu-h dropdown t-milestone-select">
-        <li>
-            <a class="t-selected-item js-milestone-selected selected-custom-item js-dropdown-menu-title" href="javascript:void(0);"></a>
-            <ul class="menu-v with-icons js-milestones-list">
+    <div class="menu-h dropdown t-milestone-select" id="milestoneSelect">
+      
+            <button class="dropdown-toggle button light-gray t-selected-item js-milestone-selected selected-custom-item js-dropdown-menu-title"></button>
+            <div class="dropdown-body">
+            <ul class="menu menu-v with-icons js-milestones-list">
                 <li class="t-nav-item js-milestones-item js-dropdown-menu-item"
                     data-value=""
                     data-project-id="">
@@ -16,7 +17,7 @@
                     <li class="t-nav-item js-milestones-item js-dropdown-menu-item"
                         data-value="{$m.id}"
                         data-project-id="{$m.project_id}">
-                            <a class="set-custom-select js-milestones-select-item t-milestones-custom-select"
+                            <a class="flexbox wrap set-custom-select js-milestones-select-item t-milestones-custom-select"
                                href="javascript:void(0);" data-value="{$m.id}">
                                     {$m.name|escape}
                                         <span class="t-milestone-due-date">{$m.due_date|wa_date:'humandate'}</span>
@@ -24,8 +25,20 @@
                     </li>
                 {/foreach}
             </ul>
+            </div>
             <input type="hidden" class="js-milestones-hidden-input" name="data[milestone_id]"
                 value="{$task.milestone_id}">
-        </li>
-    </ul>
+            
+                <script>
+                    ( function($) {
+                        $("#milestoneSelect").waDropdown({
+                            hover: false,
+                            items: ".menu > li > a",
+                            change: function(event, target, dropdown) {
+                                $("[name=\"data[milestone_id]\"]").val( $(target).data("value") );
+                            }
+                        });
+                    })(jQuery);
+                </script>
+        </div>
 </div>
