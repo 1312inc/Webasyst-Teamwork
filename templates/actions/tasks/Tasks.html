@@ -154,7 +154,7 @@
                             {if $click_to_load_more && $next_page_url}
                                 <span class="click-to-load-more"><a href="javascript:void(0)">[`Load more...`]</a></span>
                             {/if}
-                            <span class="hidden loading-indicator"><i class="icon16 loading"></i>&nbsp;[`Loading...`]</span>
+                            <span class="hidden loading-indicator"><i class="icon16 loading"></i></span>
                         </p>
                         <script>(function($) { "use strict";
                             {* Note that this script has to be inside #t-tasks-wrapper for lazy loading to work correctly. *}
@@ -213,7 +213,7 @@
                 number = $link.data('task-number'),
                 $taskWrapper = $('#task-preview-wrapper');
 
-            $taskWrapper.html('Загрузка...');
+            $taskWrapper.html('<div class="loading"></div>');
 
             $.get('?module=tasks&action=info&n=' + number, function (html) {
                 $taskWrapper.html(html);
