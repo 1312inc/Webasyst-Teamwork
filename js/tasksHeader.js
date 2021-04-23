@@ -156,6 +156,12 @@ var TasksHeader = ( function($) {
             return false;
         });
 
+        $("#add-task-link").on("click", function(event) {
+            if (event.which != 1) { return; } // not a left-mouse-button click
+            $.tasks.showNewTaskForm();
+            return false;
+        });
+
         // Reset all filters
         that.$mainMenu.find('.t-remove-filters-link').click(function() {
             if (this.href && this.href.indexOf('inbox') >= 0) {

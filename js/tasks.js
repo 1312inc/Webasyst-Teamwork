@@ -130,7 +130,7 @@
             });
 
             $.fn.showLoading = function() {
-                self.showLoading(this);
+                // self.showLoading(this);
             };
             $.fn.hideLoading = function() {
                 self.hideLoading(this);
@@ -976,11 +976,12 @@
             });
 
             // 'New task' button opens a slide-down dialog in list views
-            $("#add-task-link").on("click", function(event) {
-                if (event.which != 1) { return; } // not a left-mouse-button click
-                self.showNewTaskForm();
-                return false;
-            });
+            // $("#add-task-link").on("click", function(event) {
+            //     alert('d')
+            //     if (event.which != 1) { return; } // not a left-mouse-button click
+            //     self.showNewTaskForm();
+            //     return false;
+            // });
         },
 
         // Flag for opening new task page. Need for showNewTaskForm()

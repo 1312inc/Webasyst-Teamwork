@@ -207,10 +207,13 @@
 
                     {* TAGS *}
                     <div class="t-tags-wrapper">
-                        <a class="t-tag-item is-template" href="javascript:void(0);" data-tag-id="">
-                            <span></span>
-                            <i class="icon10 delete t-remove-tag"></i>
-                        </a>
+                        <li class="tag is-template">
+                            <a class="t-tag-item" href="javascript:void(0);" data-tag-id="">
+                                <i class="fas fa-hashtag"></i>
+                                <span></span>
+                                <i class="fas fa-minus-circle t-remove-tag"></i>
+                            </a>
+                        </li>
 
                         <ul class="chips small">
                             {foreach $task.tags as $tag_id => $tag_name}
@@ -622,7 +625,7 @@
                                         {if $_is_comment}
                                             <a href="javascript:void(0);" class="t-assign-comment-link {if $task.comment_log_id == $l.id}selected{/if}" data-id="{$l.id}">
                                                 <i class="icon16 light-bulb t-mark-icon"></i>
-                                                <i class="icon16 loading t-loading"></i>
+                                                <!-- <i class="icon16 loading t-loading"></i> -->
                                             </a>
                                         {/if}
 
@@ -726,7 +729,7 @@
 
     {* CONTAINER FOR DYNAMIC AJAX FORMS *}
     <div class="t-status-form-wrapper">
-        <i class="icon16 loading"></i>
+        <!-- <i class="icon16 loading"></i> -->
     </div>
 
     {* LINK FOR TABLE VIEW *}
