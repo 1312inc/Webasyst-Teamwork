@@ -55,13 +55,21 @@
 
                 <script>
                     ( function($) {
-                        $("#t-menu-dropdown-order").waDropdown();
+                        $("#t-menu-dropdown-order").waDropdown({
+                            hover: false
+                        });
                     })(jQuery);
                 </script>
 
             </div>
+
+            <a class="gray small bold" href="javascript:void(0);" title="[`Filter tasks`]" id="t-filters-toggle">[`Filters`] <i class="fas fa-caret-down"></i></a>
+
         </div>
-        <a class="gray larger" href="javascript:void(0);" title="[`Filter tasks`]" id="t-filters-toggle"><i class="fas fa-chevron-circle-down"></i></a>
+
+        <button class="circle" title="[`New task`]">
+            <i class="fas fa-plus"></i>
+        </button>
 
     </div>
 
