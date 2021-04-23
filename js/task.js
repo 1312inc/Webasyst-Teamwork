@@ -629,7 +629,7 @@ var Task = ( function($) {
                     $deferred.resolve(html);
                 });
 
-                showHiddenContainer($deferred, "forward", "left");
+                showHiddenContainer($deferred, "forward");
 
             } else {
 
@@ -657,7 +657,7 @@ var Task = ( function($) {
                     $deferred.resolve(html);
                 });
 
-                showHiddenContainer($deferred, "return");
+                showHiddenContainer($deferred, "return", "left");
 
             } else {
 
@@ -1320,7 +1320,7 @@ var Task = ( function($) {
         var that = this,
             $tags = that.$tags,
             tag_href = "#/tasks/tag/" + tag_name + "/",
-            $tag = $tags.find(".t-tag-item.is-template").clone().removeClass("is-template");
+            $tag = $tags.find(".tag.is-template").clone().removeClass("is-template");
 
         // Render
         $tag.data("tag-id", tag_id)
@@ -1624,17 +1624,16 @@ var Task = ( function($) {
 
     Task.prototype.onFavorite = function ($link) {
         var that = this,
-            $i = $link.find('i'),
-            value = $i.hasClass('star-empty') ? 1 : 0;
+            $i = $link.find('[data-prefix]'),
+            value = $i.attr('data-prefix') === 'far' ? 1 : 0;
 
-        $i.attr('class', 'icon16 loading');
         $.post('?module=tasks&action=favorite&id=' + that.task_id, {value: value}, function (response) {
             if (response.status == 'ok') {
                 $.tasks.reloadSidebar();
                 if (value) {
-                    $i.attr('class', 'icon16 star');
+                    $i.attr('data-prefix', 'fas');
                 } else {
-                    $i.attr('class', 'icon16 star-empty');
+                    $i.attr('data-prefix', 'far');
                 }
             }
         });
