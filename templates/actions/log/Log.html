@@ -2,40 +2,49 @@
 
 <div class="t-main-wrapper t-log-page">
     <header class="t-header-wrapper">
-        <div class="t-general-menu is-shown">
+        <div class="t-general-menu is-shown flexbox space-20">
             {*
              * Filters by project, milestone and user
              *}
-            <div class="t-menu-wrapper">
+            <div class="wide t-menu-wrapper flexbox wrap middle space-12">
                 {foreach $filter_types as $ft_id => $options}
-                    <div class="t-menu-item" data-filter-id="{$ft_id}"><ul class="menu-h dropdown"><li>
-                        <a class="t-selected-item inline-link" href="javascript:void(0);">&nbsp;</a>
-                        <ul class="menu-v with-icons">
-                            {foreach $options as $o}
-                                <li class="t-nav-item" data-value="{$o.id}"><a href="javascript:void(0);">
-                                    {if !empty($o.icon_html) && ifempty($o.icon) != 'unknown'}
-                                        {$o.icon_html}
-                                    {/if}
-
-                                    {if !empty($o.id) && array_key_exists('photo', $o)}
-                                        {$_userpic = "{$wa_url}wa-content/img/userpic96.jpg"}
-                                        {if !empty($o.photo)}
-                                            {$_userpic = waContact::getPhotoUrl($o.id, $o.photo, 40, 40, 'person', 0)}
+                    <div class="menu-h dropdown t-menu-item" id="{$ft_id}" data-filter-id="{$ft_id}">
+                        <button class="dropdown-toggle button t-selected-item inline-link"></button>
+                        <div class="dropdown-body">
+                            <ul class="menu menu-v with-icons">
+                                {foreach $options as $o}
+                                    <li class="t-nav-item" data-value="{$o.id}"><a href="javascript:void(0);">
+                                        {if !empty($o.icon_html) && ifempty($o.icon) != 'unknown'}
+                                            {$o.icon_html}
                                         {/if}
-                                        <i class="icon16 userpic20" style="background-image: url({$_userpic|escape})"></i>
-                                    {/if}
 
-                                    <span class="{if $o@index > 0}is-bold{/if}">{$o.name|escape}</span>
-                                </a></li>
-                            {/foreach}
-                        </ul>
-                    </li></ul></div>
+                                        {if !empty($o.id) && array_key_exists('photo', $o)}
+                                            {$_userpic = "{$wa_url}wa-content/img/userpic96.jpg"}
+                                            {if !empty($o.photo)}
+                                                {$_userpic = waContact::getPhotoUrl($o.id, $o.photo, 40, 40, 'person', 0)}
+                                            {/if}
+                                            <i class="icon16 userpic20" style="background-image: url({$_userpic|escape})"></i>
+                                        {/if}
+
+                                        <span class="{if $o@index > 0}is-bold{/if}">{$o.name|escape}</span>
+                                    </a></li>
+                                {/foreach}
+                            </ul>
+                        </div>
+                        <script>
+                            ( function($) {
+                                $("#{$ft_id}").waDropdown({
+                                    hover: false
+                                });
+                            })(jQuery);
+                        </script>
+                    </div>
                 {/foreach}
                 {if !empty($is_filter_set)}
-                    <div class="t-menu-item" style="border-right: 0;">
+                    <div class="t-menu-item">
                         <span class="t-menu-name">
                             <a href="#/log/" class="t-remove-filters-link">
-                                <i class="icon16 t-clear-filters" style="vertical-align: middle; margin: 0;" title="[`Clear filters`]"></i>
+                                <i class="far fa-times-circle" title="[`Clear filters`]"></i>
                             </a>
                         </span>
                     </div>
@@ -45,32 +54,43 @@
             {*
              * Chart period selector
              *}
-            <div class="t-right-column is-middle">
-                <div class="t-menu-item">
-                    <ul class="menu-h dropdown t-logs-timeframe">
-                        <li class="hidden t-custom-timeframe">
-                            [`from`]
-                            <input type="text" name="from">
-                            [`to`]
-                            <input type="text" name="to">
-                            <select name="groupby">
-                                <option value="days">[`by day`]</option>
-                                <option value="months">[`by month`]</option>
-                            </select>
-                        </li>
-                        <li class="t-logs-timeframe-dropdown">
-                            <a href="javascript:void(0)" class="inline-link float-right"><b><i>{* Changed by JS *}</i></b>
-                                <i class="icon10 darr"></i>
-                            </a>
-                            <ul class="menu-v">
-                                <li data-timeframe="30" data-groupby="days"><a href="javascript:void(0)" class="nowrap">{_w('Last %d day', 'Last %d days', 30)}</a></li>
-                                <li data-timeframe="90" data-groupby="days" data-default-choice="1"><a href="javascript:void(0)" class="nowrap">{_w('Last %d day', 'Last %d days', 90)}</a></li>
-                                <li data-timeframe="365" data-groupby="months"><a href="javascript:void(0)" class="nowrap">{_w('Last %d day', 'Last %d days', 365)}</a></li>
-                                <li data-timeframe="all" data-groupby="months"><a href="javascript:void(0)" class="nowrap">[`All time`]</a></li>
-                                <li data-timeframe="custom"><a href="javascript:void(0)" class="nowrap">[`Select dates...`]</a></li>
-                            </ul>
-                        </li>
-                    </ul>
+            <div class="t-right-column flexbox middle space-16">
+    
+                <div class="hidden t-custom-timeframe flexbox middle space-8">
+                    <span>[`from`]</span>
+                    <input type="text" name="from" style="max-width: 120px;">
+                    <span>[`to`]</span>
+                    <input type="text" name="to" style="max-width: 120px;">
+                    <div class="wa-select">
+                        <select name="groupby">
+                            <option value="days">[`by day`]</option>
+                            <option value="months">[`by month`]</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="menu-h dropdown t-menu-item" id="timeframe">
+                    <button class="dropdown-toggle button t-selected-item inline-link"></button>
+                    <div class="dropdown-body t-logs-timeframe">
+                        <ul class="menu menu-v t-logs-timeframe-dropdown">
+                            <li data-timeframe="30" data-groupby="days"><a href="javascript:void(0)" class="nowrap">{_w('Last %d day', 'Last %d days', 30)}</a></li>
+                            <li data-timeframe="90" data-groupby="days" data-default-choice="1"><a href="javascript:void(0)" class="nowrap">{_w('Last %d day', 'Last %d days', 90)}</a></li>
+                            <li data-timeframe="365" data-groupby="months"><a href="javascript:void(0)" class="nowrap">{_w('Last %d day', 'Last %d days', 365)}</a></li>
+                            <li data-timeframe="all" data-groupby="months"><a href="javascript:void(0)" class="nowrap">[`All time`]</a></li>
+                            <li data-timeframe="custom"><a href="javascript:void(0)" class="nowrap">[`Select dates...`]</a></li>
+                        </ul>
+                    </div>
+                    <script>
+                        ( function($) {
+                            $("#timeframe").waDropdown({
+                                hover: false,
+                                items: ".menu > li > a",
+                                change: function(event, target, dropdown) {
+                                    return false;
+                                }
+                            });
+                        })(jQuery);
+                    </script>
                 </div>
             </div>
         </div>
@@ -85,10 +105,10 @@
     {if $logs}
         <div class="t-logs-wrapper" id="t-logs-wrapper">
             {foreach $logs as $l}{strip}
-                <div class="t-comment-item profile image32px" data-log-id="{$l.id|escape}">
+                <div class="t-comment-item profile image32px flexbox space-8 custom-py-0 custom-mt-20 custom-mb-40" data-log-id="{$l.id|escape}">
                     <div class="image">
                         <a href="#/log/contact_id={$l.contact_id}/" title="{$l.contact.name|escape}">
-                            <img class="userpic icon16" src="{$l.contact.photo_url}" alt="{$l.contact.name|escape}">
+                            <img class="userpic userpic-48" src="{$l.contact.photo_url}" alt="{$l.contact.name|escape}">
                         </a>
                     </div>
                     <div class="details">
@@ -101,12 +121,12 @@
 
                             {$_task = $l.task|default:null}
                             {if $_task}
-                                <div class="t-log-item-project-task-names" data-task-id="{$l.task.id}">
+                                <div class="t-log-item-project-task-names small" data-task-id="{$l.task.id}">
                                     {$_project = $_task.project|default:null}
                                     {if $_project}
                                         {$_project_name = $_project.name|escape}
                                         {$_task_str_id = $_task.project_id|cat:'.':$_task.number}
-                                        <span class="t-log-item-project-name">{$_project_name}&nbsp;/&nbsp;{$_task_str_id}:&nbsp;</span>
+                                        <span class="t-log-item-project-name bold">{$_project_name}&nbsp;/&nbsp;{$_task_str_id}:&nbsp;</span>
                                     {/if}
                                     <span class="t-log-item-task-name"><a href="#/task/{$l.task_id}/">{$_task.name|escape}</a></span>
                                 </div>
@@ -116,11 +136,11 @@
 
                         </header>
                         {if !empty($l.text)}
-                            <div class="t-comment-content">{tasksTask::formatText($l.text)}</div>
+                            <div class="t-comment-content custom-my-20">{tasksTask::formatText($l.text)}</div>
                         {/if}
 
                         {if $l.status_changed}
-                            <div class="t-comment-status-change">
+                            <div class="t-comment-status-change small gray">
                                 [`Status:`]
                                 {if isset($l.before_status_id)}
                                     <span class="t-color-point" style="background:{$l.before_status_color};"></span>
@@ -133,7 +153,7 @@
                             </div>
                         {/if}
                         {if $l.assigned_contact_id}
-                            <div class="t-comment-assignment-change">
+                            <div class="t-comment-assignment-change small gray">
                                 [`Assigned:`] <strong>{$l.assigned_contact.name|escape}</strong>
                             </div>
                         {else}
@@ -178,14 +198,14 @@
                 </div>
             {/strip}{/foreach}
 
-            <div id="end-of-logs" class="block">
-                <p>
-                    <span class="js-logs-list-counter">{sprintf("[`%s of %d`]", _w('%d record','%d records', $offset + $count), $total_count)}</span>
+            <div id="end-of-logs" class="block custom-mx-16 custom-mb-24">
+                
                     {if $click_to_load_more && $next_page_url}
-                        <span class="click-to-load-more"><a href="javascript:void(0)">[`Load more...`]</a></span>
+                        <span class="js-logs-list-counter">{sprintf("[`%s of %d`]", _w('%d record','%d records', $offset + $count), $total_count)}</span>
+                        <span class="click-to-load-more custom-ml-16"><a href="javascript:void(0)">[`Load more...`]</a></span>
                     {/if}
                     <span class="hidden loading-indicator"><i class="icon16 loading"></i></span>
-                </p>
+                
                 <script>(function() { "use strict";
                     {* Note that this script has to be inside #t-logs-wrapper for lazy loading to work correctly. *}
                     $.tasks.initLazyloader({
@@ -213,7 +233,7 @@
     var list_hash = $.tasks.cleanHash(window.location.hash) || '#/log/';
     var list_params = list_hash.substr(6).split('/')[0];
 
-    initLogsTimeframeSelector($('.t-logs-timeframe')); // see d3chart-logs.js
+    initLogsTimeframeSelector($('#timeframe')); // see d3chart-logs.js
 
     // Set <a href=...> on filters
     $main_menu.find(".t-nav-item[data-value]").each(function() {

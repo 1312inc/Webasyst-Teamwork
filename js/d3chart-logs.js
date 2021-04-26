@@ -442,8 +442,8 @@ window.showLogsChart = function(dataset, options) {
 };
 
 window.initLogsTimeframeSelector = function($wrapper) {
-    var $visible_option = $wrapper.children('.t-logs-timeframe-dropdown').children('a');
-    var $custom_wrapper = $wrapper.children('.t-custom-timeframe');
+    var $visible_option = $wrapper.children('#timeframe .dropdown-toggle'); 
+    var $custom_wrapper = $('.t-custom-timeframe');
 
     // Initial selection in dropdown menu
     var timeframe = getTimeframeData();
@@ -463,7 +463,7 @@ window.initLogsTimeframeSelector = function($wrapper) {
     }
 
     // Change selection when user clicks on dropdown list item
-    $wrapper.children('.t-logs-timeframe-dropdown').on('click', 'ul li:not(.selected)', function() {
+    $wrapper.children('#timeframe .dropdown-body').on('click', 'li:not(.selected)', function() {
         var $li = $(this);
         var tf = getTimeframeData($li);
         setActiveLi($li);
@@ -549,7 +549,7 @@ window.initLogsTimeframeSelector = function($wrapper) {
 
     // Helper to set active timeframe <li>
     function setActiveLi($li) {
-        $visible_option.find('b i').text($li.text());
+        $visible_option.text($li.text());
         $li.addClass('selected').siblings('.selected').removeClass('selected');
     }
 
