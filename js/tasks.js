@@ -1369,12 +1369,12 @@
                     }
 
                 } else {
-                    var $h1 = $('#content h1').first();
-                    if ($h1.length) {
-                        $h1.append('<i class="icon16 loading"></i>');
-                    } else {
-                        $('#content').html($('#content').data('loading-string')+'<i class="icon16 loading"></i>');
-                    }
+                    // var $h1 = $('#content h1').first();
+                    // if ($h1.length) {
+                    //     $h1.append('<i class="icon16 loading"></i>');
+                    // } else {
+                    //     $('#content').html($('#content').data('loading-string')+'<i class="icon16 loading"></i>');
+                    // }
                 }
             }
         },

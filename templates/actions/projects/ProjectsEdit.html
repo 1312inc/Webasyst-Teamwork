@@ -1,78 +1,81 @@
-<div class="shadowed">
+<div class="flexbox">
 
     {$sidebar_html|default:''}
 
-    <div class="t-project-page content left200px bordered-left blank" id="t-project-page">
-        <div class="hidden block double-padded t-saved bordered-bottom">
-            <i class="icon16 yes"></i>[`Settings successfully updated`]
+    <div class="t-project-page content custom-p-20 blank" id="t-project-page">
+        
+        <div class="hidden block double-padded t-saved">
+            <span class="alert success"><i class="fas fa-check-circle"></i> [`Settings successfully updated`]</span>
         </div>
+
         <div class="block double-padded">
 
-            {if $project.id}
-                <div class="float-right block half-padded">
-                    <ul class="menu-h with-icons">
-                        <li>
-                            {if $project.archive_datetime}
-                            [`Archive datetime`]: {$project.archive_datetime|wa_datetime}
-                            {else}
-                            <a href="javascript:void(0)" id="project-archive-link"><i class="icon16 yes-bw"></i>[`Archive this project`]</a>
-                            {/if}
-                        </li>
-                        <li>
-                            <a href="javascript:void(0)" id="project-delete-link"><i class="icon16 delete"></i>[`Delete`]</a>
-                        </li>
-                    </ul>
-                </div>
-            {/if}
+            <div class="flexbox space-20 custom-mb-40">
+                <h1 class="custom-mb-0 wide">{if !$project.id}[`New project`]{else}{$project.name|default:'[`(no name)`]'|escape}{/if}</h1>
 
-            <h1>{if !$project.id}[`New project`]{else}{$project.name|default:'[`(no name)`]'|escape}{/if}</h1>
+                {if $project.id}
+                    <div class="flexbox space-12">
+                        <div>
+                            {if $project.archive_datetime}
+                                [`Archive datetime`]: {$project.archive_datetime|wa_datetime}
+                            {else}
+                                <a href="javascript:void(0)" class="button small gray" id="project-archive-link"><i class="fas fa-archive"></i> [`Archive this project`]</a>
+                            {/if}
+                        </div>
+                        <div>
+                            <a href="javascript:void(0)" class="button small red" id="project-delete-link"><i class="far fa-trash-alt"></i> [`Delete`]</a>
+                        </div>
+                    </div>
+                {/if}
+            </div>
+            
 
             <form action="?module=projects&action=edit" method="post" id="project-editor-form">
                 <div class="fields form">
                     <input type="hidden" name="id" value="{ifempty($project.id, 'add')}">
 
-                    <div class="field-group">
+                    <div class="field-group custom-mb-24">
                         <div class="field">
-                            <div class="name">[`Project name`]</div>
-                            <div class="value bold">
-                                <input type="text" class="large" name="project[name]" value="{$project.name|escape}" placeholder="[`Project name`]">
+                            <div class="name for-input">[`Project name`]</div>
+                            <div class="value">
+                                <input type="text" name="project[name]" class="bold long" value="{$project.name|escape}" placeholder="[`Project name`]">
                             </div>
                         </div>
                     </div>
 
-                    <div class="field-group">
+                    <div class="field-group custom-mb-24">
                         <div class="field">
                             <div class="name">
                                 [`Color`]
                             </div>
                             <div class="value">
-                                <ul class="menu-h t-project-settings-colorbox">
+                                <div class="flexbox space-12 t-project-settings-colorbox">
                                     {foreach $colors as $color}
-                                        <li class="{$color}"><a href="javascript:void(0)">
+                                        <div class="{$color}"><a href="javascript:void(0)">
                                             <input type="radio" name="project[color]" value="{$color|escape}"{if ($project.color == $color)} checked{/if}>
-                                        </a></li>
+                                        </a></div>
                                     {/foreach}
-                                </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="field-group">
+                    <div class="field-group custom-mb-24">
                         <div class="field">
                             <div class="name">
                                 [`Icon`]
                             </div>
                             <div class="value">
-                                <ul class="menu-h" id="project-icon-selector">
+                                <div class="flexbox wrap space-12" id="project-icon-selector">
                                     {foreach $icons as $icon}
-                                        <li class="t-project-icon{if ($project.icon_class == $icon)} selected{/if}"><a href="javascript:void(0)">
-                                            <i class="icon16 {$icon|escape}"></i>
-                                        </a></li>
+                                        <div class="t-project-icon{if ($project.icon_class == $icon)} selected{/if}"><a href="javascript:void(0)">
+                                            <i class="fas fa-briefcase"></i>
+                                        </a></div>
                                     {/foreach}
-                                </ul>
+                                </div>
                                 <input type="hidden" name="project[icon]" value="{$project.icon}">
-                                <br>
-                                <span class="small">[`Or enter image URL (image will be scaled to 16x16px)`]:</span><br>
+                                
+                                <span class="smaller">[`Or enter image URL (image will be scaled to 16x16px)`]:</span><br>
                                 <input id="t-icon-url" type="text" value="{$project.icon_url|escape}" name="icon_url" class="long">
                             </div>
                         </div>
@@ -119,13 +122,7 @@
                         </div>
                     </div>
 
-                    <div class="field-group">
-                        <div class="field">
-                            <div class="value submit">
-                                <input type="submit" name="save" class="button green" value="[`Save`]">
-                            </div>
-                        </div>
-                    </div>
+                    <input type="submit" name="save" class="button green" value="[`Save`]">
                 </div>
             </form>
         </div>
@@ -135,11 +132,11 @@
 
     <div id="archive-confirm-dialog" style="display: none;">
         <h1>{$project.name|default:'[`(no name)`]'|escape}</h1>
-        <p>
+        <div class="confirm-dialog-content">
             {sprintf_wp("All <strong>%s</strong> in this project will be archived and won't be listed anymore. Are you sure?",
                 _w('%d task', '%d tasks', $project_tasks_count)
             )}
-        </p>
+        </div>
         <div class="buttons-wrapper">
             <input type="submit" class="button gray" value="[`Archive this project`]">
             [`or`]
@@ -185,9 +182,9 @@
         });
 
         // Deletion link
-        $('#project-delete-link').on('click', function() {
+        $('#project-delete-link').on('click', function(event) {
+            event.preventDefault();
             if (confirm(delete_confirm_msg)) {
-                $(this).find('.icon16').attr('class', 'icon16 loading');
                 $.post('?module=projects&action=delete', { id: $form.find('[name="id"]').val() }, function() {
                     $.wa.setHash('#/settings/');
                 }, 'json');
@@ -195,19 +192,29 @@
         });
 
         // Archive link
-        $('#project-archive-link').on('click', function() {
-            var $buttons = $('#archive-confirm-dialog .buttons-wrapper');
-            $('#archive-confirm-dialog').show().waDialog({
-                width: '400px',
-                height: '200px',
-                buttons: $buttons
-            });
+        $('#project-archive-link').on('click', function(event) {
+            event.preventDefault();
+            var $wrapper = $('#archive-confirm-dialog');
+            var dialog = $.waDialog({
+                header: $("<h1 />").text($wrapper.find('h1').text()),
+                content: $wrapper.find('.confirm-dialog-content').html(),
+                footer: $wrapper.find('.buttons-wrapper').html(),
+                onOpen: function($dialog, dialog_instance) {
 
-            $buttons.find(':submit').click(function() {
-                $('#project-archive-link').find('.icon16').attr('class', 'icon16 loading');
-                $.post('?module=projects&action=archive', { id: $form.find('[name="id"]').val() }, function() {
-                    $.tasks.redispatch();
-                }, 'json');
+                    // клик по submit
+                    $dialog.find(':submit').click(function(event) {
+                        event.preventDefault();
+                        $.post('?module=projects&action=archive', { id: $form.find('[name="id"]').val() }, function() {
+                            $.tasks.redispatch();
+                        }, 'json');
+                    });
+
+                    // клик по кнопке закрыть
+                    $dialog.on("click", ".cancel", function(event) {
+                        event.preventDefault();
+                        dialog_instance.close();
+                    });
+                }
             });
         });
 

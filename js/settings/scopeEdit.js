@@ -49,7 +49,7 @@ var TasksScopeEdit = (function ($) {
         if ($.isArray(data) && data.length) {
             form_data = form_data.concat(data);
         }
-        $form.find(':submit:first').parent().append('<i class="icon16 loading"></i>');
+        // $form.find(':submit:first').parent().append('<i class="icon16 loading"></i>');
         $.post($form.attr('action'), form_data, function(r) {
             $('#content').html(r);
         });
