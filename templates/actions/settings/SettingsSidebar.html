@@ -1,11 +1,10 @@
 {$_backend_sidebar = $backend_settings_sidebar|default:[]}
 
-<div class="sidebar left200px t-settings-sidebar" id="t-settings-sidebar-wrapper">
-    <ul class="menu-v stack with-icons">
-
-        <li class="top-padded" data-item-type="statuses">
+<div class="sidebar width-15rem bordered-right t-settings-sidebar bg-white" id="t-settings-sidebar-wrapper">
+    <ul class="menu">
+        <li data-item-type="statuses">
             <a href="#/settings/">
-                <i class="icon16 done"></i>[`Task statuses`]
+                <i class="fas fa-check"></i><span>[`Task statuses`]</span>
             </a>
         </li>
 
@@ -16,17 +15,17 @@
     </ul>
 
     <h5 class="heading">
-        <a href="#/settings/project/add/" class="count"><i class="icon16 add"></i></a>
+        <a href="#/settings/project/add/" class="count"><i class="fas fa-plus-circle"></i></a>
         [`Projects`]
     </h5>
-    <ul class="menu-v stack with-icons" id="t-projects-list-settings">
+    <ul class="menu" id="t-projects-list-settings">
         {foreach $projects as $p}
             <li data-id="{$p.id}" data-item-type="project">
                 <a href="#/settings/project/{$p.id}/">{strip}
                     {$p.icon_html}
                     <span class="js-project-name">{$p.name|default:'[`(no name)`]'|escape}</span>
                     {if !empty($p.color) && ($p.color != "t-white")}
-                        <i class="icon10 no-overhanging color {$p.color}"></i>
+                        <span class="icon"><i class="rounded bg-{$p.color}"></i></span>
                     {/if}
                 {/strip}</a>
             </li>
@@ -37,7 +36,7 @@
                 {$_count = count($archive_projects)}
                 {$_text_hidden = _w('Show %d archived project', 'Show %d archived projects', $_count)}
                 {$_text_shown = _w('Hide archived project', 'Hide archived projects', $_count)}
-                <a href="javascript:void(0);" class="hint js-archived-item-list-toggle"
+                <a href="javascript:void(0);" class="small js-archived-item-list-toggle"
                    data-list-type="projects" data-text-shown="{$_text_shown}" data-text-hidden="{$_text_hidden}">{$_text_hidden}</a>
             </li>
         {/if}
@@ -45,11 +44,11 @@
     </ul>
 
     {if $archive_projects}
-        <ul class="menu-v stack with-icons js-archived-item-list" id="archived-projects-list" data-list-type="projects" {if empty($project.archive_datetime)}style="display: none"{/if}>
+        <ul class="menu js-archived-item-list" id="archived-projects-list" data-list-type="projects" {if empty($project.archive_datetime)}style="display: none"{/if}>
             {foreach $archive_projects as $p}
                 <li data-id="{$p.id}" data-item-type="project" data-is-archived="1">
                     <a href="#/settings/project/{$p.id}/">
-                        <span class="gray js-project-name">{$p.name|default:'[`(no name)`]'|escape}</span>
+                        <span class="js-project-name">{$p.name|default:'[`(no name)`]'|escape}</span>
                     </a>
                 </li>
             {/foreach}
@@ -57,10 +56,10 @@
     {/if}
 
     <h5 class="heading">
-        <a href="#/settings/scope/add/" class="count"><i class="icon16 add"></i></a>
+        <a href="#/settings/scope/add/" class="count"><i class="fas fa-plus-circle"></i></a>
         [`Scopes`]
     </h5>
-    <ul class="menu-v stack with-icons t-scopes-list-wrapper">
+    <ul class="menu t-scopes-list-wrapper">
 
         {foreach $scopes as $_scope}
             <li data-id="{$_scope.id}" data-item-type="scope">
@@ -76,7 +75,7 @@
                 {$_count = count($archive_scopes)}
                 {$_text_hidden = _w('Show %d archived scope', 'Show %d archived scopes', $_count)}
                 {$_text_shown = _w('Hide archived scope', 'Hide archived scopes', $_count)}
-                <a href="javascript:void(0);" class="hint js-archived-item-list-toggle"
+                <a href="javascript:void(0);" class="small js-archived-item-list-toggle"
                    data-list-type="scopes"  data-text-shown="{$_text_shown}" data-text-hidden="{$_text_hidden}">{$_text_hidden}</a>
             </li>
         {/if}
@@ -84,11 +83,11 @@
     </ul>
 
     {if $archive_scopes}
-        <ul class="menu-v stack with-icons js-archived-item-list" data-list-type="scopes" style="display: none;">
+        <ul class="menu js-archived-item-list" data-list-type="scopes" style="display: none;">
             {foreach $archive_scopes as $_scope}
                 <li data-id="{$_scope.id}" data-item-type="scope" data-is-archived="1">
                     <a href="#/settings/scope/{$_scope.id}/">
-                        <span class="gray js-scope-name t-scope-name">{$_scope.name|default:'[`(no name)`]'|escape}</span>
+                        <span class="js-scope-name t-scope-name">{$_scope.name|default:'[`(no name)`]'|escape}</span>
                     </a>
                 </li>
             {/foreach}

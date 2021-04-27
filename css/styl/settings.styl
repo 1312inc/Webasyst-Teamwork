@@ -109,7 +109,7 @@ $border_color = #ddd;
                 padding: 10px;
                 background #fff
                 border-top: 1px solid $border_color
-                width: 100%
+                // width: 100%
 
             &.is-opened
                 .t-hidden-block
@@ -146,14 +146,16 @@ $border_color = #ddd;
             box-sizing border-box
 
 /* Info panel after successfull save */
-.t-saved
-    background: #dfd;
-    border-bottom: 1px solid rgba(0,0,0,0.13);
+// .t-saved
+//     background: #dfd;
+//     border-bottom: 1px solid rgba(0,0,0,0.13);
 
 .t-project-settings-colorbox
-    li
+    div
         a
-            padding: 8px 10px;
+            display: block;
+            padding: 10px;
+            line-height: 0;
             border: 1px solid rgba(127,127,127,.2);
 
         &.t-white

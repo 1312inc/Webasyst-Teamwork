@@ -1,11 +1,11 @@
-<div class="shadowed">
+<div class="flexbox">
 
     {function render_row status=[] class=''}{strip}
         <div class="t-settings-item {$class}{if $status.special} is-special{/if}" data-id="{$status.id}">
             <input type="hidden" name="status[{$status.id}][exists]" value="1">
             <header class="t-settings-header">
                 <div class="t-item-icon">
-                    {if !$status.special}<i class="icon16 sort"></i>{/if}
+                    {if !$status.special}<i class="fas fa-sort"></i>{/if}
                 </div>
                 <div class="t-item-name">
                     {capture name="status_header"}
@@ -24,7 +24,7 @@
                             {$smarty.capture.status_header}
                         </span>
                         <span class="hide-when-closed">
-                            <input type="text" name="status[{$status.id}][name]" value="{$status.name|escape}" placeholder="[`Status name`]" class="t-control-status-name long bold">
+                            <input type="text" name="status[{$status.id}][name]" value="{$status.name|escape}" placeholder="[`Status name`]" class="t-control-status-name long">
                             {if $wa->tasks->config('extended_status_settings')}
                                 <input class="t-control-link-input" type="text" name="status[{$status.id}][button]" value="{$status.button|escape}" placeholder="[`Button label`]">
                                 <span class="hint">[`Caption for the button that sends a task into this status`]</span>
@@ -36,12 +36,14 @@
                 </div>
                 <div class="t-buttons-block">
                     {if !$status.special}
+                    <div class="flexbox middle space-12">
                         <a href="javascript:void(0)" class="t-button-item edit-link hide-when-opened">
-                            <i class="icon16 edit"></i>
+                            <i class="far fa-edit"></i>
                         </a>
                         <a href="javascript:void(0)" class="t-button-item delete-link">
-                            <i class="icon16 delete"></i>
+                            <i class="far fa-trash-alt"></i>
                         </a>
+                    </div>
                     {/if}
                 </div>
             </header>
@@ -50,7 +52,7 @@
                     <input type="hidden" name="status[{$status.id}][params][_exist]" value="1">
                     <div class="fields form">
 
-                        <div class="field-group">
+                        <div class="field-group custom-mb-20">
                             <div class="field">
                                 <div class="name">[`Icon`]</div>
                                 <div class="value">
@@ -82,17 +84,16 @@
                             <div class="field">
                                 <div class="name">[`Task title color`]</div>
                                 <div class="value colorpicker">
-                                    #<input type="text" class="short" placeholder="f0f0f0" name="status[{$status.id}][params][title_color]" value="{ifset($status.params.title_color,'000000')|escape}">
-                                    <i class="icon16 color" style="background:#{ifset($status.params.title_color, '000000')|escape};"></i>
+                                    # <input type="text" class="short" placeholder="f0f0f0" style="width: 80px;" name="status[{$status.id}][params][title_color]" value="{ifset($status.params.title_color,'000000')|escape}">
+                                    <span class="icon"><i class="rounded" style="background:#{ifset($status.params.title_color, '000000')|escape};"></i></span>
                                 </div>
                             </div>
 
                             <div class="field">
                                 <div class="name">[`Button color`]</div>
                                 <div class="value colorpicker">
-                                    #<input type="text" class="short" placeholder="f0f0f0" name="status[{$status.id}][params][button_color]" value="{ifset($status.params.button_color,'f0f0f0')|escape}">
-                                    <i class="icon16 color" style="background:#{ifset($status.params.button_color, 'f0f0f0')|escape};"></i>
-
+                                    # <input type="text" class="short" placeholder="f0f0f0" style="width: 80px;" name="status[{$status.id}][params][button_color]" value="{ifset($status.params.button_color,'f0f0f0')|escape}">
+                                    <span class="icon"><i class="rounded" style="background:#{ifset($status.params.button_color, 'f0f0f0')|escape};"></i></span>
                                     <a href="javascript:void(0)" class="t-control-link color" style="background:#{ifset($status.params.button_color, 'f0f0f0')|escape};">{$status.button|escape}</a>
                                 </div>
                             </div>
@@ -101,6 +102,7 @@
                         <div class="field-group">
                             <div class="field">
                                 <div class="name">[`Assignment`]</div>
+                                <div class="value no-shift">
                                 {$options = [
                                     ''          => "[`Do not change assignment`]",
                                     'author'    => "[`Assign to user who created the task`]",
@@ -108,38 +110,58 @@
                                     'select'    => "[`Show assignment selector every time`]"
                                 ]}
                                 {foreach $options as $value => $name}{strip}
-                                    <div class="value no-shift">
+                                        <div class="field-group__item">
                                         <label>
-                                            <input type="radio" name="status[{$status.id}][params][assign]" value="{$value|escape}"
+                                            <span class="wa-radio">
+                                                <input type="radio" name="status[{$status.id}][params][assign]" value="{$value|escape}"
                                                 {if ifempty($status.params.assign, '') == $value} checked{/if}
                                             >
+                                                <span></span>
+                                            </span>
                                             &nbsp;{$name|escape}
                                         </label>
 
                                         {if $value == 'user'}
-                                            <select name="status[{$status.id}][params][assign_user]" style="display:none;margin-left:1em;" class="show-when-selected">
+                                        <div class="wa-select custom-ml-12 show-when-selected" style="display:none;"">
+                                            <select name="status[{$status.id}][params][assign_user]">
                                                 <option value="">[`Clear assignment`]</option>
                                                 {foreach tasksHelper::getTeam() as $u}
                                                     <option {if ifempty($status.params.assign_user, 0) == $u.id}selected{/if} value="{$u.id}">{$u.name|escape}</option>
                                                 {/foreach}
                                             </select>
+                                        </div>
                                         {elseif $value == 'select'}
                                             <div class="show-when-selected" style="display:none;margin-left:1em;"><label>
-                                                <input type="checkbox" name="status[{$status.id}][params][allow_clear_assign]"
+                                                <span class="wa-checkbox custom-mr-4">
+                                                    <input type="checkbox" name="status[{$status.id}][params][allow_clear_assign]"
                                                     {if !empty($status.params.allow_clear_assign)} checked{/if}
                                                 >
+                                                    <span>
+                                                        <span class="icon">
+                                                            <i class="fas fa-check"></i>
+                                                        </span>
+                                                    </span>
+                                                </span>                                                
                                                 [`Allow to clear assignment`]
                                             </label></div>
                                         {/if}
-
                                     </div>
+                                    
                                {/strip}{/foreach}
+                                </div>
                             </div>
 
                             <div class="field">
                                 <div class="name">[`Comment form`]</div>
                                 <div class="value no-shift"><label>
-                                    <input type="checkbox" name="status[{$status.id}][params][allow_comment]" value="1"{if !empty($status.params.allow_comment)} checked{/if}>
+                                    <span class="wa-checkbox">
+                                        <input type="checkbox" name="status[{$status.id}][params][allow_comment]" value="1"{if !empty($status.params.allow_comment)} checked{/if}>
+                                        <span>
+                                            <span class="icon">
+                                                <i class="fas fa-check"></i>
+                                            </span>
+                                        </span>
+                                    </span>
                                     [`Show comment form`]
                                 </label></div>
                             </div>
@@ -153,21 +175,19 @@
 
     {$sidebar_html|default:''}
 
-    <div class="content left200px blank bordered-left">
-        <div class="hidden block double-padded t-saved bordered-bottom">
-            <i class="icon16 yes"></i>[`Settings successfully updated`]
+    <div class="content left200px blank custom-p-20">
+        
+        <div class="hidden block double-padded t-saved">
+            <span class="alert success"><i class="fas fa-check-circle"></i> [`Settings successfully updated`]</span>
         </div>
-        <div class="block double-padded blank">
-            <h1>[`Task statuses`]</h1>
 
-            <div class="block not-padded t-add-settings-wrapper">
-                <ul class="menu-h with-icons" style="margin-top: 15px; margin-bottom: 20px;">
-                    <li>
-                        <a href="javascript:void(0)" id="t-add-status-button" class="bold">
-                            <i class="icon16 add"></i>[`New status`]
-                        </a>
-                    </li>
-                </ul>
+        <div class="block double-padded blank">
+            <h1 class="custom-mb-40">[`Task statuses`]</h1>
+
+            <div class="block not-padded t-add-settings-wrapper custom-mb-20">
+                <a href="javascript:void(0)" id="t-add-status-button" class="button small">
+                    <i class="fas fa-plus-circle"></i> [`New status`]
+                </a>
             </div>
 
             <form action="?module=settings&action=save" method="post" id="settings-form">
@@ -377,7 +397,7 @@
             $wrapper.on('change', '[name$="[assign]"]', function() {
                 var $radio = $(this);
                 $radio.closest('.field').find('.show-when-selected').hide();
-                $radio.closest('.value').find('.show-when-selected').show();
+                $radio.closest('.field-group__item').find('.show-when-selected').show();
             });
 
             // When user opens specific status form, make sure

@@ -95,7 +95,7 @@ function css () {
 
 function watchFiles () {
     watch('css/**/*.styl', css);
-    watch(['js/*.js', '!js/tasks.min.js'], js);
+    watch(['js/*.js', 'js/**/*.js', '!js/tasks.min.js'], js);
 }
 
 exports.watch = watchFiles;
