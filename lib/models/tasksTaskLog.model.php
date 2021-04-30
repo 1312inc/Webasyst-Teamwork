@@ -8,6 +8,7 @@ class tasksTaskLogModel extends waModel
     const ACTION_TYPE_FORWARD = 'forward';
     const ACTION_TYPE_RETURN = 'return';
     const ACTION_TYPE_EDIT = 'edit';
+    const ACTION_TYPE_EMPTY = '';
 
     /**
      * @param array $data key value of DB record + some special keys

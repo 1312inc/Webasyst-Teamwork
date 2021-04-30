@@ -451,6 +451,11 @@ class tasksConfig extends waAppConfig
         }
     }
 
+    public function getUI2TemplatePath($path)
+    {
+        return sprintf($path, wa()->whichUI(self::APP_ID) == '1.3' ? '-legacy' : '');
+    }
+
     private function registerGlobal(): void
     {
         if (!function_exists('tsks')) {
