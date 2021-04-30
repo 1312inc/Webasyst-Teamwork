@@ -44,7 +44,8 @@ class tasksTasksCommentsActions extends waJsonActions
         $possible_action_types = [
             tasksTaskLogModel::ACTION_TYPE_COMMENT,
             tasksTaskLogModel::ACTION_TYPE_FORWARD,
-            tasksTaskLogModel::ACTION_TYPE_RETURN
+            tasksTaskLogModel::ACTION_TYPE_RETURN,
+            tasksTaskLogModel::ACTION_TYPE_EMPTY,
         ];
 
         $comment = $this->getComment($possible_action_types);

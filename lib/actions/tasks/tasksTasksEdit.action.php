@@ -16,7 +16,7 @@ class tasksTasksEditAction extends waViewAction
     {
         $this->projects = $projects = tasksHelper::getProjects();
         if (!$projects) {
-            $this->setTemplate(wa('tasks')->getAppPath('templates/actions/tasks/NoProjectsError.html'));
+            $this->setTemplate(wa('tasks')->getAppPath(tsks()->getUI2TemplatePath('templates/actions%s/tasks/NoProjectsError.html')));
             return;
         }
 

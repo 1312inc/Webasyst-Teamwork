@@ -33,7 +33,7 @@ class tasksTasksLogActions extends waJsonActions
         $hash = (string)wa()->getRequest()->post('files_hash');
 
         $log = tasksHelper::addLog($this->task, array(
-            'action'              => 'forward',
+            'action'              => tasksTaskLogModel::ACTION_TYPE_FORWARD,
             'status_id'           => waRequest::post('status_id', 0, 'int'),
             'assigned_contact_id' => waRequest::post('assigned_contact_id'),
             'text'                => waRequest::post('text'),
@@ -60,7 +60,7 @@ class tasksTasksLogActions extends waJsonActions
         $hash = (string)wa()->getRequest()->post('files_hash');
 
         $log = tasksHelper::addLog($this->task, array(
-            'action'              => 'return',
+            'action'              => tasksTaskLogModel::ACTION_TYPE_RETURN,
             'status_id'           => $status_id,
             'assigned_contact_id' => $prev_actor_id,
             'text'                => waRequest::post('text'),
@@ -76,7 +76,7 @@ class tasksTasksLogActions extends waJsonActions
     public function defaultAction()
     {
         $data = array(
-            'action'    => '',
+            'action'    => tasksTaskLogModel::ACTION_TYPE_EMPTY,
             'status_id' => waRequest::post('status_id', -1, 'int'),
             'text'      => waRequest::post('text', '', 'string')
         );
