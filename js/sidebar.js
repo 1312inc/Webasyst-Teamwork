@@ -288,7 +288,9 @@ var TasksSidebar = (function ($) {
         // DYNAMIC VARS
 
         // INIT
-        that.initElasticBlock();
+        /* version 2 tweak start */
+        // that.initElasticBlock();
+        /* version 2 tweak end */
         that.initClass();
     };
 

@@ -25,6 +25,9 @@ var TasksHeader = ( function($) {
         that.$hash_filter = that.$mainMenu.find('.t-tasks-hash-type-filter');
         that.$tag_cloud_filter = that.$mainMenu.find('.t-tasks-tag-cloud-filter');
 
+        that.$secondSidebar = $(".t-content-wrapper .sidebar");
+        that.$contentContainer = $(".t-content-wrapper .content");
+
         // CONST
         that.messages = options.messages || {};
         that.total_count = options.total_count;
@@ -74,8 +77,17 @@ var TasksHeader = ( function($) {
             that.initAllFilters();
         }
 
-        if (!that.is_in_my_list) {
+        if (!that.is_in_my_list && !that.is_single_page) {
            $('.t-preview-name').text(that.buildTitle());
+        }
+        
+        // hide/show sidebar/content if single page
+        if(that.is_single_page){
+            that.$secondSidebar.addClass('desktop-only')
+            that.$contentContainer.removeClass('desktop-only')
+        } else {
+            that.$secondSidebar.removeClass('desktop-only')
+            that.$contentContainer.addClass('desktop-only')
         }
 
     };
