@@ -249,21 +249,29 @@
                                 {$_is_something_checked = $_is_something_checked || $_is_checked}
 
                                 <li class="t-user-item is-shown" data-user-id="{$user.id}">
-                                    <label class="t-user-label set-task-user">
-                                        <input type="radio" name="data[assigned_contact_id]" value="{$user.id}" {if $_is_checked}checked{/if}>
-                                        <i class="icon16 userpic20" style="background-image: url({$user.photo_url})"></i>
-                                        {$user.name|escape}
-                                        {if ($user.id == $wa->user('id'))}
-                                            &nbsp;<span class="gray">([`me`])</span>
-                                        {/if}
+                                    <label class="t-user-label set-task-user flexbox middle space-8">
+                                        <span class="wa-radio">
+                                            <input type="radio" name="data[assigned_contact_id]" value="{$user.id}" {if $_is_checked}checked{/if}>
+                                            <span></span>
+                                        </span>
+                                        <i class="userpic userpic-32" style="background-image: url({$user.photo_url})"></i>
+                                        <span>
+                                            {$user.name|escape}
+                                            {if ($user.id == $wa->user('id'))}
+                                                &nbsp;<span class="gray">([`me`])</span>
+                                            {/if}
+                                        </span>
                                     </label>
                                 </li>
                             {/foreach}
 
                             <li class="t-user-item is-unassigned is-shown" data-user-id="">
-                                <label class="t-user-label set-task-user">
-                                    <input type="radio" name="data[assigned_contact_id]" value="0"{if !$_is_something_checked} checked{/if}>
-                                    <i class="icon16 userpic20" style="background-image: url('{$wa_url}wa-content/img/userpic96.jpg')"></i>
+                                <label class="t-user-label set-task-user flexbox middle space-8">
+                                    <span class="wa-radio">
+                                        <input type="radio" name="data[assigned_contact_id]" value="0"{if !$_is_something_checked} checked{/if}>
+                                        <span></span>
+                                    </span>
+                                    <i class="userpic userpic-32" style="background-image: url('{$wa_url}wa-content/img/userpic96.jpg')"></i>
                                     <span class="gray">[`Unassigned`]</span>
                                 </label>
                             </li>
@@ -281,8 +289,8 @@
                 <div class="t-form-line field t-due-date-wrapper">
                     <div class="name">[`Due date`]</div>
                     <div class="value">
-                        <input type="text" class="t-datepicker-due-date bold">
-                        <input type="hidden" name="data[due_date]" value="{$task.due_date|escape}"><i class="icon16 calendar"></i>
+                        <input type="text" class="t-datepicker-due-date">
+                        <input type="hidden" name="data[due_date]" value="{$task.due_date|escape}"><i class="far fa-calendar-alt"></i>
                     </div>
                 </div>
 

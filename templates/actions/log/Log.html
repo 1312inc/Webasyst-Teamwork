@@ -23,7 +23,7 @@
                                             {if !empty($o.photo)}
                                                 {$_userpic = waContact::getPhotoUrl($o.id, $o.photo, 40, 40, 'person', 0)}
                                             {/if}
-                                            <i class="icon16 userpic20" style="background-image: url({$_userpic|escape})"></i>
+                                            <i class="userpic userpic-32" style="background-image: url({$_userpic|escape})"></i>
                                         {/if}
 
                                         <span class="{if $o@index > 0}is-bold{/if}">{$o.name|escape}</span>
@@ -104,7 +104,7 @@
 
     {if $logs}
         <div class="t-logs-wrapper" id="t-logs-wrapper">
-            {foreach $logs as $l}{strip}
+            {foreach $logs as $l}{strip} 
                 <div class="t-comment-item profile image32px flexbox space-8 custom-py-0 custom-mt-20 custom-mb-40" data-log-id="{$l.id|escape}">
                     <div class="image">
                         <a href="#/log/contact_id={$l.contact_id}/" title="{$l.contact.name|escape}">
@@ -183,7 +183,7 @@
                                             {foreach $log_attachments.files as $file}
                                                 <div class="t-file-item" data-file-ident="{$file.id}">
                                                     <a class="t-file-link" href="?module=attachments&action=download&id={$file.id}" title="{$file.name|escape}">
-                                                        <i class="icon16 attachment"></i>
+                                                        <i class="fas fa-paperclip"></i>
                                                         <span class="t-file-name">{$file.name|escape}</span>
                                                         <span class="t-file-size">{$file.size|wa_format_file_size}</span>
                                                     </a>
@@ -204,7 +204,7 @@
                         <span class="js-logs-list-counter">{sprintf("[`%s of %d`]", _w('%d record','%d records', $offset + $count), $total_count)}</span>
                         <span class="click-to-load-more custom-ml-16"><a href="javascript:void(0)">[`Load more...`]</a></span>
                     {/if}
-                    <span class="hidden loading-indicator"><i class="icon16 loading"></i></span>
+                    <!-- <span class="hidden loading-indicator"><i class="icon16 loading"></i></span> -->
                 
                 <script>(function() { "use strict";
                     {* Note that this script has to be inside #t-logs-wrapper for lazy loading to work correctly. *}

@@ -39,7 +39,7 @@
             <div class="name">[`Forward to`]</div>
             <div class="value">
 
-                <ul class="menu-v t-team-list-wrapper">
+                <ul class="t-team-list-wrapper custom-my-0">
                     {$_count = count($users)}
                     {$_visible_team_count = 2}
 
@@ -79,22 +79,22 @@
                         {/if}
 
                         <li class="t-user-item {if $_is_shown}is-shown{/if}" data-user-id="{$user.id}">
-                            <label class="t-user-label flexbox middle">
+                            <label class="t-user-label flexbox middle space-8">
                                 <input type="radio" name="assigned_contact_id" value="{$user.id}" {if ($selected_user == $user.id)}checked="checked"{/if}>
-                                <i class="icon16 userpic20" style="background-image: url({$_userpic});"></i>
+                                <i class="userpic userpic-32" style="background-image: url({$_userpic});"></i>
                                 {$user.name|escape}
                                 {if ($user.id == $wa->user('id'))}
-                                    &nbsp;([`me`])
+                                    <span>([`me`])</span>
                                 {/if}
                             </label>
                         </li>
                     {/foreach}
 
                     <li class="t-user-item is-unassigned {if $_count < $_visible_team_count}is-shown{/if}" data-user-id="">
-                        <label class="t-user-label flexbox middle">
+                        <label class="t-user-label flexbox middle space-8">
                             <input type="radio" name="assigned_contact_id" value="0">
-                            <i class="icon16 userpic20" style="background-image: url('{$wa_url}wa-content/img/userpic96.jpg')"></i>
-                            [`Unassigned`]
+                            <i class="userpic userpic-32" style="background-image: url('{$wa_url}wa-content/img/userpic96.jpg')"></i>
+                            <span>[`Unassigned`]</span>
                         </label>
                     </li>
 

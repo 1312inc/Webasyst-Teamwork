@@ -9,8 +9,10 @@
         <div class="field">
             <div class="name">[`Return to`]</div>
             <div class="value">
-                <i class="icon16 userpic20" style="background-image: url({$task.return_actor->getPhoto(40, 40)})"></i>
-                {$task.return_actor->getName()|escape}
+                <div class="flexbox middle space-8">
+                    <i class="userpic userpic-32" style="background-image: url({$task.return_actor->getPhoto(40, 40)})"></i>
+                    <span>{$task.return_actor->getName()|escape}</span>
+                </div>
             </div>
         </div>
         <div class="field">

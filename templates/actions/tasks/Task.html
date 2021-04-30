@@ -84,23 +84,23 @@
                     
                 </div>
 
-                <div class="t-controls-wrapper flexbox space-16">
+                <div class="t-controls-wrapper flexbox middle space-16">
 
                     <a class="t-favorite-link t-set-favorite" href="javascript:void(0);" title="[`Set favorite`]">
                         <i class="fa{if empty($task.favorite)}r{else}s{/if} fa-star"></i>
                     </a>
 
-                    <span class="t-date-wrapper nowrap" title="{$time_since_update_str}">{$time_since_update_str}</span>
+                    <span class="t-date-wrapper nowrap small" title="{$time_since_update_str}">{$time_since_update_str}</span>
                     {if $task.rights_info.can_edit|default:false}
                         <span>
-                            <a href="#/task/{$task.project_id}.{$task.number}/edit/" class="t-edit-task-link nowrap">
+                            <a href="#/task/{$task.project_id}.{$task.number}/edit/" class="t-edit-task-link nowrap small">
                                 <i class="fas fa-edit"></i> [`Edit`]
                             </a>
                         </span>
                     {/if}
                     {if $task.rights_info.can_delete|default:false}
                         <span>
-                            <a href="javascript:void(0);" class="t-delete-task-link nowrap">
+                            <a href="javascript:void(0);" class="t-delete-task-link nowrap small">
                                 <i class="fas fa-minus-circle"></i> [`Delete`]
                             </a>
                         </span>
@@ -277,7 +277,7 @@
             {* TASK BUTTONS *}
             <div class="t-task-buttons custom-mb-40">
 
-                <div class="t-task-controls">
+                <div class="t-task-controls flexbox wrap space-12">
                     {$task->buttonHtml()}
                     {if $task.next_status && $task.next_status.id != -1 && (($task.contact_id == $wa->user('id') && $task.assigned_contact_id == $task.contact_id) || $task->hasFullAccess())}
                         {$task->buttonHtml(-1)}
@@ -445,7 +445,7 @@
                                     {foreach $task.files as $file}
                                         <div class="t-file-item">
                                             <a class="t-file-link" href="?module=attachments&action=download&id={$file.id}" target="_blank" title="{$file.name|escape}">
-                                                <i class="icon16 attachment"></i>
+                                                <i class="fas fa-paperclip"></i>
                                                 <span class="t-file-name">{$file.name|escape}</span>
                                                 <span class="t-file-size">{$file.size|wa_format_file_size}</span>
                                             </a>
@@ -534,7 +534,7 @@
                                             {foreach $_l_attachments.files as $_file}
                                                 <div class="t-file-item" data-file-ident="{$_file.id}">
                                                     <a class="t-file-link" href="?module=attachments&action=download&id={$_file.id}" title="{$_file.name|escape}">
-                                                        <i class="icon16 attachment"></i>
+                                                        <i class="fas fa-paperclip"></i>
                                                         <span class="t-file-name">{$_file.name|escape}</span>
                                                         <span class="t-file-size">{$_file.size|wa_format_file_size}</span>
                                                     </a>
@@ -599,7 +599,7 @@
                                 {$_can_edit = $_can_edit && !$_empty_log_item}
                             {/if}
 
-                            <div class="t-comment-item flexbox space-12" data-id="{$l.id}">
+                            <div class="t-comment-item flexbox space-8 custom-py-0 custom-mt-20 custom-mb-40" data-id="{$l.id}">
                                 <div class="image">
                                     <a href="{if !empty($l.contact.id)}{tasksHelper::getProfileURL($l.contact.id)}{else}javascript:void(0);{/if}" title="{$l.contact.name|escape}">
                                         {if !empty({$l.contact.photo_url})}
@@ -615,16 +615,16 @@
                                             <a href="{if !empty($l.contact.id)}{tasksHelper::getProfileURL($l.contact.id)}{else}javascript:void(0);{/if}">{$l.contact.name|escape}</a>
                                         </span>
                                         <span class="t-comment-action small">{$l.action_name}</span>
-                                        <span class="t-comment-date small">{$l.create_datetime|wa_datetime:"humandatetime"}</span>
+                                        <span class="t-comment-date small gray">{$l.create_datetime|wa_datetime:"humandatetime"}</span>
 
                                         {* MARK LAST NOT EMPTY FORWARD LOG ITEM *}
                                         {if $_is_forward && !$_empty_log_item && $task.assign_log_id && $task.assign_log_id == $l.id}
-                                            <i class="icon16 lightning"></i>
+                                            <i class="fas fa-bolt"></i>
                                         {/if}
 
                                         {if $_is_comment}
                                             <a href="javascript:void(0);" class="t-assign-comment-link {if $task.comment_log_id == $l.id}selected{/if}" data-id="{$l.id}">
-                                                <i class="icon16 light-bulb t-mark-icon"></i>
+                                                <i class="far fa-lightbulb"></i>
                                                 <!-- <i class="icon16 loading t-loading"></i> -->
                                             </a>
                                         {/if}
@@ -640,21 +640,21 @@
                                     </header>
 
                                     {if !empty($l.text)}
-                                        <div class="t-comment-content">{tasksTask::formatText($l.text)}</div>
+                                        <div class="t-comment-content small custom-my-20">{tasksTask::formatText($l.text)}</div>
                                     {/if}
 
                                     {if $l.status_changed}
-                                        <div class="t-comment-status-change">
+                                        <div class="t-comment-status-change small gray">
                                             [`Status:`] {if $l.before_status_id}{tasksHelper::statusNameHTML($l.before_status_id)}{/if} → {tasksHelper::statusNameHTML($l.after_status_id)}
                                         </div>
                                     {/if}
                                     {if $l.assignment_changed}
                                         {if $l.assigned_contact_id}
-                                            <div class="t-comment-assignment-change">
+                                            <div class="t-comment-assignment-change small gray">
                                                 [`Assigned:`] <strong>{$l.assigned_contact.name|escape}</strong>
                                             </div>
                                         {else}
-                                            <div class="t-comment-assignment-change">
+                                            <div class="t-comment-assignment-change small gray">
                                                 <strong>[`Assignment removed`]</strong>
                                             </div>
                                         {/if}
@@ -680,7 +680,7 @@
                                                         {foreach $log_attachments.files as $file}
                                                             <div class="t-file-item" data-file-ident="{$file.id}">
                                                                 <a class="t-file-link" href="?module=attachments&action=download&id={$file.id}" title="{$file.name|escape}">
-                                                                    <i class="icon16 attachment"></i>
+                                                                    <i class="fas fa-paperclip"></i>
                                                                     <span class="t-file-name">{$file.name|escape}</span>
                                                                     <span class="t-file-size">{$file.size|wa_format_file_size}</span>
                                                                 </a>

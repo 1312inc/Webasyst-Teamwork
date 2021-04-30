@@ -66,11 +66,11 @@
             <a class="gray small bold" href="javascript:void(0);" title="[`Filter tasks`]" id="t-filters-toggle">[`Filters`] <i class="fas fa-caret-down"></i></a>
 
         </div>
-        
-        <button id="add-task-link" class="circle"> 
-            <i class="fas fa-plus"></i>
-        </button>
-
+        <div>
+            <button id="add-task-link" class="circle"> 
+                <i class="fas fa-plus"></i>
+            </button>
+        </div>
     </div>
 
     <!-- plugin hook: 'backend_tasks.%plugin_id%.header.preview' -->
@@ -96,9 +96,9 @@
                 {else}
                   <i class="fas fa-star t-link-icon"></i>
                 {/if}
-                {$title|default:''|escape}
+                &nbsp;{$title|default:''|escape}
                </span>
-                <i class="icon16 loading t-loading-icon" style="display: none;"></i>
+                <!-- <i class="icon16 loading t-loading-icon" style="display: none;"></i> -->
             </a>
         {/function}
 
