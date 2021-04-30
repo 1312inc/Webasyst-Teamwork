@@ -17,7 +17,7 @@ class tasksTasksCommentsActions extends waJsonActions
         $hash = (string)wa()->getRequest()->post('files_hash');
 
         $log = tasksHelper::addLog($task, array(
-                'action'           => 'comment',
+                'action'           => tasksTaskLogModel::ACTION_TYPE_COMMENT,
                 'attachments_hash' => $hash
             ) + $data);
 
