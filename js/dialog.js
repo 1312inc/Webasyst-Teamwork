@@ -142,9 +142,11 @@ var Dialog = ( function($) { "use strict";
             if ($task) {
 
                 // Correction
-                if ($task) {
-                    $content.css("top", top - header_height - 1);
-                }
+                /* version 2 tweak start */
+                // if ($task) {
+                //     $content.css("top", top - header_height - 1);
+                // }
+                /* version 2 tweak end */
 
                 that.task_height = $task.outerHeight();
 
