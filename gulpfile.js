@@ -49,7 +49,7 @@ function js () {
         'js/settings/scopeEdit.js'
     ]
 
-    return src(source)
+    return src(source, {allowEmpty: true})
         .pipe(sourcemaps.init())
         .pipe(concat('tasks.js'))
         .pipe(uglify({

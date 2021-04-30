@@ -1297,6 +1297,9 @@ var Task = ( function($) {
             var matches = this.pathname.match(regexp);
             if (matches) {
                 var $a = $(this);
+                if (!$a.parent().hasClass('break-word')) {
+                    $a.wrap('<span class="break-word"></span>');
+                }
                 if (!$a.hasClass('js-no-app-icon') && !$a.hasClass('t-tag-link')) {
                     $a.addClass('app-link app-'+matches[1]).prepend($.parseHTML(
                         '<i class="icon16 app-icon app-'+matches[1]+'" style="background-image:url('+app_icons[matches[1]]+');background-size:16px 16px;margin-top: 2px;"></i>'

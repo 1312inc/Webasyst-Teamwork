@@ -377,7 +377,7 @@ class tasksTask implements ArrayAccess
         if (isset($options['link_pattern']) && is_string($options['link_pattern'])) {
             $link_pattern = $options['link_pattern'];
         } else {
-            $link_pattern = '<a href="{$url}" class="t-tag-link">#{$tag}</a>';
+            $link_pattern = '<span class="break-word"><a href="{$url}" class="t-tag-link">#{$tag}</a></span>';
         }
 
         $link_pattern = str_replace('{$url}', $url_pattern, $link_pattern);
@@ -433,7 +433,7 @@ class tasksTask implements ArrayAccess
         if (isset($options['link_pattern']) && is_string($options['link_pattern'])) {
             $link_pattern = $options['link_pattern'];
         } else {
-            $link_pattern = '<a href="{$url}" class="t-task-link">#{$number}</a>';
+            $link_pattern = '<span class="break-word"><a href="{$url}" class="t-task-link">#{$number}</a></span>';
         }
         $link_pattern = str_replace('{$url}', $url_pattern, $link_pattern);
         $link_pattern = str_replace('{$number}', '{$tag}', $link_pattern);
