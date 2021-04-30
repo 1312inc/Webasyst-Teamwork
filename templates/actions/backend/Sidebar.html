@@ -181,7 +181,7 @@
                 {foreach $scopes as $scope}
                     <li class="t-scope {if !empty($scope.due_date) && $scope.due_date < date('Y-m-d')}child-red{/if}">
                         <a href="#/tasks/scope/{$scope.id}/"{if isset($scope.closed_percent)}class="t-scope-title"{/if}>
-                            <span class="icon"><i class="fas fa-fire"></i>{$scope.project.icon_html}</span>
+                            <span class="icon"><!--<i class="fas fa-fire"></i>-->{$scope.project.icon_html}</span>
                             <span>
                                 {$scope.name|escape}
                                 <span class="hint" style="display: block;">
@@ -251,12 +251,12 @@
                 {foreach $_users as $user}
                     <li>
                         {user_count user_id=$user.id}
-                        <a href="#/tasks/assigned/{$user.id}/"><i class="icon16 userpic20" style="background-image: url({waContact::getPhotoUrl($user.id, $user.photo, 40, 40, 'person', 0)})"></i>{$user.name|escape}</a>
+                        <a href="#/tasks/assigned/{$user.id}/"><i class="userpic userpic-32" style="background-image: url({waContact::getPhotoUrl($user.id, $user.photo, 40, 40, 'person', 0)})"></i>{$user.name|escape}</a>
                     </li>
                 {/foreach}
             </ul>
         {else}
-            <div class="box align-center custom-my-12 hide-when-collapsed">
+            <div class="box custom-my-12 hide-when-collapsed">
                 <p class="hint">{sprintf(_w('Use <strong>app "%s"</strong> to provide access to Tasks app for your teammates.'), $team_app_name)}</p>
             </div>
         {/if}
@@ -309,12 +309,16 @@
                     </span>
                 </h5>
                 <div class="box t-tags-wrapper hide-when-collapsed">
-                <input id="js-t-sidebar-tags-autocomplete" value="" data-default="" class="ui-autocomplete-input" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true"></div>
+                
+                    <input id="js-t-sidebar-tags-autocomplete" value="" type="text" data-default="" class="ui-autocomplete-input custom-mb-12" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true">
+                    
+                    <div class="hint">
+                        {sprintf(_w('There are more than %u tags.'), tasksTaskTagsModel::TAGS_MAX_COUNT)}<br>
+                        [`Start typing in the search field to find a tag.`]
+                    </div>
 
-                <p class="hint">
-                    {sprintf(_w('There are more than %u tags.'), tasksTaskTagsModel::TAGS_MAX_COUNT)}<br>
-                    [`Start typing in the search field to find a tag.`]
-                </p>
+                </div>
+                
             </div>
         {else}
             <div id="collapsible-tags" data-block="tags">
@@ -344,7 +348,7 @@
     <ul class="menu">
         <li>
             <a href="#/personal-settings/">
-                <span class="icon"><span class="userpic" style="background-image: url('{$wa->user()->getPhoto(20)}');"></span></span>
+                <span class="icon"><span class="userpic userpic-20" style="background-image: url('{$wa->user()->getPhoto(20)}');"></span></span>
                 <span>[`My preferences`]</span>
             </a>
         </li>
