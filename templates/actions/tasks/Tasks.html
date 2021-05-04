@@ -212,8 +212,9 @@
             var $link = $(this),
                 number = $link.data('task-number'),
                 $taskWrapper = $('#task-preview-wrapper');
-
-            $taskWrapper.html('<div class="loading"></div>');
+                $taskSkeletonContainer = $('#task-skeleton');
+            
+            $taskWrapper.html($taskSkeletonContainer.html());
 
             $.get('?module=tasks&action=info&n=' + number, function (html) {
                 $taskWrapper.html(html);
