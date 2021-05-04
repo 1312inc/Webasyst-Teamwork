@@ -76,6 +76,10 @@
         </div>
     </div>
 
+    <div id="task-skeleton" style="display: none;">
+        {include file="../tasks/includes/TasksSkeleton.inc.html" inline}
+    </div>
+
     {* if method_exists($wa->installer, 'reviewWidget')}
         {$wa->installer->reviewWidget('app/tasks')}
     {/if *}
