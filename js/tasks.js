@@ -593,7 +593,10 @@
                     params_str.push(k+'='+encodeURIComponent(params[k]||''));
                 }
             }
+
+            window.loadingEntity = 'list';
             self.load('?module=tasks&' + params_str.join('&'), function() {
+                window.loadingEntity = undefined;
                 if (params.hash.substr(0, 7) == 'search/') {
                     self.setTitle($_('Search') + ' ' + params.hash.substr(7));
                 }
@@ -772,8 +775,9 @@
         },
 
         taskAction: function(id, action) {
+            window.loadingEntity = 'task';
             this.load('?module=tasks&action=' + (action || 'info') + '&n=' + id, function () {
-
+                window.loadingEntity = undefined;
             });
         },
 
