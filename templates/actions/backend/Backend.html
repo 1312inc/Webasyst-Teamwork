@@ -65,7 +65,7 @@
                 {* MAIN CONTENT *}
                 <main class="t-content-wrapper content blank">
                     <div id="content" data-loading-string="">
-                        <i class="icon16 loading"></i>
+                        <div id="loaderPlace"></div>
                     </div>
                 </main>
             </div>
@@ -76,13 +76,31 @@
         </div>
     </div>
 
-    <div id="task-skeleton" style="display: none;">
+    <div id="taskSkeleton" style="display: none;">
         {include file="../tasks/includes/TasksSkeleton.inc.html" inline}
+    </div>
+
+    <div id="tasksListSkeleton" style="display: none;">
+        {include file="../tasks/includes/TasksListSkeleton.inc.html" inline}
     </div>
 
     {* if method_exists($wa->installer, 'reviewWidget')}
         {$wa->installer->reviewWidget('app/tasks')}
     {/if *}
+
+    <script>
+        (function() {
+            var $loaderPlace = document.querySelector('#loaderPlace');
+            if($loaderPlace){
+                $loaderPlace.innerHTML = 
+                    window.loadingEntity === 'task' 
+                    ? document.querySelector('#taskSkeleton').innerHTML 
+                    : window.loadingEntity === 'list' 
+                    ? document.querySelector('#tasksListSkeleton').innerHTML 
+                    : '<i class="icon16 loading"></i>';
+            }
+        })();
+    </script>
 
     <script>$.wa.locale = $.extend($.wa.locale || {}, {
         'Search': "[`Search`]",
