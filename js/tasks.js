@@ -593,7 +593,10 @@
                     params_str.push(k+'='+encodeURIComponent(params[k]||''));
                 }
             }
+
+            window.loadingEntity = 'list';
             self.load('?module=tasks&' + params_str.join('&'), function() {
+                window.loadingEntity = undefined;
                 if (params.hash.substr(0, 7) == 'search/') {
                     self.setTitle($_('Search') + ' ' + params.hash.substr(7));
                 }
@@ -772,8 +775,9 @@
         },
 
         taskAction: function(id, action) {
+            window.loadingEntity = 'task';
             this.load('?module=tasks&action=' + (action || 'info') + '&n=' + id, function () {
-
+                window.loadingEntity = undefined;
             });
         },
 
@@ -959,7 +963,8 @@
             self.initCollapsibleSidebar();
 
             // Click on current tasks list link in sidebar reloads the list
-            $('#wa-app > .sidebar a[href^="#/tasks/"]').on("click", function(e) {
+            $('#wa-app > .flexbox > .sidebar a[href^="#/tasks/"]').on("click", function(e) {
+                
                 if (e.which != 1) {
                     return; // not a left-mouse-button click
                 }
@@ -967,12 +972,17 @@
                     href = $a.attr('href'),
                     is_current_page_href = ( self.cleanHash(href) == self.currentHash );
 
-                $('#wa-app > .sidebar .selected').removeClass('selected');
+                $('#wa-app > .flexbox > .sidebar .selected').removeClass('selected');
                 $a.closest('li').addClass('selected');
                 if (is_current_page_href) {
                     self.redispatch();
                     return false;
                 }
+            });
+
+            // Clicks on bricks
+            $('#wa-app > .flexbox .brick').on("click", function(e) {
+                $(this).addClass('selected');
             });
 
             // 'New task' button opens a slide-down dialog in list views
@@ -1181,7 +1191,7 @@
         },
 
         initCollapsibleSidebar: function() {
-            $('#wa-app > .sidebar .heading').filter(function() {
+            $('#wa-app > .flexbox > .sidebar .heading').filter(function() {
                 return $(this).find('.darr').length;
             }).click(function() {
                 // Collapse on click
@@ -1205,7 +1215,7 @@
         reloadSidebar: function(callback) {
             //$('#add-task-link .icon16').attr('class', 'icon16 loading');
             $.post('?sidebar=1', function(r) {
-                $('#wa-app > .sidebar').html(r);
+                $('#wa-app > .flexbox > .sidebar').html(r);
                 self.initSidebar();
                 self.highlightSidebar();
                 callback && callback();
@@ -1217,7 +1227,7 @@
 
         highlightMyList: function ($sidebar) {
             if (!$sidebar) {
-                $sidebar = $('#wa-app > .sidebar');
+                $sidebar = $('#wa-app > .flexbox > .sidebar');
             }
             var hash = self.cleanHash(location.hash),
                 parsed = this.parseTasksHash(hash),
@@ -1233,7 +1243,7 @@
         },
 
         updateCountOfMyList: function (list_id, count) {
-            var $sidebar = $('#wa-app > .sidebar'),
+            var $sidebar = $('#wa-app > .flexbox > .sidebar'),
                 $li = $sidebar.find('.t-view-list > li[data-id="' + list_id + '"]');
             if ($li.length) {
                 $li.find('.count').text(count);
@@ -1246,7 +1256,7 @@
          * Hashes are compared after this.cleanHash() applied to them. */
         highlightSidebar: function (sidebar) {
             if (!sidebar) {
-                sidebar = $('#wa-app > .sidebar');
+                sidebar = $('#wa-app > .flexbox > .sidebar');
             }
 
             // first, try select my list item
@@ -1265,6 +1275,14 @@
             var $match = false;
             var $partialMatch = false;
             var partialMatchLength = 2;
+
+            // Select brick by hash
+            sidebar.find('.brick').each(function(i, e) {
+                e = $(e)
+                if(e.attr('href') === currentHash) {
+                    e.addClass('selected');
+                }
+            });
 
             sidebar.find('li a').each(function(k, v) {
                 v = $(v);
@@ -1406,7 +1424,7 @@
                         title = $h1.text();
                     }
                 } else {
-                    title = $('#wa-app > .sidebar .selected a').text();
+                    title = $('#wa-app > .flexbox > .sidebar .selected a').text();
                 }
             }
 
