@@ -57,7 +57,7 @@
             {* TASK HEADER *}
             <header class="t-task-header flexbox custom-mb-20">
 
-                
+
 
                 <div class="t-task-header-content wide">
 
@@ -81,7 +81,7 @@
 
 
 
-                    
+
                 </div>
 
                 <div class="t-controls-wrapper flexbox middle space-16">
@@ -125,12 +125,6 @@
                 <div class="wide">
 
                     <h2 class="custom-m-0">
-                        {* PROJECT ICON *}
-                        {if !empty($task.project.icon_html)}
-                            <span class="t-project-icon custom-mr-8">
-                                {$task.project.icon_html}
-                            </span>
-                        {/if}
 
                         {* PRIORITY *}
                         <span class="t-priority-wrapper {ifset($_priority_class_array[$task.priority])}" title="task_id={$task.id}" title="[`Double-click to change task priority`]">
@@ -230,7 +224,7 @@
                                     [`Add tag`]
                                 </a>
                                 <div class="dropdown-body custom-p-8">
-                                    
+
                                     {if count($tags_cloud) <= tasksTaskTagsModel::TAGS_MAX_COUNT}
                                     <ul class="chips tags">
                                         {foreach $tags_cloud as $tag}
@@ -245,7 +239,7 @@
                                             [`Start typing in the search field to find a tag.`]
                                         </span>
                                     {/if}
-                                    
+
                                     <div class="t-input-wrapper">
                                         <input value="" class="t-input js-t-task-tags-autocomplete" type="text" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true"
                                             placeholder="[`Custom tag...`]">
@@ -330,7 +324,7 @@
                 {foreach $_backend_task_hook as $_}{$_.buttons|default:''}{/foreach}
 
             </div>
-            
+
             <!-- plugin hook: 'backend_task.%plugin_id%.after_buttons' -->
             {* @event backend_task.%plugin_id%.after_buttons *}
             {foreach $_backend_task_hook as $_}{$_.after_buttons|default:''}{/foreach}
