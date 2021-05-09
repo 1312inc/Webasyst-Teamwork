@@ -68,15 +68,16 @@
 
                                 {task_userpics_block}
 
+                                {* PROJECT ICON *}
+                                {if !empty($task.project.icon_html)}
+                                    <span class="t-project-icon">
+                                        {$task.project.icon_html}
+                                    </span>
+                                {/if}
+
                             </a>
                             <a href="{$_task_link}" class="details">
                                 <div class="flexbox space-8">
-                                    {* PROJECT ICON *}
-                                    {if !empty($task.project.icon_html)}
-                                        <span class="t-project-icon">
-                                            {$task.project.icon_html}
-                                        </span>
-                                    {/if}
 
 
                                     <span>
