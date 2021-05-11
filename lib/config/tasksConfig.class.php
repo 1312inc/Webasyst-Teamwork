@@ -456,6 +456,34 @@ class tasksConfig extends waAppConfig
         return sprintf($path, wa()->whichUI(self::APP_ID) == '1.3' ? '-legacy' : '');
     }
 
+    /**
+     * The method returns a counter to show in backend header near applications' icons.
+     * Three types of response are allowed.
+     * @return string|int|array - A prime number in the form of a int or string
+     * @return array - Array with keys 'count' - the value of the counter and 'url' - icon url
+     * @return array - An associative array in which the key is the object key from app.php, from the header_items.
+     *                 The value must be identical to the value described in one of the previous types of response.
+     */
+    public function onCount()
+    {
+        try {
+            $countService = new tasksUserTasksCounterService();
+            $user = wa()->getUser();
+
+            $teamCounts = $countService->getTeamCounts($user);
+            $userCount = $teamCounts[$user->getId()] ?? ['count' => 0, 'total' => 0];
+            if ($userCount['total'] == $userCount['count']) {
+                return $userCount['count'] - $countService->getHiddenCount($user);
+            }
+
+            return $userCount['count'];
+        } catch (Exception $exception) {
+            // silence
+        }
+
+        return null;
+    }
+
     private function registerGlobal(): void
     {
         if (!function_exists('tsks')) {
