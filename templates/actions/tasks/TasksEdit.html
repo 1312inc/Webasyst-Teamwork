@@ -57,14 +57,14 @@
 
                         {* PROJECT SELECTOR *}
                         <div class="t-menu-item">
-                            <div class="menu-h dropdown t-custom-select t-project-select" id="projectSelect">
-                                
+                            <div class="dropdown t-custom-select t-project-select" id="projectSelect">
+
                                 <button class="dropdown-toggle button light-gray t-selected-item selected-custom-item js-selected-project">
                                     {$project.icon_html}
                                     <span>{$project.name|escape}</span>
                                 </button>
                                 <div class="dropdown-body">
-                                    <ul class="menu menu-v with-icons js-project-list">
+                                    <ul class="menu js-project-list">
                                         {foreach $projects as $p}
                                             <li class="t-nav-item">
                                                 <a class="set-custom-select js-project-select" href="javascript:void(0);" data-value="{$p.id}" {if !empty($p.color)}data-project_color_class="{$p.color}"{/if}>
@@ -76,7 +76,7 @@
                                     </ul>
                                 </div>
                                 <input type="hidden" name="data[project_id]" value="{$task.project_id}">
-                                
+
                                 <script>
                                     ( function($) {
                                         $("#projectSelect").waDropdown({
@@ -235,7 +235,7 @@
 
                 <div class="fields custom-mt-40 custom-mt-20-mobile">
                     <div class="fields-group">
-                        
+
                 {* ASSIGN *}
                 <div class="t-form-line field t-team-list-wrapper">
                     <div class="name">[`Assign to`]</div>
@@ -284,7 +284,7 @@
 
                 </div>
 
-                    
+
 
                 <div class="t-form-line field t-due-date-wrapper">
                     <div class="name">[`Due date`]</div>
