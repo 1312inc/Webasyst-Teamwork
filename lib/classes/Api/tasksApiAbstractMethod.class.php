@@ -171,13 +171,13 @@ abstract class tasksApiAbstractMethod extends waAPIMethod
 
     /**
      * @param        $var
-     * @param int    $type
+     * @param int|null    $type
      * @param string $format
      *
      * @return array|DateTimeImmutable|float|int|string
      * @throws tasksException
      */
-    private function cast($var, int $type, string $format = '')
+    private function cast($var, ?int $type, string $format = '')
     {
         switch ($type) {
             case self::CAST_INT:
@@ -189,9 +189,6 @@ abstract class tasksApiAbstractMethod extends waAPIMethod
             case self::CAST_ARRAY:
                 return (array) $var;
 
-            case self::CAST_STRING:
-                return (string) $var;
-
             case self::CAST_STRING_TRIM:
                 return trim((string) $var);
 
@@ -202,6 +199,10 @@ abstract class tasksApiAbstractMethod extends waAPIMethod
                 }
 
                 return $var;
+
+            case self::CAST_STRING:
+            default:
+                return (string) $var;
         }
 
         return $var;
