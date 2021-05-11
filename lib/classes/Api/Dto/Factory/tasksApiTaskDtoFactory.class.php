@@ -18,7 +18,9 @@ final class tasksApiTaskDtoFactory
                 tasksApiContactDtoFactory::fromContactId($data['create_contact_id']),
                 $data['create_datetime'],
                 $data['update_datetime'] ?? null,
-                tasksApiContactDtoFactory::fromContactId($data['assigned_contact_id']),
+                !empty($data['assigned_contact_id'])
+                    ? tasksApiContactDtoFactory::fromContactId($data['assigned_contact_id'])
+                    : null,
                 (int) $data['project_id'],
                 !empty($data['milestone_id']) ? (int) $data['milestone_id'] : null,
                 (int) $data['number'],
@@ -82,8 +84,9 @@ final class tasksApiTaskDtoFactory
                     isset($log['before_status_id']) ? (int) $log['before_status_id'] : null,
                     isset($log['after_status_id']) ? (int) $log['after_status_id'] : null,
                     (string) $log['action'],
-                    tasksApiContactDtoFactory::fromContactId($log['assigned_contact_id']),
-
+                    !empty($log['assigned_contact_id'])
+                        ? tasksApiContactDtoFactory::fromContactId($log['assigned_contact_id'])
+                        : null,
                     (bool) $log['status_changed'],
                     (bool) $log['assignment_changed']
                 );

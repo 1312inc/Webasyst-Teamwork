@@ -12,9 +12,9 @@ class tasksTasksGetListMethod extends tasksApiAbstractMethod
         $filter = new tasksApiTaskGetListRequest(
             (string) $this->get('hash'),
             (string) $this->get('filters'),
-            (int) $this->get('offset'),
+            (int) $this->get('offset', self::CAST_STRING_TRIM),
             $this->get('limit')
-                ? (int) $this->get('limit')
+                ? (int) $this->get('limit', self::CAST_INT)
                 : (int) wa(tasksConfig::APP_ID)->getConfig()->getOption('tasks_per_page'),
             $this->get('since') ? (int) $this->get('since') : null,
             (string) $this->get('order')
