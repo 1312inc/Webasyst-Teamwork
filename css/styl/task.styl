@@ -11,21 +11,20 @@
 
 .t-status-wrapper
     white-space nowrap
-    font-size 0.875em
-    margin-left 0.25em
+    display inline-block
 
     h2 & {
         font-size 0.75em
     }
 
     &.is-new
-        $color = #2bb316;
+        $color = var(--green)
         border-color $color
         background $color
-        color #fff
+        color var(--white)
 
     &.is-done
-        $color = #ccc;
+        $color = var(--light-gray)
         border-color $color
         background $color
         color #fff
@@ -39,22 +38,22 @@
 
 .t-priority-wrapper
     position relative
-    margin: 0 0.4em 0 -0.3em
-    padding: 0.15em 0.3em 0.2em
-    border-radius 0.2em
+    color var(--text-color)
 
-    //&.is-low
+    &.is-low
+        color var(--gray)
 
-    //&.is-normal
+    &.is-normal
 
-    //&.is-high
+    &.is-high
+        font-weight bold
+
+        svg
+            color gold
 
     &.is-urgent
         font-weight bold
-        padding .13em 0.4em
-        background-color #e00
-        border-radius 2px
-        color #fff
+        color orangered
 
     .icon16
         vertical-align baseline
@@ -62,11 +61,11 @@
         position: relative;
         top: 1px;
 
-    &:hover
-        background: #eed;
+    &.t-priority-clickable-wrapper
+        background var(--light-gray)
 
-    &.is-urgent:hover
-        background: #c00;
+        &:hover
+            background var(--gray)
 
 
 

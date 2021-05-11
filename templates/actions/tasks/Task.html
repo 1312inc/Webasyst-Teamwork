@@ -127,7 +127,7 @@
                     <h2 class="custom-m-0">
 
                         {* PRIORITY *}
-                        <span class="t-priority-wrapper {ifset($_priority_class_array[$task.priority])}" title="task_id={$task.id}" title="[`Double-click to change task priority`]">
+                        <span class="t-priority-wrapper t-priority-clickable-wrapper {ifset($_priority_class_array[$task.priority])}" title="task_id={$task.id}" title="[`Double-click to change task priority`]">
                             {$task.project_id}.{$task.number}
                             {$_priority_icon}
                         </span>

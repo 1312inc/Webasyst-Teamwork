@@ -8,10 +8,10 @@
              *}
             <div class="wide t-menu-wrapper flexbox wrap middle space-12">
                 {foreach $filter_types as $ft_id => $options}
-                    <div class="menu-h dropdown t-menu-item" id="{$ft_id}" data-filter-id="{$ft_id}">
-                        <button class="dropdown-toggle button t-selected-item inline-link"></button>
+                    <div class="dropdown t-menu-item" id="{$ft_id}" data-filter-id="{$ft_id}">
+                        <button class="dropdown-toggle button t-selected-item light-gray"></button>
                         <div class="dropdown-body">
-                            <ul class="menu menu-v with-icons">
+                            <ul class="menu">
                                 {foreach $options as $o}
                                     <li class="t-nav-item" data-value="{$o.id}"><a href="javascript:void(0);">
                                         {if !empty($o.icon_html) && ifempty($o.icon) != 'unknown'}
@@ -23,7 +23,7 @@
                                             {if !empty($o.photo)}
                                                 {$_userpic = waContact::getPhotoUrl($o.id, $o.photo, 40, 40, 'person', 0)}
                                             {/if}
-                                            <i class="userpic userpic-32" style="background-image: url({$_userpic|escape})"></i>
+                                            <i class="userpic" style="background-image: url({$_userpic|escape})"></i>
                                         {/if}
 
                                         <span class="{if $o@index > 0}is-bold{/if}">{$o.name|escape}</span>
@@ -55,7 +55,7 @@
              * Chart period selector
              *}
             <div class="t-right-column flexbox middle space-16">
-    
+
                 <div class="hidden t-custom-timeframe flexbox middle space-8">
                     <span>[`from`]</span>
                     <input type="text" name="from" style="max-width: 120px;">
@@ -69,10 +69,10 @@
                     </div>
                 </div>
 
-                <div class="menu-h dropdown t-menu-item" id="timeframe">
-                    <button class="dropdown-toggle button t-selected-item inline-link"></button>
+                <div class="dropdown t-menu-item" id="timeframe">
+                    <button class="dropdown-toggle button t-selected-item light-gray"></button>
                     <div class="dropdown-body t-logs-timeframe">
-                        <ul class="menu menu-v t-logs-timeframe-dropdown">
+                        <ul class="menu t-logs-timeframe-dropdown">
                             <li data-timeframe="30" data-groupby="days"><a href="javascript:void(0)" class="nowrap">{_w('Last %d day', 'Last %d days', 30)}</a></li>
                             <li data-timeframe="90" data-groupby="days" data-default-choice="1"><a href="javascript:void(0)" class="nowrap">{_w('Last %d day', 'Last %d days', 90)}</a></li>
                             <li data-timeframe="365" data-groupby="months"><a href="javascript:void(0)" class="nowrap">{_w('Last %d day', 'Last %d days', 365)}</a></li>
@@ -104,7 +104,7 @@
 
     {if $logs}
         <div class="t-logs-wrapper" id="t-logs-wrapper">
-            {foreach $logs as $l}{strip} 
+            {foreach $logs as $l}{strip}
                 <div class="t-comment-item profile image32px flexbox space-8 custom-py-0 custom-mt-20 custom-mb-40" data-log-id="{$l.id|escape}">
                     <div class="image">
                         <a href="#/log/contact_id={$l.contact_id}/" title="{$l.contact.name|escape}">
@@ -199,13 +199,13 @@
             {/strip}{/foreach}
 
             <div id="end-of-logs" class="block custom-mx-16 custom-mb-24">
-                
+
                     {if $click_to_load_more && $next_page_url}
                         <span class="js-logs-list-counter">{sprintf("[`%s of %d`]", _w('%d record','%d records', $offset + $count), $total_count)}</span>
                         <span class="click-to-load-more custom-ml-16"><a href="javascript:void(0)">[`Load more...`]</a></span>
                     {/if}
                     <!-- <span class="hidden loading-indicator"><i class="icon16 loading"></i></span> -->
-                
+
                 <script>(function() { "use strict";
                     {* Note that this script has to be inside #t-logs-wrapper for lazy loading to work correctly. *}
                     $.tasks.initLazyloader({

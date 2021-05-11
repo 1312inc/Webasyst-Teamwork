@@ -28,26 +28,6 @@
                 });
             })();</script>
 
-
-                                        {$_priority_class_array = [
-                                        "-1" => "is-low",
-                                        "0" => "is-normal",
-                                        "1" => "is-high",
-                                        "2" => "is-urgent"
-                                        ]}
-                                        {$_priority_icon = ""}
-                                        {if !empty($task.priority)}
-                                            {if $task.priority == '-1'}
-                                                {$_priority_icon = "<i class=\"icon16 status-blue-tiny\"></i>"}
-                                            {/if}
-                                            {if $task.priority == '1'}
-                                                {$_priority_icon = "<i class=\"icon16 exclamation-red\"></i>"}
-                                            {/if}
-                                            {if $task.priority == '2'}
-                                                {$_priority_icon = "<i class=\"icon16 exclamation\"></i>"}
-                                            {/if}
-                                        {/if}
-
             {if $tasks}
                 <div class="t-tasks-wrapper is-{$list_view_type}" id="t-tasks-wrapper">
                     <ul class="list">
@@ -70,9 +50,9 @@
 
                                 {* PROJECT ICON *}
                                 {if !empty($task.project.icon_html)}
-                                    <span class="t-project-icon">
+                                    {strip}<span class="t-project-icon">
                                         {$task.project.icon_html}
-                                    </span>
+                                    </span>{/strip}
                                 {/if}
 
                             </a>
@@ -83,49 +63,39 @@
                                     <span>
 
                                         {* PRIORITY *}
+
+                                        {$_priority_class_array = [
+                                        "-1" => "is-low",
+                                        "0" => "is-normal",
+                                        "1" => "is-high",
+                                        "2" => "is-urgent"
+                                        ]}
+                                        {$_priority_icon = ""}
+                                        {if !empty($task.priority)}
+                                            {if $task.priority == '-1'}
+                                                {$_priority_icon = "<i class=\"fas fa-thumbs-down\" style=\"color: var(--light-gray);\"></i>"}
+                                            {/if}
+                                            {if $task.priority == '1'}
+                                                {$_priority_icon = "<i class=\"fas fa-exclamation-triangle\" style=\"color: gold;\"></i>"}
+                                            {/if}
+                                            {if $task.priority == '2'}
+                                                {$_priority_icon = "<i class=\"fas fa-exclamation-triangle\" style=\"color: orangered;\"></i>"}
+                                            {/if}
+                                            {if $task.priority == '3'}
+                                                {$_priority_icon = "<i class=\"fas fa-fire\" style=\"color: black;\"></i>"}
+                                            {/if}
+                                            {if $task.priority == '4'}
+                                                {$_priority_icon = "<i class=\"fas fa-fire\" style=\"color: orangered;\"></i>"}
+                                            {/if}
+                                        {/if}
+
                                         <span class="t-priority-wrapper {ifset($_priority_class_array[$task.priority])}" title="task_id={$task.id}" title="[`Double-click to change task priority`]">
-                                            {$task.project_id}.{$task.number}
                                             {$_priority_icon}
+                                            {$task.project_id}.{$task.number}
                                         </span>
 
                                         {* TITLE *}
                                         <span class="semibold">{$task.name|escape|default:"(no name)"|truncate:64}</span>
-
-                                        {* STATUS *}
-                                        {if !empty($task.status.name)}
-                                            {* DATA *}
-                                            {$_status_class_array = []}
-                                            {$_styles_array = []}
-
-                                            {if !$task.project.archive_datetime}
-                                                {if !empty($task.status.params.title_color)}
-                                                    {$_color = $task.status.params.title_color}
-                                                    {$_styles_array[] = "color: #{$_color};"}
-                                                {/if}
-                                                {if !empty($task.status.params.button_color)}
-                                                    {$_background = $task.status.params.button_color}
-                                                    {$_styles_array[] = "border-color: #{$_background};"}
-                                                    {$_styles_array[] = "background: #{$_background};"}
-                                                {/if}
-                                            {/if}
-
-                                            {if $task.project.archive_datetime}
-                                                {$_status_class_array[] = "is-archived"}
-                                            {elseif $task.status_id == -1}
-                                                {$_status_class_array[] = "is-done"}
-                                            {elseif $task.status_id == 0}
-                                                {$_status_class_array[] = "is-new"}
-                                            {elseif $task.status_id > 0}
-                                                {$_status_class_array[] = "is-custom"}
-                                            {/if}
-
-                                            {* RENDER *}
-                                            <span class="badge t-status-wrapper {$_status_class_array|join:" "}" style="{$_styles_array|join:""}" title="[`Status`]">
-                                                <span style="position:absolute;left:-100500px;"> (</span>
-                                                {if $task.project.archive_datetime}[`Archived`]{else}{$task.status.name}{/if}
-                                                <span style="position:absolute;left:-100500px;">) </span>
-                                            </span>
-                                        {/if}
 
                                     </span>
 
@@ -140,8 +110,47 @@
                                     </span>
                                 </div>
 
-                                {* PREVIEW *}
-                                <p class="hint">{$task.text|truncate:128}</p>
+                                <p class="hint">
+
+                                    {* STATUS *}
+                                    {if !empty($task.status.name)}
+                                        {* DATA *}
+                                        {$_status_class_array = []}
+                                        {$_styles_array = []}
+
+                                        {if !$task.project.archive_datetime}
+                                            {if !empty($task.status.params.title_color)}
+                                                {$_color = $task.status.params.title_color}
+                                                {$_styles_array[] = "color: #{$_color};"}
+                                            {/if}
+                                            {if !empty($task.status.params.button_color)}
+                                                {$_background = $task.status.params.button_color}
+                                                {$_styles_array[] = "border-color: #{$_background};"}
+                                                {$_styles_array[] = "background: #{$_background};"}
+                                            {/if}
+                                        {/if}
+
+                                        {if $task.project.archive_datetime}
+                                            {$_status_class_array[] = "is-archived"}
+                                        {elseif $task.status_id == -1}
+                                            {$_status_class_array[] = "is-done"}
+                                        {elseif $task.status_id == 0}
+                                            {$_status_class_array[] = "is-new"}
+                                        {elseif $task.status_id > 0}
+                                            {$_status_class_array[] = "is-custom"}
+                                        {/if}
+
+                                        {* RENDER *}
+                                        <span class="badge t-status-wrapper {$_status_class_array|join:" "}" style="{$_styles_array|join:""}" title="[`Status`]">
+                                            {if $task.status_id < 0}<span class="smaller"><i class="fas fa-check"></i></span>{/if}
+                                            {if $task.project.archive_datetime}[`Archived`]{else}{$task.status.name}{/if}
+                                        </span>
+                                    {/if}
+
+                                    {* PREVIEW *}
+                                    {$task.text|truncate:128}
+
+                                </p>
                             </a>
                         </li>
 
@@ -214,7 +223,7 @@
                 number = $link.data('task-number'),
                 $taskWrapper = $('#task-preview-wrapper');
                 $taskSkeletonContainer = $('#taskSkeleton');
-            
+
             $taskWrapper.html($taskSkeletonContainer.html());
 
             $.get('?module=tasks&action=info&n=' + number, function (html) {
