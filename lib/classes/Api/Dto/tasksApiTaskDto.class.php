@@ -35,7 +35,7 @@ final class tasksApiTaskDto implements JsonSerializable
     private $update_datetime;
 
     /**
-     * @var tasksApiContactDto
+     * @var tasksApiContactDto|null
      */
     private $assigned_contact;
 
@@ -147,7 +147,7 @@ final class tasksApiTaskDto implements JsonSerializable
         tasksApiContactDto $create_contact,
         string $create_datetime,
         ?string $update_datetime,
-        tasksApiContactDto $assigned_contact,
+        ?tasksApiContactDto $assigned_contact,
         int $project_id,
         ?int $milestone_id,
         int $number,
