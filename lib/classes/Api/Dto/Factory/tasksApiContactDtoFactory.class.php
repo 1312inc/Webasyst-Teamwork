@@ -20,7 +20,10 @@ final class tasksApiContactDtoFactory
     {
         $contactId = $contact->getId();
         if (!isset(self::$contacts[$contactId])) {
-            self::$contacts[$contactId] = new tasksApiContactDto((int) $contact->getId(), $contact->getName());
+            self::$contacts[$contactId] = new tasksApiContactDto(
+                (int) $contact->getId(),
+                $contact->exists() ? $contact->getName() : _w('Deleted contact')
+            );
         }
 
         return self::$contacts[$contactId];
