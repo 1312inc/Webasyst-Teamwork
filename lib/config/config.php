@@ -2,6 +2,7 @@
 return array(
     'tasks_per_page' => 30,
     'logs_per_page' => 30,
+    'tasks_per_kanban' => 30,
 
     // When performing mass operation with tasks,
     // we either send email notifications once per task,
