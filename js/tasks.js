@@ -817,6 +817,10 @@
             this.load('?module=from&action=hub&id='+topic_id);
         },
 
+        kanbanAction: function(topic_id) {
+            this.load('?module=kanban');
+        },
+
         /** Lazy loading for backend lists. Called from Tasks.html and Log.html */
         initLazyloader: function(o) {
 

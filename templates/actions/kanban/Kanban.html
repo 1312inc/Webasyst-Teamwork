@@ -1,0 +1,102 @@
+{include file="./../tasks/includes/TasksHeaderFiltersHelpers.inc.html" inline}
+
+{strip}
+    <div class="t-main-wrapper t-log-page">
+        <header class="t-header-wrapper">
+            <div class="t-general-menu is-shown flexbox space-20">
+                {*
+                 * Filters by project, milestone and user
+                 *}
+                <div class="wide t-menu-wrapper flexbox wrap middle space-12">
+                    {foreach $filter_types as $ft_id => $options}
+                        <div class="dropdown t-menu-item" id="{$ft_id}" data-filter-id="{$ft_id}">
+                            <button class="dropdown-toggle button t-selected-item light-gray"></button>
+                            <div class="dropdown-body">
+                                <ul class="menu">
+                                    {foreach $options as $o}
+                                        <li class="t-nav-item" data-value="{$o.id}"><a href="javascript:void(0);">
+                                                {if !empty($o.icon_html) && ifempty($o.icon) != 'unknown'}
+                                                    {$o.icon_html}
+                                                {/if}
+
+                                                {if !empty($o.id) && array_key_exists('photo', $o)}
+                                                    {$_userpic = "{$wa_url}wa-content/img/userpic96.jpg"}
+                                                    {if !empty($o.photo)}
+                                                        {$_userpic = waContact::getPhotoUrl($o.id, $o.photo, 40, 40, 'person', 0)}
+                                                    {/if}
+                                                    <i class="userpic"
+                                                       style="background-image: url({$_userpic|escape})"></i>
+                                                {/if}
+
+                                                <span class="{if $o@index > 0}is-bold{/if}">{$o.name|escape}</span>
+                                            </a></li>
+                                    {/foreach}
+                                </ul>
+                            </div>
+
+                            <script>
+                                (function ($) {
+                                    $("#{$ft_id}").waDropdown({
+                                        hover: false
+                                    });
+                                })(jQuery);
+                            </script>
+                        </div>
+                    {/foreach}
+
+                    <!-- TAG CLOUD WIDGET FILTER -->
+                    {showTagsCloud class='t-tasks-tag-cloud-filter js-header-title-participant' cloud=$tags_cloud}
+
+                    {if !empty($is_filter_set)}
+                        <div class="t-menu-item">
+                        <span class="t-menu-name">
+                            <a href="#/kanban/" class="t-remove-filters-link">
+                                <i class="far fa-times-circle" title="[`Clear filters`]"></i>
+                            </a>
+                        </span>
+                        </div>
+                    {/if}
+                </div>
+            </div>
+        </header>
+
+        <div class="tablebox fixed" style="border: 1px dashed gold;">
+        {foreach $kanban as $data}
+            <div>
+                <div>статус: <b>{$data.status.name}</b> <!--{$data.status|print_r}--></div>
+                <div>всего {$data.count}</div>
+                <div>
+                    {** @var tasksTask $task **}
+                    {foreach $data.tasks as $task}
+                        <b>{$task.name}</b>
+                        <!-- {$task|print_r} -->
+                    {/foreach}
+                </div>
+            </div>
+        {/foreach}
+        </div>
+    </div>
+{/strip}
+
+<script>(function () {
+        "use strict";
+
+        var $main_menu = $('.t-header-wrapper');
+        var list_hash = $.tasks.cleanHash(window.location.hash) || '#/kanban/';
+        var list_params = list_hash.substr(9).split('/')[0];
+
+
+        // Set <a href=...> on filters
+        $main_menu.find(".t-nav-item[data-value]").each(function () {
+            var $nav_item = $(this),
+                filter_id = $nav_item.closest(".t-menu-item").data("filter-id"),
+                params = $.tasks.replaceParam(list_params, filter_id, $nav_item.data('value')),
+                item_hash = '#/kanban/' + params + (params ? '/' : '');
+            $nav_item.find("a").attr('href', item_hash);
+            if (item_hash == list_hash) {
+                $nav_item.closest(".t-menu-item").find(".t-selected-item").html($nav_item.find('a').html());
+            }
+        });
+
+
+    })();</script>
