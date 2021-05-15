@@ -8,6 +8,9 @@ class tasksCollection
     public const HASH_UNASSIGNED = 'unassigned';
     public const HASH_INBOX = 'inbox';
     public const HASH_FAVORITES = 'favorites';
+    public const HASH_OUTBOX = 'outbox';
+    public const HASH_STATUS = 'status';
+    public const HASH_ID = 'id';
 
     protected $filtered = false;
     protected $prepared;
