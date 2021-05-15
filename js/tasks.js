@@ -817,8 +817,8 @@
             this.load('?module=from&action=hub&id='+topic_id);
         },
 
-        kanbanAction: function(topic_id) {
-            this.load('?module=kanban');
+        kanbanAction: function(params) {
+            this.load('?module=kanban&'+(params||''));
         },
 
         /** Lazy loading for backend lists. Called from Tasks.html and Log.html */

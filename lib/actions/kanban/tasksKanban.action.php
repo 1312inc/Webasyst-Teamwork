@@ -7,65 +7,55 @@ class tasksKanbanAction extends tasksTasksAction
 {
     public function execute()
     {
-        $offset = waRequest::get('offset', 0, 'int');
+        $offset = waRequest::get('offset', 0, waRequest::TYPE_INT);
         $limit = wa('tasks')->getConfig()->getOption('tasks_per_kanban');
         $withBacklog = waRequest::get('with_backlog', 0, waRequest::TYPE_INT);
 
-        $filters = self::getFilters();
+        $filters = $this->getFilters();
+        $statuses = $this->getStatusesForFilters($filters);
 
-        switch (true) {
-            case !empty($filters['project_id']):
-                $statuses = tasksHelper::getStatuses($filters['project_id'], false);
-                break;
-
-            case !empty($filters['milestone_id']):
-                $statuses = (new tasksMilestoneModel())->getMilestoneStatuses($filters['milestone_id']);
-                break;
-
-            default:
-                $statuses = tasksHelper::getStatuses(null, true);
+        if ($withBacklog) {
+            array_unshift(
+                $statuses,
+                [
+                    'id' => -1312,
+                    'name' => _w('Backlog'),
+                    'button' => '',
+                    'action_name' => '',
+                    'special' => 1,
+                    'icon' => '',
+                    'sort' => '',
+                    'params' => [],
+                    'icon_url' => false,
+                    'icon_class' => '',
+                    'icon_html' => '',
+                ]
+            );
         }
-        $filterTypes = self::getLogFilterTypes();
+
+        $filterTypes = $this->getLogFilterTypes();
+
+        $kanbanService = new tasksKanbanService();
 
         $kanban = [];
         foreach ($statuses as $status) {
-            $c = new tasksCollection('search');
-
-            $this->applyFilters($c, $filters + ['status_id' => $status['id']]);
-            $this->applyOrder($c, 'priority');
-
-            $totalCount = null;
-            $taskRows = $c->getTasks(
-                '*,log,create_contact,assigned_contact,attachments,tags,project,favorite,relations',
+            $kanbanRequest = new tasksKanbanRequestDto(
+                $filters['project_id'] ?? null,
+                $filters['contact_id'] ?? null,
+                $filters['milestone_id'] ?? null,
+                $status,
+                $filterTypes,
                 $offset,
-                $limit,
-                $totalCount
+                $limit
             );
 
-            $tasks = [];
-            foreach ($taskRows as $t) {
-                $tasks[$t['id']] = new tasksTask($t);
-            }
-            unset($taskRows);
-
-            $kanban[$status['id']] = [
-                'status' => $status,
-                'count' => $totalCount,
-                'tasks' => $tasks,
-            ];
+            $kanban[] = $kanbanService->getTasksForStatus($kanbanRequest) + ['status' => $status];
         }
-
-        // Lazy-loading setup
-//        $nextPageUrl = self::getNextPageUrl($offset, $limit, $count, $total_count);
-//        if ($nextPageUrl) {
-//            $nextPageUrl .= '&lazy=1';
-//        }
 
         $this->view->assign(
             [
                 'filter_types' => $filterTypes,
                 'click_to_load_more' => $offset > 100,
-//                'next_page_url' => $nextPageUrl,
                 'is_filter_set' => !!$filters,
                 'kanban' => $kanban,
                 'tags_cloud' => self::getTagsCloud(),
@@ -73,7 +63,7 @@ class tasksKanbanAction extends tasksTasksAction
         );
     }
 
-    protected static function getLogFilterTypes()
+    protected function getLogFilterTypes(): array
     {
         $project_id = waRequest::request('project_id', null, 'int');
 
@@ -84,7 +74,7 @@ class tasksKanbanAction extends tasksTasksAction
         ];
     }
 
-    protected static function getMilestoneFilterType()
+    protected static function getMilestoneFilterType(): array
     {
         $result = parent::getMilestoneFilterType();
         $result['0']['id'] = '0';
@@ -92,7 +82,7 @@ class tasksKanbanAction extends tasksTasksAction
         return $result;
     }
 
-    protected static function getFilters()
+    protected function getFilters(): array
     {
         $result = [
             'project_id' => waRequest::request('project_id', null, 'int'),
@@ -101,5 +91,29 @@ class tasksKanbanAction extends tasksTasksAction
         ];
 
         return array_filter($result, wa_lambda('$a', 'return !is_null($a);'));
+    }
+
+    protected function getStatusesForFilters(array $filters): array
+    {
+        switch (true) {
+            case !empty($filters['project_id']):
+                $statuses = tasksHelper::getStatuses($filters['project_id'], false);
+                break;
+
+            case !empty($filters['milestone_id']):
+                /** @var tasksMilestone $milestone */
+                $milestone = tsks()->getEntityRepository(tasksMilestone::class)->findById($filters['milestone_id']);
+                if (!$milestone) {
+                    throw new tasksException('No such milestone');
+                }
+
+                $statuses = tasksHelper::getStatuses($milestone->getProjectId());
+                break;
+
+            default:
+                $statuses = tasksHelper::getStatuses(null, true);
+        }
+
+        return $statuses;
     }
 }

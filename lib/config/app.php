@@ -6,7 +6,7 @@ return array(
     'vendor'  => '1021997',
     'rights'  => true,
     'plugins' => true,
-    'csrf'    => true,
+    'csrf'    => false,
     'license' => 'commercial',
     'sash_color' => '#ffdc2f',
     'ui'      => '1.3,2.0'
