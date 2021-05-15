@@ -66,11 +66,7 @@
                 <div>статус: <b>{$data.status.name}</b> <!--{$data.status|print_r}--></div>
                 <div>всего {$data.count}</div>
                 <div>
-                    {** @var tasksTask $task **}
-                    {foreach $data.tasks as $task}
-                        <b>{$task.name}</b>
-                        <!-- {$task|print_r} -->
-                    {/foreach}
+                    {include file='./KanbanStatusTasks.html' data=$data}
                 </div>
             </div>
         {/foreach}

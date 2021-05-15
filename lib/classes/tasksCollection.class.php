@@ -4,6 +4,11 @@ class tasksCollection
 {
     public const FIELDS_TO_GET = '*,log,create_contact,assigned_contact,attachments,tags,project,favorite,relations';
 
+    public const HASH_SEARCH = 'search';
+    public const HASH_UNASSIGNED = 'unassigned';
+    public const HASH_INBOX = 'inbox';
+    public const HASH_FAVORITES = 'favorites';
+
     protected $filtered = false;
     protected $prepared;
 
@@ -76,18 +81,18 @@ class tasksCollection
 
                 $condition = array();
                 if ($full_access_projects) {
-                    $condition[] = 't.project_id IN ('.join(',', $full_access_projects).')';
+                    $condition[] = 't.project_id IN ('.implode(',', $full_access_projects).')';
                 }
                 if ($limited_access_projects) {
                     $current_contact_id = wa()->getUser()->getId();
-                    $cond = "t.project_id IN (".join(",", $limited_access_projects).") AND 
+                    $cond = "t.project_id IN (".implode(",", $limited_access_projects).") AND 
                         (t.assigned_contact_id={$current_contact_id} OR t.create_contact_id={$current_contact_id})";
                     $condition[] = $cond;
                 }
                 if (!$condition) {
                     $condition[] = '0';
                 }
-                $this->addWhere('(('.join(') OR (', $condition).'))');
+                $this->addWhere('(('.implode(') OR (', $condition).'))');
             }
         }
 
@@ -256,7 +261,7 @@ class tasksCollection
         if (!array_diff_key($metadata, $model_fields)) {
             $model_fields = array('*' => 1) + array_diff_key($model_fields, $metadata);
         }
-        return 't.'.join(',t.', array_keys($model_fields));
+        return 't.'.implode(',t.', array_keys($model_fields));
     }
 
     public function getTasks($fields = "*", $offset = 0, $limit = null, &$total_count = null)
@@ -861,7 +866,7 @@ class tasksCollection
         }
 
         if ($condition == 'any') {
-            $this->addJoin('tasks_task_tags', ':table.task_id=t.id', ':table.tag_id IN ('.join(',', array_keys($tags)).')');
+            $this->addJoin('tasks_task_tags', ':table.task_id=t.id', ':table.tag_id IN ('.implode(',', array_keys($tags)).')');
         } else {
             if (count(array_flip($tag_names)) > count($tags)) {
                 $this->where[] = '0';
@@ -949,6 +954,6 @@ class tasksCollection
             "t.create_datetime",
             "t.id"
         );
-        $this->orderBy(join(',', $order), '', false);
+        $this->orderBy(implode(',', $order), '', false);
     }
 }

@@ -1,0 +1,8 @@
+{** @var array $data **}
+{** @var tasksTask $task **}
+{foreach $data.tasks as $task}
+    <div>
+        <b>{$task.name}</b>
+        <!-- {$task|print_r} -->
+    </div>
+{/foreach}
