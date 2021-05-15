@@ -33,16 +33,27 @@ final class tasksKanbanService
         ];
     }
 
-    private function applyFilters(tasksCollection $c, $filters)
+    private function applyFilters(tasksCollection $c, $filters): void
     {
         $filters && $c->filter($filters);
         $type = $c->getType();
-        if (!in_array($type, ['search', 'outbox', 'status', 'id']) && (strpos($filters, 'status_id') === false)) {
+        if (!in_array(
+                $type,
+                [
+                    tasksCollection::HASH_SEARCH,
+                    tasksCollection::HASH_OUTBOX,
+                    tasksCollection::HASH_STATUS,
+                    tasksCollection::HASH_ID,
+                    tasksCollection::HASH_UNASSIGNED,
+                ],
+                true
+            ) && (strpos($filters, 'status_id') === false)
+        ) {
             $c->addWhere('t.status_id >= 0');
         }
     }
 
-    private function applyOrder(tasksCollection $c, $order)
+    private function applyOrder(tasksCollection $c, $order): void
     {
         switch ($order) {
             case 'newest':
