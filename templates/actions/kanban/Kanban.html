@@ -47,6 +47,26 @@
                     <!-- TAG CLOUD WIDGET FILTER -->
                     {showTagsCloud class='t-tasks-tag-cloud-filter js-header-title-participant' cloud=$tags_cloud}
 
+                    {if isset($tag)}
+                        <div>
+                            <ul>
+                                <li class="tag">
+                                    <i class="fas fa-hashtag"></i>
+                                    <span>{$tag.name|escape}</span>
+                                    <a class="t-tag-item" href="#/kanban/" data-tag-value="{$tag.name}"><i class="fas fa-minus-circle t-remove-tag"></i></a>
+                                </li>
+                            </ul>
+                        </div>
+                    {/if}
+
+                    <div>
+                        <input type="hidden" name="with_backlog" value="0"/>
+                        <label>
+                            <input type="checkbox" name="with_backlog" value="1"/>
+                            Backlog
+                        </label>
+                    </div>
+
                     {if !empty($is_filter_set)}
                         <div class="t-menu-item">
                         <span class="t-menu-name">
@@ -81,18 +101,75 @@
         var list_hash = $.tasks.cleanHash(window.location.hash) || '#/kanban/';
         var list_params = list_hash.substr(9).split('/')[0];
 
-
         // Set <a href=...> on filters
         $main_menu.find(".t-nav-item[data-value]").each(function () {
             var $nav_item = $(this),
                 filter_id = $nav_item.closest(".t-menu-item").data("filter-id"),
                 params = $.tasks.replaceParam(list_params, filter_id, $nav_item.data('value')),
                 item_hash = '#/kanban/' + params + (params ? '/' : '');
+
             $nav_item.find("a").attr('href', item_hash);
             if (item_hash == list_hash) {
                 $nav_item.closest(".t-menu-item").find(".t-selected-item").html($nav_item.find('a').html());
             }
         });
 
+        if (list_params.indexOf('with_backlog=1') !== -1) {
+            $main_menu.find(':checkbox').prop('checked', true);
+        }
+
+        $main_menu.on('click', ':checkbox', function (e) {
+            var $this = $(this);
+
+            if ($this.is(':checked')) {
+                var params = $.tasks.replaceParam(list_params, 'with_backlog', 1);
+                window.location.hash = '#/kanban/' + params + (params ? '/' : '');
+            } else {
+                var params = $.tasks.replaceParam(list_params, 'with_backlog', '');
+                window.location.hash = '#/kanban/' + params + (params ? '/' : '');
+            }
+        });
+
+        $main_menu.find('.t-tags-cloud .js-tag-link').each(function () {
+            var $tag_item = $(this),
+                params = $.tasks.replaceParam(list_params, 'tag', $tag_item.data('value')),
+                item_hash = '#/kanban/' + params + (params ? '/' : '');
+
+            $tag_item.attr('href', item_hash);
+        })
+
+        var $tag = $main_menu.find('.tag .t-tag-item');
+        if ($tag.length) {
+            var params = $.tasks.replaceParam(list_params, 'tag', ''),
+                item_hash = '#/kanban/' + params + (params ? '/' : '');
+
+            $tag.attr('href', item_hash);
+        }
+
+        var $autocomplete = $main_menu.find('.js-t-header-tags-autocomplete');
+        $autocomplete.on("keyup", function (event) {
+            if (event.keyCode === 13) {}
+        });
+
+        $autocomplete.autocomplete({
+            source: '?module=tags&action=autocomplete',
+            minLength: 1,
+            delay: 300,
+            select: function (event, ui) {
+                var params = $.tasks.replaceParam(list_params, 'tag', ui.item.label);
+                window.location.hash = '#/kanban/' + params + (params ? '/' : '');
+                return false;
+            }
+        });
+
+        // When focus on auto-complete input - than HOLD drop-down menu
+        $autocomplete.on("focus", function() {
+            // $tagsWrapper.addClass(storage.shown_class);
+        });
+
+        // When focus is NOT on auto-complete input - than UNHOLD drop-down menu
+        $autocomplete.on("blur", function() {
+            // $tagsWrapper.removeClass(storage.shown_class);
+        });
 
     })();</script>

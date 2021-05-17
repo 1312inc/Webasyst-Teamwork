@@ -9,29 +9,9 @@ class tasksKanbanAction extends tasksTasksAction
     {
         $offset = waRequest::get('offset', 0, waRequest::TYPE_INT);
         $limit = wa('tasks')->getConfig()->getOption('tasks_per_kanban');
-        $withBacklog = waRequest::get('with_backlog', 0, waRequest::TYPE_INT);
 
         $filters = $this->getFilters();
         $statuses = $this->getStatusesForFilters($filters);
-
-        if ($withBacklog) {
-            array_unshift(
-                $statuses,
-                [
-                    'id' => -1312,
-                    'name' => _w('Backlog'),
-                    'button' => '',
-                    'action_name' => '',
-                    'special' => 1,
-                    'icon' => '',
-                    'sort' => '',
-                    'params' => [],
-                    'icon_url' => false,
-                    'icon_class' => '',
-                    'icon_html' => '',
-                ]
-            );
-        }
 
         $filterTypes = $this->getLogFilterTypes();
 
@@ -40,9 +20,7 @@ class tasksKanbanAction extends tasksTasksAction
         $kanban = [];
         foreach ($statuses as $status) {
             $kanbanRequest = new tasksKanbanRequestDto(
-                $filters['project_id'] ?? null,
-                $filters['contact_id'] ?? null,
-                $filters['milestone_id'] ?? null,
+                $filters,
                 $status,
                 $filterTypes,
                 $offset,
@@ -50,6 +28,13 @@ class tasksKanbanAction extends tasksTasksAction
             );
 
             $kanban[] = $kanbanService->getTasksForStatus($kanbanRequest) + ['status' => $status];
+        }
+
+        if (!empty($filters['tag'])) {
+            $tag = (new tasksTagModel())->getByField('name',$filters['tag']);
+            if ($tag) {
+                $this->view->assign('tag', $tag);
+            }
         }
 
         $this->view->assign(
@@ -84,13 +69,13 @@ class tasksKanbanAction extends tasksTasksAction
 
     protected function getFilters(): array
     {
-        $result = [
-            'project_id' => waRequest::request('project_id', null, 'int'),
-            'contact_id' => waRequest::request('contact_id', null, 'int'),
-            'milestone_id' => waRequest::request('milestone_id', null, 'int'),
+        return [
+            'project_id' => waRequest::request('project_id', null, waRequest::TYPE_INT),
+            'contact_id' => waRequest::request('contact_id', null, waRequest::TYPE_INT),
+            'milestone_id' => waRequest::request('milestone_id', null, waRequest::TYPE_INT),
+            'tag' => waRequest::request('tag', null, waRequest::TYPE_STRING_TRIM),
+            'with_backlog' => waRequest::request('with_backlog', null, waRequest::TYPE_INT),
         ];
-
-        return array_filter($result, wa_lambda('$a', 'return !is_null($a);'));
     }
 
     protected function getStatusesForFilters(array $filters): array
@@ -112,6 +97,25 @@ class tasksKanbanAction extends tasksTasksAction
 
             default:
                 $statuses = tasksHelper::getStatuses(null, true);
+        }
+
+        if (!empty($filters['with_backlog'])) {
+            array_unshift(
+                $statuses,
+                [
+                    'id' => -1312,
+                    'name' => _w('Backlog'),
+                    'button' => '',
+                    'action_name' => '',
+                    'special' => 1,
+                    'icon' => '',
+                    'sort' => '',
+                    'params' => [],
+                    'icon_url' => false,
+                    'icon_class' => '',
+                    'icon_html' => '',
+                ]
+            );
         }
 
         return $statuses;
