@@ -14,6 +14,7 @@ const stylus = require('gulp-stylus');
 const autoprefixer = require('gulp-autoprefixer');
 const concat = require('gulp-concat');
 const nib = require('nib');
+const babel = require('gulp-babel');
 
 // options for uglify `compress`
 const compressOptions = {
@@ -46,11 +47,16 @@ function js () {
         'js/taskListEdit.js',
         'js/settings/personal.js',
         'js/settings/sidebar.js',
-        'js/settings/scopeEdit.js'
+        'js/settings/scopeEdit.js',
+        'js/tasksKanban.js'
     ]
 
-    return src(source, {allowEmpty: true})
+    return src(source, { allowEmpty: true })
         .pipe(sourcemaps.init())
+        .pipe(babel({
+            test: "./js/tasksKanban.js",
+            presets: ['@babel/preset-env']
+        }))
         .pipe(concat('tasks.js'))
         .pipe(uglify({
             compress: compressOptions
@@ -58,10 +64,7 @@ function js () {
         .pipe(rename({
             extname: '.min.js'
         }))
-        .pipe(sourcemaps.write('./', {
-            includeContent: false,
-            sourceRoot: '../../../'
-        }))
+        .pipe(sourcemaps.write('./'))
         .pipe(dest('./js/'));
 }
 
@@ -83,10 +86,7 @@ function css () {
         .pipe(rename({
             extname: '.min.css'
         }))
-        .pipe(sourcemaps.write('./', {
-            includeContent: false,
-            sourceRoot: '../../../'
-        }))
+        .pipe(sourcemaps.write('./'))
         .pipe(dest('./css/'));
 }
 
