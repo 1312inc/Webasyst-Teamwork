@@ -332,11 +332,13 @@
             function checkTaskIsOpen() {
                 var result = [];
 
-                $.each(Tasks, function(task_id, task) {
-                    if (task.is_opened || task.is_status_opened) {
-                        result.push(task);
-                    }
-                });
+                if(typeof Tasks !== 'undefined') {
+                    $.each(Tasks, function(task_id, task) {
+                        if (task.is_opened || task.is_status_opened) {
+                            result.push(task);
+                        }
+                    });
+                }
 
                 return (result.length) ? result : false;
             }

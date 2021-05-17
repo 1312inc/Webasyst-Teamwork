@@ -62,8 +62,15 @@
                     <div>
                         <input type="hidden" name="with_backlog" value="0"/>
                         <label>
-                            <input type="checkbox" name="with_backlog" value="1"/>
-                            Backlog
+                            <span class="wa-checkbox">
+                                <input type="checkbox" name="with_backlog" value="1"/>
+                                <span>
+                                    <span class="icon">
+                                        <i class="fas fa-check"></i>
+                                    </span>
+                                </span>
+                            </span>
+                            &nbsp;Backlog
                         </label>
                     </div>
 
@@ -80,14 +87,22 @@
             </div>
         </header>
 
-        <div class="tablebox fixed" style="border: 1px dashed gold;">
+        <div class="flexbox full-width fixed space-12 custom-m-16">
         {foreach $kanban as $data}
-            <div>
-                <div>статус: <b>{$data.status.name}</b> <!--{$data.status|print_r}--></div>
-                <div>всего {$data.count}</div>
-                <div>
+            <div class="t-kanban-list custom-p-16">
+                <!--{$data.status|print_r}-->
+                <div class="flexbox middle custom-pb-12">
+                    <div class="wide large">
+                        <strong>{$data.status.name}</strong>
+                    </div>
+                    <div>
+                        <span class="t-kanban-list__count badge small">{$data.count}</span>
+                    </div>
+                </div>
+                <div data-kanban-list-status-id="{$data.status.id}" data-kanban-list-total="{$data.count}">
                     {include file='./KanbanStatusTasks.html' data=$data}
                 </div>
+                <div class="t-kanban-list__footer"></div>
             </div>
         {/foreach}
         </div>
@@ -173,3 +188,9 @@
         });
 
     })();</script>
+
+<script>
+(function () {
+    Kanban.init();
+})();
+</script>
