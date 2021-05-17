@@ -6,10 +6,10 @@ final class tasksKanbanService
     {
         if ($requestDto->getStatus()['id'] === -1312) {
             $c = new tasksCollection(tasksCollection::HASH_UNASSIGNED);
-            $this->applyFilters($c, $requestDto->getFilterTypes());
+            $this->applyFilters($c, $requestDto->getFilters());
         } else {
             $c = new tasksCollection(tasksCollection::HASH_SEARCH);
-            $this->applyFilters($c, $requestDto->getFilterTypes() + ['status_id' => $requestDto->getStatus()['id']]);
+            $this->applyFilters($c, $requestDto->getFilters() + ['status_id' => $requestDto->getStatus()['id']]);
         }
 
         $this->applyOrder($c, 'priority');
@@ -45,6 +45,7 @@ final class tasksKanbanService
                     tasksCollection::HASH_STATUS,
                     tasksCollection::HASH_ID,
                     tasksCollection::HASH_UNASSIGNED,
+                    tasksCollection::HASH_TAG,
                 ],
                 true
             ) && (strpos($filters, 'status_id') === false)
