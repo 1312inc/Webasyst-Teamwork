@@ -69,13 +69,19 @@ class tasksKanbanAction extends tasksTasksAction
 
     protected function getFilters(): array
     {
-        return [
+        $filters = [
             'project_id' => waRequest::request('project_id', null, waRequest::TYPE_INT),
             'contact_id' => waRequest::request('contact_id', null, waRequest::TYPE_INT),
             'milestone_id' => waRequest::request('milestone_id', null, waRequest::TYPE_INT),
             'tag' => waRequest::request('tag', null, waRequest::TYPE_STRING_TRIM),
             'with_backlog' => waRequest::request('with_backlog', null, waRequest::TYPE_INT),
         ];
+
+        if ($filters['project_id'] === 0) {
+            $filters['project_id'] = null;
+        }
+
+        return $filters;
     }
 
     protected function getStatusesForFilters(array $filters): array
