@@ -45,7 +45,13 @@ var TasksScopeEdit = (function ($) {
     TasksScopeEdit.prototype.submit = function (data) {
         var that = this,
             $form = that.$form,
-            form_data = $form.serializeArray();
+            date = $form.find('.datepicker-due-date').datepicker('getDate');
+
+        if (!date) {
+            $form.find('[name="milestone[due_date]"]').val('');
+        }
+        var form_data = $form.serializeArray();
+
         if ($.isArray(data) && data.length) {
             form_data = form_data.concat(data);
         }
