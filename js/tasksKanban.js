@@ -13,7 +13,7 @@ const Kanban = (($) => {
         constructor(el) {
             this.$list = $(el);
             this.$listFooter = this.$list.find(".t-kanban__list__body__footer");
-            this.$loader = this.$listFooter.find('span');
+            this.$loader = this.$listFooter.find("span");
             this.statusId = this.$list.data("kanban-list-status-id");
             this.listLength = this.$list.find("[data-task-id]").length;
 
@@ -41,14 +41,14 @@ const Kanban = (($) => {
                 }&milestone_id=${filterParams.milestone_id || ""}&contact_id=${filterParams.contact_id || ""
                 }`
             )
-            .done((response) => {
-                this.$listFooter.before(response);
-                this.offset += this.limit;
-                this.listLength = this.$list.find("[data-task-id]").length;
-            })
-            .always(() => {
-                this.$loader.hide();
-            })
+                .done((response) => {
+                    this.$listFooter.before(response);
+                    this.offset += this.limit;
+                    this.listLength = this.$list.find("[data-task-id]").length;
+                })
+                .always(() => {
+                    this.$loader.hide();
+                });
         }
     }
 
@@ -71,8 +71,8 @@ const Kanban = (($) => {
 
                     // change position
                     const detached = $(evt.to)
-                            .find(`[data-task-id="${taskId}"]`)
-                            .detach();
+                        .find(`[data-task-id="${taskId}"]`)
+                        .detach();
                     $(evt.to).prepend(detached);
 
                     $.post("?module=tasksLog", {
@@ -90,10 +90,42 @@ const Kanban = (($) => {
         });
     };
 
+    const defineSortable = () => {
+        const dfd = $.Deferred();
+
+        if (typeof Sortable === "undefined") {
+            const urls = [
+                "/wa-content/js/sortable/sortable.min.js",
+                "/wa-content/js/sortable/jquery-sortable.min.js",
+            ];
+
+            $.when
+                .apply(
+                    $,
+                    $.map(urls, (file) => {
+                        return $.ajax({
+                            cache: true,
+                            dataType: "script",
+                            url: file,
+                        });
+                    })
+                )
+                .done(() => {
+                    dfd.resolve();
+                });
+        } else {
+            dfd.resolve();
+        }
+
+        return dfd.promise();
+    };
+
     const init = () => {
-        const $kanbanCols = $("[data-kanban-list-status-id]");
-        addSortable($kanbanCols);
-        addLazyLoad($kanbanCols);
+        $.when(defineSortable()).then(() => {
+            const $kanbanCols = $("[data-kanban-list-status-id]");
+            addSortable($kanbanCols);
+            addLazyLoad($kanbanCols);
+        });
     };
 
     return { init };
