@@ -87,24 +87,29 @@
             </div>
         </header>
 
-        <div class="flexbox full-width fixed space-12 custom-m-16">
-        {foreach $kanban as $data}
-            <div class="t-kanban-list custom-p-16">
-                <!--{$data.status|print_r}-->
-                <div class="flexbox middle custom-pb-12">
-                    <div class="wide large">
-                        <strong>{$data.status.name}</strong>
+        <div class="t-kanban flexbox full-width">
+            <div class="flexbox full-width fixed space-12 custom-m-16">
+            {foreach $kanban as $data}
+                <div class="t-kanban__list">
+                    <!--{$data.status|print_r}-->
+                    <div class="flexbox middle custom-p-16">
+                        <div class="wide large">
+                            <strong>{$data.status.name}</strong>
+                        </div>
+                        <div>
+                            <span class="t-kanban__list__count badge yellow small">{$data.count}</span>
+                        </div>
                     </div>
-                    <div>
-                        <span class="t-kanban-list__count badge small">{$data.count}</span>
+                    <div data-kanban-list-status-id="{$data.status.id}" data-kanban-list-total="{$data.count}" class="t-kanban__list__body custom-px-16">
+                        {include file='./KanbanStatusTasks.html' data=$data}
+                        <div class="t-kanban__list__body__footer">
+                            <span style="display: none;">[`Loading...`]</span>
+                        </div>
                     </div>
+                    <div class="t-kanban__list__fade"></div>
                 </div>
-                <div data-kanban-list-status-id="{$data.status.id}" data-kanban-list-total="{$data.count}">
-                    {include file='./KanbanStatusTasks.html' data=$data}
-                </div>
-                <div class="t-kanban-list__footer"></div>
+            {/foreach}
             </div>
-        {/foreach}
         </div>
     </div>
 {/strip}

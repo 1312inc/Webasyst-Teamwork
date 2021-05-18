@@ -1,5 +1,5 @@
 const Kanban = (($) => {
-    const urlParams = window.location.hash.split("/")[2] || '';
+    const urlParams = window.location.hash.split("/")[2] || "";
 
     // Object with filter params
     const filterParams = urlParams.split("&").reduce((acc, p) => {
@@ -12,7 +12,8 @@ const Kanban = (($) => {
     class Column {
         constructor(el) {
             this.$list = $(el);
-            this.$listFooter = this.$list.parent().find(".t-kanban-list__footer")[0];
+            this.$listFooter = this.$list.find(".t-kanban__list__body__footer");
+            this.$loader = this.$listFooter.find('span');
             this.statusId = this.$list.data("kanban-list-status-id");
             this.listLength = this.$list.find("[data-task-id]").length;
 
@@ -29,22 +30,25 @@ const Kanban = (($) => {
                     this.fetch();
                 }
             });
-            this.intersectionObserver.observe(this.$listFooter);
+            this.intersectionObserver.observe(this.$listFooter[0]);
         }
 
         fetch () {
+            this.$loader.show();
             $.get(
                 `?module=kanban&action=statusTasks&with_backlog=${filterParams.with_backlog || 0
                 }&status_id=${this.statusId}&offset=${this.offset}&project_id=${filterParams.project_id || ""
                 }&milestone_id=${filterParams.milestone_id || ""}&contact_id=${filterParams.contact_id || ""
                 }`
-            ).done((response) => {
-                if (response.status === "ok") {
-                    $(this.$list).append(response);
-                    this.offset += this.limit;
-                    this.listLength = this.$list.find("[data-task-id]").length;
-                }
-            });
+            )
+            .done((response) => {
+                this.$listFooter.before(response);
+                this.offset += this.limit;
+                this.listLength = this.$list.find("[data-task-id]").length;
+            })
+            .always(() => {
+                this.$loader.hide();
+            })
         }
     }
 
@@ -57,12 +61,20 @@ const Kanban = (($) => {
             new Sortable(list, {
                 group: "statuses",
                 animation: 150,
+                sort: false,
                 onEnd: (/**Event*/ evt) => {
-                    const taskId = $(evt.item).data("task-id");
-                    const fromId = $(evt.from).data("kanban-list-status-id");
-                    const toId = $(evt.to).data("kanban-list-status-id");
-                    const $fromCount = $(evt.from).parent().find(".t-kanban-list__count");
-                    const $toCount = $(evt.to).parent().find(".t-kanban-list__count");
+                    const taskId = $(evt.item).data("task-id"),
+                        fromId = $(evt.from).data("kanban-list-status-id"),
+                        toId = $(evt.to).data("kanban-list-status-id"),
+                        $fromCount = $(evt.from).parent().find(".t-kanban__list__count"),
+                        $toCount = $(evt.to).parent().find(".t-kanban__list__count");
+
+                    // change position
+                    const detached = $(evt.to)
+                            .find(`[data-task-id="${taskId}"]`)
+                            .detach();
+                    $(evt.to).prepend(detached);
+
                     $.post("?module=tasksLog", {
                         id: taskId,
                         status_id: toId,
