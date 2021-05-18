@@ -39,9 +39,7 @@ class tasksKanbanStatusTasksAction extends tasksKanbanAction
         }
 
         $kanbanRequest = new tasksKanbanRequestDto(
-            $filters['project_id'] ?? null,
-            $filters['contact_id'] ?? null,
-            $filters['milestone_id'] ?? null,
+            $filters,
             $status,
             $this->getLogFilterTypes(),
             $offset,
