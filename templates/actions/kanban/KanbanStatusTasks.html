@@ -2,10 +2,10 @@
 {** @var tasksTask $task **}
 {foreach $data.tasks as $task}
     <div data-task-id="{$task.id}" class="t-kanban-list__item custom-p-8 custom-mb-8">
-        <div>{$task.name}</div>
+        <div>{$task.name|escape}</div>
         <div class="hint">project_id: {$task.project_id}</div>
         <div class="hint">milestone_id: {$task.milestone_id}</div>
-        <div class="hint">{$task.create_contact.name}</div>
+        <div class="hint">{$task.create_contact.name|escape}</div>
         <!-- {$task|print_r} -->
     </div>
 {/foreach}
