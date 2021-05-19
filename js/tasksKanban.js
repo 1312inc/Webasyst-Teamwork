@@ -62,12 +62,17 @@ const Kanban = (($) => {
                 group: "statuses",
                 animation: 150,
                 sort: false,
+                delay: 1500,
+	            delayOnTouchOnly: true,
                 onEnd: (/**Event*/ evt) => {
                     const taskId = $(evt.item).data("task-id"),
                         fromId = $(evt.from).data("kanban-list-status-id"),
                         toId = $(evt.to).data("kanban-list-status-id"),
                         $fromCount = $(evt.from).parent().find(".t-kanban__list__count"),
                         $toCount = $(evt.to).parent().find(".t-kanban__list__count");
+                    
+                    // if the column hasn't changed
+                    if(fromId === toId) return false;
 
                     // change position
                     const detached = $(evt.to)
