@@ -103,16 +103,30 @@ h2
 
 // Kanban section
 .t-kanban
-  height calc(100vh - 8rem)
+  height calc(100vh - 10rem)
+  width 100%
+  max-width calc(100vw - 17rem)
+  overflow-x auto
+  overflow-y hidden
+  margin 1rem
+
+  @media forMobile
+    height 90vh
+    max-width calc(100vw - 2rem)
 
   &__list
     position relative
-    overflow hidden
+    // overflow hidden
     background-color var(--highlighted-blue)
+    min-width 300px
+    
+    @media forMobile
+      min-width 280px
 
     &__body
       height calc(100% - 5rem)
       overflow-y auto
+      overflow-x hidden
 
       &__item
         background-color var(--white)
