@@ -1,5 +1,8 @@
 {strip}
-<div class="t-return-form-block">
+
+{$ident = rand(0, 1024)}
+
+<div class="t-return-form-block" id="return-wrapper-{$ident}">
     <form method="post" action="?module=tasksLog&action=return&id={$task.id}">
     <div class="fields">
         <div class="field">
@@ -36,4 +39,12 @@
     </div>
     </form>
 </div>
+
+<script>
+    (function ($) {
+        $R('#return-wrapper-{$ident} .t-redactor-comments', { 'focus': true });
+    })(jQuery);
+</script>
+
 {/strip}
+

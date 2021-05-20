@@ -1,0 +1,22 @@
+.re-button.re-quote {
+    padding-bottom: 0 !important;
+    padding-top: 15px !important;
+}
+
+.re-icon-quote::after {
+    content: '”';
+    font-size: 26px;
+    line-height: 0;
+    font-weight: bolder;
+}
+
+.redactor-styles blockquote {
+    color: var(--text-color);
+    padding: 1.5em 2em;
+    background: var(--background-color-blockquote);
+    margin: 0 0 1rem;
+}
+
+.redactor-styles blockquote p {
+    margin-bottom: 0;
+}

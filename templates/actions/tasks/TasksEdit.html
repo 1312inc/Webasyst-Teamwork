@@ -12,6 +12,8 @@
 
     {$_files_hash = md5(uniqid($task.name, true))}
 
+    $R('.t-redactor-task-edit', { 'focus': true });
+
     window.taskEdit = new TaskEdit({
         $task: $(".t-task-page-wrapper"),
         task_id: {$task.id|default:'null'},
@@ -146,7 +148,7 @@
 
                 {* CONTENT *}
                 <div class="t-form-line t-description-wrapper">
-                    <textarea name="data[text]" cols="1" rows="1" tabindex="2" placeholder="[`Input task description`]">{$task.text|escape}</textarea>
+                    <textarea name="data[text]" cols="1" rows="1" class="t-redactor-task-edit" tabindex="2" placeholder="[`Input task description`]">{$task.text|escape}</textarea>
 
                     <!-- plugin hook: 'backend_task_edit.%plugin_id.description' -->
                     {* @event backend_task_edit.%plugin_id%.description *}
