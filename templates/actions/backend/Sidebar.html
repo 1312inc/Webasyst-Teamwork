@@ -75,8 +75,8 @@
                 {/if}
             {/if}
             <a href="#/tasks/favorites/">
-                <i class="fas fa-play-circle" style="color: var(--green);"></i>
-                <span>[`Doing`]</span>
+                <i class="fas fa-star" style="color: gold;"></i>
+                <span>[`Starred`]</span>
                 <span class="count">{counts_pair total=$favorites_counts.total count=$favorites_counts.count bg_color=$favorites_counts.bg_color text_color=$favorites_counts.text_color}</span>
             </a>
         </li>
@@ -266,8 +266,11 @@
             <ul class="menu hide-when-collapsed">
                 {foreach $_users as $user}
                     <li>
-                        {user_count user_id=$user.id}
-                        <a href="#/tasks/assigned/{$user.id}/"><i class="icon16 userpic20" style="background-image: url({waContact::getPhotoUrl($user.id, $user.photo, 40, 40, 'person', 0)})"></i>{$user.name|escape}</a>
+                        <a href="#/tasks/assigned/{$user.id}/">
+                            <i class="icon userpic" style="background-image: url({waContact::getPhotoUrl($user.id, $user.photo, 40, 40, 'person', 0)})"></i>
+                            <span>{$user.name|escape}</span>
+                            <span class="count">{user_count user_id=$user.id}</span>
+                        </a>
                     </li>
                 {/foreach}
             </ul>

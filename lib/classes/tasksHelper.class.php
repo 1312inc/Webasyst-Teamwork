@@ -94,7 +94,7 @@ class tasksHelper
             $item['icon_class'] = false;
             $item['icon_url'] = $item['icon'];
             if (wa()->whichUI() == '2.0') {
-                $item['icon_html'] = '<i class="icon size-20 t-project-icon-rounded" style="background-image: url(\''.$item['icon'].'\');"'.$title.'></i>';
+                $item['icon_html'] = '<span class="icon"><i class="size-20 t-project-icon-rounded" style="background-image: url(\''.$item['icon'].'\');"'.$title.'></i></span>';
             }
             else {
                 $item['icon_html'] = '<i class="icon16" style="background-image: url(\''.$item['icon'].'\'); background-repeat: no-repeat; background-size: 16px; background-position: center center;"'.$title.'></i>';

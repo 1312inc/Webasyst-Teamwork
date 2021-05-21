@@ -20,12 +20,13 @@
                                                 {/if}
 
                                                 {if !empty($o.id) && array_key_exists('photo', $o)}
-                                                    {$_userpic = "{$wa_url}wa-content/img/userpic96.jpg"}
+                                                    {$_userpic = "{$wa_url}wa-content/img/userpic.svg"}
                                                     {if !empty($o.photo)}
                                                         {$_userpic = waContact::getPhotoUrl($o.id, $o.photo, 40, 40, 'person', 0)}
                                                     {/if}
-                                                    <i class="userpic"
-                                                       style="background-image: url({$_userpic|escape})"></i>
+                                                    <span class="icon">
+                                                        <i class="userpic" style="background-image: url({$_userpic|escape})"></i>
+                                                    </span>
                                                 {/if}
 
                                                 <span class="{if $o@index > 0}is-bold{/if}">{$o.name|escape}</span>
