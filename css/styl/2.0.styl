@@ -81,7 +81,14 @@ h2
       line-height 1rem
 
       .icon
-        vertical-align -0.125em
+        vertical-align 0.125em
+        width 1.25em
+        height 1.25em
+
+        *
+            width 1.25em
+            height 1.25em
+
 
 .t-project-icon-rounded
   border-radius 0.25rem
@@ -117,9 +124,10 @@ h2
   &__list
     position relative
     // overflow hidden
-    background-color var(--highlighted-blue)
+    background-color var(--background-color-input-solid)
     min-width 300px
-    
+    border-radius 0.25rem
+
     @media forMobile
       min-width 280px
 
