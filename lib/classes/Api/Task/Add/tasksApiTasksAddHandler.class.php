@@ -12,15 +12,15 @@ final class tasksApiTasksAddHandler
      */
     public function add(tasksApiTasksAddRequest $addRequest): tasksProject
     {
-            $project = tsks()->getEntityRepository(tasksProject::class)->findById($addRequest->getProjectId());
+        $project = tsks()->getEntityRepository(tasksProject::class)->findById($addRequest->getProjectId());
 
-            if (!$project) {
-                throw new tasksException('Project not found', 404);
-            }
+        if (!$project) {
+            throw new tasksException('Project not found', 404);
+        }
 
-            if (!tsks()->getRightResolver()->contactCanAddProject(wa()->getUser())) {
-                throw new tasksAccessException();
-            }
+        if (!tsks()->getRightResolver()->contactCanAddProject(wa()->getUser())) {
+            throw new tasksAccessException();
+        }
 
         if ($addRequest->getMilestoneId()) {
             $milestone = tsks()->getEntityRepository(tasksMilestone::class)->findById($addRequest->getMilestoneId());

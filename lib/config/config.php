@@ -106,5 +106,7 @@ return array(
     ),
 
     // 10 min
-    'tags_cloud_cache_ttl' => 600
+    'tags_cloud_cache_ttl' => 600,
+
+    'redactor_image_size' => 1000,
 );
