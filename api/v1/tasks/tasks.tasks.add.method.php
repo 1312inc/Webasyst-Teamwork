@@ -25,7 +25,8 @@ class tasksTasksAddMethod extends tasksApiAbstractMethod
             $this->post('status_id', false, self::CAST_INT) ?? 0,
             $this->post('hidden_timestamp', false, self::CAST_INT) ?? 0,
             $this->post('due_date', false, self::CAST_DATETIME, 'Y-m-d'),
-            $this->post('files_hash', false, self::CAST_STRING_TRIM)
+            $this->post('files_hash', false, self::CAST_STRING_TRIM),
+            $this->post('uuid', false, self::CAST_STRING_TRIM)
         );
 
         $task = (new tasksApiTasksAddHandler())->add($request);

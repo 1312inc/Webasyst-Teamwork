@@ -8,6 +8,7 @@
  * @property int $create_contact_id
  * @property int $assigned_contact_id
  * @property string $name
+ * @property string $uuid
  * @property string $text
  * @property string $project_id
  * @property waContact $contact

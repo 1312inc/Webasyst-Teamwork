@@ -102,6 +102,11 @@ class tasksTask2 implements tasksPersistableInterface
      */
     private $project;
 
+    /**
+     * @var string
+     */
+    private $uuid;
+
     public function __construct()
     {
         $this->create_datetime = new DateTimeImmutable();
@@ -398,6 +403,18 @@ class tasksTask2 implements tasksPersistableInterface
     public function setLegacyTask(tasksTask $legacy_task): tasksTask2
     {
         $this->legacy_task = $legacy_task;
+
+        return $this;
+    }
+
+    public function getUuid(): string
+    {
+        return $this->uuid;
+    }
+
+    public function setUuid(string $uuid): tasksTask2
+    {
+        $this->uuid = $uuid;
 
         return $this;
     }
