@@ -246,7 +246,7 @@ class tasksHelper
 
     public static function getRedactorImagesPath($taskUuid): string
     {
-        return sprintf('redactor_images/%s/%s/', substr($taskUuid, 0, 2), $taskUuid);
+        return sprintf('img/%s/%s/', substr($taskUuid, 0, 2), $taskUuid);
     }
 
     public static function getRedactorImagesDataPath($taskUuid, $create = false): string
