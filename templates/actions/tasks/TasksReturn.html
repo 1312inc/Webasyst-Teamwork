@@ -42,7 +42,12 @@
 
 <script>
     (function ($) {
-        $R('#return-wrapper-{$ident} .t-redactor-comments', { 'focus': true });
+        $R('#return-wrapper-{$ident} .t-redactor-comments', { 
+            'focus': true,
+            imageData: {
+                task_uuid: '{$task.uuid}'
+            }
+        });
     })(jQuery);
 </script>
 

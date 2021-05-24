@@ -139,7 +139,12 @@
                             $wrapper.find('.t-team-list-wrapper').prepend($parent);
                         }
 
-                        $R('#forward-wrapper-{$ident} .t-redactor-comments', { 'focus': true });
+                        $R('#forward-wrapper-{$ident} .t-redactor-comments', { 
+                            'focus': true,
+                            imageData: {
+                                task_uuid: '{$task_uuid}'
+                            }
+                         });
 
                     })(jQuery);
                 </script>

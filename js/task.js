@@ -54,6 +54,7 @@ var Task = ( function($) {
         that.time_since_update_period = options.time_since_update_period;
         that.is_single = that.$task.hasClass("is-single");
         that.task_id = that.task.id || that.$task.data("task-id");
+        that.task_uuid = that.task.uuid || that.$task.data("task-uuid");
         that.activeTaskClass = false;
         that.animationTime = 333;
         that.files_hash = options.files_hash || that.generateHash();
@@ -992,7 +993,11 @@ var Task = ( function($) {
 
         var bindEvents = function() {
 
-            $R('.t-redactor-comments'); 
+            $R('.t-redactor-comments', {
+                imageData: {
+                    task_uuid: that.task_uuid
+                }
+            }); 
             
             $commentForm.on("submit", function() {
                 clearCommentErrors();
