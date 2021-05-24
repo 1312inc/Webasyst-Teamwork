@@ -58,6 +58,11 @@ final class tasksApiTasksAddRequest
     private $create_contact_id;
 
     /**
+     * @var string
+     */
+    private $uuid;
+
+    /**
      * tasksApiTasksAddRequest constructor.
      *
      * @param string                 $name
@@ -71,6 +76,7 @@ final class tasksApiTasksAddRequest
      * @param int|null               $hidden_timestamp
      * @param DateTimeImmutable|null $due_date
      * @param string|null            $files_hash
+     * @param string|null            $uuid
      */
     public function __construct(
         string $name,
@@ -83,7 +89,8 @@ final class tasksApiTasksAddRequest
         ?int $status_id,
         ?int $hidden_timestamp,
         ?DateTimeImmutable $due_date,
-        ?string $files_hash
+        ?string $files_hash,
+        ?string $uuid
     ) {
         $this->name = $name;
         $this->text = $text;
@@ -96,6 +103,12 @@ final class tasksApiTasksAddRequest
         $this->due_date = $due_date;
         $this->files_hash = $files_hash;
         $this->create_contact_id = $create_contact_id;
+
+        if ($uuid) {
+            $this->uuid = $uuid;
+        } else {
+            $this->uuid = tasksUuid4::generate();
+        }
     }
 
     public function getName(): string
@@ -151,5 +164,10 @@ final class tasksApiTasksAddRequest
     public function getCreateContactId(): int
     {
         return $this->create_contact_id;
+    }
+
+    public function getUuid(): ?string
+    {
+        return $this->uuid;
     }
 }
