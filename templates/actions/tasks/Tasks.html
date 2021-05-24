@@ -37,7 +37,7 @@
 
                         {$_task_number = $task.project_id|cat:'.'|cat:$task.number}
                         {$_task_link = '#/task/'|cat:$_task_number|cat:'/'}
-                        <li class="item t-task-outer-container"
+                        <li class="item t-task-outer-container {$task.project.color}"
                             data-task-id="{$task.id}"
                             data-task-number="{$_task_number}"
                             data-task-uuid="{$task.uuid}"

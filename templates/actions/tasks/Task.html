@@ -205,7 +205,7 @@
                             <a class="t-tag-item" href="javascript:void(0);" data-tag-id="">
                                 <i class="fas fa-hashtag"></i>
                                 <span></span>
-                                <i class="fas fa-minus-circle t-remove-tag"></i>
+                                <!-- <i class="fas fa-minus-circle t-remove-tag"></i> -->
                             </a>
                         </li>
 
@@ -215,7 +215,7 @@
                                     <a class="t-tag-item" href="#/tasks/tag/{$tag_name|escape}/" data-tag-id="{$tag_id|escape}">
                                         <i class="fas fa-hashtag"></i>
                                         <span>{$tag_name|escape}</span>
-                                        <i class="fas fa-minus-circle t-remove-tag"></i>
+                                        <!-- <i class="fas fa-minus-circle t-remove-tag"></i> -->
                                     </a>
                                 </li>
                             {/foreach}
@@ -593,7 +593,7 @@
                                 {$_can_edit = $_can_edit && !$_empty_log_item}
                             {/if}
 
-                            <div class="t-comment-item flexbox space-8 custom-py-0 custom-mt-20 custom-mb-40" data-id="{$l.id}">
+                            <div class="t-comment-item flexbox space-8" data-id="{$l.id}">
                                 <div class="image">
                                     <a href="{if !empty($l.contact.id)}{tasksHelper::getProfileURL($l.contact.id)}{else}javascript:void(0);{/if}" title="{$l.contact.name|escape}">
                                         {if !empty({$l.contact.photo_url})}
