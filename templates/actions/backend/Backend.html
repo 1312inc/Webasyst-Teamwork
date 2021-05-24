@@ -5,6 +5,7 @@
     {$_app_name = $wa->appName(true)}
     {$_account_name = $wa->accountName(true)}
     {$_title = $wa->title()|escape}
+    {$loc = explode('_', $wa->locale())}
     <title>{$wa->title()|default:$_app_name} — {$_account_name}</title>
 
     {strip}{$priorities = []}
@@ -25,6 +26,9 @@
     <link rel="stylesheet" href="{$wa_url}wa-content/js/farbtastic/farbtastic.css" type="text/css" />
     <link rel="stylesheet" href="{$wa_app_static_url}js/waGallery/waGallery.css" type="text/css" />
     <link rel="stylesheet" href="{$wa_url}wa-content/js/prettify/prettify.css" type="text/css" />
+    <link rel="stylesheet" href="{$wa_app_static_url}js/vendors/redactor-3-4-11/redactor.min.css">
+    <link rel="stylesheet" href="{$wa_app_static_url}js/vendors/redactor-3-4-11/plugins/mdeditor/mdeditor.css">
+    <link rel="stylesheet" href="{$wa_app_static_url}js/vendors/redactor-3-4-11/plugins/watags/watags.css">
 
     <script src="{$wa_url}wa-content/js/jquery/jquery-1.11.1.min.js"></script>
     <script src="{$wa_url}wa-content/js/jquery/jquery-migrate-1.2.1.min.js" async></script>
@@ -32,6 +36,26 @@
 
     <script src="/wa-content/js/jquery-wa/wa.js?v={$wa->version(true)}"></script>
     <script src="{$wa_app_static_url}js/tasks.min.js?v{$wa->version()}"></script>
+
+    <!-- markdown-it and turndown are dependencies for mdeditor -->
+    <script src="https://unpkg.com/markdown-it/dist/markdown-it.min.js"></script>
+    <script src="https://unpkg.com/turndown/dist/turndown.js"></script>
+    <script src="{$wa_app_static_url}js/vendors/redactor-3-4-11/redactor.min.js"></script>
+    <script src="{$wa_app_static_url}js/vendors/redactor-3-4-11/langs/{$loc[0]}.js"></script>
+    <script src="{$wa_app_static_url}js/vendors/redactor-3-4-11/plugins/mdeditor/mdeditor.js"></script>
+    <script src="{$wa_app_static_url}js/vendors/redactor-3-4-11/plugins/watags/watags.js"></script>
+    <script src="{$wa_app_static_url}js/vendors/redactor-3-4-11/plugins/imgupload/imgupload.js"></script>
+    <script>
+        $R.options = {
+            lang: '{$loc[0]}',
+            buttons: ['bold', 'italic', 'ol', 'ul', 'link', 'image'],
+            source: false,
+            minHeight: '200px',
+            plugins: ['mdeditor', 'watags', 'imgupload'],
+            tagsHandle: '?action=tagsatcmpl',
+            tagsHandleTrigger: '#',
+        };
+    </script>    
 
     {$wa->js()}
     {if $wa->locale() != 'en_US'}

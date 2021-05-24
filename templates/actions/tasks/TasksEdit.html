@@ -5,12 +5,21 @@
 
 {$is_page = !$wa->get("is_dialog")}
 
+{$task_uuid = $task.uuid|default:tasksUuid4::generate()}
+
 <script>(function($) { "use strict";
     {if $task.id}
         $.tasks.setTitle({$task.name|json_encode});
     {/if}
 
     {$_files_hash = md5(uniqid($task.name, true))}
+
+    $R('.t-redactor-task-edit', { 
+        'focus': true,
+        imageData: {
+            task_uuid: '{$task_uuid}'
+        }
+    });
 
     window.taskEdit = new TaskEdit({
         $task: $(".t-task-page-wrapper"),
@@ -45,6 +54,8 @@
     {* TASK EDIT CONTENT *}
     <div class="t-task-page-wrapper {if $is_page}is-single-page{else}is-dialog-content{/if}">
         <form id="t-edit-task-form" action="?module=tasks&action=save&id={$task.id}" method="post" data-n="{$task.project_id}.{$task.number}">
+
+            <input type="hidden" name="data[uuid]" value="{$task_uuid}" />
 
             <!-- plugin hook: 'backend_task_edit.%plugin_id.before_header' -->
             {* @event backend_task_edit.%plugin_id%.before_header *}
@@ -146,7 +157,7 @@
 
                 {* CONTENT *}
                 <div class="t-form-line t-description-wrapper">
-                    <textarea name="data[text]" cols="1" rows="1" tabindex="2" placeholder="[`Input task description`]">{$task.text|escape}</textarea>
+                    <textarea name="data[text]" cols="1" rows="1" class="t-redactor-task-edit" tabindex="2" placeholder="[`Input task description`]">{$task.text|escape}</textarea>
 
                     <!-- plugin hook: 'backend_task_edit.%plugin_id.description' -->
                     {* @event backend_task_edit.%plugin_id%.description *}
