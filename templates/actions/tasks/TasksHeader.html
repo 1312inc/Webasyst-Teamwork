@@ -15,8 +15,8 @@
                 {if $is_in_my_list}
                     {$list.name|escape}
                 {/if}
-            </h4>
 
+            </h4>
             <div class="dropdown t-order-selector js-dropdown-menu" data-id="order" id="t-menu-dropdown-order">
 
                 {$sort_options = [
@@ -63,13 +63,22 @@
 
             </div>
 
-            <a class="gray small bold" href="javascript:void(0);" title="[`Filter tasks`]" id="t-filters-toggle">[`Filters`] <i class="fas fa-caret-down"></i></a>
+            <a class="gray small bold" href="javascript:void(0);" title="[`Filter tasks`]" id="t-filters-toggle">[`Filters`] <i class="fas fa-caret-down custom-mx-4"></i></a>
 
         </div>
-        <div>
-            <a id="add-task-link" class="circle button rounded" href="#/add/"> 
-                <i class="fas fa-plus"></i>
-            </a>
+        <div class="flexbox">
+            {if 1111}
+            <div>
+                <a class="circle button light-gray custom-mr-8" href="#/settings/1111">
+                    <i class="fas fa-cog"></i>
+                </a>
+            </div>
+            {/if}
+            <div>
+                <a id="add-task-link" class="circle button " href="#/add/">
+                    <i class="fas fa-plus"></i>
+                </a>
+            </div>
         </div>
     </div>
 
