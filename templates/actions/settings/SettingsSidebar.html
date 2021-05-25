@@ -5,7 +5,7 @@
     <ul class="menu">
         <li data-item-type="statuses">
             <a href="#/settings/">
-                <i class="fas fa-tags"></i><span>[`Task statuses`]</span>
+                <i class="fas fa-project-diagram"></i><span>[`Task statuses`]</span>
             </a>
         </li>
 
@@ -18,7 +18,7 @@
     <!-- SCOPES -->
     <h5 class="heading">
         <a href="#/settings/scope/add/" class="count"><i class="fas fa-plus-circle"></i></a>
-        [`Scopes`]
+        [`Milestones`]
     </h5>
     <ul class="menu t-scopes-list-wrapper">
 
@@ -34,8 +34,8 @@
         {if $archive_scopes}
             <li class="js-show-archived-scopes">
                 {$_count = count($archive_scopes)}
-                {$_text_hidden = _w('Show %d archived scope', 'Show %d archived scopes', $_count)}
-                {$_text_shown = _w('Hide archived scope', 'Hide archived scopes', $_count)}
+                {$_text_hidden = _w('Show %d completed milestone', 'Show %d completed milestones', $_count)}
+                {$_text_shown = _w('Hide completed milestone', 'Hide completed milestones', $_count)}
                 <a href="javascript:void(0);" class="small text-gray js-archived-item-list-toggle"
                    data-list-type="scopes"  data-text-shown="{$_text_shown}" data-text-hidden="{$_text_hidden}">{$_text_hidden}</a>
             </li>
@@ -49,7 +49,7 @@
                 <li data-id="{$_scope.id}" data-item-type="scope" data-is-archived="1">
                     <a href="#/settings/scope/{$_scope.id}/">
                         {$_scope.project.icon_html}
-                        <span class="js-scope-name t-scope-name text-gray">{$_scope.name|default:'[`(no name)`]'|escape}</span>
+                        <span class="js-scope-name t-scope-name text-gray">{$_scope.name|default:'[`(no name)`]'|escape} <span class="hint"><i class="fas fa-check fa-xs"></i></span></span>
                     </a>
                 </li>
             {/foreach}
