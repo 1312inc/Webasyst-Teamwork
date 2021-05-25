@@ -97,6 +97,12 @@ return array(
             'text_color' => 'white',
             'value' => 2,
         ),
+        3 => array(
+            'name' => _w('On Fire!'),
+            'bg_color' => '#ff0000',
+            'text_color' => 'white',
+            'value' => 3,
+        ),
     ),
 
     'format_name' => array(

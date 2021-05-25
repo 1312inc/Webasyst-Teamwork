@@ -141,7 +141,8 @@ label
         &.color-3
             color gold
 
-        &.color-4
+        &.color-4,
+        &.color-5
             color orangered
 
     .t-slider-wrapper
@@ -202,7 +203,8 @@ label
                 &.color-3
                     background #ffae22
 
-                &.color-4
+                &.color-4,
+                &.color-5
                     background #dd301c
 
             .t-ornament
@@ -219,30 +221,48 @@ label
                 box-sizing border-box
                 cursor pointer
 
-                &[data-value="2"]
-                    background url(../img/item-bullets-priority-fire.gif) no-repeat
-                    background-size 20px 20px
-                    width 20px
-                    height 20px
+                &.t-ornament--exclamation
+                    .svg-inline--fa
+                        display none
+
+                    &.is-active
+                        background-color transparent
+                        width 20px
+                        height 20px
+                        border 0
+                        border-radius 0
+                        top 50%
+                        margin 0
+                        transform translateX(-50%) translateY(-50%)
+                        z-index 99
+
+                        &:after
+                            content ''
+                            position absolute
+                            display block
+                            background-color #fff
+                            width 12px
+                            height 12px
+                            top 50%
+                            left 50%
+                            transform translateX(-50%) translateY(-50%)
+
+                        .svg-inline--fa
+                            display block
+                            position relative
+                            z-index 9
+
+                &[data-value='3'].is-active
+                    background url('../img/item-bullets-priority-fire.gif') no-repeat
+                    background-size 26px 26px
+                    width 26px
+                    height 26px
                     border 0
                     border-radius 0
                     top 50%
                     margin 0
                     transform translateX(-50%) translateY(-65%)
                     z-index 99
-
-                    &.is-active
-                        $width = 28px
-                        width $width
-                        height $width
-                        background-size $width $width
-
-
-                &.is-active:not([data-value="2"])
-                    $width = 18px
-                    width $width
-                    height $width
-                    margin ($width/-2) 0 0 ($width/-2)
 
 // NOTICES
 .t-notice-wrapper

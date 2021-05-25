@@ -1129,6 +1129,14 @@
                         .css("left", left + "%")
                         .attr("data-value", value)
                         .attr("data-name", name);
+                        
+                        // if High or Urgent
+                        if (value === '1' || value === '2') {
+                            var exclamation_color = value === '1' ? '#ffd700' : '#ff4500';
+                            $span
+                                .addClass('t-ornament--exclamation')
+                                .append('<i style="color:' + exclamation_color + ';" class="fas fa-exclamation-triangle"></i>');
+                        }
 
                     if (is_active) {
                         $span.data("selected", "true");
