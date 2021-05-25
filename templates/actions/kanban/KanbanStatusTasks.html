@@ -1,10 +1,68 @@
 {** @var array $data **}
 {** @var tasksTask $task **}
 {foreach $data.tasks as $task}
-    <div data-task-id="{$task.id}" class="t-kanban__list__body__item custom-p-8 custom-mb-8">
-        <div><a href="#/task/{$task.id}/" target="_blank">{$task.name|escape}</a></div>
-        <div class="hint">project_id: {$task.project_id}</div>
-        <div class="hint">milestone_id: {$task.milestone_id}</div>
-        <div class="hint">{$task.create_contact.name|escape}</div>
+
+{* PRIORITY *}
+
+{$_priority_class_array = [
+"-1" => "is-low",
+"0" => "is-normal",
+"1" => "is-high",
+"2" => "is-urgent"
+]}
+{$_priority_icon = ""}
+{if !empty($task.priority)}
+    {if $task.priority == '-1'}
+        {$_priority_icon = "<i class=\"fas fa-thumbs-down\" style=\"color: var(--light-gray);\"></i>"}
+    {/if}
+    {if $task.priority == '1'}
+        {$_priority_icon = "<i class=\"fas fa-exclamation-triangle\" style=\"color: gold;\"></i>"}
+    {/if}
+    {if $task.priority == '2'}
+        {$_priority_icon = "<i class=\"fas fa-exclamation-triangle\" style=\"color: orangered;\"></i>"}
+    {/if}
+    {if $task.priority == '3'}
+        {$_priority_icon = "<i class=\"fas fa-fire\" style=\"color: black;\"></i>"}
+    {/if}
+    {if $task.priority == '4'}
+        {$_priority_icon = "<i class=\"fas fa-fire\" style=\"color: orangered;\"></i>"}
+    {/if}
+{/if}
+
+    <div data-task-id="{$task.id}" class="t-kanban__list__body__item custom-p-8 custom-mb-8 {$task.project.color}">
+        <div class="custom-mb-8">
+            <span class="t-priority-wrapper {ifset($_priority_class_array[$task.priority])}">
+                {$_priority_icon}
+                {$task.project_id}.{$task.number}
+            </span>
+            <a href="#/task/{$task.id}/" target="_blank">{$task.name|escape}</a>
+        </div>
+        <div class="flexbox space-12 middle">
+            <div class="flexbox space-4 middle">
+                <div>
+                    {* PROJECT ICON *}
+                    {if !empty($task.project.icon_html)}
+                        {strip}<span class="t-project-icon">
+                            {$task.project.icon_html}
+                        </span>{/strip}
+                    {/if}
+                </div>
+                <div class="hint">
+                    {$task.project.name}
+                </div>
+            </div>
+            <div class="flexbox space-8 middle">
+                <div>
+                    <i class="icon userpic" style="display:block;background-image: url({waContact::getPhotoUrl($task.assigned_contact.id, $task.assigned_contact.photo, 40, 40, 'person', 0)})"></i>
+                </div>
+                <div>
+                    {* This vars will be mutated by tasksHelper::getDatetime, must be inited first because of Smary & PHP 7.4 cause the warnings otherwise *}
+                    {$time_since_update_period = null}
+                    {$time_since_update_template = null}
+                    {$time_since_update_str = tasksHelper::getDatetime($task.update_datetime, $time_since_update_period, $time_since_update_template)}
+                    <span class="small gray nowrap">{$time_since_update_str}</span>
+                </div>
+            </div>
+        </div>
     </div>
 {/foreach}
