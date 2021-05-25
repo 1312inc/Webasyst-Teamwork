@@ -148,15 +148,17 @@
             this._show();
         },
         _update: function () {
+            var that = this;
+            
             this.$list.html("");
-
+            
             for (var term of this.data) {
                 var $item = $R.dom('<a href="#">');
                 $item.html(term);
                 $item.attr("data-key", term);
                 $item.on("click", function (e) {
                     e.preventDefault();
-                    this._replace(e.target);
+                    that._replace(e.target);
                 });
 
                 this.$list.append($item);
