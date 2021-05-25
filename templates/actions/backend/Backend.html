@@ -22,7 +22,6 @@
 
     {$wa->css()}
     <link href="{$wa_app_static_url}js/vendors/jquery-ui.min.css" rel="stylesheet" type="text/css" />
-    <link href="{$wa_app_static_url}css/datepicker.css" rel="stylesheet" type="text/css" />
     <link href="{$wa_app_static_url}css/tasks.min.css?v{$wa->version()}" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="{$wa_url}wa-content/js/farbtastic/farbtastic.css" type="text/css" />
     <link rel="stylesheet" href="{$wa_app_static_url}js/waGallery/waGallery.css" type="text/css" />
@@ -56,7 +55,7 @@
             tagsHandle: '?action=tagsatcmpl',
             tagsHandleTrigger: '#',
         };
-    </script>    
+    </script>
 
     {$wa->js()}
     {if $wa->locale() != 'en_US'}
@@ -117,11 +116,11 @@
         (function() {
             var $loaderPlace = document.querySelector('#loaderPlace');
             if($loaderPlace){
-                $loaderPlace.innerHTML = 
-                    window.loadingEntity === 'task' 
-                    ? document.querySelector('#taskSkeleton').innerHTML 
-                    : window.loadingEntity === 'list' 
-                    ? document.querySelector('#tasksListSkeleton').innerHTML 
+                $loaderPlace.innerHTML =
+                    window.loadingEntity === 'task'
+                    ? document.querySelector('#taskSkeleton').innerHTML
+                    : window.loadingEntity === 'list'
+                    ? document.querySelector('#tasksListSkeleton').innerHTML
                     : '<i class="icon16 loading"></i>';
             }
         })();
