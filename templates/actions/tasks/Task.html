@@ -13,9 +13,11 @@
 {if !empty($is_single)}
     {$classes['is-single'] = 'is-single'}
 {/if}
-{if !empty($task.project.color)}
-    {$classes[$task.project.color] = $task.project.color}
-{/if}
+
+    {* LEGACY if !empty($task.project.color)}
+        {$classes[$task.project.color] = $task.project.color}
+    {/if *}
+
 {if $task.project.archive_datetime}
     {$classes['is-archived'] = 'is-archived'}
 {/if}

@@ -12,20 +12,24 @@
                 </div>
 
                 <div class="flexbox space-20 custom-mb-40">
-                    <h1 class="custom-mb-0 wide">{if !$project.id}[`New project`]{else}{$project.name|default:'[`(no name)`]'|escape}{/if}</h1>
+                    <h1 class="custom-mb-0 wide{if $project.archive_datetime} gray{/if}">
+                        {if !$project.id}[`New project`]{else}{$project.name|default:'[`(no name)`]'|escape}{/if}
+                    </h1>
 
                     {if $project.id}
                         <div class="flexbox space-12 custom-mt-4">
                             <div>
                                 {if $project.archive_datetime}
-                                    <div class="custom-"
-                                    [`Archived`]: {$project.archive_datetime|wa_datetime}
+                                    <div class="custom-p-4 text-brown">
+                                        {if $project.archive_datetime}<i class="fas fa-archive" title="[`Archived`]"></i>{/if}
+                                        [`Archived`]: <strong>{$project.archive_datetime|wa_datetime}</strong>
+                                    </div>
                                 {else}
                                     <a href="javascript:void(0)" class="button nowrap outlined brown" id="project-archive-link"><i class="fas fa-archive"></i> [`Archive this project`]</a>
                                 {/if}
                             </div>
                             <div>
-                                <a href="javascript:void(0)" class="button nowrap outlined red" id="project-delete-link"><i class="fas fa-trash-alt"></i> [`Delete`]</a>
+                                <a href="javascript:void(0)" class="button nowrap nobutton red" id="project-delete-link"><i class="fas fa-trash-alt"></i> [`Delete`]</a>
                             </div>
                         </div>
                     {/if}
@@ -151,7 +155,7 @@
     <script>( function($) { "use strict";
 
         var $form = $('#project-editor-form');
-        var delete_confirm_msg = "[`Are you sure?`]";
+        var delete_confirm_msg = "[`DANGER: Deletion will be permanent with no ability to roll back. Are you sure?`]";
 
         {if $project.id}
             // Make sure the hash is correct after we saved a new project
