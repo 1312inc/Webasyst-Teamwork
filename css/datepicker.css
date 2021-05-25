@@ -1,0 +1,75 @@
+/* Webasyst Date Picker Default Styles */
+.ui-datepicker {
+	padding: 0;
+    border: 0;
+    box-shadow: 1px 0 0 #e6e6e6, -1px 0 0 #e6e6e6, 0 1px 0 #e6e6e6, 0 -1px 0 #e6e6e6, 0 3px 13px rgb(0 0 0 / 8%);
+}
+.ui-datepicker * {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    color: var(--text-color);
+	padding: 0;
+}
+.ui-datepicker table {
+	margin: 0;
+}
+.ui-datepicker .ui-datepicker-header {
+	border: none;
+	background: #fff;
+	font-weight: normal;
+}
+.ui-datepicker .ui-datepicker-header .ui-state-hover {
+	background: #fff;
+	border-color: transparent;
+	cursor: pointer;
+}
+.ui-datepicker thead {
+	background: #fff;
+}
+.ui-datepicker .ui-datepicker-title {
+	margin-top: .4rem;
+	margin-bottom: .4rem;
+	font-size: .9rem;
+}
+.ui-datepicker .ui-datepicker-title select {
+    border: 0;
+}
+.ui-datepicker .ui-datepicker-next,
+.ui-datepicker .ui-datepicker-prev {
+	top: 6px;
+	border: none;
+}
+.ui-datepicker .ui-datepicker-prev span {
+	background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pg0KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDE5LjAuMCwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPg0KPHN2ZyB2ZXJzaW9uPSIxLjEiIGlkPSJDYXBhXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4Ig0KCSB2aWV3Qm94PSIwIDAgNDQzLjUyIDQ0My41MiIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgNDQzLjUyIDQ0My41MjsiIHhtbDpzcGFjZT0icHJlc2VydmUiPg0KPGc+DQoJPGc+DQoJCTxwYXRoIGQ9Ik0xNDMuNDkyLDIyMS44NjNMMzM2LjIyNiwyOS4xMjljNi42NjMtNi42NjQsNi42NjMtMTcuNDY4LDAtMjQuMTMyYy02LjY2NS02LjY2Mi0xNy40NjgtNi42NjItMjQuMTMyLDBsLTIwNC44LDIwNC44DQoJCQljLTYuNjYyLDYuNjY0LTYuNjYyLDE3LjQ2OCwwLDI0LjEzMmwyMDQuOCwyMDQuOGM2Ljc4LDYuNTQ4LDE3LjU4NCw2LjM2LDI0LjEzMi0wLjQyYzYuMzg3LTYuNjE0LDYuMzg3LTE3LjA5OSwwLTIzLjcxMg0KCQkJTDE0My40OTIsMjIxLjg2M3oiLz4NCgk8L2c+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8L3N2Zz4NCg==');
+	background-position: center center;
+}
+.ui-datepicker .ui-datepicker-next span {
+	background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pg0KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDE5LjAuMCwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPg0KPHN2ZyB2ZXJzaW9uPSIxLjEiIGlkPSJDYXBhXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4Ig0KCSB2aWV3Qm94PSIwIDAgNDQzLjUyIDQ0My41MiIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgNDQzLjUyIDQ0My41MjsiIHhtbDpzcGFjZT0icHJlc2VydmUiPg0KPGc+DQoJPGc+DQoJCTxwYXRoIGQ9Ik0zMzYuMjI2LDIwOS41OTFsLTIwNC44LTIwNC44Yy02Ljc4LTYuNTQ4LTE3LjU4NC02LjM2LTI0LjEzMiwwLjQyYy02LjM4OCw2LjYxNC02LjM4OCwxNy4wOTksMCwyMy43MTJsMTkyLjczNCwxOTIuNzM0DQoJCQlMMTA3LjI5NCw0MTQuMzkxYy02LjY2Myw2LjY2NC02LjY2MywxNy40NjgsMCwyNC4xMzJjNi42NjUsNi42NjMsMTcuNDY4LDYuNjYzLDI0LjEzMiwwbDIwNC44LTIwNC44DQoJCQlDMzQyLjg4OSwyMjcuMDU4LDM0Mi44ODksMjE2LjI1NSwzMzYuMjI2LDIwOS41OTF6Ii8+DQoJPC9nPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPC9zdmc+DQo=');
+	background-position: center center;
+}
+.ui-datepicker th {
+    font-size: .76rem;
+	border: none;
+}
+.ui-datepicker td {
+	border: none;
+	padding: 0;
+}
+.ui-datepicker td .ui-state-default {
+	background: transparent;
+	border: none;
+	text-align: center;
+	padding: 0;
+	margin: 0;
+	font-weight: normal;
+    height: 39px;
+    line-height: 39px;
+    font-size: .86rem;
+    color: var(--text-color);
+}
+.ui-datepicker td.ui-datepicker-today .ui-state-default {
+    background-color: var(--highlighted-blue);
+}
+.ui-datepicker td .ui-state-active,
+.ui-datepicker td .ui-state-hover {
+	background: #e6e6e6;
+}
