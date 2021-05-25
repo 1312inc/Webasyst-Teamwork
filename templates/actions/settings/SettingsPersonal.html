@@ -2,9 +2,10 @@
 
 {include file="./SettingsPersonalHelpers.inc.html" inline}
 
-<div class="block bordered-left blank shadowed double-padded" id="{$wrapper_id}">
-    <h1>[`My preferences`]</h1>
-    <div class="block not-padded">
+<div class="article" id="{$wrapper_id}">
+    <div class="article-body">
+
+        <h1>[`My preferences`]</h1>
         <form action="?module=settingsPersonal&action=save" class="t-setting-form">
             <input type="hidden" name="settings[notification][]" value="">
             <br>
@@ -16,7 +17,7 @@
                         </div>
                         <div class="value">
                             [`Send me notification in case of`]
-                            <ul class="menu-v">
+                            <ul class="menu">
                                 {$_items = [
                                     'always' => '[`Any action`]',
                                     'assign' => '[`Assignment only`]',
@@ -38,7 +39,7 @@
                             [`Notify me about next kind of tasks`]
 
 
-                            <ul class="menu-v t-settings-list">
+                            <ul class="menu t-settings-list">
                                 {$_items = [
                                     'assigned_to_me' => '[`Assigned to me`]',
                                     'created_by_me' => '[`Created by me`]',
@@ -57,7 +58,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="field-group">
+                <div class="field-group custom-mt-16">
                     <div class="field">
                         <div class="value submit t-settings-buttons">
                             <input type="submit" class="button green" value="[`Save settings`]">
@@ -67,8 +68,8 @@
                 </div>
             </div>
         </form>
+
     </div>
-    <div class="clear"></div>
 
     <script>
         (function ($) {

@@ -111,7 +111,7 @@ class tasksHelper
             $item['icon_url'] = false;
             $item['icon_class'] = $item['icon'];
             if (wa()->whichUI() == '2.0') {
-                $item['icon_html'] = '<i class="icon ' . $item['icon'] . '"' . $title . '></i>';
+                $item['icon_html'] = '<i class="fas fa-briefcase"' . $title . '></i>';
             } else {
                 $item['icon_html'] = '<i class="icon16 ' . $item['icon'] . '"' . $title . '></i>';
             }
