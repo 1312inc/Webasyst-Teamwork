@@ -16,6 +16,12 @@ var TasksScopeEdit = (function ($) {
 
         // DYNAMIC VARS
 
+        // Redirect to the Scope if just created
+        if (that.just_saved && that.scope.id) {
+            window.location.hash = '#/tasks/scope/' + that.scope.id + '/';
+            return;
+        }
+
         // INIT
         that.init();
     };
