@@ -3,131 +3,136 @@
     {$sidebar_html|default:''}
 
     <div class="t-project-page content custom-p-20 blank" id="t-project-page">
-        
-        <div class="hidden block double-padded t-saved">
-            <span class="alert success"><i class="fas fa-check-circle"></i> [`Settings successfully updated`]</span>
-        </div>
 
-        <div class="block double-padded">
+        <div class="article">
+            <div class="article-body">
 
-            <div class="flexbox space-20 custom-mb-40">
-                <h1 class="custom-mb-0 wide">{if !$project.id}[`New project`]{else}{$project.name|default:'[`(no name)`]'|escape}{/if}</h1>
+                <div class="hidden t-saved">
+                    <span class="alert success"><i class="fas fa-check-circle"></i> [`Settings successfully updated`]</span>
+                </div>
 
-                {if $project.id}
-                    <div class="flexbox space-12">
-                        <div>
-                            {if $project.archive_datetime}
-                                [`Archive datetime`]: {$project.archive_datetime|wa_datetime}
-                            {else}
-                                <a href="javascript:void(0)" class="button small gray" id="project-archive-link"><i class="fas fa-archive"></i> [`Archive this project`]</a>
-                            {/if}
-                        </div>
-                        <div>
-                            <a href="javascript:void(0)" class="button small red" id="project-delete-link"><i class="far fa-trash-alt"></i> [`Delete`]</a>
-                        </div>
-                    </div>
-                {/if}
-            </div>
-            
+                <div class="flexbox space-20 custom-mb-40">
+                    <h1 class="custom-mb-0 wide">{if !$project.id}[`New project`]{else}{$project.name|default:'[`(no name)`]'|escape}{/if}</h1>
 
-            <form action="?module=projects&action=edit" method="post" id="project-editor-form">
-                <div class="fields form">
-                    <input type="hidden" name="id" value="{ifempty($project.id, 'add')}">
-
-                    <div class="field-group custom-mb-24">
-                        <div class="field">
-                            <div class="name for-input">[`Project name`]</div>
-                            <div class="value">
-                                <input type="text" name="project[name]" class="bold long" value="{$project.name|escape}" placeholder="[`Project name`]">
+                    {if $project.id}
+                        <div class="flexbox space-12 custom-mt-4">
+                            <div>
+                                {if $project.archive_datetime}
+                                    <div class="custom-"
+                                    [`Archived`]: {$project.archive_datetime|wa_datetime}
+                                {else}
+                                    <a href="javascript:void(0)" class="button nowrap outlined brown" id="project-archive-link"><i class="fas fa-archive"></i> [`Archive this project`]</a>
+                                {/if}
+                            </div>
+                            <div>
+                                <a href="javascript:void(0)" class="button nowrap outlined red" id="project-delete-link"><i class="fas fa-trash-alt"></i> [`Delete`]</a>
                             </div>
                         </div>
-                    </div>
+                    {/if}
+                </div>
 
-                    <div class="field-group custom-mb-24">
-                        <div class="field">
-                            <div class="name">
-                                [`Color`]
-                            </div>
-                            <div class="value">
-                                <div class="flexbox space-12 t-project-settings-colorbox">
-                                    {foreach $colors as $color}
-                                        <div class="{$color}"><a href="javascript:void(0)">
-                                            <input type="radio" name="project[color]" value="{$color|escape}"{if ($project.color == $color)} checked{/if}>
-                                        </a></div>
-                                    {/foreach}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <form action="?module=projects&action=edit" method="post" id="project-editor-form">
+                    <div class="fields form">
+                        <input type="hidden" name="id" value="{ifempty($project.id, 'add')}">
 
-                    <div class="field-group custom-mb-24">
-                        <div class="field">
-                            <div class="name">
-                                [`Icon`]
-                            </div>
-                            <div class="value">
-                                <div class="flexbox wrap space-12" id="project-icon-selector">
-                                    {foreach $icons as $icon}
-                                        <div class="t-project-icon{if ($project.icon_class == $icon)} selected{/if}"><a href="javascript:void(0)">
-                                            <i class="fas fa-briefcase"></i>
-                                        </a></div>
-                                    {/foreach}
-                                </div>
-                                <input type="hidden" name="project[icon]" value="{$project.icon}">
-                                
-                                <span class="smaller">[`Or enter image URL (image will be scaled to 16x16px)`]:</span><br>
-                                <input id="t-icon-url" type="text" value="{$project.icon_url|escape}" name="icon_url" class="long">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="field-group">
-                        <div class="field">
-                            <div class="name">[`Workflow`]</div>
-                            {foreach $workflows as $wf_id => $wf}
+                        <div class="field-group custom-mb-24">
+                            <div class="field">
+                                <div class="name for-input">[`Project name`]</div>
                                 <div class="value">
-                                    <label>
-                                        <input type="radio" name="workflow" value="{$wf_id}"{if $wf.selected} checked{/if}>
-                                        {foreach $wf.statuses as $status}
-                                            {if $status.button}
-                                                {$wa->tasks->statusButton($status)}
-                                                <span class="t-control-link t-forward-link"></span>
-                                            {/if}
-                                            <span class="t-status-name">{$status.name|escape}</span>
-                                            <span class="t-control-link t-forward-link"></span>
-                                        {/foreach}
-                                        <i class="icon16 archive"></i>
-                                    </label>
-                                    {if $wf.project.id != $project.id}
-                                        <span class="hint" style="margin-left:2em;">{$wf.project.name|escape}</span>
-                                    {/if}
+                                    <input type="text" name="project[name]" class="bold long large" value="{$project.name|escape}" placeholder="[`Project name`]">
                                 </div>
-                            {/foreach}
-                            <div class="value">
-                                <label>
-                                    <input type="radio" name="workflow" value="custom"{if !$workflows} checked{/if}>
-                                    [`Customize...`]
-                                </label>
                             </div>
-                            <div class="hidden" id="customize-project-workflow">
-                                {foreach $statuses as $s}
+                        </div>
+
+                        <div class="field-group custom-mb-24">
+                            <div class="field">
+                                <div class="name">
+                                    [`Color`]
+                                </div>
+                                <div class="value">
+                                    <div class="flexbox space-12 t-project-settings-colorbox">
+                                        {foreach $colors as $color}
+                                            <div class="{$color}"><a href="javascript:void(0)">
+                                                <input type="radio" name="project[color]" value="{$color|escape}"{if ($project.color == $color)} checked{/if}>
+                                            </a></div>
+                                        {/foreach}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="field-group custom-mb-24">
+                            <div class="field">
+                                <div class="name">
+                                    [`Icon`]
+                                </div>
+                                <div class="value">
+                                    <div class="flexbox wrap space-12" id="project-icon-selector">
+                                        {foreach $icons as $icon}
+                                            <div class="t-project-icon{if ($project.icon_class == $icon)} selected{/if}"><a href="javascript:void(0)">
+                                                <i class="fas fa-briefcase"></i>
+                                            </a></div>
+                                        {/foreach}
+                                    </div>
+                                    <input type="hidden" name="project[icon]" value="{$project.icon}">
+
+                                    <span class="smaller">[`Or enter image URL (image will be scaled to 16x16px)`]:</span><br>
+                                    <input id="t-icon-url" type="text" value="{$project.icon_url|escape}" name="icon_url" class="long">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="field-group">
+                            <div class="field">
+                                <div class="name">[`Workflow`]</div>
+                                {foreach $workflows as $wf_id => $wf}
                                     <div class="value">
                                         <label>
-                                            <input type="checkbox" name="custom_workflow[{$s.id}]" value="1"{if !empty($project_statuses[$s.id])} checked{/if}{if $s.special} disabled{/if}>
-                                            {$s.name|escape}
+                                            <input type="radio" name="workflow" value="{$wf_id}"{if $wf.selected} checked{/if}>
+                                            {foreach $wf.statuses as $status}
+                                                {if $status.button}
+                                                    {$wa->tasks->statusButton($status)}
+                                                    <span class="t-control-link t-forward-link"></span>
+                                                {/if}
+                                                <span class="t-status-name">{$status.name|escape}</span>
+                                                <span class="t-control-link t-forward-link"></span>
+                                            {/foreach}
+                                            <i class="icon16 archive"></i>
                                         </label>
+                                        {if $wf.project.id != $project.id}
+                                            <span class="hint" style="margin-left:2em;">{$wf.project.name|escape}</span>
+                                        {/if}
                                     </div>
                                 {/foreach}
+                                <div class="value">
+                                    <label>
+                                        <input type="radio" name="workflow" value="custom"{if !$workflows} checked{/if}>
+                                        [`Customize...`]
+                                    </label>
+                                </div>
+                                <div class="hidden" id="customize-project-workflow">
+                                    {foreach $statuses as $s}
+                                        <div class="value">
+                                            <label>
+                                                <input type="checkbox" name="custom_workflow[{$s.id}]" value="1"{if !empty($project_statuses[$s.id])} checked{/if}{if $s.special} disabled{/if}>
+                                                {$s.name|escape}
+                                            </label>
+                                        </div>
+                                    {/foreach}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field custom-mt-32">
+                            <div class="value submit">
+                                <input type="submit" class="button green" value="[`Save`]">
                             </div>
                         </div>
                     </div>
+                </form>
 
-                    <input type="submit" name="save" class="button green" value="[`Save`]">
-                </div>
-            </form>
+            </div>
         </div>
 
-        <div class="clear-both"></div>
     </div>
 
     <div id="archive-confirm-dialog" style="display: none;">
@@ -138,9 +143,8 @@
             )}
         </div>
         <div class="buttons-wrapper">
-            <input type="submit" class="button gray" value="[`Archive this project`]">
-            [`or`]
-            <a href="javascript:void(0)" class="cancel">[`cancel`]</a>
+            <input type="submit" class="button brown" value="[`Archive this project`]">
+            <a href="javascript:void(0)" class="cancel button light-gray">[`Cancel`]</a>
         </div>
     </div>
 
