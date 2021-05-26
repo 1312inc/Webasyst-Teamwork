@@ -14,13 +14,6 @@
 
     {$_files_hash = md5(uniqid($task.name, true))}
 
-    $R('.t-redactor-task-edit', { 
-        'focus': true,
-        imageData: {
-            task_uuid: '{$task_uuid}'
-        }
-    });
-
     window.taskEdit = new TaskEdit({
         $task: $(".t-task-page-wrapper"),
         task_id: {$task.id|default:'null'},
