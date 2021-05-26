@@ -149,9 +149,9 @@
         },
         _update: function () {
             var that = this;
-            
+
             this.$list.html("");
-            
+
             for (var term of this.data) {
                 var $item = $R.dom('<a href="#">');
                 $item.html(term);
@@ -214,7 +214,7 @@
         _replace: function (e) {
             var $item = $R.dom(e);
             var key = $item.attr("data-key");
-            var replacement = this.tagsHandleTrigger + key + " ";
+            var replacement = "<span class=\"redactor-tag\">" + this.tagsHandleTrigger + key + "</span> ";
 
             var marker = this.marker.insert("start");
             var $marker = $R.dom(marker);
@@ -224,6 +224,11 @@
 
             currentText = currentText.replace(re, "");
             current.textContent = currentText;
+
+            if (current.parentElement.className === 'redactor-tag') {
+                var $node = $R.dom(current.parentElement);
+                $node.unwrap();
+            }
 
             $marker.before(replacement);
 
