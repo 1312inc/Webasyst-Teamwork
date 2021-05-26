@@ -26,3 +26,12 @@
     color: #fff !important;
     background-color: #449aef !important;
 }
+
+.redactor-box .redactor-tag {
+    color: var(--chips-tags-link-color);
+    background: var(--chips-tags-background-color);
+    border-radius: .25em;
+    padding: .375em .5em;
+    font-weight: 500;
+    margin-right: .25em;
+}
