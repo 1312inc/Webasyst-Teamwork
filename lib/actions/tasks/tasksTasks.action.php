@@ -61,8 +61,13 @@ class tasksTasksAction extends waViewAction
         );
 
         $project_id = null;
-        if ($c->getType() == 'project' && !empty($collection_info['id'])) {
+        if ($c->getType() === tasksCollection::HASH_PROJECT && !empty($collection_info['id'])) {
             $project_id = $collection_info['id'];
+        }
+
+        $scopeId = null;
+        if ($c->getType() === tasksCollection::HASH_SCOPE && !empty($collection_info['id'])) {
+            $scopeId = $collection_info['id'];
         }
 
         $this->view->assign(array(
@@ -87,6 +92,15 @@ class tasksTasksAction extends waViewAction
             'backend_tasks_hooks' => $backend_tasks_hooks,
             'tags_cloud'          => self::getTagsCloud($project_id),
             'statuses'            => self::getStatusFilterType(),
+
+            'show_settings' => wa()->getUser()->isAdmin('tasks') && in_array(
+                    $c->getType(),
+                    [tasksCollection::HASH_PROJECT, tasksCollection::HASH_SCOPE],
+                    true
+                ),
+            'settings_url' => $project_id
+                ? "project/$project_id/"
+                : ($scopeId ? "scope/$scopeId/" : ''),
         ));
     }
 

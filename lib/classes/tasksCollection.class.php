@@ -12,6 +12,8 @@ class tasksCollection
     public const HASH_OUTBOX = 'outbox';
     public const HASH_STATUS = 'status';
     public const HASH_ID = 'id';
+    public const HASH_PROJECT = 'project';
+    public const HASH_SCOPE = 'scope';
 
     protected $filtered = false;
     protected $prepared;
