@@ -472,11 +472,16 @@ class tasksConfig extends waAppConfig
 
             $teamCounts = $countService->getTeamCounts($user);
             $userCount = $teamCounts[$user->getId()] ?? ['count' => 0, 'total' => 0];
+            $hiddenCount = $countService->getHiddenCount($user);
             if ($userCount['total'] == $userCount['count']) {
-                return $userCount['count'] - $countService->getHiddenCount($user);
+                $inboxUrgentCount = $userCount['count'] - $hiddenCount;
+            } else {
+                $inboxUrgentCount = $userCount['count'];
             }
 
-            return $userCount['count'];
+            return $inboxUrgentCount && $inboxUrgentCount != ($userCount['total'] - $hiddenCount)
+                ? $inboxUrgentCount
+                : null;
         } catch (Exception $exception) {
             // silence
         }
