@@ -345,6 +345,29 @@ class tasksHelper
         return $data;
     }
 
+    public static function getNameFormat()
+    {
+        if (!self::$static_cache['format_name']) {
+            $formatNameFromSystem = (new waAppSettingsModel())->get('webasyst', 'user_name_display');
+            if ($formatNameFromSystem) {
+                $formatNameFromSystem = explode(',', $formatNameFromSystem);
+                $format_name = array_combine($formatNameFromSystem, array_fill(0, count($formatNameFromSystem), true));
+            } else {
+                $format_name = wa('tasks')->getConfig()->getOption('format_name');
+                if (!$format_name) {
+                    $format_name = [
+                        'firstname' => true,
+                        'middlename' => false,
+                        'lastname' => true,
+                    ];
+                }
+            }
+            self::$static_cache['format_name'] = $format_name;
+        }
+
+        return self::$static_cache['format_name'];
+    }
+
     /**
      * @param array|waContact $contact
      *
@@ -355,14 +378,8 @@ class tasksHelper
         if (!is_array($contact) && !($contact instanceof waContact)) {
             return '';
         }
-        $format_name = wa('tasks')->getConfig()->getOption('format_name');
-        if (!$format_name) {
-            $format_name = [
-                'firstname' => true,
-                'middlename' => false,
-                'lastname' => true,
-            ];
-        }
+
+        $format_name = self::getNameFormat();
 
         $name = [];
         foreach ($format_name as $part => $status) {
