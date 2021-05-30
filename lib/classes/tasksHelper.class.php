@@ -347,7 +347,7 @@ class tasksHelper
 
     public static function getNameFormat()
     {
-        if (!self::$static_cache['format_name']) {
+        if (!isset(self::$static_cache['format_name'])) {
             $formatNameFromSystem = (new waAppSettingsModel())->get('webasyst', 'user_name_display');
             if ($formatNameFromSystem) {
                 $formatNameFromSystem = explode(',', $formatNameFromSystem);
