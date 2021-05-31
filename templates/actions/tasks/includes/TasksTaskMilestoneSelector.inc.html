@@ -17,7 +17,7 @@
                     <li class="t-nav-item js-milestones-item js-dropdown-menu-item"
                         data-value="{$m.id}"
                         data-project-id="{$m.project_id}">
-                            <a class="set-custom-select js-milestones-select-item t-milestones-custom-select"
+                            <a class="set-custom-select js-milestones-select-item t-milestones-custom-select {if $task.milestone_id == $m.id}selected{/if}"
                                href="javascript:void(0);" data-value="{$m.id}">
                                 <span>
                                     {$m.name|escape}
@@ -38,6 +38,9 @@
                             items: ".menu > li > a",
                             change: function(event, target, dropdown) {
                                 $("[name=\"data[milestone_id]\"]").val( $(target).data("value") );
+                            },
+                            ready: function (dropdown) {
+                                $("#milestoneSelect").find('.menu > li a.selected').trigger('click');
                             }
                         });
                     })(jQuery);
