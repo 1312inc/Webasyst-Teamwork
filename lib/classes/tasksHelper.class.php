@@ -303,7 +303,12 @@ class tasksHelper
                     $data[$contact_id]['is_active'] = false;
                 }
 
-                uasort($data, wa_lambda('$a,$b', 'return strcmp($a["name"],$b["name"]);'));
+                uasort(
+                    $data,
+                    static function ($a, $b) {
+                        return strcmp($a["name"], $b["name"]);
+                    }
+                );
 
                 $contact_ids = $log_model->getRelatedContactIds(wa()->getUser()->getId(), $project_id);
                 if ($contact_ids) {
@@ -314,7 +319,14 @@ class tasksHelper
                             $tmp[$contact_id]['is_active'] = true;
                         }
                     }
-                    uasort($tmp, wa_lambda('$a,$b', 'return strcmp($a["name"],$b["name"]);'));
+
+                    uasort(
+                        $tmp,
+                        static function ($a, $b) {
+                            return strcmp($a["name"], $b["name"]);
+                        }
+                    );
+
                     foreach ($data as $contact_id => $contact) {
                         if (!isset($tmp[$contact_id])) {
                             $tmp[$contact_id] = $contact;
@@ -329,12 +341,13 @@ class tasksHelper
         } else {
             $data = $contacts;
         }
+
         if ($only_active) {
             $contact_ids = $log_model->getContactIds();
             $result = [];
             $user_id = wa()->getUser()->getId();
             foreach ($data as $contact_id => $c) {
-                if (in_array($contact_id, $contact_ids) && $contact_id != $user_id) {
+                if (in_array($contact_id, $contact_ids) && $contact_id != $user_id && $c['is_user'] != -1) {
                     $result[$contact_id] = $c;
                 }
             }
