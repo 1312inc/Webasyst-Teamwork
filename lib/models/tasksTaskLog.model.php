@@ -346,7 +346,7 @@ class tasksTaskLogModel extends waModel
         }
         if ($contacts) {
             $collection = new waContactsCollection('id/'.implode(',', array_keys($contacts)));
-            $contacts = $collection->getContacts('firstname,middlename,lastname,name,company,photo_url');
+            $contacts = $collection->getContacts('login,firstname,middlename,lastname,name,company,photo_url');
             foreach ($contacts as &$c) {
                 $c['name'] = tasksHelper::formatName($c);
             }

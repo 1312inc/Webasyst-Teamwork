@@ -373,7 +373,7 @@ class tasksHelper
      *
      * @return string
      */
-    public static function formatName($contact)
+    public static function formatName($contact): string
     {
         if (!is_array($contact) && !($contact instanceof waContact)) {
             return '';
