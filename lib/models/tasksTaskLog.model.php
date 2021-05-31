@@ -3,12 +3,12 @@ class tasksTaskLogModel extends waModel
 {
     protected $table = 'tasks_task_log';
 
-    const ACTION_TYPE_CREATE = 'create';
-    const ACTION_TYPE_COMMENT = 'comment';
-    const ACTION_TYPE_FORWARD = 'forward';
-    const ACTION_TYPE_RETURN = 'return';
-    const ACTION_TYPE_EDIT = 'edit';
-    const ACTION_TYPE_EMPTY = '';
+    public const ACTION_TYPE_CREATE = 'create';
+    public const ACTION_TYPE_COMMENT       = 'comment';
+    public const ACTION_TYPE_FORWARD = 'forward';
+    public const ACTION_TYPE_RETURN = 'return';
+    public const ACTION_TYPE_EDIT = 'edit';
+    public const ACTION_TYPE_EMPTY = '';
 
     /**
      * @param array $data key value of DB record + some special keys
