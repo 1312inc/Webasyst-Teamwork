@@ -39,6 +39,7 @@
 .t-priority-wrapper
     position relative
     color var(--text-color)
+    padding 3px 6px
 
     &.is-low
         color var(--gray)
@@ -70,14 +71,15 @@
 
 
 .t-priority-changer-wrapper
-    $padding = 10px
     display none
     position absolute
-    top -($padding/2)
-    left -($padding/2)
+    top 0
+    left 0
+    z-index 99
     width 400px
     background #fff
-    padding $padding
+    transform translateY(-100%)
+    padding 10px
     border 1px solid rgba(0,0,0,.1)
 
     &.is-shown

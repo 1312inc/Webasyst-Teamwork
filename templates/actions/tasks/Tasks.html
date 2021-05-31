@@ -1,8 +1,8 @@
 {$is_in_my_list = $list && $list.is_own && $list.found_by_id}
 
 <div class="flexbox">
-    <div class="sidebar blank width-25rem bordered-right overflow-visible">
-
+    <div class="sidebar blank width-25rem bordered-right {if $total_count < 1}overflow-visible{/if}"> 
+        
         <div class="t-main-wrapper">
 
             {$_backend_tasks_hooks = $backend_tasks_hooks|default:[]}

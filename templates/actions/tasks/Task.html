@@ -124,12 +124,12 @@
                     {task_userpics_block}
                 </div>
 
-                <div class="wide">
+                <div class="wide" style="position: relative;">
 
                     <h2 class="custom-m-0">
 
                         {* PRIORITY *}
-                        <span class="t-priority-wrapper t-priority-clickable-wrapper {ifset($_priority_class_array[$task.priority])}" title="task_id={$task.id}" title="[`Double-click to change task priority`]">
+                        <span class="t-priority-wrapper t-priority-clickable-wrapper custom-mr-12 {ifset($_priority_class_array[$task.priority])}" title="task_id={$task.id}" title="[`Double-click to change task priority`]">
                             {$task.project_id}.{$task.number}
                             {$_priority_icon}
                         </span>
@@ -169,7 +169,7 @@
                             {/if}
 
                             {* RENDER *}
-                            <span class="badge t-status-wrapper {$_status_class_array|join:" "}" style="{$_styles_array|join:""}" title="[`Status`]">
+                            <span class="badge t-status-wrapper custom-ml-12 {$_status_class_array|join:" "}" style="{$_styles_array|join:""}" title="[`Status`]">
                                 <span style="position:absolute;left:-100500px;"> (</span>
                                 {if $task.project.archive_datetime}[`Archived`]{else}{$task.status.name}{/if}
                                 <span style="position:absolute;left:-100500px;">) </span>
@@ -577,8 +577,8 @@
                 {* COMMENT LIST *}
                 <div class="t-comments-list-wrapper js-comments-list-wrapper">
                     {foreach $task.log as $l}
-                        <div class="t-comment-item-wrapper custom-mb-40" data-id="{$l.id}">
-
+                        <div class="t-comment-item-wrapper custom-mb-20 {if $l.contact_id === $l.assigned_contact_id}t-comment-item-wrapper--right{/if}" data-id="{$l.id}">
+                            
                             {$_rights_info = $l.rights_info|default:[]}
                             {$_can_edit = $_rights_info.can_edit|default:false}
                             {$_can_delete = $_rights_info.can_delete|default:false}
@@ -636,7 +636,7 @@
                                     </header>
 
                                     {if !empty($l.text)}
-                                        <div class="t-comment-content small custom-my-20">{tasksTask::formatText($l.text)}</div>
+                                        <div class="t-comment-content small custom-mt-20">{tasksTask::formatText($l.text)}</div>
                                     {/if}
 
                                     {if $l.status_changed}
