@@ -88,8 +88,8 @@
 
                 <div class="t-controls-wrapper flexbox middle space-16">
 
-                    <a class="t-favorite-link t-set-favorite" href="javascript:void(0);" title="[`Set favorite`]">
-                        <i class="fa{if empty($task.favorite)}r{else}s{/if} fa-star"></i>
+                    <a class="t-favorite-link t-set-favorite {if empty($task.favorite)}text-light-gray{else}text-yellow{/if}" href="javascript:void(0);" title="[`Set favorite`]">
+                        <i class="fas fa-star"></i>
                     </a>
 
                     <span class="t-date-wrapper nowrap small" title="{$time_since_update_str}">{$time_since_update_str}</span>
