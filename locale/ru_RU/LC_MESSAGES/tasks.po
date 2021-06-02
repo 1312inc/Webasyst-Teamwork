@@ -761,13 +761,13 @@ msgid "forwarded several tasks"
 msgstr "перенаправил несколько задач"
 
 msgid "marked several tasks as done"
-msgstr "отметил несколько задач как выполненные"
+msgstr "отметил несколько задач как закрытые"
 
 msgid "Open"
-msgstr "В работе"
+msgstr "Новые"
 
 msgid "Closed"
-msgstr "Завершено"
+msgstr "Закрытые"
 
 msgid "In %d day"
 msgid_plural "In %d days"

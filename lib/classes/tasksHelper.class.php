@@ -111,7 +111,7 @@ class tasksHelper
             $item['icon_url'] = false;
             $item['icon_class'] = $item['icon'];
             if (wa()->whichUI() == '2.0') {
-                $item['icon_html'] = '<i class="fas fa-briefcase"' . $title . '></i>';
+                $item['icon_html'] = '<i class="fas fa-tasks"' . $title . '></i>';
             } else {
                 $item['icon_html'] = '<i class="icon16 ' . $item['icon'] . '"' . $title . '></i>';
             }
@@ -157,7 +157,7 @@ class tasksHelper
             $statuses[-1] = [
                 'id' => -1,
                 'name' => _w('Closed'),
-                'button' => _w('Closed'),
+                'button' => _w('Close'),
                 'action_name' => _w('done'),
                 'special' => 1,
                 'icon' => 'done-bw',
@@ -208,16 +208,16 @@ class tasksHelper
                 {
                     $status['view']['button_html'] = '<a ' .
                         'href="javascript:void(0);" ' .
-                        'class="button rounded t-control-link t-change-status-link gray" data-status-id="' . $status['id'] . '"' .
+                        'class="button rounded t-control-link large t-change-status-link gray" data-status-id="' . $status['id'] . '"' .
                         // 'style="background-color:#'.$color.'"'.
-                        '><span class="t-change-status-link-label"><span class="smaller"><i class="fas fa-check"></i></span> ' . htmlspecialchars($status['button']) . '</span></a>';
+                        '><span class="t-change-status-link-label"><span class="small"><i class="fas fa-check"></i></span> ' . htmlspecialchars($status['button']) . '</span></a>';
                 }
                 else
                 {
                     $status['view']['button_html'] = '<a ' .
                         'href="javascript:void(0);" ' .
-                        'class="button rounded t-control-link t-change-status-link ' . $buttonClassName . '" data-status-id="' . $status['id'] . '"' .
-                        // 'style="background-color:#'.$color.'"'.
+                        'class="button rounded t-control-link large t-change-status-link ' . $buttonClassName . '" data-status-id="' . $status['id'] . '"' .
+                        'style="background-color:#'.$color.'"'.
                         '><span class="t-change-status-link-label">' . htmlspecialchars($status['button']) . '</span></a>';
                 }
             } else {
