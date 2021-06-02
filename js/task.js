@@ -1635,16 +1635,15 @@ var Task = ( function($) {
 
     Task.prototype.onFavorite = function ($link) {
         var that = this,
-            $i = $link.find('[data-prefix]'),
-            value = $i.attr('data-prefix') === 'far' ? 1 : 0;
+            value = $link.hasClass('text-light-gray') ? 1 : 0;
 
         $.post('?module=tasks&action=favorite&id=' + that.task_id, {value: value}, function (response) {
             if (response.status == 'ok') {
                 $.tasks.reloadSidebar();
                 if (value) {
-                    $i.attr('data-prefix', 'fas');
+                    $link.addClass('text-yellow').removeClass('text-light-gray');
                 } else {
-                    $i.attr('data-prefix', 'far');
+                    $link.addClass('text-light-gray').removeClass('text-yellow');
                 }
             }
         });

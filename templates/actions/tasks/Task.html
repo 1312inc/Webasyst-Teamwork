@@ -80,15 +80,15 @@
                     <div class="t-controls-wrapper flexbox middle space-16">
 
 
-                        <a class="t-favorite-link t-set-favorite" href="javascript:void(0);" title="[`Set favorite`]">
-                            <i class="fa{if empty($task.favorite)}r{else}s{/if} fa-star"></i>
+                        <a class="t-favorite-link button light-gray circle t-set-favorite {if empty($task.favorite)}text-light-gray{else}text-yellow{/if}" href="javascript:void(0);" title="[`Set favorite`]">
+                            <i class="fas fa-star"></i>
                         </a>
 
                         {* EDIT & DELETE *}
                         {if $task.rights_info.can_edit|default:false}
                             <span>
                                 <a href="#/task/{$task.project_id}.{$task.number}/edit/" class="t-edit-task-link nowrap button light-gray rounded" title="[`Edit`]">
-                                    <i class="fas fa-edit"></i> [`Edit`]
+                                    <i class="fas fa-edit text-blue"></i> [`Edit`]
                                 </a>
                             </span>
                         {/if}
