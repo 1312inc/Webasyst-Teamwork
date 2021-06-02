@@ -1,8 +1,8 @@
 {$is_in_my_list = $list && $list.is_own && $list.found_by_id}
 
 <div class="flexbox">
-    <div class="sidebar blank width-25rem bordered-right {if $total_count < 1}overflow-visible{/if}"> 
-        
+    <div class="sidebar blank width-25rem bordered-right {if $total_count < 1}overflow-visible{/if}">
+
         <div class="t-main-wrapper">
 
             {$_backend_tasks_hooks = $backend_tasks_hooks|default:[]}
@@ -58,8 +58,7 @@
 
                             </a>
                             <a href="{$_task_link}" class="details">
-                                <div class="flexbox space-8">
-
+                                <div class="flexbox space-8 full-width">
 
                                     <span>
 
@@ -69,7 +68,8 @@
                                         "-1" => "is-low",
                                         "0" => "is-normal",
                                         "1" => "is-high",
-                                        "2" => "is-urgent"
+                                        "2" => "is-urgent",
+                                        "3" => "is-onfire"
                                         ]}
                                         {$_priority_icon = ""}
                                         {if !empty($task.priority)}
@@ -82,12 +82,6 @@
                                             {if $task.priority == '2'}
                                                 {$_priority_icon = "<i class=\"fas fa-exclamation-triangle\" style=\"color: orangered;\"></i>"}
                                             {/if}
-                                            {if $task.priority == '3'}
-                                                {$_priority_icon = "<i class=\"fas fa-fire\" style=\"color: black;\"></i>"}
-                                            {/if}
-                                            {if $task.priority == '4'}
-                                                {$_priority_icon = "<i class=\"fas fa-fire\" style=\"color: orangered;\"></i>"}
-                                            {/if}
                                         {/if}
 
                                         <span class="t-priority-wrapper {ifset($_priority_class_array[$task.priority])}" title="task_id={$task.id}" title="[`Double-click to change task priority`]">
@@ -96,7 +90,7 @@
                                         </span>
 
                                         {* TITLE *}
-                                        <span class="semibold">{$task.name|escape|default:"(no name)"|truncate:64}</span>
+                                        <span class="{if !empty($task.priority)&& $task.priority == '3'}bold{else}semibold{/if}">{$task.name|escape|default:"(no name)"|truncate:64}</span>
 
                                     </span>
 
@@ -150,6 +144,7 @@
 
                                     {* PREVIEW *}
                                     {$task.text|truncate:128}
+
 
                                 </p>
                             </a>

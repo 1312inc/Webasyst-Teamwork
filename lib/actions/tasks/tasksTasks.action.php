@@ -304,7 +304,7 @@ class tasksTasksAction extends waViewAction
             'hash' => 'status',
             'options' => self::getStatusFilterType($project_id),
         );
-        
+
         return $filter_types;
     }
 
@@ -321,8 +321,8 @@ class tasksTasksAction extends waViewAction
         // that means are there tasks in project assigned to current user
         if ($hash === 'inbox' && $project_items) {
             $project_ids = waUtils::getFieldValues($project_items, 'id');
-            $sql = "SELECT DISTINCT `project_id` 
-                    FROM `tasks_task` 
+            $sql = "SELECT DISTINCT `project_id`
+                    FROM `tasks_task`
                     WHERE `project_id` IN (:project_ids) AND `assigned_contact_id` = :contact_id AND `status_id` != -1";
             $result = $project_model->query($sql, array(
                 'project_ids' => $project_ids,
@@ -418,7 +418,8 @@ class tasksTasksAction extends waViewAction
                         'name'    => 'user-assigned',
                         'title'   => sprintf_wp("%s's task list is empty", htmlspecialchars($c->getName())),
                         'message' => sprintf_wp('No tasks are assigned to %s right now.', htmlspecialchars($c->getName())),
-                        'img_url' => $c->getPhoto(192, 192),
+                        //'img_url' => $c->getPhoto(192, 192),
+                        'img_url' => wa()->getAppStaticUrl('tasks').'img/notice/welcome.png',
                     );
                 }
             } elseif ($type == 'outbox') {

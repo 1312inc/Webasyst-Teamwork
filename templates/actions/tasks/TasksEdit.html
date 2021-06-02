@@ -242,7 +242,7 @@
 
                 {* ASSIGN *}
                 <div class="t-form-line field t-team-list-wrapper">
-                    <div class="name">[`Assign to`]</div>
+                    <div class="name for-checkbox">[`Assign to`]</div>
                     <div class="value">
                         <ul class="menu-v js-task-users-list">
                             {$_count = 0}
@@ -291,7 +291,7 @@
 
 
                 <div class="t-form-line field t-due-date-wrapper">
-                    <div class="name">[`Due date`]</div>
+                    <div class="name for-input">[`Deadline`]</div>
                     <div class="value">
                         <input type="text" class="t-datepicker-due-date">
                         <input type="hidden" name="data[due_date]" value="{$task.due_date|escape}"><i class="far fa-calendar-alt"></i>
@@ -320,29 +320,7 @@
                 <div class="t-errors-block js-errors-block"></div>
                 <div class="t-form-line t-buttons-block">
                     <input class="button green t-save-task-link" type="submit" value="{if !empty($task.id)}[`Save task`]{else}[`Create task`]{/if}">
-                    &nbsp;[`or`]&nbsp;
-                    <a class="t-close-link" href="javascript:void(0);">[`cancel`]</a>
-
-                    {*
-                    <ul class="menu-h notice-list-wrapper">
-                        <li>
-                            <label>
-                                <input type="checkbox" name="data[email_notice]">
-                                <i class="icon16 email"></i>
-                                [`Email`]
-                            </label>
-                        </li>
-                        <li>
-                            <label>
-                                <input type="checkbox" name="data[sms_notice]">
-                                <i class="icon16 email"></i>
-                                [`SMS`]
-                            </label>
-                        </li>
-                    </ul>
-
-                    <a class="more-fields-link show-more-fields inline-link" href="javascript:void(0);"><b><i>[`More fields`]</i></b><i class="icon10 darr"></i></a>
-                    *}
+                    <a class="t-close-link button light-gray custom-ml-12" href="javascript:void(0);">[`Cancel`]</a>
 
                     <!-- plugin hook: 'backend_task_edit.%plugin_id.buttons' -->
                     {* @event backend_task_edit.%plugin_id%.buttons *}

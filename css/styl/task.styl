@@ -38,8 +38,9 @@
 
 .t-priority-wrapper
     position relative
-    color var(--text-color)
-    padding 3px 6px
+    color var(--text-color-strong)
+    border-radius 0.25em
+    margin-right 0.125em
 
     &.is-low
         color var(--gray)
@@ -48,6 +49,7 @@
 
     &.is-high
         font-weight bold
+        color var(--text-color-stronger)
 
         svg
             color gold
@@ -56,31 +58,62 @@
         font-weight bold
         color orangered
 
-    .icon16
-        vertical-align baseline
-        margin: 0 0 0 3px
-        position: relative;
-        top: 1px;
+    &.is-onfire
+        font-weight bold
+        color white
+        background #f22 url('../img/priority-fire.gif') no-repeat !important
+        background-size 13em 13em !important
+        background-position center -6em !important
+        padding 0.125em 0.25em
+        margin-right 0.25em
 
     &.t-priority-clickable-wrapper
-        background var(--light-gray)
+        background var(--background-color-input-solid)
+        border 0.125em solid transparent
+        padding 0 0.25em
+        transition 0.1s
+        margin-right 0.5rem
+
+        &.t-white
+            background: $white_color_strong;
+
+        &.t-gray
+            background: $gray_color_strong;
+
+        &.t-green
+            background: $green_color_strong;
+
+        &.t-blue
+            background: $blue_color_strong;
+
+        &.t-purple
+            background: $purple_color_strong;
+
+        &.t-red
+            background: $gred_color_strong;
+
+        &.t-yellow
+            background: $yellow_color_strong;
+
+        .icon
+            margin-right 0.375em
 
         &:hover
-            background var(--gray)
+            border-color var(--border-color-input)
 
 
 
 .t-priority-changer-wrapper
     display none
     position absolute
-    top 0
+    top -5px
     left 0
     z-index 99
     width 400px
     background #fff
-    transform translateY(-100%)
-    padding 10px
-    border 1px solid rgba(0,0,0,.1)
+    padding 0.625rem 1rem
+    border-radius 0.25em
+    box-shadow 0 1rem 2rem -0.25rem rgba(0,0,0,0.2), 0 0.5rem 1rem -0.75rem rgba(0,0,0,0.4)
 
     &.is-shown
         display block
@@ -89,6 +122,24 @@
 .t-tags-wrapper
     .is-template
         display none
+
+.t-task-header
+    .t-menu-name
+        margin-top 0.25rem
+
+        .icon
+            margin-right 0.75rem
+
+            .size-20
+                width 1.25rem
+                height 1.25rem
+                margin-top 0.125rem
+
+.t-completed-seal-background
+    background url("../img/done-seal.png") no-repeat 350px 350px;
+
+
+
 
 
 
@@ -119,6 +170,7 @@ $highlighted_color = #ffa;
         &:first-child
             border-top: 0
 
+/******
         &.t-white
             background: $white_color;
 
@@ -191,6 +243,7 @@ $highlighted_color = #ffa;
                     .t-task-header
                         .t-controls-wrapper
                             background: $highlighted_color;
+
 
         &.is-archived
             $archived_color = #888
@@ -623,7 +676,7 @@ $highlighted_color = #ffa;
                             right 0
                             width $size
                             height $size
-                            background transparent url("../img/icons/done-icon.png") no-repeat;
+                            background transparent url("../img/legacy/icons/done-icon.png") no-repeat;
                             background-size $size
                             opacity .05
 
@@ -1137,7 +1190,7 @@ $highlighted_color = #ffa;
         right 14px
         width $size
         height $size
-        background transparent url("../img/icons/done-icon.png") no-repeat;
+        background transparent url("../img/notice/welcome.png") no-repeat;
         background-size $size
         opacity .05
 

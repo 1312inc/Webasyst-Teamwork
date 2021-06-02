@@ -204,11 +204,22 @@ class tasksHelper
             }
 
             if (wa()->whichUI() == '2.0') {
-                $status['view']['button_html'] = '<a ' .
-                    'href="javascript:void(0);" ' .
-                    'class="button t-control-link t-change-status-link ' . $buttonClassName . '" data-status-id="' . $status['id'] . '"' .
-                    // 'style="background-color:#'.$color.'"'.
-                    '><span class="t-change-status-link-label">' . htmlspecialchars($status['button']) . '</span></a>';
+                if ($status['id'] == -1)
+                {
+                    $status['view']['button_html'] = '<a ' .
+                        'href="javascript:void(0);" ' .
+                        'class="button rounded t-control-link t-change-status-link gray" data-status-id="' . $status['id'] . '"' .
+                        // 'style="background-color:#'.$color.'"'.
+                        '><span class="t-change-status-link-label"><span class="smaller"><i class="fas fa-check"></i></span> ' . htmlspecialchars($status['button']) . '</span></a>';
+                }
+                else
+                {
+                    $status['view']['button_html'] = '<a ' .
+                        'href="javascript:void(0);" ' .
+                        'class="button rounded t-control-link t-change-status-link ' . $buttonClassName . '" data-status-id="' . $status['id'] . '"' .
+                        // 'style="background-color:#'.$color.'"'.
+                        '><span class="t-change-status-link-label">' . htmlspecialchars($status['button']) . '</span></a>';
+                }
             } else {
                 $status['view']['button_html'] = '<a ' .
                     'href="javascript:void(0);" ' .
@@ -442,11 +453,14 @@ class tasksHelper
     {
         $style = [];
         if (!empty($status['params']['title_color'])) {
-            $color = $status['params']['title_color'];
+            $color = '#'.$status['params']['title_color'];
         } else {
-            $color = '000';
+            if (wa()->whichUI() == '1.3')
+                $color = '#000';
+            else
+                $color = 'var(--text-color-strongest)';
         }
-        $style[] = 'color:#' . htmlspecialchars($color);
+        $style[] = 'color:' . htmlspecialchars($color);
         if (!empty($status['params']['title_style_italic'])) {
             $style[] = 'font-style:italic';
         }
@@ -717,9 +731,9 @@ class tasksHelper
         } elseif ($days_left == 1) {
             return _w('Tomorrow');
         } elseif ($days_left > 0) {
-            return _w("%d day left", "%d days left", $days_left);
+            return _w("In %d day", "In %d days", $days_left);
         } else {
-            return _w("%d day overdue", "%d days overdue", abs($days_left));
+            return _w("%d day ago", "%d days ago", abs($days_left));
         }
     }
 
@@ -728,7 +742,7 @@ class tasksHelper
         if ($days_left < 0) {
             return 'red';
         } elseif ($days_left == 0) {
-            return 'orange';
+            return 'yellow';
         } else {
             return 'green';
         }
