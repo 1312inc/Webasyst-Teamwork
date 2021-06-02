@@ -146,37 +146,35 @@ $border_color = #ddd;
 //     border-bottom: 1px solid rgba(0,0,0,0.13);
 
 .t-project-settings-colorbox
-    div
-        a
-            display: block;
-            padding: 10px;
-            line-height: 0;
-            border: 1px solid rgba(127,127,127,.2);
+    label
+        display: block
+        padding: 0.75rem
+        line-height: 0
+        border-radius 0.25rem
+        border 2px solid transparent
 
         &.t-white
-            a
-                background: $white_color_strong;
+            background: $white_color;
+            border-color: $white_color_strong;
 
         &.t-gray
-            a
-                background: $gray_color_strong;
+            background: $gray_color_strong;
 
         &.t-yellow
-            a
-                background: $yellow_color_strong;
+            background: $yellow_color_strong;
 
         &.t-green
-            a
-                background: $green_color_strong;
+            background: $green_color_strong;
 
         &.t-blue
-            a
-                background: $blue_color_strong;
+            background: $blue_color_strong;
 
         &.t-red
-            a
-                background: $red_color_strong;
+            background: $red_color_strong;
 
         &.t-purple
-            a
-                background: $purple_color_strong;
+            background: $purple_color_strong;
+
+.t-project-workflow-box
+    background var(--background-color)
+    border-radius 0.5rem

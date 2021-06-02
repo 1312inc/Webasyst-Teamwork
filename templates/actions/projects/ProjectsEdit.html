@@ -50,85 +50,111 @@
 
                         <div class="field-group custom-mb-24">
                             <div class="field">
-                                <div class="name">
+                                <div class="name custom-pt-8">
                                     [`Color`]
                                 </div>
                                 <div class="value">
                                     <div class="flexbox space-12 t-project-settings-colorbox">
                                         {foreach $colors as $color}
-                                            <div class="{$color}"><a href="javascript:void(0)">
+                                            <label class="{$color}">
                                                 <input type="radio" name="project[color]" value="{$color|escape}"{if ($project.color == $color)} checked{/if}>
-                                            </a></div>
+                                            </label>
                                         {/foreach}
                                     </div>
+                                    <p class="hint">[`Highlight color for the main task list and the kanban board.`]</p>
                                 </div>
                             </div>
                         </div>
 
                         <div class="field-group custom-mb-24">
                             <div class="field">
-                                <div class="name">
+                                <div class="name for-input">
                                     [`Icon`]
                                 </div>
                                 <div class="value">
-                                    <div class="flexbox wrap space-12" id="project-icon-selector">
-                                        {foreach $icons as $icon}
-                                            <div class="t-project-icon{if ($project.icon_class == $icon)} selected{/if}"><a href="javascript:void(0)">
-                                                <i class="fas fa-briefcase"></i>
-                                            </a></div>
-                                        {/foreach}
-                                    </div>
+                                    {*
+                                        LEGACY
+                                        <div class="flexbox wrap space-12" id="project-icon-selector">
+                                            {foreach $icons as $icon}
+                                                <div class="t-project-icon{if ($project.icon_class == $icon)} selected{/if}"><a href="javascript:void(0)">
+                                                    <i class="fas fa-briefcase"></i>
+                                                </a></div>
+                                            {/foreach}
+                                        </div>
+                                    *}
                                     <input type="hidden" name="project[icon]" value="{$project.icon}">
 
-                                    <span class="smaller">[`Or enter image URL (image will be scaled to 16x16px)`]:</span><br>
                                     <input id="t-icon-url" type="text" value="{$project.icon_url|escape}" name="icon_url" class="long">
+                                    <p class="hint">[`Image URL to be used as a project icon all around.`]</p>
+
                                 </div>
                             </div>
                         </div>
 
                         <div class="field-group">
-                            <div class="field">
-                                <div class="name">[`Workflow`]</div>
-                                {foreach $workflows as $wf_id => $wf}
-                                    <div class="value">
+
+                            {foreach $workflows as $wf_id => $wf}
+                                <div class="field">
+                                    <div class="name custom-pt-12">{if $wf@iteration == 1}[`Workflow`]{/if}</div>
+                                    <div class="value t-project-workflow-box box">
                                         <label>
-                                            <input type="radio" name="workflow" value="{$wf_id}"{if $wf.selected} checked{/if}>
+                                            <span class="wa-radio">
+                                                <input type="radio" name="workflow" value="{$wf_id}"{if $wf.selected} checked{/if}>
+                                                <span></span>
+                                            </span>
                                             {foreach $wf.statuses as $status}
-                                                {if $status.button}
-                                                    {$wa->tasks->statusButton($status)}
-                                                    <span class="t-control-link t-forward-link"></span>
-                                                {/if}
                                                 <span class="t-status-name">{$status.name|escape}</span>
-                                                <span class="t-control-link t-forward-link"></span>
+                                                {if $status.id >= 0}
+                                                    <i class="fas fa-angle-right text-light-gray"></i>
+                                                {/if}
                                             {/foreach}
-                                            <i class="icon16 archive"></i>
                                         </label>
                                         {if $wf.project.id != $project.id}
-                                            <span class="hint" style="margin-left:2em;">{$wf.project.name|escape}</span>
+                                            <span class="hint custom-ml-8">{sprintf('[`Similar to %s`]', $wf.project.name|escape)}</span>
                                         {/if}
                                     </div>
-                                {/foreach}
-                                <div class="value">
+                                </div>
+                            {/foreach}
+
+                            <div class="field">
+                                <div class="name"></div>
+                                <div class="value box custom-pt-4">
                                     <label>
-                                        <input type="radio" name="workflow" value="custom"{if !$workflows} checked{/if}>
+                                        <span class="wa-radio">
+                                            <input type="radio" name="workflow" value="custom"{if !$workflows} checked{/if}>
+                                            <span></span>
+                                        </span>
                                         [`Customize...`]
                                     </label>
-                                </div>
-                                <div class="hidden" id="customize-project-workflow">
-                                    {foreach $statuses as $s}
-                                        <div class="value">
-                                            <label>
-                                                <input type="checkbox" name="custom_workflow[{$s.id}]" value="1"{if !empty($project_statuses[$s.id])} checked{/if}{if $s.special} disabled{/if}>
-                                                {$s.name|escape}
-                                            </label>
-                                        </div>
-                                    {/foreach}
+
+                                    <div class="hidden" id="customize-project-workflow">
+                                        <ul class="menu">
+                                            {foreach $statuses as $s}
+                                            <li>
+                                                <label class="item">
+                                                    <span class="icon">
+                                                    <span class="wa-checkbox">
+                                                        <input type="checkbox" name="custom_workflow[{$s.id}]" value="1"{if !empty($project_statuses[$s.id])} checked{/if}{if $s.special} disabled{/if} class="custom-mr-8">
+                                                        <span>
+                                                            <span class="icon">
+                                                                <i class="fas fa-check"></i>
+                                                            </span>
+                                                        </span>
+                                                    </span>
+                                                    </span>
+                                                    <span>{$s.name|escape}</span>
+                                                </label>
+                                            </li>
+                                            {/foreach}
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
+
                         </div>
                         <div class="field custom-mt-32">
                             <div class="value submit">
-                                <input type="submit" class="button green" value="[`Save`]">
+                                <input type="submit" class="button" value="[`Save`]">
                             </div>
                         </div>
                     </div>
@@ -162,7 +188,7 @@
             $.tasks.forceHash('#/settings/project/{$project.id}/');
         {/if}
         {if !empty($saved)}
-            
+
             {if $project.id}
                 // redirect to the project
                 window.location.hash = '#/tasks/project/{$project.id}/';
@@ -241,49 +267,51 @@
         })();
 
         // Change background when color selector changes
-        (function() {
-            var $wrapper = $("#t-project-page"),
-                $colorBox = $wrapper.find(".t-project-settings-colorbox"),
-                active_class = false;
-
-            // Event
-            $colorBox.on("click", "a", function() {
-                var color = $(this).find('input').attr('checked', true).val();
-                setColor( color );
-                return true;
-            });
-
-            // First Init
-            $colorBox.find("input:radio:checked").closest("a").click();
-
-            function setColor( color ) {
-                if (!active_class || color != active_class) {
-                    if (active_class) {
-                        $wrapper.removeClass(active_class);
-                    }
-                    $wrapper.addClass(color);
-                    active_class = color;
-                }
-            }
-        })();
+        // LEGACY
+        // (function() {
+        //     var $wrapper = $("#t-project-page"),
+        //         $colorBox = $wrapper.find(".t-project-settings-colorbox"),
+        //         active_class = false;
+        //
+        //     // Event
+        //     $colorBox.on("click", "a", function() {
+        //         var color = $(this).find('input').attr('checked', true).val();
+        //         setColor( color );
+        //         return true;
+        //     });
+        //
+        //     // First Init
+        //     $colorBox.find("input:radio:checked").closest("a").click();
+        //
+        //     function setColor( color ) {
+        //         if (!active_class || color != active_class) {
+        //             if (active_class) {
+        //                 $wrapper.removeClass(active_class);
+        //             }
+        //             $wrapper.addClass(color);
+        //             active_class = color;
+        //         }
+        //     }
+        // })();
 
         // Project icon selector
-        (function() {
-            var $wrapper = $('#project-icon-selector');
-            var $hidden_input = $wrapper.closest('.field').find('[name="project[icon]"]');
-            var $text_input = $wrapper.closest('.field').find('[name="icon_url"]');
-            $wrapper.on('click', 'a', function() {
-                var $i = $(this).find('i');
-                $i.closest('li').addClass('selected').siblings('.selected').removeClass('selected');
-                $hidden_input.val($i.attr('class').replace('icon16 ', ''));
-                $text_input.val('');
-            });
-
-            $text_input.on('keypress', function() {
-                $wrapper.children('.selected').removeClass('selected');
-                $hidden_input.val('');
-            });
-        })();
+        // LEGACY
+        // (function() {
+        //     var $wrapper = $('#project-icon-selector');
+        //     var $hidden_input = $wrapper.closest('.field').find('[name="project[icon]"]');
+        //     var $text_input = $wrapper.closest('.field').find('[name="icon_url"]');
+        //     $wrapper.on('click', 'a', function() {
+        //         var $i = $(this).find('i');
+        //         $i.closest('li').addClass('selected').siblings('.selected').removeClass('selected');
+        //         $hidden_input.val($i.attr('class').replace('icon16 ', ''));
+        //         $text_input.val('');
+        //     });
+        //
+        //     $text_input.on('keypress', function() {
+        //         $wrapper.children('.selected').removeClass('selected');
+        //         $hidden_input.val('');
+        //     });
+        // })();
 
         $('#content input:visible:first').focus();
 
