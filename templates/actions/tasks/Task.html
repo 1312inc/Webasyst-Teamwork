@@ -239,7 +239,7 @@
                                         {if $_due_hint}
                                             <span class="small">{$_due_hint}</span>
                                         {/if}
-                                    {elseif $_milestone}
+                                    {elseif !$_due_date || $_milestone}
                                         [`No deadline`]
                                     {else}
                                         [`No milestone`]
@@ -369,7 +369,7 @@
                 {* PRIMARY ACTION BUTTONS *}
                 <div class="t-task-controls flexbox wrap space-12 full-width">
                     <div>
-                        <a href="javascript:void(0);" class="t-control-link button light-gray rounded t-return-link" title="[`Return`]"> <i class="fas fa-arrow-left"></i> [`Return`]</a>
+                        <a href="javascript:void(0);" class="t-control-link button light-gray large rounded t-return-link" title="[`Return`]"> <i class="fas fa-arrow-left"></i> [`Return`]</a>
                     </div>
                     <div class="wide">
                         {$task->buttonHtml()}
@@ -378,7 +378,7 @@
                         {/if}
                     </div>
                     <div>
-                        <a href="javascript:void(0);" class="t-control-link button light-gray rounded t-forward-link" title="[`Forward`]"> <i class="fas fa-arrow-right"></i> [`Forward`]</a>
+                        <a href="javascript:void(0);" class="t-control-link button light-gray large rounded t-forward-link" title="[`Forward`]"> <i class="fas fa-arrow-right"></i> [`Forward`]</a>
                     </div>
                 </div>
 
@@ -683,9 +683,9 @@
                                     </a>
                                 </div>
                                 <div class="details">
-                                    <header class="t-comment-header flexbox wrap middle space-8 custom-mb-8">
+                                    <header class="t-comment-header flexbox wrap middle space-8">
                                         <span class="t-comment-author">
-                                            <a href="{if !empty($l.contact.id)}{tasksHelper::getProfileURL($l.contact.id)}{else}javascript:void(0);{/if}">{$l.contact.name|escape}</a>
+                                            <a href="{if !empty($l.contact.id)}#/tasks/assigned/{$l.contact.id}/{* tasksHelper::getProfileURL($l.contact.id) *}{else}javascript:void(0);{/if}" class="bold">{$l.contact.name|escape}</a>
                                         </span>
                                         <span class="t-comment-action small">{$l.action_name}</span>
                                         <span class="t-comment-date small gray">{$l.create_datetime|wa_datetime:"humandatetime"}</span>

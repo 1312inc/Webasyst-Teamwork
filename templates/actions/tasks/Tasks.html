@@ -137,7 +137,7 @@
 
                                         {* RENDER *}
                                         <span class="badge t-status-wrapper {$_status_class_array|join:" "}" style="{$_styles_array|join:""}" title="[`Status`]">
-                                            {if $task.status_id < 0}<span class="smaller"><i class="fas fa-check"></i></span>{/if}
+                                            {if $task.status_id < 0}<span class="small"><i class="fas fa-check"></i></span>{/if}
                                             {if $task.project.archive_datetime}[`Archived`]{else}{$task.status.name}{/if}
                                         </span>
                                     {/if}
