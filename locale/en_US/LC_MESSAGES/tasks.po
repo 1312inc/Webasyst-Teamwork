@@ -713,13 +713,13 @@ msgstr ""
 msgid "Closed"
 msgstr ""
 
-msgid "%d day left"
-msgid_plural "%d days left"
+msgid "In %d day"
+msgid_plural "In %d days"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%d day overdue"
-msgid_plural "%d days overdue"
+msgid "%d day ago"
+msgid_plural "%d days ago"
 msgstr[0] ""
 msgstr[1] ""
 

@@ -32,25 +32,26 @@ label
     margin-right 0.25em
 
 .t-white
-    background: #fff;
+    background: $white_color;
 
 .t-gray
-    background: #ddd;
+    background: $gray_color;
 
 .t-green
-    background: #cea;
+    background: $green_color;
 
 .t-blue
-    background: #bef;
+    background: $blue_color;
 
 .t-purple
-    background: #dcf;
+    background: $purple_color;
 
 .t-red
-    background: #fcc;
+    background: $red_color;
 
 .t-yellow
-    background: #fff7aa;
+    background: $yellow_color;
+
 
 @import "header.styl";
 
@@ -126,7 +127,7 @@ label
     .t-slider-wrapper
         display table-cell
         vertical-align middle
-        width 50%
+        width 60%
 
     .t-priority-text
         text-align center
@@ -147,8 +148,8 @@ label
 
     .t-slider-wrapper
         .t-priority-slider
-            $height = 12px
-            $color = #989898
+            $height = 16px
+            $color = var(--light-gray)
 
             position relative
             width auto
@@ -170,7 +171,7 @@ label
                 background $color
 
             .ui-slider-handle
-                $width = 12px
+                $width = 16px
                 position absolute
                 top ($height/2)
                 padding 0
@@ -208,14 +209,14 @@ label
                     background #dd301c
 
             .t-ornament
-                $width = 14px
+                $width = 16px
                 position absolute
                 top ($height/2)
                 padding 0
                 width $width
                 height $width
                 margin ($width/-2) 0 0 ($width/-2)
-                border 1px solid $color
+                border 2px solid $color
                 background #fff
                 border-radius 50%
                 box-sizing border-box
@@ -241,8 +242,8 @@ label
                             position absolute
                             display block
                             background-color #fff
-                            width 12px
-                            height 12px
+                            width 20px
+                            height 20px
                             top 50%
                             left 50%
                             transform translateX(-50%) translateY(-50%)
@@ -254,14 +255,14 @@ label
 
                 &[data-value='3'].is-active
                     background url('../img/item-bullets-priority-fire.gif') no-repeat
-                    background-size 26px 26px
-                    width 26px
-                    height 26px
+                    background-size 2em 2em
+                    width 2em
+                    height 2em
                     border 0
                     border-radius 0
                     top 50%
                     margin 0
-                    transform translateX(-50%) translateY(-65%)
+                    transform translateX(-50%) translateY(-70%)
                     z-index 99
 
 // NOTICES

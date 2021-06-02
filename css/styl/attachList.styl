@@ -118,17 +118,17 @@
     .t-attach-droparea
         position relative
         padding: 16px
-        border: 1px dashed #aaa
-        border-radius 0 0 3px 3px
+        border: 2px dashed var(--light-gray)
+        border-radius 0 0 0.25rem 0.25rem
         border-top: none
         text-align center
-        background #f3f3f3
+        background var(--background-color)
         color: #aaa;
         transition background 200ms linear
         box-sizing border-box
 
         &.file-hover
-            background #ffa
+            background var(--background-color-editable)
 
         input[type="file"]
             position absolute
