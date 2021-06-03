@@ -105,7 +105,7 @@
                                     </span>
                                 </div>
 
-                                <p class="hint">
+                                <p class="hint custom-mb-8">
 
                                     {* STATUS *}
                                     {if !empty($task.status.name)}
@@ -145,8 +145,41 @@
                                     {* PREVIEW *}
                                     {$task.text|truncate:128}
 
+                                    {* HISTORY COUNTERS *}
+                                    {strip}
+                                        {$_count_comment = 0}
+                                        {$_count_action = 0}
+                                        {foreach $task.log as $_k => $_v}
+                                            {if $_v.action == 'comment'}
+                                                {$_count_comment = $_count_comment + 1}
+                                            {elseif $_v.action != 'add' && $_v.action != 'create'}
+                                                {$_count_action = $_count_action + 1}
+                                            {/if}
+                                        {/foreach}
+                                    {/strip}
+                                    <span class="nowrap bold" title="[`History &amp; Comments`]">
+                                        {if $_count_action}
+                                            <i class="fas fa-exchange-alt custom-ml-4"></i> {$_count_action}
+                                        {/if}
+                                        {if $_count_comment}
+                                            <i class="fas fa-comment custom-ml-4"></i> {$_count_comment}
+                                        {/if}
+                                    </span>
 
                                 </p>
+
+                                {* PINNED COMMENTS *}
+                                {$log_header_ids = array_unique([$task.assign_log_id, $task.comment_log_id])}
+                                {$_sort = sort($log_header_ids)}
+                                {foreach $log_header_ids as $log_id}
+                                    {if !empty($task['log'][$log_id])}
+                                        {$_l = $task.log[$log_id]}
+                                        {if $_l.text}
+                                            <div class="box custom-mb-8 t-pinned-comment blue small"><i class="icon userpic middle" style="background-image: url('{$_l.contact.photo_url}');"></i> {$_l.text|escape|truncate:255} <span class="hint nowrap">{$_l.create_datetime|wa_datetime:'humandatetime'}</span></div>
+                                        {/if}
+                                    {/if}
+                                {/foreach}
+
                             </a>
                         </li>
 
