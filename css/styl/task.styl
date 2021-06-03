@@ -138,10 +138,18 @@
 .t-completed-seal-background
     background url("../img/done-seal.png") no-repeat 350px 350px;
 
+.t-quote-wrapper
+    border-radius 1rem
 
-
-
-
+.t-task-buttons
+    background-color var(--dialog-background-color)
+    backdrop-filter blur(0.25rem)
+    position sticky
+    z-index 13
+    top 4rem
+    margin-top 1rem
+    margin-bottom 1rem
+    padding 1rem 0
 
 /******
 LEGACY -- REMOVE
@@ -807,6 +815,7 @@ $highlighted_color = #ffa;
                 .t-quote-wrapper
                     margin: 1.5em 0 0
                     padding: 1em
+                    border-r
 
                     .t-quote-header
                         .t-quote-author

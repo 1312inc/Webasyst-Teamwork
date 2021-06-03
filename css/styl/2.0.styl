@@ -168,25 +168,33 @@ h2
   &--right
     justify-content flex-end
 
-    .t-comment-item
-      flex-direction row-reverse
-
-      &.space-8 > *:not(:last-child)
-        margin-left 0.5rem
-        margin-right 0
-
   .t-comment-item
-    width 80%
-    padding 1rem
+    width 70%
     border-radius 1rem
+    padding 0.75rem
     background var(--background-color)
 
     .details
+      margin-top -0.25rem
       flex-grow 1
 
     .t-comment-content
       p:last-child
         margin-bottom 0
+
+    &.t-pinned-comment
+        background var(--highlighted-blue)
+        box-shadow 0 0.5rem 1rem -0.75rem rgba(0,0,0,0.1), 0 0.5rem 0.5rem -0.5rem rgba(0,0,0,0.2)
+
+.t-pinned-comment
+    background var(--highlighted-blue)
+    border-radius 0.25rem
+    color var(--text-color-strong) !important
+
+.t-task-embedded-block
+    padding 0.75rem 1rem
+    border-radius 1rem
+    background var(--background-color)
 
 .redactor-box.redactor-styles-on
     border-width 2px !important
