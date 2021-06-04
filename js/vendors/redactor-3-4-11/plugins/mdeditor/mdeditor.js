@@ -50,15 +50,18 @@ md.set({
       // add buttons to the toolbar
       this.toolbar.addButton("html", buttonCode);
       this.toolbar.addButton("quote", buttonQuote);
+    },
+    onstarted: function () {
+      var that = this,
+        startedContent = this.app.source.getStartedContent();
 
-      var startedContent = this.app.source.getStartedContent();
+      setTimeout(function () {
+        // set initial HTML in visual layer
+        that.app.source.setCode(md.render(startedContent));
 
-      // set initial HTML in visual layer
-      this.app.source.setCode(md.render(startedContent));
-
-      // set initial md in textarea
-      this.app.source.getElement().val(startedContent);
-
+        // set initial md in textarea
+        that.app.source.getElement().val(startedContent);
+      }, 0);
     },
     toggleCode: function () {
       switch (this.app.selection.getElement().nodeName) {
