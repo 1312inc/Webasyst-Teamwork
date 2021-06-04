@@ -37,11 +37,11 @@
     <script src="/wa-content/js/jquery-wa/wa.js?v={$wa->version(true)}"></script>
     <script src="{$wa_app_static_url}js/tasks.min.js?v{$wa->version()}"></script>
 
-    <!-- markdown-it and turndown are dependencies for mdeditor -->
-    <script src="https://unpkg.com/markdown-it/dist/markdown-it.min.js"></script>
-    <script src="https://unpkg.com/turndown/dist/turndown.js"></script>
     <script src="{$wa_app_static_url}js/vendors/redactor-3-4-11/redactor.min.js"></script>
     <script src="{$wa_app_static_url}js/vendors/redactor-3-4-11/langs/{$loc[0]}.js"></script>
+    <!-- markdown-it and turndown are dependencies for mdeditor -->
+    <script src="{$wa_app_static_url}js/vendors/redactor-3-4-11/plugins/mdeditor/markdown-it.min.js"></script>
+    <script src="{$wa_app_static_url}js/vendors/redactor-3-4-11/plugins/mdeditor/turndown.js"></script>
     <script src="{$wa_app_static_url}js/vendors/redactor-3-4-11/plugins/mdeditor/mdeditor.js"></script>
     <script src="{$wa_app_static_url}js/vendors/redactor-3-4-11/plugins/watags/watags.js"></script>
     <script src="{$wa_app_static_url}js/vendors/redactor-3-4-11/plugins/imgupload/imgupload.js"></script>
