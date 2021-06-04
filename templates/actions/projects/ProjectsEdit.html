@@ -188,12 +188,12 @@
             $.tasks.forceHash('#/settings/project/{$project.id}/');
         {/if}
         {if !empty($saved)}
-
-            {if $project.id}
-                // redirect to the project
-                window.location.hash = '#/tasks/project/{$project.id}/';
-                return;
-            {/if}
+            // Show 'saved' indicator briefly
+            var $hsaved = $('#content .t-saved').slideDown();
+            setTimeout(function() {
+                $hsaved.slideUp();
+            }, 3000);
+            $.tasks.reloadSidebar();
 
         {elseif !empty($errors)}
             // Show form validation errors
