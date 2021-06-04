@@ -198,3 +198,24 @@ h2
 
 .redactor-box.redactor-styles-on
     border-width 2px !important
+
+.collapsible 
+  margin-bottom: 2rem
+
+  &__content   
+    :last-child 
+      margin-bottom: 0 !important
+
+  .heading
+    cursor pointer
+    
+    span 
+      .caret svg
+        transition .3s transform
+
+      &.collapsed
+        .caret svg
+          transform: rotate(180deg)
+  
+
+      

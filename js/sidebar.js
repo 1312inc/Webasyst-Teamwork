@@ -313,7 +313,7 @@ var TasksSidebar = (function ($) {
         });
 
         that.initSidebarTagsAutocomplete();
-
+        that.initCollapsible();
     };
 
     TasksSidebar.prototype.initSidebarTagsAutocomplete =  function() {
@@ -376,6 +376,25 @@ var TasksSidebar = (function ($) {
         }
         $.wa.setHash(new_hash);
     };
+
+    TasksSidebar.prototype.initCollapsible = function () {
+        var that = this,
+            $collapsibles = that.$wrapper.find('.collapsible');
+        
+        $.each($collapsibles, function(i, el) {
+            var $toggler = $(el).find('.heading > span'),
+                $content = $(el).find('.collapsible__content');
+
+            if ($toggler) {
+                $toggler.on('click', function(e) {
+                    e.preventDefault();
+                    $toggler.toggleClass('collapsed');
+                    $content.slideToggle(300);
+                })
+            }
+        })
+        
+    }
 
     return TasksSidebar;
 
