@@ -98,14 +98,16 @@
                data-hash="{$hash}"
                data-order="{$current_sort}"
                data-id="{$id|default:''}">
-               <span>
-                {if $id > 0}
-                  <i class="fas fa-times-circle t-link-icon"></i>
-                {else}
-                  <i class="fas fa-star t-link-icon"></i>
-                {/if}
-                &nbsp;{$title|default:''|escape}
-               </span>
+               <div class="flexbox" style="display: inline-block;">
+                    <div style="display:{if $id > 0}block{else}none{/if}">
+                        <i class="fas fa-times-circle"></i>
+                    </div>
+                    <div style="display:{if $id > 0}none{else}block{/if}">
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+                &nbsp;
+                <span>{$title|default:''|escape}</span>
                 <!-- <i class="icon16 loading t-loading-icon" style="display: none;"></i> -->
             </a>
         {/function}

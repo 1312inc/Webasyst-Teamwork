@@ -122,39 +122,41 @@
     {/if}
 
     {if $lists}
-        <div class="t-view-list-wrapper block" id="t-view-list-wrapper">
+        <div class="t-view-list-wrapper collapsible" id="t-view-list-wrapper">
             <h5 class="heading black">
                 <span>
                     <span class="caret"><i class="fas fa-caret-down"></i></span>
                     [`My lists`]
                 </span>
             </h5>
-            <ul class="menu t-view-list hide-when-collapsed">
+            <div class="collapsible__content">
+                <ul class="menu t-view-list hide-when-collapsed">
 
-                {foreach $lists as $_list}
-                    <li data-id="{$_list.id}">
-                        {$_params = [
-                            "list_id={$_list.id}",
-                            "hash={$_list.hash|escape}"
-                        ]}
-                        {if $_list.params != null}
-                            {$_params[] = $_list.params|escape}
-                        {/if}
-                        {if $_list.order != null}
-                            {$_params[] = "order="|cat:$_list.order|escape}
-                        {/if}
-                        {$_params_str = join('&', $_params)}
+                    {foreach $lists as $_list}
+                        <li data-id="{$_list.id}">
+                            {$_params = [
+                                "list_id={$_list.id}",
+                                "hash={$_list.hash|escape}"
+                            ]}
+                            {if $_list.params != null}
+                                {$_params[] = $_list.params|escape}
+                            {/if}
+                            {if $_list.order != null}
+                                {$_params[] = "order="|cat:$_list.order|escape}
+                            {/if}
+                            {$_params_str = join('&', $_params)}
 
-                        {$_href = "#/tasks/{$_params_str}/"}
-                        <a title="{$_list.name|escape}" href="{$_href}">
-                            <!-- <i class="icon16 {$_list.icon|default:'contact'|escape}"></i> -->
-                            <i class="fas fa-bug {$_list.icon|default:'contact'|escape}"></i>
-                            <span>{$_list.name|truncate:18:'...':true|escape}</span>
-                            <span class="count">{$_list.count|default:0}</span>
-                        </a>
-                    </li>
-                {/foreach}
-            </ul>
+                            {$_href = "#/tasks/{$_params_str}/"}
+                            <a title="{$_list.name|escape}" href="{$_href}">
+                                <!-- <i class="icon16 {$_list.icon|default:'contact'|escape}"></i> -->
+                                <i class="fas fa-bug {$_list.icon|default:'contact'|escape}"></i>
+                                <span>{$_list.name|truncate:18:'...':true|escape}</span>
+                                <span class="count">{$_list.count|default:0}</span>
+                            </a>
+                        </li>
+                    {/foreach}
+                </ul>
+            </div>
         </div>
     {/if}
 
