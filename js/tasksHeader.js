@@ -224,17 +224,17 @@ var TasksHeader = ( function($) {
 
         var showCreateDialog = function () {
             var $link = $(this),
-                $icon = $link.find('.t-link-icon'),
-                order = $link.data('order'),
-                $loading = $link.find('.t-loading-icon');
+                // $icon = $link.find('.t-link-icon'),
+                order = $link.data('order');
+                // $loading = $link.find('.t-loading-icon');
 
             if ((location.hash || '').indexOf('list_id=') >= 0) {
                 alert(that.messages['cant_create_list']);
                 return;
             }
 
-            $icon.hide();
-            $loading.show();
+            // $icon.hide();
+            // $loading.show();
 
             var hash = location.hash.replace('#/tasks/', ''),
                 parsed = $.tasks.parseTasksHash(hash);
@@ -250,13 +250,19 @@ var TasksHeader = ( function($) {
                     // clear old dialogs
                     $('.tasks-list-edit-dialog').remove();
                     // append new dialog
-                    $('body').append(html);
+                    // $('body').append(html);
+                    $.waDialog({
+                        html: html
+                    });
                     //
                     new TaskListEdit({
                         '$wrapper': $('.tasks-list-edit-dialog'),
                         'callbacks': {
                             onDoneSubmit: function (r) {
-                                $icon.removeClass('star-empty').addClass('star');
+                                // $icon.removeClass('star-empty').addClass('star');
+                                $link.find('.fa-star').parent().hide();
+                                $link.find('.fa-times-circle').parent().show();
+                                $link.find('span').text(r.data.title);
                                 $link.data('id', r.data.view.id);
                                 $link.prop('title', r.data.title);
                                 $.tasks.reloadSidebar();
@@ -265,30 +271,33 @@ var TasksHeader = ( function($) {
                     });
                 })
                 .always(function () {
-                    $icon.show();
-                    $loading.hide();
+                    // $icon.show();
+                    // $loading.hide();
                 });
         };
 
         var deleteView = function () {
             var $link = $(this),
-                id = $link.data('id'),
-                $icon = $link.find('.t-link-icon'),
-                $loading = $link.find('.t-loading-icon');
+                id = $link.data('id');
+                // $icon = $link.find('.t-link-icon'),
+                // $loading = $link.find('.t-loading-icon');
 
-            $icon.hide();
-            $loading.show();
+            // $icon.hide();
+            // $loading.show();
 
             $.post('?module=list&action=delete', { id: id })
                 .done(function (r) {
-                    $icon.removeClass('star').addClass('star-empty');
+                    // $icon.removeClass('star').addClass('star-empty');
+                    $link.find('.fa-star').parent().show();
+                    $link.find('.fa-times-circle').parent().hide();
+                    $link.find('span').text(r.data.title);
                     $link.data('id', null);
                     $link.prop('title', r.data.title);
                     $.tasks.reloadSidebar();
                 })
                 .always(function () {
-                    $icon.show();
-                    $loading.hide();
+                    // $icon.show();
+                    // $loading.hide();
                 });
         };
 
