@@ -122,7 +122,7 @@
     {/if}
 
     {if $lists}
-        <div class="t-view-list-wrapper collapsible" id="t-view-list-wrapper">
+        <div class="t-view-list-wrapper collapsible" data-type="lists" id="t-view-list-wrapper">
             <h5 class="heading black">
                 <span>
                     <span class="caret"><i class="fas fa-caret-down"></i></span>
@@ -161,7 +161,7 @@
     {/if}
 
     {if $scopes || $is_admin}
-        <div class="collapsible">
+        <div class="collapsible" data-type="milestones">
             <h5 class="heading black">
                 <span>
                     <span class="caret"><i class="fas fa-caret-down"></i></span>
@@ -220,7 +220,7 @@
     {* @event backend_sidebar.%plugin_id%.section *}
     {if !empty($backend_sidebar)}{foreach $backend_sidebar as $_}{ifset($_.section)}{/foreach}{/if}
 
-    <div id="status-list-wrapper" class="collapsible">
+    <div id="status-list-wrapper" class="collapsible" data-type="status">
         <h5 class="heading black">
             <span>
                 <span class="caret"><i class="fas fa-caret-down"></i></span>
@@ -266,7 +266,7 @@
         </div>
     </div>
 
-    <div class="team-list-wrapper collapsible" id="team-list-wrapper">
+    <div class="team-list-wrapper collapsible" id="team-list-wrapper" data-type="team">
         <h5 class="heading">
             <span>
                 <span class="caret"><i class="fas fa-caret-down"></i></span>
@@ -298,7 +298,7 @@
     </div>
 
     {if $projects || $is_admin}
-        <div class="projects-list-wrapper collapsible" id="projects-list-wrapper">
+        <div class="projects-list-wrapper collapsible" data-type="projects" id="projects-list-wrapper">
             <h5 class="heading">
                 <span href="javascript:void(0);">
                     <span class="caret"><i class="fas fa-caret-down"></i></span>
@@ -334,7 +334,7 @@
 
     {if !empty($cloud)}
 
-            <div id="collapsible-tags" data-block="tags" class="collapsible">
+            <div id="collapsible-tags" data-block="tags"  data-type="tags" class="collapsible">
                 <h5 id="t-tags" class="heading collapse-handler">
                     <span>
                         <span class="caret"><i class="fas fa-caret-down"></i></span>

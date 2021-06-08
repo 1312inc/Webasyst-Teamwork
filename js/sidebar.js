@@ -380,20 +380,51 @@ var TasksSidebar = (function ($) {
     TasksSidebar.prototype.initCollapsible = function () {
         var that = this,
             $collapsibles = that.$wrapper.find('.collapsible');
-        
-        $.each($collapsibles, function(i, el) {
+
+        var storage = {
+            get: function (k) {
+                if (window.localStorage) {
+                    return window.localStorage.getItem(k);
+                } else {
+                    return undefined;
+                }
+            },
+            set: function (k, v) {
+                window.localStorage && window.localStorage.setItem(k, v);
+            },
+            del: function (k) {
+                window.localStorage && window.localStorage.removeItem(k);
+            }
+        };
+
+        var buildKey = function (type) {
+            return 'collapsible-' + type;
+        };
+
+        $.each($collapsibles, function (i, el) {
             var $toggler = $(el).find('.heading > span'),
-                $content = $(el).find('.collapsible__content');
+                $content = $(el).find('.collapsible__content'),
+                key = buildKey($(el).data('type'));
+
+            if (storage.get(key)) {
+                $content.hide();
+                $toggler.addClass('collapsed');
+            }
 
             if ($toggler) {
-                $toggler.on('click', function(e) {
+                $toggler.on('click', function (e) {
                     e.preventDefault();
                     $toggler.toggleClass('collapsed');
                     $content.slideToggle(300);
-                })
+                    if (storage.get(key)) {
+                        storage.del(key);
+                    } else {
+                        storage.set(key, '1');
+                    }
+                });
             }
-        })
-        
+        });
+
     }
 
     return TasksSidebar;
