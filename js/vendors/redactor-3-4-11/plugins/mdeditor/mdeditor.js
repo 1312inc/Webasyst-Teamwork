@@ -52,16 +52,16 @@ md.set({
       this.toolbar.addButton("quote", buttonQuote);
     },
     onstarted: function () {
-      var that = this,
-        startedContent = this.app.source.getStartedContent();
+        var startedContent = this.app.source.getStartedContent(),
+          mdRender = md.render(startedContent);
 
-      setTimeout(function () {
         // set initial HTML in visual layer
-        that.app.source.setCode(md.render(startedContent));
+        this.app.source.setCode(mdRender);
 
         // set initial md in textarea
-        that.app.source.getElement().val(startedContent);
-      }, 0);
+        // this.app.source.getElement().val(startedContent);
+        
+        this.app.broadcast('mdRendered', mdRender);
     },
     toggleCode: function () {
       switch (this.app.selection.getElement().nodeName) {

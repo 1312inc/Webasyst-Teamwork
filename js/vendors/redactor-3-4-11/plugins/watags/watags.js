@@ -10,6 +10,9 @@
             this.keycodes = app.keycodes;
             this.container = app.container;
             this.selection = app.selection;
+            this.insertion = app.insertion;
+
+            this.tagRegExp = new RegExp("#[a-zA-Z0-9._-]+");
 
             // local
             this.tagsHandleTrigger =
@@ -33,6 +36,12 @@
             $editor.on("keydown.redactor-plugin-handle", this._navigate.bind(this));
             $editor.on("keyup.redactor-plugin-handle", this._handle.bind(this));
         },
+        onmdRendered: function (html) {
+            var content = html.replace(this.tagRegExp, function (match) {
+                return "<span class=\"redactor-tag\">" + match + "</span><span></span>";
+            });
+            this.app.source.setCode(content);
+        },
         stop: function () {
             var $editor = this.editor.getElement();
 
@@ -46,7 +55,21 @@
         // private
         _navigate: function (e) {
             var key = e.which;
-            var arrows = [38, 40];
+            var arrows = [38, 40]; // up and down
+
+            if (key === this.keycodes.SPACE ) {
+                var $current = this.selection.getCurrent();
+                if($current.parentElement.className !== 'redactor-tag') {
+                    var currentText = $current.textContent;
+                    if(this.tagRegExp.test(currentText)) {
+                        $current.textContent = '';
+                        insertionTag = currentText.replace(this.tagRegExp, function (match) {
+                            return "<span class=\"redactor-tag\">" + match + "</span><span></span>";
+                        });
+                        this.insertion.insertHtml(insertionTag);
+                    }
+                }                
+            }
 
             if (
                 (arrows.indexOf(key) !== -1 || key === this.keycodes.ENTER) &&
