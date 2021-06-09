@@ -451,6 +451,8 @@ class tasksHelper
 
     public static function getStatusHeaderStyles($status)
     {
+        /* LEGACY (1.3) */
+
         $style = [];
         if (!empty($status['params']['title_color'])) {
             $color = '#'.$status['params']['title_color'];
