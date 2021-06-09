@@ -1,18 +1,54 @@
-$white_color = #fff;
-$gray_color = #f7f7f7;
-$green_color = #f3ffe3;
-$blue_color = #f8ffff;
-$purple_color = #fcf3ff;
-$red_color = #fff1f1;
-$yellow_color = #ffffe3;
+:root {
+    --white-color: #fff;
+    --gray-color: #f7f7f7;
+    --green-color: #f3ffe3;
+    --blue-color: #f8ffff;
+    --purple-color: #fcf3ff;
+    --red-color: #fff1f1;
+    --yellow-color: #ffffe3;
 
-$white_color_strong = rgba(0,0,0,0.06);
-$gray_color_strong = #ddd;
-$green_color_strong = #cea;
-$blue_color_strong = #bef;
-$purple_color_strong = #dcf;
-$red_color_strong = #fcc;
-$yellow_color_strong = #fff7aa;
+    --white-color-strong: rgba(0,0,0,0.06);
+    --gray-color-strong: #ddd;
+    --green-color-strong: #cea;
+    --blue-color-strong: #bef;
+    --purple-color-strong: #dcf;
+    --red-color-strong: #fcc;
+    --yellow-color-strong: #fff7aa;
+}
+
+[data-theme="dark"] {
+    --white-color: #000;
+    --gray-color: #f7f7f7;
+    --green-color: #f3ffe3;
+    --blue-color: #f8ffff;
+    --purple-color: #fcf3ff;
+    --red-color: #fff1f1;
+    --yellow-color: #ffffe3;
+
+    --white-color-strong: rgba(0,0,0,0.06);
+    --gray-color-strong: #ddd;
+    --green-color-strong: #cea;
+    --blue-color-strong: #bef;
+    --purple-color-strong: #dcf;
+    --red-color-strong: #fcc;
+    --yellow-color-strong: #fff7aa;
+}
+
+$white_color = var(--white-color);
+$gray_color = var(--gray-color);
+$green_color = var(--green-color);
+$blue_color = var(--blue-color);
+$purple_color = var(--purple-color);
+$red_color = var(--red-color);
+$yellow_color = var(--yellow-color);
+
+$white_color_strong = var(--white-color-strong);
+$gray_color_strong = var(--gray-color-strong);
+$green_color_strong = var(--green-color-strong);
+$blue_color_strong = var(--blue-color-strong);
+$purple_color_strong = var(--purple-color-strong);
+$red_color_strong = var(--red-color-strong);
+$yellow_color_strong = var(--yellow-color-strong);
 
 smartphoneWidth = 760px
 mediumWidth = 1360px
