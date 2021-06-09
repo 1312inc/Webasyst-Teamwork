@@ -10,7 +10,8 @@ body.wa-gallery-is-shown
     display block
     width: 0
     height: 0
-    border: 1px solid rgba(0,0,0,.1)
+    z-index 1312
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05), 0 0.5rem 0.5rem -0.5rem rgba(0, 0, 0, 0.13);
     box-sizing border-box
 
     &.is-animated
@@ -30,8 +31,9 @@ body.wa-gallery-is-shown
         display block
         width: 100%
         height: 100%
-        background #fff 50% no-repeat
+        background var(--background-color) 50% no-repeat
         background-size: contain
+        border-radius 0.5rem
         cursor pointer
         opacity 0
 
@@ -84,14 +86,14 @@ body.wa-gallery-is-shown
                 opacity: .66
 
         .wa-gallery-close
-            background-image url("close-button.png")
+            background-image url("close-button.svg")
 
         .wa-gallery-download
-            background-image url("download-button.png")
+            background-image url("download-button.svg")
 
         .wa-gallery-arrow
             &.right
-                background-image url("right-arrow.png")
+                background-image url("right-arrow.svg")
 
             &.left
-                background-image url("left-arrow.png")
+                background-image url("left-arrow.svg")

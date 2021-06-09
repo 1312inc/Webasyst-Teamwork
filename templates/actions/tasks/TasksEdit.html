@@ -109,7 +109,7 @@
             {foreach $backend_task_edit as $_}{ifset($_.after_header)}{/foreach}
 
             {* EDIT CONTENT *}
-            <div class="t-task-page-block {if !empty($project.color)}{$project.color}{/if}">
+            <div class="t-task-page-block">
 
                 <!-- plugin hook: 'backend_task_edit.%plugin_id.before_name' -->
                 {* @event backend_task_edit.%plugin_id%.before_name *}
@@ -203,7 +203,7 @@
                             {foreach $task.files as $file}
                                 <div class="t-file-item" data-file-ident="{$file.id}">
                                     <a class="t-file-link" href="?module=attachments&action=download&id={$file.id}" title="{$file.name|escape}">
-                                        <i class="icon16 attachment"></i>
+                                        <i class="fas fa-cloud-download-alt custom-mr-4"></i>
                                         <span class="t-file-name">{$file.name|escape}</span>
                                         <span class="t-file-size">{$file.size|wa_format_file_size}</span>
                                     </a>
@@ -213,7 +213,7 @@
 
                             <div class="t-file-item is-template">
                                 <div class="t-file-link">
-                                    <i class="icon16 attachment"></i>
+                                    <i class="fas fa-cloud-download-alt custom-mr-4"></i>
                                     <span class="t-file-name"></span>
                                     <span class="t-file-size"></span>
                                 </div>

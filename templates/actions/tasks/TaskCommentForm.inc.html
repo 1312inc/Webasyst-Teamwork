@@ -56,7 +56,7 @@
                             {foreach $_files as $_file}
                                 <div class="t-file-item" data-file-ident="{$_file.id}">
                                     <a class="t-file-link" href="?module=attachments&action=download&id={$_file.id}" title="{$_file.name|escape}">
-                                        <i class="icon16 attachment"></i>
+                                        <i class="fas fa-cloud-download-alt custom-mr-4"></i>
                                         <span class="t-file-name">{$_file.name|escape}</span>
                                         <span class="t-file-size">{$_file.size|wa_format_file_size}</span>
                                     </a>
@@ -66,7 +66,7 @@
 
                             <div class="t-file-item is-template">
                                 <div class="t-file-link">
-                                    <i class="icon16 attachment"></i>
+                                    <i class="fas fa-cloud-download-alt custom-mr-4"></i>
                                     <span class="t-file-name"></span>
                                     <span class="t-file-size"></span>
                                 </div>

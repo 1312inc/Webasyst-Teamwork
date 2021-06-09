@@ -8,7 +8,9 @@ body.wa-gallery-is-shown {
   display: block;
   width: 0;
   height: 0;
-  border: 1px solid rgba(0,0,0,0.1);
+  z-index: 1312;
+  border: none;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05), 0 0.5rem 0.5rem -0.5rem rgba(0, 0, 0, 0.13);
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
@@ -36,7 +38,8 @@ body.wa-gallery-is-shown {
   display: block;
   width: 100%;
   height: 100%;
-  background: #fff 50% no-repeat;
+  background: var(--background-color) 50% no-repeat;
+  border-radius: 0.5rem;
   -webkit-background-size: contain;
   -moz-background-size: contain;
   background-size: contain;
@@ -122,14 +125,14 @@ body.wa-gallery-is-shown {
   filter: alpha(opacity=66);
 }
 .wa-gallery-preview .wa-gallery-controls .wa-gallery-close {
-  background-image: url("close-button.png");
+  background-image: url("close-button.svg");
 }
 .wa-gallery-preview .wa-gallery-controls .wa-gallery-download {
-  background-image: url("download-button.png");
+  background-image: url("download-button.svg");
 }
 .wa-gallery-preview .wa-gallery-controls .wa-gallery-arrow.right {
-  background-image: url("right-arrow.png");
+  background-image: url("right-arrow.svg");
 }
 .wa-gallery-preview .wa-gallery-controls .wa-gallery-arrow.left {
-  background-image: url("left-arrow.png");
+  background-image: url("left-arrow.svg");
 }
