@@ -123,7 +123,7 @@
 
     {if $lists}
         <div class="t-view-list-wrapper collapsible" data-type="lists" id="t-view-list-wrapper">
-            <h5 class="heading black">
+            <h5 class="heading">
                 <span>
                     <span class="caret"><i class="fas fa-caret-down"></i></span>
                     [`My lists`]
@@ -149,7 +149,7 @@
                             {$_href = "#/tasks/{$_params_str}/"}
                             <a title="{$_list.name|escape}" href="{$_href}">
                                 <!-- <i class="icon16 {$_list.icon|default:'contact'|escape}"></i> -->
-                                <i class="fas fa-bug {$_list.icon|default:'contact'|escape}"></i>
+                                <i class="fas fa-{$_list.icon|default:'star'|escape}"></i>
                                 <span>{$_list.name|truncate:18:'...':true|escape}</span>
                                 <span class="count">{$_list.count|default:0}</span>
                             </a>
@@ -162,7 +162,7 @@
 
     {if $scopes || $is_admin}
         <div class="collapsible" data-type="milestones">
-            <h5 class="heading black">
+            <h5 class="heading">
                 <span>
                     <span class="caret"><i class="fas fa-caret-down"></i></span>
                     [`Milestones`]
@@ -221,7 +221,7 @@
     {if !empty($backend_sidebar)}{foreach $backend_sidebar as $_}{ifset($_.section)}{/foreach}{/if}
 
     <div id="status-list-wrapper" class="collapsible" data-type="status">
-        <h5 class="heading black">
+        <h5 class="heading">
             <span>
                 <span class="caret"><i class="fas fa-caret-down"></i></span>
                 [`Status`]

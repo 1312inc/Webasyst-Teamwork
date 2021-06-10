@@ -41,7 +41,7 @@ msgid "Urgent"
 msgstr "Срочно"
 
 msgid "Milestones"
-msgstr "Сроки"
+msgstr "Дедлайны"
 
 msgid "Scopes"
 msgstr "Работы"
@@ -119,7 +119,7 @@ msgid "Due"
 msgstr "Срок"
 
 msgid "New milestone"
-msgstr "Добавить срок"
+msgstr "Добавить дедлайн"
 
 msgid "New scope"
 msgstr "Добавить работу"
@@ -134,7 +134,7 @@ msgid "(no name)"
 msgstr "(без названия)"
 
 msgid "Create milestone"
-msgstr "Новый срок"
+msgstr "Новый дедлайн"
 
 msgid "Create scope"
 msgstr "Новая работа"

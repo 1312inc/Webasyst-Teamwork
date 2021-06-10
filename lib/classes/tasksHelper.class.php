@@ -111,7 +111,7 @@ class tasksHelper
             $item['icon_url'] = false;
             $item['icon_class'] = $item['icon'];
             if (wa()->whichUI() == '2.0') {
-                $item['icon_html'] = '<i class="fas fa-tasks"' . $title . '></i>';
+                $item['icon_html'] = '<i class="fas fa-' . $item['icon'] . '"' . $title . '></i>';
             } else {
                 $item['icon_html'] = '<i class="icon16 ' . $item['icon'] . '"' . $title . '></i>';
             }
@@ -197,9 +197,11 @@ class tasksHelper
 
             if (!empty($status['params']['button_color'])) {
                 $color = $status['params']['button_color'];
+                $textcolor = $status['params']['title_color'];
                 $buttonClassName = 'yellow';
             } else {
                 $color = 'eeeeee';
+                $textcolor = '000000';
                 $buttonClassName = 'light-gray';
             }
 
@@ -217,14 +219,14 @@ class tasksHelper
                     $status['view']['button_html'] = '<a ' .
                         'href="javascript:void(0);" ' .
                         'class="button rounded t-control-link large t-change-status-link ' . $buttonClassName . '" data-status-id="' . $status['id'] . '"' .
-                        'style="background-color:#'.$color.'"'.
+                        'style="background-color:#'.$color.'; color:#'.$textcolor.';"'.
                         '><span class="t-change-status-link-label">' . htmlspecialchars($status['button']) . '</span></a>';
                 }
             } else {
                 $status['view']['button_html'] = '<a ' .
                     'href="javascript:void(0);" ' .
                     'class="t-control-link t-change-status-link" data-status-id="' . $status['id'] . '"' .
-                    'style="background-color:#' . $color . '"' .
+                    'style="background-color:#' . $color . '; color:#'.$textcolor.';"' .
                     '><span class="t-change-status-link-label">' . htmlspecialchars($status['button']) . '</span></a>';
             }
         }
@@ -462,11 +464,19 @@ class tasksHelper
             else
                 $color = 'var(--text-color-strongest)';
         }
+        if (!empty($status['params']['button_color'])) {
+            $style[] = 'background: #'.$status['params']['button_color'];
+        } else {
+            if (wa()->whichUI() == '1.3')
+                $style[] = 'background: #f0f0f0';
+            else
+                $style[] = 'background: var(--light-gray)';
+        }
         $style[] = 'color:' . htmlspecialchars($color);
-        if (!empty($status['params']['title_style_italic'])) {
+        if (wa()->whichUI() == '1.3' && !empty($status['params']['title_style_italic'])) {
             $style[] = 'font-style:italic';
         }
-        if (!empty($status['params']['title_style_bold'])) {
+        if (wa()->whichUI() == '1.3' && !empty($status['params']['title_style_bold'])) {
             $style[] = 'font-weight:bold';
         }
 
@@ -485,7 +495,7 @@ class tasksHelper
         }
         $s = $statuses[$status_id];
 
-        return '<span style="' . self::getStatusHeaderStyles($s) . '">' . htmlspecialchars($s['name']) . '</span>';
+        return '<span class="badge t-status-wrapper" style="' . self::getStatusHeaderStyles($s) . '">' . htmlspecialchars($s['name']) . '</span>';
     }
 
     /**

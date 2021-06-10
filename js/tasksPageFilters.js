@@ -610,4 +610,3 @@ var TasksTagCloudFilterSelector;
     // </FILTERS CLASSES DECLARATIONS>
 
 })(jQuery);
-
