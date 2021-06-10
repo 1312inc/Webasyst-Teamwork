@@ -244,7 +244,7 @@
                 <div class="t-form-line field t-team-list-wrapper">
                     <div class="name for-checkbox">[`Assign to`]</div>
                     <div class="value">
-                        <ul class="menu-v js-task-users-list">
+                        <ul class="js-task-users-list">
                             {$_count = 0}
                             {$_is_something_checked = false}
                             {foreach $users as $user}
@@ -281,7 +281,7 @@
                             </li>
 
                             <li class="t-link-item">
-                                <a class="show-team-users inline-link" href="javascript:void(0);"><b><i>[`Show all`]</i></b></a>
+                                <a class="show-team-users" href="javascript:void(0);">[`Show all`]</a>
                             </li>
                         </ul>
                     </div>
@@ -294,7 +294,7 @@
                     <div class="name for-input">[`Deadline`]</div>
                     <div class="value">
                         <input type="text" class="t-datepicker-due-date">
-                        <input type="hidden" name="data[due_date]" value="{$task.due_date|escape}"><i class="far fa-calendar-alt"></i>
+                        <input type="hidden" name="data[due_date]" value="{$task.due_date|escape}"><i class="fas fa-flag-checkered custom-ml-4"></i>
                     </div>
                 </div>
 

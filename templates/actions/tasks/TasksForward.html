@@ -48,7 +48,7 @@
 
                     {function renderLink}
                         <li class="t-link-item is-shown">
-                            <a class="show-team-users inline-link" href="javascript:void(0);"><b><i>[`Show all`]</i></b></a>
+                            <a class="show-team-users" href="javascript:void(0);">[`Show all`]</a>
                         </li>
                     {/function}
 
@@ -139,7 +139,7 @@
                             $wrapper.find('.t-team-list-wrapper').prepend($parent);
                         }
 
-                        $R('#forward-wrapper-{$ident} .t-redactor-comments', { 
+                        $R('#forward-wrapper-{$ident} .t-redactor-comments', {
                             'focus': true,
                             imageData: {
                                 task_uuid: '{$task_uuid}'

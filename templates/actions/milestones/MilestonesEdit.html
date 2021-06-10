@@ -46,11 +46,22 @@
                 <form action="?module=milestones&action=edit" id="milestone-editor-form">
                     <div class="fields form">
                         <div class="field-group">
+
                             <input type="hidden" name="id" value="{ifempty($milestone.id, 'new')}">
+
                             <div class="field">
                                 <div class="name for-input">[`Name`]</div>
                                 <div class="value"><input type="text" name="milestone[name]" class="bold long large" value="{$milestone.name|escape}"></div>
                             </div>
+                            <div class="field">
+                                <div class="name for-input">[`Due date`]</div>
+                                <div class="value">
+                                    <input type="text" class="datepicker-due-date bold" placeholder="[`Date`]">
+                                    <input type="hidden" name="milestone[due_date]" value="{$milestone.due_date|escape}">
+                                    <i class="fas fa-flag-checkered "></i>
+                                </div>
+                            </div>
+
                             <div class="field">
                                 <div class="name">[`Description`]</div>
                                 <div class="value"><textarea name="milestone[description]" style="max-width:24rem;" class="small">{$milestone.description|escape}</textarea>
@@ -70,15 +81,6 @@
                                 </div>
                             </div>
 
-                            <div class="field">
-                                <div class="name for-input">[`Deadline`]</div>
-                                <div class="value">
-                                    <input type="text" class="datepicker-due-date bold" placeholder="[`Date`]">
-                                    <input type="hidden" name="milestone[due_date]" value="{$milestone.due_date|escape}">
-                                    <i class="fas fa-flag-checkered "></i>
-                                </div>
-                            </div>
-
                             <div class="t-more-fields">
                                 <!-- plugin hook: 'backend_milestone_edit.%plugin_id%.more' -->
                                 {* @event backend_milestone_edit.%plugin_id%.more *}
@@ -88,7 +90,7 @@
                         </div>
                         <div class="field custom-mt-32">
                             <div class="value submit">
-                                <input type="submit" class="button green" value="[`Save`]">
+                                <input type="submit" class="button" value="[`Save`]">
                             </div>
                         </div>
                     </div>

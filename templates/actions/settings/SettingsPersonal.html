@@ -6,9 +6,9 @@
     <div class="article-body">
 
         <h1>[`My preferences`]</h1>
+
         <form action="?module=settingsPersonal&action=save" class="t-setting-form">
             <input type="hidden" name="settings[notification][]" value="">
-            <br>
             <div class="t-settings-fields fields">
                 <div class="field-group">
                     <div class="field">
@@ -16,7 +16,7 @@
                             [`Notifications`]
                         </div>
                         <div class="value">
-                            [`Send me notification in case of`]
+                            <strong>[`Send me notification in case of`]</strong>
                             <ul class="menu">
                                 {$_items = [
                                     'always' => '[`Any action`]',
@@ -36,8 +36,7 @@
                             [`Actions`]
                         </div>
                         <div class="value">
-                            [`Notify me about next kind of tasks`]
-
+                            <strong>[`Notify me about next kind of tasks`]</strong>
 
                             <ul class="menu t-settings-list">
                                 {$_items = [
@@ -61,8 +60,8 @@
                 <div class="field-group custom-mt-16">
                     <div class="field">
                         <div class="value submit t-settings-buttons">
-                            <input type="submit" class="button green" value="[`Save settings`]">
-                            <i class="icon16 loading t-loading" style="margin-top: 6px; display: none;"></i>
+                            <input type="submit" class="button" value="[`Save settings`]">
+                            <i class="fas fa-spinner" style="margin-top: 6px; display: none;"></i>
                         </div>
                     </div>
                 </div>

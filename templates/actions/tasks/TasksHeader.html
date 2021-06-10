@@ -93,7 +93,7 @@
 
     <div class="box align-center t-my-lists-wrapper" id="t-my-lists-box">
         {function star_link id='' title=''}
-            <a href="javascript:void(0);" class="t-my-list-toggle button outlined"
+            <a href="javascript:void(0);" class="t-my-list-toggle button {if $id > 0}light-gray{/if} small outlined"
                title="{$title|default:''|escape}"
                data-hash="{$hash}"
                data-order="{$current_sort}"
@@ -131,7 +131,14 @@
         <div class="t-menu-wrapper">
 
             <span class="t-checkbox-wrapper custom-mr-8">
-                <input class="t-checkbox" id="check-all-tasks" type="checkbox" name="">
+                <span class="wa-checkbox">
+                    <input class="t-checkbox" id="check-all-tasks" type="checkbox" name="">
+                    <span>
+                        <span class="icon">
+                            <i class="fas fa-check"></i>
+                        </span>
+                    </span>
+                </span>
             </span>
 
             <div class="dropdown">

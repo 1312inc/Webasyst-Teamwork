@@ -10,24 +10,24 @@
         <div class="dialog-body dialog-window">
             <div class="dialog-content">
                 <div class="dialog-content-indent">
-                    <h1>{if $list.id > 0}Edit my list{else}[`Save in my lists`]{/if}</h1>
+                    <h2>{if $list.id > 0}[`Edit my list`]{else}[`Save in my lists`]{/if}</h2>
                     <div class="fields">
 
 
                         <div class="field">
-                            <div class="name">[`Name`]</div>
+                            <div class="name for-input">[`Name`]</div>
                             <div class="value">
-                                <input type="text" value="{$list.name|escape}" class="t-name-input" name="data[name]">
+                                <input type="text" value="{$list.name|escape}" class="t-name-input bold" name="data[name]">
                             </div>
                         </div>
 
                         <div class="field t-icons-block">
                             <div class="name">[`Icon`]</div>
                             <div class="value">
-                                <ul class="menu-h">
+                                <ul class="chips">
                                     {foreach $icons as $icon}
                                         <li data-icon="{$icon}" {if $icon == $list.icon}class="selected"{/if}>
-                                            <a href="javascript:void(0)"><i class="icon16 {$icon}"></i></a>
+                                            <a href="javascript:void(0)"><i class="fas fa-{$icon}"></i></a>
                                         </li>
                                     {/foreach}
                                 </ul>
@@ -54,8 +54,7 @@
                         <input type="hidden" name="data[params]" value="{$list.params}">
                     {/if}
                     <!-- <i class="icon16 loading t-loading" style="display: none;"></i> -->
-                    <span style="margin: 0 4px;">[`or`]</span>
-                    <a href="javascript:void(0)" class="cancel">[`cancel`]</a>
+                    <a href="javascript:void(0)" class="cancel button light-gray">[`Cancel`]</a>
                 </div>
             </div>
         </div>

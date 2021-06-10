@@ -126,11 +126,13 @@
                                     <img class="userpic userpic48" src="{waContact::getPhotoUrl($_assignment_creator.id, $_assignment_creator.photo, 96)}" alt="{$_assignment_creator.name|escape}">
                                 </a>
                                 <div class="wide">
-                                    {if empty({$_assignment_creator.delete}) && $_assignment_creator.id}
-                                        <a href="#/tasks/assigned/{$_assignment_creator.id}/" class="small black bold">{$_assignment_creator.name|escape}</a>
-                                    {else}
-                                        <strong class="gray small">{$_assignment_creator.name|escape}</strong>
-                                    {/if}
+                                    <p class="small custom-mb-0">
+                                        {if empty({$_assignment_creator.delete}) && $_assignment_creator.id}
+                                            <a href="#/tasks/assigned/{$_assignment_creator.id}/" class="black bold">{$_assignment_creator.name|escape}</a>
+                                        {else}
+                                            <strong class="gray">{$_assignment_creator.name|escape}</strong>
+                                        {/if}
+                                    </p>
                                     <p class="t-date-wrapper hint nowrap custom-mt-0">{$task.update_datetime|wa_datetime:'humandatetime'}</p>
                                 </div>
                             </div>
@@ -144,14 +146,13 @@
                                     <img class="userpic userpic48" src="{waContact::getPhotoUrl($_assigned_contact.id, $_assigned_contact.photo, 96)}" alt="{$_assigned_contact.name|escape}">
                                 </a>
                                 <div class="wide">
-                                    {if empty($_assigned_contact.delete) && $_assigned_contact.id}
-
-                                        <a href="#/tasks/assigned/{$_assigned_contact.id}/" class="small black bold">{$_assigned_contact.name|escape}</a>
-
-                                    {else}
-                                        <strong class="gray small">[`Unassigned`]</strong>
-
-                                    {/if}
+                                    <p class="small custom-mb-0">
+                                        {if empty($_assigned_contact.delete) && $_assigned_contact.id}
+                                            <a href="#/tasks/assigned/{$_assigned_contact.id}/" class="black bold">{$_assigned_contact.name|escape}</a>
+                                        {else}
+                                            <strong class="gray">[`Unassigned`]</strong>
+                                        {/if}
+                                    </p>
 
                                     {* STATUS *}
                                     {if !empty($task.status.name)}
@@ -180,12 +181,12 @@
                                             {$_status_class_array[] = "is-custom"}
                                         {/if}
 
-                                        <div>
-                                            <span class="badge t-status-wrapper small {$_status_class_array|join:" "}" style="{$_styles_array|join:""}" title="[`Status`]">
+                                        <p class="small custom-mt-0">
+                                            <span class="badge t-status-wrapper {$_status_class_array|join:" "}" style="{$_styles_array|join:""}" title="[`Status`]">
                                                 {if $task.status_id < 0}<span class="smaller"><i class="fas fa-check"></i></span>{/if}
                                                 {if $task.project.archive_datetime}[`Archived`]{else}{$task.status.name}{/if}
                                             </span>
-                                        </div>
+                                        </p>
                                     {/if}
 
                                 </div>
@@ -221,21 +222,21 @@
                                 </span>
                             </a>
                             <div class="wide">
-                                <span class="small">
+                                <p class="small custom-mb-0">
                                     {if $_milestone}
                                         <strong>{$_milestone}</strong>
                                     {elseif $_due_date}
-                                        <span class="badge squared small {$_due_class} custom-mr-4">{$_due_date}</span>
+                                        <span class="badge squared {$_due_class} custom-mr-4">{$_due_date}</span>
                                         {if $_due_hint}
                                             <span class="small">{$_due_hint}</span>
                                         {/if}
                                     {else}
                                         <span class="gray">[`No milestone`]</span>
                                     {/if}
-                                </span>
+                                </p>
                                 <p class="hint custom-mt-0">
                                     {if $_due_date && $_milestone}
-                                        <span class="t-due-date-bl badge squared small {$_due_class} custom-mr-4">{$_due_date}</span>
+                                        <span class="t-due-date-bl badge squared {$_due_class} custom-mr-4">{$_due_date}</span>
                                         {if $_due_hint}
                                             <span class="small">{$_due_hint}</span>
                                         {/if}
