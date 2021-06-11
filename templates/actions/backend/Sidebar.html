@@ -26,7 +26,7 @@
     bg_color => 'transparent'
 ]}
 
-<div class="sidebar-body t-sidebar-block" id="t-sidebar">
+<div class="sidebar-body hide-scrollbar t-sidebar-block" id="t-sidebar">
     <div class="box custom-mt-4">
         <div class="state-with-inner-icon left width-100">
             <span class="icon"><i class="fas fa-search"></i></span>
@@ -255,13 +255,6 @@
                         </a>
                     </li>
                 {/foreach}
-                <li class="gray">
-                    <a href="#/tasks/unassigned/">
-                        <i class="fas fa-pause-circle"></i>
-                        <span>[`Backlog`]</span>
-                        <span class="count">{user_count user_id=''}</span>
-                    </a>
-                </li>
             </ul>
         </div>
     </div>
@@ -288,6 +281,13 @@
                             </a>
                         </li>
                     {/foreach}
+                    <li class="gray">
+                        <a href="#/tasks/unassigned/">
+                            <span class="icon"><img src="{$wa_url}wa-content/img/userpic.svg" alt="Василий" class="userpic"></span>
+                            <span>[`Unassigned`]</span>
+                            <span class="count">{user_count user_id=''}</span>
+                        </a>
+                    </li>
                 </ul>
             {else}
                 <div class="box small align-center custom-my-12 hide-when-collapsed">

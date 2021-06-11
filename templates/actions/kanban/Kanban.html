@@ -94,7 +94,7 @@
                 <div class="t-kanban__list">
                     <div class="flexbox middle custom-p-16">
                         <div class="wide large">
-                            <strong>{$data.status.name}</strong>
+                            {tasksHelper::statusNameHTML($data.status.id)}
                         </div>
                         <div>
                             <span class="t-kanban__list__count badge yellow small">{$data.count}</span>

@@ -1,7 +1,7 @@
 {$is_in_my_list = $list && $list.is_own && $list.found_by_id}
 
 <div class="flexbox">
-    <div class="sidebar blank width-25rem bordered-right {if $total_count < 1}overflow-visible{/if}">
+    <div class="sidebar blank width-25rem bordered-right hide-scrollbar{if $total_count < 1} overflow-visible{/if}">
 
         <div class="t-main-wrapper">
 
@@ -117,37 +117,13 @@
 
                                     {* STATUS *}
                                     {if !empty($task.status.name)}
-                                        {* DATA *}
-                                        {$_status_class_array = []}
-                                        {$_styles_array = []}
-
-                                        {if !$task.project.archive_datetime}
-                                            {if !empty($task.status.params.title_color)}
-                                                {$_color = $task.status.params.title_color}
-                                                {$_styles_array[] = "color: #{$_color};"}
-                                            {/if}
-                                            {if !empty($task.status.params.button_color)}
-                                                {$_background = $task.status.params.button_color}
-                                                {$_styles_array[] = "border-color: #{$_background};"}
-                                                {$_styles_array[] = "background: #{$_background};"}
-                                            {/if}
-                                        {/if}
 
                                         {if $task.project.archive_datetime}
-                                            {$_status_class_array[] = "is-archived"}
-                                        {elseif $task.status_id == -1}
-                                            {$_status_class_array[] = "is-done"}
-                                        {elseif $task.status_id == 0}
-                                            {$_status_class_array[] = "is-new"}
-                                        {elseif $task.status_id > 0}
-                                            {$_status_class_array[] = "is-custom"}
+                                            <span class="badge t-status-wrapper is-archived"><i class="fas fa-archive fa-xs"></i> [`Archived`]</span>
+                                        {else}
+                                            {tasksHelper::statusNameHTML($task.status.id)}
                                         {/if}
 
-                                        {* RENDER *}
-                                        <span class="badge t-status-wrapper {$_status_class_array|join:" "}" style="{$_styles_array|join:""}" title="[`Status`]">
-                                            {if $task.status_id < 0}<span class="small"><i class="fas fa-check"></i></span>{/if}
-                                            {if $task.project.archive_datetime}[`Archived`]{else}{$task.status.name}{/if}
-                                        </span>
                                     {/if}
 
                                     {* PREVIEW *}
