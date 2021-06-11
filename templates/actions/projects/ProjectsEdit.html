@@ -105,10 +105,7 @@
                                             </span>
                                             <div class="wide custom-ml-12">
                                                 {foreach $wf.statuses as $status}
-                                                    <span class="t-status-name badge large t-status-wrapper{if $status.special}{if $status.id == -1} is-done{elseif $status.id == 0} is-new{/if}{/if}" {if !$status.special} style="{tasksHelper::getStatusHeaderStyles($status)}"{/if}>
-                                                        {if $status.id == -1}<span class="icon"><span class="small"><i class="fas fa-check"></i></span></span>{/if}
-                                                        {$status.name|escape}
-                                                    </span>
+                                                    {tasksHelper::statusNameHTML($status.id)}
                                                     {if $status.id >= 0}
                                                         <i class="fas fa-arrow-right text-light-gray custom-mx-4"></i>
                                                     {/if}
@@ -139,16 +136,18 @@
                                             <li>
                                                 <label class="item">
                                                     <span class="icon">
-                                                    <span class="wa-checkbox">
-                                                        <input type="checkbox" name="custom_workflow[{$s.id}]" value="1"{if !empty($project_statuses[$s.id])} checked{/if}{if $s.special} disabled{/if} class="custom-mr-8">
-                                                        <span>
-                                                            <span class="icon">
-                                                                <i class="fas fa-check"></i>
+                                                        <span class="wa-checkbox">
+                                                            <input type="checkbox" name="custom_workflow[{$s.id}]" value="1"{if !empty($project_statuses[$s.id])} checked{/if}{if $s.special} disabled{/if} class="custom-mr-8">
+                                                            <span>
+                                                                <span class="icon">
+                                                                    <i class="fas fa-check"></i>
+                                                                </span>
                                                             </span>
                                                         </span>
                                                     </span>
+                                                    <span>
+                                                        {tasksHelper::statusNameHTML($s.id)}
                                                     </span>
-                                                    <span>{$s.name|escape}</span>
                                                 </label>
                                             </li>
                                             {/foreach}

@@ -453,8 +453,6 @@ class tasksHelper
 
     public static function getStatusHeaderStyles($status)
     {
-        /* LEGACY (1.3) */
-
         $style = [];
         if (!empty($status['params']['title_color'])) {
             $color = '#'.$status['params']['title_color'];
@@ -483,7 +481,7 @@ class tasksHelper
         return join(';', $style);
     }
 
-    public static function statusNameHTML($status_id)
+    public static function statusNameHTML($status_id, $status_additional_class = '')
     {
         $statuses = self::getStatuses(null, false);
         if (!isset($status_id)) {
@@ -495,7 +493,13 @@ class tasksHelper
         }
         $s = $statuses[$status_id];
 
-        return '<span class="badge t-status-wrapper" style="' . self::getStatusHeaderStyles($s) . '">' . htmlspecialchars($s['name']) . '</span>';
+        $class = [];
+        if ($status_id == -1)
+            $class[] = "is-done";
+        elseif ($status_id == 0)
+            $class[] = "is-new";
+
+        return '<span class="badge t-status-wrapper ' . join(' ', $class) . ' ' . $status_additional_class . '" style="' . ( $status_id > 0 ? self::getStatusHeaderStyles($s) : '' ) . '">' . ( $status_id < 0 ? '<span class="small"><i class="fas fa-check"></i></span> ' : '' ) . htmlspecialchars($s['name']) . '</span>';
     }
 
     /**
