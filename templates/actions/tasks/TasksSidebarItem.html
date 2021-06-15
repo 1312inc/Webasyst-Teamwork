@@ -1,0 +1,134 @@
+{include file="./includes/TasksTaskHelpers.inc.html" inline}
+
+{$_task_number = $task.project_id|cat:'.'|cat:$task.number}
+{$_task_link = '#/task/'|cat:$_task_number|cat:'/'}
+<li class="item t-task-outer-container {$task.project.color}"
+    data-task-id="{$task.id}"
+    data-task-number="{$_task_number}"
+    data-task-uuid="{$task.uuid}"
+>
+    <div class="t-checkbox-column">
+        <label>
+            <span class="wa-checkbox">
+                <input type="checkbox" class="t-checkbox-item">
+                <span>
+                    <span class="icon">
+                        <i class="fas fa-check"></i>
+                    </span>
+                </span>
+            </span>
+        </label>
+    </div>
+    <a href="{$_task_link}" class="image">
+
+        {task_userpics_block}
+
+        {* PROJECT ICON *}
+        {if !empty($task.project.icon_html)}
+            {strip}<span class="t-project-icon">
+                {$task.project.icon_html}
+                </span>{/strip}
+        {/if}
+
+    </a>
+    <a href="{$_task_link}" class="details">
+        <div class="flexbox space-8 full-width">
+
+                                    <span>
+
+                                        {* PRIORITY *}
+
+                                        {$_priority_class_array = [
+                                        "-1" => "is-low",
+                                        "0" => "is-normal",
+                                        "1" => "is-high",
+                                        "2" => "is-urgent",
+                                        "3" => "is-onfire"
+                                        ]}
+                                        {$_priority_icon = ""}
+                                        {if !empty($task.priority)}
+                                            {if $task.priority == '-1'}
+                                                {$_priority_icon = "<i class=\"fas fa-thumbs-down\" style=\"color: var(--light-gray);\"></i>"}
+                                            {/if}
+                                            {if $task.priority == '1'}
+                                                {$_priority_icon = "<i class=\"fas fa-exclamation-triangle\" style=\"color: gold;\"></i>"}
+                                            {/if}
+                                            {if $task.priority == '2'}
+                                                {$_priority_icon = "<i class=\"fas fa-exclamation-triangle\" style=\"color: orangered;\"></i>"}
+                                            {/if}
+                                        {/if}
+
+                                        <span class="t-priority-wrapper {ifset($_priority_class_array[$task.priority])}" title="task_id={$task.id}" title="[`Double-click to change task priority`]">
+                                            {$_priority_icon}
+                                            {$task.project_id}.{$task.number}
+                                        </span>
+
+                                        {* TITLE *}
+                                        <span class="{if !empty($task.priority)&& $task.priority == '3'}bold{else}semibold{/if}">{$task.name|escape|default:"(no name)"|truncate:64}</span>
+
+                                    </span>
+
+            <span class="count align-right">
+                                        {* This vars will be mutated by tasksHelper::getDatetime, must be inited first because of Smary & PHP 7.4 cause the warnings otherwise *}
+                {$time_since_update_period = null}
+                {$time_since_update_template = null}
+                {$time_since_update_str = tasksHelper::getDatetime($task.update_datetime, $time_since_update_period, $time_since_update_template)}
+
+                                        <span class="small gray nowrap">{$time_since_update_str}</span>
+
+                                    </span>
+        </div>
+
+        <p class="hint custom-mb-8">
+
+            {* STATUS *}
+            {if !empty($task.status.name)}
+
+                {if $task.project.archive_datetime}
+                    <span class="badge t-status-wrapper is-archived"><i class="fas fa-archive fa-xs"></i> [`Archived`]</span>
+                {else}
+                    {tasksHelper::statusNameHTML($task.status.id)}
+                {/if}
+
+            {/if}
+
+            {* PREVIEW *}
+            {$task.text|truncate:128}
+
+            {* HISTORY COUNTERS *}
+            {strip}
+                {$_count_comment = 0}
+                {$_count_action = 0}
+                {foreach $task.log as $_k => $_v}
+                    {if $_v.action == 'comment'}
+                        {$_count_comment = $_count_comment + 1}
+                    {elseif $_v.action != 'add' && $_v.action != 'create'}
+                        {$_count_action = $_count_action + 1}
+                    {/if}
+                {/foreach}
+            {/strip}
+            <span class="nowrap bold" title="[`History &amp; Comments`]">
+                                        {if $_count_action}
+                                            <i class="fas fa-exchange-alt custom-ml-4"></i> {$_count_action}
+                                        {/if}
+                {if $_count_comment}
+                    <i class="fas fa-comment custom-ml-4"></i> {$_count_comment}
+                {/if}
+                                    </span>
+
+        </p>
+
+        {* PINNED COMMENTS *}
+        {$log_header_ids = array_unique([$task.assign_log_id, $task.comment_log_id])}
+        {$_sort = sort($log_header_ids)}
+        {foreach $log_header_ids as $log_id}
+            {if !empty($task['log'][$log_id])}
+                {$_l = $task.log[$log_id]}
+                {if $_l.text}
+                    <div class="box custom-mb-8 t-pinned-comment blue small"><i class="icon userpic middle" style="background-image: url('{$_l.contact.photo_url}');"></i> {$_l.text|escape|truncate:255} <span class="hint nowrap">{$_l.create_datetime|wa_datetime:'humandatetime'}</span></div>
+                {/if}
+            {/if}
+        {/foreach}
+
+    </a>
+</li>
