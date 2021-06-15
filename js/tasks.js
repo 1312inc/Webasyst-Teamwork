@@ -1004,66 +1004,43 @@
         is_new_task_displayed: false,
 
         showNewTaskForm: function(force) {
-            var $list = $("#t-tasks-wrapper"),
-                is_list_view = ( $list.length && $list.hasClass("is-detailed") );
+            if (force || !self.is_new_task_displayed) {
+                self.is_new_task_displayed = true;
 
-            if (is_list_view) {
-
-                if (force || !self.is_new_task_displayed) {
-                    self.is_new_task_displayed = true;
-
-                    $.get("?module=tasks&action=edit", {
-                        is_dialog: true
-                    }, function(response) {
-                        new Dialog({
-                            html: response,
-                            type: "create",
-                            onCancel: function() {
-                                self.is_new_task_displayed = false;
-                            }
-                        });
+                $.get("?module=tasks&action=edit", {
+                    is_dialog: true
+                }, function(response) {
+                    new Dialog({
+                        html: response,
+                        type: "create",
+                        onCancel: function() {
+                            self.is_new_task_displayed = false;
+                        }
                     });
-                }
-
-            } else {
-                var href = $("#add-task-link").attr("href");
-                if (href) {
-                    self.setHash(href);
-                }
+                });
             }
         },
 
         showEditTaskForm: function(task, $link) {
-            var $list = $("#t-tasks-wrapper"),
-                is_list_view = ( $list.length && $list.hasClass("is-detailed") ),
-                task_id = task.task_id;
+            var task_id = task.task_id;
 
-            if (is_list_view) {
+            if (!self.is_new_task_displayed) {
+                self.is_new_task_displayed = true;
 
-                if (!self.is_new_task_displayed) {
-                    self.is_new_task_displayed = true;
-
-                    $.get("?module=tasks&action=edit", {
-                        is_dialog: true,
-                        n: task_id
-                    }, function(response) {
-                        new Dialog({
-                            html: response,
-                            type: "edit",
-                            task: task,
-                            onCancel: function() {
-                                self.initPrettyPrint();
-                                self.is_new_task_displayed = false;
-                            }
-                        });
+                $.get("?module=tasks&action=edit", {
+                    is_dialog: true,
+                    n: task_id
+                }, function(response) {
+                    new Dialog({
+                        html: response,
+                        type: "edit",
+                        task: task,
+                        onCancel: function() {
+                            self.initPrettyPrint();
+                            self.is_new_task_displayed = false;
+                        }
                     });
-                }
-
-            } else {
-                var href = $link.attr("href");
-                if (href) {
-                    self.setHash(href);
-                }
+                });
             }
         },
 
