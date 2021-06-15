@@ -126,7 +126,7 @@
                 self.initFilesDrop();
 
                 // When user clicks on app icon in main menu, he probably wants to see all tasks without filtering
-                $('#wa-app-tasks a')[0].href += '#/tasks/';
+                // $('#wa-app-tasks a')[0].href += '#/tasks/';
             });
 
             $.fn.showLoading = function() {
