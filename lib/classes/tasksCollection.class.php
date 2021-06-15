@@ -12,6 +12,7 @@ class tasksCollection
     public const HASH_OUTBOX = 'outbox';
     public const HASH_STATUS = 'status';
     public const HASH_ID = 'id';
+    public const HASH_UUID = 'uuid';
     public const HASH_PROJECT = 'project';
     public const HASH_SCOPE = 'scope';
 
@@ -595,6 +596,24 @@ class tasksCollection
         if ($ids) {
             $this->where[] = "t.id IN (".implode(',', $ids).")";
             $this->default_order_by = 'FIELD(t.id, '.implode(',', $ids).')';
+        } else {
+            $this->where[] = '0';
+        }
+    }
+
+    protected function uuidPrepare($ids)
+    {
+        $ids = explode(',', (string)$ids);
+        foreach ($ids as $i => $id) {
+            $ids[$i] = trim($id);
+            if (!$ids[$i]) {
+                unset($ids[$i]);
+            }
+        }
+
+        if ($ids) {
+            $this->where[] = sprintf("t.uuid IN ('%s')", implode("','", $ids));
+            $this->default_order_by = 't.id';
         } else {
             $this->where[] = '0';
         }
