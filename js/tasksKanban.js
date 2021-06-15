@@ -63,16 +63,16 @@ const Kanban = (($) => {
                 animation: 150,
                 sort: false,
                 delay: 1500,
-	            delayOnTouchOnly: true,
+                delayOnTouchOnly: true,
                 onEnd: (/**Event*/ evt) => {
                     const taskId = $(evt.item).data("task-id"),
                         fromId = $(evt.from).data("kanban-list-status-id"),
                         toId = $(evt.to).data("kanban-list-status-id"),
                         $fromCount = $(evt.from).parent().find(".t-kanban__list__count"),
                         $toCount = $(evt.to).parent().find(".t-kanban__list__count");
-                    
+
                     // if the column hasn't changed
-                    if(fromId === toId) return false;
+                    if (fromId === toId) return false;
 
                     // change position
                     const detached = $(evt.to)
@@ -104,20 +104,20 @@ const Kanban = (($) => {
                 "/wa-content/js/sortable/jquery-sortable.min.js",
             ];
 
-            $.when
-                .apply(
-                    $,
-                    $.map(urls, (file) => {
-                        return $.ajax({
-                            cache: true,
-                            dataType: "script",
-                            url: file,
-                        });
-                    })
-                )
-                .done(() => {
-                    dfd.resolve();
+            const sortableDeferred = urls.reduce((dfd, url) => {
+                return dfd.then(() => {
+                    return $.ajax({
+                        cache: true,
+                        dataType: "script",
+                        url: url
+                    });
                 });
+            }, $.Deferred().resolve());
+
+            sortableDeferred.done(() => {
+                dfd.resolve();
+            });
+
         } else {
             dfd.resolve();
         }
