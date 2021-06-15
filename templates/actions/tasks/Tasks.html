@@ -43,15 +43,16 @@
                             data-task-uuid="{$task.uuid}"
                         >
                             <div class="t-checkbox-column">
-                                <span class="wa-checkbox">
-                                    <input type="checkbox" class="t-checkbox-item">
-                                    <span>
-                                        <span class="icon">
-                                            <i class="fas fa-check"></i>
+                                <label>
+                                    <span class="wa-checkbox">
+                                        <input type="checkbox" class="t-checkbox-item">
+                                        <span>
+                                            <span class="icon">
+                                                <i class="fas fa-check"></i>
+                                            </span>
                                         </span>
                                     </span>
-                                </span>
-
+                                </label>
                             </div>
                             <a href="{$_task_link}" class="image">
 
@@ -230,9 +231,9 @@
 
 <script>
     (function (){
-        $('.t-tasks-wrapper').on('click', '.item[data-task-number]', function (e) {
+        $('.t-tasks-wrapper').on('click', '.item[data-task-number] a', function (e) {
             e.preventDefault();
-            var $link = $(this),
+            var $link = $(this).parent(),
                 number = $link.data('task-number'),
                 $taskWrapper = $('#task-preview-wrapper');
                 $taskSkeletonContainer = $('#taskSkeleton');
