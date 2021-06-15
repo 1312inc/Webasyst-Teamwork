@@ -88,6 +88,7 @@
                                             items: ".menu > li > a",
                                             change: function(event, target, dropdown) {
                                                 $("[name=\"data[project_id]\"]").val( $(target).data("value") );
+                                                taskEdit.onProjectChange();
                                             }
                                         });
                                     })(jQuery);
