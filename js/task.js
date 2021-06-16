@@ -1594,6 +1594,14 @@ var Task = ( function($) {
                 replace();
             }
 
+            // Update the task item in the second sidebar if exists
+            $.get('?module=tasks&action=sidebarItem&id=' + that.task_id).then(function (html) {
+                var el = $('#t-tasks-wrapper [data-task-id="' + that.task_id + '"]');
+                if (el.length) {
+                    el.replaceWith(html);
+                }
+            })
+
         });
 
     };
