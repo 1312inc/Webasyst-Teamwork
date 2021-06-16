@@ -33,6 +33,16 @@ class tasksMilestone implements tasksPersistableInterface
     private $closed = false;
 
     /**
+     * @var tasksProject
+     */
+    private $project;
+
+    /**
+     * @var float
+     */
+    private $closed_percent = 0.;
+
+    /**
      * @return int|null
      */
     public function getId()
@@ -167,10 +177,50 @@ class tasksMilestone implements tasksPersistableInterface
     {
         $dbValues['id'] = (int) $dbValues['id'];
         $dbValues['project_id'] = (int) $dbValues['project_id'];
-        $dbValues['closed'] = (int) $dbValues['closed'];
+        $dbValues['closed'] = (bool) $dbValues['closed'];
 
         if (!empty($dbValues['due_date'])) {
             $dbValues['due_date'] = DateTimeImmutable::createFromFormat('Y-m-d|', $dbValues['due_date']);
         }
+    }
+
+    /**
+     * @return tasksProject
+     */
+    public function getProject(): tasksProject
+    {
+        return $this->project;
+    }
+
+    /**
+     * @param tasksProject $project
+     *
+     * @return tasksMilestone
+     */
+    public function setProject(tasksProject $project): tasksMilestone
+    {
+        $this->project = $project;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getClosedPercent(): int
+    {
+        return $this->closed_percent;
+    }
+
+    /**
+     * @param float  $closed_percent
+     *
+     * @return tasksMilestone
+     */
+    public function setClosedPercent(float $closed_percent): tasksMilestone
+    {
+        $this->closed_percent = $closed_percent;
+
+        return $this;
     }
 }
