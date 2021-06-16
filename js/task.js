@@ -490,34 +490,13 @@ var Task = ( function($) {
                     return false;
                 }
 
-                var $loading = $('<i class="icon16 loading"></i>'),
-                    $label = $link.find('.t-change-status-link-label');
-
-                $loading.css({
-                    marginTop: '6px',
-                    marginLeft: '4px'
-                }).insertAfter($label);
-
                 showConfirmDialog({
                     params: {
                         contact_id: assigned_contact_id,
                         status_id: status_id
                     },
-                    onLoad: function () {
-                        $loading.hide();
-                        var $dialog = $(this),
-                            $form = $dialog.find('form'),
-                            $button = $dialog.find('.t-change-status-link');
-                        $button.click(function (e) {
-                            e.preventDefault();
-                            $form.submit();
-                        });
-                    },
-                    onSubmit: function ($dialog) {
-                        $dialog.find('.t-loading').show();
+                    onSubmit: function () {
                         onChangeStatus($link, skip_form);
-                        $dialog.trigger('close');
-                        return false;
                     }
                 });
 
@@ -742,11 +721,24 @@ var Task = ( function($) {
         var showConfirmDialog = function (options) {
             $.get('?module=tasks&action=changeStatusConfirm', options.params || {})
                 .done(function (html) {
-                    // remove all previous dialogs in DOM
-                    $('.tasks-done-confirm-dialog').remove();
-                    // append new dialog
-                    $('body').append(html);
-                    $('.tasks-done-confirm-dialog').waDialog(options);
+                    $.waDialog({
+                        html: html,
+                        onOpen: function ($dialog, dialog_instance) {
+                            var $button = $dialog.find('.t-change-status-link');
+                                $close = $dialog.find('.cancel');
+                                
+                            $button.click(function (e) {
+                                e.preventDefault();
+                                options.onSubmit();
+                                dialog_instance.close();
+                            });
+
+                            $close.click(function (e) {
+                                e.preventDefault();
+                                dialog_instance.close();
+                            })
+                        }
+                    });
                 });
         };
 
