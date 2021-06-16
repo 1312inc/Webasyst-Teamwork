@@ -784,7 +784,8 @@ var Task = ( function($) {
 
                     // Send Request
                     $.post(href, data, function() {
-                        $.tasks.redispatch();
+                        that.reloadTask();
+                        $.tasks.reloadSidebar();
                     }, 'json');
 
                 } else {
@@ -1588,11 +1589,16 @@ var Task = ( function($) {
 
             // Update the task item in the second sidebar if exists
             $.get('?module=tasks&action=sidebarItem&id=' + that.task_id).then(function (html) {
-                var el = $('#t-tasks-wrapper [data-task-id="' + that.task_id + '"]');
+                var selector = '#t-tasks-wrapper [data-task-id="' + that.task_id + '"]',
+                    el = $(selector),
+                    status = $(html).data('statusId');
                 if (el.length) {
                     el.replaceWith(html);
+                    if (+status === -1) {
+                        $(selector).fadeOut();
+                    }
                 }
-            })
+            });
 
         });
 
