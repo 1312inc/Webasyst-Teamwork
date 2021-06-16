@@ -23,11 +23,15 @@ class tasksTasksAction extends waViewAction
         $this->applyOrder($c, $order);
 
         $total_count = null;
-        $task_rows = $c->getTasks('*,log,create_contact,assigned_contact,attachments,tags,project,favorite, relations',
-            $offset, $limit, $total_count);
+        $task_rows = $c->getTasks(
+            '*,log,create_contact,assigned_contact,attachments,tags,project,favorite, relations',
+            $offset,
+            $limit,
+            $total_count
+        );
 
-        $tasks = array();
-        $logs_by_task = array();
+        $tasks = [];
+        $logs_by_task = [];
         foreach ($task_rows as $t) {
             $tasks[$t['id']] = new tasksTask($t);
             if (!empty($t['log'])) {
@@ -52,12 +56,13 @@ class tasksTasksAction extends waViewAction
         tasksHelper::workupTasksForView($tasks);
 
         // hook jukebox
-        $backend_tasks_hooks = $this->triggerBackendTasksEvent($tasks,
-            array(
+        $backend_tasks_hooks = $this->triggerBackendTasksEvent(
+            $tasks,
+            [
                 'hash' => $hash,
                 'filters' => $filters,
-                'order' => $order
-            )
+                'order' => $order,
+            ]
         );
 
         $project_id = null;
@@ -68,54 +73,61 @@ class tasksTasksAction extends waViewAction
         $scopeId = null;
         if ($c->getType() === tasksCollection::HASH_SCOPE && !empty($collection_info['id'])) {
             $scopeId = $collection_info['id'];
+
+            $milestone = tsks()->getEntityRepository(tasksMilestone::class)
+                ->findById($scopeId);
         }
 
-        $this->view->assign(array(
-            'hash_type'           => $c->getType(),
-            'count'               => $count,
-            'offset'              => $offset,
-            'total_count'         => $total_count,
-            'search_value'        => $search_value,
-            'click_to_load_more'  => $offset > 100,
-            'next_page_url'       => self::getNextPageUrl($offset, $limit, $count, $total_count),
-            'filter_types'        => self::getFilterTypes($project_id, $hash),
-            'emptymsg'            => self::getEmptyMsg($c->getType(), $collection_info, $filters),
-            'updater_url'         => self::getUpdaterUrl($c, $tasks, $total_count),
-            'no_filters_hash'     => '#/tasks/'.trim($hash, '\/').'/',
-            'list_view_type'      => self::getListViewType(),
-            'is_filter_set'       => !!$filters,
-            'current_sort'        => $order,
-            'tasks'               => $tasks,
-            'hash'                => $hash,
-            'parsed_hash'         => $c->getHash(),
-            'list'                => $this->getList($hash, $filters, $order, $c),
-            'backend_tasks_hooks' => $backend_tasks_hooks,
-            'tags_cloud'          => self::getTagsCloud($project_id),
-            'statuses'            => self::getStatusFilterType(),
+        $this->view->assign(
+            [
+                'hash_type' => $c->getType(),
+                'count' => $count,
+                'offset' => $offset,
+                'total_count' => $total_count,
+                'search_value' => $search_value,
+                'click_to_load_more' => $offset > 100,
+                'next_page_url' => self::getNextPageUrl($offset, $limit, $count, $total_count),
+                'filter_types' => self::getFilterTypes($project_id, $hash),
+                'emptymsg' => self::getEmptyMsg($c->getType(), $collection_info, $filters),
+                'updater_url' => self::getUpdaterUrl($c, $tasks, $total_count),
+                'no_filters_hash' => '#/tasks/' . trim($hash, '\/') . '/',
+                'list_view_type' => self::getListViewType(),
+                'is_filter_set' => !!$filters,
+                'current_sort' => $order,
+                'tasks' => $tasks,
+                'hash' => $hash,
+                'parsed_hash' => $c->getHash(),
+                'list' => $this->getList($hash, $filters, $order, $c),
+                'backend_tasks_hooks' => $backend_tasks_hooks,
+                'tags_cloud' => self::getTagsCloud($project_id),
+                'statuses' => self::getStatusFilterType(),
 
-            'show_settings' => wa()->getUser()->isAdmin('tasks') && in_array(
-                    $c->getType(),
-                    [tasksCollection::HASH_PROJECT, tasksCollection::HASH_SCOPE],
-                    true
-                ),
-            'settings_url' => $project_id
-                ? "project/$project_id/"
-                : ($scopeId ? "scope/$scopeId/" : ''),
-        ));
+                'show_settings' => wa()->getUser()->isAdmin('tasks') && in_array(
+                        $c->getType(),
+                        [tasksCollection::HASH_PROJECT, tasksCollection::HASH_SCOPE],
+                        true
+                    ),
+                'settings_url' => $project_id
+                    ? "project/$project_id/"
+                    : ($scopeId ? "scope/$scopeId/" : ''),
+
+                'milestone' => $milestone ?? null,
+            ]
+        );
     }
 
     protected function applyFilters(tasksCollection $c, $filters)
     {
         $filters && $c->filter($filters);
         $type = $c->getType();
-        if (!in_array($type, array('search', 'outbox', 'status', 'id')) && (strpos($filters, 'status_id') === false)) {
+        if (!in_array($type, ['search', 'outbox', 'status', 'id']) && (strpos($filters, 'status_id') === false)) {
             $c->addWhere('t.status_id >= 0');
         }
     }
 
     protected function applySince(tasksCollection $c, $since)
     {
-        $since && $c->addWhere("t.update_datetime > '".date('Y-m-d H:i:s', $since)."'");
+        $since && $c->addWhere("t.update_datetime > '" . date('Y-m-d H:i:s', $since) . "'");
     }
 
     protected function applyOrder(tasksCollection $c, $order)
@@ -138,7 +150,7 @@ class tasksTasksAction extends waViewAction
 
     protected function getList($hash, $filters, $order, tasksCollection $c)
     {
-        $list_id = (int)wa()->getRequest()->get('list_id');
+        $list_id = (int) wa()->getRequest()->get('list_id');
         $lm = new tasksListModel();
 
         $list = null;
@@ -158,14 +170,17 @@ class tasksTasksAction extends waViewAction
         if ($list && !isset($list['found_by_id'])) {
             $list['found_by_id'] = false;
         }
+
         return $list;
     }
 
     /**
      * Trigger 'backend_tasks' event
      * See doc comments in method body
+     *
      * @param $tasks
      * @param $params
+     *
      * @return array
      */
     protected function triggerBackendTasksEvent(&$tasks, $params)
@@ -180,9 +195,9 @@ class tasksTasksAction extends waViewAction
          * @event backend_tasks
          *
          * @param int[]|array[]|tasksTask[] $tasks
-         * @param string $hash
-         * @param string $filters
-         * @param string $order
+         * @param string                    $hash
+         * @param string                    $filters
+         * @param string                    $order
          *
          * Returns complex structure
          *
@@ -247,12 +262,14 @@ class tasksTasksAction extends waViewAction
         $backend_tasks_result = wa()->event('backend_tasks', $params);
 
         foreach ($tasks as &$task) {
-            $hooks = array(
-                'backend_task' => array()
-            );
+            $hooks = [
+                'backend_task' => [],
+            ];
             foreach ($backend_tasks_result as $plugin_id => $backend_tasks) {
-                $hooks['backend_task'][$plugin_id] = array();
-                $backend_tasks['tasks'] = isset($backend_tasks['tasks']) && is_array($backend_tasks['tasks']) ? $backend_tasks['tasks'] : array();
+                $hooks['backend_task'][$plugin_id] = [];
+                $backend_tasks['tasks'] = isset($backend_tasks['tasks']) && is_array(
+                    $backend_tasks['tasks']
+                ) ? $backend_tasks['tasks'] : [];
                 if (isset($backend_tasks['tasks'][$task['id']])) {
                     $hooks['backend_task'][$plugin_id] = $backend_tasks['tasks'][$task['id']];
                 }
@@ -262,7 +279,7 @@ class tasksTasksAction extends waViewAction
         }
         unset($task);
 
-        $page_hooks = array();
+        $page_hooks = [];
         foreach ($backend_tasks_result as $plugin_id => $backend_tasks) {
             foreach ($backend_tasks as $key => $result) {
                 if ($key !== 'tasks') {
@@ -270,40 +287,41 @@ class tasksTasksAction extends waViewAction
                 }
             }
         }
+
         return $page_hooks;
     }
 
     protected static function getFilterTypes($project_id, $hash = null)
     {
-        $filter_types['project_id'] = array(
+        $filter_types['project_id'] = [
             'id' => 'project_id',
             'hash' => 'project',
-            'options' => self::getProjectFilterType($hash)
-        );
-        $filter_types['milestone_id'] = array(
+            'options' => self::getProjectFilterType($hash),
+        ];
+        $filter_types['milestone_id'] = [
             'id' => 'milestone_id',
             'hash' => 'scope',
-            'options' => self::getMilestoneFilterType()
-        );
+            'options' => self::getMilestoneFilterType(),
+        ];
 
         if ($hash !== 'inbox') {
-            $filter_types['assigned_contact_id'] = array(
+            $filter_types['assigned_contact_id'] = [
                 'id' => 'assigned_contact_id',
                 'hash' => 'assigned',
-                'options' => self::getUsersFilterType($project_id)
-            );
+                'options' => self::getUsersFilterType($project_id),
+            ];
         } else {
-            $filter_types['from_contact_id'] = array(
+            $filter_types['from_contact_id'] = [
                 'id' => 'from_contact_id',
-                'options' => self::getUsersFilterType($project_id)
-            );
+                'options' => self::getUsersFilterType($project_id),
+            ];
         }
 
-        $filter_types['status_id'] = array(
+        $filter_types['status_id'] = [
             'id' => 'status_id',
             'hash' => 'status',
             'options' => self::getStatusFilterType($project_id),
-        );
+        ];
 
         return $filter_types;
     }
@@ -324,17 +342,20 @@ class tasksTasksAction extends waViewAction
             $sql = "SELECT DISTINCT `project_id`
                     FROM `tasks_task`
                     WHERE `project_id` IN (:project_ids) AND `assigned_contact_id` = :contact_id AND `status_id` != -1";
-            $result = $project_model->query($sql, array(
-                'project_ids' => $project_ids,
-                'contact_id' => wa()->getUser()->getId()
-            ))->fetchAll('project_id');
+            $result = $project_model->query(
+                $sql,
+                [
+                    'project_ids' => $project_ids,
+                    'contact_id' => wa()->getUser()->getId(),
+                ]
+            )->fetchAll('project_id');
             foreach ($project_items as &$item) {
                 $item['is_empty'] = !isset($result[$item['id']]);
             }
             unset($item);
         }
 
-        return array('' => $all_projects) + $project_items;
+        return ['' => $all_projects] + $project_items;
     }
 
     protected static function getStatusFilterType($project_id = null)
@@ -348,49 +369,51 @@ class tasksTasksAction extends waViewAction
         $all_statuses_without_archive['name'] = _w('All including closed');
         $all_statuses_without_archive['id'] = 'all';
 
-        return array(
+        return [
                 '' => $all_statuses,
-            )
+            ]
             + tasksHelper::getStatuses($project_id)
-            + array('all' => $all_statuses_without_archive);
+            + ['all' => $all_statuses_without_archive];
     }
 
     protected static function getMilestoneFilterType()
     {
         $milestone_model = new tasksMilestoneModel();
         $milestones = $milestone_model->where('closed=0')->order('due_date')->fetchAll('id');
-        return array(
-                ''  => array(
-                    'id'   => '',
+
+        return [
+                '' => [
+                    'id' => '',
                     'name' => _w('Any scope'),
-                    'project_id' => ''
-                ),
-                '0' => array(
-                    'id'   => 'NULL',
-                    'op'   => '==',
+                    'project_id' => '',
+                ],
+                '0' => [
+                    'id' => 'NULL',
+                    'op' => '==',
                     'name' => _w('No scope'),
-                    'project_id' => ''
-                ),
-            ) + $milestones;
+                    'project_id' => '',
+                ],
+            ] + $milestones;
     }
 
     protected static function getUsersFilterType($project_id)
     {
-        return array(
-                '' => array(
-                    'id'    => '',
-                    'name'  => _w('Everyone'),
+        return [
+                '' => [
+                    'id' => '',
+                    'name' => _w('Everyone'),
                     'photo' => '',
-                ),
-            ) + tasksHelper::getTeam($project_id);
+                ],
+            ] + tasksHelper::getTeam($project_id);
     }
 
     protected static function getListViewType()
     {
         $type = waRequest::get('view', '', 'string');
-        if (!in_array($type, array('detailed', 'table'))) {
+        if (!in_array($type, ['detailed', 'table'])) {
             $type = 'detailed';
         }
+
         return $type;
     }
 
@@ -398,67 +421,80 @@ class tasksTasksAction extends waViewAction
     {
         if (!$filters) {
             if ($type == 'inbox') {
-                return array(
-                    'name'    => 'me-assigned',
-                    'title'   => _w('Your inbox is empty'),
-                    'message' => _w('Inbox automatically collects all tasks assigned to you. No tasks are assigned to you right now :-)'),
-                    'img_url' => wa()->getAppStaticUrl('tasks').'img/notice/welcome.png',
-                );
+                return [
+                    'name' => 'me-assigned',
+                    'title' => _w('Your inbox is empty'),
+                    'message' => _w(
+                        'Inbox automatically collects all tasks assigned to you. No tasks are assigned to you right now :-)'
+                    ),
+                    'img_url' => wa()->getAppStaticUrl('tasks') . 'img/notice/welcome.png',
+                ];
             } elseif ($type == 'assigned' && $info) {
                 if ($info['id'] == wa()->getUser()->getId()) {
-                    return array(
-                        'name'    => 'me-assigned',
-                        'title'   => _w('Your inbox is empty'),
-                        'message' => _w('Inbox automatically collects all tasks assigned to you. No tasks are assigned to you right now :-)'),
-                        'img_url' => wa()->getAppStaticUrl('tasks').'img/notice/welcome.png',
-                    );
+                    return [
+                        'name' => 'me-assigned',
+                        'title' => _w('Your inbox is empty'),
+                        'message' => _w(
+                            'Inbox automatically collects all tasks assigned to you. No tasks are assigned to you right now :-)'
+                        ),
+                        'img_url' => wa()->getAppStaticUrl('tasks') . 'img/notice/welcome.png',
+                    ];
                 } else {
                     $c = new waContact($info);
-                    return array(
-                        'name'    => 'user-assigned',
-                        'title'   => sprintf_wp("%s's task list is empty", htmlspecialchars($c->getName())),
-                        'message' => sprintf_wp('No tasks are assigned to %s right now.', htmlspecialchars($c->getName())),
+
+                    return [
+                        'name' => 'user-assigned',
+                        'title' => sprintf_wp("%s's task list is empty", htmlspecialchars($c->getName())),
+                        'message' => sprintf_wp(
+                            'No tasks are assigned to %s right now.',
+                            htmlspecialchars($c->getName())
+                        ),
                         //'img_url' => $c->getPhoto(192, 192),
-                        'img_url' => wa()->getAppStaticUrl('tasks').'img/notice/welcome.png',
-                    );
+                        'img_url' => wa()->getAppStaticUrl('tasks') . 'img/notice/welcome.png',
+                    ];
                 }
             } elseif ($type == 'outbox') {
-                return array(
-                    'name'    => 'outbox',
-                    'title'   => _w('Your outbox is empty'),
+                return [
+                    'name' => 'outbox',
+                    'title' => _w('Your outbox is empty'),
                     'message' => _w('Outbox automatically collects all tasks you’ve created.'),
-                    'img_url' => wa()->getAppStaticUrl('tasks').'img/notice/outbox.png',
-                );
+                    'img_url' => wa()->getAppStaticUrl('tasks') . 'img/notice/outbox.png',
+                ];
             } elseif ($type == 'favorites') {
-                return array(
-                    'name'    => 'favorites',
-                    'title'   => _w('Your favorite task list is empty'),
-                    'message' => _w('To add a task to your personal favorite list, click on a tiny star icon next to task name.'),
-                    'img_url' => wa()->getAppStaticUrl('tasks').'img/notice/favorite.png',
-                );
+                return [
+                    'name' => 'favorites',
+                    'title' => _w('Your favorite task list is empty'),
+                    'message' => _w(
+                        'To add a task to your personal favorite list, click on a tiny star icon next to task name.'
+                    ),
+                    'img_url' => wa()->getAppStaticUrl('tasks') . 'img/notice/favorite.png',
+                ];
             } elseif ($type == 'project' && $info) {
-                return array(
-                    'name'    => 'project',
-                    'title'   => sprintf_wp("No tasks in %s project", htmlspecialchars($info['name'])),
+                return [
+                    'name' => 'project',
+                    'title' => sprintf_wp("No tasks in %s project", htmlspecialchars($info['name'])),
                     'message' => _w('There are no tasks in this project.'),
-                    'img_url' => wa()->getAppStaticUrl('tasks').'img/notice/welcome.png',
-                );
+                    'img_url' => wa()->getAppStaticUrl('tasks') . 'img/notice/welcome.png',
+                ];
             } elseif ($type == 'status' && $info) {
-                return array(
-                    'name'    => 'status',
-                    'title'   => sprintf_wp("No tasks in %s status", htmlspecialchars($info['name'])),
-                    'message' => sprintf_wp('There are currently no tasks in %s status.', htmlspecialchars($info['name'])),
-                    'img_url' => wa()->getAppStaticUrl('tasks').'img/notice/welcome.png',
-                );
+                return [
+                    'name' => 'status',
+                    'title' => sprintf_wp("No tasks in %s status", htmlspecialchars($info['name'])),
+                    'message' => sprintf_wp(
+                        'There are currently no tasks in %s status.',
+                        htmlspecialchars($info['name'])
+                    ),
+                    'img_url' => wa()->getAppStaticUrl('tasks') . 'img/notice/welcome.png',
+                ];
             }
         }
 
-        return array(
-            'name'    => 'all',
-            'title'   => _w('Task list is empty'),
+        return [
+            'name' => 'all',
+            'title' => _w('Task list is empty'),
             'message' => _w('No tasks match your search criteria.'),
-            'img_url' => wa()->getAppStaticUrl('tasks').'img/notice/welcome.png',
-        );
+            'img_url' => wa()->getAppStaticUrl('tasks') . 'img/notice/welcome.png',
+        ];
     }
 
     protected static function getNextPageUrl($offset, $limit, $count, $total_count)
@@ -469,7 +505,8 @@ class tasksTasksAction extends waViewAction
         $params = waRequest::get();
         $params['offset'] = ifset($params['offset'], 0) + $limit;
         unset($params['since']);
-        return '?'.http_build_query($params);
+
+        return '?' . http_build_query($params);
     }
 
     protected static function getUpdaterUrl($collection, $tasks, $total_count)
@@ -479,7 +516,8 @@ class tasksTasksAction extends waViewAction
         }
         $params = waRequest::get();
         $params['since'] = self::getLastUpdateTime($collection, $tasks, $total_count);
-        return '?'.http_build_query($params);
+
+        return '?' . http_build_query($params);
     }
 
     protected static function getLastUpdateTime($collection, $tasks, $total_count)
@@ -492,6 +530,7 @@ class tasksTasksAction extends waViewAction
                     $max_ts = $ts;
                 }
             }
+
             return $max_ts;
         }
 
@@ -501,7 +540,7 @@ class tasksTasksAction extends waViewAction
     protected function getOrder(tasksCollection $collection)
     {
         $order = wa()->getRequest()->get('order');
-        $order = is_scalar($order) ? (string)$order : '';
+        $order = is_scalar($order) ? (string) $order : '';
 
         if (strlen($order) == 0) {
             $order = $this->getSavedOrder($collection);
@@ -518,7 +557,7 @@ class tasksTasksAction extends waViewAction
     protected function saveOrder(tasksCollection $collection, $order)
     {
         $key = $this->getOrderKey($collection);
-        $order = is_scalar($order) ? (string)$order : '';
+        $order = is_scalar($order) ? (string) $order : '';
         $csm = new waContactSettingsModel();
         if (strlen($order) == 0 || $order === $this->getDefaultOrder($collection)) {
             $csm->delete($this->getUserId(), $this->getAppId(), $key);
@@ -532,7 +571,8 @@ class tasksTasksAction extends waViewAction
         $key = $this->getOrderKey($collection);
         $csm = new waContactSettingsModel();
         $order = $csm->getOne($this->getUserId(), $this->getAppId(), $key);
-        return is_scalar($order) ? (string)$order : '';
+
+        return is_scalar($order) ? (string) $order : '';
     }
 
     protected function getDefaultOrder(tasksCollection $collection)
@@ -546,6 +586,7 @@ class tasksTasksAction extends waViewAction
         } else {
             $order = 'priority';
         }
+
         return $order;
     }
 
@@ -556,6 +597,7 @@ class tasksTasksAction extends waViewAction
             return "tasks/tasks_order/{$type}";
         } else {
             $info = $collection->getInfo();
+
             return "tasks/tasks_order/{$type}/{$info['id']}";
         }
     }
@@ -563,6 +605,7 @@ class tasksTasksAction extends waViewAction
     protected static function getTagsCloud($project_id = null)
     {
         $tasks_tags_model = new tasksTaskTagsModel();
+
         return $tasks_tags_model->getCloud($project_id);
     }
 }

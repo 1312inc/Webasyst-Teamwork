@@ -13,6 +13,10 @@
             {foreach $_backend_body_hooks as $_}{$_.top|default:''}{/foreach}
 
             <header class="t-header-wrapper">
+                {if isset($milestone) && $milestone->getClosedPercent() >= 100}
+                    game is over
+                {/if}
+
                 {include file="./TasksHeader.html" inline}
             </header>
             <script>(function() { "use strict";
