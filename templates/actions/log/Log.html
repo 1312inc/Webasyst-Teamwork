@@ -103,13 +103,24 @@
     {/if}
 
     {if $logs}
+    <div class="article">
+        <div class="article-body">
         <div class="t-logs-wrapper" id="t-logs-wrapper">
             {foreach $logs as $l}{strip}
-                <div class="t-comment-item profile image32px flexbox space-8 custom-py-0 custom-mt-20 custom-mb-40" data-log-id="{$l.id|escape}">
-                    <div class="image">
+            <div class="t-comment-item-wrapper custom-mb-20">
+                <div class="t-comment-item flexbox space-8" style="width: 100%;" data-log-id="{$l.id|escape}">
+                    <div class="image" style="position: relative;">
                         <a href="#/log/contact_id={$l.contact_id}/" title="{$l.contact.name|escape}">
                             <img class="userpic userpic-48" src="{$l.contact.photo_url}" alt="{$l.contact.name|escape}">
                         </a>
+                        {if !empty($l.task.project.icon_html)}
+                        {$_task_number = '#/task/'|cat:$l.task.project_id|cat:'.'|cat:$l.task.number}
+                        <a href="{$_task_number}">
+                            <span class="t-project-icon" style="line-height: normal;top: 30px;left: 30px;">
+                                {$l.task.project.icon_html}
+                            </span>
+                        </a>
+                        {/if}
                     </div>
                     <div class="details">
                         <header class="t-comment-header">
@@ -196,6 +207,7 @@
                         {/if}
                     </div>
                 </div>
+            </div>
             {/strip}{/foreach}
 
             <div id="end-of-logs" class="block custom-mx-16 custom-mb-24">
@@ -219,6 +231,8 @@
                 })();</script>
             </div>
         </div>
+    </div>
+    </div>
     {else}
         {* !!! TODO: nice friendly message when there are no logs in list *}
     {/if}
