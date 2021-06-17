@@ -13,10 +13,6 @@
             {foreach $_backend_body_hooks as $_}{$_.top|default:''}{/foreach}
 
             <header class="t-header-wrapper">
-                {if isset($milestone) && $milestone->getClosedPercent() >= 100}
-                    game is over
-                {/if}
-
                 {include file="./TasksHeader.html" inline}
             </header>
             <script>(function() { "use strict";
@@ -70,10 +66,20 @@
                         <div class="t-image">
                             <img src="{$emptymsg.img_url|escape}" alt="">
                         </div>
-                        <h3 class="t-header">{$emptymsg.title|escape}</h3>
-                        <p class="t-desc">{$emptymsg.message|escape}</p>
+                        {if isset($milestone) && $milestone->getClosedPercent() >= 100}
+                            <h3 class="t-header">[`All done!`]</h3>
+                            <p class="t-desc">[`Congratulations! Everything set to be done in this milestone is marked as complete.`]</p>
+                            <a class="button outlined light-gray custom-mt-24" href="#/settings/scope/{$milestone->getId()}/">
+                                <i class="fas fa-cog"></i>
+                                [`Go to settings`]
+                            </a>
+                        {else}
+                            <h3 class="t-header">{$emptymsg.title|escape}</h3>
+                            <p class="t-desc">{$emptymsg.message|escape}</p>
+                        {/if}
                     </div>
                 </div>
+
             {/if}
 
             <!-- plugin hook: 'backend_tasks.%plugin_id%.body.bottom' -->
