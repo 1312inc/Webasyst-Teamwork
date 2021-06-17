@@ -14,7 +14,7 @@
                     </span>
 
                     <span class="hide-when-closed">
-                        <a href="javascript:void(0)" class="t-control-link color badge large t-status-wrapper">{$status.name|escape|default:"[`New status`]"}</a>
+                        <a href="javascript:void(0)" class="t-control-link color badge large t-status-wrapper" style="color:#{ifset($status.params.title_color, '000')|escape};background:#{ifset($status.params.button_color, 'f0f0f0')|escape};">{$status.name|escape|default:"[`New status`]"}</a>
                     </span>
 
 
@@ -96,7 +96,7 @@
                             <div class="field">
                                 <div class="name">[`Background color`]</div>
                                 <div class="value colorpicker">
-                                    # <input type="text" class="short small" placeholder="f0f0f0" style="width: 80px;" name="status[{$status.id}][params][button_color]" value="{ifset($status.params.button_color,'f0f0f0')|escape}">
+                                    # <input type="text" data-type="bg" class="short small" placeholder="f0f0f0" style="width: 80px;" name="status[{$status.id}][params][button_color]" value="{ifset($status.params.button_color,'f0f0f0')|escape}">
                                     <span class="icon"><i class="rounded" style="background:#{ifset($status.params.button_color, 'f0f0f0')|escape};"></i></span>
                                 </div>
                             </div>
@@ -104,7 +104,7 @@
                             <div class="field">
                                 <div class="name">[`Text color`]</div>
                                 <div class="value colorpicker">
-                                    # <input type="text" class="short small" placeholder="f0f0f0" style="width: 80px;" name="status[{$status.id}][params][title_color]" value="{ifset($status.params.title_color,'000000')|escape}">
+                                    # <input type="text" data-type="text" class="short small" placeholder="f0f0f0" style="width: 80px;" name="status[{$status.id}][params][title_color]" value="{ifset($status.params.title_color,'000000')|escape}">
                                     <span class="icon"><i class="rounded" style="background:#{ifset($status.params.title_color, '000000')|escape};"></i></span>
                                 </div>
                             </div>
@@ -353,8 +353,10 @@
 
             $status_list.on('click', '.colorpicker .color, .colorpicker input', function() {
                 var $field = $(this).closest('.colorpicker');
-                var $icon = $field.find('.color');
+                var $icon = $field.find('.rounded');
                 var $input = $field.find('input');
+                var $b = $('.t-settings-item.is-opened').find('.t-control-link');
+                var type = $input.data('type');
 
                 // Attach colorpicker position to this field
                 var pos = $field.position();
@@ -366,6 +368,12 @@
                 // When user selects color, change colors in table cell
                 farbtastic.linkTo(function(new_color) {
                     $icon.css('background', new_color);
+                    if (type === 'bg') {
+                        $b.css('background', new_color);
+                    }
+                    if (type === 'text') {
+                        $b.css('color', new_color);
+                    }
                     $input.val(new_color && new_color[0] == '#' ? new_color.substr(1) : new_color);
                     $form.change();
                 });
