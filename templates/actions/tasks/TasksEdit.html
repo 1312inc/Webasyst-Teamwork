@@ -151,7 +151,7 @@
 
                 {* CONTENT *}
                 <div class="t-form-line t-description-wrapper">
-                    <textarea name="data[text]" cols="1" rows="1" class="t-redactor-task-edit" tabindex="2" placeholder="[`Input task description`]">{$task.text|escape}</textarea>
+                    <textarea name="data[text]" cols="1" rows="1" class="t-redactor-task-edit" tabindex="2" placeholder="[`Task summary`]">{$task.text|escape}</textarea>
 
                     <!-- plugin hook: 'backend_task_edit.%plugin_id.description' -->
                     {* @event backend_task_edit.%plugin_id%.description *}
@@ -172,7 +172,7 @@
                 <div class="t-form-line t-attach-wrapper">
                     {* Droparea *}
                     <div class="t-attach-droparea" id="t-attach-droparea">
-                        <div class="t-droparea-hint">[`Click to select files or drag them here`]</div>
+                        <div class="t-droparea-hint">[`Attach files`]</div>
                         <input type="file" name="files[]" multiple="true" />
                     </div>
                     {* Container For Attached Files*}
@@ -243,7 +243,7 @@
 
                 {* ASSIGN *}
                 <div class="t-form-line field t-team-list-wrapper">
-                    <div class="name for-checkbox">[`Assign to`]</div>
+                    <div class="name custom-mt-4">[`Assign to`]</div>
                     <div class="value">
                         <ul class="js-task-users-list">
                             {$_count = 0}
@@ -276,13 +276,13 @@
                                         <input type="radio" name="data[assigned_contact_id]" value="0"{if !$_is_something_checked} checked{/if}>
                                         <span></span>
                                     </span>
-                                    <i class="userpic userpic-32" style="background-image: url('{$wa_url}wa-content/img/userpic96.jpg')"></i>
+                                    <i class="userpic userpic-32" style="background-image: url('{$wa_url}wa-content/img/userpic.svg')"></i>
                                     <span class="gray">[`Unassigned`]</span>
                                 </label>
                             </li>
 
                             <li class="t-link-item">
-                                <a class="show-team-users" href="javascript:void(0);">[`Show all`]</a>
+                                <a class="show-team-users small" href="javascript:void(0);">[`Show everyone`]</a>
                             </li>
                         </ul>
                     </div>
@@ -292,7 +292,7 @@
 
 
                 <div class="t-form-line field t-due-date-wrapper">
-                    <div class="name for-input">[`Deadline`]</div>
+                    <div class="name for-input">[`Due date`]</div>
                     <div class="value">
                         <input type="text" class="t-datepicker-due-date">
                         <input type="hidden" name="data[due_date]" value="{$task.due_date|escape}"><i class="fas fa-flag-checkered custom-ml-4"></i>

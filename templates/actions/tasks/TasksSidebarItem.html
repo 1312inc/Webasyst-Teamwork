@@ -94,7 +94,7 @@
             {/if}
 
             {* PREVIEW *}
-            {$task.text|truncate:128}
+            {strip_tags($task.text)|truncate:128}
 
             {* HISTORY COUNTERS *}
             {strip}

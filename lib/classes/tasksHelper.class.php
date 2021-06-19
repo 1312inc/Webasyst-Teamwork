@@ -151,7 +151,7 @@ class tasksHelper
                 'name' => _w('Open'),
                 'button' => '',
                 'special' => 1,
-                'icon' => 'status-green-tiny',
+                'icon' => wa()->whichUI() == '1.3' ? 'status-green-tiny' : '',
             ];
             $statuses += $status_model->getAll('id');
             $statuses[-1] = [
@@ -160,10 +160,14 @@ class tasksHelper
                 'button' => _w('Close'),
                 'action_name' => _w('done'),
                 'special' => 1,
-                'icon' => 'done-bw',
+                'icon' => wa()->whichUI() == '1.3' ? 'done-bw' : '',
             ];
+
             foreach ($statuses as $id => $s) {
-                $statuses[$id] = self::extendIcon($statuses[$id] + $defaults);
+                if (wa()->whichUI() == '1.3')
+                    $statuses[$id] = self::extendIcon($statuses[$id] + $defaults);
+                else
+                    $statuses[$id] = $statuses[$id] + $defaults;
             }
 
             $status_params_model = new tasksStatusParamsModel();

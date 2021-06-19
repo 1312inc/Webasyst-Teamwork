@@ -150,7 +150,7 @@ var TaskEdit = ( function($) { "use strict";
         $.event.trigger("onTaskEditInit", that);
 
 
-        $R('.t-redactor-task-edit', { 
+        $R('.t-redactor-task-edit', {
             'focus': true,
             imageData: {
                 task_uuid: '{$task_uuid}'
@@ -212,7 +212,7 @@ var TaskEdit = ( function($) { "use strict";
             selector.setSelected('');
         }
     };
-    
+
     TaskEdit.prototype.setFilterParams = function () {
         var that = this,
             $task = that.$task,
@@ -855,7 +855,7 @@ var TaskEdit = ( function($) { "use strict";
             $file.remove();
 
         } else {
-            if (confirm($_("Are you sure?"))) {
+            if (confirm($_("Delete the attached file?"))) {
                 var file_ident = $file.data("file-ident"),
                     delete_href = "?module=attachments&action=delete",
                     delete_data = {

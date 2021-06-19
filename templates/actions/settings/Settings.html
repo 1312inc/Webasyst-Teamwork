@@ -130,10 +130,10 @@
                                 <div class="name">[`Assignment`]</div>
                                 <div class="value no-shift">
                                 {$options = [
-                                    ''          => "[`Do not change assignment`]",
-                                    'author'    => "[`Assign to user who created the task`]",
-                                    'user'      => "[`Assign to specific user`]",
-                                    'select'    => "[`Show assignment selector every time`]"
+                                    ''          => "[`Keep the assignee unchanged`]",
+                                    'author'    => "[`Assign to the user who created the task`]",
+                                    'user'      => "[`Force assign to`]",
+                                    'select'    => "[`Allow to select the assignee`]"
                                 ]}
                                 {foreach $options as $value => $name}{strip}
                                         <div class="field-group__item">
@@ -148,16 +148,16 @@
                                         </label>
 
                                         {if $value == 'user'}
-                                        <div class="wa-select small custom-ml-12 show-when-selected" style="display:none;"">
+                                        <div class="wa-select smaller custom-ml-12 show-when-selected" style="display:none;"">
                                             <select name="status[{$status.id}][params][assign_user]">
-                                                <option value="">[`Clear assignment`]</option>
                                                 {foreach tasksHelper::getTeam() as $u}
                                                     <option {if ifempty($status.params.assign_user, 0) == $u.id}selected{/if} value="{$u.id}">{$u.name|escape}</option>
                                                 {/foreach}
+                                                <option value="">[`Unassigned`]</option>
                                             </select>
                                         </div>
                                         {elseif $value == 'select'}
-                                            <div class="show-when-selected" style="display:none;margin-left:1em;"><label>
+                                            <div class="show-when-selected small" style="display:none;margin-left:1em;"><label>
                                                 <span class="wa-checkbox custom-mr-4">
                                                     <input type="checkbox" name="status[{$status.id}][params][allow_clear_assign]"
                                                     {if !empty($status.params.allow_clear_assign)} checked{/if}
@@ -168,7 +168,7 @@
                                                         </span>
                                                     </span>
                                                 </span>
-                                                [`Allow to clear assignment`]
+                                                [`Allow making the task unassigned`]
                                             </label></div>
                                         {/if}
                                     </div>
@@ -178,7 +178,7 @@
                             </div>
 
                             <div class="field">
-                                <div class="name">[`Comment form`]</div>
+                                <div class="name">[`Comment`]</div>
                                 <div class="value no-shift"><label>
                                     <span class="wa-checkbox">
                                         <input type="checkbox" name="status[{$status.id}][params][allow_comment]" value="1"{if !empty($status.params.allow_comment)} checked{/if}>

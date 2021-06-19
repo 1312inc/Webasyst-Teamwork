@@ -144,51 +144,50 @@
             </span>
 
             <div class="dropdown">
-                <span class="dropdown-toggle semibold">
+                <span class="dropdown-toggle semibold" style="cursor: pointer;">
                     [`Selected tasks`]
-                    <span class="counter"></span>
+                    <span class="counter badge blue small custom-ml-4" style="display: none;"></span>
                 </span>
                 <div class="dropdown-body" style="min-width: 300px;">
 
                     <ul class="menu">
-                        <li>
-                            <a class="t-done-link" href="javascript:void(0);">
-                                <i class="fas fa-check-circle"></i>
-                                <span>[`Done`]</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="t-delete-link" href="javascript:void(0);">
-                                <i class="fas fa-times-circle"></i>
-                                <span>[`Delete`]</span>
-                            </a>
-                        </li>
                         <li>
                             <a class="t-forward-link" href="javascript:void(0);" title="[`Forward`]">
                                 <i class="fas fa-arrow-right"></i>
                                 <span>[`Forward`]</span>
                             </a>
                         </li>
+                        <li class="bottom-padded">
+                            <a class="t-done-link" href="javascript:void(0);">
+                                <i class="fas fa-check-circle text-gray"></i>
+                                <span>[`Close tasks`]</span>
+                            </a>
+                        </li>
                         <li>
                             <a class="set-priority-link" href="javascript:void(0);">
-                                <i class="fas fa-exclamation"></i>
+                                <i class="fas fa-exclamation-triangle text-yellow"></i>
                                 <span>[`Set priority`]</span>
                             </a>
                         </li>
                         <li>
                             <a class="set-deadline-link" href="javascript:void(0);">
-                                <i class="fas fa-fire"></i>
-                                <span>[`Set deadline`]</span>
+                                <i class="fas fa-flag-checkered text-black"></i>
+                                <span>[`Set due date`]</span>
+                            </a>
+                        </li>
+                        <li class="top-padded">
+                            <a class="t-delete-link" href="javascript:void(0);">
+                                <i class="fas fa-trash-alt text-red"></i>
+                                <span>[`Delete tasks`]</span>
                             </a>
                         </li>
                     </ul>
 
                     <hr class="custom-mb-8" />
 
-                    <div class="t-tags-dropdown box custom-pt-0">
+                    <div class="t-tags-dropdown box custom-pt-0 custom-pb-4">
 
                         <ul class="chips tags small">
-                            <li class="transparent">[`Add tag`]:</li>
 
                             {if count($tags_cloud) <= tasksTaskTagsModel::TAGS_MAX_COUNT}
                                 {foreach $tags_cloud as $tag}
@@ -211,9 +210,10 @@
                             <li class="t-add-tag">
                                 <form action="?module=tags&action=set">
                                     <div class="t-input-wrapper">
-                                        <input type="text" class="t-input shorter js-t-task-tags-autocomplete" name="tag_name"
+                                        <i class="fas fa-hashtag text-green"></i>
+                                        <input type="text" class="t-input custom-ml-8 shorter js-t-task-tags-autocomplete" name="tag_name"
                                                autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true"
-                                               placeholder="[`Custom tag...`]">
+                                               placeholder="[`Tag tasks`]">
                                         <input type="submit" class="t-submit button green" value="[`Add`]">
                                     </div>
                                 </form>

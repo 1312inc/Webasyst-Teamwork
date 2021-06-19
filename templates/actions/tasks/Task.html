@@ -80,15 +80,18 @@
                     <div class="t-controls-wrapper flexbox middle space-16">
 
 
-                        <a class="t-favorite-link button light-gray circle t-set-favorite {if empty($task.favorite)}text-light-gray{else}text-yellow{/if}" href="javascript:void(0);" title="[`Set favorite`]">
+                        <a class="t-favorite-link button light-gray rounded t-set-favorite {if empty($task.favorite)}text-light-gray{else}text-yellow{/if}" href="javascript:void(0);">
                             <i class="fas fa-star"></i>
+                            <span class="text-black custom-ml-4"{if !empty($task.favorite)} style="display: none;"{/if}>[`Watch`]</span>
+                            <span class="text-black custom-ml-4"{if empty($task.favorite)} style="display: none;"{/if}>[`Watching`]</span>
                         </a>
 
                         {* EDIT & DELETE *}
                         {if $task.rights_info.can_edit|default:false}
                             <span>
-                                <a href="#/task/{$task.project_id}.{$task.number}/edit/" class="t-edit-task-link nowrap button light-gray rounded" title="[`Edit`]">
-                                    <i class="fas fa-edit text-blue"></i> [`Edit`]
+                                <a href="#/task/{$task.project_id}.{$task.number}/edit/" class="t-edit-task-link nowrap button light-gray rounded">
+                                    <i class="fas fa-edit text-blue"></i>
+                                    <span class="custom-ml-4">[`Edit`]</span>
                                 </a>
                             </span>
                         {/if}
@@ -217,7 +220,7 @@
                                             <span class="small">{$_due_hint}</span>
                                         {/if}
                                     {elseif !$_due_date || $_milestone}
-                                        [`No deadline`]
+                                        [`No due date`]
                                     {else}
                                         [`No milestone`]
                                     {/if}
@@ -423,34 +426,36 @@
 
                 <div class="t-relations-wrapper">
                     {function insertRelations data=null relation_name=null relation_type=null}
-                        <ul class="menu t-relations-hover-block">
+                        <ul class="bordered t-relations-hover-block custom-my-0">
                             {foreach $data as $id => $item}
                                 <li data-relation-type="{$relation_type}" data-relation-task="{$id}">
-                                    <span class="item">
-                                        <strong>{$relation_name}:</strong> <a title="{$item['name']|escape}" href="#/task/{$item['project']|escape}.{$item['number']|escape}/" class="t-task-link">#{$item['project']|escape}.{$item['number']|escape}</a>&nbsp;
+                                    <div class="flexbox full-width space-12">
+                                        <!-- <span class="gray">{$relation_name}:</span> -->
+                                        <span class="wide flexbox space-8">
+                                            <span title="{$relation_name}" class="small custom-mt-4"><i class="fas fa-link text-light-gray"></i></span>
+                                            <a title="{$item['name']|escape}" href="#/task/{$item['project']|escape}.{$item['number']|escape}/" class="t-task-link{if $item['status_id'] < 0} gray{/if}"><strong>{$item['project']|escape}.{$item['number']|escape}</strong> {$item['name']|escape}</a>
+                                        </span>
                                         {if !empty($statuses[$item['status_id']])}
-                                            {if !empty($statuses[$item['status_id']]['params'])}
-                                                {$status_color = "color:#`$statuses[$item['status_id']]['params']['title_color']`;"}
-                                                {$status_background = "border-color:#`$statuses[$item['status_id']]['params']['button_color']`;background:#`$statuses[$item['status_id']]['params']['button_color']`"}
-                                            {else}
-                                                {$status_color = ''}
-                                                {$status_background = ''}
-                                            {/if}
-                                            <span style="{if isset($status_color) && isset($status_background)}{$status_color|escape}{$status_background|escape}{/if}" class="t-relations-status t-relations-status{$item['status_id']|escape}">{$statuses[$item['status_id']]['name']|escape}</span>
+                                            <span>{tasksHelper::statusNameHTML($item['status_id'])}</span>
                                         {/if}
-                                        <a class="js-t-invert-relations t-relations-btn js-no-app-icon small" href="javascript:void(0);"><i class="icon10 larr"></i><span>[`invert`]</span></a>&nbsp;
-                                        <a class="js-t-delete-relations t-relations-btn js-no-app-icon small" href="javascript:void(0);"><i class="icon10 delete"></i><span>[`remove link`]</span></a>
-                                    </span>
+                                        {*
+                                            legacy
+                                            <a class="js-t-invert-relations t-relations-btn js-no-app-icon small" href="javascript:void(0);"><i class="icon10 larr"></i><span>[`invert`]</span></a>&nbsp;
+                                        *}
+                                        <a class="js-t-delete-relations t-relations-btn js-no-app-icon large" href="javascript:void(0);" title="[`Unlink`]"><i class="fas fa-times-circle text-light-gray"></i></a>
+                                    </div>
                                 </li>
                             {/foreach}
                         </ul>
                     {/function}
                     {if !empty($task.relations.parents)}
-                        {insertRelations data=$task.relations.parents relation_type="parent" relation_name="[`Parent task`]" }
+                        {* legacy: 'Parent task' *}
+                        {insertRelations data=$task.relations.parents relation_type="parent" relation_name="[`Linked task`]" }
                     {/if}
 
                     {if !empty($task.relations.childs)}
-                        {insertRelations data=$task.relations.childs  relation_type="child" relation_name="[`Child task`]"}
+                        {* legacy: 'Child task' *}
+                        {insertRelations data=$task.relations.childs  relation_type="child" relation_name="[`Linked task`]"}
                     {/if}
                 </div>
 
