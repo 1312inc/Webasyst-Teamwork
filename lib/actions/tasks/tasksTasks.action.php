@@ -384,13 +384,13 @@ class tasksTasksAction extends waViewAction
         return [
                 '' => [
                     'id' => '',
-                    'name' => _w('Any scope'),
+                    'name' => _w('All milestones'),
                     'project_id' => '',
                 ],
                 '0' => [
                     'id' => 'NULL',
                     'op' => '==',
-                    'name' => _w('No scope'),
+                    'name' => _w('No milestone'),
                     'project_id' => '',
                 ],
             ] + $milestones;
@@ -401,7 +401,7 @@ class tasksTasksAction extends waViewAction
         return [
                 '' => [
                     'id' => '',
-                    'name' => _w('Everyone'),
+                    'name' => _w('All users'),
                     'photo' => '',
                 ],
             ] + tasksHelper::getTeam($project_id);

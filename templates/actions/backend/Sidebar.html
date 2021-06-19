@@ -76,7 +76,7 @@
             {/if}
             <a href="#/tasks/favorites/">
                 <i class="fas fa-star{if $favorites_counts.total} text-yellow{/if}"></i>
-                <span>[`Favorites`]</span>
+                <span>[`Watching`]</span>
                 <span class="count">{counts_pair total=$favorites_counts.total count=$favorites_counts.count bg_color=$favorites_counts.bg_color text_color=$favorites_counts.text_color}</span>
             </a>
         </li>
@@ -108,7 +108,7 @@
         <ul class="menu">
             <li>
                 <a href="#/log/">
-                    <i class="fas fa-bolt" style="color: gold;"></i>
+                    <i class="fas fa-bolt"></i>
                     <span>[`Updates`]</span>
                 </a>
             </li>
@@ -386,8 +386,8 @@
     <ul class="menu">
         <li>
             <a href="#/personal-settings/">
-                <span class="icon"><span class="userpic" style="background-image: url('{$wa->user()->getPhoto(20)}');"></span></span>
-                <span>[`My preferences`]</span>
+                <i class="fas fa-bell"></i>
+                <span>[`Notifications`]</span>
             </a>
         </li>
         {if $is_admin}

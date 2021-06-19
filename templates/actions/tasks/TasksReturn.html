@@ -6,11 +6,11 @@
     <form method="post" action="?module=tasksLog&action=return&id={$task.id}">
     <div class="fields">
         <div class="field">
-            <div class="name">[`Status`]</div>
-            <div class="value">{$task.return_status.name|escape}</div>
+            <div class="name for-checkbox">[`Status`]</div>
+            <div class="value large">{tasksHelper::statusNameHTML($task.return_status.id)}</div>
         </div>
         <div class="field">
-            <div class="name">[`Return to`]</div>
+            <div class="name custom-mt-4">[`Assign to`]</div>
             <div class="value">
                 <div class="flexbox middle space-8">
                     <i class="userpic userpic-32" style="background-image: url({$task.return_actor->getPhoto(40, 40)})"></i>
@@ -18,31 +18,29 @@
                 </div>
             </div>
         </div>
-        <div class="field">
-            <div class="name">[`Comment`]</div>
-            <div class="value">
-                <input type="hidden" name="prev_status_id" value="{$task.return_status.id}">
-                <input type="hidden" name="prev_actor_contact_id" value="{$task.return_actor.id}">
+    </div>
 
-                {include file="./TaskStatusForm.DropArea.html" inline}
+    <div class="custom-mt-16">
+        <input type="hidden" name="prev_status_id" value="{$task.return_status.id}">
+        <input type="hidden" name="prev_actor_contact_id" value="{$task.return_actor.id}">
 
-            </div>
-        </div>
-        <div class="field t-buttons-block">
-            <div class="name"></div>
-            <div class="value">
-                <input type="submit" class="button green" value="[`Return`]">
-                &nbsp;[`or`]&nbsp;
-                <a class="t-hiddenform-cancel-link" href="javascript:void(0);">[`cancel`]</a>
-            </div>
+        {include file="./TaskStatusForm.DropArea.html" inline}
+
+    </div>
+
+    <div class="field t-buttons-block">
+        <div class="name"></div>
+        <div class="value">
+            <input type="submit" class="button" value="[`Return task`]">
         </div>
     </div>
+
     </form>
 </div>
 
 <script>
     (function ($) {
-        $R('#return-wrapper-{$ident} .t-redactor-comments', { 
+        $R('#return-wrapper-{$ident} .t-redactor-comments', {
             'focus': true,
             imageData: {
                 task_uuid: '{$task.uuid}'
@@ -52,4 +50,3 @@
 </script>
 
 {/strip}
-

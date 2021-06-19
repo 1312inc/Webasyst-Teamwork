@@ -5,7 +5,10 @@
 <div class="article" id="{$wrapper_id}">
     <div class="article-body">
 
-        <h1>[`My preferences`]</h1>
+        <h1>
+            <span class="icon custom-mr-4"><span class="userpic" style="background-image: url('{$wa->user()->getPhoto(96)}');"></span></span>
+            [`My notification preferences`]
+        </h1>
 
         <form action="?module=settingsPersonal&action=save" class="t-setting-form">
             <input type="hidden" name="settings[notification][]" value="">
@@ -13,15 +16,14 @@
                 <div class="field-group">
                     <div class="field">
                         <div class="name">
-                            [`Notifications`]
+                            [`Notify me on`]
                         </div>
                         <div class="value">
-                            <strong>[`Send me notification in case of`]</strong>
-                            <ul class="menu">
+                            <ul class="menu custom-mt-4">
                                 {$_items = [
-                                    'always' => '[`Any action`]',
-                                    'assign' => '[`Assignment only`]',
-                                    'off' => '[`Switch off`]'
+                                    'always' => '[`All updates and comments`]',
+                                    'assign' => '[`Assignments only`]',
+                                    'off' => '[`Turn off all notifications`]'
                                 ]}
                                 {foreach $_items as $_id => $_label}
                                     <li>{action_li_item label=$_label id=$_id}</li>
@@ -33,17 +35,15 @@
                 <div class="field-group">
                     <div class="field">
                         <div class="name">
-                            [`Actions`]
+                            [`Which tasks`]
                         </div>
                         <div class="value">
-                            <strong>[`Notify me about next kind of tasks`]</strong>
-
-                            <ul class="menu t-settings-list">
+                            <ul class="menu t-settings-list custom-mt-4">
                                 {$_items = [
-                                    'assigned_to_me' => '[`Assigned to me`]',
-                                    'created_by_me' => '[`Created by me`]',
-                                    'favorites' => '[`Favorites`]',
-                                    'project' => '[`Selected projects`]'
+                                    'assigned_to_me' => '[`Tasks assigned to me`]',
+                                    'created_by_me' => '[`Tasks created by me`]',
+                                    'favorites' => '[`Tasks I’m watching`]',
+                                    'project' => '[`Tasks from selected projects`]'
                                 ]}
                                 {foreach $_items as $_id => $_label}
                                     <li>

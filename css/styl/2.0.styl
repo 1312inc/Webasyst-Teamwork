@@ -140,6 +140,7 @@ h2
         // background-color var(--white)
         cursor move
         transition 0.3s box-shadow
+        border-radius 0.25rem
 
         &:hover
           box-shadow 1px 1px 2px rgba(0, 0, 0, 0.1)
@@ -200,21 +201,20 @@ h2
 .redactor-box.redactor-styles-on
     border-width 2px !important
 
-.collapsible 
+.collapsible
   margin-bottom: 2rem
 
-  &__content   
-    :last-child 
+  &__content
+    :last-child
       margin-bottom: 0 !important
 
   .heading
     cursor pointer
-    
-    span 
+
+    span
       .caret svg
         transition .3s transform
 
       &.collapsed
         .caret svg
           transform: rotate(-90deg)
-  

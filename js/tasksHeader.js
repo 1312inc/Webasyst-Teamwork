@@ -33,7 +33,7 @@ var TasksHeader = ( function($) {
         that.total_count = options.total_count;
         that.is_single_page = that.$wrapper.find(".t-single-task-wrapper").length;
         that.is_in_my_list = options.is_in_my_list || false;
-        
+
         // DYNAMIC VARS
         that.selectedTasks = {};
         that.selected_count = 0;
@@ -80,7 +80,7 @@ var TasksHeader = ( function($) {
         if (!that.is_in_my_list && !that.is_single_page) {
            $('.t-preview-name').text(that.buildTitle());
         }
-        
+
         // hide/show sidebar/content if single page
         if(that.is_single_page){
             that.$secondSidebar.addClass('desktop-only')
@@ -238,7 +238,7 @@ var TasksHeader = ( function($) {
 
             var hash = location.hash.replace('#/tasks/', ''),
                 parsed = $.tasks.parseTasksHash(hash);
-            
+
             var data = {
                 hash_parsed: parsed,
                 order: order,
@@ -323,7 +323,7 @@ var TasksHeader = ( function($) {
     // Init all filters in header of page
     Header.initAllFilters = function () {
         var that = this;
-        
+
         var defaultInboxFilterReset = function () {
             var current_hash = $.tasks.cleanHash(window.location.hash) || '#/tasks/';
             if (current_hash.indexOf('inbox') >= 0) {
@@ -387,11 +387,11 @@ var TasksHeader = ( function($) {
         new TasksFilterSelector(that.$order_selector);
 
     };
-    
+
     // Action with multiple tasks: done
     Header.doneTasks = function() {
 
-        if (!confirm($_('Are you sure?'))) {
+        if (!confirm($_('Mark all selected tasks as closed (complete)?'))) {
             return false;
         }
 
@@ -413,7 +413,7 @@ var TasksHeader = ( function($) {
     // Action with multiple tasks: delete
     Header.deleteTasks = function() {
 
-        if (!confirm($_('Are you sure?'))) {
+        if (!confirm($_('DANGER: All selected tasks are about to be delete permanently without the ability to roll back. Delete all selected?'))) {
             return false;
         }
 
@@ -582,12 +582,14 @@ var TasksHeader = ( function($) {
             if (that.selected_count > 0) {
                 that.$mainMenu.removeClass(storage.shown_class);
                 that.$selectedMenu.addClass(storage.shown_class);
-                $selectedCounter.text("(" + that.selected_count + ")");
+                $selectedCounter.text( that.selected_count );
+                $selectedCounter.show();
 
             } else {
                 that.$selectedMenu.removeClass(storage.shown_class);
                 that.$mainMenu.addClass(storage.shown_class);
                 $selectedCounter.text("");
+                $selectedCounter.hide();
             }
 
             // Toggle selectAllInput

@@ -2,18 +2,17 @@
 
 <div class="sidebar width-19rem bordered-right t-settings-sidebar" id="t-settings-sidebar-wrapper">
 
-    <ul class="menu">
-        <li data-item-type="statuses">
-            <a href="#/settings/">
-                <i class="fas fa-sort-amount-down"></i><span>[`Task statuses`]</span>
-            </a>
-        </li>
+    <div class="bricks">
+        <a href="#/settings/" class="brick full-width selected" data-item-type="statuses">
+            <span class="icon"><i class="fas fa-sort-amount-down"></i></span>
+            [`Task statuses`]
+        </a>
 
         <!-- plugin hook: 'backend_settings_sidebar.top_li' -->
         {* @event backend_settings_sidebar.%plugin_id%.top_li *}
         {foreach $_backend_sidebar as $_}{ifset($_.top_li)}{/foreach}
 
-    </ul>
+    </div>
 
     <!-- SCOPES -->
     <h5 class="heading black">

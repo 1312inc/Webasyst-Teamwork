@@ -237,7 +237,7 @@ var Task = ( function($) {
         });
 
         $task.on("click", ".t-delete-task-link", function() {
-            if (confirm($_("Are you sure?"))) {
+            if (confirm($_("DANGER: Task will be deleted without the ability to restore. Delete?"))) {
                 that.deleteTask();
             }
             return false;
@@ -726,7 +726,7 @@ var Task = ( function($) {
                         onOpen: function ($dialog, dialog_instance) {
                             var $button = $dialog.find('.t-change-status-link');
                                 $close = $dialog.find('.cancel');
-                                
+
                             $button.click(function (e) {
                                 e.preventDefault();
                                 options.onSubmit();
@@ -902,7 +902,7 @@ var Task = ( function($) {
 
         var showHiddenContainer = function( $deferred, name = '', direction = 'right') {
             // var $statusWrapper = that.$statusWrapper;
-            
+
             // $statusWrapper
             //     .html('<i class="icon16 loading" />')
             //     .addClass(storage.shown_class);
@@ -929,7 +929,7 @@ var Task = ( function($) {
                     </div>
                 </div>
                     `;
-                
+
                 $.waDrawer({
                     html: wrappedHtml,
                     direction: direction,
@@ -990,8 +990,8 @@ var Task = ( function($) {
                 imageData: {
                     task_uuid: that.task_uuid
                 }
-            }); 
-            
+            });
+
             $commentForm.on("submit", function() {
                 clearCommentErrors();
                 if (validateComment()) {
@@ -1200,7 +1200,7 @@ var Task = ( function($) {
 
         $task.on('click', '.t-comment-delete-link', function (e) {
             e.preventDefault();
-            if (!confirm($_("Are you sure?"))) {
+            if (!confirm($_("Comment will be deleted without the ability to restore. Delete?"))) {
                 return;
             }
             var $link = $(this);
@@ -1303,7 +1303,7 @@ var Task = ( function($) {
                 }
                 if (!$a.hasClass('js-no-app-icon') && !$a.hasClass('t-tag-link')) {
                     $a.addClass('app-link app-'+matches[1]).prepend($.parseHTML(
-                        '<i class="icon16 app-icon app-'+matches[1]+'" style="background-image:url('+app_icons[matches[1]]+');background-size:16px 16px;margin-top: 2px;"></i>'
+                        '<i class="icon app-icon custom-mr-4 app-'+matches[1]+'" style="background-image: url('+app_icons[matches[1]]+'); background-size: 100%; margin-top: 2px;"></i>'
                     ));
                 }
             }
@@ -1399,7 +1399,7 @@ var Task = ( function($) {
     };
 
     Task.prototype.deleteRelations = function ($this) {
-        if (confirm('Are you sure')) {
+        if (confirm( $_('Unlink these tasks?') )) {
             var that = this,
                 $parent = $this.parent(),
                 type = $parent.data('relation-type'),
@@ -1800,7 +1800,7 @@ var Task = ( function($) {
                 task_info = r.data.task;
 
                 if (is_changed) {
-                    
+
                     if (canBeReload()) {
                         reloadTask(r.data.url);
                         return;
@@ -2008,7 +2008,7 @@ var TaskCommentFilesUploader = ( function($) {
             $file.remove();
 
         } else {
-            if (confirm($_("Are you sure?"))) {
+            if (confirm($_("Attachment will be deleted without the ability to restore. Delete?"))) {
                 var file_ident = $file.data("file-ident"),
                     delete_href = "?module=attachments&action=delete",
                     delete_data = {

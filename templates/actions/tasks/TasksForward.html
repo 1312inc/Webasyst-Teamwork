@@ -8,7 +8,7 @@
 
         {if !empty($projects)}
             <div class="field">
-                <div class="name">[`Project`]</div>
+                <div class="name for-input">[`Project`]</div>
                 <div class="value">
                     <div class="wa-select">
                         <select name="project_id">
@@ -23,7 +23,7 @@
         {/if}
 
         <div class="field">
-            <div class="name">[`Status`]</div>
+            <div class="name for-input">[`New status`]</div>
             <div class="value">
                 <div class="wa-select">
                     <select name="status_id">
@@ -36,19 +36,19 @@
             </div>
         </div>
         <div class="field">
-            <div class="name">[`Forward to`]</div>
+            <div class="name custom-mt-4">[`Assign to`]</div>
             <div class="value">
 
                 <ul class="t-team-list-wrapper custom-my-0">
                     {$_count = count($users)}
-                    {$_visible_team_count = 2}
+                    {$_visible_team_count = 5}
 
                     {$_active_users = false}
                     {$_render_link = false}
 
                     {function renderLink}
-                        <li class="t-link-item is-shown">
-                            <a class="show-team-users" href="javascript:void(0);">[`Show all`]</a>
+                        <li class="t-link-item is-shown small">
+                            <a class="show-team-users" href="javascript:void(0);">[`Show everyone`]</a>
                         </li>
                     {/function}
 
@@ -72,7 +72,7 @@
                             {$_is_shown = true}
                         {/if}
 
-                        {$_userpic = "{$wa_url}wa-content/img/userpic96.jpg"}
+                        {$_userpic = "{$wa_url}wa-content/img/userpic.svg"}
 
                         {if !empty($user.photo)}
                             {$_userpic = waContact::getPhotoUrl($user.id, $user.photo, 40, 40, 'person', 0)}
@@ -80,11 +80,14 @@
 
                         <li class="t-user-item {if $_is_shown}is-shown{/if}" data-user-id="{$user.id}">
                             <label class="t-user-label flexbox middle space-8">
-                                <input type="radio" name="assigned_contact_id" value="{$user.id}" {if ($selected_user == $user.id)}checked="checked"{/if}>
+                                <span class="wa-radio">
+                                   <input type="radio" name="assigned_contact_id" value="{$user.id}" {if ($selected_user == $user.id)}checked="checked"{/if}>
+                                   <span></span>
+                               </span>
                                 <i class="userpic userpic-32" style="background-image: url({$_userpic});"></i>
-                                {$user.name|escape}
+                                <span>{$user.name|escape}</span>
                                 {if ($user.id == $wa->user('id'))}
-                                    <span>([`me`])</span>
+                                    <span class="gray">([`me`])</span>
                                 {/if}
                             </label>
                         </li>
@@ -92,9 +95,12 @@
 
                     <li class="t-user-item is-unassigned {if $_count < $_visible_team_count}is-shown{/if}" data-user-id="">
                         <label class="t-user-label flexbox middle space-8">
-                            <input type="radio" name="assigned_contact_id" value="0">
-                            <i class="userpic userpic-32" style="background-image: url('{$wa_url}wa-content/img/userpic96.jpg')"></i>
-                            <span>[`Unassigned`]</span>
+                            <span class="wa-radio">
+                                <input type="radio" name="assigned_contact_id" value="0">
+                                <span></span>
+                            </span>
+                            <i class="userpic userpic-32" style="background-image: url('{$wa_url}wa-content/img/userpic.svg')"></i>
+                            <span class="gray">[`Unassigned`]</span>
                         </label>
                     </li>
 
@@ -114,6 +120,7 @@
 
                         $wrapper.on("click", ".show-team-users", function () {
                             showFullTeam($(this));
+                            $(this).hide();
                             show_flag = show_flag ? false : true;
                         });
 
@@ -126,7 +133,7 @@
                             } else {
                                 {*Hide user before link*}
                                 $link.closest('li').nextAll('li.t-user-item').removeClass('is-shown');
-                                $wrapper.find('.t-link-item').find('i').text('[`Show all`]');
+                                $wrapper.find('.t-link-item').find('i').text('[`Show everyone`]');
                             }
 
                             {* TRIGGER RESIZE *}
@@ -151,23 +158,17 @@
 
             </div>
         </div>
-        <div class="field">
-            <div class="name">[`Comment`]</div>
-            <div class="value">
+    </div>
 
-                {include file="./TaskStatusForm.DropArea.html" inline}
+    <div class="custom-mt-16">
 
-            </div>
-        </div>
-        <div class="field t-buttons-block">
-            <div class="name"></div>
-            <div class="value">
-                <input type="submit" class="button green" value="[`Save`]">
-                <span>&nbsp;[`or`]&nbsp;</span>
-                <a class="t-hiddenform-cancel-link cancel" href="javascript:void(0);">[`cancel`]</a>
-            </div>
+        {include file="./TaskStatusForm.DropArea.html" inline}
+
+        <div class="t-buttons-block">
+            <input type="submit" class="button" value="[`Forward task`]">
         </div>
     </div>
+
     </form>
 </div>
 
