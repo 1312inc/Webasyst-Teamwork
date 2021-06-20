@@ -207,6 +207,32 @@ var TasksHeader = ( function($) {
 
         var title = parts.join(' / ');
 
+        if (title === '') {
+            switch (true) {
+                case location.hash === '#/':
+                    var el = $('#t-menu-dropdown-hash_type .menu li').eq(1);
+                    title = el.text();
+                    break;
+                case location.hash === '#/tasks/':
+                    var el = $('#t-menu-dropdown-hash_type .menu li').eq(0);
+                    title = el.text();
+                    break;
+                case location.hash === '#/tasks/unassigned/':
+                    title = 'Unassigned';
+                    break;
+                case location.hash.includes('#/tasks/search/'):
+                    var a = location.hash.split('/');
+                    title = decodeURI(a[3]);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        if (location.hash.includes('#/tasks/tag/')) {
+            title = '#' + title;
+        }
+        
         //add tasks count to title
         if (that.total_count > 0) {
             title += ' — ' + that.messages.tasks_count;
