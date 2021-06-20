@@ -107,8 +107,8 @@
         <div class="article-body">
         <div class="t-logs-wrapper" id="t-logs-wrapper">
             {foreach $logs as $l}{strip}
-            <div class="t-comment-item-wrapper custom-mb-20">
-                <div class="t-comment-item flexbox space-8" style="width: 100%;" data-log-id="{$l.id|escape}">
+            <div class="t-comment-item-wrapper custom-mb-20 {if $l.contact_id == $wa->user()->getId()}t-comment-item-wrapper--right{/if}" data-id="{$l.id}">
+                <div class="t-comment-item flexbox space-8" data-log-id="{$l.id|escape}">
                     <div class="image" style="position: relative;">
                         <a href="#/log/contact_id={$l.contact_id}/" title="{$l.contact.name|escape}">
                             <img class="userpic userpic-48" src="{$l.contact.photo_url}" alt="{$l.contact.name|escape}">
