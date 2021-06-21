@@ -83,10 +83,10 @@
         {* BUTTONS *}
         <div class="line t-buttons-block">
             {$_button_text = $button_text|default:_w('Add comment')}
-            <input class="t-add-comment-button button green" type="submit" name="" value="{$_button_text}">
+            <input class="t-add-comment-button button" type="submit" name="" value="{$_button_text}">
             {$_cancel_link = $cancel_link|default:''}
             {if $_cancel_link}
-                [`or`] <a href="javascript:void(0)" class="t-cancel-link">[`cancel`]</a>
+                <a href="javascript:void(0)" class="t-cancel-link button light-gray">[`Cancel`]</a>
             {/if}
         </div>
     </form>

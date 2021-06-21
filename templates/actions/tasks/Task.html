@@ -300,7 +300,7 @@
                             </a>
                         </li>
                     {/foreach}
-                    <li class="t-tag-cloud-widget transparent dropdown" id="t-task-dropdown-add-tag">
+                    <li class="t-tag-cloud-widget light-gray dropdown" id="t-task-dropdown-add-tag">
                         <a href="javascript:void(0);" class="dropdown-toggle">
                             [`Add tag`]
                         </a>
@@ -309,9 +309,10 @@
                             {if count($tags_cloud) <= tasksTaskTagsModel::TAGS_MAX_COUNT}
                             <ul class="chips tags">
                                 {foreach $tags_cloud as $tag}
-                                <li class="tag">
-                                    <a style="font-size: {$tag.size}%; opacity: {$tag.opacity};color: green;text-decoration: underline;margin: 0px;padding: 3px;" class="js-set-tag t-cloud-link"
-                                        data-id="{$tag.id}" href="#/tasks/tag/{$tag.name|escape}/">{$tag.name|escape}</a>
+                                <li class="tag small">
+                                    {$_wa2_optimized_opacity = $tag.opacity * 2}
+                                    <a style="opacity: {max(1, $_wa2_optimized_opacity)};" class="js-set-tag t-cloud-link"
+                                        data-id="{$tag.id}" href="#/tasks/tag/{$tag.name|escape}/"><i class="fas fa-hashtag"></i> {$tag.name|escape}</a>
                                 </li>
                                 {/foreach}
                             </ul>
@@ -329,7 +330,9 @@
 
                         <script>
                             ( function($) {
-                                $("#t-task-dropdown-add-tag").waDropdown();
+                                $("#t-task-dropdown-add-tag").waDropdown({
+                                    hover: false,
+                                });
                             })(jQuery);
                         </script>
 
