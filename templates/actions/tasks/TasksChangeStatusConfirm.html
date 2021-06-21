@@ -11,7 +11,7 @@
             <form method="post">
 
                 <p>
-                    [`The task is assigned now to:`]
+                    [`The task is now assigned to:`]
                 </p>
                 <div class="profile flexbox space-8 middle">
                     <img class="userpic userpic-32" src="{$contact.photo_url_32}" alt="" >
@@ -19,7 +19,7 @@
                         <span>{$contact.name|escape}</span>
                     </div>
                 </div>
-                
+
                 <div class="custom-mt-20">
                     {$wa->csrf()}
                     {if $status}
@@ -29,8 +29,6 @@
                     {/if}
                     <span class="t-cancel-link-wrapper">
                         <i class="icon16 loading t-loading" style="display: none;"></i>
-                        [`or`]
-                        <a href="javascript:void(0)" class="cancel">[`cancel`]</a>
                     </span>
                 </div>
             </form>
