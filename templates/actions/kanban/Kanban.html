@@ -15,22 +15,22 @@
                                 <ul class="menu">
                                     {foreach $options as $o}
                                         <li class="t-nav-item" data-value="{$o.id}"><a href="javascript:void(0);">
-                                                {if !empty($o.icon_html) && ifempty($o.icon) != 'unknown'}
-                                                    {$o.icon_html}
-                                                {/if}
+                                            {if !empty($o.icon_html) && ifempty($o.icon) != 'unknown'}
+                                                {$o.icon_html}
+                                            {/if}
 
-                                                {if !empty($o.id) && array_key_exists('photo', $o)}
-                                                    {$_userpic = "{$wa_url}wa-content/img/userpic.svg"}
-                                                    {if !empty($o.photo)}
-                                                        {$_userpic = waContact::getPhotoUrl($o.id, $o.photo, 40, 40, 'person', 0)}
-                                                    {/if}
-                                                    <span class="icon">
-                                                        <i class="userpic" style="background-image: url({$_userpic|escape})"></i>
-                                                    </span>
+                                            {if !empty($o.id) && array_key_exists('photo', $o)}
+                                                {$_userpic = "{$wa_url}wa-content/img/userpic.svg"}
+                                                {if !empty($o.photo)}
+                                                    {$_userpic = waContact::getPhotoUrl($o.id, $o.photo, 40, 40, 'person', 0)}
                                                 {/if}
+                                                <span class="icon">
+                                                    <i class="userpic" style="background-image: url({$_userpic|escape})"></i>
+                                                </span>
+                                            {/if}
 
-                                                <span class="{if $o@index > 0}is-bold{/if}">{$o.name|escape}</span>
-                                            </a></li>
+                                            <span class="{if $o@index > 0}is-bold{/if}">{$o.name|escape}</span>
+                                        </a></li>
                                     {/foreach}
                                 </ul>
                             </div>
@@ -46,19 +46,9 @@
                     {/foreach}
 
                     <!-- TAG CLOUD WIDGET FILTER -->
-                    {showTagsCloud class='t-tasks-tag-cloud-filter js-header-title-participant' cloud=$tags_cloud}
-
-                    {if isset($tag)}
-                        <div>
-                            <ul>
-                                <li class="tag">
-                                    <i class="fas fa-hashtag"></i>
-                                    <span>{$tag.name|escape}</span>
-                                    <a class="t-tag-item" href="#/kanban/" data-tag-value="{$tag.name}"><i class="fas fa-minus-circle t-remove-tag"></i></a>
-                                </li>
-                            </ul>
-                        </div>
-                    {/if}
+                    {$_current_tag = ''}
+                    {if isset($tag)}{$_current_tag = '#'|cat:$tag.name}{/if}
+                    {showTagsCloud class='t-tasks-tag-cloud-filter js-header-title-participant' cloud=$tags_cloud title=$_current_tag}
 
                     <div>
                         <input type="hidden" name="with_backlog" value="0"/>
@@ -71,15 +61,15 @@
                                     </span>
                                 </span>
                             </span>
-                            &nbsp;Backlog
+                            <span class="custom-ml-4">[`Show unassigned`]</span>
                         </label>
                     </div>
 
                     {if !empty($is_filter_set)}
                         <div class="t-menu-item">
                         <span class="t-menu-name">
-                            <a href="#/kanban/" class="t-remove-filters-link">
-                                <i class="far fa-times-circle" title="[`Clear filters`]"></i>
+                            <a href="#/kanban/" class="t-remove-filters-link gray larger">
+                                <i class="fas fa-times-circle" title="[`Clear filters`]"></i>
                             </a>
                         </span>
                         </div>
@@ -97,7 +87,7 @@
                             {tasksHelper::statusNameHTML($data.status.id)}
                         </div>
                         <div>
-                            <span class="t-kanban__list__count badge yellow small">{$data.count}</span>
+                            <span class="t-kanban__list__count gray bold">{$data.count}</span>
                         </div>
                     </div>
                     <div data-kanban-list-status-id="{$data.status.id}" data-kanban-list-total="{$data.count}" class="t-kanban__list__body custom-px-16">
