@@ -93,7 +93,7 @@
 
     <div class="box align-center t-my-lists-wrapper" id="t-my-lists-box">
         {function star_link id='' title=''}
-            <a href="javascript:void(0);" class="t-my-list-toggle button {if $id > 0}light-gray{/if} small outlined"
+            <a href="javascript:void(0);" class="t-my-list-toggle button {if $id > 0}light-gray{/if} smaller outlined"
                title="{$title|default:''|escape}"
                data-hash="{$hash}"
                data-order="{$current_sort}"
@@ -101,9 +101,6 @@
                <div class="flexbox" style="display: inline-block;">
                     <div style="display:{if $id > 0}block{else}none{/if}">
                         <i class="fas fa-times-circle"></i>
-                    </div>
-                    <div style="display:{if $id > 0}none{else}block{/if}">
-                        <i class="fas fa-star"></i>
                     </div>
                 </div>
                 &nbsp;
@@ -113,9 +110,9 @@
         {/function}
 
         {if $list && $list.is_own}
-            {star_link id=$list.id title='[`Remove from my lists`]'}
+            {star_link id=$list.id title='[`Remove from my filters`]'}
         {else}
-            {star_link title='[`Save in my lists`]'}
+            {star_link title='[`Save to my custom filters`]'}
         {/if}
 
         <!-- plugin hook: 'backend_tasks.%plugin_id%.header.toolbar' -->

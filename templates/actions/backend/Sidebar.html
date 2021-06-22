@@ -126,7 +126,7 @@
             <h5 class="heading">
                 <span>
                     <span class="caret"><i class="fas fa-caret-down"></i></span>
-                    [`My lists`]
+                    [`My filters`]
                 </span>
             </h5>
             <div class="collapsible__content">
@@ -148,8 +148,7 @@
 
                             {$_href = "#/tasks/{$_params_str}/"}
                             <a title="{$_list.name|escape}" href="{$_href}">
-                                <!-- <i class="icon16 {$_list.icon|default:'contact'|escape}"></i> -->
-                                <i class="fas fa-{$_list.icon|default:'star'|escape}"></i>
+                                <i class="fas fa-tasks"></i>
                                 <span>{$_list.name|truncate:18:'...':true|escape}</span>
                                 <span class="count">{$_list.count|default:0}</span>
                             </a>

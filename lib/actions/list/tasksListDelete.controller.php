@@ -17,11 +17,11 @@ class tasksListDeleteController extends waJsonController
              */
             $params = array('ids' => array($list['id']));
             wa()->event('list_delete', $params);
-            
+
             $lm->deleteById($list['id']);
         }
         $this->response = array(
-            'title' => _w("Create list")
+            'title' => wa()->whichUI() == '1.3' ? _w("Create list") : _w('Save to my filters');
         );
     }
 
