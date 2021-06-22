@@ -10,30 +10,39 @@
         <div class="dialog-body dialog-window">
             <div class="dialog-content">
                 <div class="dialog-content-indent">
-                    <h2>{if $list.id > 0}[`Edit my list`]{else}[`Save in my lists`]{/if}</h2>
+                    <h2>{if $list.id > 0}[`Edit custom filter`]{else}[`Save custom filter`]{/if}</h2>
                     <div class="fields">
 
 
                         <div class="field">
                             <div class="name for-input">[`Name`]</div>
                             <div class="value">
-                                <input type="text" value="{$list.name|escape}" class="t-name-input bold" name="data[name]">
+                                <input type="text" value="{$list.name|escape}" class="t-name-input bold long" name="data[name]">
+                                <p class="hint">
+                                    <i class="fas fa-lock fa-xs"></i>
+                                    [`Only you will see this filter in the app navigation.`]
+                                </p>
                             </div>
                         </div>
 
-                        <div class="field t-icons-block">
-                            <div class="name">[`Icon`]</div>
-                            <div class="value">
-                                <ul class="chips">
-                                    {foreach $icons as $icon}
-                                        <li data-icon="{$icon}" {if $icon == $list.icon}class="selected"{/if}>
-                                            <a href="javascript:void(0)"><i class="fas fa-{$icon}"></i></a>
-                                        </li>
-                                    {/foreach}
-                                </ul>
-                                <input type="hidden" name="data[icon]" value="{$list.icon}" class="t-icon-input">
+                        <input type="hidden" name="data[icon]" value="tasks{* $list.icon *}" class="t-icon-input">
+
+                        {*
+                            LEGACY
+                            <div class="field t-icons-block">
+                                <div class="name">[`Icon`]</div>
+                                <div class="value">
+                                    <ul class="chips">
+                                        {foreach $icons as $icon}
+                                            <li data-icon="{$icon}" {if $icon == $list.icon}class="selected"{/if}>
+                                                <a href="javascript:void(0)"><i class="fas fa-{$icon}"></i></a>
+                                            </li>
+                                        {/foreach}
+                                    </ul>
+                                    <input type="hidden" name="data[icon]" value="{$list.icon}" class="t-icon-input">
+                                </div>
                             </div>
-                        </div>
+                        *}
 
                         <div class="t-more-fields">
                             <!-- plugin hook: 'backend_list_edit.%plugin_id%.more' -->
@@ -47,7 +56,7 @@
             <div class="dialog-footer dialog-buttons">
                 <div class="dialog-buttons-gradient">
                     {$wa->csrf()}
-                    <input class="button green t-button" type="submit" value="[`Save`]">
+                    <input class="button t-button" type="submit" value="[`Save`]">
                     {if $list.id <= 0}
                         <input type="hidden" name="data[hash]" value="{$list.hash}">
                         <input type="hidden" name="data[order]" value="{$list.order}">

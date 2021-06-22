@@ -37,7 +37,7 @@ class tasksHelper
                 'id'
             );
             foreach ($all_projects as &$p) {
-                $p = self::extendIcon($p);
+                $p = self::extendIcon($p, $p['color'], 'tasks');
             }
             unset($p);
             self::$static_cache['all_projects'] = $all_projects;
@@ -93,7 +93,7 @@ class tasksHelper
         return $projects;
     }
 
-    public static function extendIcon($item)
+    public static function extendIcon($item, $custom_css_class = '', $force_replace_fa_icon = '')
     {
         $title = ' title="' . htmlentities($item['name'], ENT_QUOTES, 'utf-8') . '"';
         if (empty($item['icon'])) {
@@ -111,7 +111,7 @@ class tasksHelper
             $item['icon_url'] = false;
             $item['icon_class'] = $item['icon'];
             if (wa()->whichUI() == '2.0') {
-                $item['icon_html'] = '<i class="fas fa-' . $item['icon'] . '"' . $title . '></i>';
+                $item['icon_html'] = '<i class="fas fa-' . ( $force_replace_fa_icon ? $force_replace_fa_icon : $item['icon'] ) . ( $custom_css_class != '' ? ' '.$custom_css_class : '' ) . '"' . $title . '></i>';
             } else {
                 $item['icon_html'] = '<i class="icon16 ' . $item['icon'] . '"' . $title . '></i>';
             }

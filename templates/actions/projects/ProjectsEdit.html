@@ -57,7 +57,10 @@
                                     <div class="flexbox space-12 t-project-settings-colorbox">
                                         {foreach $colors as $color}
                                             <label class="{$color}">
-                                                <input type="radio" name="project[color]" value="{$color|escape}"{if ($project.color == $color)} checked{/if}>
+                                                <span class="wa-radio">
+                                                    <input type="radio" name="project[color]" value="{$color|escape}"{if ($project.color == $color)} checked{/if}>
+                                                    <span></span>
+                                                </span>
                                             </label>
                                         {/foreach}
                                     </div>
@@ -69,10 +72,12 @@
                         <div class="field-group custom-mb-24">
                             <div class="field">
                                 <div class="name for-input">
-                                    [`Icon`]
+                                    [`Logo`]
                                 </div>
                                 <div class="value">
 
+                                    {*
+                                        LEGACY
                                         <ul class="chips" id="project-icon-selector">
                                             {foreach $icons as $icon}
                                                 <li class="t-project-icon{if ($project.icon_class == $icon)} selected{/if}">
@@ -82,11 +87,12 @@
                                             </li>
                                             {/foreach}
                                         </ul>
+                                    *}
 
-                                    <input type="hidden" name="project[icon]" value="{$project.icon}">
+                                    <input type="hidden" name="project[icon]" value="tasks{* $project.icon *}">
 
-                                    <input id="t-icon-url" type="text" value="{$project.icon_url|escape}" name="icon_url" class="long">
-                                    <p class="hint">[`Image URL to be used as a project icon all around.`]</p>
+                                    <input id="t-icon-url" type="text" value="{$project.icon_url|escape}" name="icon_url" class="long" placeholder="https://" />
+                                    <p class="hint">[`Image URL to be used as a project icon all around. If not defined, a tiny list icon will be used instead.`]</p>
 
                                 </div>
                             </div>
