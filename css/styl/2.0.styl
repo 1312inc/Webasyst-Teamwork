@@ -66,6 +66,17 @@ h2
     display block
     padding 0
 
+.t-project-icon
+
+  .icon
+      vertical-align 0.125rem
+      width 1.25rem
+      height 1.25rem
+
+      *
+        width 1.25rem
+        height 1.25rem
+
 .list > .item a
   position relative
 
@@ -80,15 +91,6 @@ h2
       padding 0.125rem
       background var(--white)
       line-height 1rem
-
-      .icon
-        vertical-align 0.125rem
-        width 1.25rem
-        height 1.25rem
-
-        *
-          width 1.25rem
-          height 1.25rem
 
 .t-project-icon-rounded
   border-radius 0.25rem
@@ -139,11 +141,13 @@ h2
       &__item
         // background-color var(--white)
         cursor move
-        transition 0.3s box-shadow
+        transition 0.1s
         border-radius 0.25rem
+        font-size 0.9375rem
 
         &:hover
-          box-shadow 1px 1px 2px rgba(0, 0, 0, 0.1)
+          box-shadow 0 0.125rem 0.75rem -0.125rem rgba(0, 0, 0, 0.1)
+          transform translateY(-1px)
 
         a
           color var(--text-color)

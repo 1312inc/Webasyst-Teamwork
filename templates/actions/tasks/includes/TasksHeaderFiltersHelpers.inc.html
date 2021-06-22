@@ -56,23 +56,27 @@
 
         <script>
             ( function($) {
-                $("#t-menu-dropdown-{$filter.id}").waDropdown();
+                $("#t-menu-dropdown-{$filter.id}").waDropdown( { hover: false } );
             })(jQuery);
         </script>
 
     </li>
 {/strip}{/function}
 
-{function showTagsCloud class='' cloud=[]}
+{function showTagsCloud class='' cloud=[] title=''}
     <li class="dropdown {$class|default:''}" data-id="tag" data-hash="tag" id="t-menu-dropdown-tag">
 
-        {$_title = '[`Tags`]'}
-        <a class="dropdown-toggle t-selected-item js-title" href="javascript:void(0);" data-default-title="{$_title}">{$_title}</a>
+        {if !$title}
+            {$_title = '[`All tags`]'}
+        {else}
+            {$_title = $title}
+        {/if}
+        <button class="dropdown-toggle button light-gray t-selected-item js-title" data-default-title="{$_title}">{$_title}</button>
 
         <div class="dropdown-body custom-p-8">
             <ul class="menu t-tags-cloud">
                 <li class="js-show-all" style="display: none;">
-                    <a href="javascript:void(0);" class="js-tag-link" data-id="" data-value="">[`Show all`]</a>
+                    <a href="javascript:void(0);" class="js-tag-link" data-id="" data-value="">[`All tags`]</a>
                 </li>
                 <li class="t-nav-tags-item tag">
                     {if count($cloud) <= tasksTaskTagsModel::TAGS_MAX_COUNT}
@@ -95,7 +99,7 @@
 
         <script>
             ( function($) {
-                $("#t-menu-dropdown-tag").waDropdown();
+                $("#t-menu-dropdown-tag").waDropdown( { hover: false } );
             })(jQuery);
         </script>
 
