@@ -296,35 +296,60 @@
                             <a class="t-tag-item" href="#/tasks/tag/{$tag_name|escape}/" data-tag-id="{$tag_id|escape}">
                                 <i class="fas fa-hashtag"></i>
                                 <span>{$tag_name|escape}</span>
-                                <!-- <i class="fas fa-minus-circle t-remove-tag"></i> -->
+                                <i class="fas fa-times-circle t-remove-tag"></i>
                             </a>
                         </li>
                     {/foreach}
-                    <li class="t-tag-cloud-widget light-gray dropdown" id="t-task-dropdown-add-tag">
-                        <a href="javascript:void(0);" class="dropdown-toggle">
+                    <li class="t-tag-cloud-widget transparent dropdown" id="t-task-dropdown-add-tag">
+                        <a href="javascript:void(0);" class="text-gray dropdown-toggle">
                             [`Add tag`]
                         </a>
-                        <div class="dropdown-body custom-p-8">
+                        <div class="dropdown-body custom-p-8" style="min-width: 320px;">
 
-                            {if count($tags_cloud) <= tasksTaskTagsModel::TAGS_MAX_COUNT}
-                            <ul class="chips tags">
+                            {* top tags 'copy-paste #3' *}
+
+                            {$_tag_usage_counts = []}
+                            {foreach $tags_cloud as $tag}
+                                {$_tag_usage_counts[ $tag.id ] = $tag.count}
+                            {/foreach}
+
+                            {capture}{arsort($_tag_usage_counts)}{/capture}
+
+                            {$_top_tags_ids = []}
+                            {$_max_tag_visible = 25}
+                            {$_i = 0}
+                            {foreach $_tag_usage_counts as $_tid => $_tcount}
+                                {$_top_tags_ids[ $_tid ] = $_tcount}
+                                {if $_i >= $_max_tag_visible}
+                                    {break}
+                                {/if}
+                                {$_i = $_i + 1}
+                            {/foreach}
+
+                            {$_hidden_tags_counter = 0}
+                            <ul class="chips tags small">
                                 {foreach $tags_cloud as $tag}
-                                <li class="tag small">
-                                    {$_wa2_optimized_opacity = $tag.opacity * 2}
-                                    <a style="opacity: {max(1, $_wa2_optimized_opacity)};" class="js-set-tag t-cloud-link"
-                                        data-id="{$tag.id}" href="#/tasks/tag/{$tag.name|escape}/"><i class="fas fa-hashtag"></i> {$tag.name|escape}</a>
-                                </li>
+                                    {$_visible = $tag.id|array_key_exists:$_top_tags_ids}
+
+                                    <li{if !$_visible} class="t-tags-hidden-tag js-tags-hidden-tag"{/if}>
+                                        <a class="js-set-tag t-cloud-link"
+                                            data-id="{$tag.id}" href="#/tasks/tag/{$tag.name|escape}/"><i class="fas fa-hashtag"></i> {$tag.name|escape}</a>
+                                    </li>
+                                    {if !$_visible}
+                                        {$_hidden_tags_counter = $_hidden_tags_counter + 1}
+                                    {/if}
                                 {/foreach}
+
+                                {if $_hidden_tags_counter > 0}
+                                    <li class="transparent">
+                                        <a href="#" style="background: transparent !important; color: rgba(127,127,127,0.5) !important;" class="js-tags-show-all-link">[`Show all tags`]</a>
+                                    </li>
+                                {/if}
                             </ul>
-                            {else}
-                                <span class="hint" style="display: inline-block;line-height: 1rem;">{sprintf(_w('There are more than %u tags.'), tasksTaskTagsModel::TAGS_MAX_COUNT)}<br>
-                                    [`Start typing in the search field to find a tag.`]
-                                </span>
-                            {/if}
 
                             <div class="t-input-wrapper">
-                                <input value="" class="t-input js-t-task-tags-autocomplete" type="text" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true"
-                                    placeholder="[`Custom tag...`]">
+                                <input value="" class="t-input js-t-task-tags-autocomplete small" type="text" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true"
+                                    placeholder="[`Enter new tag...`]">
                             </div>
                         </div>
 
