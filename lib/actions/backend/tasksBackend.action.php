@@ -88,6 +88,8 @@ class tasksBackendAction extends waViewAction
                     $percent = $count['closed'] / $count['total'] * 100;
                     $percent = round($percent);
                     $scopes[$count['milestone_id']]['closed_percent'] = $percent;
+                    $scopes[$count['milestone_id']]['closed_tasks'] = $count['closed'];
+                    $scopes[$count['milestone_id']]['open_tasks'] = $count['total'] - $count['closed'];
                 }
             }
         }
