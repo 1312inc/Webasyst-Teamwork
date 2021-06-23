@@ -71,7 +71,7 @@ class tasksKanbanAction extends tasksTasksAction
     {
         $filters = [
             'project_id' => waRequest::request('project_id', null),
-            'contact_id' => waRequest::request('contact_id', null),
+            'assigned_contact_id' => waRequest::request('contact_id', null),
             'milestone_id' => waRequest::request('milestone_id', null),
             'tag' => waRequest::request('tag', null, waRequest::TYPE_STRING_TRIM),
             'with_backlog' => waRequest::request('with_backlog', null),
