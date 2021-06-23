@@ -60,7 +60,7 @@
 
             {* TASK HEADER *}
             <header class="t-task-header">
-                <div class="flexbox wrap full-width custom-mb-20">
+                <div class="flexbox wrap-mobile full-width custom-mb-20">
 
                     <div class="t-task-header-content wide flexbox">
 
@@ -108,7 +108,7 @@
                 {foreach $_backend_task_hook as $_}{$_.header|default:''}{/foreach}
 
                 {* USERS & DEADLINES *}
-                <div class="flexbox space-16 custom-mb-16">
+                <div class="flexbox space-16 custom-mb-16 wrap-mobile">
 
                     <div class="wide" style="position: relative;">
 
@@ -172,9 +172,9 @@
                     </div>
 
                     {* MILESTONE & DEADLINE *}
-                    <div>
+                    <div class="t-task-flag-box">
 
-                        <div class="flexbox space-8">
+                        <div class="flexbox space-8 t-task-flag-box-content">
                             {$_milestone = ''}
                             {$_due_date = ''}
                             {$_due_hint = ''}
