@@ -35,39 +35,39 @@
     <a href="{$_task_link}" class="details">
         <div class="flexbox space-8 full-width">
 
-                                    <span>
+            <span>
 
-                                        {* PRIORITY *}
+                {* PRIORITY *}
 
-                                        {$_priority_class_array = [
-                                        "-1" => "is-low",
-                                        "0" => "is-normal",
-                                        "1" => "is-high",
-                                        "2" => "is-urgent",
-                                        "3" => "is-onfire"
-                                        ]}
-                                        {$_priority_icon = ""}
-                                        {if !empty($task.priority)}
-                                            {if $task.priority == '-1'}
-                                                {$_priority_icon = "<i class=\"fas fa-thumbs-down\" style=\"color: var(--light-gray);\"></i>"}
-                                            {/if}
-                                            {if $task.priority == '1'}
-                                                {$_priority_icon = "<i class=\"fas fa-exclamation-triangle\" style=\"color: gold;\"></i>"}
-                                            {/if}
-                                            {if $task.priority == '2'}
-                                                {$_priority_icon = "<i class=\"fas fa-exclamation-triangle\" style=\"color: orangered;\"></i>"}
-                                            {/if}
-                                        {/if}
+                {$_priority_class_array = [
+                "-1" => "is-low",
+                "0" => "is-normal",
+                "1" => "is-high",
+                "2" => "is-urgent",
+                "3" => "is-onfire"
+                ]}
+                {$_priority_icon = ""}
+                {if !empty($task.priority)}
+                    {if $task.priority == '-1'}
+                        {$_priority_icon = "<i class=\"fas fa-thumbs-down\" style=\"color: var(--light-gray);\"></i>"}
+                    {/if}
+                    {if $task.priority == '1'}
+                        {$_priority_icon = "<i class=\"fas fa-exclamation-triangle\" style=\"color: gold;\"></i>"}
+                    {/if}
+                    {if $task.priority == '2'}
+                        {$_priority_icon = "<i class=\"fas fa-exclamation-triangle\" style=\"color: orangered;\"></i>"}
+                    {/if}
+                {/if}
 
-                                        <span class="t-priority-wrapper {ifset($_priority_class_array[$task.priority])}" title="task_id={$task.id}" title="[`Double-click to change task priority`]">
-                                            {$_priority_icon}
-                                            {$task.project_id}.{$task.number}
-                                        </span>
+                <span class="t-priority-wrapper {ifset($_priority_class_array[$task.priority])}" title="task_id={$task.id}" title="[`Double-click to change task priority`]">
+                    {$_priority_icon}
+                    {$task.project_id}.{$task.number}
+                </span>
 
-                                        {* TITLE *}
-                                        <span class="{if !empty($task.priority)&& $task.priority == '3'}bold{else}semibold{/if}">{$task.name|escape|default:"(no name)"|truncate:64}</span>
+                {* TITLE *}
+                <span class="{if !empty($task.priority)&& $task.priority == '3'}bold{else}semibold{/if}">{$task.name|escape|default:"(no name)"|truncate:64}</span>
 
-                                    </span>
+            </span>
 
             <span class="count align-right">
                                         {* This vars will be mutated by tasksHelper::getDatetime, must be inited first because of Smary & PHP 7.4 cause the warnings otherwise *}
@@ -75,9 +75,10 @@
                 {$time_since_update_template = null}
                 {$time_since_update_str = tasksHelper::getDatetime($task.update_datetime, $time_since_update_period, $time_since_update_template)}
 
-                                        <span class="small gray nowrap">{$time_since_update_str}</span>
+                <span class="small gray nowrap">{$time_since_update_str}</span>
 
-                                    </span>
+            </span>
+
         </div>
 
         <p class="hint custom-mb-8">
@@ -130,6 +131,28 @@
                 {/if}
             {/if}
         {/foreach}
+
+        {* DUE *}
+        {if !empty($task.due_date)}
+            {* manually set due date overrides milestone general due date *}
+            <p class="small">
+                <span class="badge small squared {$task.view.due_color_class|default:''} custom-mr-4">
+                    <i class="fas fa-flag-checkered"></i>
+                    {$task.due_date|wa_date:'humandate'}
+                </span>
+                {if !empty($task.view.due_text)}
+                    <span class="hint semibold">{$task.view.due_text}</span>
+                {/if}
+            </p>
+        {else if !empty($task.milestone.due_date)}
+            <p class="small">
+                <span class="badge small squared {$task.milestone.view.due_color_class|default:''} custom-mr-4">
+                    <i class="fas fa-flag-checkered"></i>
+                    {$task.milestone.due_date|wa_date:'humandate'}
+                </span>
+                <span class="hint semibold">{$task.milestone.name|escape}</span>
+            </p>
+        {/if}
 
     </a>
 </li>
