@@ -65,7 +65,7 @@
 
                                 <button class="dropdown-toggle button light-gray t-selected-item selected-custom-item js-selected-project">
                                     {$project.icon_html}
-                                    <span>{$project.name|escape}</span>
+                                    <span>{$project.name|escape|truncate:32}</span>
                                 </button>
                                 <div class="dropdown-body">
                                     <ul class="menu js-project-list">
@@ -73,7 +73,7 @@
                                             <li class="t-nav-item">
                                                 <a class="set-custom-select js-project-select" href="javascript:void(0);" data-value="{$p.id}" {if !empty($p.color)}data-project_color_class="{$p.color}"{/if}>
                                                     {$p.icon_html}
-                                                    <span>{$p.name|escape}</span>
+                                                    <span>{$p.name|escape|truncate:32}</span>
                                                 </a>
                                             </li>
                                         {/foreach}

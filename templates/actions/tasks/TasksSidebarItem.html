@@ -33,6 +33,8 @@
 
     </a>
     <a href="{$_task_link}" class="details">
+
+
         <div class="flexbox space-8 full-width">
 
             <span>
@@ -70,12 +72,12 @@
             </span>
 
             <span class="count align-right">
-                                        {* This vars will be mutated by tasksHelper::getDatetime, must be inited first because of Smary & PHP 7.4 cause the warnings otherwise *}
+                {* This vars will be mutated by tasksHelper::getDatetime, must be inited first because of Smary & PHP 7.4 cause the warnings otherwise *}
                 {$time_since_update_period = null}
                 {$time_since_update_template = null}
                 {$time_since_update_str = tasksHelper::getDatetime($task.update_datetime, $time_since_update_period, $time_since_update_template)}
 
-                <span class="small gray nowrap">{$time_since_update_str}</span>
+                <span class="small gray nowrap semibold">{$time_since_update_str}</span>
 
             </span>
 
@@ -110,15 +112,38 @@
                 {/foreach}
             {/strip}
             <span class="nowrap bold" title="[`History &amp; Comments`]">
-                                        {if $_count_action}
-                                            <i class="fas fa-exchange-alt custom-ml-4"></i> {$_count_action}
-                                        {/if}
+                {if $_count_action}
+                    <i class="fas fa-exchange-alt custom-ml-4"></i> {$_count_action}
+                {/if}
                 {if $_count_comment}
                     <i class="fas fa-comment custom-ml-4"></i> {$_count_comment}
                 {/if}
-                                    </span>
+            </span>
 
         </p>
+
+        {* DUE *}
+        {if !empty($task.due_date)}
+            {* manually set due date overrides milestone general due date *}
+            <p class="small custom-mt-0 custom-mb-4">
+                <span class="small nowrap t-due-date-hint-{$task.view.due_color_class|default:'green
+>'} custom-mr-4">
+                    <i class="fas fa-flag-checkered"></i>
+                    {$task.due_date|wa_date:'humandate'}
+                </span>
+                {if !empty($task.view.due_text)}
+                    <span class="hint semibold">{$task.view.due_text}</span>
+                {/if}
+            </p>
+        {else if !empty($task.milestone.due_date)}
+            <p class="small custom-mt-0 custom-mb-4">
+                <span class="small nowrap t-due-date-hint-{$task.milestone.view.due_color_class|default:'green'} custom-mr-4">
+                    <i class="fas fa-flag-checkered"></i>
+                    {$task.milestone.due_date|wa_date:'humandate'}
+                </span>
+                <span class="hint semibold">{$task.milestone.name|escape|truncate:32}</span>
+            </p>
+        {/if}
 
         {* PINNED COMMENTS *}
         {$log_header_ids = array_unique([$task.assign_log_id, $task.comment_log_id])}
@@ -131,28 +156,6 @@
                 {/if}
             {/if}
         {/foreach}
-
-        {* DUE *}
-        {if !empty($task.due_date)}
-            {* manually set due date overrides milestone general due date *}
-            <p class="small">
-                <span class="badge small squared {$task.view.due_color_class|default:''} custom-mr-4">
-                    <i class="fas fa-flag-checkered"></i>
-                    {$task.due_date|wa_date:'humandate'}
-                </span>
-                {if !empty($task.view.due_text)}
-                    <span class="hint semibold">{$task.view.due_text}</span>
-                {/if}
-            </p>
-        {else if !empty($task.milestone.due_date)}
-            <p class="small">
-                <span class="badge small squared {$task.milestone.view.due_color_class|default:''} custom-mr-4">
-                    <i class="fas fa-flag-checkered"></i>
-                    {$task.milestone.due_date|wa_date:'humandate'}
-                </span>
-                <span class="hint semibold">{$task.milestone.name|escape}</span>
-            </p>
-        {/if}
 
     </a>
 </li>
