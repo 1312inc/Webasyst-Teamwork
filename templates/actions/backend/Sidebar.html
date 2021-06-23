@@ -333,48 +333,63 @@
 
     {if !empty($cloud)}
 
-            <div id="collapsible-tags" data-block="tags"  data-type="tags" class="collapsible">
-                <h5 id="t-tags" class="heading collapse-handler">
-                    <span>
-                        <span class="caret"><i class="fas fa-caret-down"></i></span>
-                        [`Tags`]
-                    </span>
-                </h5>
-                <div class="collapsible__content">
-                    <div class="box align-center small t-tags-wrapper js-tags-wrapper hide-when-collapsed">
-                        <ul class="chips tags small">
-                            {$_tags_visible = 0}
-                            {foreach $cloud as $tag}
-                                {if $tag.count > 10}
-                                    <li>
-                                        {$_wa2_optimized_opacity = $tag.opacity * 2}
-                                        <a style="opacity: {max(1, $_wa2_optimized_opacity)};" data-id="{$tag.id}" data-value="{$tag.name|escape}" href="#/tasks/tag/{$tag.name|escape}/">
-                                            <i class="fas fa-hashtag"></i>
-                                            <span{if $_wa2_optimized_opacity >= 1} class="bold"{/if}>{$tag.name|escape}</span>
-                                            <span class="count">{$tag.count}</span>
-                                        </a>
-                                    </li>
-                                    {$_tags_visible = $_tags_visible + 1}
-                                {/if}
-                            {/foreach}
-                        </ul>
+        <div id="collapsible-tags" data-block="tags"  data-type="tags" class="collapsible">
+            <h5 id="t-tags" class="heading collapse-handler">
+                <span>
+                    <span class="caret"><i class="fas fa-caret-down"></i></span>
+                    [`Tags`]
+                </span>
+            </h5>
+            <div class="collapsible__content">
+                <div class="box align-center small t-tags-wrapper js-tags-wrapper hide-when-collapsed">
+                    <ul class="chips tags small">
 
-                        {if count($cloud) > tasksTaskTagsModel::TAGS_MAX_COUNT}
-                            <div id="collapsible-tags-autocomplete" data-block="tags">
-                                <div class="box t-tags-wrapper hide-when-collapsed">
-                                <input id="js-t-sidebar-tags-autocomplete" value="" data-default="" class="ui-autocomplete-input" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true"></div>
+                        {$_tag_usage_counts = []}
+                        {foreach $cloud as $tag}
+                            {$_tag_usage_counts[ $tag.id ] = $tag.count}
+                        {/foreach}
 
-                                <p class="hint">
-                                    {sprintf(_w('There are more than %u tags.'), tasksTaskTagsModel::TAGS_MAX_COUNT)}<br>
-                                    [`Start typing in the search field to find a tag.`]
-                                </p>
-                            </div>
+                        {capture}{arsort($_tag_usage_counts)}{/capture}
+
+                        {$_top_tags_ids = []}
+                        {$_max_tag_visible = 13}
+                        {$_i = 0}
+                        {foreach $_tag_usage_counts as $_tid => $_tcount}
+                            {$_top_tags_ids[ $_tid ] = $_tcount}
+                            {if $_i >= $_max_tag_visible}
+                                {break}
+                            {/if}
+                            {$_i = $_i + 1}
+                        {/foreach}
+
+                        {$_hidden_tags_counter = 0}
+                        {foreach $cloud as $tag}
+                            {$_visible = $tag.id|array_key_exists:$_top_tags_ids}
+
+                            <li{if !$_visible} class="t-tags-hidden-tag js-tags-hidden-tag"{/if}>
+                                {$_wa2_optimized_opacity = $tag.opacity * 2}
+                                <a style="opacity: {max(1, $_wa2_optimized_opacity)};" data-id="{$tag.id}" data-value="{$tag.name|escape}" href="#/tasks/tag/{$tag.name|escape}/">
+                                    <i class="fas fa-hashtag"></i>
+                                    <span{if $_wa2_optimized_opacity >= 1} class="bold"{/if}>{$tag.name|escape}</span>
+                                    <span class="count">{$tag.count}</span>
+                                </a>
+                            </li>
+                            {if !$_visible}
+                                {$_hidden_tags_counter = $_hidden_tags_counter + 1}
+                            {/if}
+
+                        {/foreach}
+
+                        {if $_hidden_tags_counter > 0}
+                            <li class="transparent">
+                                <a href="#" style="background: transparent !important; color: rgba(127,127,127,0.5) !important;" class="js-tags-show-all-link">[`Show all tags`] ({count($cloud)})</a>
+                            </li>
                         {/if}
+                    </ul>
 
-                        <p class="hint">{sprintf('[`Showing %d most popular tags out of %d.`]', $_tags_visible, count($cloud))}</p>
-                    </div>
                 </div>
             </div>
+        </div>
 
     {/if}
 

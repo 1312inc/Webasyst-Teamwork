@@ -73,28 +73,65 @@
         {/if}
         <button class="dropdown-toggle button light-gray t-selected-item js-title" data-default-title="{$_title}">{$_title}</button>
 
-        <div class="dropdown-body custom-p-8">
+        <div class="dropdown-body custom-p-8" style="min-width: 320px;">
             <ul class="menu t-tags-cloud">
                 <li class="js-show-all" style="display: none;">
-                    <a href="javascript:void(0);" class="js-tag-link" data-id="" data-value="">[`All tags`]</a>
+                    <a href="javascript:void(0);" class="js-tag-link" data-id="" data-value="">
+                        <span>[`Show all tags`]</span>
+                        <span class="count">{count($cloud)}</span>
+                    </a>
                 </li>
                 <li class="t-nav-tags-item tag">
-                    {if count($cloud) <= tasksTaskTagsModel::TAGS_MAX_COUNT}
+
+                    <ul class="chips tags small">
+
+                        {$_tag_usage_counts = []}
                         {foreach $cloud as $tag}
-                            <a href="javascript:void(0)"
-                               class="js-tag-link t-tag-link"
-                               data-id="{$tag.id}"
-                               data-value="{$tag.name|escape}"
-                               ><i class="fas fa-hashtag"></i><span>{$tag.name|escape}</span></a>
+                            {$_tag_usage_counts[ $tag.id ] = $tag.count}
                         {/foreach}
-                    {else}
-                        <span class="hint">{sprintf(_w('There are more than %u tags.'), tasksTaskTagsModel::TAGS_MAX_COUNT)}<br>
-                            [`Start typing in the search field to find a tag.`]
-                        </span>
-                    {/if}
+
+                        {capture}{arsort($_tag_usage_counts)}{/capture}
+
+                        {$_top_tags_ids = []}
+                        {$_max_tag_visible = 25}
+                        {$_i = 0}
+                        {foreach $_tag_usage_counts as $_tid => $_tcount}
+                            {$_top_tags_ids[ $_tid ] = $_tcount}
+                            {if $_i >= $_max_tag_visible}
+                                {break}
+                            {/if}
+                            {$_i = $_i + 1}
+                        {/foreach}
+
+                        {$_hidden_tags_counter = 0}
+                        {foreach $cloud as $tag}
+                            {$_visible = $tag.id|array_key_exists:$_top_tags_ids}
+
+                            <li{if !$_visible} class="t-tags-hidden-tag js-tags-hidden-tag"{/if}>
+                                <a href="javascript:void(0)"
+                                   class="js-tag-link t-tag-link"
+                                   data-id="{$tag.id}"
+                                   data-value="{$tag.name|escape}"
+                                   >
+                                   <i class="fas fa-hashtag"></i>
+                                   <span>{$tag.name|escape}</span>
+                               </a>
+                            </li>
+                            {if !$_visible}
+                                {$_hidden_tags_counter = $_hidden_tags_counter + 1}
+                            {/if}
+                        {/foreach}
+
+                        {if $_hidden_tags_counter > 0}
+                            <li class="transparent">
+                                <a href="#" style="background: transparent !important; color: rgba(127,127,127,0.5) !important;" class="js-tags-show-all-link">[`Show all tags`] ({count($cloud)})</a>
+                            </li>
+                        {/if}
+                    </ul>
+
                 </li>
             </ul>
-            <input value="" class="t-input js-t-header-tags-autocomplete" type="text" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true" placeholder="[`Search tag...`]">
+            <input value="" class="t-input js-t-header-tags-autocomplete small" type="text" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true" placeholder="[`Find tag`]">
         </div>
 
         <script>
