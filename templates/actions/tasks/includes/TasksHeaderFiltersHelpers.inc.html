@@ -47,7 +47,7 @@
                                     {show_userpic o=$o}
                                 {/if}
 
-                                <span class="{if $o@index > 0}is-bold{/if}">{$o.name|escape}</span>
+                                <span class="{if $o@index > 0}is-bold{/if}">{$o.name|escape|truncate:42}</span>
                             </a>
                     </li>
                 {/foreach}

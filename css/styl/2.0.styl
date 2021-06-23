@@ -152,6 +152,9 @@ h2
         a
           color var(--text-color)
 
+          &:hover
+            background var(--background-color-editable)
+
       &__footer
         color var(--blue)
         text-align center
@@ -224,7 +227,19 @@ h2
 
 .button.light-gray
     &:hover
-        background var(--background-color-blockquote)
+        background var(--button-light-gray-background-color-hover)
 
 .t-tags-hidden-tag
     display none
+
+.t-due-date-hint-red
+    color var(--red)
+    font-weight bold
+
+.t-due-date-hint-yellow
+    color var(--yellow)
+    font-weight bold
+
+.t-due-date-hint-green
+    color var(--text-color)
+    font-weight 500

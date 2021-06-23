@@ -79,11 +79,10 @@
 
                     <div class="t-controls-wrapper flexbox middle space-16">
 
-
-                        <a class="t-favorite-link button light-gray rounded t-set-favorite {if empty($task.favorite)}text-light-gray{else}text-yellow{/if}" href="javascript:void(0);">
-                            <i class="fas fa-star"></i>
-                            <span class="text-black custom-ml-4"{if !empty($task.favorite)} style="display: none;"{/if}>[`Watch`]</span>
-                            <span class="text-black custom-ml-4"{if empty($task.favorite)} style="display: none;"{/if}>[`Watching`]</span>
+                        <a class="t-favorite-link button light-gray rounded t-set-favorite" href="javascript:void(0);">
+                            <i class="fas fa-star {if empty($task.favorite)}text-light-gray{else}text-yellow{/if}"></i>
+                            <span class="custom-ml-4"{if !empty($task.favorite)} style="display: none;"{/if}>[`Watch`]</span>
+                            <span class="custom-ml-4"{if empty($task.favorite)} style="display: none;"{/if}>[`Watching`]</span>
                         </a>
 
                         {* EDIT & DELETE *}
