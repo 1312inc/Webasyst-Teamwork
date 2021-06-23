@@ -1,6 +1,6 @@
 h2
   @media forMobile
-    font-size 1.2rem
+    font-size 1.5rem
 
 .loading, .loading:after
   border-radius 50%
@@ -194,6 +194,9 @@ h2
     &.t-pinned-comment
         background var(--highlighted-blue)
 
+    @media forMobile
+        width 85%
+
 .t-pinned-comment
     background var(--highlighted-blue)
     border-radius 0.25rem
@@ -243,3 +246,18 @@ h2
 .t-due-date-hint-green
     color var(--text-color)
     font-weight 500
+
+.t-task-flag-box
+    @media forMobile
+        flex 1
+
+    .t-task-flag-box-content
+        @media forMobile
+            background var(--background-color)
+            padding 0.5rem 1rem
+            border-radius 0.25rem
+            margin-top 1rem
+
+.t-task-header-content
+    @media forMobile
+        margin-bottom 0.75rem

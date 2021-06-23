@@ -17,7 +17,7 @@ window.showLogsChart = function(dataset, options) {
             left: 8
         },
         xTicks: 10,
-        yTicks: 3,
+        yTicks: 0,
         colorsArray: ["#a7e0a7","#009900","#ae4410"],
         hovered_point: false, // Container for points logic
         getColumnWidth: function() {
@@ -442,7 +442,7 @@ window.showLogsChart = function(dataset, options) {
 };
 
 window.initLogsTimeframeSelector = function($wrapper) {
-    var $visible_option = $wrapper.children('#timeframe .dropdown-toggle'); 
+    var $visible_option = $wrapper.children('#timeframe .dropdown-toggle');
     var $custom_wrapper = $('.t-custom-timeframe');
 
     // Initial selection in dropdown menu
