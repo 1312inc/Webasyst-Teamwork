@@ -176,7 +176,7 @@
                         {foreach $scopes as $scope}
                             {$_scope_is_100_complete = isset($scope.closed_percent) && $scope.closed_percent >= 100}
                             <li class="t-scope">
-                                <a href="#/tasks/scope/{$scope.id}/"{if isset($scope.closed_percent)}class="t-scope-title"{/if}>
+                                <a href="#/tasks/scope/{$scope.id}/"{if isset($scope.closed_percent)}class="t-scope-title"{/if} title="{sprintf('[`%d open / %d closed`]', $scope.open_tasks|default:0, $scope.closed_tasks|default:0)}">
                                     {$scope.project.icon_html}
                                     <span>
                                         <span class="flexbox">
