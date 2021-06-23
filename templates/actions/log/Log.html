@@ -106,7 +106,10 @@
     <div class="article">
         <div class="article-body">
         <div class="t-logs-wrapper" id="t-logs-wrapper">
-            {foreach $logs as $l}{strip}
+            {foreach $groupedLogs as $groupDate => $logGroup}
+            {if count($logGroup.items)}
+            <h3>{$logGroup.group|escape}</h3>
+            {foreach $logGroup.items as $l}{strip}
             <div class="t-comment-item-wrapper custom-mb-20 {if $l.contact_id == $wa->user()->getId()}t-comment-item-wrapper--right{/if}" data-id="{$l.id}">
                 <div class="t-comment-item flexbox space-8" data-log-id="{$l.id|escape}">
                     <div class="image" style="position: relative;">
@@ -209,6 +212,8 @@
                 </div>
             </div>
             {/strip}{/foreach}
+            {/if}
+            {/foreach}
 
             <div id="end-of-logs" class="block custom-mx-16 custom-mb-24">
 
