@@ -18,9 +18,10 @@ try {
     $status_model = new tasksStatusModel();
 
     if (!$project_model->countAll() && !$status_model->countAll()) {
+
         $status_id = $status_model->insert(array(
-            'name' => _w('Testing'),
-            'button' => wa()->getLocale() == 'ru_RU' ? 'На проверку' : _w('Done'),
+            'name' => _w('In progress'),
+            'button' => _w('Start doing'),
             'sort' => 2,
             'icon' => 'status-yellow-tiny'
         ));
@@ -28,12 +29,30 @@ try {
             $params_model = new tasksStatusParamsModel();
             $params_model->set($status_id, array(
                 'assign_user' => '',
-                'assign' => 'author',
+                'assign' => '',
                 'button_color' => 'ffdc2f',
                 'title_color' => '000',
+                'allow_comment' => 0
+            ));
+        }
+
+        $status_id = $status_model->insert(array(
+            'name' => _w('Testing'),
+            'button' => _w('To test'),
+            'sort' => 3,
+            'icon' => 'status-red-tiny'
+        ));
+        if ($status_id) {
+            $params_model = new tasksStatusParamsModel();
+            $params_model->set($status_id, array(
+                'assign_user' => '',
+                'assign' => 'select',
+                'button_color' => 'ff7416',
+                'title_color' => 'ffffff',
                 'allow_comment' => 1
             ));
         }
+
         $project_id = $project_model->add(array(
             'name' => wa()->accountName(),
             'icon' => 'blog'

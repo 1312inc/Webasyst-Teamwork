@@ -69,11 +69,8 @@
                             {if !empty($task.project.icon_html)}
                                 {$task.project.icon_html}
                             {/if}
-                            <span class="semibold">{$task.project.name|escape}</span>
+                            <span class="semibold">{$task.project.name|escape|truncate:42}</span>
                         </a>
-
-
-
 
                     </div>
 
@@ -204,17 +201,17 @@
                                     {if $_milestone}
                                         <strong>{$_milestone}</strong>
                                     {elseif $_due_date}
-                                        <span class="badge squared {$_due_class} custom-mr-4">{$_due_date}</span>
+                                        <span class="badge nowrap squared {$_due_class} custom-mr-4">{$_due_date}</span>
                                         {if $_due_hint}
-                                            <span class="small">{$_due_hint}</span>
+                                            <span class="small nowrap">{$_due_hint}</span>
                                         {/if}
                                     {else}
-                                        <span class="gray">[`No milestone`]</span>
+                                        <span class="gray nowrap">[`No milestone`]</span>
                                     {/if}
                                 </p>
                                 <p class="hint custom-mt-0">
                                     {if $_due_date && $_milestone}
-                                        <span class="t-due-date-bl badge squared {$_due_class} custom-mr-4">{$_due_date}</span>
+                                        <span class="t-due-date-bl badge nowrap squared {$_due_class} custom-mr-4">{$_due_date}</span>
                                         {if $_due_hint}
                                             <span class="small">{$_due_hint}</span>
                                         {/if}
