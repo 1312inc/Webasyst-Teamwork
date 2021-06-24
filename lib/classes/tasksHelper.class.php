@@ -299,7 +299,7 @@ class tasksHelper
         return $path . $attach['id'] . ($attach['ext'] ? '.' . $attach['ext'] : '');
     }
 
-    public static function getTeam($project_id = null, $only_active = false)
+    public static function getTeam($project_id = null, $only_active = false, $withDisabled = false)
     {
         static $contacts = null;
 
@@ -359,12 +359,20 @@ class tasksHelper
             $data = $contacts;
         }
 
+        if (!$withDisabled) {
+            foreach ($data as $contact_id => $c) {
+                if ($c['is_user'] == -1) {
+                    unset($data[$contact_id]);
+                }
+            }
+        }
+
         if ($only_active) {
             $contact_ids = $log_model->getContactIds();
             $result = [];
             $user_id = wa()->getUser()->getId();
             foreach ($data as $contact_id => $c) {
-                if (in_array($contact_id, $contact_ids) && $contact_id != $user_id && $c['is_user'] != -1) {
+                if (in_array($contact_id, $contact_ids) && $contact_id != $user_id) {
                     $result[$contact_id] = $c;
                 }
             }
