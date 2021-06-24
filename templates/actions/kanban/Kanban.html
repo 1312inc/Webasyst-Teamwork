@@ -29,7 +29,7 @@
                                                 </span>
                                             {/if}
 
-                                            <span class="{if $o@index > 0}is-bold{/if}">{$o.name|escape}</span>
+                                            <span class="{if $o@index > 0}is-bold{/if}">{$o.name|escape|truncate:42}</span>
                                         </a></li>
                                     {/foreach}
                                 </ul>
@@ -78,7 +78,7 @@
             </div>
         </header>
 
-        <div class="t-kanban flexbox">
+        <div class="t-kanban hide-scrollbar flexbox">
             <div class="flexbox fixed space-12 width-100">
             {foreach $kanban as $data}
                 <div class="t-kanban__list">
@@ -90,7 +90,7 @@
                             <span class="t-kanban__list__count gray bold">{$data.count}</span>
                         </div>
                     </div>
-                    <div data-kanban-list-status-id="{$data.status.id}" data-kanban-list-total="{$data.count}" class="t-kanban__list__body custom-px-16">
+                    <div data-kanban-list-status-id="{$data.status.id}" data-kanban-list-total="{$data.count}" class="t-kanban__list__body hide-scrollbar custom-px-16">
                         {include file='./KanbanStatusTasks.html' data=$data}
                         <div class="t-kanban__list__body__footer">
                             <span style="display: none;">[`Loading...`]</span>
