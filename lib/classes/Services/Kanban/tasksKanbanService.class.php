@@ -10,6 +10,8 @@ final class tasksKanbanService
 
         if (!$requestDto->isWithUnassigned()) {
             $c->filter('assigned_contact_id>0');
+            // убрать удаленных и заблокированных - приравниваем к незаассайненым
+            $c->addJoin('wa_contact', ':table.id=t.assigned_contact_id', ':table.is_user>-1');
         }
 
         $this->applyOrder($c, 'priority');
