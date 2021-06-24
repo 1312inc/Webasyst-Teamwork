@@ -10,21 +10,21 @@ class tasksKanbanStatusTasksAction extends tasksKanbanAction
 
         $filters = $this->getFilters();
 
-        if ($statusId === -1312) {
-            $status = [
-                'id' => -1312,
-                'name' => _w('Backlog'),
-                'button' => '',
-                'action_name' => '',
-                'special' => 1,
-                'icon' => '',
-                'sort' => '',
-                'params' => [],
-                'icon_url' => false,
-                'icon_class' => '',
-                'icon_html' => '',
-            ];
-        } else {
+//        if ($statusId === -1312) {
+//            $status = [
+//                'id' => -1312,
+//                'name' => _w('Backlog'),
+//                'button' => '',
+//                'action_name' => '',
+//                'special' => 1,
+//                'icon' => '',
+//                'sort' => '',
+//                'params' => [],
+//                'icon_url' => false,
+//                'icon_class' => '',
+//                'icon_html' => '',
+//            ];
+//        } else {
             $status = null;
             foreach ($this->getStatusesForFilters($filters) as $s) {
                 if ($statusId == $s['id']) {
@@ -32,7 +32,7 @@ class tasksKanbanStatusTasksAction extends tasksKanbanAction
                     break;
                 }
             }
-        }
+//        }
 
         if ($status === null) {
             throw new tasksException('No status found for this request');
@@ -42,6 +42,7 @@ class tasksKanbanStatusTasksAction extends tasksKanbanAction
             $filters,
             $status,
             $this->getLogFilterTypes(),
+            (bool) waRequest::request('with_backlog', null),
             $offset,
             $limit
         );
