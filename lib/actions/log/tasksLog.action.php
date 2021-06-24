@@ -26,15 +26,17 @@ class tasksLogAction extends tasksTasksAction
         self::addStatusColors($logs);
         $count = count($logs);
 
+        $isLasy = waRequest::request('lazy');
+
         // Lazy-loading setup
         $next_page_url = self::getNextPageUrl($offset, $limit, $count, $total_count);
-        if ($next_page_url) {
+        if (!$isLasy && $next_page_url) {
             $next_page_url .= '&lazy=1';
         }
 
         // Chart is rendered using a separate action
         $chart_html = '';
-        if (!waRequest::request('lazy') && $logs) {
+        if (!$isLasy && $logs) {
             $chart_action = new tasksLogChartAction();
             $chart_html = $chart_action->display();
         }
@@ -53,6 +55,7 @@ class tasksLogAction extends tasksTasksAction
                 'chart_html' => $chart_html,
                 'logs' => $logs,
                 'groupedLogs' => $groupedLogs,
+                'isLazy' => $isLasy,
             ]
         );
     }

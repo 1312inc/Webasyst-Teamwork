@@ -106,9 +106,15 @@
     <div class="article">
         <div class="article-body">
         <div class="t-logs-wrapper" id="t-logs-wrapper">
+            {$_logGroupIteration = 0}
             {foreach $groupedLogs as $groupDate => $logGroup}
             {if count($logGroup.items)}
+
+            {if !$isLazy || ($isLazy && $_logGroupIteration > 0)}
             <h3>{$logGroup.group|escape}</h3>
+            {/if}
+
+            {$_logGroupIteration=$_logGroupIteration+1}
             {foreach $logGroup.items as $l}{strip}
             <div class="t-comment-item-wrapper custom-mb-20 {if $l.contact_id == $wa->user()->getId()}t-comment-item-wrapper--right{/if}" data-id="{$l.id}">
                 <div class="t-comment-item flexbox space-8" data-log-id="{$l.id|escape}">
