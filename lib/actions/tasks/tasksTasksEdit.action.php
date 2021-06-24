@@ -54,11 +54,6 @@ class tasksTasksEditAction extends waViewAction
     {
         $users = tasksHelper::getTeam();
         foreach ($users as $user_id => $user) {
-            if ($user['is_user'] == -1) {
-                unset($users[$user_id]);
-                continue;
-            }
-
             $users[$user_id]['photo_url'] = waContact::getPhotoUrl($user['id'], $user['photo'], 40, 40, 'person', 0);
         }
 
