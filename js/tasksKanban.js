@@ -99,9 +99,12 @@ const Kanban = (($) => {
         const dfd = $.Deferred();
 
         if (typeof Sortable === "undefined") {
+            const $script = $("#wa-header-js"),
+                path = $script.attr('src').replace(/wa-content\/js\/jquery-wa\/wa.header.js.*$/, '');
+
             const urls = [
-                "/wa-content/js/sortable/sortable.min.js",
-                "/wa-content/js/sortable/jquery-sortable.min.js",
+                "wa-content/js/sortable/sortable.min.js",
+                "wa-content/js/sortable/jquery-sortable.min.js",
             ];
 
             const sortableDeferred = urls.reduce((dfd, url) => {
@@ -109,7 +112,7 @@ const Kanban = (($) => {
                     return $.ajax({
                         cache: true,
                         dataType: "script",
-                        url: url
+                        url: path + url
                     });
                 });
             }, $.Deferred().resolve());
