@@ -28,11 +28,17 @@ final class tasksKanbanRequestDto
     private $filters;
 
     /**
+     * @var bool
+     */
+    private $withUnassigned;
+
+    /**
      * tasksKanbanRequestDto constructor.
      *
      * @param array $filters
      * @param array $status
      * @param array $filterTypes
+     * @param bool  $withUnassigned
      * @param int   $offset
      * @param int   $limit
      */
@@ -40,6 +46,7 @@ final class tasksKanbanRequestDto
         array $filters,
         array $status,
         array $filterTypes,
+        $withUnassigned,
         $offset,
         $limit
     ) {
@@ -48,45 +55,36 @@ final class tasksKanbanRequestDto
         $this->offset = $offset;
         $this->limit = $limit;
         $this->filters = $filters;
+        $this->withUnassigned = $withUnassigned;
     }
 
-    /**
-     * @return array
-     */
     public function getStatus(): array
     {
         return $this->status;
     }
 
-    /**
-     * @return array
-     */
     public function getFilterTypes(): array
     {
         return $this->filterTypes;
     }
 
-    /**
-     * @return int
-     */
     public function getOffset(): int
     {
         return $this->offset;
     }
 
-    /**
-     * @return int
-     */
     public function getLimit(): int
     {
         return $this->limit;
     }
 
-    /**
-     * @return array
-     */
     public function getFilters(): array
     {
         return array_filter($this->filters, wa_lambda('$a', 'return !is_null($a);'));
+    }
+
+    public function isWithUnassigned(): bool
+    {
+        return $this->withUnassigned;
     }
 }

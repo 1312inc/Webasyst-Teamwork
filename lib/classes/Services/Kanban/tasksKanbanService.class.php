@@ -4,12 +4,12 @@ final class tasksKanbanService
 {
     public function getTasksForStatus(tasksKanbanRequestDto $requestDto): array
     {
-        if ($requestDto->getStatus()['id'] === -1312) {
-            $c = new tasksCollection(tasksCollection::HASH_UNASSIGNED);
-            $this->applyFilters($c, $requestDto->getFilters());
-        } else {
-            $c = new tasksCollection(tasksCollection::HASH_SEARCH);
-            $this->applyFilters($c, $requestDto->getFilters() + ['status_id' => $requestDto->getStatus()['id']]);
+        $c = new tasksCollection(tasksCollection::HASH_STATUS . '/' . $requestDto->getStatus()['id']);
+
+        $this->applyFilters($c, $requestDto->getFilters());
+
+        if (!$requestDto->isWithUnassigned()) {
+            $c->filter('assigned_contact_id>0');
         }
 
         $this->applyOrder($c, 'priority');
