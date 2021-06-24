@@ -23,6 +23,7 @@ class tasksKanbanAction extends tasksTasksAction
                 $filters,
                 $status,
                 $filterTypes,
+                (bool) waRequest::request('with_backlog', null),
                 $offset,
                 $limit
             );
@@ -74,7 +75,6 @@ class tasksKanbanAction extends tasksTasksAction
             'assigned_contact_id' => waRequest::request('contact_id', null),
             'milestone_id' => waRequest::request('milestone_id', null),
             'tag' => waRequest::request('tag', null, waRequest::TYPE_STRING_TRIM),
-            'with_backlog' => waRequest::request('with_backlog', null),
         ];
 
         foreach ($filters as &$filter) {
@@ -105,25 +105,6 @@ class tasksKanbanAction extends tasksTasksAction
 
             default:
                 $statuses = tasksHelper::getStatuses(null, true);
-        }
-
-        if (!empty($filters['with_backlog'])) {
-            array_unshift(
-                $statuses,
-                [
-                    'id' => -1312,
-                    'name' => _w('Backlog'),
-                    'button' => '',
-                    'action_name' => '',
-                    'special' => 1,
-                    'icon' => '',
-                    'sort' => '',
-                    'params' => [],
-                    'icon_url' => false,
-                    'icon_class' => '',
-                    'icon_html' => '',
-                ]
-            );
         }
 
         return $statuses;
