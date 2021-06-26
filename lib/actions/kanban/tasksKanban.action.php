@@ -186,7 +186,7 @@ class tasksKanbanAction extends tasksTasksAction
 
         $kanbanTasksResult = wa()->event(tasksEventsStorage::KANBAN_STATUS_TASKS, $params);
 
-        foreach ($kanban as $i => $data) {
+        foreach ($kanban as $data) {
             foreach ($data['tasks'] as &$task) {
                 $hooks = [
                     tasksEventsStorage::KANBAN_STATUS_TASKS => [],

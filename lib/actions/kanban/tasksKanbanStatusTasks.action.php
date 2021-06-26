@@ -48,10 +48,12 @@ class tasksKanbanStatusTasksAction extends tasksKanbanAction
         );
 
         $kanban = (new tasksKanbanService())->getTasksForStatus($kanbanRequest);
+        tasksHelper::workupTasksForView($kanban['tasks']);
+        $eventKanban = [$kanban];
 
         // hook jukebox
         $this->triggerKanbanTasksEvent(
-            $kanban,
+            $eventKanban,
             [
                 'filters' => $filters,
             ]
