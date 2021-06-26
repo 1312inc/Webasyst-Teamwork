@@ -65,6 +65,12 @@
                         </label>
                     </div>
 
+                    {$_kanban_page_hooks_header = $kanban_page_hooks.header|default:[]}
+                    {foreach $_kanban_page_hooks_header as $pluginId => $h}
+                        <!-- {$pluginId} filters -->
+                        {$h.filters|default:''}
+                    {/foreach}
+
                     {if !empty($is_filter_set)}
                         <div class="t-menu-item">
                         <span class="t-menu-name">
