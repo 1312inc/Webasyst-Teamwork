@@ -7,6 +7,7 @@ class tasksKanbanAction extends tasksTasksAction
 {
     public function execute()
     {
+        $hash = waRequest::get('hash', '', 'string');
         $offset = waRequest::get('offset', 0, waRequest::TYPE_INT);
         $limit = wa('tasks')->getConfig()->getOption('tasks_per_kanban');
 
@@ -32,14 +33,52 @@ class tasksKanbanAction extends tasksTasksAction
         }
 
         if (!empty($filters['tag'])) {
-            $tag = (new tasksTagModel())->getByField('name',$filters['tag']);
+            $tag = (new tasksTagModel())->getByField('name', $filters['tag']);
             if ($tag) {
                 $this->view->assign('tag', $tag);
             }
         }
 
+        // hook jukebox
+        $this->triggerKanbanTasksEvent(
+            $kanban,
+            [
+                'filters' => $filters,
+            ]
+        );
+
+        /**
+         * UI hook for extend task kanban page:
+         *
+         * extend other page blocks, like filters block in header of page
+         *
+         *
+         * @event kanban_tasks
+         *
+         * @param int[]|array[]|tasksTask[] $kanban
+         * @param string                    $hash
+         * @param string                    $filters
+         * @param string                    $order
+         *
+         * Returns complex structure
+         *
+         * In keys returns html blocks for whole tasks page
+         *
+         * @return array $return[%plugin_id%]['header'] html blocks in header of page
+         *
+         * @return string $return[%plugin_id%]['header']['filters'] array of html blocks, each is filter html block
+         */
+        $kanbanTasksResult = wa()->event(tasksEventsStorage::KANBAN_PAGE, $params);
+        $pageHooks = [];
+        foreach ($kanbanTasksResult as $pluginId => $kanbanTasks) {
+            foreach ($kanbanTasks as $key => $result) {
+                $pageHooks[$key][$pluginId] = $result;
+            }
+        }
+
         $this->view->assign(
             [
+                'kanban_page_hooks' => $pageHooks,
                 'filter_types' => $filterTypes,
                 'click_to_load_more' => $offset > 100,
                 'is_filter_set' => !!$filters,
@@ -108,5 +147,57 @@ class tasksKanbanAction extends tasksTasksAction
         }
 
         return $statuses;
+    }
+
+
+    /**
+     * Trigger 'kanban_tasks' event
+     * See doc comments in method body
+     *
+     * @param $kanban
+     * @param $params
+     */
+    protected function triggerKanbanTasksEvent(&$kanban, $params)
+    {
+        /**
+         * UI hook for extend task kanban page:
+         *
+         * extend each task html block as like as in 'kanban_task' event
+         *
+         *
+         * @event kanban_tasks
+         *
+         * @param int[]|array[]|tasksTask[] $kanban
+         * @param string                    $hash
+         * @param string                    $filters
+         * @param string                    $order
+         *
+         * Returns complex structure
+         *
+         * In key 'tasks' returns html blocks for each tasks
+         *
+         * @return array[string]array $return[%plugin_id%][%task_id%] array of array of html output
+         *
+         * @return string $return[%plugin_id%][%task_id%]['after_body'] html
+         */
+        $params['tasks'] = $kanban;
+
+        $kanbanTasksResult = wa()->event(tasksEventsStorage::KANBAN_STATUS_TASKS, $params);
+
+        foreach ($kanban as $i => $data) {
+            foreach ($data['tasks'] as &$task) {
+                $hooks = [
+                    tasksEventsStorage::KANBAN_STATUS_TASKS => [],
+                ];
+                foreach ($kanbanTasksResult as $pluginId => $kanbanTasks) {
+                    $hooks[tasksEventsStorage::KANBAN_STATUS_TASKS][$pluginId] = [];
+                    if (isset($kanbanTasks[$task['id']])) {
+                        $hooks[tasksEventsStorage::KANBAN_STATUS_TASKS][$pluginId] = $kanbanTasks[$task['id']];
+                    }
+                }
+                $task['hooks'] = $hooks;
+            }
+        }
+        unset($task);
     }
 }
