@@ -367,12 +367,15 @@ var TasksSidebar = (function ($) {
             $tasks.find(".t-comment-content").replaceText(value, "<span class=\"highlighted\">" + new_value + "</span>");
         });
 
-        var hash = $.tasks.cleanHash();
-        var collection_hash = 'search/'+encodeURIComponent(value.replace(/&/g, ''));
-        if (hash.indexOf('&hash=search/') < 0) {
-            new_hash = $.tasks.cleanHash('#/tasks/'+collection_hash);
+        if (value.charAt(0) === '#') {
+            new_hash = $.tasks.cleanHash('#/tasks/tag/' + encodeURIComponent(value.replace(/&/g, '')) + '/');
         } else {
-            new_hash = $.tasks.cleanHash(hash.replace(/&hash=search\/.*/, '&hash='+collection_hash));
+            var collection_hash = 'search/' + encodeURIComponent(value.replace(/&/g, ''));
+            if (hash.indexOf('&hash=search/') < 0) {
+                new_hash = $.tasks.cleanHash('#/tasks/' + collection_hash);
+            } else {
+                new_hash = $.tasks.cleanHash(hash.replace(/&hash=search\/.*/, '&hash=' + collection_hash));
+            }
         }
         $.wa.setHash(new_hash);
     };
