@@ -29,7 +29,9 @@ class tasksKanbanAction extends tasksTasksAction
                 $limit
             );
 
-            $kanban[] = $kanbanService->getTasksForStatus($kanbanRequest) + ['status' => $status];
+            $statusData = $kanbanService->getTasksForStatus($kanbanRequest) + ['status' => $status];
+            tasksHelper::workupTasksForView($statusData['tasks']);
+            $kanban[] = $statusData;
         }
 
         if (!empty($filters['tag'])) {
