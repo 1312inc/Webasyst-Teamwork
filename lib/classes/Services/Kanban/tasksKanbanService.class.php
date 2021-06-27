@@ -14,7 +14,7 @@ final class tasksKanbanService
             $c->addJoin('wa_contact', ':table.id=t.assigned_contact_id', ':table.is_user>-1');
         }
 
-        $this->applyOrder($c, 'priority');
+        $this->applyOrder($c, $requestDto->getOrder());
         $totalCount = null;
         $taskRows = $c->getTasks(
             tasksCollection::FIELDS_TO_GET,
@@ -59,16 +59,16 @@ final class tasksKanbanService
     private function applyOrder(tasksCollection $c, $order): void
     {
         switch ($order) {
-            case 'newest':
+            case tasksKanbanRequestDto::ORDER_NEWEST:
                 $c->orderBy('update_datetime', 'DESC');
                 break;
-            case 'oldest':
+            case tasksKanbanRequestDto::ORDER_OLDEST:
                 $c->orderBy('create_datetime');
                 break;
-            case 'due':
+            case tasksKanbanRequestDto::ORDER_DUE:
                 $c->orderByDue();
                 break;
-            case 'priority':
+            case tasksKanbanRequestDto::ORDER_PRIORITY:
             default:
                 break; // Nothing to do: collection defaults to priority ordering
         }
