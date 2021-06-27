@@ -433,6 +433,7 @@ var TasksHeader = ( function($) {
                 }
             });
             that.$selectedMenu.trigger("cancelSelection");
+            $.tasks.redispatch();
         });
     };
 
@@ -453,6 +454,7 @@ var TasksHeader = ( function($) {
                 }
             });
             that.$selectedMenu.trigger("cancelSelection");
+            $.tasks.redispatch();
         });
 
     };
@@ -462,55 +464,58 @@ var TasksHeader = ( function($) {
         var that = this;
         var task_ids = that.getSelectedTaskIds();
         var title = $_('Forward (%d)').replace('%d', task_ids.length);
-        $('#t-bulk-forward-dialog').empty().removeClass('dialog').waDialog({
-            url: '?module=tasks&action=forward',
-            title: title,
-            onLoad: function(d) {
-                var $dialog = $(this);
-                var $content = $dialog.find('.dialog-content-indent');
-                var $buttons = $dialog.find('.dialog-buttons-gradient').empty();
-                var $form = $content.find('form');
 
-                // Show dialog title
-                $content.prepend($('<h1>').text(title));
+        $.get('?module=tasks&action=forward')
+                .done(function (html) {
+                    $.waDialog({
+                        content: html,
+                        onOpen: function($dialog, dialog_instance) {
+                            var $content = $dialog.find('form');
+                            var $buttons = $dialog.find('.dialog-buttons-gradient').empty();
+                            var $form = $content;
+            
+                            // Show dialog title
+                            $content.prepend($('<h1 class="custom-mt-0">').text(title));
+            
+                            // Move buttons where appropriate
+                            $content.find('.t-hiddenform-cancel-link').show();
+                            $content.find('.t-buttons-block').remove();
+            
+                            // Add hidden ids to form
+                            task_ids.forEach(function(task_id) {
+                                $form.prepend($.parseHTML('<input type="hidden" name="ids[]" value="'+task_id+'">'));
+                            });
+            
+                            // Submit form when a button is clicked
+                            $buttons.find(':submit').click(function() {
+                                $form.submit();
+                            });
+            
+                            // Form submit via XHR
+                            $form.submit(function() {
+                                $buttons.append('<i class="icon16 loading"></i>').find(':submit').prop('disabled', true);
+                                $.post($form.attr('action'), $form.serialize(), function() {
+                                    dialog_instance.close();
 
-                // Move buttons where appropriate
-                $content.find('.t-hiddenform-cancel-link').closest('.value').children().appendTo($buttons);
-                $content.find('.t-buttons-block').remove();
-
-                // Add hidden ids to form
-                task_ids.forEach(function(task_id) {
-                    $form.prepend($.parseHTML('<input type="hidden" name="ids[]" value="'+task_id+'">'));
-                });
-
-                // Submit form when a button is clicked
-                $buttons.find(':submit').click(function() {
-                    $form.submit();
-                });
-
-                // Form submit via XHR
-                $form.submit(function() {
-                    $buttons.append('<i class="icon16 loading"></i>').find(':submit').prop('disabled', true);
-                    $.post($form.attr('action'), $form.serialize(), function() {
-                        $dialog.trigger('close');
-
-                        // Animation removing tasks from the list
-                        task_ids.forEach(function(id) {
-                            if (typeof Tasks == 'object' && Tasks[id]) {
-                                var task = Tasks[id];
-                                task.moveTask("right", function() {
-                                    task.removeTask();
+                                    // Animation removing tasks from the list
+                                    task_ids.forEach(function(id) {
+                                        if (typeof Tasks == 'object' && Tasks[id]) {
+                                            var task = Tasks[id];
+                                            task.moveTask("right", function() {
+                                                task.removeTask();
+                                            });
+                                        }
+                                    });
+                                    that.$selectedMenu.trigger("cancelSelection");
+                                    $.tasks.redispatch();
                                 });
-                            }
-                        });
-                        that.$selectedMenu.trigger("cancelSelection");
+                                return false;
+                            });
+            
+                        }
+
                     });
-                    return false;
                 });
-
-            }
-        });
-
     };
 
     Header.getSelectedTaskIds = function() {
@@ -803,7 +808,7 @@ var TasksHeader = ( function($) {
                 tag = $.trim($val_input.val());
 
             if (tag.length > 0) {
-                createTag(add_tag_url, tag);
+                createTag(tag);
                 $val_input.val("");
             }
 
@@ -848,6 +853,7 @@ var TasksHeader = ( function($) {
                 set_data = getDataForSet(tag_id);
             $.post(set_href, set_data, function(response) {
                 //console.log( response );
+                $.tasks.redispatch();
             });
         };
 
@@ -922,24 +928,18 @@ var TasksHeader = ( function($) {
             $datepicker = null;
 
         var showDialog = function(options) {
-
+            options = options || {};
             $.get('?module=tasks&action=deadlineSetDialog')
                 .done(function (html) {
-                    // remove all previous dialogs in DOM
-                    $('.tasks-deadline-set-dialog').remove();
-                    // append new dialog
-                    $('body').append(html);
-                    $('.tasks-deadline-set-dialog').waDialog(options || {});
+                    options.html = html;
+                    $.waDialog(options);
                 });
         };
-
-
 
         $selectedMenu.on('click', '.set-deadline-link', function (e) {
             e.preventDefault();
             showDialog({
-                onLoad: function () {
-                    var $dialog = $(this);
+                onOpen: function ($dialog, dialog_instance) {
                     $datepicker = $dialog.find('.t-datepicker-wrapper');
                     $datepicker.datepicker({
                         changeYear: true,
@@ -948,25 +948,25 @@ var TasksHeader = ( function($) {
                         constrainInput: true,
                         altFormat: 'yy-mm-dd'
                     });
-                },
-                onSubmit: function ($dialog) {
-                    var $loading = $dialog.find('.t-loading'),
+
+                    $dialog.on('submit', 'form', function (e) {
+                        e.preventDefault();
+                        var $loading = $dialog.find('.t-loading'),
                         data = {
                             due_date: $.datepicker.formatDate('yy-mm-dd', $datepicker.datepicker('getDate')),
                             ids: that.getSelectedTaskIds()
                         };
 
-                    $loading.show();
-                    $.post('?module=tasksBulk&action=deadline', data)
-                        .done(function () {
-                            $dialog.trigger('close');
-                            $.tasks.redispatch();
-                        })
-                        .always(function () {
-                            $loading.hide();
-                        });
-
-                    return false;
+                        $loading.show();
+                        $.post('?module=tasksBulk&action=deadline', data)
+                            .done(function () {
+                                dialog_instance.close();
+                                $.tasks.redispatch();
+                            })
+                            .always(function () {
+                                $loading.hide();
+                            });
+                    })
                 }
             });
         });
@@ -977,44 +977,41 @@ var TasksHeader = ( function($) {
         var that = this,
             $selectedMenu = that.$selectedMenu;
 
-        $selectedMenu.on("click", ".set-priority-link", function() {
-            showDialog();
-            return false;
+        $selectedMenu.on("click", ".set-priority-link", function (e) {
+            e.preventDefault();
+            $.get('?module=tasks&action=priorityForm')
+                .done(function (html) {
+                    showDialog({
+                        html: html
+                    });
+                });
         });
 
-        function showDialog() {
+        function showDialog(options) {
 
-            // Destroy previous dialog just in case
-            removeDialog();
+            options = options || {};
 
             // Create a new dialog
-            $('<div>').waDialog({
-                width: '450px',
-                height: '250px',
-                url: '?module=tasks&action=priorityForm',
-                onSubmit: function() {
-                    return submitDialog($(this));
-                },
-                onLoad: function() {
-                    var $dialog = $(this);
-
-                    // Move buttons where appropriate
-                    $dialog.find('.buttons-wrapper').appendTo( $dialog.find('.dialog-buttons-gradient') );
-
-                    $.tasks.initPrioritySlider( $("#t-priority-multi-changer") );
+            $.waDialog({
+                html: options.html,
+                onOpen: function ($dialog, dialog_instance) {
+                    $.tasks.initPrioritySlider( $("#t-priority-multi-changer") );  
+                    $dialog.on('click', '[type="submit"]', function (e) {
+                        e.preventDefault();
+                        submitDialog($dialog, dialog_instance);
+                    })
                 }
             });
         }
 
-        function submitDialog($dialog) {
-
+        function submitDialog($dialog, dialog_instance) {
             $dialog.find('.dialog-buttons-gradient').append('<i class="icon16 loading"></i>');
 
             $.post('?module=tasksBulk&action=priority', {
                 ids: that.getSelectedTaskIds(),
                 priority: $dialog.find('[name="data[priority]"]').val()
             }, function(r) {
-                removeDialog();
+                dialog_instance.close();
                 $.tasks.redispatch();
             }, 'json');
 
