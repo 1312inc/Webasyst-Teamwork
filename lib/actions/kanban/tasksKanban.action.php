@@ -7,7 +7,6 @@ class tasksKanbanAction extends tasksTasksAction
 {
     public function execute()
     {
-        $hash = waRequest::get('hash', '', 'string');
         $offset = waRequest::get('offset', 0, waRequest::TYPE_INT);
         $limit = wa('tasks')->getConfig()->getOption('tasks_per_kanban');
 
@@ -20,13 +19,21 @@ class tasksKanbanAction extends tasksTasksAction
 
         $kanban = [];
         foreach ($statuses as $status) {
+            $withUnassigned = (bool) waRequest::request('with_backlog', null);
+            $order = tasksKanbanRequestDto::ORDER_PRIORITY;
+            if ($status['id'] == tasksStatusModel::STATUS_CLOSED_ID) {
+                $withUnassigned = true;
+                $order = tasksKanbanRequestDto::ORDER_NEWEST;
+            }
+
             $kanbanRequest = new tasksKanbanRequestDto(
                 $filters,
                 $status,
                 $filterTypes,
-                (bool) waRequest::request('with_backlog', null),
+                $withUnassigned,
                 $offset,
-                $limit
+                $limit,
+                $order
             );
 
             $statusData = $kanbanService->getTasksForStatus($kanbanRequest) + ['status' => $status];

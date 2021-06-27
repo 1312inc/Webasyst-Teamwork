@@ -146,16 +146,16 @@ class tasksHelper
                     'special' => 0,
                 ];
             $statuses = [];
-            $statuses[0] = [
-                'id' => 0,
+            $statuses[tasksStatusModel::STATUS_OPEN_ID] = [
+                'id' => tasksStatusModel::STATUS_OPEN_ID,
                 'name' => _w('Open'),
                 'button' => '',
                 'special' => 1,
                 'icon' => wa()->whichUI() == '1.3' ? 'status-green-tiny' : '',
             ];
             $statuses += $status_model->getAll('id');
-            $statuses[-1] = [
-                'id' => -1,
+            $statuses[tasksStatusModel::STATUS_CLOSED_ID] = [
+                'id' => tasksStatusModel::STATUS_CLOSED_ID,
                 'name' => _w('Closed'),
                 'button' => _w('Close'),
                 'action_name' => _w('done'),
@@ -210,7 +210,7 @@ class tasksHelper
             }
 
             if (wa()->whichUI() == '2.0') {
-                if ($status['id'] == -1)
+                if ($status['id'] == tasksStatusModel::STATUS_CLOSED_ID)
                 {
                     $status['view']['button_html'] = '<a ' .
                         'href="javascript:void(0);" ' .
