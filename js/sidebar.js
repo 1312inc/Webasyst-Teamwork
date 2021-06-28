@@ -366,10 +366,11 @@ var TasksSidebar = (function ($) {
             $tasks.find(".t-description-wrapper").replaceText(value, "<span class=\"highlighted\">" + new_value + "</span>");
             $tasks.find(".t-comment-content").replaceText(value, "<span class=\"highlighted\">" + new_value + "</span>");
         });
-
+        
         if (value.charAt(0) === '#') {
-            new_hash = $.tasks.cleanHash('#/tasks/tag/' + encodeURIComponent(value.replace(/&/g, '')) + '/');
+            new_hash = $.tasks.cleanHash('#/tasks/tag/' + encodeURIComponent(value.replace(/#/g, '')) + '/');
         } else {
+            var hash = $.tasks.cleanHash();
             var collection_hash = 'search/' + encodeURIComponent(value.replace(/&/g, ''));
             if (hash.indexOf('&hash=search/') < 0) {
                 new_hash = $.tasks.cleanHash('#/tasks/' + collection_hash);
