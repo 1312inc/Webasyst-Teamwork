@@ -840,7 +840,7 @@
             // contains the same lazy-loading initialization and will take care of the rest.
             o.is_lazy && o.next_page_url && $window.onWhile(function() {
                 return !triggered && $.contains(document, $lazyloading_wrapper[0]);
-            }, 'scroll mousewheel resize wa_try_lazyloading', function() {
+            }, 'scroll wheel resize wa_try_lazyloading', function() {
                 if (distanceBetweenBottoms($lazyloading_wrapper, $window) < 50) {
                     loadNextPage();
                 }
