@@ -228,10 +228,6 @@ var TasksHeader = ( function($) {
                     break;
             }
         }
-
-        if (location.hash.includes('#/tasks/tag/')) {
-            title = '#' + title;
-        }
         
         //add tasks count to title
         if (that.total_count > 0) {
