@@ -151,7 +151,8 @@ var TaskEdit = ( function($) { "use strict";
 
 
         $R('.t-redactor-task-edit', {
-            'focus': true,
+            // 'focus': true,
+            tabindex: 1,
             imageData: {
                 task_uuid: '{$task_uuid}'
             },
