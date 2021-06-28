@@ -546,7 +546,7 @@ var TasksTagCloudFilterSelector;
             $('.js-show-all').click(function () {
                 $('.js-tags-wrapper a').removeClass('t-tag-selected');
             });
-            $element.find('.js-title').text(title);
+            $element.find('.js-title').text('#' + title);
 
 
             // prepare instance itself
