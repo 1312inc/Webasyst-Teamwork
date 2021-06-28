@@ -354,6 +354,13 @@
                                 $("#t-task-dropdown-add-tag").waDropdown({
                                     hover: false,
                                 });
+
+                                $('.js-tags-show-all-link').on('click', function (e) {
+                                    e.preventDefault();
+                                    $(this).closest('.tags').find('.js-tags-hidden-tag').show();
+                                    $(this).hide();
+                                });
+
                             })(jQuery);
                         </script>
 
