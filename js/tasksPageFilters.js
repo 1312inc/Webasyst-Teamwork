@@ -546,7 +546,7 @@ var TasksTagCloudFilterSelector;
             $('.js-show-all').click(function () {
                 $('.js-tags-wrapper a').removeClass('t-tag-selected');
             });
-            $element.find('.js-title').text('#' + title);
+            $element.find('.js-title').text(title);
 
 
             // prepare instance itself
@@ -600,7 +600,12 @@ var TasksTagCloudFilterSelector;
                 $title = that.$element.find('.js-title'),
                 title = $title.text(),
                 default_title = $title.data('defaultTitle');
-            return default_title !== title ? title : '';
+
+            if (default_title !== title) {
+                $title.text('#' + title);
+            }
+
+            return default_title !== title ? '#' + title : '';
         };
 
         return TasksTagCloudFilterSelector;
