@@ -597,6 +597,12 @@
             }
 
             window.loadingEntity = 'list';
+
+            var $secondSideBar = document.querySelector('.t-content-wrapper .sidebar');
+            if ($secondSideBar) {
+                $secondSideBar.innerHTML = document.querySelector('#tasksListSkeleton').innerHTML;
+            }
+
             self.load('?module=tasks&' + params_str.join('&'), function() {
                 window.loadingEntity = undefined;
                 if (params.hash.substr(0, 7) == 'search/') {

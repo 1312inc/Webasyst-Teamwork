@@ -30,7 +30,7 @@
 
             {if $tasks}
                 <div class="t-tasks-wrapper is-{$list_view_type}" id="t-tasks-wrapper">
-                    <ul class="list">
+                    <ul class="list custom-m-0 bordered-bottom">
                     {foreach $tasks as $task}{strip}
 
                         {include file="./TasksSidebarItem.html" inline}
@@ -39,12 +39,29 @@
                     </ul>
 
                     <div id="end-of-tasks" class="box small gray align-center">
+                        <span class="hidden loading-indicator">
+                            <div class="skeleton">
+                            {for $i=1 to 4}
+                            <div class="custom-px-16 bordered-bottom custom-mb-16">
+                                <div class="flexbox space-12">
+                                    <div>
+                                        <span class="skeleton-custom-circle size-48"></span>
+                                    </div>
+                                    <div class="wide">
+                                        <span class="skeleton-header custom-mb-12"></span>
+                                        <span class="skeleton-line"></span>
+                                        <span class="skeleton-line"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            {/for}
+                            </div>
+                        </span>
                         <p>
                             <span class="js-tasks-list-counter">{sprintf("[`%s of %d`]", _w('%d task','%d tasks', $offset + $count), $total_count)}</span>
                             {if $click_to_load_more && $next_page_url}
                                 <span class="click-to-load-more"><a href="javascript:void(0)">[`Load more...`]</a></span>
                             {/if}
-                            <span class="hidden loading-indicator"><i class="icon16 loading"></i></span>
                         </p>
                         <script>(function($) { "use strict";
                             {* Note that this script has to be inside #t-tasks-wrapper for lazy loading to work correctly. *}
