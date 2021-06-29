@@ -820,7 +820,9 @@
         },
 
         kanbanAction: function(params) {
-            this.load('?module=kanban&'+(params||''));
+            this.load('?module=kanban&' + (params || ''), function () {
+                Kanban.init();
+            });
         },
 
         /** Lazy loading for backend lists. Called from Tasks.html and Log.html */
