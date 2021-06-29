@@ -3,7 +3,6 @@
 {* INIT HEADER *}
 <script>( function($) {
     window.Tasks = { };
-    window.tasksHeader = new TasksHeader();
     $.tasks.forceHash("#/task/{$task.project_id}.{$task.number}/");
     $.tasks.setTitle({$task.name|json_encode});
 })(jQuery);
