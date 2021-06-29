@@ -1641,15 +1641,22 @@ var Task = ( function($) {
 
     Task.prototype.onFavorite = function ($link) {
         var that = this,
-            value = $link.hasClass('text-light-gray') ? 1 : 0;
+            $i = $link.find('.fa-star').get(0),
+            value = $i.classList.contains('text-light-gray') ? 1 : 0,
+            $spans = $link.find('span');
 
-        $.post('?module=tasks&action=favorite&id=' + that.task_id, {value: value}, function (response) {
+        $.post('?module=tasks&action=favorite&id=' + that.task_id, { value: value }, function (response) {
             if (response.status == 'ok') {
                 $.tasks.reloadSidebar();
+                $spans.hide();
                 if (value) {
-                    $link.addClass('text-yellow').removeClass('text-light-gray');
+                    $spans.eq(1).show();
+                    $i.classList.remove('text-light-gray');
+                    $i.classList.add('text-yellow');
                 } else {
-                    $link.addClass('text-light-gray').removeClass('text-yellow');
+                    $spans.eq(0).show();
+                    $i.classList.add('text-light-gray');
+                    $i.classList.remove('text-yellow');
                 }
             }
         });
