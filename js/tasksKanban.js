@@ -1,14 +1,6 @@
 const Kanban = (($) => {
-    const urlParams = window.location.hash.split("/")[2] || "";
 
-    // Object with filter params
-    const filterParams = urlParams.split("&").reduce((acc, p) => {
-        const t = p.split("=");
-        if (t.length === 2) {
-            acc[t[0]] = t[1];
-        }
-        return acc;
-    }, {});
+    let filterParams = {};
     class Column {
         constructor(el) {
             this.$list = $(el);
@@ -128,7 +120,25 @@ const Kanban = (($) => {
         return dfd.promise();
     };
 
+    const setFilterParams = () => {
+
+        const urlParams = window.location.hash.split("/")[2] || "";
+
+        // Object with filter params
+        filterParams = urlParams.split("&").reduce((acc, p) => {
+            const t = p.split("=");
+            if (t.length === 2) {
+                acc[t[0]] = t[1];
+            }
+            return acc;
+        }, {});
+
+    };
+
     const init = () => {
+
+        setFilterParams();
+
         $.when(defineSortable()).then(() => {
             const $kanbanCols = $("[data-kanban-list-status-id]");
             addSortable($kanbanCols);
