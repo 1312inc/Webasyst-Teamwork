@@ -121,6 +121,18 @@
                 window.TasksController.skipDispatch = 1;
                 window.TasksController.setHash('/task/' + number + '/');
             });
-        })
-    }())
+        });
+
+        /* hide/show scrollbar */
+        $('.sidebar').on('hover', function () {
+            var $element = $(this),
+                element_class = 'hide-scrollbar';
+
+            if ($element.hasClass(element_class)) {
+                $element.removeClass(element_class);
+            } else {
+                $element.addClass(element_class);
+            }
+        });
+    }());
 </script>
