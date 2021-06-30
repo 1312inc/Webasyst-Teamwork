@@ -467,6 +467,14 @@ class tasksConfig extends waAppConfig
     public function onCount()
     {
         try {
+            $m = new tasksTaskModel();
+            foreach ($m->getWithoutUuid() as $task) {
+                $m->exec(
+                    'update tasks_task set uuid = s:uuid where id = i:id',
+                    ['id' => $task['id'], 'uuid' => tasksUuid4::generate()]
+                );
+            }
+
             $countService = new tasksUserTasksCounterService();
             $user = wa()->getUser();
 
