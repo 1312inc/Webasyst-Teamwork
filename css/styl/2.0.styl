@@ -275,3 +275,33 @@ h2
     font-weight normal !important
     background-color var(--accent-color)
     color #fff !important
+
+
+@keyframes rotate
+  to
+    transform rotate(360deg)
+
+@keyframes opa
+  from
+    opacity 0
+
+  to
+    opacity 1
+
+.button
+  &.button--loading
+    position relative
+    padding-right 2rem
+
+    &:after
+      position absolute
+      top calc(50% - 8px)
+      right 0.5rem
+      display inline-block
+      content ''
+      width 16px
+      height 16px
+      animation opa 1s linear, rotate 1s linear infinite
+      background-image url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMzA0IDQ4YzAgMjYuNTEtMjEuNDkgNDgtNDggNDhzLTQ4LTIxLjQ5LTQ4LTQ4IDIxLjQ5LTQ4IDQ4LTQ4IDQ4IDIxLjQ5IDQ4IDQ4em0tNDggMzY4Yy0yNi41MSAwLTQ4IDIxLjQ5LTQ4IDQ4czIxLjQ5IDQ4IDQ4IDQ4IDQ4LTIxLjQ5IDQ4LTQ4LTIxLjQ5LTQ4LTQ4LTQ4em0yMDgtMjA4Yy0yNi41MSAwLTQ4IDIxLjQ5LTQ4IDQ4czIxLjQ5IDQ4IDQ4IDQ4IDQ4LTIxLjQ5IDQ4LTQ4LTIxLjQ5LTQ4LTQ4LTQ4ek05NiAyNTZjMC0yNi41MS0yMS40OS00OC00OC00OFMwIDIyOS40OSAwIDI1NnMyMS40OSA0OCA0OCA0OCA0OC0yMS40OSA0OC00OHptMTIuOTIyIDk5LjA3OGMtMjYuNTEgMC00OCAyMS40OS00OCA0OHMyMS40OSA0OCA0OCA0OCA0OC0yMS40OSA0OC00OGMwLTI2LjUwOS0yMS40OTEtNDgtNDgtNDh6bTI5NC4xNTYgMGMtMjYuNTEgMC00OCAyMS40OS00OCA0OHMyMS40OSA0OCA0OCA0OCA0OC0yMS40OSA0OC00OGMwLTI2LjUwOS0yMS40OS00OC00OC00OHpNMTA4LjkyMiA2MC45MjJjLTI2LjUxIDAtNDggMjEuNDktNDggNDhzMjEuNDkgNDggNDggNDggNDgtMjEuNDkgNDgtNDgtMjEuNDkxLTQ4LTQ4LTQ4eiIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==')
+      background-size contain
+
