@@ -1337,7 +1337,7 @@
         },
 
         showLoading: function($form, options) {
-
+            
             if ($form) {
                 return showLoadingForm($form, options);
             } else {
@@ -1486,6 +1486,20 @@
                     });
                 }
             }
+        },
+
+        showLoadingButton: function ($button) {
+            var $icon = $button.find('svg');
+            if (!$icon.length) {
+                $button.addClass('custom-pl-40');
+            }
+            $button.prop("disabled", true).addClass('button--loading');
+        },
+    
+        hideLoadingButton: function ($button) {
+            setTimeout(function () {
+                $button.removeAttr('disabled').removeClass('button--loading');
+            }, 1000);
         }
     };
 })();
