@@ -935,8 +935,11 @@ var TaskEdit = ( function($) { "use strict";
     };
 
     // Submit
-    TaskEdit.prototype.onSubmit = function($form, return_to_new) {
-        var that = this;
+    TaskEdit.prototype.onSubmit = function($form, return_to_new) { 
+        var that = this,
+            $submitButton = $form.find('[type="submit"]');
+
+        $.tasks.showLoadingButton($submitButton);
 
         // Validation Task Type
         var e = new $.Event('task_before_submit');
@@ -1019,7 +1022,8 @@ var TaskEdit = ( function($) { "use strict";
         var that = this,
             url = "?module=attachments&action=upload",
             hash = that.files_hash,
-            files = that.attachedFiles;
+            files = that.attachedFiles,
+            waLoading = $.waLoading();
 
         callbacks = $.isPlainObject(callbacks) ? callbacks : {};
         var onAllDone = typeof callbacks.onAllDone === 'function' ? callbacks.onAllDone : null,
@@ -1033,6 +1037,9 @@ var TaskEdit = ( function($) { "use strict";
         }
 
         var all_files_counter = that.files_count;
+
+        // Show progress bar
+        waLoading.animate(6000, 99, true);
 
         $.each(files, function (index, file) {
             // Vars
@@ -1063,6 +1070,8 @@ var TaskEdit = ( function($) { "use strict";
                     all_files_counter--;
                     if (all_files_counter <= 0) {
                         onAllAlways && onAllAlways();
+                        // Hide progress bar
+                        waLoading.hide();
                     }
 
                     if (r.status != 'ok') {

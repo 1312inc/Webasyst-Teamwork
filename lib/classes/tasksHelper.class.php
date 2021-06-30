@@ -214,7 +214,7 @@ class tasksHelper
                 {
                     $status['view']['button_html'] = '<a ' .
                         'href="javascript:void(0);" ' .
-                        'class="button rounded t-control-link large t-change-status-link gray" data-status-id="' . $status['id'] . '"' .
+                        'class="button rounded t-control-link large t-change-status-link t-change-status-link--close gray" data-status-id="' . $status['id'] . '"' .
                         // 'style="background-color:#'.$color.'"'.
                         '><span class="t-change-status-link-label"><span class="small"><i class="fas fa-check"></i></span> ' . htmlspecialchars($status['button']) . '</span></a>';
                 }
