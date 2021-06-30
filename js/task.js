@@ -26,16 +26,6 @@ var Task = ( function($) {
         return isNaN(int) ? null : int;
     };
 
-    var showLoadingButton = function ($button) {
-        $button.prop("disabled", true).addClass('button--loading');
-    }
-
-    var hideLoadingButton = function ($button) {
-        setTimeout(function () {
-            $button.removeAttr('disabled').removeClass('button--loading');
-        }, 1000);
-    }
-
     Task = function(options) {
         var that = this;
 
@@ -490,8 +480,11 @@ var Task = ( function($) {
                     status_id = $link.data('statusId'),
                     current_user_id = that.user_id,
                     skip_form = !!e.shiftKey;
-                
-                showLoadingButton($link);
+
+                // Show spinner if Close button
+                if ($link.hasClass('t-change-status-link--close')) {
+                    $.tasks.showLoadingButton($link);
+                }
 
                 // assigned contact is current user, than show confirm dialog first
                 var need_show_confirm_dialog = current_user_id !== null && assigned_contact_id !== null &&
@@ -768,9 +761,6 @@ var Task = ( function($) {
 
                     $.post(status_href, function(html) {
                         $deferred.resolve(html);
-                    })
-                    .always(function() {
-                        hideLoadingButton($link);
                     });
 
                     showHiddenContainer($deferred, "status");
@@ -783,9 +773,6 @@ var Task = ( function($) {
                             // GET FORM HTML
                             $.post(status_href, function(html) {
                                 afterLoad(html);
-                            })
-                            .always(function() {
-                                hideLoadingButton($link);
                             });
                         }
                     });
@@ -804,20 +791,14 @@ var Task = ( function($) {
                     $.post(href, data, function() {
                         that.reloadTask();
                         $.tasks.reloadSidebar();
-                    }, 'json')
-                    .always(function() {
-                        hideLoadingButton($link);
-                    });
+                    }, 'json');
 
                 } else {
 
                     // Send Request
                     $.post(href, data, function() {
                         $.tasks.reloadSidebar();
-                    }, 'json')
-                    .always(function() {
-                        hideLoadingButton($link);
-                    });
+                    }, 'json');
 
                     // Render
                     that.moveTask("right", function() {
@@ -1017,6 +998,9 @@ var Task = ( function($) {
             });
 
             $commentForm.on("submit", function() {
+                var $submitButton = $(this).find('[type="submit"]');
+                
+                $.tasks.showLoadingButton($submitButton);
                 clearCommentErrors();
                 if (validateComment()) {
                     addComment();
@@ -1880,7 +1864,8 @@ var TaskCommentFilesUploader = ( function($) {
     TaskCommentFilesUploader.prototype.uploadFiles = function(hash, callbacks) {
         var that = this,
             url = "?module=attachments&action=upload",
-            files = that.attachedFiles;
+            files = that.attachedFiles,
+            waLoading = $.waLoading();
 
         callbacks = $.isPlainObject(callbacks) ? callbacks : {};
         var onAllDone = typeof callbacks.onAllDone === 'function' ? callbacks.onAllDone : null,
@@ -1897,6 +1882,9 @@ var TaskCommentFilesUploader = ( function($) {
         var all_files_counter = that.files_count;
 
         that.clearErrors();
+
+        // Show progress bar
+        waLoading.animate(6000, 99, true);
 
         $.each(files, function (index, file) {
             // Vars
@@ -1928,6 +1916,8 @@ var TaskCommentFilesUploader = ( function($) {
                     all_files_counter--;
                     if (all_files_counter <= 0) {
                         onAllAlways && onAllAlways();
+                        // Hide progress bar
+                        waLoading.hide();
                     }
 
                     if (r.status != 'ok') {
