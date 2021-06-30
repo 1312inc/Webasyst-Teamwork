@@ -74,7 +74,7 @@
                                     <div class="wa-select">
                                         <select name="milestone[project_id]">
                                             {foreach $projects as $p}
-                                                <option value="{$p.id}"{if $p.id == $milestone.project_id} selected{/if}>{$p.name|escape}</option>
+                                                <option value="{$p.id}"{if $p.id == $milestone.project_id} selected{/if}>{$p.name|escape|truncate:42}</option>
                                             {/foreach}
                                         </select>
                                     </div>
