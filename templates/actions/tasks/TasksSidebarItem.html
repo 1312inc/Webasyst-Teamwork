@@ -67,7 +67,7 @@
                 </span>
 
                 {* TITLE *}
-                <span class="{if !empty($task.priority)&& $task.priority == '3'}bold{else}semibold{/if}">{$task.name|escape|default:"(no name)"|truncate:64}</span>
+                <span class="{if !empty($task.priority) && ($task.priority == '1' || $task.priority == '2' || $task.priority == '3')}bold{else}semibold{/if}">{$task.name|escape|default:"(no name)"|truncate:64}</span>
 
             </span>
 
@@ -97,7 +97,7 @@
             {/if}
 
             {* PREVIEW *}
-            {strip_tags($task.text)|truncate:128}
+            {strip_tags($task.text)|truncate:83}
 
             {* HISTORY COUNTERS *}
             {strip}
