@@ -301,5 +301,14 @@ class tasksTaskModel extends waModel
 
         return $this->query($sql)->fetchAll();
     }
+
+    public function getWithoutUuid($limit = 100)
+    {
+        return $this->select('*')
+            ->where('uuid is null')
+            ->limit($limit)
+            ->order('id desc')
+            ->fetchAll();
+    }
 }
 
