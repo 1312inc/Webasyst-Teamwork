@@ -26,6 +26,16 @@ var Task = ( function($) {
         return isNaN(int) ? null : int;
     };
 
+    var showLoadingButton = function ($button) {
+        $button.prop("disabled", true).addClass('button--loading');
+    }
+
+    var hideLoadingButton = function ($button) {
+        setTimeout(function () {
+            $button.removeAttr('disabled').removeClass('button--loading');
+        }, 1000);
+    }
+
     Task = function(options) {
         var that = this;
 
@@ -480,6 +490,8 @@ var Task = ( function($) {
                     status_id = $link.data('statusId'),
                     current_user_id = that.user_id,
                     skip_form = !!e.shiftKey;
+                
+                showLoadingButton($link);
 
                 // assigned contact is current user, than show confirm dialog first
                 var need_show_confirm_dialog = current_user_id !== null && assigned_contact_id !== null &&
@@ -756,6 +768,9 @@ var Task = ( function($) {
 
                     $.post(status_href, function(html) {
                         $deferred.resolve(html);
+                    })
+                    .always(function() {
+                        hideLoadingButton($link);
                     });
 
                     showHiddenContainer($deferred, "status");
@@ -768,6 +783,9 @@ var Task = ( function($) {
                             // GET FORM HTML
                             $.post(status_href, function(html) {
                                 afterLoad(html);
+                            })
+                            .always(function() {
+                                hideLoadingButton($link);
                             });
                         }
                     });
@@ -786,14 +804,20 @@ var Task = ( function($) {
                     $.post(href, data, function() {
                         that.reloadTask();
                         $.tasks.reloadSidebar();
-                    }, 'json');
+                    }, 'json')
+                    .always(function() {
+                        hideLoadingButton($link);
+                    });
 
                 } else {
 
                     // Send Request
                     $.post(href, data, function() {
                         $.tasks.reloadSidebar();
-                    }, 'json');
+                    }, 'json')
+                    .always(function() {
+                        hideLoadingButton($link);
+                    });
 
                     // Render
                     that.moveTask("right", function() {
@@ -1535,7 +1559,7 @@ var Task = ( function($) {
 
     Task.prototype.reloadTask = function(callbacks) {
         var that = this,
-            is_selected = (tasksHeader.selectedTasks.hasOwnProperty(that.task_id)),
+            is_selected = (typeof tasksHeader !== 'undefined') ? tasksHeader.selectedTasks.hasOwnProperty(that.task_id) : undefined,
             update_href,
             params = {};
 
