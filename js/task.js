@@ -481,8 +481,8 @@ var Task = ( function($) {
                     current_user_id = that.user_id,
                     skip_form = !!e.shiftKey;
 
-                // Show spinner if Close button
-                if ($link.hasClass('t-change-status-link--close')) {
+                // Show spinner if Status has no form
+                if ($link.data('has-form') === 0) {
                     $.tasks.showLoadingButton($link);
                 }
 
