@@ -62,7 +62,6 @@
                         {* PROJECT SELECTOR *}
                         <div class="t-menu-item">
                             <div class="dropdown t-custom-select t-project-select" id="projectSelect">
-
                                 <button class="dropdown-toggle button light-gray t-selected-item selected-custom-item js-selected-project">
                                     {$project.icon_html}
                                     <span>{$project.name|escape|truncate:32}</span>
@@ -80,20 +79,25 @@
                                     </ul>
                                 </div>
                                 <input type="hidden" name="data[project_id]" value="{$task.project_id}">
-
-                                <script>
-                                    ( function($) {
-                                        $("#projectSelect").waDropdown({
-                                            hover: false,
-                                            items: ".menu > li > a",
-                                            change: function(event, target, dropdown) {
-                                                $("[name=\"data[project_id]\"]").val( $(target).data("value") );
-                                                taskEdit.onProjectChange();
-                                            }
-                                        });
-                                    })(jQuery);
-                                </script>
                             </div>
+                            <script>
+                                ( function($) {
+                                    var $dropdown = $("#projectSelect"),
+                                        $currentProject = $dropdown.find("li:first a");
+
+                                    $dropdown.find('.dropdown-toggle').html($currentProject.html());
+                                    $dropdown.find('[name="data[project_id]"]').val($currentProject.data('value'));
+
+                                    $dropdown.waDropdown({
+                                        hover: false,
+                                        items: ".menu > li > a",
+                                        change: function(event, target, dropdown) {
+                                            $("[name=\"data[project_id]\"]").val( $(target).data("value") );
+                                            taskEdit.onProjectChange();
+                                        }
+                                    });
+                                })(jQuery);
+                            </script>
                         </div>
 
                         {include file="./includes/TasksTaskMilestoneSelector.inc.html" inline}
