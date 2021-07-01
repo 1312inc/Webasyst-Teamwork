@@ -1,6 +1,7 @@
 const Kanban = (($) => {
 
     let filterParams = {};
+
     class Column {
         constructor(el) {
             this.$list = $(el);
@@ -22,13 +23,16 @@ const Kanban = (($) => {
                     this.fetch();
                 }
             });
-            this.intersectionObserver.observe(this.$listFooter[0]);
+            this.intersectionObserver.observe(this.$listFooter.get(0));
         }
 
         fetch () {
+            // with_backlog param always 1 if Closed column
+            let withBacklog = this.statusId === -1 ? 1 : (filterParams.with_backlog || 0);
+            
             this.$loader.show();
             $.get(
-                `?module=kanban&action=statusTasks&with_backlog=${filterParams.with_backlog || 0
+                `?module=kanban&action=statusTasks&with_backlog=${withBacklog
                 }&status_id=${this.statusId}&offset=${this.offset}&project_id=${filterParams.project_id || ""
                 }&milestone_id=${filterParams.milestone_id || ""}&contact_id=${filterParams.contact_id || ""
                 }`
