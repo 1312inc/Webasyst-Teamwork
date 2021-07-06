@@ -50,7 +50,7 @@ function js () {
         'js/settings/sidebar.js',
         'js/settings/scopeEdit.js',
         'js/tasksKanban.js'
-    ]
+    ];
 
     return src(source, { allowEmpty: true })
         .pipe(sourcemaps.init())
@@ -101,7 +101,7 @@ function cssRedactor () {
             overrideBrowserslist: ['last 2 versions'],
             cascade: false
         }))
-        .pipe(cssnano())
+        .pipe(cssnano({ zindex: false }))
         .pipe(rename({
             extname: '.min.css'
         }))
