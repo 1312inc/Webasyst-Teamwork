@@ -81,14 +81,18 @@ var TasksHeader = ( function($) {
            $('.t-preview-name').text(that.buildTitle());
         }
 
-        // hide/show sidebar/content if single page
-        if(that.is_single_page){
-            that.$secondSidebar.addClass('desktop-only')
-            that.$contentContainer.removeClass('desktop-only')
-        } else {
-            that.$secondSidebar.removeClass('desktop-only')
-            that.$contentContainer.addClass('desktop-only')
-        }
+        // hide/show sidebar/content if single page on phone
+        var observer = new MutationObserver(function (mutations) {
+            if (document.querySelector(".t-main-wrapper .t-single-task-wrapper")) {
+                that.$secondSidebar.addClass('desktop-only');
+                that.$contentContainer.removeClass('desktop-only');
+            } else {
+                that.$secondSidebar.removeClass('desktop-only');
+                that.$contentContainer.addClass('desktop-only');
+            }
+        });
+
+        observer.observe(document, { attributes: false, childList: true, characterData: false, subtree: true });
 
     };
 
