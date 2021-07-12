@@ -111,6 +111,10 @@
       border-radius: 0.25rem;
       padding: 0.125rem 0.25rem;
     }
+
+    img {
+      max-width: 100%;
+    }
   </style>
 </head>
 
@@ -134,10 +138,11 @@
                           <table cellpadding="0" cellspacing="0" width="100%" border="0" style="color:#000000;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;font-size:1rem;line-height:1.5rem;table-layout:auto;width:100%;border:none;">
                             <tr>
                               <td style="width: 38px;">
-                                <img src="https://1312.io/wa-apps/tasks/img/tasks-512.png?v=2.0.0" width="28" height="28" style="vertical-align: middle;" />
+                                <!-- Change App Icon -->
+                                <img src="{$wa->url(true)}wa-apps/tasks/img/tasks.png" width="28" height="28" style="vertical-align: middle;" />
                               </td>
                               <td>
-                                <strong>1312 Inc.</strong>
+                                <strong>{$wa->appName()}</strong>
                               </td>
                             </tr>
                           </table>
@@ -150,9 +155,10 @@
                 <div class="mj-column-per-50 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:50%;">
                   <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
                     <tbody>
+                      <!-- Change App Link -->
                       <tr>
                         <td align="right" style="font-size:0px;padding:10px 25px;word-break:break-word;">
-                          <div style="font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;font-size:1rem;line-height:1.5rem;text-align:right;color:#000000;"><a href="https://1312.io/webasyst/tasks/" target="_blank" style="color: #777777 !important;">1312.io</a></div>
+                          <div style="font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;font-size:1rem;line-height:1.5rem;text-align:right;color:#000000;"><a href="{$wa->currentUrl(true)}" target="_blank" style="color: #777777 !important;">{$wa->accountName()}</a></div>
                         </td>
                       </tr>
                     </tbody>
@@ -181,3 +187,4 @@
                     <tr>
                       <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
                         <div style="font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;font-size:1rem;line-height:1.5rem;text-align:left;color:#000000;">
+                          <!-- -------------- Content Start -------------- -->
