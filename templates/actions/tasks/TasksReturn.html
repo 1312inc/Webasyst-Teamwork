@@ -6,15 +6,15 @@
     <form method="post" action="?module=tasksLog&action=return&id={$task.id}">
     <div class="fields">
         <div class="field">
-            <div class="name for-checkbox">[`Status`]</div>
-            <div class="value large">{tasksHelper::statusNameHTML($task.return_status.id)}</div>
+            <div class="name for-checkbox">[`Return to status`]</div>
+            <div class="value">{tasksHelper::statusNameHTML($task.return_status.id)}</div>
         </div>
         <div class="field">
-            <div class="name custom-mt-4">[`Assign to`]</div>
+            <div class="name for-checkbox">[`Assign to`]</div>
             <div class="value">
-                <div class="flexbox middle space-8">
-                    <i class="userpic userpic-32" style="background-image: url({$task.return_actor->getPhoto(40, 40)})"></i>
-                    <span>{$task.return_actor->getName()|escape}</span>
+                <div class="flexbox middle space-4">
+                    <i class="userpic userpic-20" style="background-image: url({$task.return_actor->getPhoto(40, 40)})"></i>
+                    <span class="semibold">{$task.return_actor->getName()|escape}</span>
                 </div>
             </div>
         </div>
@@ -31,7 +31,7 @@
     <div class="field t-buttons-block">
         <div class="name"></div>
         <div class="value">
-            <input type="submit" class="button" value="[`Return task`]">
+            <input type="submit" class="button larger rounded gray" value="[`Return task`]">
         </div>
     </div>
 

@@ -641,7 +641,7 @@ msgid "edit"
 msgstr "отредактирована"
 
 msgid "Enter your comment"
-msgstr "Введите ваш комментарий"
+msgstr "Введите свой комментарий"
 
 msgid "Double-click to change task priority"
 msgstr "Двойной щелчок, чтобы изменить приоритет задачи"
