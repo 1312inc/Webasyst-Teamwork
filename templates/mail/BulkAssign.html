@@ -1,4 +1,4 @@
-{include inline file='./includes/Header.inc.html'} 
+{include inline file='./includes/Header.inc.html'}
 
 {$tasks_count_str = _w('%d new task', '%d new tasks', $count)}
 {sprintf_wp('<a href="%s">%s</a> from %s', $inbox_url, $tasks_count_str, $from.name|escape)}
@@ -9,8 +9,5 @@
         {$comment}
     </blockquote>
 {/if}
-<br>
-<br>
-[`via Tasks app`]
 
-{include inline file='./includes/Footer.inc.html'} 
+{include inline file='./includes/Footer.inc.html'}

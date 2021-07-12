@@ -25,7 +25,13 @@
             <li data-id="{$_scope.id}" data-item-type="scope">
                 <a href="#/settings/scope/{$_scope.id}/">{strip}
                     {$_scope.project.icon_html}
-                    <span class="t-scope-name js-scope-name">{$_scope.name|default:'[`(no name)`]'|escape}</span>
+                    <span class="t-scope-name js-scope-name">
+                        {$_scope.name|default:'[`(no name)`]'|escape}
+                        {if !empty($_scope.due_date)}
+                            <p class="hint">{$_scope.due_date|wa_datetime:"humandate"}</p>
+                        {/if}
+
+                    </span>
                 {/strip}</a>
             </li>
         {/foreach}
