@@ -196,8 +196,6 @@
                                         <span class="hint{if !empty($scope.due_date) && $scope.due_date < date('Y-m-d')} text-red bold{/if}" style="display: block;">
                                             {if !empty($scope.due_date)}
                                                 {$scope.due_date|wa_datetime:"humandate"}
-                                            {else}
-                                                [`Date is not set.`]
                                             {/if}
                                         </span>
 
@@ -208,7 +206,7 @@
                     </ul>
                 {else}
                     <div class="box align-center custom-my-16">
-                        <p class="hint">[`No active work scopes are defined.`]</p>
+                        <p class="hint">[`Add a milestone to group tasks into time-based activities such as sprints, releases, or subprojects.`]</p>
                     </div>
                 {/if}
             </div>
@@ -324,7 +322,7 @@
                     </ul>
                 {else}
                     <div class="box align-center custom-my-12 hide-when-collapsed">
-                        <p class="hint">[`Create a project by clicking the green tiny icon above.`]</p>
+                        <p class="hint">[`Add a project to start creating tasks.`]</p>
                     </div>
                 {/if}
             </div>

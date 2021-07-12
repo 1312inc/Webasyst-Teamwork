@@ -18,26 +18,20 @@
 
         .item.selected
 
-            &.t-gray
-                background var(--gray-color-strong)
+            background var(--accent-color) !important
+            color var(--white) !important
 
-            &.t-green
-                background var(--green-color-strong)
+            *
+                color var(--white) !important
 
-            &.t-blue
-                background var(--blue-color-strong)
-
-            &.t-red
-                background var(--red-color-strong)
-
-            &.t-purple
-                background var(--purple-color-strong)
-
-            &.t-yellow
-                background var(--yellow-color-strong)
+                .t-pinned-comment
+                    background var(--light-gray)
 
         &.new-task
             margin-bottom 0
+
+            li
+                background var(--highlighted-yellow)
 
 .t-status-wrapper
     white-space nowrap

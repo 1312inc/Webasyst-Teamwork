@@ -252,7 +252,7 @@
                     <span style="position:absolute;left:-100500px;">: </span>
 
                     {* TITLE *}
-                    <span class="t-task-name-wrapper" href="#/task/{$task.project_id}.{$task.number}/">{$task.name|escape|default:"(no name)"}</span>
+                    <span class="t-task-name-wrapper{if $task.status_id == -1} gray{/if}" href="#/task/{$task.project_id}.{$task.number}/">{$task.name|escape|default:"(no name)"}{if $task.status_id == -1} <i class="fas fa-check fa-xs"></i>{/if}</span>
 
                 </h2>
 

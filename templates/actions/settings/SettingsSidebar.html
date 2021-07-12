@@ -19,6 +19,11 @@
         <a href="#/settings/scope/add/" class="count"><i class="fas fa-plus-circle"></i></a>
         [`Milestones`]
     </h5>
+    {if !$scopes}
+        <div class="box align-center custom-my-16">
+            <p class="hint">[`Add a milestone to group tasks into time-based activities such as sprints, releases, or subprojects.`]</p>
+        </div>
+    {/if}
     <ul class="menu t-scopes-list-wrapper custom-mb-0">
 
         {foreach $scopes as $_scope}

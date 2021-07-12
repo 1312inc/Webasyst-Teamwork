@@ -24,7 +24,7 @@
     {/if}
 {/if}
 
-    <div data-task-id="{$task.id}" class="t-kanban__list__body__item custom-p-8 custom-mb-8 {$task.project.color}">
+    <div data-task-id="{$task.id}" class="t-kanban__list__body__item custom-p-8 custom-mb-8 {$task.project.color|default:'t-white'}">
 
         <div class="custom-mb-8 t-kanban-item-title">
             <span class="t-priority-wrapper {ifset($_priority_class_array[$task.priority])}">
