@@ -546,8 +546,8 @@ var Task = ( function($) {
 
         };
 
-        var commentFileEvents = function() {
-            var $commentWrapper = $task.find(".t-status-comment-wrapper");
+        var commentFileEvents = function($container) {
+            var $commentWrapper = $container.find(".t-status-comment-wrapper");
 
             filesController = new TaskCommentFilesUploader({
                 '$wrapper': $commentWrapper
@@ -848,7 +848,7 @@ var Task = ( function($) {
                             // Render
                             $statusForm.html(html);
 
-                            commentFileEvents();
+                            commentFileEvents($statusForm);
 
                             // Focus
                             $statusForm.find("textarea").focus();
@@ -951,13 +951,14 @@ var Task = ( function($) {
                             onStatusSubmit($(this), direction);
                             drawer_instance.close();
                         });
+
+                        commentFileEvents($drawer);
                     },
                     onClose: function () {
                         that.is_status_opened = false;
                     }
                 });
-
-                commentFileEvents();
+                
             });
 
             that.is_status_opened = true;
