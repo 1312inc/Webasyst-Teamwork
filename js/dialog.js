@@ -42,16 +42,16 @@ var Dialog = ( function($) { "use strict";
             $content = that.$content,
             $closeLink = that.$closeLink;
 
-        $dialog.on("click", function(event) {
-            var $target = $(event.target),
-                custom_select_class = "set-custom-select",
-                is_custom_link = ($target.hasClass(custom_select_class) || $target.closest("." + custom_select_class).length ),
-                $closeContent = $content.find(".t-close-link");
+        // $dialog.on("click", function(event) {
+        //     var $target = $(event.target),
+        //         custom_select_class = "set-custom-select",
+        //         is_custom_link = ($target.hasClass(custom_select_class) || $target.closest("." + custom_select_class).length ),
+        //         $closeContent = $content.find(".t-close-link");
 
-            if (!is_custom_link && $closeContent.length) {
-                $closeContent.trigger("click");
-            }
-        });
+        //     if (!is_custom_link && $closeContent.length) {
+        //         $closeContent.trigger("click");
+        //     }
+        // });
 
         $content.on("click", function(event) {
             // Fix for custom select
