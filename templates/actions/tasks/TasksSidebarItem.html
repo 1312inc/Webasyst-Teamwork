@@ -51,7 +51,7 @@
                 {$_priority_icon = ""}
                 {if !empty($task.priority)}
                     {if $task.priority == '-1'}
-                        {$_priority_icon = "<i class=\"fas fa-thumbs-down\" style=\"color: var(--light-gray);\"></i>"}
+                        {$_priority_icon = "<i class=\"fas fa-hourglass-half\" style=\"color: var(--light-gray);\"></i>"}
                     {/if}
                     {if $task.priority == '1'}
                         {$_priority_icon = "<i class=\"fas fa-exclamation-triangle\" style=\"color: gold;\"></i>"}
@@ -67,7 +67,7 @@
                 </span>
 
                 {* TITLE *}
-                <span class="{if !empty($task.priority) && ($task.priority == '1' || $task.priority == '2' || $task.priority == '3')}bold{else}semibold{/if}">{$task.name|escape|default:"(no name)"|truncate:64}</span>
+                <span class="{if !empty($task.priority)}{if ($task.priority == '1' || $task.priority == '2' || $task.priority == '3')}bold{else}semibold{/if}{if $task.priority == '-1'} text-gray{/if}{/if}">{$task.name|escape|default:"(no name)"|truncate:64}</span>
 
             </span>
 
