@@ -1,8 +1,8 @@
 .t-tasks-wrapper
 
     .t-checkbox-column
-        //display none
-        padding 1.25rem 0rem 1.25rem 1rem
+        display none
+        padding 1.25rem 0.25rem 1.25rem 1rem
 
     &.t-selection-checkboxes-visible
 
@@ -15,6 +15,12 @@
 
             .image
                 padding-left 0.75rem
+
+            .t-task-item-title
+                font-size 0.9375rem
+
+                .t-status-wrapper
+                    font-size 0.875rem
 
         .item.selected
 
@@ -39,6 +45,11 @@
 
     h2 & {
         font-size 0.75em
+        padding 0.25rem 0.5rem
+        margin-left 0.5rem
+        white-space nowrap
+        position relative
+        top -2px
     }
 
     &.is-new
