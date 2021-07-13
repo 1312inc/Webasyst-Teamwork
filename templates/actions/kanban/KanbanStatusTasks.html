@@ -14,7 +14,7 @@
 {$_priority_icon = ""}
 {if !empty($task.priority)}
     {if $task.priority == '-1'}
-        {$_priority_icon = "<i class=\"fas fa-thumbs-down\" style=\"color: var(--light-gray);\"></i>"}
+        {$_priority_icon = "<i class=\"fas fa-hourglass-half\" style=\"color: var(--light-gray);\"></i>"}
     {/if}
     {if $task.priority == '1'}
         {$_priority_icon = "<i class=\"fas fa-exclamation-triangle\" style=\"color: gold;\"></i>"}
@@ -31,7 +31,7 @@
                 {$_priority_icon}
                 {$task.project_id}.{$task.number}
             </span>
-            <a href="#/task/{$task.id}/" target="_blank" class="{if !empty($task.priority)&& $task.priority == '3'}bold{else}semibold{/if}" title="{strip_tags($task.text)|truncate:128}">{$task.name|escape}</a>
+            <a href="#/task/{$task.id}/" target="_blank" class="{if !empty($task.priority)}{if ($task.priority == '1' || $task.priority == '2' || $task.priority == '3')}bold{else}semibold{/if}{if $task.priority == '-1'} text-gray{/if}{/if}" title="{strip_tags($task.text)|truncate:128}">{$task.name|escape}</a>
 
         </div>
         <div class="flexbox space-8 middle t-kanban-item-body">
