@@ -37,7 +37,7 @@
 
         <div class="flexbox space-8 full-width">
 
-            <span>
+            <span class="t-task-item-title">
 
                 {* PRIORITY *}
 
@@ -67,7 +67,18 @@
                 </span>
 
                 {* TITLE *}
-                <span class="{if !empty($task.priority)}{if ($task.priority == '1' || $task.priority == '2' || $task.priority == '3')}bold{else}semibold{/if}{if $task.priority == '-1'} text-gray{/if}{/if}">{$task.name|escape|default:"(no name)"|truncate:64}</span>
+                <span class="{if !empty($task.priority) && ($task.priority == '1' || $task.priority == '2' || $task.priority == '3')}bold{else}semibold{/if}{if !empty($task.priority) && $task.priority == '-1'} text-gray{/if}">{$task.name|escape|default:"(no name)"|truncate:64}</span>
+                
+                {* STATUS *}
+                {if !empty($task.status.name)}
+
+                    {if $task.project.archive_datetime}
+                        <span class="badge t-status-wrapper is-archived"><i class="fas fa-archive fa-xs"></i> [`Archived`]</span>
+                    {else}
+                        {tasksHelper::statusNameHTML($task.status.id)}
+                    {/if}
+
+                {/if}
 
             </span>
 
@@ -85,19 +96,8 @@
 
         <p class="hint custom-mb-8">
 
-            {* STATUS *}
-            {if !empty($task.status.name)}
-
-                {if $task.project.archive_datetime}
-                    <span class="badge t-status-wrapper is-archived"><i class="fas fa-archive fa-xs"></i> [`Archived`]</span>
-                {else}
-                    {tasksHelper::statusNameHTML($task.status.id)}
-                {/if}
-
-            {/if}
-
             {* PREVIEW *}
-            {strip_tags($task.text)|truncate:83}
+            <span class="break-word">{strip_tags($task.text)|truncate:128}</span>
 
             {* HISTORY COUNTERS *}
             {strip}
