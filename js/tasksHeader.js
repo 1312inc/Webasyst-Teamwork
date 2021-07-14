@@ -172,10 +172,10 @@ var TasksHeader = ( function($) {
             return false;
         });
 
-        $("#add-task-link").on("click", function(event) {
-            if (event.which != 1) { return; } // not a left-mouse-button click
-            $.tasks.showNewTaskForm();
-            return false;
+        $('#show-selection-checkboxes').on('click', function (event) {
+            event.preventDefault();
+            $('.t-checkbox-column').fadeIn();
+            $('.t-tasks-wrapper').addClass('t-selection-checkboxes-visible');
         });
 
         // Reset all filters
