@@ -976,6 +976,16 @@
         initSidebar: function() {
             self.initCollapsibleSidebar();
 
+            $("#add-task-link").on("click", function(event) {
+                if (event.which != 1) { return; } // not a left-mouse-button click
+                $(this).addClass('rotated');
+                setTimeout(() => {
+                    $(this).removeClass('rotated');
+                }, 1000);
+                $.tasks.showNewTaskForm();
+                return false;
+            });
+
             // Click on current tasks list link in sidebar reloads the list
             $('#wa-app > .flexbox > .sidebar a[href^="#/tasks/"]').on("click", function(e) {
                 

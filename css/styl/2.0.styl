@@ -298,6 +298,10 @@ h2
   to
     opacity 1
 
+@keyframes rotate90
+  to
+    transform rotate(90deg)
+
 .button
   &.button--loading
     position relative
@@ -322,3 +326,6 @@ h2
   .t-header-wrapper
     #t-menu-dropdown-tag
       position initial
+
+.rotated
+  animation rotate90 .1s linear
