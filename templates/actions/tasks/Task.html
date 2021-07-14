@@ -52,7 +52,7 @@
 <div class="article {$classes|join:' '}" id="task-{$task.id}" data-task-id="{$task.id}">
     <div class="article-body t-task-wrapper">
 
-        <div class="t-content-column{if $task.status_id == -1} t-completed-seal-background{/if}">
+        <div class="t-content-column">
 
             <!-- plugin hook: 'backend_task.%plugin_id%.before_header' -->
             {* @event backend_task.%plugin_id%.before_header *}
@@ -131,21 +131,35 @@
                             </div>
 
                             <div class="flexbox space-8">
-                                <a href="#/tasks/assigned/{$_assigned_contact.id}/{* tasksHelper::getProfileURL($_assigned_contact.id) *}" title="{$_assigned_contact.name|escape}">
-                                    <img class="userpic userpic48" src="{waContact::getPhotoUrl($_assigned_contact.id, $_assigned_contact.photo, 96)}" alt="{$_assigned_contact.name|escape}">
-                                </a>
-                                <div class="wide">
-                                    <p class="small custom-mb-0">
-                                        {if empty($_assigned_contact.delete) && $_assigned_contact.id}
-                                            <a href="#/tasks/assigned/{$_assigned_contact.id}/" class="black bold">{$_assigned_contact.name|escape}</a>
-                                        {else}
-                                            <strong class="gray">[`Unassigned`]</strong>
-                                        {/if}
-                                    </p>
+                                {if $task.status_id == -1}
+                                    <span class="icon size-48">
+                                        <i class="fas fa-check-circle text-light-gray"></i>
+                                    </span>
+                                    <div class="wide">
+                                        <p class="small custom-mb-0 semibold text-gray">
+                                            [`Closed`]
+                                        </p>
 
-                                    <p class="t-date-wrapper hint nowrap custom-mt-0">{$task.update_datetime|wa_datetime:'humandatetime'}</p>
+                                        <p class="t-date-wrapper hint nowrap custom-mt-0">{$task.update_datetime|wa_datetime:'humandatetime'}</p>
 
-                                </div>
+                                    </div>
+                                {else}
+                                    <a href="#/tasks/assigned/{$_assigned_contact.id}/{* tasksHelper::getProfileURL($_assigned_contact.id) *}" title="{$_assigned_contact.name|escape}">
+                                        <img class="userpic userpic48" src="{waContact::getPhotoUrl($_assigned_contact.id, $_assigned_contact.photo, 96)}" alt="{$_assigned_contact.name|escape}">
+                                    </a>
+                                    <div class="wide">
+                                        <p class="small custom-mb-0">
+                                            {if empty($_assigned_contact.delete) && $_assigned_contact.id}
+                                                <a href="#/tasks/assigned/{$_assigned_contact.id}/" class="black bold">{$_assigned_contact.name|escape}</a>
+                                            {else}
+                                                <strong class="gray">[`Unassigned`]</strong>
+                                            {/if}
+                                        </p>
+
+                                        <p class="t-date-wrapper hint nowrap custom-mt-0">{$task.update_datetime|wa_datetime:'humandatetime'}</p>
+
+                                    </div>
+                                {/if}
                             </div>
 
                         </div>
