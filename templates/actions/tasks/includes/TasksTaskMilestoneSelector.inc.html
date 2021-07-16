@@ -22,7 +22,8 @@
                                 <span>
                                     {$m.name|escape}
                                     <span class="hint nowrap t-milestone-due-date">
-                                        {wa_date('humandate', $m.due_date, waDateTime::getDefaultTimezone())|escape}</span>
+                                        {if $m.due_date}{wa_date('humandate', $m.due_date, waDateTime::getDefaultTimezone())|escape}{/if}
+                                    </span>
                                 </span>
                             </a>
                     </li>

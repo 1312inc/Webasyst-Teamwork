@@ -66,10 +66,7 @@ class tasksBackendAction extends waViewAction
         $tasks_milestone_model = new tasksMilestoneModel();
         $tasks_task_model = new tasksTaskModel();
 
-        //Need set due_date 9999-12-31 to first show the red tasks, and without a period - the last
-        $scopes = $tasks_milestone_model->where('closed=0')
-            ->order('IFNULL(due_date, \'9999-12-31 23:59:59\') ASC')
-            ->fetchAll('id');
+        $scopes = $tasks_milestone_model->getStatusesWithOrder(false);
         $projects = tasksHelper::getProjects();
 
         foreach ($scopes as $id => $scope) {

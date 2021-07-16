@@ -24,11 +24,15 @@ class tasksTasksAction extends waViewAction
 
         $total_count = null;
         $task_rows = $c->getTasks(
-            '*,log,create_contact,assigned_contact,attachments,tags,project,favorite, relations',
+            tasksCollection::FIELDS_TO_GET,
             $offset,
             $limit,
             $total_count
         );
+
+//        if ($c->getType() == 'search') {
+//            $task_rows = (new tasksSearchService())->extend($task_rows, $c->getInfo());
+//        }
 
         $tasks = [];
         $logs_by_task = [];
@@ -379,7 +383,7 @@ class tasksTasksAction extends waViewAction
     protected static function getMilestoneFilterType()
     {
         $milestone_model = new tasksMilestoneModel();
-        $milestones = $milestone_model->where('closed=0')->order('due_date')->fetchAll('id');
+        $milestones = $milestone_model->getStatusesWithOrder(false);
 
         return [
                 '' => [
