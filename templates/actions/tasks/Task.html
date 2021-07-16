@@ -176,13 +176,13 @@
                             {$_due_class = ''}
                             {if $task.milestone}
                                 {$_milestone = $task.milestone.name|escape}
-                                {$_due_date = $task.milestone.due_date|wa_date:'humandate'}
+                                {$_due_date = wa_date('humandate', $task.milestone.due_date, waDateTime::getDefaultTimezone())|escape}
                                 {$_due_hint = $task.milestone.view.due_text}
                                 {$_due_class = $task.milestone.view.due_color_class}
                             {/if}
                             {if $task.due_date}
                                 {* manually set due date overrides milestone general due date *}
-                                {$_due_date = $task.due_date|wa_date:'humandate'}
+                                {$_due_date = wa_date('humandate', $task.due_date, waDateTime::getDefaultTimezone())|escape}
                                 {$_due_hint = $task.view.due_text}
                                 {$_due_class = $task.view.due_color_class}
                             {/if}

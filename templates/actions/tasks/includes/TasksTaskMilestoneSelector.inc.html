@@ -21,7 +21,8 @@
                                href="javascript:void(0);" data-value="{$m.id}">
                                 <span>
                                     {$m.name|escape}
-                                    <span class="hint nowrap t-milestone-due-date">{$m.due_date|wa_date:'humandate'}</span>
+                                    <span class="hint nowrap t-milestone-due-date">
+                                        {wa_date('humandate', $m.due_date, waDateTime::getDefaultTimezone())|escape}</span>
                                 </span>
                             </a>
                     </li>
