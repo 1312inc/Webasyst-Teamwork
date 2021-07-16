@@ -1,6 +1,93 @@
 {$time = time()}
 {strip}
 
+{if $wa->whichUI() == '2.0'}
+{function name="_renderItem" _item=[]}
+    <li class="custom-mt-8">
+        <div class="flexbox middle space-8">
+            <div class="t-scopes-date{if $time > strtotime($_item.due_date)} c-date-fail{elseif (strtotime($_item.due_date) - $time) < 691200 } c-date-red{/if}">
+                <div class="small" style="line-height: normal;">{waDateTime::date('j', $_item.due_date)}</div>
+                <div class="small" style="line-height: normal;">{waDateTime::date('f', $_item.due_date)}</div>
+            </div>
+            <div class="wide">
+                {if !empty($_item.name)}
+                    <div class="custom-mb-4">
+                        {$_item.name|escape}
+                    </div>
+                    <progress max="100" value="{$_item.progress}"></progress>
+                {/if}
+            </div>
+        </div>
+    </li>
+{/function}
+
+<style>
+@keyframes release-fail {
+    0% {
+        background-color: var(--alert-danger-background-color);
+    }
+    50% {
+        background-color: rgba(255,0,0,0.3);
+    }
+    100% {
+        background-color: var(--alert-danger-background-color);
+    }
+}
+.t-scopes-date {
+    padding: 0.4em 0;
+    flex: 0 0 60px;
+    background: var(--gray);
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    text-align: center;
+    color: var(--white);
+}
+.t-scopes-date.c-date-red {
+    background: var(--alert-danger-background-color);
+}
+
+.t-scopes-date.c-date-fail {
+    -webkit-animation: release-fail 2s linear infinite;
+    animation: release-fail 2s linear infinite;
+}
+.t-content-wrapper {
+    position: absolute;
+    overflow-y: auto;
+    top: 2.2rem; 
+    right: 1rem; 
+    bottom: 1rem; 
+    left: 1rem;
+}
+</style>
+
+<div class="custom-p-16 nowrap uppercase"><strong>{$title}</strong></div>
+<div class="t-content-wrapper hide-scrollbar">
+    <ul class="menu custom-m-0">
+        {if !empty($scopes)}
+            {foreach $scopes as $item}
+                {_renderItem _item=$item}
+            {/foreach}
+        {else}
+            <li class="gray">
+                No scopes
+            </li>
+        {/if}
+    </ul>
+</div>
+
+<script>
+    (function ($) {
+        $(function () {
+            setTimeout(function() {
+                try {
+                    DashboardWidgets[{$widget_id}].renderWidget();
+                } catch (e) { }
+            }, 60 * 1000);
+        });
+    })(jQuery)
+</script>
+
+{else}
 {function name="_renderItem" _item=[]}
     <div class="t-scopes-item">
         <div class="left-column">
@@ -53,5 +140,6 @@
         });
     })(jQuery)
 </script>
+{/if}
 
 {/strip}
