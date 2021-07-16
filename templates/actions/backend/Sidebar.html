@@ -204,7 +204,7 @@
 
                                         <span class="hint{if !empty($scope.due_date) && $scope.due_date < date('Y-m-d')} text-red bold{/if}" style="display: block;">
                                             {if !empty($scope.due_date)}
-                                                {$scope.due_date|wa_datetime:"humandate"}
+                                                {wa_date('humandate', $scope.due_date, waDateTime::getDefaultTimezone())|escape}
                                             {/if}
                                         </span>
 

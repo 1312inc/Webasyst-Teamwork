@@ -58,14 +58,14 @@
                             {* manually set due date overrides milestone general due date *}
                             <span class="small nowrap t-due-date-hint-{$task.view.due_color_class|default:'green'} custom-ml-4">
                                 <i class="fas fa-flag-checkered"></i>
-                                {$task.due_date|wa_date:'humandate'}
+                                {wa_date('humandate', $task.due_date, waDateTime::getDefaultTimezone())|escape}
                             </span>
 
                         {else if !empty($task.milestone.due_date)}
 
                             <span class="small t-due-date-hint-{$task.milestone.view.due_color_class|default:'green'} custom-ml-4">
                                 <i class="fas fa-flag-checkered"></i>
-                                {$task.milestone.due_date|wa_date:'humandate'}
+                                {wa_date('humandate', $task.milestone.due_date, waDateTime::getDefaultTimezone())|escape}
                             </span>
 
                         {/if}

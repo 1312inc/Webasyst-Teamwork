@@ -38,7 +38,7 @@
                     <span class="t-scope-name js-scope-name">
                         {$_scope.name|default:'[`(no name)`]'|escape}
                         {if !empty($_scope.due_date)}
-                            <p class="hint">{$_scope.due_date|wa_datetime:"humandate"}</p>
+                            <p class="hint">{wa_date('humandate', $_scope.due_date, waDateTime::getDefaultTimezone())|escape}</p>
                         {/if}
 
                     </span>

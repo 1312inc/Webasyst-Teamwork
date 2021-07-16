@@ -129,7 +129,7 @@
                 <span class="small nowrap t-due-date-hint-{$task.view.due_color_class|default:'green
 >'} custom-mr-4">
                     <i class="fas fa-flag-checkered"></i>
-                    {$task.due_date|wa_date:'humandate'}
+                    {wa_date('humandate', $task.due_date, waDateTime::getDefaultTimezone())|escape}
                 </span>
                 {if !empty($task.view.due_text)}
                     <span class="hint semibold">{$task.view.due_text}</span>
@@ -139,7 +139,7 @@
             <p class="small custom-mt-0 custom-mb-4">
                 <span class="small nowrap t-due-date-hint-{$task.milestone.view.due_color_class|default:'green'} custom-mr-4">
                     <i class="fas fa-flag-checkered"></i>
-                    {$task.milestone.due_date|wa_date:'humandate'}
+                    {wa_date('humandate', $task.milestone.due_date, waDateTime::getDefaultTimezone())|escape}
                 </span>
                 <span class="hint semibold">{$task.milestone.name|escape|truncate:32}</span>
             </p>
