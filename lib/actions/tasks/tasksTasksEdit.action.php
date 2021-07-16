@@ -30,7 +30,7 @@ class tasksTasksEditAction extends waViewAction
         }
 
         $milestone_model = new tasksMilestoneModel();
-        $this->milestones = $milestone_model->where('closed=0')->order('due_date')->fetchAll('id');
+        $this->milestones = $milestone_model->getStatusesWithOrder(false);
 
         $this->users = $this->getUsers();
         $this->projects_users = $this->getProjectsUsers($projects, $this->users);

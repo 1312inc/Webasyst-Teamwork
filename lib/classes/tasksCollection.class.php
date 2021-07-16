@@ -683,6 +683,7 @@ class tasksCollection
                 if (empty($this->info)) {
                     $this->info = $parts[2];
                 }
+                // поиск по номеру таски X.N
                 if (preg_match("/^\d+\.\d+$/", $parts[2])) {
                     @list($project_id, $number) = explode('.', $parts[2], 2);
                     $task = $this->getModel()->getByField(array(
@@ -695,6 +696,7 @@ class tasksCollection
                     }
                 }
                 if (mb_strlen($parts[2]) <= 3) {
+                    // для поиска коротких слов
                     $this->where[] = "CONCAT(t.name, ' ', t.text) LIKE '%".$model->escape($parts[2], 'like')."%'";
                 } else {
                     $q = $parts[2];

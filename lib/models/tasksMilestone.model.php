@@ -145,5 +145,22 @@ class tasksMilestoneModel extends waModel
 
         return $is_single ? reset($milestones) : $milestones;
     }
+
+    /**
+     * Show first the red tasks, and without a period - the last
+     *
+     * @return array
+     */
+    public function getStatusesWithOrder($withClosed = true)
+    {
+        $result = $this->select('*')
+            ->order('closed DESC, IFNULL(due_date, \'9999-12-31 23:59:59\') ASC');
+
+        if (!$withClosed) {
+            $result->where('closed=0');
+        }
+
+        return $result->fetchAll('id');
+    }
 }
 
