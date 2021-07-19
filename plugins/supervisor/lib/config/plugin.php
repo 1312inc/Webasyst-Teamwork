@@ -2,8 +2,8 @@
 
 return array (
     'name' => 'Supervisor',
-    'img' => 'img/supervisor.png',
-    'version' => '0.1',
+    'img' => 'img/supervisor.svg',
+    'version' => '1.0',
     'vendor' => 'webasyst',
     'handlers' => array(
         'backend_sidebar' => 'backendSidebar',
