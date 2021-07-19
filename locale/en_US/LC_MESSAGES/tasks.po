@@ -1259,3 +1259,6 @@ msgstr ""
 
 msgid "Backlog"
 msgstr ""
+
+msgid "Hide tasks from your inbox for a specific period of time to focus on other important tasks. Your teammates will continue to see your hidden tasks as open and visible."
+msgstr ""

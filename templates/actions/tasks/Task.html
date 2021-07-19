@@ -76,6 +76,64 @@
 
                     <div class="t-controls-wrapper flexbox middle space-16">
 
+                        {* HIDE FROM INBOX OPTIONS *}
+                        {$_hash_type = $hash_type|default:''}
+                        {if 1 || ($_hash_type == 'inbox' || $_hash_type == 'hidden') && $task.priority <= 1}
+                            <span class="t-postpone-wrapper t-visible-part">
+                                {$intervals = ['1d' => '1 day', '3d' => '3 days', '1w' => '1 week', '2w' => '2 weeks']}
+                                <span id="js-hide-task-dropdown" class="dropdown t-custom-select" style="line-height: 1"
+                                    {if $task.priority > 0}
+                                        data-errormsg="[`You can't hide high priority task`]"
+                                    {elseif $task.assigned_contact_id != $wa->user('id')}
+                                        data-errormsg="[`You can only hide tasks assigned to you.`]"
+                                    {/if}
+                                >
+
+                                    <a class="dropdown-toggle button circle {if $task.hidden_timestamp && $task.hidden_timestamp > time()}gray{else}light-gray{/if} selected-custom-item inline-link" href="javascript:void(0);" style="top: 3px;">
+                                        <i class="fas fa-eye-slash"></i>
+                                    </a>
+                                    <div class="dropdown-body">
+
+                                        {if $task.hidden_timestamp && $task.hidden_timestamp > time()}
+                                            <div class="box align-center custom-pb-0">
+                                                <h6 class="align-center small">
+                                                    <i class="fas fa-inbox custom-mr-4"></i>
+                                                    [`Hidden until`] {waDateTime::format('humandate', $task.hidden_timestamp)}
+                                                </h6>
+                                            </div>
+                                        {/if}
+
+                                        <ul class="menu">
+                                            {if $task.hidden_timestamp && $task.hidden_timestamp > time()}
+                                                <li class="t-nav-item">
+                                                    <a class="set-custom-select" href="javascript:void(0);" data-value="">[`Unhide`]</a>
+                                                </li>
+                                            {/if}
+                                            {foreach $intervals as $value => $name}
+                                                <li class="t-nav-item">
+                                                    <a class="set-custom-select" href="javascript:void(0);" data-value="{$value}">{$name}</a>
+                                                </li>
+                                            {/foreach}
+                                        </ul>
+                                        <div class="box align-center custom-pt-0">
+                                            <p class="hint">
+                                                <i class="fas fa-inbox custom-mr-4"></i>
+                                                [`Hide tasks from your inbox for a specific period of time to focus on other important tasks. Your teammates will continue to see your hidden tasks as open and visible.`]
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <input class="change-postpone-field" type="hidden" name="change-postpone-field" value="!">
+                                    <script>
+                                        ( function($) {
+                                            $("#js-hide-task-dropdown").waDropdown();
+                                        })(jQuery);
+                                    </script>
+
+                                </span>
+                            </span>
+                        {/if}
+
+                        {* WATCH *}
                         <a class="t-favorite-link button light-gray rounded t-set-favorite nowrap" href="javascript:void(0);">
                             <i class="fas fa-star {if empty($task.favorite)}text-light-gray{else}text-yellow{/if}"></i>
                             <span class="custom-ml-4"{if !empty($task.favorite)} style="display: none;"{/if}>[`Watch`]</span>
@@ -397,46 +455,6 @@
                         <a href="javascript:void(0);" class="t-control-link button light-gray large rounded t-forward-link" title="[`Forward`]"> <i class="fas fa-arrow-right"></i> [`Forward`]</a>
                     </div>
                 </div>
-
-                {* HIDE FROM INBOX OPTIONS *}
-                {$_hash_type = $hash_type|default:''}
-                {if ($_hash_type == 'inbox' || $_hash_type == 'hidden') && $task.priority <= 1}
-                    <div class="t-postpone-wrapper float-right t-visible-part">
-                        {$intervals = ['1d' => '1 day', '3d' => '3 days', '1w' => '1 week', '2w' => '2 weeks']}
-                        <ul class="menu-h dropdown t-custom-select"
-                            {if $task.priority > 0}
-                                data-errormsg="[`You can't hide high priority task`]"
-                            {elseif $task.assigned_contact_id != $wa->user('id')}
-                                data-errormsg="[`You can only hide tasks assigned to you.`]"
-                            {/if}
-                        >
-                            <li>
-                                <a class="selected-custom-item inline-link" href="javascript:void(0);">
-                                    <b><i>
-                                        {if $task.hidden_timestamp && $task.hidden_timestamp > time()}
-                                            [`Hidden until`] {waDateTime::format('humandate', $task.hidden_timestamp)}
-                                        {else}
-                                            [`Hide`]
-                                        {/if}
-                                    </i></b>
-                                </a>
-                                <ul class="menu-v">
-                                    {if $task.hidden_timestamp && $task.hidden_timestamp > time()}
-                                        <li class="t-nav-item">
-                                            <a class="set-custom-select" href="javascript:void(0);" data-value="">[`Unhide`]</a>
-                                        </li>
-                                    {/if}
-                                    {foreach $intervals as $value => $name}
-                                        <li class="t-nav-item">
-                                            <a class="set-custom-select" href="javascript:void(0);" data-value="{$value}">{$name}</a>
-                                        </li>
-                                    {/foreach}
-                                </ul>
-                                <input class="change-postpone-field" type="hidden" name="change-postpone-field" value="!">
-                            </li>
-                        </ul>
-                    </div>
-                {/if}
 
                 <!-- plugin hook: 'backend_task.%plugin_id%.buttons' -->
                 {* @event backend_task.%plugin_id%.buttons *}
