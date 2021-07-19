@@ -4,7 +4,7 @@ return array(
     'name'            => 'Git',
     'description'     => 'Commits, tests, release handler',
     'img'             => 'img/git.png',
-    'version'         => '0.2.10',
+    'version'         => '1.0.0',
     'vendor'          => 'webasyst',
     'custom_settings' => 1,
     'handlers'        => array(

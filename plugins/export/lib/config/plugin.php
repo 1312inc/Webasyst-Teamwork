@@ -3,8 +3,8 @@
 return array(
     'name'            => 'Export',
     'description'     => 'Export',
-    'img'             => 'img/export.png',
-    'version'         => '0.1',
+    'img'             => 'img/export.svg',
+    'version'         => '1.0',
     'vendor'          => 'webasyst',
     'custom_settings' => 0,
     'handlers'        => array(

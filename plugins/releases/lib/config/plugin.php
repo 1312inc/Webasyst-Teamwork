@@ -3,8 +3,8 @@
 return array(
     'name'            => 'Releases',
     'description'     => 'Releases',
-    'img'             => 'img/releases.png',
-    'version'         => '0.2',
+    'img'             => 'img/releases.svg',
+    'version'         => '0.3',
     'vendor'          => 'webasyst',
     'custom_settings' => true,
     'handlers'        => array(
