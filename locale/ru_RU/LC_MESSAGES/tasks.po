@@ -50,7 +50,7 @@ msgid "Scope"
 msgstr "Работа"
 
 msgid "Agile"
-msgstr ""
+msgstr "Agile"
 
 msgid "Logs"
 msgstr "Журнал"
@@ -188,7 +188,7 @@ msgid "Icon"
 msgstr "Иконка"
 
 msgid "Or enter image URL (image will be scaled to 16x16px)"
-msgstr "или введите URL изображения (изображение будет автоматически уменьшено до 16х16 пикселей)"
+msgstr "Или введите URL изображения (изображение будет автоматически уменьшено до 16х16 пикселей)"
 
 msgid "Workflow"
 msgstr "Процесс"
@@ -356,10 +356,10 @@ msgid "Cancel"
 msgstr "Отмена"
 
 msgid "Email"
-msgstr ""
+msgstr "Email"
 
 msgid "SMS"
-msgstr ""
+msgstr "SMS"
 
 msgid "More fields"
 msgstr "Еще"
@@ -503,10 +503,10 @@ msgid "You can only hide tasks assigned to you."
 msgstr "Можно отложить только задачи, назначенные на вас."
 
 msgid "Unable to return task because someome modified it."
-msgstr "Невозможно вернуть задачу, т. к. она было кем-то изменена."
+msgstr "Невозможно вернуть задачу, т.к. она было кем-то изменена."
 
 msgid "Unable to return task because contact has been deleted. Use forward action instead."
-msgstr "Невозможно вернуть задачу, т. к. контакт удален. Используйте функцию перенаправления."
+msgstr "Невозможно вернуть задачу, т.к. контакт был удален. Используйте функцию переназначения."
 
 msgid "%d min"
 msgid_plural "%d mins"
@@ -593,7 +593,7 @@ msgid "added comment"
 msgstr "добавлен комментарий"
 
 msgid "forwarded"
-msgstr "перенаправлена"
+msgstr "назначена"
 
 msgid "returned"
 msgstr "возвращена"
@@ -616,11 +616,8 @@ msgstr "Очистить фильтры"
 msgid "Today"
 msgstr "Сегодня"
 
-msgid "A tiny hint describing this milestone."
-msgstr "Короткое поясняющее описание"
-
 msgid "A tiny hint describing this scope."
-msgstr "Короткое поясняющее описание"
+msgstr "Короткое описание работы."
 
 msgid "Archived"
 msgstr "В архиве"
@@ -647,7 +644,7 @@ msgid "Double-click to change task priority"
 msgstr "Двойной щелчок, чтобы изменить приоритет задачи"
 
 msgid "Forward"
-msgstr "Перенаправить"
+msgstr "Назначить"
 
 msgid "History &amp; Comments"
 msgstr "История и комментарии"
@@ -746,7 +743,7 @@ msgid "deleted a task"
 msgstr "удалил задачу"
 
 msgid "forwarded a task"
-msgstr "перенаправил задачу"
+msgstr "назначил задачу"
 
 msgid "returned a task"
 msgstr "вернул задачу"
@@ -758,7 +755,7 @@ msgid "commented on a task"
 msgstr "добавил комментарий к задаче"
 
 msgid "forwarded several tasks"
-msgstr "перенаправил несколько задач"
+msgstr "назначил несколько задач"
 
 msgid "marked several tasks as done"
 msgstr "отметил несколько задач как закрытые"
@@ -1229,7 +1226,7 @@ msgid "Show everyone"
 msgstr "Показать всех"
 
 msgid "Forward task"
-msgstr "Перенаправить задачу"
+msgstr "Назначить задачу"
 
 msgid "Highlight color for the main task list and the kanban board."
 msgstr "Цвет подсветки задач в основном списке и на канбан-доске."
@@ -1298,7 +1295,7 @@ msgid "Doing"
 msgstr "Делается"
 
 msgid "Start doing"
-msgstr "В работу!"
+msgstr "Взять в работу"
 
 msgid "To test"
 msgstr "На проверку"
