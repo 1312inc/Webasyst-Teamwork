@@ -12,7 +12,7 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Basepath: .\n"
 "Language: ru_RU\n"
-"X-Generator: Poedit 2.3\n"
+"X-Generator: Poedit 3.0\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPath-1: .\n"
 
@@ -41,7 +41,7 @@ msgid "Urgent"
 msgstr "Срочно"
 
 msgid "Milestones"
-msgstr "Дедлайны"
+msgstr "Сроки"
 
 msgid "Scopes"
 msgstr "Работы"
@@ -116,10 +116,10 @@ msgstr[1] "%d записи"
 msgstr[2] "%d записей"
 
 msgid "Due"
-msgstr "Срок"
+msgstr "Дедлайн"
 
 msgid "New milestone"
-msgstr "Добавить дедлайн"
+msgstr "Добавить работу"
 
 msgid "New scope"
 msgstr "Добавить работу"
@@ -152,7 +152,7 @@ msgid "Project"
 msgstr "Проект"
 
 msgid "Due date"
-msgstr "Срок"
+msgstr "Дедлайн"
 
 msgid "Milestone is closed"
 msgstr "Срок истек"
@@ -695,7 +695,7 @@ msgid "User %s has just completed a task"
 msgstr "Пользователь %s только что выполнил задачу"
 
 msgid "Inbox automatically collects all tasks assigned to you. No tasks are assigned to you right now :-)"
-msgstr "Раздел «Входящие» содержит все назначенные на вас задачи. Сейчас на вас не назначено ни одной задачи :-)"
+msgstr "Раздел «Входящие» содержит все назначенные на вас задачи. Сейчас на вас не назначено ни одной задачи."
 
 msgid "Your outbox is empty"
 msgstr "Список исходящих пуст"
@@ -1065,3 +1065,264 @@ msgstr "Заголовок"
 
 msgid "No active work scopes are defined."
 msgstr "Текущие работы не заданы."
+
+msgid "Add a milestone to group tasks into time-based activities such as sprints, releases, or subprojects."
+msgstr "Группируйте задачи в работы и контролируйте сроки выполнения."
+
+msgid "Show %d completed milestone"
+msgid_plural "Show %d completed milestones"
+msgstr[0] "Показать %d завершенную работу"
+msgstr[1] "Показать %d завершенные работы"
+msgstr[2] "Показать %d завершенных работ"
+
+msgid "Hide completed milestone"
+msgid_plural "Hide completed milestones"
+msgstr[0] "Скрыть завершенные работы"
+msgstr[1] "Скрыть завершенные работы"
+msgstr[2] "Скрыть завершенные работы"
+
+msgid "My notification preferences"
+msgstr "Мои настройки уведомлений"
+
+msgid "Notify me on"
+msgstr "Уведомления"
+
+msgid "All updates and comments"
+msgstr "Все изменения и действия с задачами"
+
+msgid "Assignments only"
+msgstr "Только назначение меня на задачи"
+
+msgid "Turn off all notifications"
+msgstr "Выключить уведомления"
+
+msgid "Which tasks"
+msgstr "Какие задачи"
+
+msgid "Tasks assigned to me"
+msgstr "Задачи, назначенные на меня"
+
+msgid "Tasks created by me"
+msgstr "Задачи, которые я поставил"
+
+msgid "Tasks I’m watching"
+msgstr "Задачи, за которыми я наблюдаю"
+
+msgid "Tasks from selected projects"
+msgstr "Задачи из выбранных проектов"
+
+msgid "Button name"
+msgstr "Текст на кнопке"
+
+msgid "Caption on a button that sends a task into this status. Sometimes it matches the status name, but in most cases, it's a verb."
+msgstr "Текст на кнопке, которая переводит задачу в этот статус. Иногда может совпадать с названием статуса, но чаще всего все-таки отличается."
+
+msgid "Background color"
+msgstr "Цвет фона"
+
+msgid "Text color"
+msgstr "Цвет текста"
+
+msgid "Keep the assignee unchanged"
+msgstr "Оставить исполнителя без изменения"
+
+msgid "Assign to the user who created the task"
+msgstr "Назначить задачу ее постановщику"
+
+msgid "Force assign to"
+msgstr "Назначить выбранному пользователю"
+
+msgid "Allow to select the assignee"
+msgstr "Предлагать выбрать исполнителя"
+
+msgid "Allow making the task unassigned"
+msgstr "Разрешить оставить задачу без назначения"
+
+msgid "Below is the global list of all statuses a task can pass through. On a project level, custom workflow can be set up by selecting particular statuses only and skipping the unwanted ones."
+msgstr "Здесь настраивается общий список статусов, через которые проходят задачи. На уровне каждого проекта можно затем включить нужные статусы и отключить ненужные."
+
+msgid "Commit changes by clicking “Save” when done editing."
+msgstr "Нажмите «Сохранить», когда закончите редактирование."
+
+msgid "All done!"
+msgstr "Все готово!"
+
+msgid "Congratulations! Everything set to be done in this milestone is marked as complete."
+msgstr "Поздравляем! В этой работе все задачи закрыты."
+
+msgid "Go to settings"
+msgstr "Перейти в настройки"
+
+msgid "Set due date"
+msgstr "Дедлайн"
+
+msgid "Filter"
+msgstr "Фильтр"
+
+msgid "Remove from my filters"
+msgstr "Удалить из личных фильтров"
+
+msgid "Save to my custom filters"
+msgstr "Сохранить в личных фильтрах"
+
+msgid "Selected tasks"
+msgstr "Выбранные задачи"
+
+msgid "Close tasks"
+msgstr "Закрыть задачи"
+
+msgid "Delete tasks"
+msgstr "Удалить задачи"
+
+msgid "Tag tasks"
+msgstr "Добавить тег"
+
+msgid "All tags"
+msgstr "Все теги"
+
+msgid "Show all tags"
+msgstr "Показать все теги"
+
+msgid "Find tag"
+msgstr "Найти тег"
+
+msgid "Watching"
+msgstr "Наблюдаю"
+
+msgid "Return to status"
+msgstr "Вернуть в статус"
+
+msgid "Return task"
+msgstr "Вернуть задачу"
+
+msgid "The task is now assigned to:"
+msgstr "Задача назначена:"
+
+msgid "Watch"
+msgstr "Наблюдать"
+
+msgid "No due date"
+msgstr "Нет дедлайна"
+
+msgid "Enter new tag..."
+msgstr "Добавить тег..."
+
+msgid "Unlink"
+msgstr "Удалить связь"
+
+msgid "Linked task"
+msgstr "Связанная задача"
+
+msgid "Pin"
+msgstr "Прикрепить"
+
+msgid "Pinned"
+msgstr "Прикреплено"
+
+msgid "Task summary"
+msgstr "Текст задачи"
+
+msgid "Attach files"
+msgstr "Прикрепить файлы"
+
+msgid "Show everyone"
+msgstr "Показать всех"
+
+msgid "Forward task"
+msgstr "Перенаправить задачу"
+
+msgid "Highlight color for the main task list and the kanban board."
+msgstr "Цвет подсветки задач в основном списке и на канбан-доске."
+
+msgid "Logo"
+msgstr "Логотип"
+
+msgid "Image URL to be used as a tiny project icon all around."
+msgstr "Изображение будет использоваться в качестве маленькой иконки проекта повсюду в приложении."
+
+msgid "Similar to %s"
+msgstr "Как в %s"
+
+msgid "DANGER: Deletion will be permanent with no ability to roll back. Are you sure?"
+msgstr "ОПАСНО: Удаление будет безвозвратным. Восстановить данные будет нельзя. Удалить?"
+
+msgid "Menu"
+msgstr "Меню"
+
+msgid "Updates"
+msgstr "События"
+
+msgid "Kanban"
+msgstr "Канбан"
+
+msgid "My filters"
+msgstr "Мои фильтры"
+
+msgid "%d open / %d closed"
+msgstr "%d открытых / %d закрытых"
+
+msgid "Add a project to start creating tasks."
+msgstr "Создайте проект, чтобы начать ставить задачи."
+
+msgid "Edit custom filter"
+msgstr "Редактировать фильтр"
+
+msgid "Save custom filter"
+msgstr "Сохранить фильтр"
+
+msgid "Only you will see this filter in the app navigation."
+msgstr "Только вы будете видеть этот фильтр в интерфейсе приложения."
+
+msgid "Show unassigned"
+msgstr "Показывать задачи без назначения"
+
+msgid "Assigned to %s %s ago"
+msgstr "Назначено %s %s назад"
+
+msgid "Unassigned task"
+msgstr "Задача никому не назначена"
+
+msgid "Restore this milestone"
+msgstr "Восстановить из завершенных"
+
+msgid "Mark as complete"
+msgstr "Работа завершена"
+
+msgid "Date"
+msgstr "Дата"
+
+msgid "A tiny hint describing your teammates what this milestone is all about."
+msgstr "Небольшая подсказка коллегам о том, что это за работа и срок."
+
+msgid "Doing"
+msgstr "Делается"
+
+msgid "Start doing"
+msgstr "В работу!"
+
+msgid "To test"
+msgstr "На проверку"
+
+msgid "On Fire!"
+msgstr "Горит!"
+
+msgid "Close"
+msgstr "Закрыть"
+
+msgid "Deleted contact"
+msgstr "Удаленный контакт"
+
+msgid "All milestones"
+msgstr "Все сроки"
+
+msgid "All assignees"
+msgstr "Все исполнители"
+
+msgid "Failed to upload image %s."
+msgstr "Не получилось загрузить изображение %s."
+
+msgid "Save to my filters"
+msgstr "Сохранить в личных фильтрах"
+
+msgid "Backlog"
+msgstr "Беклог"
