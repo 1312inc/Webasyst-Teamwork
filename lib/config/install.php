@@ -20,7 +20,7 @@ try {
     if (!$project_model->countAll() && !$status_model->countAll()) {
 
         $status_id = $status_model->insert(array(
-            'name' => _w('In progress'),
+            'name' => _w('Doing'),
             'button' => _w('Start doing'),
             'sort' => 2,
             'icon' => 'status-yellow-tiny'

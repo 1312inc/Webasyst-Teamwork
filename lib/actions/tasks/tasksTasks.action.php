@@ -405,7 +405,7 @@ class tasksTasksAction extends waViewAction
         return [
                 '' => [
                     'id' => '',
-                    'name' => _w('All users'),
+                    'name' => _w('All assignees'),
                     'photo' => '',
                 ],
             ] + tasksHelper::getTeam($project_id);
