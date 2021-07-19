@@ -1300,7 +1300,7 @@ msgstr "Взять в работу"
 msgid "To test"
 msgstr "На проверку"
 
-msgid "On Fire!"
+msgid "On fire!"
 msgstr "Горит!"
 
 msgid "Close"
