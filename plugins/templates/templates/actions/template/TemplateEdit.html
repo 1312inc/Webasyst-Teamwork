@@ -1,4 +1,5 @@
 {$wrapper_id = uniqid('t-templates-plugin-template-edit-wrapper')}
+{if $wa->whichUi() == '1.3'}
 <div class="block bordered-left blank shadowed double-padded t-templates-plugin-template-edit-wrapper" id="{$wrapper_id}">
     <form action="?plugin=templates&module=template&action=save&id={$template.id|escape}">
         <h1>{if $template.id > 0}[`Edit template`]{else}[`Create template`]{/if}</h1>
@@ -65,3 +66,81 @@
 
 
 </div>
+{else}
+<div class="article">
+<div class="blank article-body" id="{$wrapper_id}">
+    <form action="?plugin=templates&module=template&action=save&id={$template.id|escape}">
+        <h1>{if $template.id > 0}[`Edit template`]{else}[`Create template`]{/if}</h1>
+        <div class="block not-padded">
+            <div class="fields">
+                <div class="field">
+                    <div class="value t-template-value">
+                        <input type="text" class="t-template-name large width-100" placeholder="[`Input task name`]" value="{$template.name|default:''|escape}" name="data[name]">
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="value t-template-value">
+                        <textarea placeholder="[`Description`]" class="t-template-description width-100" name="data[text]">{$template.text|default:''|escape}</textarea>
+                    </div>
+                </div>
+                <!-- <div class="field t-icons-block">
+                    <div class="name">[`Icon`]</div>
+                    <div class="value">
+                        <ul class="menu">
+                            {foreach $icons as $icon}
+                                <li data-icon="{$icon}" {if $icon == $template.icon}class="selected"{/if}>
+                                    <a href="javascript:void(0)"><i class="icon16 {$icon}"></i></a>
+                                </li>
+                            {/foreach}
+                        </ul>
+                        <input type="hidden" name="data[icon]" value="{$template.icon}" class="t-icon-input">
+                    </div>
+                </div> -->
+                <div class="field">
+                    <div class="name">[`Access`]</div>
+                    <div class="value">
+                        <label>
+                            <span class="wa-radio">
+                                <input type="radio" name="data[is_shared]" value="0" {if $template.is_shared == "0"}checked="checked"{/if}>
+                                <span></span>
+                            </span>
+                            [`only me`]
+                        </label><br>
+                        <label>
+                            <span class="wa-radio">
+                                <input type="radio" name="data[is_shared]" value="1" {if $template.is_shared == "1"}checked="checked"{/if}>
+                                <span></span>
+                            </span>
+                            [`all users`]
+                        </label>
+                    </div>
+                </div>
+                <div class="field">
+                    {$wa->csrf()}
+                    <div class="flexbox middle space-12">
+                        <input type="submit" value="[`Save`]" class="button green t-button">
+                        <!-- <i class="icon16 loading t-loading" style="margin-top: 8px; display: none;"></i> -->
+                        <span>[`or`]</span>
+                        <a href="javascript:history.back();" class="cancel">[`cancel`]</a>
+                        {if $template.id > 0}
+                            <a href="javascript:void(0);" class="js-delete button red" style="float: right;"><i class="far fa-trash-alt"></i> [`Delete`]</a>
+                        {/if}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </form>
+    <script>
+        (function ($) {
+            new TasksTemplatesPluginTemplateEdit({
+                '$wrapper': $('#{$wrapper_id}'),
+                'template': {$template|json_encode}
+            });
+        })(jQuery);
+    </script>
+
+
+</div>
+</div>
+{/if}
