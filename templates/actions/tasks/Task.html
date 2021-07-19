@@ -638,7 +638,7 @@
                                             {/if}
                                         {/if}
 
-                                        {if $_can_edit}
+                                        {if $_can_edit && $l.contact_id == $wa->user()->getId()}
                                             <a href="javascript:void(0);" class="t-comment-edit-link button circle light-gray small" data-id="{$l.id}"><i class="fas fa-edit text-blue"></i></a>
                                         {/if}
 
