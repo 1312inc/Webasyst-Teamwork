@@ -74,7 +74,7 @@
 
                     </div>
 
-                    <div class="t-controls-wrapper flexbox middle space-16">
+                    <div class="t-controls-wrapper flexbox middle wrap-mobile space-16">
 
                         {* HIDE FROM INBOX OPTIONS *}
                         {$_hash_type = $hash_type|default:''}
@@ -176,7 +176,7 @@
                         {* CURRENT ASSIGNED CONTACT *}
                         {$_assigned_contact = $task.assigned_contact}
 
-                        <div class="flexbox space-16">
+                        <div class="flexbox space-12">
 
                             <div class="flexbox space-8">
                                 <a href="#/tasks/assigned/{$_assignment_creator.id}/{* tasksHelper::getProfileURL($_assignment_creator.id) *}" title="{$_assignment_creator.name|escape}">
@@ -184,8 +184,8 @@
                                 </a>
                             </div>
 
-                            <div class="middle">
-                                <i class="fas fa-arrow-right text-light-gray"></i>
+                            <div>
+                                <i class="fas fa-arrow-right text-light-gray custom-mt-16"></i>
                             </div>
 
                             <div class="flexbox space-8">

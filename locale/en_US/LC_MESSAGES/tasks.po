@@ -569,9 +569,6 @@ msgstr ""
 msgid "Today"
 msgstr ""
 
-msgid "A tiny hint describing this milestone."
-msgstr ""
-
 msgid "Archived"
 msgstr ""
 
