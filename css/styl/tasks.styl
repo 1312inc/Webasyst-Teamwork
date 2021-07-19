@@ -85,6 +85,9 @@ label
     .t-priority-text
         text-align center
         font-weight bold
+        padding-left 1rem
+        font-size 0.91375rem
+        white-space nowrap
 
         &.color-1
             color var(--light-gray)
@@ -124,14 +127,14 @@ label
                 background $color
 
             .ui-slider-handle
-                $width = 16px
+                $width = 8px
                 position absolute
                 top ($height/2)
                 padding 0
                 width $width
                 height $width
                 margin ($width/-2) 0 0 ($width/-2)
-                border 1px solid $color
+                border none
                 background red
                 border-radius 50%
                 box-sizing border-box
@@ -143,7 +146,7 @@ label
                     transition background 200ms linear, left 200ms linear
 
                 &.is-active
-                    $width = 24px
+                    $width = 16px
                     width $width
                     height $width
                     margin ($width/-2) 0 0 ($width/-2)
@@ -152,10 +155,10 @@ label
                     background #81bbf5
 
                 &.color-2
-                    background $color
+                    background var(--gray)
 
                 &.color-3
-                    background #ffae22
+                    background var(--orange)
 
                 &.color-4,
                 &.color-5
@@ -170,7 +173,7 @@ label
                 height $width
                 margin ($width/-2) 0 0 ($width/-2)
                 border 2px solid $color
-                background #fff
+                background var(--background-color-blank)
                 border-radius 50%
                 box-sizing border-box
                 cursor pointer
@@ -183,6 +186,7 @@ label
                         background-color transparent
                         width 20px
                         height 20px
+                        font-size 1.25rem
                         border 0
                         border-radius 0
                         top 50%
@@ -194,7 +198,7 @@ label
                             content ''
                             position absolute
                             display block
-                            background-color #fff
+                            background-color var(--background-color-blank)
                             width 20px
                             height 20px
                             top 50%
@@ -208,14 +212,14 @@ label
 
                 &[data-value='3'].is-active
                     background url('../img/priority-fire.gif') no-repeat
-                    background-size 2em 2em
-                    width 2em
-                    height 2em
+                    background-size 2.5em 2.5em
+                    width 2.5em
+                    height 2.5em
                     border 0
                     border-radius 0
                     top 50%
                     margin 0
-                    transform translateX(-50%) translateY(-70%)
+                    transform translateX(-50%) translateY(-75%)
                     z-index 99
 
 // NOTICES

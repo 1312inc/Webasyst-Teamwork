@@ -1233,7 +1233,7 @@ msgstr ""
 msgid "To test"
 msgstr ""
 
-msgid "On Fire!"
+msgid "On fire!"
 msgstr ""
 
 msgid "Close"

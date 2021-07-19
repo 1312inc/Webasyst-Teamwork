@@ -988,7 +988,7 @@
 
             // Click on current tasks list link in sidebar reloads the list
             $('#wa-app > .flexbox > .sidebar a[href^="#/tasks/"]').on("click", function(e) {
-                
+
                 if (e.which != 1) {
                     return; // not a left-mouse-button click
                 }
@@ -1124,13 +1124,13 @@
                         .css("left", left + "%")
                         .attr("data-value", value)
                         .attr("data-name", name);
-                        
+
                         // if High or Urgent
                         if (value === '1' || value === '2') {
                             var exclamation_color = value === '1' ? '#ffd700' : '#ff4500';
                             $span
                                 .addClass('t-ornament--exclamation')
-                                .append('<i style="color:' + exclamation_color + ';" class="fas fa-exclamation-triangle"></i>');
+                                .append('<i style="color:' + exclamation_color + ';" class="fas fa-exclamation-circle"></i>');
                         }
 
                     if (is_active) {
@@ -1347,7 +1347,7 @@
         },
 
         showLoading: function($form, options) {
-            
+
             if ($form) {
                 return showLoadingForm($form, options);
             } else {
@@ -1505,7 +1505,7 @@
             }
             $button.prop("disabled", true).addClass('button--loading');
         },
-    
+
         hideLoadingButton: function ($button) {
             setTimeout(function () {
                 $button.removeAttr('disabled').removeClass('button--loading');
