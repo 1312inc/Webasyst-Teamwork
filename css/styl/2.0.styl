@@ -38,7 +38,12 @@ h2
     -webkit-transform rotate(360deg)
     transform rotate(360deg)
 
-.sidebar.width-26rem
+.sidebar.t-task-list-sidebar
+  width 26rem
+
+  @media forMedium
+    width 24rem
+
   @media forMobile
     width 100%
 
@@ -52,6 +57,17 @@ h2
 
   @media forMobile
     padding 2rem 1rem
+
+#sidebar.sidebar.width-adaptive
+  min-width 13rem
+
+  .bricks > a
+    @media screen and (max-width: 1440px)
+      font-size 0.75rem
+      padding 0.375rem 0.5rem
+      width calc(50% - 1.75rem)
+      margin-right 0.75rem
+
 
 .prettyprint
   border 0 !important
@@ -85,8 +101,8 @@ h2
   a
     .t-project-icon
       position absolute
-      top 2.6125rem
-      left 2.75rem
+      top 2.5rem
+      left 2.6125rem
       border-radius 0.375rem
       padding 0.125rem
       background var(--white)
