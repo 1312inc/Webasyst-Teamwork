@@ -323,9 +323,9 @@
 
                 {* BUTTONS *}
                 <div class="t-errors-block js-errors-block"></div>
-                <div class="t-form-line t-buttons-block">
+                <div class="t-form-line t-buttons-block flexbox middle space-20">
                     <button class="button green large t-save-task-link" type="submit">{if !empty($task.id)}[`Save task`]{else}[`Create task`]{/if}</button>
-                    <a class="t-close-link button large light-gray custom-ml-12" href="javascript:void(0);">[`Cancel`]</a>
+                    <a class="t-close-link button large light-gray" href="javascript:void(0);">[`Cancel`]</a>
 
                     <!-- plugin hook: 'backend_task_edit.%plugin_id.buttons' -->
                     {* @event backend_task_edit.%plugin_id%.buttons *}
