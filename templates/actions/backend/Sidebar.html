@@ -289,14 +289,14 @@
                     {/foreach}
                     <li class="gray">
                         <a href="#/tasks/unassigned/">
-                            <span class="icon"><img src="{$wa_url}wa-content/img/userpic.svg" alt="Василий" class="userpic"></span>
+                            <span class="icon"><img src="{$wa_url}wa-content/img/userpic.svg" alt="[`Unassigned`]" class="userpic"></span>
                             <span>[`Unassigned`]</span>
                             <span class="count">{user_count user_id=''}</span>
                         </a>
                     </li>
                 </ul>
             {else}
-                <div class="box small align-center custom-my-12 hide-when-collapsed">
+                <div class="box align-center custom-my-12 hide-when-collapsed">
                     <p class="hint">{sprintf(_w('Use <strong>app "%s"</strong> to provide access to Tasks app for your teammates.'), $team_app_name)}</p>
                 </div>
             {/if}

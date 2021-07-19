@@ -60,14 +60,7 @@
                             {$_active_users = true}
                         {/if}
 
-                        {*Render "show all" link if next user after active - not active. Or if interation more 2 *}
-                        {if ($_active_users && !$_is_shown && !$_render_link) ||
-                            (!$_active_users && $user@iteration > $_visible_team_count &&  !$_render_link)}
-                            {renderLink}
-                            {$_render_link = true}
-                        {/if}
-
-                        {*If not found active user need show first 2 user *}
+                        {*If not found active user need show first 5 users *}
                         {if $user@iteration <= $_visible_team_count && !$_active_users}
                             {$_is_shown = true}
                         {/if}
@@ -104,6 +97,12 @@
                         </label>
                     </li>
 
+                    {*Render "show all" link if next user after active - not active. Or if interation more 2 *}
+                    {if ($_active_users && !$_is_shown && !$_render_link) ||
+                        (!$_active_users && count($_active_users) > $_visible_team_count &&  !$_render_link)}
+                        {renderLink}
+                        {$_render_link = true}
+                    {/if}
 
                 </ul>
 
@@ -165,7 +164,7 @@
         {include file="./TaskStatusForm.DropArea.html" inline}
 
         <div class="t-buttons-block">
-            <input type="submit" class="button larger rounded gray" value="[`Forward task`]">
+            <input type="submit" class="button large rounded gray" value="[`Forward task`]">
         </div>
 
         <div class="t-hiddenform-cancel-link custom-mt-16" style="display: none;">
