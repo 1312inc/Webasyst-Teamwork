@@ -22,6 +22,7 @@
         {/if}
 
         {if $statuses}
+            {if $wa->whichUi() == '1.3'}
             <div class="t-task-status">
                 <ul class="menu-v">
                     {foreach $statuses as $_status}
@@ -29,6 +30,15 @@
                     {/foreach}
                 </ul>
             </div>
+            {else}
+            <div class="t-task-status">
+                <ul class="menu">
+                    {foreach $statuses as $_status}
+                        <li>{$_status.icon_html} {$_status.name|escape} - {$_status.count|default:0}</li>
+                    {/foreach}
+                </ul>
+            </div>
+            {/if}
         {/if}
     </div>
     {* BODY *}

@@ -157,6 +157,13 @@ var TaskEdit = ( function($) { "use strict";
                 task_uuid: '{$task_uuid}'
             },
             callbacks: {
+                started () {
+                    var that = this,
+                        $el = this.element.getElement().get(0);
+                    $el.onchange = function () {
+                        that.source.setCode($($el).val());
+                    }
+                },
                 synced (html) {
                     if (that.is_new) {
                         //Save task draft text
@@ -939,8 +946,6 @@ var TaskEdit = ( function($) { "use strict";
         var that = this,
             $submitButton = $form.find('[type="submit"]');
 
-        $.tasks.showLoadingButton($submitButton);
-
         // Validation Task Type
         var e = new $.Event('task_before_submit');
         $form.trigger(e);
@@ -965,6 +970,8 @@ var TaskEdit = ( function($) { "use strict";
         $form.showLoading();
         that.clearFileErrors();
 
+        $.tasks.showLoadingButton($submitButton);
+        
         that.uploadFiles({
             onAllDone: function () {
                 $form.showLoading();
@@ -986,6 +993,7 @@ var TaskEdit = ( function($) { "use strict";
                     )
                     .always(function () {
                         $form.hideLoading();
+                        $.tasks.hideLoadingButton($submitButton);
                     });
             },
             onAllAlways: function () {

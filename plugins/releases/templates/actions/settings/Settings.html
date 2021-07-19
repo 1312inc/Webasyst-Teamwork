@@ -7,6 +7,7 @@
 {/foreach}
 
 <h1>[`Releases`]</h1>
+{if $wa->whichUi() == '1.3'}
 <form action="?module=plugins&id=releases&action=save" method="post" id="plugins-settings-form" enctype="multipart/form-data" target="plugins-settings-iframe"
       style="overflow: hidden;">
     <div class="field">
@@ -40,3 +41,49 @@
 
     {$wa->csrf()}
 </form>
+{else}
+<form action="?module=plugins&id=releases&action=save" method="post" id="plugins-settings-form" enctype="multipart/form-data" target="plugins-settings-iframe"
+      style="overflow: hidden;">
+    <div class="fields">
+        <div class="field">
+            <div class="name">
+                Select statuses
+            </div>
+            <div class="value">
+                {foreach $statuses as $status_id => $data}
+                <div>
+                    <label for="tasks_releases_show_statuses_{$status_id}">
+                        <span class="wa-checkbox">
+                            <input type="checkbox" name="tasks_releases[show_statuses][{$status_id}]"
+                            {if isset($show_statuses[$status_id])}checked{/if}
+                                {if isset($disabled_statuses[$status_id])}disabled{/if}
+                            value="{$status_id}"
+                            class="groupbox checkbox"
+                            id="tasks_releases_show_statuses_{$status_id}"
+                            title="{$data.button|default:$data.name|escape}">
+                            <span>
+                                <span class="icon">
+                                    <i class="fas fa-check"></i>
+                                </span>
+                            </span>
+                        </span>
+                        {$data.button|default:$data.name|escape}
+                        {if !isset($disabled_statuses[$status_id])}{/if}
+                    </label>
+                </div>
+                {/foreach}
+                <span class="hint">[`For what actions should the actual work be specified.`]</span></div>
+        </div>
+
+        <div class="field">
+            <div class="value submit">
+                <input type="submit" class="button green" value="Сохранить">
+                <span id="plugins-settings-form-status" style=""></span>
+            </div>
+        </div>
+
+    </div>
+
+    {$wa->csrf()}
+</form>
+{/if}

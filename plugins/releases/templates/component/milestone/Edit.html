@@ -2,6 +2,7 @@
 
 {$input_ns = 'tasks_plugin_releases_milestone_project'}
 
+{if $wa->whichUi() == '1.3'}
 <div class="t-releases-plugin-milestone-edit-block" id="{$wrapper_id}">
 
     <div class="field">
@@ -33,3 +34,43 @@
     </script>
 
 </div>
+{else}
+<div class="t-releases-plugin-milestone-edit-block" id="{$wrapper_id}">
+
+    <div class="field">
+        <div class="value js-type-wrapper">
+            <ul class="menu with-icons">
+                {$_checked_map = array_fill_keys($related_projects, true)}
+                {foreach $projects as $_project}
+                    {$_checked = $_checked_map[$_project.id]|default:false}
+                    <li>
+                        <label>
+                            <span class="wa-checkbox">
+                                {$_project.icon_html|default:''}
+                                <input type="checkbox" name="{$input_ns}[]" value="{$_project.id|escape}" {if $_checked}checked="checked"{/if}>
+                                <span>
+                                    <span class="icon">
+                                        <i class="fas fa-check"></i>
+                                    </span>
+                                </span>
+                            </span>
+                            {$_project.name|escape|default:''}
+                        </label>
+                    </li>
+
+                {/foreach}
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        (function ($) {
+            new TasksReleasesPluginMilestoneEdit({
+                '$wrapper': $('#{$wrapper_id}'),
+                '$editor': $('#milestone-editor-form')
+            });
+        })(jQuery);
+    </script>
+
+</div>
+{/if}
