@@ -224,6 +224,9 @@ var TasksHeader = ( function($) {
                 case location.hash === '#/tasks/unassigned/':
                     title = 'Unassigned';
                     break;
+                case location.hash === '#/tasks/hidden/':
+                    title = 'Hidden';
+                    break;
                 case location.hash.includes('#/tasks/search/'):
                     var a = location.hash.split('/');
                     title = decodeURI(a[3]);
