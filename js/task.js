@@ -395,6 +395,7 @@ var Task = ( function($) {
             is_changer_shown = false;
 
             $(document).off("keydown", onEscPress);
+            that.reloadTask();
         }
 
         function savePriority(priority_class) {
