@@ -12,7 +12,7 @@
 </select>
 {/function}
 
-<div class="t-releases-plugin-task-edit-block" id="{$wrapper_id}"> 
+<div class="t-releases-plugin-task-edit-block" id="{$wrapper_id}">
 
     <a class="inline-link js-more-options t-releases-plugin-task-edit-block-more-options-link float-right">
         <b>[`More options`]</b>
@@ -108,7 +108,7 @@
 </div>
 {/function}
 
-<div class="t-releases-plugin-task-edit-block" id="{$wrapper_id}"> 
+<div class="t-releases-plugin-task-edit-block" id="{$wrapper_id}">
 
     <a class="inline-link js-more-options t-releases-plugin-task-edit-block-more-options-link flexbox space-8 float-right">
         <b>[`More options`]</b>
@@ -125,7 +125,7 @@
             <div class="name">
                 {$field_names.gravity|default:''}
             </div>
-            <div class="value">
+            <div class="value small">
                 {show_select id='gravity' values=$gravities selected=$ext_info.gravity}
             </div>
         </div>
@@ -134,7 +134,7 @@
             <div class="name">
                 {$field_names.timecosts_plan|default:''}
             </div>
-            <div class="value">
+            <div class="value small">
                 {$_value = $ext_info.timecosts_plan}
                 <input type="text" class="short js-time-plan" value="{if !empty($_value)}{$_value}{/if}">
                 <div class="wa-select">
@@ -151,7 +151,7 @@
             <div class="name">
                 {$field_names.timecosts_fact|default:''}
             </div>
-            <div class="value">
+            <div class="value small">
                 {$_value = $ext_info.timecosts_fact}
 
                 <input type="text" class="short js-time-fact" value="{if !empty($_value)}{$_value}{/if}">
@@ -169,7 +169,7 @@
             <div class="name">
                 {$field_names.affected_version|default:''}
             </div>
-            <div class="value">
+            <div class="value small">
                 <input type="text" class="short" name="{$input_ns}[affected_version]" value="{$ext_info.affected_version|escape|default:''}">
             </div>
         </div>
@@ -178,7 +178,7 @@
             <div class="name">
                 {$field_names.resolution|default:''}
             </div>
-            <div class="value">
+            <div class="value small">
                 {show_select id='resolution' values=$resolutions selected=$ext_info.resolution}
             </div>
         </div>
