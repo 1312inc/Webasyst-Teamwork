@@ -1115,7 +1115,7 @@ msgid "Button name"
 msgstr "Текст на кнопке"
 
 msgid "Caption on a button that sends a task into this status. Sometimes it matches the status name, but in most cases, it's a verb."
-msgstr "Текст на кнопке, которая переводит задачу в этот статус. Иногда может совпадать с названием статуса, но чаще всего все-таки отличается."
+msgstr "Текст на кнопке, которая переводит задачу в этот статус. Иногда может совпадать с названием статуса, но чаще всего все-таки является глаголом и поэтому отличается."
 
 msgid "Background color"
 msgstr "Цвет фона"

@@ -644,7 +644,7 @@ msgid "User %s has just completed a task"
 msgstr ""
 
 msgid "Inbox automatically collects all tasks assigned to you. No tasks are assigned to you right now :-)"
-msgstr ""
+msgstr "Inbox automatically collects all tasks assigned to you. No tasks are assigned to you right now."
 
 msgid "Your outbox is empty"
 msgstr ""

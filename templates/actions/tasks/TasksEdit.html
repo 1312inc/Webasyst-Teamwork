@@ -247,7 +247,7 @@
 
                 {* ASSIGN *}
                 <div class="t-form-line field t-team-list-wrapper">
-                    <div class="name custom-mt-4">[`Assign to`]</div>
+                    <div class="name custom-pt-4">[`Assign to`]</div>
                     <div class="value">
                         <ul class="js-task-users-list">
                             {$_count = 0}
@@ -324,8 +324,8 @@
                 {* BUTTONS *}
                 <div class="t-errors-block js-errors-block"></div>
                 <div class="t-form-line t-buttons-block">
-                    <button class="button green t-save-task-link" type="submit">{if !empty($task.id)}[`Save task`]{else}[`Create task`]{/if}</button>
-                    <a class="t-close-link button light-gray custom-ml-12" href="javascript:void(0);">[`Cancel`]</a>
+                    <button class="button green large t-save-task-link" type="submit">{if !empty($task.id)}[`Save task`]{else}[`Create task`]{/if}</button>
+                    <a class="t-close-link button large light-gray custom-ml-12" href="javascript:void(0);">[`Cancel`]</a>
 
                     <!-- plugin hook: 'backend_task_edit.%plugin_id.buttons' -->
                     {* @event backend_task_edit.%plugin_id%.buttons *}
