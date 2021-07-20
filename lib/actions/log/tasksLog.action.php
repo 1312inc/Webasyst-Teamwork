@@ -76,6 +76,8 @@ class tasksLogAction extends tasksTasksAction
             ],
         ];
 
+        $monthNames = waDateTime::getMonthNames();
+
         foreach ($logs as $log) {
             $groupBy = waDateTime::date('Y-m-d', strtotime($log['create_datetime']));
             if (isset($grouped[$groupBy])) {
@@ -84,10 +86,11 @@ class tasksLogAction extends tasksTasksAction
                 continue;
             }
 
-            $groupBy = waDateTime::date('F Y', strtotime($log['create_datetime']));
+            $groupBy = waDateTime::date('n-Y', strtotime($log['create_datetime']));
+            $groupByExploded = explode('-', $groupBy);
             if (!isset($grouped[$groupBy])) {
                 $grouped[$groupBy] = [
-                    'group' => _w($groupBy),
+                    'group' => $monthNames[$groupByExploded[0]],
                     'items' => [],
                 ];
             }
