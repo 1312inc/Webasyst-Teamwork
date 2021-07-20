@@ -24,6 +24,8 @@
 
     // js controller
     var $, self = window.TasksController = {
+        customSelectInited: false,
+
         options: { // see Backend.html for init options
             contact_id: 0,
             accountName: '',
@@ -137,7 +139,9 @@
             };
 
             self.initTaskDateUpdater();
-            self.initCustomSelect();
+            if(!this.customSelectInited) {
+                self.initCustomSelect();
+            }
 
             return self;
         },
@@ -172,9 +176,7 @@
 
                 // If non changed
                 if (is_changed) {
-                    // Render
-                    $activeLink.html( $link.html() );
-
+                    
                     // set value
                     $input.val(value).change();
 
@@ -185,7 +187,7 @@
             };
 
             $(document).on("click", ".t-custom-select .set-custom-select", setCustomSelect);
-
+            this.customSelectInited = true;
         },
 
         // Keep last update datetime of tasks up to date ('14 mins' => '15 mins')
