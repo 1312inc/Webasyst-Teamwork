@@ -132,54 +132,55 @@
                         {/if}
                     </div>
                     <div class="details">
-                        <header class="t-comment-header">
-                            <span class="t-comment-author">
-                                <a href="#/log/contact_id={$l.contact_id}/" title="{$l.contact.name|escape}">{$l.contact.name|escape}</a>
-                            </span>
-                            <span class="t-comment-action">{$l.action_name}</span>
-                            <span class="t-comment-date">{$l.create_datetime|wa_datetime:"humandatetime"}</span>
+                        <header class="t-comment-header small">
 
                             {$_task = $l.task|default:null}
                             {if $_task}
-                                <div class="t-log-item-project-task-names small" data-task-id="{$l.task.id}">
-                                    {$_project = $_task.project|default:null}
-                                    {if $_project}
-                                        {$_project_name = $_project.name|escape}
-                                        {$_task_str_id = $_task.project_id|cat:'.':$_task.number}
-                                        <span class="t-log-item-project-name bold">{$_project_name}&nbsp;/&nbsp;{$_task_str_id}:&nbsp;</span>
-                                    {/if}
-                                    <span class="t-log-item-task-name"><a href="#/task/{$l.task_id}/">{$_task.name|escape}</a></span>
-                                </div>
+                                {$_project = $_task.project|default:null}
+                                {if $_project}
+                                    {$_task_str_id = $_task.project_id|cat:'.':$_task.number}
+                                {else}
+                                    {$_task_str_id = $_task.number}
+                                {/if}
+                                <span class="t-log-item-project-task-names" data-task-id="{$l.task.id}">
+                                    <span class="t-log-item-task-name semibold"><a href="#/task/{$l.task_id}/"><b>{$_task_str_id}</b>:&nbsp;{$_task.name|escape}</a></span>
+                                </span>
                             {else}
                                 <!-- TASK NOT FOUND (ID={$l.task_id}) -->
                             {/if}
 
+                            {if $l.action == 'edit' || $l.action == 'comment' || $l.action == 'forward'}
+                                <span class="t-comment-action custom-ml-4">{$l.action_name}</span>
+                            {/if}
+
+                            <span class="t-comment-date hint nowrap custom-ml-4">{$l.create_datetime|wa_datetime:"humandatetime"}</span>
+
                         </header>
-                        {if !empty($l.text)}
-                            <div class="t-comment-content custom-my-20">{tasksTask::formatText($l.text)}</div>
-                        {/if}
 
                         {if $l.status_changed}
                             <div class="t-comment-status-change small gray">
-                                [`Status:`]
                                 {if isset($l.before_status_id)}
-                                    <span class="t-color-point" style="background:{$l.before_status_color};"></span>
                                     {tasksHelper::statusNameHTML($l.before_status_id)}
-                                    &nbsp;→
+                                    &nbsp;→&nbsp;
                                 {/if}
-                                <span class="t-color-point" style="background:{$l.after_status_color};"></span>
                                 {tasksHelper::statusNameHTML($l.after_status_id)}
-
                             </div>
                         {/if}
-                        {if $l.assigned_contact_id}
-                            <div class="t-comment-assignment-change small gray">
-                                [`Assigned:`] <strong>{$l.assigned_contact.name|escape}</strong>
-                            </div>
-                        {else}
-                            <div class="t-comment-assignment-change">
-                                <em>[`Unassigned`]</em>
-                            </div>
+
+                        {if !empty($l.text)}
+                            <div class="t-comment-content">{tasksTask::formatText($l.text)}</div>
+                        {/if}
+
+                        {if $l.action == 'forward'}
+                            {if $l.assigned_contact_id}
+                                <div class="t-comment-assignment-change small gray">
+                                    [`Assigned:`] <strong>{$l.assigned_contact.name|escape}</strong>
+                                </div>
+                            {else}
+                                <div class="t-comment-assignment-change">
+                                    <em>[`Unassigned`]</em>
+                                </div>
+                            {/if}
                         {/if}
 
                         {$log_attachments = ['files' => [], 'images' => []]} {* !!! *}
