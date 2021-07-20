@@ -110,13 +110,13 @@
 
 <div class="t-releases-plugin-task-edit-block" id="{$wrapper_id}">
 
-    <a class="inline-link js-more-options t-releases-plugin-task-edit-block-more-options-link flexbox space-8 float-right">
-        <b>[`More options`]</b>
-        <div class="darr">
-            <i class="fas fa-caret-up"></i>
+    <a class="inline-link js-more-options t-releases-plugin-task-edit-block-more-options-link flexbox space-8 float-right gray small">
+        [`More options`]
+        <div class="darr custom-ml-4">
+            <i class="fas fa-chevron-down fa-xs"></i>
         </div>
-        <div class="uarr">
-            <i class="fas fa-caret-down"></i>
+        <div class="uarr custom-ml-4">
+            <i class="fas fa-chevron-up fa-xs"></i>
         </div>
     </a>
 
@@ -126,7 +126,7 @@
                 {$field_names.gravity|default:''}
             </div>
             <div class="value small">
-                {show_select id='gravity' values=$gravities selected=$ext_info.gravity}
+                {show_select id='gravity' values=$gravities selected=$ext_info.gravity|default:''}
             </div>
         </div>
 
@@ -135,7 +135,7 @@
                 {$field_names.timecosts_plan|default:''}
             </div>
             <div class="value small">
-                {$_value = $ext_info.timecosts_plan}
+                {$_value = $ext_info.timecosts_plan|default:''}
                 <input type="text" class="short js-time-plan" value="{if !empty($_value)}{$_value}{/if}">
                 <div class="wa-select">
                     <select class="js-select-plan-period">
@@ -152,7 +152,7 @@
                 {$field_names.timecosts_fact|default:''}
             </div>
             <div class="value small">
-                {$_value = $ext_info.timecosts_fact}
+                {$_value = $ext_info.timecosts_fact|default:''}
 
                 <input type="text" class="short js-time-fact" value="{if !empty($_value)}{$_value}{/if}">
                 <div class="wa-select">
@@ -179,7 +179,7 @@
                 {$field_names.resolution|default:''}
             </div>
             <div class="value small">
-                {show_select id='resolution' values=$resolutions selected=$ext_info.resolution}
+                {show_select id='resolution' values=$resolutions selected=$ext_info.resolution|default:''}
             </div>
         </div>
     </div>
