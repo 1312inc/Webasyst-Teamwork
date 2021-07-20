@@ -6,10 +6,19 @@ class tasksSupervisorPlugin extends waPlugin
     {
         $supervisor_model = new tasksSupervisorModel();
         $count = $supervisor_model->countByContact(wa()->getUser()->getId());
-        return array(
+        return wa()->whichUI() == '1.3' ? array(
             'top_li' => '<li>
                     <span class="count">'.$count.'</span>
                     <a href="#/tasks/supervisor/"><i class="icon16 exclamation"></i>'._wp('Watching').'</a>
+            </li>'
+        )
+        :
+        array(
+            'top_li' => '<li>
+                    <a href="#/tasks/supervisor/">
+                        <span class="count">'.$count.'</span>
+                        <i class="fas fa-user-secret"></i><span>'._wp('Watching').'</span>
+                    </a>
             </li>'
         );
     }
