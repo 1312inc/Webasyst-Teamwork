@@ -395,7 +395,6 @@ var Task = ( function($) {
             is_changer_shown = false;
 
             $(document).off("keydown", onEscPress);
-            that.reloadTask();
         }
 
         function savePriority(priority_class) {
@@ -413,7 +412,7 @@ var Task = ( function($) {
 
                 $.post(save_href, save_data, function(response) {
                     if (response["status"] == "ok") {
-                        //
+                        that.reloadTask();
                         hidePriorityChanger();
                     }
                 });
