@@ -230,8 +230,8 @@ class tasksTaskModel extends waModel
         $priorities = wa('tasks')->getConfig()->getOption('priorities');
 
         // For the purpose of sidebar counts we only differentiate
-        // between urgent=2 and everything else being normal=0.
-        $priority_field = "IF(t.priority=2, 2, 0)";
+        // between urgent=2 and onfire=3 and everything else being normal=0.
+        $priority_field = "IF(t.priority>=2, 2, 0)";
 
         $sql = "SELECT t.assigned_contact_id, {$priority_field} AS priority, count(*) AS `count`
                 FROM {$this->table} t JOIN tasks_project p ON t.project_id = p.id
