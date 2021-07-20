@@ -29,7 +29,7 @@
             })();</script>
 
             {if $tasks}
-                <div class="t-tasks-wrapper is-{$list_view_type}" id="t-tasks-wrapper">
+                <div class="t-tasks-wrapper is-{$list_view_type}" id="t-tasks-wrapper" data-tasks-hash-type="{$hash_type}">
                     <ul class="list custom-m-0 bordered-bottom">
                     {foreach $tasks as $task}{strip}
 
@@ -133,7 +133,7 @@
 
             $taskWrapper.html($taskSkeletonContainer.html());
 
-            $.get('?module=tasks&action=info&n=' + number, function (html) {
+            $.get('?module=tasks&action=info&n=' + number + '&from_hash_type=' + $('#t-tasks-wrapper').data('tasks-hash-type'), function (html) {
                 $taskWrapper.html(html);
                 window.TasksController.skipDispatch = 1;
                 window.TasksController.setHash('/task/' + number + '/');

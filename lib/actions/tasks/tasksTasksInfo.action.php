@@ -53,6 +53,8 @@ class tasksTasksInfoAction extends waViewAction
         $this->view->assign('tags_cloud', $tasks_tags_model->getCloud($task->project_id));
         $this->view->assign('statuses', tasksHelper::getStatuses());
         $this->view->assign('task', $task);
+        
+        $this->view->assign('hash_type', waRequest::get('from_hash_type', '', waRequest::TYPE_STRING_TRIM));
     }
 
     public function workup(&$task)
