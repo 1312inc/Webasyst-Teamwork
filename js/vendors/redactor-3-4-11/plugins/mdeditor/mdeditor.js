@@ -83,5 +83,10 @@ md.set({
     onsyncing: function (html) {
       return turndownService.turndown(html);
     },
+    onsyncingInverse: function (value) {
+      // Synchronization event between textarea and visual layer
+      this.app.source.setCode(md.render(value));
+      this.app.broadcast('mdRendered', md.render(value));
+    },
   });
 })(Redactor);

@@ -160,8 +160,11 @@ var TaskEdit = ( function($) { "use strict";
                 started () {
                     var that = this,
                         $el = this.element.getElement().get(0);
+                    // Textarea value changed
                     $el.onchange = function () {
                         that.source.setCode($($el).val());
+                        // Broadcast synchronization event between textarea and visual layer
+                        that.broadcast('syncingInverse', $($el).val());
                     }
                 },
                 synced (html) {
