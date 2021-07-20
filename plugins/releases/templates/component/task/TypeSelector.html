@@ -8,7 +8,7 @@
                     {if $ext_info.type}
                         <span style="color:#{if !empty($types[$ext_info.type].color)}{$types[$ext_info.type].color|escape}{else}999{/if}">{$types[$ext_info.type].name|escape}</span>
                     {else}
-                        [`Select Type`]
+                        [`Type`]
                     {/if}
                 </a>
                 <ul class="menu-v js-task-types-list">
@@ -28,11 +28,11 @@
 {else}
 <div id="{$wrapper_id}" class="t-releases-plugin-task-type-selector-wrapper">
     <div class="dropdown width-100 t-custom-select">
-        <button class="dropdown-toggle width-100 button light-gray t-selected-item js-selected-item selected-custom-item" style="text-align: left;">
-            {if $ext_info.type}
+        <button class="dropdown-toggle width-100 button light-gray t-selected-item js-selected-item selected-custom-item" style="text-align: left; font-size: 1.375rem;">
+            {if !empty($ext_info.type) && $ext_info.type}
                 <span style="color:#{if !empty($types[$ext_info.type].color)}{$types[$ext_info.type].color|escape}{else}999{/if}">{$types[$ext_info.type].name|escape}</span>
             {else}
-                [`Select Type`]
+                [`Type`]
             {/if}
         </button>
         <div class="dropdown-body">
@@ -50,7 +50,7 @@
     </div>
     <script>
         (function ($) {
-            $('#{$wrapper_id} .dropdown').waDropdown({ 
+            $('#{$wrapper_id} .dropdown').waDropdown({
                 hover: false,
                 items: ".menu > li > a",
              });

@@ -50,19 +50,21 @@
 {else}
 <li class="custom-px-16 custom-py-8 flexbox space-4" id="{$wrapper_id}">
     <div class="dropdown js-dropdown-menu t-templates-plugin-templates-menu">
-        <div class="dropdown-toggle t-selected-item js-dropdown-menu-title" style="cursor: pointer;"><i class="fas fa-book-open" style="margin-right: 0.5rem;"></i>[`Template`]</div>
+        <div class="dropdown-toggle t-selected-item js-dropdown-menu-title" style="cursor: pointer;"><i class="fas fa-fish text-light-gray" style="margin-right: 0.5rem;"></i>[`Template`]</div>
         <div class="dropdown-body">
-            <ul class="menu with-icons js-task-templates-menu">
+            <ul class="menu js-task-templates-menu">
                 {foreach $templates as $template}
-                    <li class="t-nav-item js-dropdown-menu-item custom-px-16 custom-py-8" data-value="{$template.id}">
-                        <div class="flexbox middle full-width">
-                            <a href="#/add/{$template.id}/" title="{$template.name|escape}">
-                                <i class="icon16 {$template.icon|escape} t-icon"></i><span class="t-name">{$template.name|escape}</span>
-                            </a>
-                            <a href="#/templates/edit/{$template.id}/" title="[`Edit`]">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                        </div>
+                    <li class="t-nav-item js-dropdown-menu-item" data-value="{$template.id}">
+
+                        <span class="item">
+                            <div class="flexbox width-100">
+                                <a href="#/add/{$template.id}/" title="{$template.name|escape}" class="t-name wide">{$template.name|escape}</a>
+                                <a href="#/templates/edit/{$template.id}" title="[`Edit`]" class="t-edit-template-link">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                            </div>
+                        </span>
+
                     </li>
                 {/foreach}
 
@@ -78,7 +80,7 @@
 
                 <li class="t-nav-item js-dropdown-menu-item js-add-menu-item" data-value="">
                     <a href="#/templates/add/">
-                        <i class="fas fa-plus-circle"></i><span class="bold">[`Add template`]</span>
+                        <i class="fas fa-plus-circle"></i><span>[`Add template`]</span>
                     </a>
                 </li>
             </ul>
@@ -98,5 +100,9 @@
             });
         })(jQuery);
     </script>
+
+    <style>
+        .t-edit-template-link:hover svg { color: var(--red) !important; }
+    </style>
 </li>
 {/if}

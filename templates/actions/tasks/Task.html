@@ -636,7 +636,9 @@
                                             <span class="t-comment-author small">
                                                 <a href="{if !empty($l.contact.id)}#/tasks/assigned/{$l.contact.id}/{* tasksHelper::getProfileURL($l.contact.id) *}{else}javascript:void(0);{/if}" class="bold">{$l.contact.name|escape}</a>
                                             </span>
-                                            <span class="t-comment-action small">{$l.action_name}</span>
+                                            {if $l.action == 'edit' || $l.action == 'comment' || $l.action == 'forward'}
+                                                <span class="t-comment-action small">{$l.action_name}</span>
+                                            {/if}
                                             <span class="t-comment-date nowrap hint middle">{$l.create_datetime|wa_datetime:"humandatetime"}</span>
                                         </div>
 
@@ -666,15 +668,16 @@
 
                                     </header>
 
+                                    {if $l.status_changed}
+                                        <div class="t-comment-status-change small gray">
+                                            {if $l.before_status_id}{tasksHelper::statusNameHTML($l.before_status_id)} → {/if}{tasksHelper::statusNameHTML($l.after_status_id)}
+                                        </div>
+                                    {/if}
+
                                     {if !empty($l.text)}
                                         <div class="t-comment-content custom-mt-8">{tasksTask::formatText($l.text)}</div>
                                     {/if}
 
-                                    {if $l.status_changed}
-                                        <div class="t-comment-status-change small gray">
-                                            [`Status:`] {if $l.before_status_id}{tasksHelper::statusNameHTML($l.before_status_id)}{/if} → {tasksHelper::statusNameHTML($l.after_status_id)}
-                                        </div>
-                                    {/if}
                                     {if $l.assignment_changed}
                                         {if $l.assigned_contact_id}
                                             <div class="t-comment-assignment-change small gray">
@@ -682,7 +685,7 @@
                                             </div>
                                         {else}
                                             <div class="t-comment-assignment-change small gray">
-                                                <strong>[`Assignment removed`]</strong>
+                                                [`Assignment removed`]
                                             </div>
                                         {/if}
                                     {/if}
