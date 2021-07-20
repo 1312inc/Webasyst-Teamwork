@@ -222,10 +222,10 @@ var TasksHeader = ( function($) {
                     title = el.text();
                     break;
                 case location.hash === '#/tasks/unassigned/':
-                    title = 'Unassigned';
+                    title = $.wa.locale['unassigned'];
                     break;
                 case location.hash === '#/tasks/hidden/':
-                    title = 'Hidden';
+                    title = $.wa.locale['hidden'];
                     break;
                 case location.hash.includes('#/tasks/search/'):
                     var a = location.hash.split('/');
