@@ -61,7 +61,7 @@ var TasksTemplatesPluginTaskEdit = (function ($) {
 
         if (typeof template.text === 'string' && template.text.length > 0) {
             if (task_content_val.length > 0 && that.open_content_lenght > 0) {
-                var delimiter = '\n–––––––––––––––––––––––––––––––\n';
+                var delimiter = '\n\n–––––––––––––––––––––––––––––––\n\n';
                 $task_content.val(task_content_val.split(delimiter)[0] + delimiter + template.text).trigger('change');
             } else {
                 $task_content.val(template.text).trigger('change');
