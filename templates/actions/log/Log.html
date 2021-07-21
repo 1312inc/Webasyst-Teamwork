@@ -222,11 +222,13 @@
             {/if}
             {/foreach}
 
-            <div id="end-of-logs" class="block custom-mx-16 custom-mb-24">
+            <div id="end-of-logs" class="box align-center custom-my-16">
 
                     {if $click_to_load_more && $next_page_url}
-                        <span class="js-logs-list-counter">{sprintf("[`%s of %d`]", _w('%d record','%d records', $offset + $count), $total_count)}</span>
-                        <span class="click-to-load-more custom-ml-16"><a href="javascript:void(0)">[`Load more...`]</a></span>
+                        <span class="js-logs-list-counter semibold">{sprintf("[`%s of %d`]", _w('%d record','%d records', $offset + $count), $total_count)}</span>
+                        <p class="box align-center custom-mt-8">
+                            <span class="button light-gray small click-to-load-more"><a href="javascript:void(0)" class="text-gray">[`Load more...`]</a></span>
+                        </p>
                     {/if}
                     <!-- <span class="hidden loading-indicator"><i class="icon16 loading"></i></span> -->
 

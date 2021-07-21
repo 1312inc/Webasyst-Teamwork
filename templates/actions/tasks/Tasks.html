@@ -57,12 +57,14 @@
                             {/for}
                             </div>
                         </span>
-                        <p>
-                            <span class="js-tasks-list-counter">{sprintf("[`%s of %d`]", _w('%d task','%d tasks', $offset + $count), $total_count)}</span>
+                        <div class="custom-my-8">
+                            <span class="js-tasks-list-counter semibold">{sprintf("[`%s of %d`]", _w('%d task','%d tasks', $offset + $count), $total_count)}</span>
                             {if $click_to_load_more && $next_page_url}
-                                <span class="click-to-load-more"><a href="javascript:void(0)">[`Load more...`]</a></span>
+                                <p class="box align-center custom-mt-8">
+                                    <span class="button light-gray small click-to-load-more"><a href="javascript:void(0)">[`Load more...`]</a></span>
+                                </p>
                             {/if}
-                        </p>
+                        </div>
                         <script>(function($) { "use strict";
                             {* Note that this script has to be inside #t-tasks-wrapper for lazy loading to work correctly. *}
                             $.tasks.initLazyloader({
