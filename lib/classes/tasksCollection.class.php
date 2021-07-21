@@ -2,6 +2,20 @@
 
 class tasksCollection
 {
+    public const FIELDS_TO_GET = '*,log,create_contact,assigned_contact,attachments,tags,project,favorite,relations';
+
+    public const HASH_SEARCH = 'search';
+    public const HASH_UNASSIGNED = 'unassigned';
+    public const HASH_TAG = 'tag';
+    public const HASH_INBOX = 'inbox';
+    public const HASH_FAVORITES = 'favorites';
+    public const HASH_OUTBOX = 'outbox';
+    public const HASH_STATUS = 'status';
+    public const HASH_ID = 'id';
+    public const HASH_UUID = 'uuid';
+    public const HASH_PROJECT = 'project';
+    public const HASH_SCOPE = 'scope';
+
     protected $filtered = false;
     protected $prepared;
 
@@ -74,18 +88,18 @@ class tasksCollection
 
                 $condition = array();
                 if ($full_access_projects) {
-                    $condition[] = 't.project_id IN ('.join(',', $full_access_projects).')';
+                    $condition[] = 't.project_id IN ('.implode(',', $full_access_projects).')';
                 }
                 if ($limited_access_projects) {
                     $current_contact_id = wa()->getUser()->getId();
-                    $cond = "t.project_id IN (".join(",", $limited_access_projects).") AND 
+                    $cond = "t.project_id IN (".implode(",", $limited_access_projects).") AND 
                         (t.assigned_contact_id={$current_contact_id} OR t.create_contact_id={$current_contact_id})";
                     $condition[] = $cond;
                 }
                 if (!$condition) {
                     $condition[] = '0';
                 }
-                $this->addWhere('(('.join(') OR (', $condition).'))');
+                $this->addWhere('(('.implode(') OR (', $condition).'))');
             }
         }
 
@@ -254,7 +268,7 @@ class tasksCollection
         if (!array_diff_key($metadata, $model_fields)) {
             $model_fields = array('*' => 1) + array_diff_key($model_fields, $metadata);
         }
-        return 't.'.join(',t.', array_keys($model_fields));
+        return 't.'.implode(',t.', array_keys($model_fields));
     }
 
     public function getTasks($fields = "*", $offset = 0, $limit = null, &$total_count = null)
@@ -587,6 +601,24 @@ class tasksCollection
         }
     }
 
+    protected function uuidPrepare($ids)
+    {
+        $ids = explode(',', (string)$ids);
+        foreach ($ids as $i => $id) {
+            $ids[$i] = trim($id);
+            if (!$ids[$i]) {
+                unset($ids[$i]);
+            }
+        }
+
+        if ($ids) {
+            $this->where[] = sprintf("t.uuid IN ('%s')", implode("','", $ids));
+            $this->default_order_by = 't.id';
+        } else {
+            $this->where[] = '0';
+        }
+    }
+
     protected function favoritesPrepare()
     {
         $this->addJoin('tasks_favorite', null, ':table.contact_id = '.(int)wa()->getUser()->getId());
@@ -651,6 +683,7 @@ class tasksCollection
                 if (empty($this->info)) {
                     $this->info = $parts[2];
                 }
+                // поиск по номеру таски X.N
                 if (preg_match("/^\d+\.\d+$/", $parts[2])) {
                     @list($project_id, $number) = explode('.', $parts[2], 2);
                     $task = $this->getModel()->getByField(array(
@@ -663,6 +696,7 @@ class tasksCollection
                     }
                 }
                 if (mb_strlen($parts[2]) <= 3) {
+                    // для поиска коротких слов
                     $this->where[] = "CONCAT(t.name, ' ', t.text) LIKE '%".$model->escape($parts[2], 'like')."%'";
                 } else {
                     $q = $parts[2];
@@ -859,7 +893,7 @@ class tasksCollection
         }
 
         if ($condition == 'any') {
-            $this->addJoin('tasks_task_tags', ':table.task_id=t.id', ':table.tag_id IN ('.join(',', array_keys($tags)).')');
+            $this->addJoin('tasks_task_tags', ':table.task_id=t.id', ':table.tag_id IN ('.implode(',', array_keys($tags)).')');
         } else {
             if (count(array_flip($tag_names)) > count($tags)) {
                 $this->where[] = '0';
@@ -947,6 +981,6 @@ class tasksCollection
             "t.create_datetime",
             "t.id"
         );
-        $this->orderBy(join(',', $order), '', false);
+        $this->orderBy(implode(',', $order), '', false);
     }
 }

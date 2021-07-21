@@ -288,7 +288,9 @@ var TasksSidebar = (function ($) {
         // DYNAMIC VARS
 
         // INIT
-        that.initElasticBlock();
+        /* version 2 tweak start */
+        // that.initElasticBlock();
+        /* version 2 tweak end */
         that.initClass();
     };
 
@@ -311,7 +313,7 @@ var TasksSidebar = (function ($) {
         });
 
         that.initSidebarTagsAutocomplete();
-
+        that.initCollapsible();
     };
 
     TasksSidebar.prototype.initSidebarTagsAutocomplete =  function() {
@@ -364,16 +366,70 @@ var TasksSidebar = (function ($) {
             $tasks.find(".t-description-wrapper").replaceText(value, "<span class=\"highlighted\">" + new_value + "</span>");
             $tasks.find(".t-comment-content").replaceText(value, "<span class=\"highlighted\">" + new_value + "</span>");
         });
-
-        var hash = $.tasks.cleanHash();
-        var collection_hash = 'search/'+encodeURIComponent(value.replace(/&/g, ''));
-        if (hash.indexOf('&hash=search/') < 0) {
-            new_hash = $.tasks.cleanHash('#/tasks/'+collection_hash);
+        
+        if (value.charAt(0) === '#') {
+            new_hash = $.tasks.cleanHash('#/tasks/tag/' + encodeURIComponent(value.replace(/#/g, '')) + '/');
         } else {
-            new_hash = $.tasks.cleanHash(hash.replace(/&hash=search\/.*/, '&hash='+collection_hash));
+            var hash = $.tasks.cleanHash();
+            var collection_hash = 'search/' + encodeURIComponent(value.replace(/&/g, ''));
+            if (hash.indexOf('&hash=search/') < 0) {
+                new_hash = $.tasks.cleanHash('#/tasks/' + collection_hash);
+            } else {
+                new_hash = $.tasks.cleanHash(hash.replace(/&hash=search\/.*/, '&hash=' + collection_hash));
+            }
         }
         $.wa.setHash(new_hash);
     };
+
+    TasksSidebar.prototype.initCollapsible = function () {
+        var that = this,
+            $collapsibles = that.$wrapper.find('.collapsible');
+
+        var storage = {
+            get: function (k) {
+                if (window.localStorage) {
+                    return window.localStorage.getItem(k);
+                } else {
+                    return undefined;
+                }
+            },
+            set: function (k, v) {
+                window.localStorage && window.localStorage.setItem(k, v);
+            },
+            del: function (k) {
+                window.localStorage && window.localStorage.removeItem(k);
+            }
+        };
+
+        var buildKey = function (type) {
+            return 'collapsible-' + type;
+        };
+
+        $.each($collapsibles, function (i, el) {
+            var $toggler = $(el).find('.heading > span'),
+                $content = $(el).find('.collapsible__content'),
+                key = buildKey($(el).data('type'));
+
+            if (storage.get(key)) {
+                $content.hide();
+                $toggler.addClass('collapsed');
+            }
+
+            if ($toggler) {
+                $toggler.on('click', function (e) {
+                    e.preventDefault();
+                    $toggler.toggleClass('collapsed');
+                    $content.slideToggle(300);
+                    if (storage.get(key)) {
+                        storage.del(key);
+                    } else {
+                        storage.set(key, '1');
+                    }
+                });
+            }
+        });
+
+    }
 
     return TasksSidebar;
 

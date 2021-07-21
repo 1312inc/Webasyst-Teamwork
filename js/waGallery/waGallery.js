@@ -450,9 +450,9 @@ var waGallery = ( function($) {
         }
 
         slider.is_lock = true;
-        
+
         if (is_next) {
-            
+
             if (slider.current_slide < slider.slide_count ) {
                 $new_slide = slider.$slides.eq(slider.current_slide + 1);
                 slider.current_slide++;
@@ -460,7 +460,7 @@ var waGallery = ( function($) {
                 $new_slide = slider.$slides.first();
                 slider.current_slide = 0;
             }
-            
+
         } else {
 
             if (slider.current_slide >= 1 ) {

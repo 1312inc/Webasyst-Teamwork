@@ -1,0 +1,53 @@
+<div class="t-status-comment-wrapper">
+
+    <div class="profile image32px">
+        <div class="image">
+            <img src="{$wa->user()->getPhoto(40)}" alt="" class="userpic">
+        </div>
+        <div class="details">
+            {* TEXTAREA *}
+            <div class="t-textarea-wrapper">
+                <textarea name="text" cols="" rows="" placeholder="[`Input your comment`]"></textarea>
+            </div>
+
+            {if empty($is_bulk)}
+                {* ATTACH *}
+                <div class="t-attach-wrapper">
+
+                    {* Droparea *}
+                    <div class="t-attach-droparea">
+                        <div class="t-droparea-hint">[`Please click or drop image file here`]</div>
+                        <input type="file" name="files[]" multiple="true" />
+                    </div>
+
+                    {* Container For Attached Files*}
+                    <div class="t-attached-files-wrapper">
+                        <div class="t-images-list">
+                            <div class="t-image-item is-template">
+                                <a class="t-image-link" href="javascript:void(0);">
+                                    <img src="" alt="">
+                                </a>
+                                <div class="t-file-name"></div>
+                                <div class="t-file-size"></div>
+                                <a class="t-file-delete" href="javascript:void(0);"></a>
+                                <div class="t-file-error"></div>
+                            </div>
+                        </div>
+                        <div class="t-files-list">
+                            <div class="t-file-item is-template">
+                                <div class="t-file-link">
+                                    <i class="fas fa-cloud-download-alt"></i>
+                                    <span class="t-file-name"></span>
+                                    <span class="t-file-size"></span>
+                                </div>
+                                <a class="t-file-delete" href="javascript:void(0);"></a>
+                                <div class="t-file-error"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {/if}
+
+        </div>
+    </div>
+</div>

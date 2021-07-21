@@ -1,6 +1,9 @@
 <?php
 class tasksStatusModel extends waModel
 {
+    public const STATUS_OPEN_ID = 0;
+    public const STATUS_CLOSED_ID = -1;
+
     protected $table = 'tasks_status';
 
     public function getAll($key = null, $normalize = false)

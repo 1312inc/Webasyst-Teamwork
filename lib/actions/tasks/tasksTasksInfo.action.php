@@ -53,6 +53,8 @@ class tasksTasksInfoAction extends waViewAction
         $this->view->assign('tags_cloud', $tasks_tags_model->getCloud($task->project_id));
         $this->view->assign('statuses', tasksHelper::getStatuses());
         $this->view->assign('task', $task);
+        
+        $this->view->assign('hash_type', waRequest::get('from_hash_type', '', waRequest::TYPE_STRING_TRIM));
     }
 
     public function workup(&$task)
@@ -74,7 +76,7 @@ class tasksTasksInfoAction extends waViewAction
          * Each key represents location where corresponding html peace will be placed
          *
          * @event backend_task
-         * @param int|array|taskTask $task
+         * @param int|array|tasksTask $task
          * @return array[string]array $return[%plugin_id%] array of html output
          *
          * @return string $return[%plugin_id%]['before_header'] html

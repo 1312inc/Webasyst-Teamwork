@@ -7,6 +7,7 @@
 
 <!-- HASH FILTER -->
 
+<ul class="chips small" style="position: relative;">
 {show_filter
     class='t-tasks-hash-type-filter js-header-title-participant'
     filter=[
@@ -26,11 +27,16 @@
             ],
             [
                 'id' => 'favorites',
-                'name' => '[`Favorites`]'
+                'name' => '[`Watching`]'
+            ],
+            [
+                'id' => 'urgent',
+                'name' => '[`Urgent`]'
             ]
         ]
     ]
 }
+
 
 <!-- OTHER SELECTOR FILTERS -->
 {foreach $filter_types as $id => $filter}
@@ -56,12 +62,18 @@
 <!-- RESET FILTERS BUTTON -->
 
 {if !empty($is_filter_set) && !empty($no_filters_hash)}
-    <div class="t-menu-item">
-        <span class="t-menu-name">
-            <a href="{$no_filters_hash}" class="t-remove-filters-link">
-                <i class="icon16 t-clear-filters" style="vertical-align: middle; margin: 0;" title="[`Clear filters`]"></i>
-            </a>
-        </span>
-    </div>
+    <a href="{$no_filters_hash}" class="t-remove-filters-link gray larger">
+        <i class="fas fa-times-circle" title="[`Clear filters`]"></i>
+    </a>
+    <style>
+        #t-filters-menu { display: block; }
+    </style>
+    <script>
+        (function ($) {
+            $('#t-my-lists-box').show();
+            $('#t-selection-menu').show();
+        })(jQuery);
+    </script>
 {/if}
 
+</ul>

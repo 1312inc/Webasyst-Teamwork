@@ -3,7 +3,7 @@
 return array(
     'name' => /*_wp*/('Debug'),
     'description' => /*_wp*/('Debug events helper'),
-    'img' => 'img/debug.png',
+    'img' => 'img/debug.svg',
     'vendor' => 'webasyst',
     'version' => '0.1',
     'custom_settings' => 0,

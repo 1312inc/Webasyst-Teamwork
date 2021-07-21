@@ -3,15 +3,15 @@
 <div class="t-comment-form">
     <form {if $post_action_url|default:''}action="{$post_action_url}"{/if} method="post">
 
-        <div class="profile image32px">
+        <div class="flexbox space-12">
             <div class="image">
-                <img src="{$wa->user()->getPhoto(64)}" alt="" class="userpic">
+                <img src="{$wa->user()->getPhoto(64)}" alt="" class="userpic userpic-48">
             </div>
-            <div class="details">
+            <div class="wide">
                 {* TEXTAREA *}
                 <div class="line t-textarea-wrapper">
                     {$_text = $comment.text|default:''}
-                    <textarea name="data[text]" cols="" rows="" placeholder="[`Enter your comment`]">{$_text|escape}</textarea>
+                    <textarea name="data[text]" cols="" rows="" class="t-redactor-comments width-100" placeholder="[`Enter your comment`]">{$_text|escape}</textarea>
                 </div>
 
                 {* ATTACH *}
@@ -56,7 +56,7 @@
                             {foreach $_files as $_file}
                                 <div class="t-file-item" data-file-ident="{$_file.id}">
                                     <a class="t-file-link" href="?module=attachments&action=download&id={$_file.id}" title="{$_file.name|escape}">
-                                        <i class="icon16 attachment"></i>
+                                        <i class="fas fa-cloud-download-alt custom-mr-4"></i>
                                         <span class="t-file-name">{$_file.name|escape}</span>
                                         <span class="t-file-size">{$_file.size|wa_format_file_size}</span>
                                     </a>
@@ -66,7 +66,7 @@
 
                             <div class="t-file-item is-template">
                                 <div class="t-file-link">
-                                    <i class="icon16 attachment"></i>
+                                    <i class="fas fa-cloud-download-alt custom-mr-4"></i>
                                     <span class="t-file-name"></span>
                                     <span class="t-file-size"></span>
                                 </div>
@@ -83,10 +83,10 @@
         {* BUTTONS *}
         <div class="line t-buttons-block">
             {$_button_text = $button_text|default:_w('Add comment')}
-            <input class="t-add-comment-button button green" type="submit" name="" value="{$_button_text}">
+            <button class="t-add-comment-button button" type="submit">{$_button_text}</button>
             {$_cancel_link = $cancel_link|default:''}
             {if $_cancel_link}
-                [`or`] <a href="javascript:void(0)" class="t-cancel-link">[`cancel`]</a>
+                <a href="javascript:void(0)" class="t-cancel-link button light-gray">[`Cancel`]</a>
             {/if}
         </div>
     </form>

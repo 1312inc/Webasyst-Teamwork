@@ -600,7 +600,12 @@ var TasksTagCloudFilterSelector;
                 $title = that.$element.find('.js-title'),
                 title = $title.text(),
                 default_title = $title.data('defaultTitle');
-            return default_title !== title ? title : '';
+
+            if (default_title !== title) {
+                $title.text('#' + title);
+            }
+
+            return default_title !== title ? '#' + title : '';
         };
 
         return TasksTagCloudFilterSelector;
@@ -610,4 +615,3 @@ var TasksTagCloudFilterSelector;
     // </FILTERS CLASSES DECLARATIONS>
 
 })(jQuery);
-

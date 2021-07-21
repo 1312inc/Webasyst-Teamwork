@@ -2,13 +2,14 @@
 
 {$input_ns = 'task_plugin_releases_task_ext'}
 
+{if $wa->whichUi() == '1.3'}
 {function show_select id='' values=[] selected=''}
-    <select name="{$input_ns}[{$id}]">
-        <option value=""></option>
-        {foreach $values as $_value => $_name}
-            <option value="{$_value}" {if $selected == $_value}selected="selected"{/if}>{$_name|escape}</option>
-        {/foreach}
-    </select>
+<select name="{$input_ns}[{$id}]">
+    <option value=""></option>
+    {foreach $values as $_value => $_name}
+        <option value="{$_value}" {if $selected == $_value}selected="selected"{/if}>{$_name|escape}</option>
+    {/foreach}
+</select>
 {/function}
 
 <div class="t-releases-plugin-task-edit-block" id="{$wrapper_id}">
@@ -95,3 +96,108 @@
     </script>
 
 </div>
+{else}
+{function show_select id='' values=[] selected=''}
+<div class="wa-select">
+    <select name="{$input_ns}[{$id}]">
+        <option value=""></option>
+        {foreach $values as $_value => $_name}
+            <option value="{$_value}" {if $selected == $_value}selected="selected"{/if}>{$_name|escape}</option>
+        {/foreach}
+    </select>
+</div>
+{/function}
+
+<div class="t-releases-plugin-task-edit-block" id="{$wrapper_id}">
+
+    <a class="inline-link js-more-options t-releases-plugin-task-edit-block-more-options-link flexbox space-8 float-right gray small">
+        [`More options`]
+        <div class="darr custom-ml-4">
+            <i class="fas fa-chevron-down fa-xs"></i>
+        </div>
+        <div class="uarr custom-ml-4">
+            <i class="fas fa-chevron-up fa-xs"></i>
+        </div>
+    </a>
+
+    <div class="fields t-fields-block" style="display: none;">
+        <div class="field js-gravity">
+            <div class="name">
+                {$field_names.gravity|default:''}
+            </div>
+            <div class="value small">
+                {show_select id='gravity' values=$gravities selected=$ext_info.gravity|default:''}
+            </div>
+        </div>
+
+        <div class="field">
+            <div class="name">
+                {$field_names.timecosts_plan|default:''}
+            </div>
+            <div class="value small">
+                {$_value = $ext_info.timecosts_plan|default:''}
+                <input type="text" class="short js-time-plan" value="{if !empty($_value)}{$_value}{/if}">
+                <div class="wa-select">
+                    <select class="js-select-plan-period">
+                        <option value="1">[`hours`]</option>
+                        <option value="8" selected>[`days`]</option>
+                    </select>
+                </div>
+                <input type="hidden" class="js-time-plan-hidden" name="{$input_ns}[timecosts_plan]" value="{if isset($_value)}{$_value}{/if}">
+            </div>
+        </div>
+
+        <div class="field">
+            <div class="name">
+                {$field_names.timecosts_fact|default:''}
+            </div>
+            <div class="value small">
+                {$_value = $ext_info.timecosts_fact|default:''}
+
+                <input type="text" class="short js-time-fact" value="{if !empty($_value)}{$_value}{/if}">
+                <div class="wa-select">
+                    <select class="js-select-fact-period">
+                        <option value="1">[`hours`]</option>
+                        <option value="8" selected>[`days`]</option>
+                    </select>
+                </div>
+                <input type="hidden" class="js-time-fact-hidden" name="{$input_ns}[timecosts_fact]" value="{if isset($_value)}{$_value}{/if}">
+            </div>
+        </div>
+
+        <div class="field js-affected_version-wrapper">
+            <div class="name">
+                {$field_names.affected_version|default:''}
+            </div>
+            <div class="value small">
+                <input type="text" class="short" name="{$input_ns}[affected_version]" value="{$ext_info.affected_version|escape|default:''}">
+            </div>
+        </div>
+
+        <div class="field js-resolution-wrapper">
+            <div class="name">
+                {$field_names.resolution|default:''}
+            </div>
+            <div class="value small">
+                {show_select id='resolution' values=$resolutions selected=$ext_info.resolution|default:''}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        {$task_info = [
+            'id' => $task.id,
+            'milestone_id' => $task.milestone_id
+        ]}
+        (function ($) {
+            new TasksReleasesPluginTaskEdit({
+                '$wrapper': $('#{$wrapper_id}'),
+                '$editor': $('#t-edit-task-form'),
+                'milestones': {$milestones|json_encode},
+                'task': {$task_info|json_encode}
+            });
+        })(jQuery);
+    </script>
+
+</div>
+{/if}

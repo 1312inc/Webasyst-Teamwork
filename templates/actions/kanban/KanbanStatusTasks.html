@@ -1,0 +1,98 @@
+{** @var array $data **}
+{** @var tasksTask $task **}
+{foreach $data.tasks as $task}
+
+{* PRIORITY *}
+
+{$_priority_class_array = [
+"-1" => "is-low",
+"0" => "is-normal",
+"1" => "is-high",
+"2" => "is-urgent",
+"3" => "is-onfire"
+]}
+{$_priority_icon = ""}
+{if !empty($task.priority)}
+    {if $task.priority == '-1'}
+        {$_priority_icon = "<i class=\"fas fa-hourglass-half\" style=\"color: var(--light-gray);\"></i>"}
+    {/if}
+    {if $task.priority == '1'}
+        {$_priority_icon = "<i class=\"fas fa-exclamation-triangle\" style=\"color: orange;\"></i>"}
+    {/if}
+    {if $task.priority == '2'}
+        {$_priority_icon = "<i class=\"fas fa-exclamation-triangle\" style=\"color: red;\"></i>"}
+    {/if}
+{/if}
+
+    <div data-task-id="{$task.id}" class="t-kanban__list__body__item custom-p-8 custom-mb-8 {$task.project.color|default:'t-white'}">
+
+        <div class="custom-mb-8 t-kanban-item-title">
+            <span class="t-priority-wrapper {ifset($_priority_class_array[$task.priority])}">
+                {$_priority_icon}
+                {$task.project_id}.{$task.number}
+            </span>
+            <a href="#/task/{$task.id}/" target="_blank" class="{if !empty($task.priority) && ($task.priority == '1' || $task.priority == '2' || $task.priority == '3')}bold{else}semibold{/if}{if !empty($task.priority) && $task.priority == '-1'} text-gray{/if}" title="{strip_tags($task.text)|truncate:128}">{$task.name|escape}</a>
+
+        </div>
+        <div class="flexbox space-8 middle t-kanban-item-body">
+
+            <div class="flexbox space-8 middle wide t-kanban-item-project">
+                <div>
+                    {* PROJECT ICON *}
+                    {if !empty($task.project.icon_html)}
+                        {strip}<span class="t-project-icon">
+                            {$task.project.icon_html}
+                        </span>{/strip}
+                    {/if}
+                </div>
+                <div>
+                    <p class="small gray">
+                        {if !empty($task.milestone.name)}
+                            {$task.milestone.name|escape|truncate:24}
+                        {else}
+                            {$task.project.name|escape|truncate:24}
+                        {/if}
+
+                        {* DUE *}
+                        {if !empty($task.due_date)}
+                            {* manually set due date overrides milestone general due date *}
+                            <span class="small nowrap t-due-date-hint-{$task.view.due_color_class|default:'green'} custom-ml-4">
+                                <i class="fas fa-flag-checkered"></i>
+                                {wa_date('humandate', $task.due_date, waDateTime::getDefaultTimezone())|escape}
+                            </span>
+
+                        {else if !empty($task.milestone.due_date)}
+
+                            <span class="small t-due-date-hint-{$task.milestone.view.due_color_class|default:'green'} custom-ml-4">
+                                <i class="fas fa-flag-checkered"></i>
+                                {wa_date('humandate', $task.milestone.due_date, waDateTime::getDefaultTimezone())|escape}
+                            </span>
+
+                        {/if}
+                    </p>
+                </div>
+            </div>
+
+            {* This vars will be mutated by tasksHelper::getDatetime, must be inited first because of Smary & PHP 7.4 cause the warnings otherwise *}
+            {$time_since_update_period = null}
+            {$time_since_update_template = null}
+            {$time_since_update_str = tasksHelper::getDatetime($task.update_datetime, $time_since_update_period, $time_since_update_template)}
+            <div class="flexbox space-8 middle t-kanban-item-assignee" title="{if $task.assigned_contact.id}{sprintf('[`Assigned to %s %s ago`]', $task.assigned_contact.name|escape, $time_since_update_str)}{else}[`Unassigned task`]{/if}">
+                <div>
+                    <span class="small gray nowrap semibold">{$time_since_update_str}</span>
+                </div>
+                <div>
+                    <i class="icon userpic" style="display:block;background-image: url({waContact::getPhotoUrl($task.assigned_contact.id, $task.assigned_contact.photo, 40, 40, 'person', 0)})"></i>
+                </div>
+            </div>
+
+        </div>
+
+        {$_task_hooks_kanban_taks = $task.hooks[tasksEventsStorage::KANBAN_STATUS_TASKS]|default:[]}
+        {foreach $_task_hooks_kanban_taks as $pluginId => $h}
+            <!-- {$pluginId} after_body -->
+            {$h.after_body|default:''}
+        {/foreach}
+
+    </div>
+{/foreach}

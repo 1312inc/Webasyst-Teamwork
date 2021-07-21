@@ -1,0 +1,25 @@
+{$class_id = 'tasks-deadline-set-dialog'}
+{$dialog_id = uniqid({$class_id})}
+
+<div class="dialog width550px height400px {$class_id}" id="{$dialog_id}" style="display:none;">
+    <form method="post">
+        <div class="dialog-background"></div>
+        <div class="dialog-window">
+            <div class="dialog-content">
+                <div class="dialog-content-indent">
+                    <h1>[`Set deadline`]</h1>
+                    <div class="t-datepicker-wrapper"></div>
+                </div>
+            </div>
+            <div class="dialog-buttons">
+                <div class="dialog-buttons-gradient">
+                    {$wa->csrf()}
+                    <input class="button green" type="submit" value="[`Set deadline`]">
+                    <i class="icon16 loading t-loading" style="margin-top: 6px; display: none;"></i>
+                    [`or`]
+                    <a href="javascript:void(0)" class="cancel">[`cancel`]</a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

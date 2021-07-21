@@ -12,7 +12,7 @@ class tasksMilestonesActions extends waViewActions
     protected static function getMilestones()
     {
         $milestone_model = new tasksMilestoneModel();
-        $milestones = $milestone_model->where('closed=0')->order('due_date')->fetchAll('id');
+        $milestones = $milestone_model->getStatusesWithOrder(false);
 
         $projects = tasksHelper::getProjects();
         $project_model = new tasksProjectModel();

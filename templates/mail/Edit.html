@@ -1,3 +1,5 @@
+{include inline file='./includes/Header.inc.html'}
+
 {include file="./Helpers.inc.html" inline}
 
 {if $to.id == $log.assigned_contact_id}
@@ -16,6 +18,4 @@
 
 {task_block}
 
-<br>
-<br>
-[`via Tasks app`]
+{include inline file='./includes/Footer.inc.html'}

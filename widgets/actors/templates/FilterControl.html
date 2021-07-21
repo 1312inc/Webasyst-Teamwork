@@ -9,6 +9,75 @@
 {$_checked_scopes = $_value.scopes|default:[]}
 
 <div class="{$class_id}" id="{$wrapper_id}">
+    {if $wa->whichUI() == '2.0'}
+    <div class="custom-mb-4">
+        <label>
+            <span class="wa-radio">
+                <input type="radio" name="{$name}[type]" value="all" {if $_type === 'all'}checked="checked"{/if}>
+                <span></span>
+            </span>
+            {_wp('All tasks')}
+        </label>
+    </div>
+    <div class="custom-mb-4">
+        <div class="custom-mb-4">
+            <label>
+                <span class="wa-radio">
+                    <input type="radio" name="{$name}[type]" value="projects" {if $_type === 'projects'}checked="checked"{/if}>
+                    <span></span>
+                </span>
+                {_wp('Selected projects')}
+            </label>
+        </div>
+        <div class="custom-ml-12 t-control-block" data-type="projects" style="display: none;">
+            {foreach $projects as $_project}
+                <div class="custom-mb-4">
+                    <label>
+                        <span class="wa-checkbox">
+                            {$_checked = $_checked_projects[$_project.id]|default:0}
+                            <input type="checkbox" name="{$name}[projects][{$_project.id}]" value="{$_project.id}" {if $_checked}checked="checked"{/if}>
+                            <span>
+                                <span class="icon">
+                                    <i class="fas fa-check"></i>
+                                </span>
+                            </span>
+                        </span>
+                        <span class="small">{$_project.name|escape}</span>
+                    </label>
+                </div>
+            {/foreach}
+        </div>
+    </div>
+    <div class="custom-mb-4">
+        <div class="custom-mb-4">
+            <label>
+                <span class="wa-radio">
+                    <input type="radio" name="{$name}[type]" value="scopes" {if $_type === 'scopes'}checked="checked"{/if}>
+                    <span></span>
+                </span>
+                {_wp('Selected scopes')}
+            </label>
+        </div>
+        <div class="custom-ml-12 t-control-block" data-type="scopes" style="display: none;">
+            {foreach $scopes as $_scope}
+                <div class="custom-mb-4">
+                    <label>
+                        <span class="wa-checkbox">
+                            {$_checked = $_checked_scopes[$_scope.id]|default:0}
+                            <input type="checkbox" name="{$name}[scopes][{$_scope.id}]" value="{$_scope.id}" {if $_checked}checked="checked"{/if}>
+                            <span>
+                                <span class="icon">
+                                    <i class="fas fa-check"></i>
+                                </span>
+                            </span>
+                        </span>
+                        <span class="small">{$_scope.name|escape}</span>
+                    </label>
+                </div>
+            {/foreach}
+        </div>
+    </div>
+    {else}
     <div class="t-line">
         <label>
             <input type="radio" name="{$name}[type]" value="all" {if $_type === 'all'}checked="checked"{/if}>
@@ -49,6 +118,7 @@
             {/foreach}
         </div>
     </div>
+    {/if}
     <script>
         $(function () {
             new TasksWidgetActorsFilterControl({

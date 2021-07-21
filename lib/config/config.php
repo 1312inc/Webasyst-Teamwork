@@ -2,6 +2,7 @@
 return array(
     'tasks_per_page' => 30,
     'logs_per_page' => 30,
+    'tasks_per_kanban' => 30,
 
     // When performing mass operation with tasks,
     // we either send email notifications once per task,
@@ -79,22 +80,28 @@ return array(
             'value' => -1,
         ),
         0 => array(
-            'name' => _w('Normal'),
+            'name' => _w('Priority'), //_w('Normal'),
             'bg_color' => 'transparent',
             'text_color' => '#999',
             'value' => 0,
         ),
         1 => array(
             'name' => _w('High'),
-            'bg_color' => '#FF0000',
+            'bg_color' => '#ff6c00',
             'text_color' => 'white',
             'value' => 1,
         ),
         2 => array(
             'name' => _w('Urgent'),
-            'bg_color' => '#ff0000',
+            'bg_color' => '#ed2509',
             'text_color' => 'white',
             'value' => 2,
+        ),
+        3 => array(
+            'name' => _w('On fire!'),
+            'bg_color' => '#ff0000',
+            'text_color' => 'white',
+            'value' => 3,
         ),
     ),
 
@@ -105,5 +112,7 @@ return array(
     ),
 
     // 10 min
-    'tags_cloud_cache_ttl' => 600
+    'tags_cloud_cache_ttl' => 600,
+
+    'redactor_image_size' => 1000,
 );

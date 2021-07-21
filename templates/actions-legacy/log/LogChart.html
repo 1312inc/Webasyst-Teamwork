@@ -1,0 +1,21 @@
+
+<div class="graph-container">
+    <div class="logs-chart-wrapper"></div>
+    <div class="hint-wrapper"></div>
+</div>
+
+<script>(function() { "use strict";
+    // Load necessary JS files (making sure they're cached in non-debug mode)
+    // and draw the chart.
+    var deferreds = [];
+    if (typeof d3 == 'undefined') {
+        deferreds.push($.ajax({
+              dataType: "script",
+              url: "{$wa_url}wa-content/js/d3/d3.min.js?{$wa->version(true)}",
+              cache: true
+        }));
+    }
+    $.when.apply($, deferreds).done(function() {
+        showLogsChart({json_encode($chart_data)}); // see d3chart-logs.js
+    });
+})();</script>

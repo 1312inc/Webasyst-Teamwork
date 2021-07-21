@@ -1,74 +1,121 @@
 {$is_in_my_list = $list && $list.is_own && $list.found_by_id}
 
-<div class="t-main-wrapper">
+<div class="flexbox">
+    <div class="sidebar blank t-task-list-sidebar bordered-right hide-scrollbar{if $total_count < 1} overflow-visible{/if}">
 
-    {$_backend_tasks_hooks = $backend_tasks_hooks|default:[]}
-    {$_backend_body_hooks = $backend_tasks_hooks.body|default:[]}
+        <div class="t-main-wrapper">
 
-    <!-- plugin hook: 'backend_tasks.%plugin_id%.body.top' -->
-    {* @event backend_tasks.%plugin_id%.body.top *}
-    {foreach $_backend_body_hooks as $_}{$_.top|default:''}{/foreach}
+            {$_backend_tasks_hooks = $backend_tasks_hooks|default:[]}
+            {$_backend_body_hooks = $backend_tasks_hooks.body|default:[]}
 
-    <header class="t-header-wrapper">
-        {include file="./TasksHeader.html" inline}
-    </header>
-    <script>(function() { "use strict";
-        window.Tasks = { };
-        window.tasksHeader = new TasksHeader({
-            total_count: {$total_count|json_encode},
-            is_in_my_list: {$is_in_my_list|json_encode},
-            messages: {
-                cant_create_list: "[`Cannot create a list from another list.`]",
-                tasks_count: {_w('%d task','%d tasks', $total_count)|json_encode},
-                no_tasks: {_w('no tasks')|json_encode},
-            }
-        });
-    })();</script>
+            <!-- plugin hook: 'backend_tasks.%plugin_id%.body.top' -->
+            {* @event backend_tasks.%plugin_id%.body.top *}
+            {foreach $_backend_body_hooks as $_}{$_.top|default:''}{/foreach}
 
-    {if $tasks}
-        <div class="t-tasks-wrapper is-{$list_view_type}" id="t-tasks-wrapper">
-            {foreach $tasks as $task}{strip}
-                {include file="./Task.html" inline}
-            {/strip}{/foreach}
+            <header class="t-header-wrapper">
+                {include file="./TasksHeader.html" inline}
+            </header>
+            <script>(function() { "use strict";
+                window.Tasks = { };
+                window.tasksHeader = new TasksHeader({
+                    total_count: {$total_count|json_encode},
+                    is_in_my_list: {$is_in_my_list|json_encode},
+                    messages: {
+                        cant_create_list: "[`Cannot create a list from another list.`]",
+                        tasks_count: {_w('%d task','%d tasks', $total_count)|json_encode},
+                        no_tasks: {_w('no tasks')|json_encode},
+                    }
+                });
+            })();</script>
 
-            <div id="end-of-tasks" class="block">
-                <p>
-                    <span class="js-tasks-list-counter">{sprintf("[`%s of %d`]", _w('%d task','%d tasks', $offset + $count), $total_count)}</span>
-                    {if $click_to_load_more && $next_page_url}
-                        <span class="click-to-load-more"><a href="javascript:void(0)">[`Load more...`]</a></span>
-                    {/if}
-                    <span class="hidden loading-indicator"><i class="icon16 loading"></i>&nbsp;[`Loading...`]</span>
-                </p>
-                <script>(function($) { "use strict";
-                    {* Note that this script has to be inside #t-tasks-wrapper for lazy loading to work correctly. *}
-                    $.tasks.initLazyloader({
-                        lazyloading_wrapper: $('#end-of-tasks'),
-                        next_page_url: {$next_page_url|json_encode},
-                        is_lazy: {if $click_to_load_more}false{else}true{/if},
-                        list_selector: '#t-tasks-wrapper',
-                        item_id_data_attr: 'task-id'
-                    });
-                    {* Init PrettyPrint on Tasks List *}
-                    $.tasks.initPrettyPrint();
-                })(jQuery);</script>
-            </div>
-        </div>
-    {else}
-        <div class="t-notice-list">
-            <div class="t-notice-wrapper {$emptymsg.name|escape} is-shown">
-                <div class="t-image">
-                    <img src="{$emptymsg.img_url|escape}" alt="">
+            {if $tasks}
+                <div class="t-tasks-wrapper is-{$list_view_type}" id="t-tasks-wrapper" data-tasks-hash-type="{$hash_type}">
+                    <ul class="list custom-m-0 bordered-bottom">
+                    {foreach $tasks as $task}{strip}
+
+                        {include file="./TasksSidebarItem.html" inline}
+
+                    {/strip}{/foreach}
+                    </ul>
+
+                    <div id="end-of-tasks" class="box small gray align-center">
+                        <span class="hidden loading-indicator">
+                            <div class="skeleton">
+                            {for $i=1 to 4}
+                            <div class="custom-px-16 bordered-bottom custom-mb-16">
+                                <div class="flexbox space-12">
+                                    <div>
+                                        <span class="skeleton-custom-circle size-48"></span>
+                                    </div>
+                                    <div class="wide">
+                                        <span class="skeleton-header custom-mb-12"></span>
+                                        <span class="skeleton-line"></span>
+                                        <span class="skeleton-line"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            {/for}
+                            </div>
+                        </span>
+                        <div class="custom-my-8">
+                            <span class="js-tasks-list-counter semibold">{sprintf("[`%s of %d`]", _w('%d task','%d tasks', $offset + $count), $total_count)}</span>
+                            {if $click_to_load_more && $next_page_url}
+                                <p class="box align-center custom-mt-8">
+                                    <span class="button light-gray small click-to-load-more"><a href="javascript:void(0)">[`Load more...`]</a></span>
+                                </p>
+                            {/if}
+                        </div>
+                        <script>(function($) { "use strict";
+                            {* Note that this script has to be inside #t-tasks-wrapper for lazy loading to work correctly. *}
+                            $.tasks.initLazyloader({
+                                lazyloading_wrapper: $('#end-of-tasks'),
+                                next_page_url: {$next_page_url|json_encode},
+                                is_lazy: {if $click_to_load_more}false{else}true{/if},
+                                list_selector: '#t-tasks-wrapper',
+                                item_id_data_attr: 'task-id'
+                            });
+                            {* Init PrettyPrint on Tasks List *}
+                            $.tasks.initPrettyPrint();
+                        })(jQuery);</script>
+                    </div>
                 </div>
-                <h3 class="t-header">{$emptymsg.title|escape}</h3>
-                <p class="t-desc">{$emptymsg.message|escape}</p>
-            </div>
+            {else}
+                <div class="t-notice-list">
+                    <div class="t-notice-wrapper {$emptymsg.name|escape} is-shown">
+                        <div class="t-image">
+                            <img src="{$emptymsg.img_url|escape}" alt="">
+                        </div>
+                        {if isset($milestone) && $milestone->getClosedPercent() >= 100}
+                            <h3 class="t-header">[`All done!`]</h3>
+                            <p class="t-desc">[`Congratulations! Everything set to be done in this milestone is marked as complete.`]</p>
+                            <a class="button outlined light-gray custom-mt-24" href="#/settings/scope/{$milestone->getId()}/">
+                                <i class="fas fa-cog"></i>
+                                [`Go to settings`]
+                            </a>
+                        {else}
+                            <h3 class="t-header">{$emptymsg.title|escape}</h3>
+                            <p class="t-desc">{$emptymsg.message|escape}</p>
+                        {/if}
+                    </div>
+                </div>
+
+            {/if}
+
+            <!-- plugin hook: 'backend_tasks.%plugin_id%.body.bottom' -->
+            {* @event backend_tasks.%plugin_id%.body.bottom *}
+            {foreach $_backend_body_hooks as $_}{$_.bottom|default:''}{/foreach}
+
         </div>
-    {/if}
 
-    <!-- plugin hook: 'backend_tasks.%plugin_id%.body.bottom' -->
-    {* @event backend_tasks.%plugin_id%.body.bottom *}
-    {foreach $_backend_body_hooks as $_}{$_.bottom|default:''}{/foreach}
 
+    </div>
+    <div class="content" id="task-preview-wrapper">
+
+            <div class="box align-center" style="margin-top: 20vh;">
+                <span style="opacity: 0.15; font-size: 18rem;" class="text-gray"><i class="fas fa-tasks"></i></span>
+            </div>
+
+    </div>
 </div>
 
 {if !empty($updater_url)}
@@ -76,3 +123,35 @@
         $.tasks.initTasksUpdater({$updater_url|json_encode});
     })();</script>
 {/if}
+
+<script>
+    (function (){
+        $('.t-tasks-wrapper').on('click', '.item[data-task-number] a', function (e) {
+            e.preventDefault();
+            var $link = $(this).parent(),
+                number = $link.data('task-number'),
+                $taskWrapper = $('#task-preview-wrapper');
+                $taskSkeletonContainer = $('#taskSkeleton');
+
+            $taskWrapper.html($taskSkeletonContainer.html());
+
+            $.get('?module=tasks&action=info&n=' + number + '&from_hash_type=' + $('#t-tasks-wrapper').data('tasks-hash-type'), function (html) {
+                $taskWrapper.html(html);
+                window.TasksController.skipDispatch = 1;
+                window.TasksController.setHash('/task/' + number + '/');
+            });
+        });
+
+        /* hide/show scrollbar */
+        $('.sidebar').on('hover', function () {
+            var $element = $(this),
+                element_class = 'hide-scrollbar';
+
+            if ($element.hasClass(element_class)) {
+                $element.removeClass(element_class);
+            } else {
+                $element.addClass(element_class);
+            }
+        });
+    }());
+</script>

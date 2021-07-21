@@ -1,0 +1,14 @@
+{$wrapper_id = uniqid('t-plugin-preview-wrapper')}
+<div id="{$wrapper_id}">
+    <a class="t-plugin-preview-link" href="javascript:void(0);" title="[`Preview mode`]">
+        <i class="icon16 loading"></i>
+        [`Preview`]
+    </a>
+    <div class="t-plugin-preview-wrapper"></div>
+    <script>
+        new TasksPreviewPlugin({
+            '$wrapper': $('#{$wrapper_id}'),
+            'task_id': {$task.id|json_encode}
+        });
+    </script>
+</div>

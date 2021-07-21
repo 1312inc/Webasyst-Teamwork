@@ -1,0 +1,163 @@
+{strip}
+
+{$ident = rand(0, 1024)}
+
+<div class="t-task-forward-wrapper" id="forward-wrapper-{$ident}">
+    <form method="post" action="{$form_url}">
+    <div class="">
+
+        {if !empty($projects)}
+            <div class="field">
+                <div class="name">[`Project`]</div>
+                <div class="value">
+                    <select name="project_id">
+                        <option value=""></option>
+                        {foreach $projects as $p}
+                            <option value="{$p.id}">{$p.name|escape}</option>
+                        {/foreach}
+                    </select>
+                </div>
+            </div>
+        {/if}
+
+        <div class="field">
+            <div class="name">[`Status`]</div>
+            <div class="value">
+                <select name="status_id">
+                    <option>[`Do not change`]</option>
+                    {foreach $statuses as $s_id => $s}
+                        <option {if isset($selected_status_id) && $selected_status_id == $s_id}selected{/if} value="{$s_id}">{$s.name|escape}</option>
+                    {/foreach}
+                </select>
+            </div>
+        </div>
+        <div class="field">
+            <div class="name">[`Forward to`]</div>
+            <div class="value">
+
+                <ul class="menu-v t-team-list-wrapper">
+                    {$_count = count($users)}
+                    {$_visible_team_count = 2}
+
+                    {$_active_users = false}
+                    {$_render_link = false}
+
+                    {function renderLink}
+                        <li class="t-link-item is-shown">
+                            <a class="show-team-users inline-link" href="javascript:void(0);"><b><i>[`Show all`]</i></b></a>
+                        </li>
+                    {/function}
+
+                    {foreach $users as $user}
+                        {$_is_shown = ifset($user, 'is_active', false)}
+
+                        {*If find acive users, show only them*}
+                        {if $_is_shown}
+                            {$_active_users = true}
+                        {/if}
+
+                        {*Render "show all" link if next user after active - not active. Or if interation more 2 *}
+                        {if ($_active_users && !$_is_shown && !$_render_link) ||
+                            (!$_active_users && $user@iteration > $_visible_team_count &&  !$_render_link)}
+                            {renderLink}
+                            {$_render_link = true}
+                        {/if}
+
+                        {*If not found active user need show first 2 user *}
+                        {if $user@iteration <= $_visible_team_count && !$_active_users}
+                            {$_is_shown = true}
+                        {/if}
+
+                        {$_userpic = "{$wa_url}wa-content/img/userpic96.jpg"}
+
+                        {if !empty($user.photo)}
+                            {$_userpic = waContact::getPhotoUrl($user.id, $user.photo, 40, 40, 'person', 0)}
+                        {/if}
+
+                        <li class="t-user-item {if $_is_shown}is-shown{/if}" data-user-id="{$user.id}">
+                            <label class="t-user-label">
+                                <input type="radio" name="assigned_contact_id" value="{$user.id}" {if ($selected_user == $user.id)}checked="checked"{/if}>
+                                <i class="icon16 userpic20" style="background-image: url({$_userpic});"></i>
+                                {$user.name|escape}
+                                {if ($user.id == $wa->user('id'))}
+                                    &nbsp;([`me`])
+                                {/if}
+                            </label>
+                        </li>
+                    {/foreach}
+
+                    <li class="t-user-item is-unassigned {if $_count < $_visible_team_count}is-shown{/if}" data-user-id="">
+                        <label class="t-user-label">
+                            <input type="radio" name="assigned_contact_id" value="0">
+                            <i class="icon16 userpic20" style="background-image: url('{$wa_url}wa-content/img/userpic96.jpg')"></i>
+                            [`Unassigned`]
+                        </label>
+                    </li>
+
+
+                </ul>
+
+                <script>
+                    (function ($) {
+                        var $wrapper = $("#forward-wrapper-{$ident}"),
+                            show_class = "is-shown",
+                            show_flag = false,
+                            $checked_user = $wrapper.find('input:checked');
+
+                        if ($checked_user) {
+                            moveCheckedUserToTop($checked_user)
+                        }
+
+                        $wrapper.on("click", ".show-team-users", function () {
+                            showFullTeam($(this));
+                            show_flag = show_flag ? false : true;
+                        });
+
+                        function showFullTeam($link) {
+                            if (!show_flag) {
+                                {* Show full list *}
+                                $wrapper.find(".t-user-item").not("." + show_class).addClass(show_class);
+                                $wrapper.find('.t-link-item').find('i').text('[`Hide`]');
+
+                            } else {
+                                {*Hide user before link*}
+                                $link.closest('li').nextAll('li.t-user-item').removeClass('is-shown');
+                                $wrapper.find('.t-link-item').find('i').text('[`Show all`]');
+                            }
+
+                            {* TRIGGER RESIZE *}
+                            $wrapper.closest(".t-status-form-wrapper").trigger("onResize");
+                        }
+
+                        function moveCheckedUserToTop($checked_user) {
+                            var $parent = $checked_user.closest('li');
+                            $parent.remove();
+                            $wrapper.find('.t-team-list-wrapper').prepend($parent);
+                        }
+
+                    })(jQuery);
+                </script>
+
+            </div>
+        </div>
+        <div class="field">
+            <div class="name">[`Comment`]</div>
+            <div class="value">
+
+                {include file="./TaskStatusForm.DropArea.html" inline}
+
+            </div>
+        </div>
+        <div class="field t-buttons-block">
+            <div class="name"></div>
+            <div class="value">
+                <input type="submit" class="button green" value="[`Save`]">
+                <span>&nbsp;[`or`]&nbsp;</span>
+                <a class="t-hiddenform-cancel-link cancel" href="javascript:void(0);">[`cancel`]</a>
+            </div>
+        </div>
+    </div>
+    </form>
+</div>
+
+{/strip}

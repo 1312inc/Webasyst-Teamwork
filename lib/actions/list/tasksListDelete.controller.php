@@ -11,22 +11,25 @@ class tasksListDeleteController extends waJsonController
 
             /**
              * @event list_delete
+             *
              * @param array [string]mixed $params
              * @param array [string]array $params['ids'] Array of IDs of deleting list entries
+             *
              * @return void
              */
-            $params = array('ids' => array($list['id']));
+            $params = ['ids' => [$list['id']]];
             wa()->event('list_delete', $params);
-            
+
             $lm->deleteById($list['id']);
         }
-        $this->response = array(
-            'title' => _w("Create list")
-        );
+
+        $this->response = [
+            'title' => wa()->whichUI() == '1.3' ? _w("Create list") : _w('Save to my filters'),
+        ];
     }
 
     protected function getId()
     {
-        return (int)$this->getRequest()->post('id');
+        return (int) $this->getRequest()->post('id');
     }
 }

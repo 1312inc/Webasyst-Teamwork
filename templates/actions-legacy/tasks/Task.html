@@ -1,0 +1,712 @@
+{strip}
+
+{include file="./includes/TasksTaskHelpers.inc.html" inline}
+
+{$is_single = $is_single|default:false}
+
+{* This vars will be mutated by tasksHelper::getDatetime, must be inited first because of Smary & PHP 7.4 cause the warnings otherwise *}
+{$time_since_update_period = null}
+{$time_since_update_template = null}
+{$time_since_update_str = tasksHelper::getDatetime($task.update_datetime, $time_since_update_period, $time_since_update_template)}
+
+{$classes = ['t-task-outer-container']}
+{if !empty($is_single)}
+    {$classes['is-single'] = 'is-single'}
+{/if}
+{if !empty($task.project.color)}
+    {$classes[$task.project.color] = $task.project.color}
+{/if}
+{if $task.project.archive_datetime}
+    {$classes['is-archived'] = 'is-archived'}
+{/if}
+
+{$_priority_class_array = [
+    "-1" => "is-low",
+    "0" => "is-normal",
+    "1" => "is-high",
+    "2" => "is-urgent"
+]}
+
+{$_priority_icon = ""}
+{if !empty($task.priority)}
+    {if $task.priority == '-1'}
+        {$_priority_icon = "<i class=\"icon16 status-blue-tiny\"></i>"}
+    {/if}
+    {if $task.priority == '1'}
+        {$_priority_icon = "<i class=\"icon16 exclamation-red\"></i>"}
+    {/if}
+    {if $task.priority == '2'}
+        {$_priority_icon = "<i class=\"icon16 exclamation\"></i>"}
+    {/if}
+{/if}
+
+{$_task_hooks = $task.hooks|default:[]}
+{$_backend_task_hook = $_task_hooks.backend_task|default:[]}
+
+{* MAIN TASK CONTAINER *}
+<div class="{$classes|join:' '}" id="task-{$task.id}" data-task-id="{$task.id}">
+    <div class="t-task-wrapper">
+
+        {* CHECKBOX FOR LIST TYPE *}
+        <div class="t-checkbox-column">
+            <input type="checkbox" class="t-checkbox-item">
+        </div>
+
+        {* USERPICK *}
+        <div class="t-userpic-column">
+            {task_userpics_block}
+        </div>
+
+        {* CONTENT PART *}
+        <div class="t-content-column">
+
+            <!-- plugin hook: 'backend_task.%plugin_id%.before_header' -->
+            {* @event backend_task.%plugin_id%.before_header *}
+            {foreach $_backend_task_hook as $_}{$_.before_header|default:''}{/foreach}
+
+            {* TASK HEADER *}
+            <header class="t-task-header">
+                <div class="t-controls-wrapper">
+                    <ul class="t-hidden-block menu-h with-icons">
+                        {if $task.rights_info.can_edit|default:false}
+                            <li>
+                                <a href="#/task/{$task.project_id}.{$task.number}/edit/" class="t-edit-task-link">
+                                    <i class="icon16 edit"></i>[`Edit`]
+                                </a>
+                            </li>
+                        {/if}
+                        {if $task.rights_info.can_delete|default:false}
+                            <li>
+                                <a href="javascript:void(0);" class="t-delete-task-link">
+                                    <i class="icon16 delete"></i>[`Delete`]
+                                </a>
+                            </li>
+                        {/if}
+                    </ul>
+
+                    <span class="t-visible-block"></span>
+
+                    <span class="t-date-wrapper" title="{$time_since_update_str}">{$time_since_update_str}</span>
+
+                    {* FAVORITE *}
+                    <a class="t-favorite-link t-set-favorite" href="javascript:void(0);" title="[`Set favorite`]"><i class="icon16 star{if empty($task.favorite)}-empty{/if}"></i></a>
+                </div>
+
+                <h3 class="t-task-header-content">
+
+                    {* PROJECT ICON *}
+                    {if !empty($task.project.icon_html)}
+                        <span class="t-project-icon">
+                            {$task.project.icon_html}
+                        </span>
+                    {/if}
+
+                    {* PRIORITY *}
+                    <span class="t-priority-wrapper {ifset($_priority_class_array[$task.priority])}" title="task_id={$task.id}" title="[`Double-click to change task priority`]">
+                        {$task.project_id}.{$task.number}
+                        {$_priority_icon}
+                    </span>
+
+                    {* A delimeter between number and name that should get into clipboard when user selects text, but should not be visible *}
+                    <span style="position:absolute;left:-100500px;">: </span>
+
+                    {* NAME *}
+                    <a class="t-task-name-wrapper" href="#/task/{$task.project_id}.{$task.number}/" style="color: black;">{$task.name|escape|default:"(no name)"}</a>
+
+
+                    {* STATUS *}
+                    {if !empty($task.status.name)}
+                        {* DATA *}
+                        {$_status_class_array = []}
+                        {$_styles_array = []}
+
+                        {if !$task.project.archive_datetime}
+                            {if !empty($task.status.params.title_color)}
+                                {$_color = $task.status.params.title_color}
+                                {$_styles_array[] = "color: #{$_color};"}
+                            {/if}
+                            {if !empty($task.status.params.button_color)}
+                                {$_background = $task.status.params.button_color}
+                                {$_styles_array[] = "border-color: #{$_background};"}
+                                {$_styles_array[] = "background: #{$_background};"}
+                            {/if}
+                        {/if}
+
+                        {if $task.project.archive_datetime}
+                            {$_status_class_array[] = "is-archived"}
+                        {elseif $task.status_id == -1}
+                            {$_status_class_array[] = "is-done"}
+                        {elseif $task.status_id == 0}
+                            {$_status_class_array[] = "is-new"}
+                        {elseif $task.status_id > 0}
+                            {$_status_class_array[] = "is-custom"}
+                        {/if}
+
+                        {* RENDER *}
+                        <span class="t-status-wrapper {$_status_class_array|join:" "}" style="{$_styles_array|join:""}" title="[`Status`]">
+                            <span style="position:absolute;left:-100500px;"> (</span>
+                            {if $task.project.archive_datetime}[`Archived`]{else}{$task.status.name}{/if}
+                            <span style="position:absolute;left:-100500px;">) </span>
+                        </span>
+                    {/if}
+
+                    {* TAGS *}
+                    <div class="t-tags-wrapper">
+                        <a class="t-tag-item is-template" href="javascript:void(0);" data-tag-id="">
+                            <span></span>
+                            <i class="icon10 delete t-remove-tag"></i>
+                        </a>
+
+                        {foreach $task.tags as $tag_id => $tag_name}
+                            <a class="t-tag-item" href="#/tasks/tag/{$tag_name|escape}/" data-tag-id="{$tag_id|escape}">
+                                <span>{$tag_name|escape}</span>
+                                <i class="icon10 delete t-remove-tag"></i>
+                            </a>
+                        {/foreach}
+
+                        <ul class="menu-h dropdown t-tag-cloud-widget">
+                            <li>
+                                <a class="inline-link gray" href="javascript:void(0);">
+                                    <b><i>[`Add tag`]</i></b>
+                                </a>
+                                <ul class="menu-v" style="width: 175px;">
+                                    <li class="t-tags-cloud">
+                                        {if count($tags_cloud) <= tasksTaskTagsModel::TAGS_MAX_COUNT}
+                                            {foreach $tags_cloud as $tag}
+                                                <a style="font-size: {$tag.size}%; opacity: {$tag.opacity};color: green;text-decoration: underline;margin: 0px;padding: 3px;" class="js-set-tag t-cloud-link"
+                                                   data-id="{$tag.id}" href="#/tasks/tag/{$tag.name|escape}/">{$tag.name|escape}</a>
+                                            {/foreach}
+                                        {else}
+                                            <span class="hint" style="margin: 1em 0;">{sprintf(_w('There are more than %u tags.'), tasksTaskTagsModel::TAGS_MAX_COUNT)}<br>
+                                                [`Start typing in the search field to find a tag.`]
+                                            </span>
+                                        {/if}
+                                    </li>
+                                    <li class="t-add-tag">
+                                        <div class="t-input-wrapper">
+                                            <input value="" class="t-input js-t-task-tags-autocomplete" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true"
+                                                   placeholder="[`Custom tag...`]">
+                                        </div>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </h3>
+                <div class="t-priority-changer-wrapper">
+                    <div class="t-priority-changer">
+                        <div class="t-slider-wrapper">
+                            <div class="t-priority-slider"></div>
+                            <input class="t-input" type="hidden" name="data[priority]" value="{$task.priority}">
+                        </div>
+                        <div class="t-priority-text"></div>
+                    </div>
+                </div>
+
+                <!-- plugin hook: 'backend_task.%plugin_id%.header' -->
+                {* @event backend_task.%plugin_id%.header *}
+                {foreach $_backend_task_hook as $_}{$_.header|default:''}{/foreach}
+
+            </header>
+
+            <!-- plugin hook: 'backend_task.%plugin_id%.after_header' -->
+            {* @event backend_task.%plugin_id%.after_header *}
+            {foreach $_backend_task_hook as $_}{$_.after_header|default:''}{/foreach}
+
+            <!-- plugin hook: 'backend_task.%plugin_id%.before_description' -->
+            {* @event backend_task.%plugin_id%.before_description *}
+            {foreach $_backend_task_hook as $_}{$_.before_description|default:''}{/foreach}
+
+            {* TASK CONTENT *}
+            <div class="t-description-wrapper js-description-wrapper">
+                {if $task.milestone}
+                    <div class="t-milestone-wrapper">
+                        <div class="t-milestone-value">
+                            <strong>{$task.milestone.name|escape}: </strong>&nbsp;
+                            <span class="t-due-date-bl-{$task.milestone.view.due_color_class}">{$task.milestone.due_date|wa_date:'humandate'}</span>
+                            <span class="t-milestone-due-date {$task.milestone.view.due_color_class}">
+                                &nbsp;({$task.milestone.view.due_text})
+                            </span>
+                        </div>
+                    </div>
+                {/if}
+
+                {if $task.due_date}
+                    <div class="t-due-wrapper">
+                        <div class="t-due-date-value">
+                            <strong>[`Due date`]: </strong>&nbsp;
+                            <span class="t-due-date-bl-{$task.view.due_color_class}">{$task.due_date|wa_date:'humandate'}</span>
+                            <span class="t-milestone-due-date {$task.view.due_color_class}">&nbsp;
+                                 ({$task.view.due_text})
+                            </span>
+                        </div>
+                    </div>
+                {/if}
+                <div class="t-relations-wrapper">
+                    {function insertRelations data=null relation_name=null relation_type=null}
+                        <ul class="t-relations-hover-block">
+                            {foreach $data as $id => $item}
+                                <li data-relation-type="{$relation_type}" data-relation-task="{$id}">
+                                    <strong>{$relation_name}:</strong> <a title="{$item['name']|escape}" href="#/task/{$item['project']|escape}.{$item['number']|escape}/" class="t-task-link">#{$item['project']|escape}.{$item['number']|escape}</a>&nbsp;
+                                    {if !empty($statuses[$item['status_id']])}
+                                        {if !empty($statuses[$item['status_id']]['params'])}
+                                            {$status_color = "color:#`$statuses[$item['status_id']]['params']['title_color']`;"}
+                                            {$status_background = "border-color:#`$statuses[$item['status_id']]['params']['button_color']`;background:#`$statuses[$item['status_id']]['params']['button_color']`"}
+                                        {else}
+                                            {$status_color = ''}
+                                            {$status_background = ''}
+                                        {/if}
+                                        <span style="{if isset($status_color) && isset($status_background)}{$status_color|escape}{$status_background|escape}{/if}" class="t-relations-status t-relations-status{$item['status_id']|escape}">{$statuses[$item['status_id']]['name']|escape}</span>
+                                    {/if}
+                                    <a class="js-t-invert-relations t-relations-btn js-no-app-icon small" href="javascript:void(0);"><i class="icon10 larr"></i><span>[`invert`]</span></a>&nbsp;
+                                    <a class="js-t-delete-relations t-relations-btn js-no-app-icon small" href="javascript:void(0);"><i class="icon10 delete"></i><span>[`remove link`]</span></a>
+                                </li>
+                            {/foreach}
+                        </ul>
+                    {/function}
+                    {if !empty($task.relations.parents)}
+                        {insertRelations data=$task.relations.parents relation_type="parent" relation_name="[`Parent task`]" }
+                    {/if}
+
+                    {if !empty($task.relations.childs)}
+                        {insertRelations data=$task.relations.childs  relation_type="child" relation_name="[`Child task`]"}
+                    {/if}
+                </div>
+
+                {tasksTask::formatText($task.text)}
+
+                <!-- plugin hook: 'backend_task.%plugin_id%.description' -->
+                {* @event backend_task.%plugin_id%.description *}
+                {foreach $_backend_task_hook as $_}{$_.description|default:''}{/foreach}
+
+            </div>
+
+            <!-- plugin hook: 'backend_task.%plugin_id%.after_description' -->
+            {* @event backend_task.%plugin_id%.after_description *}
+            {foreach $_backend_task_hook as $_}{$_.after_description|default:''}{/foreach}
+
+            {* ATTACHED FILES *}
+            {if $task.images || $task.files}
+
+                <!-- plugin hook: 'backend_task.%plugin_id%.before_attachments' -->
+                {* @event backend_task.%plugin_id%.before_attachments *}
+                {foreach $_backend_task_hook as $_}{$_.before_attachments|default:''}{/foreach}
+
+                <div class="t-attach-wrapper">
+                    {if $task.images}
+                        <div class="t-attached-files-wrapper">
+                            <div class="t-attach-list-block">
+                                <div class="t-images-list">
+                                    {foreach $task.images as $image}
+                                        <div class="t-image-item">
+                                            <a class="t-image-link wa-gallery-image" href="?module=attachments&action=download&id={$image.id}" target="_blank" title="{$image.name|escape}">
+                                                <img src="{tasksHelper::getAttachPreviewUrl($image)}" alt="{$image.name|escape}">
+                                            </a>
+                                            <div class="t-file-name" title="{$image.name|escape}">{$image.name|escape}</div>
+                                        </div>
+                                    {/foreach}
+                                </div>
+                            </div>
+                        </div>
+                    {/if}
+                    {if $task.files}
+                        <div class="t-attached-files-wrapper">
+                            <div class="t-attach-list-block">
+                                <div class="t-files-list">
+                                    {foreach $task.files as $file}
+                                        <div class="t-file-item">
+                                            <a class="t-file-link" href="?module=attachments&action=download&id={$file.id}" target="_blank" title="{$file.name|escape}">
+                                                <i class="icon16 attachment"></i>
+                                                <span class="t-file-name">{$file.name|escape}</span>
+                                                <span class="t-file-size">{$file.size|wa_format_file_size}</span>
+                                            </a>
+                                        </div>
+                                    {/foreach}
+                                </div>
+                            </div>
+                        </div>
+                    {/if}
+
+                    <!-- plugin hook: 'backend_task.%plugin_id%.attachments' -->
+                    {* @event backend_task.%plugin_id%.attachments *}
+                    {foreach $_backend_task_hook as $_}{$_.attachments|default:''}{/foreach}
+
+                </div>
+
+                <!-- plugin hook: 'backend_task.%plugin_id%.after_attachments' -->
+                {* @event backend_task.%plugin_id%.after_attachments *}
+                {foreach $_backend_task_hook as $_}{$_.after_attachments|default:''}{/foreach}
+            {/if}
+
+            {function renderHeaderComment _l=[]}
+
+                {$_l_attachments = $task->getLogAttachments($_l.id)}
+                {$_l_attachments_count = count($_l_attachments.files) + count($_l_attachments.images)}
+
+                {if !empty($_l.text) || $_l_attachments_count > 0}
+                    <blockquote class="t-quote-wrapper">
+
+                        <!-- plugin hook: 'backend_task.%plugin_id%.before_quote_header' -->
+                        {* @event backend_task.%plugin_id%.before_quote_header *}
+                        {foreach $_backend_task_hook as $_}{$_.before_quote_header|default:''}{/foreach}
+
+                        <header class="t-quote-header">
+                            <span class="t-quote-author">{$_l.contact.name|escape}</span>
+                            <span class="t-quote-date">{$_l.create_datetime|wa_datetime:"humandatetime"}</span>
+
+                            <!-- plugin hook: 'backend_task.%plugin_id%.quote_header' -->
+                            {* @event backend_task.%plugin_id%.quote_header *}
+                            {foreach $_backend_task_hook as $_}{$_.quote_header|default:''}{/foreach}
+
+                        </header>
+
+                        <!-- plugin hook: 'backend_task.%plugin_id%.after_quote_header' -->
+                        {* @event backend_task.%plugin_id%.after_quote_header *}
+                        {foreach $_backend_task_hook as $_}{$_.after_quote_header|default:''}{/foreach}
+
+                        <!-- plugin hook: 'backend_task.%plugin_id%.before_quote_description' -->
+                        {* @event backend_task.%plugin_id%.before_quote_description *}
+                        {foreach $_backend_task_hook as $_}{$_.before_quote_description|default:''}{/foreach}
+
+                        <div class="t-quote-text js-quote-text">
+                            {tasksTask::formatText($_l.text)}
+
+                            <!-- plugin hook: 'backend_task.%plugin_id%.quote_description' -->
+                            {* @event backend_task.%plugin_id%.quote_description *}
+                            {foreach $_backend_task_hook as $_}{$_.quote_description|default:''}{/foreach}
+
+                        </div>
+
+                        <!-- plugin hook: 'backend_task.%plugin_id%.after_quote_description' -->
+                        {* @event backend_task.%plugin_id%.after_quote_description *}
+                        {foreach $_backend_task_hook as $_}{$_.after_quote_description|default:''}{/foreach}
+
+                        {if $_l_attachments.files || $_l_attachments.images}
+
+                            <!-- plugin hook: 'backend_task.%plugin_id%.before_quote_attachments' -->
+                            {* @event backend_task.%plugin_id%.before_quote_attachments *}
+                            {foreach $_backend_task_hook as $_}{$_.before_quote_attachments|default:''}{/foreach}
+                            <div class="t-attach-wrapper">
+                                <div class="t-attached-files-wrapper">
+                                    {if $_l_attachments.images}
+                                        <div class="t-images-list">
+                                            {foreach $_l_attachments.images as $_image}
+                                                <div class="t-image-item">
+                                                    <a class="t-image-link wa-gallery-image" href="?module=attachments&action=download&id={$_image.id}" title="{$_image.name|escape}">
+                                                        <img src="{tasksHelper::getAttachPreviewUrl($_image)}" alt="{$_image.name|escape}">
+                                                    </a>
+                                                    <div class="t-file-name" title="{$_image.name|escape}">{$_image.name|escape}</div>
+                                                </div>
+                                            {/foreach}
+                                        </div>
+                                    {/if}
+                                    {if $_l_attachments.files}
+                                        <div class="t-files-list">
+                                            {foreach $_l_attachments.files as $_file}
+                                                <div class="t-file-item" data-file-ident="{$_file.id}">
+                                                    <a class="t-file-link" href="?module=attachments&action=download&id={$_file.id}" title="{$_file.name|escape}">
+                                                        <i class="icon16 attachment"></i>
+                                                        <span class="t-file-name">{$_file.name|escape}</span>
+                                                        <span class="t-file-size">{$_file.size|wa_format_file_size}</span>
+                                                    </a>
+                                                </div>
+                                            {/foreach}
+                                        </div>
+                                    {/if}
+                                </div>
+
+                                <!-- plugin hook: 'backend_task.%plugin_id%.quote_attachments' -->
+                                {* @event backend_task.%plugin_id%.quote_attachments *}
+                                {foreach $_backend_task_hook as $_}{$_.quote_attachments|default:''}{/foreach}
+                            </div>
+                            <!-- plugin hook: 'backend_task.%plugin_id%.after_quote_attachments' -->
+                            {* @event backend_task.%plugin_id%.after_quote_attachments *}
+                            {foreach $_backend_task_hook as $_}{$_.after_quote_attachments|default:''}{/foreach}
+
+                        {/if}
+                        <div class="t-quote-files"></div>
+                        <div class="t-quote-images"></div>
+                    </blockquote>
+                {/if}
+            {/function}
+
+            {* Obtain unique id and sort them in chronological order *}
+            {$log_header_ids = array_unique([$task.assign_log_id, $task.comment_log_id])}
+            {$_sort = sort($log_header_ids)}
+
+            {foreach $log_header_ids as $log_id}
+                {if !empty($task['log'][$log_id])}
+                    {$_l = $task.log[$log_id]}
+                    {renderHeaderComment _l=$_l}
+                {/if}
+            {/foreach}
+
+            {* It need for load html of change_status_form *}
+            {if !empty($is_single)}
+                <div class="t-status-data-container"></div>
+            {/if}
+
+            <!-- plugin hook: 'backend_task.%plugin_id%.before_buttons' -->
+            {* @event backend_task.%plugin_id%.before_buttons *}
+            {foreach $_backend_task_hook as $_}{$_.before_buttons|default:''}{/foreach}
+
+            {* TASK BUTTONS *}
+            <div class="t-task-buttons">
+
+                <div class="t-task-controls">
+                    {$task->buttonHtml()}
+                    {if $task.next_status && $task.next_status.id != -1 && (($task.contact_id == $wa->user('id') && $task.assigned_contact_id == $task.contact_id) || $task->hasFullAccess())}
+                        {$task->buttonHtml(-1)}
+                    {/if}
+                    <a href="javascript:void(0);" class="t-control-link t-return-link" title="[`Return`]"></a>
+                    <a href="javascript:void(0);" class="t-control-link t-forward-link" title="[`Forward`]"></a>
+                </div>
+
+                <div class="t-visible-part">
+                    <a href="javascript:void(0);" class="gray inline-link t-button-item t-show-full-content"><b><i>[`History &amp; Comments`] ({count($task.log)})</i></b></a>
+                </div>
+                <div class="t-hidden-part">
+                    <a href="javascript:void(0);" class="gray inline-link t-button-item t-hide-full-content"><b><i>[`Hide history`]</i></b></a>
+                </div>
+
+                {$_hash_type = $hash_type|default:''}
+                {if ($_hash_type == 'inbox' || $_hash_type == 'hidden') && $task.priority <= 1}
+                    <div class="t-postpone-wrapper float-right t-visible-part">
+                        {$intervals = ['1d' => '1 day', '3d' => '3 days', '1w' => '1 week', '2w' => '2 weeks']}
+                        <ul class="menu-h dropdown t-custom-select"
+                            {if $task.priority > 0}
+                                data-errormsg="[`You can't hide high priority task`]"
+                            {elseif $task.assigned_contact_id != $wa->user('id')}
+                                data-errormsg="[`You can only hide tasks assigned to you.`]"
+                            {/if}
+                        >
+                            <li>
+                                <a class="selected-custom-item inline-link" href="javascript:void(0);">
+                                    <b><i>
+                                        {if $task.hidden_timestamp && $task.hidden_timestamp > time()}
+                                            [`Hidden until`] {waDateTime::format('humandate', $task.hidden_timestamp)}
+                                        {else}
+                                            [`Hide`]
+                                        {/if}
+                                    </i></b>
+                                </a>
+                                <ul class="menu-v">
+                                    {if $task.hidden_timestamp && $task.hidden_timestamp > time()}
+                                        <li class="t-nav-item">
+                                            <a class="set-custom-select" href="javascript:void(0);" data-value="">[`Unhide`]</a>
+                                        </li>
+                                    {/if}
+                                    {foreach $intervals as $value => $name}
+                                        <li class="t-nav-item">
+                                            <a class="set-custom-select" href="javascript:void(0);" data-value="{$value}">{$name}</a>
+                                        </li>
+                                    {/foreach}
+                                </ul>
+                                <input class="change-postpone-field" type="hidden" name="change-postpone-field" value="!">
+                            </li>
+                        </ul>
+                    </div>
+                {/if}
+
+                <!-- plugin hook: 'backend_task.%plugin_id%.buttons' -->
+                {* @event backend_task.%plugin_id%.buttons *}
+                {foreach $_backend_task_hook as $_}{$_.buttons|default:''}{/foreach}
+
+            </div>
+
+            <!-- plugin hook: 'backend_task.%plugin_id%.after_buttons' -->
+            {* @event backend_task.%plugin_id%.after_buttons *}
+            {foreach $_backend_task_hook as $_}{$_.after_buttons|default:''}{/foreach}
+
+            <!-- plugin hook: 'backend_task.%plugin_id%.before_hidden_block' -->
+            {* @event backend_task.%plugin_id%.before_hidden_block *}
+            {foreach $_backend_task_hook as $_}{$_.before_hidden_block|default:''}{/foreach}
+
+            {* TASK HIDDEN CONTENT *}
+            <div class="t-full-content">
+                {* COMMENT LIST *}
+                <div class="t-comments-list-wrapper js-comments-list-wrapper">
+                    {foreach $task.log as $l}
+                        <div class="t-comment-item-wrapper" data-id="{$l.id}">
+
+                            {$_rights_info = $l.rights_info|default:[]}
+                            {$_can_edit = $_rights_info.can_edit|default:false}
+                            {$_can_delete = $_rights_info.can_delete|default:false}
+
+                            {$log_attachments = $task->getLogAttachments($l.id)}
+                            {$log_attachments_count = count($log_attachments.files) + count($log_attachments.images)}
+
+                            {$_is_comment = $l.action == tasksTaskLogModel::ACTION_TYPE_COMMENT}
+                            {$_is_forward = $l.action == tasksTaskLogModel::ACTION_TYPE_FORWARD}
+
+                            {$_empty_log_item = empty($l.text) && $log_attachments_count <= 0}
+
+                            {if $_is_forward}
+                                {$_can_edit = $_can_edit && !$_empty_log_item}
+                            {/if}
+
+                            <div class="t-comment-item profile image32px" data-id="{$l.id}">
+                                <div class="image">
+                                    <a href="{if !empty($l.contact.id)}{tasksHelper::getProfileURL($l.contact.id)}{else}javascript:void(0);{/if}" title="{$l.contact.name|escape}">
+                                        {if !empty({$l.contact.photo_url})}
+                                            <img class="userpic icon16" src="{$l.contact.photo_url}" alt="{$l.contact.name|escape}">
+                                            {else}
+                                            <img class="userpic icon16" src="/wa-content/img/userpic96@2x.jpg">
+                                        {/if}
+                                    </a>
+                                </div>
+                                <div class="details">
+                                    <header class="t-comment-header">
+                                        <span class="t-comment-author">
+                                            <a href="{if !empty($l.contact.id)}{tasksHelper::getProfileURL($l.contact.id)}{else}javascript:void(0);{/if}">{$l.contact.name|escape}</a>
+                                        </span>
+                                        <span class="t-comment-action">{$l.action_name}</span>
+                                        <span class="t-comment-date">{$l.create_datetime|wa_datetime:"humandatetime"}</span>
+
+                                        {* MARK LAST NOT EMPTY FORWARD LOG ITEM *}
+                                        {if $_is_forward && !$_empty_log_item && $task.assign_log_id && $task.assign_log_id == $l.id}
+                                            <i class="icon16 lightning"></i>
+                                        {/if}
+
+                                        {if $_is_comment}
+                                            <a href="javascript:void(0);" class="t-assign-comment-link {if $task.comment_log_id == $l.id}selected{/if}" data-id="{$l.id}">
+                                                <i class="icon16 light-bulb t-mark-icon"></i>
+                                                <i class="icon16 loading t-loading"></i>
+                                            </a>
+                                        {/if}
+
+                                        {if $_can_edit}
+                                            <a href="javascript:void(0);" class="t-comment-edit-link" data-id="{$l.id}"><i class="icon10 edit"></i> <span class="small">[`Edit`]</span></a>
+                                        {/if}
+
+                                        {if $_can_delete}
+                                            <a href="javascript:void(0);" class="t-comment-delete-link" data-id="{$l.id}"><i class="icon10 delete"></i> <span class="small">[`Delete`]</span></a>
+                                        {/if}
+
+                                    </header>
+
+                                    {if !empty($l.text)}
+                                        <div class="t-comment-content">{tasksTask::formatText($l.text)}</div>
+                                    {/if}
+
+                                    {if $l.status_changed}
+                                        <div class="t-comment-status-change">
+                                            [`Status:`] {if $l.before_status_id}{tasksHelper::statusNameHTML($l.before_status_id)}{/if} → {tasksHelper::statusNameHTML($l.after_status_id)}
+                                        </div>
+                                    {/if}
+                                    {if $l.assignment_changed}
+                                        {if $l.assigned_contact_id}
+                                            <div class="t-comment-assignment-change">
+                                                [`Assigned:`] <strong>{$l.assigned_contact.name|escape}</strong>
+                                            </div>
+                                        {else}
+                                            <div class="t-comment-assignment-change">
+                                                <strong>[`Assignment removed`]</strong>
+                                            </div>
+                                        {/if}
+                                    {/if}
+
+                                    {if $log_attachments.files || $log_attachments.images}
+                                        <div class="t-attach-wrapper">
+                                            <div class="t-attached-files-wrapper">
+                                                {if $log_attachments.images}
+                                                    <div class="t-images-list">
+                                                        {foreach $log_attachments.images as $image}
+                                                            <div class="t-image-item">
+                                                                <a class="t-image-link wa-gallery-image" href="?module=attachments&action=download&id={$image.id}" title="{$image.name|escape}">
+                                                                    <img src="{tasksHelper::getAttachPreviewUrl($image)}" alt="{$image.name|escape}">
+                                                                </a>
+                                                                <div class="t-file-name" title="{$image.name|escape}">{$image.name|escape}</div>
+                                                            </div>
+                                                        {/foreach}
+                                                    </div>
+                                                {/if}
+                                                {if $log_attachments.files}
+                                                    <div class="t-files-list">
+                                                        {foreach $log_attachments.files as $file}
+                                                            <div class="t-file-item" data-file-ident="{$file.id}">
+                                                                <a class="t-file-link" href="?module=attachments&action=download&id={$file.id}" title="{$file.name|escape}">
+                                                                    <i class="icon16 attachment"></i>
+                                                                    <span class="t-file-name">{$file.name|escape}</span>
+                                                                    <span class="t-file-size">{$file.size|wa_format_file_size}</span>
+                                                                </a>
+                                                            </div>
+                                                        {/foreach}
+                                                    </div>
+                                                {/if}
+                                            </div>
+                                        </div>
+                                    {/if}
+                                </div>
+                            </div>
+
+                            {if $_can_edit}
+                                <div class="t-comment-edit-form-wrapper" style="display: none;"></div>
+                            {/if}
+                        </div>
+                    {foreachelse}
+                        <p class="hint">[`There are no comments for this task yet.`]</p>
+                    {/foreach}
+                </div>
+
+
+                {* ADD COMMENT FORM *}
+                {include file="./TaskCommentForm.inc.html"
+                    post_action_url="?module=tasksComments&action=add&task_id={$task.id}"
+                inline}
+
+                <!-- plugin hook: 'backend_task.%plugin_id%.hidden_block' -->
+                {* @event backend_task.%plugin_id%.hidden_block *}
+                {foreach $_backend_task_hook as $_}{$_.hidden_block|default:''}{/foreach}
+
+            </div>
+
+            {if $task.status_id == -1}
+                <div class="show-done-icon"></div>
+            {/if}
+
+            <!-- plugin hook: 'backend_task.%plugin_id%.after_hidden_block' -->
+            {* @event backend_task.%plugin_id%.after_hidden_block *}
+            {foreach $_backend_task_hook as $_}{$_.after_hidden_block|default:''}{/foreach}
+
+        </div>
+    </div>
+
+    {* CONTAINER FOR DYNAMIC AJAX FORMS *}
+    <div class="t-status-form-wrapper">
+        <i class="icon16 loading"></i>
+    </div>
+
+    {* LINK FOR TABLE VIEW *}
+    {$_list_view_type = $list_vie_type|default:''}
+    {if $_list_view_type == "table"}
+        <a class="t-open-task-link" href="#/task/{$task.project_id}.{$task.number}/"></a>
+    {/if}
+
+    {$_files_hash = md5(uniqid($task.id, true))}
+
+    {$_ignore_js = $ignore_js|default:false}
+
+    {if !$_ignore_js}
+        <script>(function() { "use strict";
+            var task = {
+                id: {$task.id|json_encode},
+                tags: {$task.tags|json_encode},
+                priority: {$task.priority|json_encode},
+                assigned_contact_id: {$task.assigned_contact_id|json_encode}
+            };
+            Tasks[task.id] = new Task({
+                $task: $("#task-{$task.id}"),
+                task: task,
+                tags: {$task.tags|json_encode},
+                priority: "{$task.priority}",
+                show_status_form: {$task->hasStatusForm()|json_encode},
+                time_since_update_period: {$time_since_update_period|json_encode},
+                time_since_update_template: {$time_since_update_template|json_encode},
+                files_hash: {$_files_hash|json_encode},
+                user_id: {$wa->user('id')|json_encode}
+            });
+        })();</script>
+    {/if}
+</div>
+{/strip}

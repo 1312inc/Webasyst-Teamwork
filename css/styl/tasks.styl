@@ -1,4 +1,7 @@
-@import "nib";
+@import "variables.styl";
+
+// remove after fixed in WA
+@import "wa-fix.styl";
 
 input
 select
@@ -15,153 +18,45 @@ label
     cursor pointer
 
 #wa-app
-    overflow inherit
-    display table
-    width: 100%
-    table-layout fixed
 
     &:before
     &:after
         display none
 
-    .t-sidebar-wrapper
-        float: none
-        display table-cell
-        vertical-align top
-        margin: 0
-        padding: 35px 0 0
-        width 200px
-
-        .t-sidebar-block::-webkit-scrollbar
-            width 0px
-            background-color #fff
-
-        .t-sidebar-block
-
-            &.fixed-to-top
-                position fixed
-                left 0
-                top 0
-
-            &.fixed-to-bottom
-                position fixed
-                left 0
-                bottom 0
-            #t-scope-list-wrapper
-                .t-scopes
-                    .t-scope
-                        position:relative
-                        margin-right -5px
-                        .t-closed-percent
-                            position absolute
-                            top 5px
-                            right 5px
-
-                    .t-scope-title
-                        margin-right 30px
-
-                ul.menu-v li.selected a
-                    background transparent
-
-                ul.menu-v li.selected
-                    background: rgba(0,0,0,0.07);
-
-                .child-red > *
-                    color red
-        .add-task-wrapper
-            margin: 0 0 10px 0
-
-        .projects-list-wrapper
-            li
-                .count.show-on-hover
-                    display: none;
-
-                &:hover
-                    .count.show-on-hover
-                        display: inline-block;
-
-    .t-content-wrapper
-        float: none
-        display table-cell
-        margin: 0
-        padding: 0
-
 .t-tag-link
-    color green !important
-    text-decoration none
+    color var(--chips-tags-link-color)
+    background var(--chips-tags-background-color)
+    border-radius 0.25em
+    padding 0.375em 0.5em
+    font-weight 500
+    margin-right 0.25em
 
-.t-main-wrapper
-    border 1px solid #ddd
-    border-radius 2px
-    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.13)
+.t-white
+    background: $white_color;
 
-    @import "header.styl";
+.t-gray
+    background: $gray_color;
+
+.t-green
+    background: $green_color;
+
+.t-blue
+    background: $blue_color;
+
+.t-purple
+    background: $purple_color;
+
+.t-red
+    background: $red_color;
+
+.t-yellow
+    background: $yellow_color;
+
+
+@import "header.styl";
 
 @import "sidebar.styl"
 
-// ICONS
-
-.icon16.done
-.icon16.archive
-.icon16.done-bw
-.icon16.outbox
-.icon16.userpic-unassigned
-    background-image url("../img/icons/tasks-icons16.png");
-    background-size 128px 80px
-
-.icon16.done
-    background-position -16px 0
-
-.icon16.archive
-    background-position -32px 0
-
-.icon16.done-bw
-    background-position -48px 0
-
-.icon16.outbox
-    background-position -64px 0
-
-.icon16.userpic-unassigned
-    background-position -80px 0
-
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)
-    .icon16.done
-    .icon16.archive
-    .icon16.done-bw
-    .icon16.outbox
-    .icon16.userpic-unassigned
-        background-image url("../img/icons/tasks-icons16@2x.png");
-
-.icon10
-.icon16
-    &.color
-        margin: 0 0 0 4px !important
-        vertical-align baseline
-        border-radius 50%
-        box-sizing border-box
-
-        &.t-white
-            background: #fff;
-
-        &.t-gray
-            background: #ddd;
-
-        &.t-green
-            background: #cea;
-
-        &.t-blue
-            background: #bef;
-
-        &.t-purple
-            background: #dcf;
-
-        &.t-red
-            background: #fcc;
-
-        &.t-yellow
-            background: #fff7aa;
-
-// It need for inline-link
 .dropdown
     &.is-right
         .menu-v
@@ -185,28 +80,32 @@ label
     .t-slider-wrapper
         display table-cell
         vertical-align middle
-        width 50%
+        width 60%
 
     .t-priority-text
         text-align center
         font-weight bold
+        padding-left 1rem
+        font-size 0.91375rem
+        white-space nowrap
 
         &.color-1
-            color #81bbf5
+            color var(--light-gray)
 
         &.color-2
-            color #989898
+            color var(--text-color)
 
         &.color-3
-            color #ffae22
+            color gold
 
-        &.color-4
-            color #dd301c
+        &.color-4,
+        &.color-5
+            color orangered
 
     .t-slider-wrapper
         .t-priority-slider
-            $height = 12px
-            $color = #989898
+            $height = 16px
+            $color = var(--light-gray)
 
             position relative
             width auto
@@ -228,25 +127,26 @@ label
                 background $color
 
             .ui-slider-handle
-                $width = 12px
+                $width = 8px
                 position absolute
                 top ($height/2)
                 padding 0
                 width $width
                 height $width
                 margin ($width/-2) 0 0 ($width/-2)
-                border 1px solid $color
+                border none
                 background red
                 border-radius 50%
                 box-sizing border-box
                 box-shadow none
                 cursor pointer
+                outline none
 
                 &.is-animated
                     transition background 200ms linear, left 200ms linear
 
                 &.is-active
-                    $width = 24px
+                    $width = 16px
                     width $width
                     height $width
                     margin ($width/-2) 0 0 ($width/-2)
@@ -255,33 +155,72 @@ label
                     background #81bbf5
 
                 &.color-2
-                    background $color
+                    background var(--gray)
 
                 &.color-3
-                    background #ffae22
+                    background var(--orange)
 
-                &.color-4
+                &.color-4,
+                &.color-5
                     background #dd301c
 
             .t-ornament
-                $width = 14px
+                $width = 16px
                 position absolute
                 top ($height/2)
                 padding 0
                 width $width
                 height $width
                 margin ($width/-2) 0 0 ($width/-2)
-                border 1px solid $color
-                background #fff
+                border 2px solid $color
+                background var(--background-color-blank)
                 border-radius 50%
                 box-sizing border-box
                 cursor pointer
 
-                &.is-active
-                    $width = 18px
-                    width $width
-                    height $width
-                    margin ($width/-2) 0 0 ($width/-2)
+                &.t-ornament--exclamation
+                    .svg-inline--fa
+                        display none
+
+                    &.is-active
+                        background-color transparent
+                        width 20px
+                        height 20px
+                        font-size 1.25rem
+                        border 0
+                        border-radius 0
+                        top 50%
+                        margin 0
+                        transform translateX(-50%) translateY(-50%)
+                        z-index 99
+
+                        &:after
+                            content ''
+                            position absolute
+                            display block
+                            background-color var(--background-color-blank)
+                            width 20px
+                            height 20px
+                            top 50%
+                            left 50%
+                            transform translateX(-50%) translateY(-50%)
+
+                        .svg-inline--fa
+                            display block
+                            position relative
+                            z-index 9
+
+                &[data-value='3'].is-active
+                    background url('../img/priority-fire.gif') no-repeat
+                    background-size 2.5em 2.5em
+                    width 2.5em
+                    height 2.5em
+                    border 0
+                    border-radius 0
+                    top 50%
+                    margin 0
+                    transform translateX(-50%) translateY(-75%)
+                    z-index 99
 
 // NOTICES
 .t-notice-wrapper
@@ -304,16 +243,15 @@ label
 
         img
             width 100%
-            opacity .13
+            opacity .25
 
     .t-header
         margin: 12px 0 0
-        font-size: 1.5em
-        color: #000
+        font-size: 1.25rem
 
     .t-desc
         margin: 12px 0 0
-        color: #aaa
+        font-size 0.875rem
 
 // DEEP DEEP MAGIC
 .not-implemented.not-implemented.not-implemented.not-implemented.not-implemented.not-implemented.not-implemented
@@ -403,7 +341,9 @@ label
     select
         max-width 400px
         box-sizing border-box
-        
+
+@import "helpers.styl";
+
 @import "logs.styl";
 
 @import "task.styl";
@@ -425,3 +365,5 @@ label
 @import "list.styl"
 
 @import "confirm.styl"
+
+@import "2.0.styl"

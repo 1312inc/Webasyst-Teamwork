@@ -54,6 +54,7 @@ var Task = ( function($) {
         that.time_since_update_period = options.time_since_update_period;
         that.is_single = that.$task.hasClass("is-single");
         that.task_id = that.task.id || that.$task.data("task-id");
+        that.task_uuid = that.task.uuid || that.$task.data("task-uuid");
         that.activeTaskClass = false;
         that.animationTime = 333;
         that.files_hash = options.files_hash || that.generateHash();
@@ -236,7 +237,7 @@ var Task = ( function($) {
         });
 
         $task.on("click", ".t-delete-task-link", function() {
-            if (confirm($_("Are you sure?"))) {
+            if (confirm($_("DANGER: Task will be deleted without the ability to restore. Delete?"))) {
                 that.deleteTask();
             }
             return false;
@@ -411,7 +412,7 @@ var Task = ( function($) {
 
                 $.post(save_href, save_data, function(response) {
                     if (response["status"] == "ok") {
-                        //
+                        that.reloadTask();
                         hidePriorityChanger();
                     }
                 });
@@ -480,6 +481,11 @@ var Task = ( function($) {
                     current_user_id = that.user_id,
                     skip_form = !!e.shiftKey;
 
+                // Show spinner if Status has no form
+                if ($link.data('has-form') === 0) {
+                    $.tasks.showLoadingButton($link);
+                }
+
                 // assigned contact is current user, than show confirm dialog first
                 var need_show_confirm_dialog = current_user_id !== null && assigned_contact_id !== null &&
                         assigned_contact_id !== current_user_id;
@@ -489,63 +495,42 @@ var Task = ( function($) {
                     return false;
                 }
 
-                var $loading = $('<i class="icon16 loading"></i>'),
-                    $label = $link.find('.t-change-status-link-label');
-
-                $loading.css({
-                    marginTop: '6px',
-                    marginLeft: '4px'
-                }).insertAfter($label);
-
                 showConfirmDialog({
                     params: {
                         contact_id: assigned_contact_id,
                         status_id: status_id
                     },
-                    onLoad: function () {
-                        $loading.hide();
-                        var $dialog = $(this),
-                            $form = $dialog.find('form'),
-                            $button = $dialog.find('.t-change-status-link');
-                        $button.click(function (e) {
-                            e.preventDefault();
-                            $form.submit();
-                        });
-                    },
-                    onSubmit: function ($dialog) {
-                        $dialog.find('.t-loading').show();
+                    onSubmit: function () {
                         onChangeStatus($link, skip_form);
-                        $dialog.trigger('close');
-                        return false;
                     }
                 });
 
                 return false;
             });
 
-            $task.on("click", ".t-hiddenform-cancel-link", function() {
-                if (that.is_single) {
-                    hideHiddenContainer();
-                } else {
-                    hideHiddenForm();
-                }
-                return false;
-            });
+            // $task.on("click", ".t-hiddenform-cancel-link", function() {
+            //     if (that.is_single) {
+            //         hideHiddenContainer();
+            //     } else {
+            //         hideHiddenForm();
+            //     }
+            //     return false;
+            // });
 
-            $task.on("submit", ".t-return-form-block form", function() {
-                onStatusSubmit($(this), "left");
-                return false;
-            });
+            // $task.on("submit", ".t-return-form-block form", function() {
+            //     onStatusSubmit($(this), "left");
+            //     return false;
+            // });
 
-            $task.on("submit", ".t-task-forward-wrapper form", function() {
-                onStatusSubmit($(this), "right");
-                return false;
-            });
+            // $task.on("submit", ".t-task-forward-wrapper form", function() {
+            //     onStatusSubmit($(this), "right");
+            //     return false;
+            // });
 
-            $task.on("submit", ".t-status-form-block form", function() {
-                onStatusSubmit($(this), "right");
-                return false;
-            });
+            // $task.on("submit", ".t-status-form-block form", function() {
+            //     onStatusSubmit($(this), "right");
+            //     return false;
+            // });
 
             $statusForm.on("onResize", function() {
                 resizeHiddenForm();
@@ -561,8 +546,8 @@ var Task = ( function($) {
 
         };
 
-        var commentFileEvents = function() {
-            var $commentWrapper = $task.find(".t-status-comment-wrapper");
+        var commentFileEvents = function($container) {
+            var $commentWrapper = $container.find(".t-status-comment-wrapper");
 
             filesController = new TaskCommentFilesUploader({
                 '$wrapper': $commentWrapper
@@ -629,7 +614,7 @@ var Task = ( function($) {
                     $deferred.resolve(html);
                 });
 
-                showHiddenContainer($deferred);
+                showHiddenContainer($deferred, "forward");
 
             } else {
 
@@ -657,7 +642,7 @@ var Task = ( function($) {
                     $deferred.resolve(html);
                 });
 
-                showHiddenContainer($deferred);
+                showHiddenContainer($deferred, "return", "left");
 
             } else {
 
@@ -741,11 +726,24 @@ var Task = ( function($) {
         var showConfirmDialog = function (options) {
             $.get('?module=tasks&action=changeStatusConfirm', options.params || {})
                 .done(function (html) {
-                    // remove all previous dialogs in DOM
-                    $('.tasks-done-confirm-dialog').remove();
-                    // append new dialog
-                    $('body').append(html);
-                    $('.tasks-done-confirm-dialog').waDialog(options);
+                    $.waDialog({
+                        html: html,
+                        onOpen: function ($dialog, dialog_instance) {
+                            var $button = $dialog.find('.t-change-status-link');
+                                $close = $dialog.find('.cancel');
+
+                            $button.click(function (e) {
+                                e.preventDefault();
+                                options.onSubmit();
+                                dialog_instance.close();
+                            });
+
+                            $close.click(function (e) {
+                                e.preventDefault();
+                                dialog_instance.close();
+                            })
+                        }
+                    });
                 });
         };
 
@@ -765,7 +763,7 @@ var Task = ( function($) {
                         $deferred.resolve(html);
                     });
 
-                    showHiddenContainer($deferred);
+                    showHiddenContainer($deferred, "status");
 
                 } else {
 
@@ -791,7 +789,8 @@ var Task = ( function($) {
 
                     // Send Request
                     $.post(href, data, function() {
-                        $.tasks.redispatch();
+                        that.reloadTask();
+                        $.tasks.reloadSidebar();
                     }, 'json');
 
                 } else {
@@ -849,7 +848,7 @@ var Task = ( function($) {
                             // Render
                             $statusForm.html(html);
 
-                            commentFileEvents();
+                            commentFileEvents($statusForm);
 
                             // Focus
                             $statusForm.find("textarea").focus();
@@ -906,33 +905,72 @@ var Task = ( function($) {
             }
         };
 
-        var showHiddenContainer = function( $deferred ) {
-            var $statusWrapper = that.$statusWrapper;
+        var showHiddenContainer = function( $deferred, name = '', direction = 'right') {
+            // var $statusWrapper = that.$statusWrapper;
 
-            $statusWrapper
-                .html('<i class="icon16 loading" />')
-                .addClass(storage.shown_class);
+            // $statusWrapper
+            //     .html('<i class="icon16 loading" />')
+            //     .addClass(storage.shown_class);
 
             $deferred.done( function(html) {
-                $statusWrapper
-                    .html( html );
+                // $statusWrapper
+                //     .html( html );
 
-                // Focus
-                $statusWrapper.find("textarea").focus();
+                var wrappedHtml = `
+                    <div class="drawer" id="">
+                    <div class="drawer-background"></div>
+                    <div class="drawer-body">
+                        <a href="#" class="drawer-close js-close-drawer"><i class="fas fa-times"></i></a>
+                        <div class="drawer-block">
+                            <header class="drawer-header">
+                                <h1>
+                                    ${$.wa.locale[name]}
+                                </h1>
+                            </header>
+                            <div class="drawer-content">
+                                ${html}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                    `;
 
-                commentFileEvents();
+                $.waDrawer({
+                    html: wrappedHtml,
+                    direction: direction,
+                    onOpen: function ($drawer, drawer_instance) {
+                        // Focus
+                        $drawer.find("textarea").focus();
+                        // Handle close
+                        $drawer.find(".t-hiddenform-cancel-link").on('click', function() {
+                            drawer_instance.close();
+                        })
+                        // Handle submit
+                        $drawer.find("form").on("submit", function(e) {
+                            e.preventDefault()
+                            onStatusSubmit($(this), direction);
+                            drawer_instance.close();
+                        });
+
+                        commentFileEvents($drawer);
+                    },
+                    onClose: function () {
+                        that.is_status_opened = false;
+                    }
+                });
+                
             });
 
             that.is_status_opened = true;
         };
 
-        var hideHiddenContainer = function() {
-            that.$statusWrapper
-                .removeClass(storage.shown_class)
-                .html("");
+        // var hideHiddenContainer = function() {
+        //     that.$statusWrapper
+        //         .removeClass(storage.shown_class)
+        //         .html("");
 
-            that.is_status_opened = false;
-        };
+        //     that.is_status_opened = false;
+        // };
 
         bindEvents();
 
@@ -953,7 +991,17 @@ var Task = ( function($) {
         var onAllDone = typeof callbacks.onAllDone === 'function' ? callbacks.onAllDone : null;
 
         var bindEvents = function() {
+
+            $R('.t-redactor-comments', {
+                imageData: {
+                    task_uuid: that.task_uuid
+                }
+            });
+
             $commentForm.on("submit", function() {
+                var $submitButton = $(this).find('[type="submit"]');
+                
+                $.tasks.showLoadingButton($submitButton);
                 clearCommentErrors();
                 if (validateComment()) {
                     addComment();
@@ -1161,7 +1209,7 @@ var Task = ( function($) {
 
         $task.on('click', '.t-comment-delete-link', function (e) {
             e.preventDefault();
-            if (!confirm($_("Are you sure?"))) {
+            if (!confirm($_("Comment will be deleted without the ability to restore. Delete?"))) {
                 return;
             }
             var $link = $(this);
@@ -1259,9 +1307,12 @@ var Task = ( function($) {
             var matches = this.pathname.match(regexp);
             if (matches) {
                 var $a = $(this);
+                if (!$a.parent().hasClass('break-word')) {
+                    $a.wrap('<span class="break-word"></span>');
+                }
                 if (!$a.hasClass('js-no-app-icon') && !$a.hasClass('t-tag-link')) {
                     $a.addClass('app-link app-'+matches[1]).prepend($.parseHTML(
-                        '<i class="icon16 app-icon app-'+matches[1]+'" style="background-image:url('+app_icons[matches[1]]+');background-size:16px 16px;margin-top: 2px;"></i>'
+                        '<i class="icon app-icon custom-mr-4 app-'+matches[1]+'" style="background-image: url('+app_icons[matches[1]]+'); background-size: 100%; margin-top: 2px;"></i>'
                     ));
                 }
             }
@@ -1282,7 +1333,7 @@ var Task = ( function($) {
         var that = this,
             $tags = that.$tags,
             tag_href = "#/tasks/tag/" + tag_name + "/",
-            $tag = $tags.find(".t-tag-item.is-template").clone().removeClass("is-template");
+            $tag = $tags.find(".tag.is-template").clone().removeClass("is-template");
 
         // Render
         $tag.data("tag-id", tag_id)
@@ -1357,7 +1408,7 @@ var Task = ( function($) {
     };
 
     Task.prototype.deleteRelations = function ($this) {
-        if (confirm('Are you sure')) {
+        if (confirm( $_('Unlink these tasks?') )) {
             var that = this,
                 $parent = $this.parent(),
                 type = $parent.data('relation-type'),
@@ -1493,7 +1544,7 @@ var Task = ( function($) {
 
     Task.prototype.reloadTask = function(callbacks) {
         var that = this,
-            is_selected = (tasksHeader.selectedTasks.hasOwnProperty(that.task_id)),
+            is_selected = (typeof tasksHeader !== 'undefined') ? tasksHeader.selectedTasks.hasOwnProperty(that.task_id) : undefined,
             update_href,
             params = {};
 
@@ -1545,6 +1596,19 @@ var Task = ( function($) {
                 replace();
             }
 
+            // Update the task item in the second sidebar if exists
+            $.get('?module=tasks&action=sidebarItem&id=' + that.task_id).then(function (html) {
+                var selector = '#t-tasks-wrapper [data-task-id="' + that.task_id + '"]',
+                    el = $(selector),
+                    status = $(html).data('statusId');
+                if (el.length) {
+                    el.replaceWith(html);
+                    if (+status === -1) {
+                        $(selector).fadeOut();
+                    }
+                }
+            });
+
         });
 
     };
@@ -1586,17 +1650,22 @@ var Task = ( function($) {
 
     Task.prototype.onFavorite = function ($link) {
         var that = this,
-            $i = $link.find('i'),
-            value = $i.hasClass('star-empty') ? 1 : 0;
+            $i = $link.find('.fa-star').get(0),
+            value = $i.classList.contains('text-light-gray') ? 1 : 0,
+            $spans = $link.find('span');
 
-        $i.attr('class', 'icon16 loading');
-        $.post('?module=tasks&action=favorite&id=' + that.task_id, {value: value}, function (response) {
+        $.post('?module=tasks&action=favorite&id=' + that.task_id, { value: value }, function (response) {
             if (response.status == 'ok') {
                 $.tasks.reloadSidebar();
+                $spans.hide();
                 if (value) {
-                    $i.attr('class', 'icon16 star');
+                    $spans.eq(1).show();
+                    $i.classList.remove('text-light-gray');
+                    $i.classList.add('text-yellow');
                 } else {
-                    $i.attr('class', 'icon16 star-empty');
+                    $spans.eq(0).show();
+                    $i.classList.add('text-light-gray');
+                    $i.classList.remove('text-yellow');
                 }
             }
         });
@@ -1747,7 +1816,7 @@ var Task = ( function($) {
                 task_info = r.data.task;
 
                 if (is_changed) {
-                    
+
                     if (canBeReload()) {
                         reloadTask(r.data.url);
                         return;
@@ -1796,7 +1865,8 @@ var TaskCommentFilesUploader = ( function($) {
     TaskCommentFilesUploader.prototype.uploadFiles = function(hash, callbacks) {
         var that = this,
             url = "?module=attachments&action=upload",
-            files = that.attachedFiles;
+            files = that.attachedFiles,
+            waLoading = $.waLoading();
 
         callbacks = $.isPlainObject(callbacks) ? callbacks : {};
         var onAllDone = typeof callbacks.onAllDone === 'function' ? callbacks.onAllDone : null,
@@ -1813,6 +1883,9 @@ var TaskCommentFilesUploader = ( function($) {
         var all_files_counter = that.files_count;
 
         that.clearErrors();
+
+        // Show progress bar
+        waLoading.animate(6000, 99, true);
 
         $.each(files, function (index, file) {
             // Vars
@@ -1844,6 +1917,8 @@ var TaskCommentFilesUploader = ( function($) {
                     all_files_counter--;
                     if (all_files_counter <= 0) {
                         onAllAlways && onAllAlways();
+                        // Hide progress bar
+                        waLoading.hide();
                     }
 
                     if (r.status != 'ok') {
@@ -1955,7 +2030,7 @@ var TaskCommentFilesUploader = ( function($) {
             $file.remove();
 
         } else {
-            if (confirm($_("Are you sure?"))) {
+            if (confirm($_("Attachment will be deleted without the ability to restore. Delete?"))) {
                 var file_ident = $file.data("file-ident"),
                     delete_href = "?module=attachments&action=delete",
                     delete_data = {

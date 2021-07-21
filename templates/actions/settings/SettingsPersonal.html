@@ -2,25 +2,28 @@
 
 {include file="./SettingsPersonalHelpers.inc.html" inline}
 
-<div class="block bordered-left blank shadowed double-padded" id="{$wrapper_id}">
-    <h1>[`My preferences`]</h1>
-    <div class="block not-padded">
+<div class="article" id="{$wrapper_id}">
+    <div class="article-body">
+
+        <h1>
+            <span class="icon custom-mr-4"><span class="userpic" style="background-image: url('{$wa->user()->getPhoto(96)}');"></span></span>
+            [`My notification preferences`]
+        </h1>
+
         <form action="?module=settingsPersonal&action=save" class="t-setting-form">
             <input type="hidden" name="settings[notification][]" value="">
-            <br>
             <div class="t-settings-fields fields">
                 <div class="field-group">
                     <div class="field">
                         <div class="name">
-                            [`Notifications`]
+                            [`Notify me on`]
                         </div>
                         <div class="value">
-                            [`Send me notification in case of`]
-                            <ul class="menu-v">
+                            <ul class="menu custom-mt-4">
                                 {$_items = [
-                                    'always' => '[`Any action`]',
-                                    'assign' => '[`Assignment only`]',
-                                    'off' => '[`Switch off`]'
+                                    'always' => '[`All updates and comments`]',
+                                    'assign' => '[`Assignments only`]',
+                                    'off' => '[`Turn off all notifications`]'
                                 ]}
                                 {foreach $_items as $_id => $_label}
                                     <li>{action_li_item label=$_label id=$_id}</li>
@@ -32,18 +35,15 @@
                 <div class="field-group">
                     <div class="field">
                         <div class="name">
-                            [`Actions`]
+                            [`Which tasks`]
                         </div>
                         <div class="value">
-                            [`Notify me about next kind of tasks`]
-
-
-                            <ul class="menu-v t-settings-list">
+                            <ul class="menu t-settings-list custom-mt-4">
                                 {$_items = [
-                                    'assigned_to_me' => '[`Assigned to me`]',
-                                    'created_by_me' => '[`Created by me`]',
-                                    'favorites' => '[`Favorites`]',
-                                    'project' => '[`Selected projects`]'
+                                    'assigned_to_me' => '[`Tasks assigned to me`]',
+                                    'created_by_me' => '[`Tasks created by me`]',
+                                    'favorites' => '[`Tasks I’m watching`]',
+                                    'project' => '[`Tasks from selected projects`]'
                                 ]}
                                 {foreach $_items as $_id => $_label}
                                     <li>
@@ -57,18 +57,18 @@
                         </div>
                     </div>
                 </div>
-                <div class="field-group">
+                <div class="field-group custom-mt-16">
                     <div class="field">
                         <div class="value submit t-settings-buttons">
-                            <input type="submit" class="button green" value="[`Save settings`]">
-                            <i class="icon16 loading t-loading" style="margin-top: 6px; display: none;"></i>
+                            <input type="submit" class="button" value="[`Save settings`]">
+                            <i class="fas fa-spinner" style="margin-top: 6px; display: none;"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </form>
+
     </div>
-    <div class="clear"></div>
 
     <script>
         (function ($) {

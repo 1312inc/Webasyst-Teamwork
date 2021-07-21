@@ -1,0 +1,296 @@
+{strip}
+
+{function counts_pair total=0 count=0 bg_color=null text_color=null}
+    {if !$count}
+        <span class="count">{$total}</span>
+    {elseif $count == $total}
+        <span class="count{if $bg_color == '#ff0000'} indicator{/if}" style="background:{ifempty($bg_color, 'transparent')};color:{ifempty($text_color, '#999')}">{$count}</span>
+    {else}
+        <span class="count">{$total}</span>
+        <span class="count indicator" style="margin-right: 4px; background:{ifempty($bg_color, 'transparent')};color:{ifempty($text_color, '#999')}">{$count}</span>
+
+    {/if}
+{/function}
+
+{$empty_user_count = [
+    count => 0,
+    total => 0,
+    text_color => '#999',
+    bg_color => 'transparent'
+]}
+{function user_count user_id=null}{strip}
+    {if $is_admin}
+        {$user_count = ifset($team_counts[$user_id], $empty_user_count)}
+        {counts_pair total=$user_count.total count=$user_count.count bg_color=$user_count.bg_color text_color=$user_count.text_color}
+    {/if}
+{/strip}{/function}
+
+<div class="t-sidebar-block" id="t-sidebar">
+    <div class="block">
+        <ul class="menu-v with-icons">
+            <li class="add-task-wrapper">
+                <a id="add-task-link" class="add-task-link bold" href="#/add/"><i class="icon16 add"></i>[`New task`]</a>
+            </li>
+            <li>
+                {$user_count = ifset($team_counts[$wa->user('id')], $empty_user_count)}
+                {if $user_count.total == $user_count.count}
+                    {$inbox_urgent_count = $user_count.count - $hidden_count}
+                {else}
+                    {$inbox_urgent_count = $user_count.count}
+                {/if}
+                {counts_pair total=$user_count.total-$hidden_count count=$inbox_urgent_count bg_color=$user_count.bg_color text_color=$user_count.text_color}
+                <a href="#/tasks/inbox/"><i class="icon16 download"></i>[`Inbox`]</a>
+            </li>
+            <li class="inbox-hidden small gray"{if !$hidden_count} style="display: none"{/if}>
+                <span class="count">{$hidden_count}</span>
+                <a href="#/tasks/hidden/">[`Hidden`]</a>
+            </li>
+            <li>
+                <span class="count">{$outbox_count}</span>
+                <a href="#/tasks/outbox/"><i class="icon16 outbox"></i>[`Outbox`]</a>
+            </li>
+            <li>
+                {* Fix color for favorites task with high priority (dont use red)*}
+                {if !empty($favorites_counts) && isset($favorites_counts.name)}
+                    {if $favorites_counts.name == 'High'}
+                        {$favorites_counts.text_color = '#999'}
+                        {$favorites_counts.bg_color = 'transparent'}
+                    {/if}
+                {/if}
+                {counts_pair total=$favorites_counts.total count=$favorites_counts.count bg_color=$favorites_counts.bg_color text_color=$favorites_counts.text_color}
+                <a href="#/tasks/favorites/"><i class="icon16 star"></i>[`Favorites`]</a>
+            </li>
+            <li>
+                {counts_pair total=$urgent_count count=$super_urgent_count bg_color='#ff0000' text_color='white'}
+                <a href="#/tasks/urgent/"><i class="icon16 exclamation-red"></i>[`Urgent`]</a>
+            </li>
+
+            <!-- plugin hook: 'backend_sidebar.top_li' -->
+            {* @event backend_sidebar.%plugin_id%.top_li *}
+            {if !empty($backend_sidebar)}{foreach $backend_sidebar as $_}{ifset($_.top_li)}{/foreach}{/if}
+
+            {if $is_admin}
+                <li>
+                    <a href="#/log/"><i class="icon16 reports"></i>[`Logbook`]</a>
+                </li>
+            {/if}
+
+        </ul>
+
+        <br>
+
+        <div class="t-search-wrapper">
+            <div class="t-search-block">
+                <input class="t-sidebar-search-submit js-search-submit" type="button" value="">
+                <input class="t-search-input" id="t-search-input" type="text" placeholder="[`Search`]"{if !empty($search_value)} value="{$search_value|escape}"{/if}>
+            </div>
+        </div>
+
+    </div>
+
+    {if $lists}
+        <div class="t-view-list-wrapper block" id="t-view-list-wrapper">
+            <h5 class="heading">
+                <i class="icon16 darr"></i><a href="javascript:void(0);">[`My lists`]</a>
+            </h5>
+            <ul class="menu-v with-icons t-view-list collapsible hide-when-collapsed">
+
+                {foreach $lists as $_list}
+                    <li data-id="{$_list.id}">
+                        <span class="count">{$_list.count|default:0}</span>
+
+                        {$_params = [
+                            "list_id={$_list.id}",
+                            "hash={$_list.hash|escape}"
+                        ]}
+                        {if $_list.params != null}
+                            {$_params[] = $_list.params|escape}
+                        {/if}
+                        {if $_list.order != null}
+                            {$_params[] = "order="|cat:$_list.order|escape}
+                        {/if}
+                        {$_params_str = join('&', $_params)}
+
+                        {$_href = "#/tasks/{$_params_str}/"}
+                        <a title="{$_list.name|escape}" href="{$_href}">
+                            <i class="icon16 {$_list.icon|default:'contact'|escape}"></i>
+                            {$_list.name|truncate:18:'...':true|escape}
+                        </a>
+                    </li>
+                {/foreach}
+            </ul>
+        </div>
+    {/if}
+
+    {if $scopes || $is_admin}
+        <div class="block" id="t-scope-list-wrapper">
+        {if $is_admin}
+            <span class="count">
+                <a class="add-scope" href="#/webasyst/tasks/#/settings/scope/add/"><i class="icon16 add"></i></a>
+            </span>
+        {/if}
+        <h5 class="heading">
+            <i class="icon16 darr"></i><a href="javascript:void(0);">[`Scopes`]</a>
+        </h5>
+        {if $scopes}
+            <ul class="t-scopes menu-v with-icons collapsible hide-when-collapsed">
+                {foreach $scopes as $scope}
+                    <li class="t-scope {if !empty($scope.due_date) && $scope.due_date < date('Y-m-d')}child-red{/if}">
+                        <span class="count"></span>
+                        <a href="#/tasks/scope/{$scope.id}/"{if isset($scope.closed_percent)}class="t-scope-title"{/if}>
+                            {$scope.project.icon_html}{$scope.name|escape}
+                            <span class="hint" style="display: block;">
+                                {if !empty($scope.due_date)}
+                                    {$scope.due_date|wa_datetime:"humandate"}
+                                {else}
+                                    [`Date is not set.`]
+                                {/if}
+                            </span>
+                        </a>
+                        <span class="hint t-closed-percent">{if isset($scope.closed_percent)}{$scope.closed_percent}%{/if}</span>
+                    </li>
+                {/foreach}
+            </ul>
+        {else}
+            <div class="block align-center collapsible hide-when-collapsed">
+                <p class="hint">[`Scopes are not set.`]</p>
+            </div>
+        {/if}
+    </div>
+    {/if}
+
+    <!-- plugin hook: 'backend_sidebar.section' -->
+    {* @event backend_sidebar.%plugin_id%.section *}
+    {if !empty($backend_sidebar)}{foreach $backend_sidebar as $_}{ifset($_.section)}{/foreach}{/if}
+
+    <div class="block" id="status-list-wrapper">
+        <h5 class="heading">
+            <i class="icon16 darr"></i><a href="javascript:void(0);">[`Status`]</a>
+        </h5>
+        <ul class="menu-v with-icons collapsible hide-when-collapsed">
+            {foreach tasksHelper::getStatuses() as $s}
+                <li>
+                    {if $status_counts}<span class="count">{ifset($status_counts[$s.id], 0)}</span>{/if}
+                    <a href="#/tasks/status/{$s.id}/">
+                        {$s.icon_html}{$s.name|escape}
+                    </a>
+                </li>
+            {/foreach}
+            <li class="gray">
+                {user_count user_id=''}
+                <a href="#/tasks/unassigned/"><i class="icon16 userpic-unassigned"></i>[`Unassigned`]</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="team-list-wrapper block" id="team-list-wrapper">
+        <h5 class="heading">
+            <i class="icon16 darr"></i><a href="javascript:void(0);">[`Team`]</a>
+        </h5>
+        {$_users = tasksHelper::getTeam(null, true)}
+        {if !empty($_users)}
+            <ul class="menu-v with-icons collapsible hide-when-collapsed">
+                {foreach $_users as $user}
+                    <li>
+                        {user_count user_id=$user.id}
+                        <a href="#/tasks/assigned/{$user.id}/"><i class="icon16 userpic20" style="background-image: url({waContact::getPhotoUrl($user.id, $user.photo, 40, 40, 'person', 0)})"></i>{$user.name|escape}</a>
+                    </li>
+                {/foreach}
+            </ul>
+        {else}
+            <div class="block align-center collapsible hide-when-collapsed">
+                <p class="hint">{sprintf(_w('Use <strong>app "%s"</strong> to provide access to Tasks app for your teammates.'), $team_app_name)}</p>
+            </div>
+        {/if}
+    </div>
+
+    {if $projects || $is_admin}
+        <div class="projects-list-wrapper block" id="projects-list-wrapper">
+            {if $is_admin}
+                <span class="count">
+                    <a class="add-project" href="#/settings/project/add/"><i class="icon16 add"></i></a>
+                </span>
+            {/if}
+            <h5 class="heading">
+                <i class="icon16 darr"></i><a href="javascript:void(0);">[`Projects`]</a>
+            </h5>
+            {if $projects}
+                <ul class="menu-v with-icons collapsible hide-when-collapsed">
+                    {foreach $projects as $project}
+                        <li>
+                            {if $project.count !== null}
+                                {counts_pair total=$project.total count=$project.count bg_color=$project.priority_count.bg_color text_color=$project.priority_count.text_color}
+                            {/if}
+                            <a href="#/tasks/project/{$project.id}/">
+                                {$project.icon_html}{$project.name|escape}
+                                {if !empty($project.color) && ($project.color != "t-white")}
+                                    <i class="icon10 no-overhanging color {$project.color}"></i>
+                                {/if}
+                            </a>
+                        </li>
+                    {/foreach}
+                </ul>
+            {else}
+                <div class="block align-center collapsible hide-when-collapsed">
+                    <p class="hint">[`Create a project by clicking the green tiny icon above.`]</p>
+                </div>
+            {/if}
+        </div>
+    {/if}
+
+    {if !empty($cloud)}
+        {if count($cloud) > tasksTaskTagsModel::TAGS_MAX_COUNT}
+            <div id="collapsible-tags-autocomplete" class="block" data-block="tags">
+                <h5 id="t-tags-autocomplete" class="heading collapse-handler"><i class="icon16 darr"></i>[`Tags`]</h5>
+                <div class="block t-tags-wrapper collapsible hide-when-collapsed">
+                <input id="js-t-sidebar-tags-autocomplete" value="" data-default="" class="ui-autocomplete-input" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true">
+                <br>
+                <span class="hint" style="margin: 1em 0;">{sprintf(_w('There are more than %u tags.'), tasksTaskTagsModel::TAGS_MAX_COUNT)}<br>
+                    [`Start typing in the search field to find a tag.`]</span>
+                </div>
+            </div>
+        {else}
+            <div id="collapsible-tags" class="block" data-block="tags">
+                <h5 id="t-tags" class="heading collapse-handler"><i class="icon16 darr"></i>[`Tags`]</h5>
+                <div class="block align-center t-tags-wrapper js-tags-wrapper collapsible hide-when-collapsed">
+                    {foreach $cloud as $tag}
+                        <a style="font-size: {$tag.size}%; opacity: {$tag.opacity};color: green;text-decoration: underline;" data-id="{$tag.id}" data-value="{$tag.name|escape}" href="#/tasks/tag/{$tag.name|escape}/">{$tag.name|escape}</a>
+                    {/foreach}
+                </div>
+            </div>
+        {/if}
+    {/if}
+
+    <div class="hr"></div>
+
+    <div class="block">
+        <ul class="menu-v with-icons">
+            <li>
+                <a href="#/personal-settings/"><i class="icon10 settings"></i>[`Personal settings`]</a>
+            </li>
+            {if $is_admin}
+                <li>
+                    <a href="#/settings/"><i class="icon16 settings"></i>[`Settings`]</a>
+                </li>
+                <li>
+                    <a href="#/plugins/"><i class="icon16 plugins"></i>[s`Plugins`]</a>
+                </li>
+            {/if}
+            <!-- plugin hook: 'backend_sidebar.bottom_li' -->
+            {* @event backend_sidebar.%plugin_id%.bottom_li *}
+            {if !empty($backend_sidebar)}{foreach $backend_sidebar as $_}{ifset($_.bottom_li)}{/foreach}{/if}
+        </ul>
+    </div>
+
+</div>
+
+{/strip}
+<script>
+    (function ($) {
+
+        new TasksSidebar({
+            $wrapper: $(".t-sidebar-block")
+        });
+
+    })(jQuery);
+</script>

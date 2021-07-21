@@ -1,0 +1,231 @@
+{strip}
+
+<div class="t-main-wrapper t-log-page">
+    <header class="t-header-wrapper">
+        <div class="t-general-menu is-shown">
+            {*
+             * Filters by project, milestone and user
+             *}
+            <div class="t-menu-wrapper">
+                {foreach $filter_types as $ft_id => $options}
+                    <div class="t-menu-item" data-filter-id="{$ft_id}"><ul class="menu-h dropdown"><li>
+                        <a class="t-selected-item inline-link" href="javascript:void(0);">&nbsp;</a>
+                        <ul class="menu-v with-icons">
+                            {foreach $options as $o}
+                                <li class="t-nav-item" data-value="{$o.id}"><a href="javascript:void(0);">
+                                    {if !empty($o.icon_html) && ifempty($o.icon) != 'unknown'}
+                                        {$o.icon_html}
+                                    {/if}
+
+                                    {if !empty($o.id) && array_key_exists('photo', $o)}
+                                        {$_userpic = "{$wa_url}wa-content/img/userpic96.jpg"}
+                                        {if !empty($o.photo)}
+                                            {$_userpic = waContact::getPhotoUrl($o.id, $o.photo, 40, 40, 'person', 0)}
+                                        {/if}
+                                        <i class="icon16 userpic20" style="background-image: url({$_userpic|escape})"></i>
+                                    {/if}
+
+                                    <span class="{if $o@index > 0}is-bold{/if}">{$o.name|escape}</span>
+                                </a></li>
+                            {/foreach}
+                        </ul>
+                    </li></ul></div>
+                {/foreach}
+                {if !empty($is_filter_set)}
+                    <div class="t-menu-item" style="border-right: 0;">
+                        <span class="t-menu-name">
+                            <a href="#/log/" class="t-remove-filters-link">
+                                <i class="icon16 t-clear-filters" style="vertical-align: middle; margin: 0;" title="[`Clear filters`]"></i>
+                            </a>
+                        </span>
+                    </div>
+                {/if}
+            </div>
+
+            {*
+             * Chart period selector
+             *}
+            <div class="t-right-column is-middle">
+                <div class="t-menu-item">
+                    <ul class="menu-h dropdown t-logs-timeframe">
+                        <li class="hidden t-custom-timeframe">
+                            [`from`]
+                            <input type="text" name="from">
+                            [`to`]
+                            <input type="text" name="to">
+                            <select name="groupby">
+                                <option value="days">[`by day`]</option>
+                                <option value="months">[`by month`]</option>
+                            </select>
+                        </li>
+                        <li class="t-logs-timeframe-dropdown">
+                            <a href="javascript:void(0)" class="inline-link float-right"><b><i>{* Changed by JS *}</i></b>
+                                <i class="icon10 darr"></i>
+                            </a>
+                            <ul class="menu-v">
+                                <li data-timeframe="30" data-groupby="days"><a href="javascript:void(0)" class="nowrap">{_w('Last %d day', 'Last %d days', 30)}</a></li>
+                                <li data-timeframe="90" data-groupby="days" data-default-choice="1"><a href="javascript:void(0)" class="nowrap">{_w('Last %d day', 'Last %d days', 90)}</a></li>
+                                <li data-timeframe="365" data-groupby="months"><a href="javascript:void(0)" class="nowrap">{_w('Last %d day', 'Last %d days', 365)}</a></li>
+                                <li data-timeframe="all" data-groupby="months"><a href="javascript:void(0)" class="nowrap">[`All time`]</a></li>
+                                <li data-timeframe="custom"><a href="javascript:void(0)" class="nowrap">[`Select dates...`]</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    {if $chart_html}
+        <div id="t-logs-chart-wrapper">
+            {$chart_html}
+        </div>
+    {/if}
+
+    {if $logs}
+        <div class="t-logs-wrapper" id="t-logs-wrapper">
+            {foreach $logs as $l}{strip}
+                <div class="t-comment-item profile image32px" data-log-id="{$l.id|escape}">
+                    <div class="image">
+                        <a href="#/log/contact_id={$l.contact_id}/" title="{$l.contact.name|escape}">
+                            <img class="userpic icon16" src="{$l.contact.photo_url}" alt="{$l.contact.name|escape}">
+                        </a>
+                    </div>
+                    <div class="details">
+                        <header class="t-comment-header">
+                            <span class="t-comment-author">
+                                <a href="#/log/contact_id={$l.contact_id}/" title="{$l.contact.name|escape}">{$l.contact.name|escape}</a>
+                            </span>
+                            <span class="t-comment-action">{$l.action_name}</span>
+                            <span class="t-comment-date">{$l.create_datetime|wa_datetime:"humandatetime"}</span>
+
+                            {$_task = $l.task|default:null}
+                            {if $_task}
+                                <div class="t-log-item-project-task-names" data-task-id="{$l.task.id}">
+                                    {$_project = $_task.project|default:null}
+                                    {if $_project}
+                                        {$_project_name = $_project.name|escape}
+                                        {$_task_str_id = $_task.project_id|cat:'.':$_task.number}
+                                        <span class="t-log-item-project-name">{$_project_name}&nbsp;/&nbsp;{$_task_str_id}:&nbsp;</span>
+                                    {/if}
+                                    <span class="t-log-item-task-name"><a href="#/task/{$l.task_id}/">{$_task.name|escape}</a></span>
+                                </div>
+                            {else}
+                                <!-- TASK NOT FOUND (ID={$l.task_id}) -->
+                            {/if}
+
+                        </header>
+                        {if !empty($l.text)}
+                            <div class="t-comment-content">{tasksTask::formatText($l.text)}</div>
+                        {/if}
+
+                        {if $l.status_changed}
+                            <div class="t-comment-status-change">
+                                [`Status:`]
+                                {if isset($l.before_status_id)}
+                                    <span class="t-color-point" style="background:{$l.before_status_color};"></span>
+                                    {tasksHelper::statusNameHTML($l.before_status_id)}
+                                    &nbsp;→
+                                {/if}
+                                <span class="t-color-point" style="background:{$l.after_status_color};"></span>
+                                {tasksHelper::statusNameHTML($l.after_status_id)}
+
+                            </div>
+                        {/if}
+                        {if $l.assigned_contact_id}
+                            <div class="t-comment-assignment-change">
+                                [`Assigned:`] <strong>{$l.assigned_contact.name|escape}</strong>
+                            </div>
+                        {else}
+                            <div class="t-comment-assignment-change">
+                                <em>[`Unassigned`]</em>
+                            </div>
+                        {/if}
+
+                        {$log_attachments = ['files' => [], 'images' => []]} {* !!! *}
+                        {if $log_attachments.files || $log_attachments.images}
+                            <div class="t-attach-wrapper">
+                                <div class="t-attached-files-wrapper">
+                                    {if $log_attachments.images}
+                                        <div class="t-images-list">
+                                            {foreach $log_attachments.images as $image}
+                                                <div class="t-image-item">
+                                                    <a class="t-image-link wa-gallery-image" href="?module=attachments&action=download&id={$image.id}" title="{$image.name|escape}">
+                                                        <img src="{tasksHelper::getAttachPreviewUrl($image)}" alt="{$image.name|escape}">
+                                                    </a>
+                                                    <div class="t-file-name">{$image.name|escape}</div>
+                                                </div>
+                                            {/foreach}
+                                        </div>
+                                    {/if}
+                                    {if $log_attachments.files}
+                                        <div class="t-files-list">
+                                            {foreach $log_attachments.files as $file}
+                                                <div class="t-file-item" data-file-ident="{$file.id}">
+                                                    <a class="t-file-link" href="?module=attachments&action=download&id={$file.id}" title="{$file.name|escape}">
+                                                        <i class="icon16 attachment"></i>
+                                                        <span class="t-file-name">{$file.name|escape}</span>
+                                                        <span class="t-file-size">{$file.size|wa_format_file_size}</span>
+                                                    </a>
+                                                </div>
+                                            {/foreach}
+                                        </div>
+                                    {/if}
+                                </div>
+                            </div>
+                        {/if}
+                    </div>
+                </div>
+            {/strip}{/foreach}
+
+            <div id="end-of-logs" class="block">
+                <p>
+                    <span class="js-logs-list-counter">{sprintf("[`%s of %d`]", _w('%d record','%d records', $offset + $count), $total_count)}</span>
+                    {if $click_to_load_more && $next_page_url}
+                        <span class="click-to-load-more"><a href="javascript:void(0)">[`Load more...`]</a></span>
+                    {/if}
+                    <span class="hidden loading-indicator"><i class="icon16 loading"></i>&nbsp;[`Loading...`]</span>
+                </p>
+                <script>(function() { "use strict";
+                    {* Note that this script has to be inside #t-logs-wrapper for lazy loading to work correctly. *}
+                    $.tasks.initLazyloader({
+                        lazyloading_wrapper: $('#end-of-logs'),
+                        next_page_url: {$next_page_url|json_encode},
+                        is_lazy: {if $click_to_load_more}false{else}true{/if},
+                        list_selector: '#t-logs-wrapper',
+                        item_id_data_attr: 'log-id'
+                    });
+
+                })();</script>
+            </div>
+        </div>
+    {else}
+        {* !!! TODO: nice friendly message when there are no logs in list *}
+    {/if}
+
+</div>
+
+{/strip}
+
+<script>(function() { "use strict";
+
+    var $main_menu = $('.t-header-wrapper');
+    var list_hash = $.tasks.cleanHash(window.location.hash) || '#/log/';
+    var list_params = list_hash.substr(6).split('/')[0];
+
+    initLogsTimeframeSelector($('.t-logs-timeframe')); // see d3chart-logs.js
+
+    // Set <a href=...> on filters
+    $main_menu.find(".t-nav-item[data-value]").each(function() {
+        var $nav_item = $(this),
+            filter_id = $nav_item.closest(".t-menu-item").data("filter-id"),
+            params = $.tasks.replaceParam(list_params, filter_id, $nav_item.data('value')),
+            item_hash = '#/log/'+params+(params ? '/' : '');
+        $nav_item.find("a").attr('href', item_hash);
+        if (item_hash == list_hash) {
+            $nav_item.closest(".t-menu-item").find(".t-selected-item").html($nav_item.find('a').html());
+        }
+    });
+
+
+})();</script>
