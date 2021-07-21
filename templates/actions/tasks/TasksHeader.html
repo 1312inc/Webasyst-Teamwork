@@ -66,6 +66,9 @@
 
         </div>
         <div class="flexbox">
+            <!-- plugin hook: 'backend_tasks.%plugin_id%.header.toolbar' -->
+            {* @event backend_tasks.%plugin_id%.header.toolbar *}
+            {foreach $_backend_header_hooks as $_}<div>{$_.toolbar|default:''}</div>{/foreach}
             {if $show_settings}
             <div>
                 <a class="circle button light-gray custom-mr-8" href="#/settings/{$settings_url}">
@@ -115,9 +118,6 @@
             {star_link title='[`Save to my custom filters`]'}
         {/if}
 
-        <!-- plugin hook: 'backend_tasks.%plugin_id%.header.toolbar' -->
-        {* @event backend_tasks.%plugin_id%.header.toolbar *}
-        {foreach $_backend_header_hooks as $_}{$_.toolbar|default:''}{/foreach}
     </div>
 
 </div>
