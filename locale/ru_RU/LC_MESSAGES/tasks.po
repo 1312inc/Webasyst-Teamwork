@@ -463,8 +463,11 @@ msgstr "Все проекты"
 msgid "All statuses"
 msgstr "Все статусы"
 
+msgid "All open"
+msgstr "Все открытые"
+
 msgid "All including closed"
-msgstr "Все, включая завершенные"
+msgstr "Все, включая закрытые"
 
 msgid "Any milestone"
 msgstr "Все сроки"
