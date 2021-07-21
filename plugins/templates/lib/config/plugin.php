@@ -2,10 +2,10 @@
 
 return array(
     'name'            => 'Templates',
-    'description'     => 'Templates',
-    'img'             => 'img/templates.svg',
-    'version'         => '1.0',
-    'vendor'          => 'webasyst',
+    'description'     => 'Speeds up task creation and assignment',
+    'img'             => 'img/templates.png',
+    'version'         => '1.0.0',
+    'vendor'          => '1021997',
     'custom_settings' => 0,
     'handlers'        => array(
         'backend_sidebar'   => 'backendSidebar',

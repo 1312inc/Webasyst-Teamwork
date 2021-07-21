@@ -5,7 +5,7 @@ return array(
     'description'     => 'Commits, tests, and releases handler',
     'img'             => 'img/git.png',
     'version'         => '1.0.0',
-    'vendor'          => 'webasyst',
+    'vendor'          => '1021997',
     'custom_settings' => 1,
     'handlers'        => array(
         'task_log'  => 'taskLog',

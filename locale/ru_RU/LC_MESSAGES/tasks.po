@@ -1326,3 +1326,9 @@ msgstr "Беклог"
 
 msgid "Hide tasks from your inbox for a specific period of time to focus on other important tasks. Your teammates will continue to see your hidden tasks as open and visible."
 msgstr "Скрывайте задачи из входящих на ограниченный период времени, чтобы сосредоточиться на других более важных задачах. Скрытие задачи работает только для вас во «Входящих». Другие пользователи будут видеть скрытые задачи как обычно."
+
+msgid "Template"
+msgstr "Шаблон"
+
+msgid "Export"
+msgstr "Экспорт"
