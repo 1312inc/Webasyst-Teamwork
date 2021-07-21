@@ -1,0 +1,27 @@
+<div class="t-toolbar-item">
+    {if $wa->whichUI() == '1.3'}
+        <a class="t-plugin-export-link" href="javascript:void(0);" title="Экспортировать">
+            <i class="icon16 export t-export-icon"></i>
+            <i class="icon16 loading t-loading-icon" style="display: none"></i>
+        </a>
+    {else}
+        <a class="button light-gray small t-plugin-export-link" href="javascript:void(0);" title="Экспортировать">
+            <i class="fas fa-export t-export-icon"></i>
+            <!-- <i class="icon16 loading t-loading-icon" style="display: none"></i> -->
+        </a>
+    {/if}
+
+    {* FORM FOR DOWNLOAD FILE *}
+    <form class="t-plugin-export-download-file-form" method="post" action="">
+        {$wa->csrf()}
+        <input type="hidden" name="file" value="1">
+    </form>
+
+    <script>
+        (function() {
+            new TasksExportPlugin({
+                "$wrapper": $("#content")
+            });
+        })(jQuery);
+    </script>
+</div>
