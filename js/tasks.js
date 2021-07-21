@@ -176,7 +176,7 @@
 
                 // If non changed
                 if (is_changed) {
-                    
+
                     // set value
                     $input.val(value).change();
 
@@ -1129,7 +1129,7 @@
 
                         // if High or Urgent
                         if (value === '1' || value === '2') {
-                            var exclamation_color = value === '1' ? '#ffd700' : '#ff4500';
+                            var exclamation_color = value === '1' ? '#ff6c00' : '#ed2509';
                             $span
                                 .addClass('t-ornament--exclamation')
                                 .append('<i style="color:' + exclamation_color + ';" class="fas fa-exclamation-circle"></i>');
