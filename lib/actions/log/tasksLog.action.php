@@ -90,7 +90,7 @@ class tasksLogAction extends tasksTasksAction
             $groupByExploded = explode('-', $groupBy);
             if (!isset($grouped[$groupBy])) {
                 $grouped[$groupBy] = [
-                    'group' => $monthNames[$groupByExploded[0]],
+                    'group' => sprintf('%s %d', $monthNames[$groupByExploded[0]], $groupByExploded[1]),
                     'items' => [],
                 ];
             }
