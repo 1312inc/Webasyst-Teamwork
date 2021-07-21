@@ -4,8 +4,8 @@ return array(
     'name'            => 'Releases',
     'description'     => 'Releases',
     'img'             => 'img/releases.svg',
-    'version'         => '0.3',
-    'vendor'          => 'webasyst',
+    'version'         => '0.3.0',
+    'vendor'          => '1021997',
     'custom_settings' => true,
     'handlers'        => array(
         'backend_assets'           => 'backendAssets',
