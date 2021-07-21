@@ -2,6 +2,12 @@
 var turndownService = new TurndownService();
 
 // add turndown custom rules
+turndownService.addRule("a", {
+  filter: ["a"],
+  replacement: function (content) {
+    return content;
+  },
+});
 turndownService.addRule("pre", {
   filter: ["pre"],
   replacement: function (content) {
@@ -21,6 +27,7 @@ turndownService.addRule("code", {
 var md = markdownit();
 md.set({
   html: true,
+  linkify: true,
 });
 
 // Redactor API
