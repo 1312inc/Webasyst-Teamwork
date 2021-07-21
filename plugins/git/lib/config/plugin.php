@@ -2,10 +2,10 @@
 
 return array(
     'name'            => 'Git',
-    'description'     => 'Commits, tests, release handler',
+    'description'     => 'Commits, tests, and releases handler',
     'img'             => 'img/git.png',
-    'version'         => '0.2.10',
-    'vendor'          => 'webasyst',
+    'version'         => '1.0.0',
+    'vendor'          => '1021997',
     'custom_settings' => 1,
     'handlers'        => array(
         'task_log'  => 'taskLog',

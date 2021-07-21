@@ -2,20 +2,40 @@
  * Supervisor control for task editor page. See plugin method backendTaskEdit()
  *}
 
-<div class="t-form-line field t-supervisor-wrapper" id="{$uniqid}">
-    <div class="name">[`Supervisor`]</div>
-    <div class="value supervisor-control">
-        <select name="supervisor_id[]">
-            <option value=""></option>
-            {foreach $users as $u}
-                <option value="{$u.id}">{$u.name|escape}</option>
-            {/foreach}
-        </select>
-        <a href="javascript:void(0)" class="supervisor-del"><i class="icon10 delete-bw no-overhanging"></i></a>
-    </div>
-    <div class="value">
-        <a href="javascript:void(0)" class="supervisor-add small inline-link"><i class="icon10 add"></i> <b><i>[`Add supervisor`]</i></b></a>
-    </div>
+<div class="fields">
+<div class="t-form-line field t-supervisor-wrapper custom-mt-16" id="{$uniqid}">
+    {if $wa->whichUI() == '1.3'}
+        <div class="name">[`Supervisor`]</div>
+        <div class="value supervisor-control">
+            <select name="supervisor_id[]">
+                <option value=""></option>
+                {foreach $users as $u}
+                    <option value="{$u.id}">{$u.name|escape}</option>
+                {/foreach}
+            </select>
+            <a href="javascript:void(0)" class="supervisor-del"><i class="icon10 delete-bw no-overhanging"></i></a>
+        </div>
+        <div class="value">
+            <a href="javascript:void(0)" class="supervisor-add small inline-link"><i class="icon10 add"></i> <b><i>[`Add supervisor`]</i></b></a>
+        </div>
+    {else}
+        <div class="name">[`Supervisor`]</div>
+        <div class="value">
+            <div class="supervisor-control">
+                <select name="supervisor_id[]">
+                    <option value=""></option>
+                    {foreach $users as $u}
+                        <option value="{$u.id}">{$u.name|escape}</option>
+                    {/foreach}
+                </select>
+                <a href="javascript:void(0)" class="supervisor-del"><i class="fas fa-minus-circle fa-xs"></i></a>
+            </div>
+            <div>
+                <a href="javascript:void(0)" class="supervisor-add small"><i class="fas fa-plus-circle fa-xs"></i> [`Add supervisor`]</a>
+            </div>
+        </div>
+    {/if}
+</div>
 </div>
 
 <script>(function() { "use strict";

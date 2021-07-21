@@ -42,16 +42,16 @@ var Dialog = ( function($) { "use strict";
             $content = that.$content,
             $closeLink = that.$closeLink;
 
-        $dialog.on("click", function(event) {
-            var $target = $(event.target),
-                custom_select_class = "set-custom-select",
-                is_custom_link = ($target.hasClass(custom_select_class) || $target.closest("." + custom_select_class).length ),
-                $closeContent = $content.find(".t-close-link");
+        // $dialog.on("click", function(event) {
+        //     var $target = $(event.target),
+        //         custom_select_class = "set-custom-select",
+        //         is_custom_link = ($target.hasClass(custom_select_class) || $target.closest("." + custom_select_class).length ),
+        //         $closeContent = $content.find(".t-close-link");
 
-            if (!is_custom_link && $closeContent.length) {
-                $closeContent.trigger("click");
-            }
-        });
+        //     if (!is_custom_link && $closeContent.length) {
+        //         $closeContent.trigger("click");
+        //     }
+        // });
 
         $content.on("click", function(event) {
             // Fix for custom select
@@ -142,9 +142,11 @@ var Dialog = ( function($) { "use strict";
             if ($task) {
 
                 // Correction
-                if ($task) {
-                    $content.css("top", top - header_height - 1);
-                }
+                /* version 2 tweak start */
+                // if ($task) {
+                //     $content.css("top", top - header_height - 1);
+                // }
+                /* version 2 tweak end */
 
                 that.task_height = $task.outerHeight();
 
@@ -155,14 +157,20 @@ var Dialog = ( function($) { "use strict";
                 });
 
             // NEW
-            } else {
-                // place for dialog content
-                $tasksWrapper.animate({
-                    "padding-top": block_height
-                }, time, easing, function() {
+            } 
 
-                });
-            }
+            // VERSION 2 CHANGES START
+
+            // else {
+            //     // place for dialog content
+            //     $tasksWrapper.animate({
+            //         "padding-top": block_height
+            //     }, time, easing, function() {
+
+            //     });
+            // }
+
+            // VERSION 2 CHANGES END
 
             // show dialog content
             $block.slideDown(time, easing, function() {
@@ -204,16 +212,28 @@ var Dialog = ( function($) { "use strict";
 
         // NEW
         } else {
-            $tasksWrapper.animate({
-                "padding-top": 0
-            },time ,easing, function() {
-                if ($.contains(document, $dialog[0])) {
-                    $dialog.remove();
-                    $(this).removeAttr("style");
-                    that.$body.removeClass(that.storage.showClass);
-                }
-                that.cancelCallback();
-            });
+
+            // VERSION 2 CHANGES START
+
+            // $tasksWrapper.animate({
+            //     "padding-top": 0
+            // },time ,easing, function() {
+            //     if ($.contains(document, $dialog[0])) {
+            //         $dialog.remove();
+            //         $(this).removeAttr("style");
+            //         that.$body.removeClass(that.storage.showClass);
+            //     }
+            //     that.cancelCallback();
+            // });
+            if ($.contains(document, $dialog[0])) {
+                $dialog.remove();
+                $(this).removeAttr("style");
+                that.$body.removeClass(that.storage.showClass);
+            }
+            that.cancelCallback();
+
+            // VERSION 2 CHANGES END
+
         }
     };
 

@@ -111,21 +111,21 @@ class tasksNotifications
             'from' => wa()->getUser(),
             'to' => $to
         ));
-        
+
         switch ($event) {
             case 'new':
-                $subject = sprintf(_w('NEW: %s %s'), $task['project_id'].'.'.$task['number'], $task['name']);
+                $subject = sprintf( '✅ ' . _w('NEW: %s %s'), $task['project_id'].'.'.$task['number'], $task['name']);
                 break;
             case 'assign':
-                $subject = sprintf(_w('ASSIGNED: %s %s'), $task['project_id'].'.'.$task['number'], $task['name']);
+                $subject = sprintf( '➡️ ' . _w('ASSIGNED: %s %s'), $task['project_id'].'.'.$task['number'], $task['name']);
                 break;
             case 'done':
-                $subject = sprintf(_w('DONE: %s was completed'), $task['project_id'].'.'.$task['number']);
+                $subject = sprintf( '☑️ ' . _w('DONE: %s was completed'), $task['project_id'].'.'.$task['number']);
                 break;
             case 'comment':
             case 'edit':
             default:
-                $subject = sprintf(_w('EDIT: %s was edited'), $task['project_id'].'.'.$task['number']);
+                $subject = sprintf( '⚡ ' . _w('EDIT: %s was edited'), $task['project_id'].'.'.$task['number']);
                 break;
         }
 
@@ -140,8 +140,10 @@ class tasksNotifications
 
     /**
      * Get task for this contact
+     *
      * @param $task
      * @param int $contact_id For what contact get TASK
+     *
      * @return null|tasksTask
      */
     protected static function getTask($task, $contact_id)

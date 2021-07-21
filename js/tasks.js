@@ -24,6 +24,8 @@
 
     // js controller
     var $, self = window.TasksController = {
+        customSelectInited: false,
+
         options: { // see Backend.html for init options
             contact_id: 0,
             accountName: '',
@@ -126,18 +128,20 @@
                 self.initFilesDrop();
 
                 // When user clicks on app icon in main menu, he probably wants to see all tasks without filtering
-                $('#wa-app-tasks a')[0].href += '#/tasks/';
+                // $('#wa-app-tasks a')[0].href += '#/tasks/';
             });
 
             $.fn.showLoading = function() {
-                self.showLoading(this);
+                // self.showLoading(this);
             };
             $.fn.hideLoading = function() {
                 self.hideLoading(this);
             };
 
             self.initTaskDateUpdater();
-            self.initCustomSelect();
+            if(!this.customSelectInited) {
+                self.initCustomSelect();
+            }
 
             return self;
         },
@@ -172,9 +176,7 @@
 
                 // If non changed
                 if (is_changed) {
-                    // Render
-                    $activeLink.html( $link.html() );
-
+                    
                     // set value
                     $input.val(value).change();
 
@@ -185,7 +187,7 @@
             };
 
             $(document).on("click", ".t-custom-select .set-custom-select", setCustomSelect);
-
+            this.customSelectInited = true;
         },
 
         // Keep last update datetime of tasks up to date ('14 mins' => '15 mins')
@@ -332,11 +334,13 @@
             function checkTaskIsOpen() {
                 var result = [];
 
-                $.each(Tasks, function(task_id, task) {
-                    if (task.is_opened || task.is_status_opened) {
-                        result.push(task);
-                    }
-                });
+                if(typeof Tasks !== 'undefined') {
+                    $.each(Tasks, function(task_id, task) {
+                        if (task.is_opened || task.is_status_opened) {
+                            result.push(task);
+                        }
+                    });
+                }
 
                 return (result.length) ? result : false;
             }
@@ -593,7 +597,16 @@
                     params_str.push(k+'='+encodeURIComponent(params[k]||''));
                 }
             }
+
+            window.loadingEntity = 'list';
+
+            var $secondSideBar = document.querySelector('.t-content-wrapper .sidebar');
+            if ($secondSideBar) {
+                $secondSideBar.innerHTML = document.querySelector('#tasksListSkeleton').innerHTML;
+            }
+
             self.load('?module=tasks&' + params_str.join('&'), function() {
+                window.loadingEntity = undefined;
                 if (params.hash.substr(0, 7) == 'search/') {
                     self.setTitle($_('Search') + ' ' + params.hash.substr(7));
                 }
@@ -772,8 +785,9 @@
         },
 
         taskAction: function(id, action) {
+            window.loadingEntity = 'task';
             this.load('?module=tasks&action=' + (action || 'info') + '&n=' + id, function () {
-
+                window.loadingEntity = undefined;
             });
         },
 
@@ -813,6 +827,12 @@
             this.load('?module=from&action=hub&id='+topic_id);
         },
 
+        kanbanAction: function(params) {
+            this.load('?module=kanban&' + (params || ''), function () {
+                Kanban.init();
+            });
+        },
+
         /** Lazy loading for backend lists. Called from Tasks.html and Log.html */
         initLazyloader: function(o) {
 
@@ -830,7 +850,7 @@
             // contains the same lazy-loading initialization and will take care of the rest.
             o.is_lazy && o.next_page_url && $window.onWhile(function() {
                 return !triggered && $.contains(document, $lazyloading_wrapper[0]);
-            }, 'scroll resize wa_try_lazyloading', function() {
+            }, 'scroll wheel resize wa_try_lazyloading', function() {
                 if (distanceBetweenBottoms($lazyloading_wrapper, $window) < 50) {
                     loadNextPage();
                 }
@@ -958,8 +978,19 @@
         initSidebar: function() {
             self.initCollapsibleSidebar();
 
+            $("#add-task-link").on("click", function(event) {
+                if (event.which != 1) { return; } // not a left-mouse-button click
+                $(this).addClass('rotated');
+                setTimeout(() => {
+                    $(this).removeClass('rotated');
+                }, 1000);
+                $.tasks.showNewTaskForm();
+                return false;
+            });
+
             // Click on current tasks list link in sidebar reloads the list
-            $('#wa-app > .sidebar a[href^="#/tasks/"]').on("click", function(e) {
+            $('#wa-app > .flexbox > .sidebar a[href^="#/tasks/"]').on("click", function(e) {
+
                 if (e.which != 1) {
                     return; // not a left-mouse-button click
                 }
@@ -967,7 +998,7 @@
                     href = $a.attr('href'),
                     is_current_page_href = ( self.cleanHash(href) == self.currentHash );
 
-                $('#wa-app > .sidebar .selected').removeClass('selected');
+                $('#wa-app > .flexbox > .sidebar .selected').removeClass('selected');
                 $a.closest('li').addClass('selected');
                 if (is_current_page_href) {
                     self.redispatch();
@@ -975,78 +1006,61 @@
                 }
             });
 
-            // 'New task' button opens a slide-down dialog in list views
-            $("#add-task-link").on("click", function(event) {
-                if (event.which != 1) { return; } // not a left-mouse-button click
-                self.showNewTaskForm();
-                return false;
+            // Clicks on bricks
+            $('#wa-app > .flexbox .brick').on("click", function(e) {
+                $(this).addClass('selected');
             });
+
+            // 'New task' button opens a slide-down dialog in list views
+            // $("#add-task-link").on("click", function(event) {
+            //     alert('d')
+            //     if (event.which != 1) { return; } // not a left-mouse-button click
+            //     self.showNewTaskForm();
+            //     return false;
+            // });
         },
 
         // Flag for opening new task page. Need for showNewTaskForm()
         is_new_task_displayed: false,
 
         showNewTaskForm: function(force) {
-            var $list = $("#t-tasks-wrapper"),
-                is_list_view = ( $list.length && $list.hasClass("is-detailed") );
+            if (force || !self.is_new_task_displayed) {
+                self.is_new_task_displayed = true;
 
-            if (is_list_view) {
-
-                if (force || !self.is_new_task_displayed) {
-                    self.is_new_task_displayed = true;
-
-                    $.get("?module=tasks&action=edit", {
-                        is_dialog: true
-                    }, function(response) {
-                        new Dialog({
-                            html: response,
-                            type: "create",
-                            onCancel: function() {
-                                self.is_new_task_displayed = false;
-                            }
-                        });
+                $.get("?module=tasks&action=edit", {
+                    is_dialog: true
+                }, function(response) {
+                    new Dialog({
+                        html: response,
+                        type: "create",
+                        onCancel: function() {
+                            self.is_new_task_displayed = false;
+                        }
                     });
-                }
-
-            } else {
-                var href = $("#add-task-link").attr("href");
-                if (href) {
-                    self.setHash(href);
-                }
+                });
             }
         },
 
         showEditTaskForm: function(task, $link) {
-            var $list = $("#t-tasks-wrapper"),
-                is_list_view = ( $list.length && $list.hasClass("is-detailed") ),
-                task_id = task.task_id;
+            var task_id = task.task_id;
 
-            if (is_list_view) {
+            if (!self.is_new_task_displayed) {
+                self.is_new_task_displayed = true;
 
-                if (!self.is_new_task_displayed) {
-                    self.is_new_task_displayed = true;
-
-                    $.get("?module=tasks&action=edit", {
-                        is_dialog: true,
-                        n: task_id
-                    }, function(response) {
-                        new Dialog({
-                            html: response,
-                            type: "edit",
-                            task: task,
-                            onCancel: function() {
-                                self.initPrettyPrint();
-                                self.is_new_task_displayed = false;
-                            }
-                        });
+                $.get("?module=tasks&action=edit", {
+                    is_dialog: true,
+                    n: task_id
+                }, function(response) {
+                    new Dialog({
+                        html: response,
+                        type: "edit",
+                        task: task,
+                        onCancel: function() {
+                            self.initPrettyPrint();
+                            self.is_new_task_displayed = false;
+                        }
                     });
-                }
-
-            } else {
-                var href = $link.attr("href");
-                if (href) {
-                    self.setHash(href);
-                }
+                });
             }
         },
 
@@ -1112,6 +1126,14 @@
                         .css("left", left + "%")
                         .attr("data-value", value)
                         .attr("data-name", name);
+
+                        // if High or Urgent
+                        if (value === '1' || value === '2') {
+                            var exclamation_color = value === '1' ? '#ffd700' : '#ff4500';
+                            $span
+                                .addClass('t-ornament--exclamation')
+                                .append('<i style="color:' + exclamation_color + ';" class="fas fa-exclamation-circle"></i>');
+                        }
 
                     if (is_active) {
                         $span.data("selected", "true");
@@ -1180,7 +1202,7 @@
         },
 
         initCollapsibleSidebar: function() {
-            $('#wa-app > .sidebar .heading').filter(function() {
+            $('#wa-app > .flexbox > .sidebar .heading').filter(function() {
                 return $(this).find('.darr').length;
             }).click(function() {
                 // Collapse on click
@@ -1204,7 +1226,7 @@
         reloadSidebar: function(callback) {
             //$('#add-task-link .icon16').attr('class', 'icon16 loading');
             $.post('?sidebar=1', function(r) {
-                $('#wa-app > .sidebar').html(r);
+                $('#wa-app > .flexbox > .sidebar').html(r);
                 self.initSidebar();
                 self.highlightSidebar();
                 callback && callback();
@@ -1216,7 +1238,7 @@
 
         highlightMyList: function ($sidebar) {
             if (!$sidebar) {
-                $sidebar = $('#wa-app > .sidebar');
+                $sidebar = $('#wa-app > .flexbox > .sidebar');
             }
             var hash = self.cleanHash(location.hash),
                 parsed = this.parseTasksHash(hash),
@@ -1232,7 +1254,7 @@
         },
 
         updateCountOfMyList: function (list_id, count) {
-            var $sidebar = $('#wa-app > .sidebar'),
+            var $sidebar = $('#wa-app > .flexbox > .sidebar'),
                 $li = $sidebar.find('.t-view-list > li[data-id="' + list_id + '"]');
             if ($li.length) {
                 $li.find('.count').text(count);
@@ -1245,7 +1267,7 @@
          * Hashes are compared after this.cleanHash() applied to them. */
         highlightSidebar: function (sidebar) {
             if (!sidebar) {
-                sidebar = $('#wa-app > .sidebar');
+                sidebar = $('#wa-app > .flexbox > .sidebar');
             }
 
             // first, try select my list item
@@ -1264,6 +1286,14 @@
             var $match = false;
             var $partialMatch = false;
             var partialMatchLength = 2;
+
+            // Select brick by hash
+            sidebar.find('.brick').each(function(i, e) {
+                e = $(e)
+                if(e.attr('href') === currentHash) {
+                    e.addClass('selected');
+                }
+            });
 
             sidebar.find('li a').each(function(k, v) {
                 v = $(v);
@@ -1368,12 +1398,12 @@
                     }
 
                 } else {
-                    var $h1 = $('#content h1').first();
-                    if ($h1.length) {
-                        $h1.append('<i class="icon16 loading"></i>');
-                    } else {
-                        $('#content').html($('#content').data('loading-string')+'<i class="icon16 loading"></i>');
-                    }
+                    // var $h1 = $('#content h1').first();
+                    // if ($h1.length) {
+                    //     $h1.append('<i class="icon16 loading"></i>');
+                    // } else {
+                    //     $('#content').html($('#content').data('loading-string')+'<i class="icon16 loading"></i>');
+                    // }
                 }
             }
         },
@@ -1405,7 +1435,7 @@
                         title = $h1.text();
                     }
                 } else {
-                    title = $('#wa-app > .sidebar .selected a').text();
+                    title = $('#wa-app > .flexbox > .sidebar .selected a').text();
                 }
             }
 
@@ -1468,6 +1498,20 @@
                     });
                 }
             }
+        },
+
+        showLoadingButton: function ($button) {
+            var $icon = $button.find('svg');
+            if (!$icon.length) {
+                $button.addClass('custom-pl-40');
+            }
+            $button.prop("disabled", true).addClass('button--loading');
+        },
+
+        hideLoadingButton: function ($button) {
+            setTimeout(function () {
+                $button.removeAttr('disabled').removeClass('button--loading');
+            }, 1000);
         }
     };
 })();

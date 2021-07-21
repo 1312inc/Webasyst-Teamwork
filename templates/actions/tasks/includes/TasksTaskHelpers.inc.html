@@ -6,21 +6,13 @@
     {* ASSIGNED CONTACT *}
     {$_assigned_contact = $task.assigned_contact}
 
-    <div class="t-userpics-wrapper is-animated-on-hover">
-        
-        <a class="t-userpic-item is-creator" href="{tasksHelper::getProfileURL($_assignment_creator.id)}" title="{$_assignment_creator.name|escape}">
-            <img src="{waContact::getPhotoUrl($_assignment_creator.id, $_assignment_creator.photo, 96)}" alt="{$_assignment_creator.name|escape}">
-        </a>
+    {* show assigned userpic by default; if assigned to me, show vis-a-vis userpic instead (to avoid seeing self in the Inbox all the time) *}
+    {if $_assigned_contact.id == $wa->user()->getId()}
+        {* assigned to me: show vis-a-vis *}
+        <i class="userpic userpic-48" style="background-image: url('{waContact::getPhotoUrl($_assignment_creator.id, $_assignment_creator.photo, 96)}')"></i>
+    {else}
+        {* assigned to someone else: show whom is assigned *}
+        <i class="userpic userpic-48" style="background-image: url('{waContact::getPhotoUrl($_assigned_contact.id, $_assigned_contact.photo, 96)}')"></i>
+    {/if}
 
-        {*If a contact is attached and it is not deleted*}
-        {if empty($_assigned_contact.delete)}
-            <a class="t-userpic-item is-assigned" href="{tasksHelper::getProfileURL($_assigned_contact.id)}" title="{$_assigned_contact.name|escape}">
-                <img src="{waContact::getPhotoUrl($_assigned_contact.id, $_assigned_contact.photo, 96)}" alt="{$_assigned_contact.name|escape}">
-            </a>
-        {else}
-            <a class="t-userpic-item is-assigned" href="javascript:void(0);" title="[`Unassigned`]">
-                <img src="{$wa_app_static_url}img/userpic-unassigned.png" alt="[`Unassigned`]">
-            </a>
-        {/if}
-    </div>
 {/function}

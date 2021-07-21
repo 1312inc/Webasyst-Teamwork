@@ -5,6 +5,8 @@
 
 {$is_page = !$wa->get("is_dialog")}
 
+{$task_uuid = $task.uuid|default:tasksUuid4::generate()}
+
 <script>(function($) { "use strict";
     {if $task.id}
         $.tasks.setTitle({$task.name|json_encode});
@@ -46,6 +48,8 @@
     <div class="t-task-page-wrapper {if $is_page}is-single-page{else}is-dialog-content{/if}">
         <form id="t-edit-task-form" action="?module=tasks&action=save&id={$task.id}" method="post" data-n="{$task.project_id}.{$task.number}">
 
+            <input type="hidden" name="data[uuid]" value="{$task_uuid}" />
+
             <!-- plugin hook: 'backend_task_edit.%plugin_id.before_header' -->
             {* @event backend_task_edit.%plugin_id%.before_header *}
             {foreach $backend_task_edit as $_}{ifset($_.before_header)}{/foreach}
@@ -53,27 +57,47 @@
             {* HEADER *}
             <header class="t-header-wrapper">
                 <div class="t-general-menu is-shown">
-                    <div class="t-menu-wrapper">
+                    <div class="t-menu-wrapper flexbox space-20">
 
                         {* PROJECT SELECTOR *}
                         <div class="t-menu-item">
-                            <ul class="menu-h dropdown t-custom-select t-project-select"><li>
-                                <a class="t-selected-item selected-custom-item js-selected-project" href="javascript:void(0);">
+                            <div class="dropdown t-custom-select t-project-select" id="projectSelect">
+                                <button class="dropdown-toggle button light-gray t-selected-item selected-custom-item js-selected-project">
                                     {$project.icon_html}
-                                    {$project.name|escape}
-                                </a>
-                                <ul class="menu-v with-icons js-project-list">
-                                    {foreach $projects as $p}
-                                        <li class="t-nav-item">
-                                            <a class="set-custom-select js-project-select" href="javascript:void(0);" data-value="{$p.id}" {if !empty($p.color)}data-project_color_class="{$p.color}"{/if}>
-                                                {$p.icon_html}
-                                                {$p.name|escape}
-                                            </a>
-                                        </li>
-                                    {/foreach}
-                                </ul>
+                                    <span>{$project.name|escape|truncate:32}</span>
+                                </button>
+                                <div class="dropdown-body">
+                                    <ul class="menu js-project-list">
+                                        {foreach $projects as $p}
+                                            <li class="t-nav-item">
+                                                <a class="set-custom-select js-project-select" href="javascript:void(0);" data-value="{$p.id}" {if !empty($p.color)}data-project_color_class="{$p.color}"{/if}>
+                                                    {$p.icon_html}
+                                                    <span>{$p.name|escape|truncate:32}</span>
+                                                </a>
+                                            </li>
+                                        {/foreach}
+                                    </ul>
+                                </div>
                                 <input type="hidden" name="data[project_id]" value="{$task.project_id}">
-                            </li></ul>
+                            </div>
+                            <script>
+                                ( function($) {
+                                    var $dropdown = $("#projectSelect"),
+                                        $currentProject = $dropdown.find("li:first a");
+
+                                    $dropdown.find('.dropdown-toggle').html($currentProject.html());
+                                    $dropdown.find('[name="data[project_id]"]').val($currentProject.data('value'));
+
+                                    $dropdown.waDropdown({
+                                        hover: false,
+                                        items: ".menu > li > a",
+                                        change: function(event, target, dropdown) {
+                                            $("[name=\"data[project_id]\"]").val( $(target).data("value") );
+                                            taskEdit.onProjectChange();
+                                        }
+                                    });
+                                })(jQuery);
+                            </script>
                         </div>
 
                         {include file="./includes/TasksTaskMilestoneSelector.inc.html" inline}
@@ -90,7 +114,7 @@
             {foreach $backend_task_edit as $_}{ifset($_.after_header)}{/foreach}
 
             {* EDIT CONTENT *}
-            <div class="t-task-page-block {if !empty($project.color)}{$project.color}{/if}">
+            <div class="t-task-page-block">
 
                 <!-- plugin hook: 'backend_task_edit.%plugin_id.before_name' -->
                 {* @event backend_task_edit.%plugin_id%.before_name *}
@@ -131,7 +155,7 @@
 
                 {* CONTENT *}
                 <div class="t-form-line t-description-wrapper">
-                    <textarea name="data[text]" cols="1" rows="1" tabindex="2" placeholder="[`Input task description`]">{$task.text|escape}</textarea>
+                    <textarea name="data[text]" cols="1" rows="1" class="t-redactor-task-edit" placeholder="[`Task summary`]">{$task.text|escape}</textarea>
 
                     <!-- plugin hook: 'backend_task_edit.%plugin_id.description' -->
                     {* @event backend_task_edit.%plugin_id%.description *}
@@ -152,7 +176,7 @@
                 <div class="t-form-line t-attach-wrapper">
                     {* Droparea *}
                     <div class="t-attach-droparea" id="t-attach-droparea">
-                        <div class="t-droparea-hint">[`Click to select files or drag them here`]</div>
+                        <div class="t-droparea-hint">[`Attach files`]</div>
                         <input type="file" name="files[]" multiple="true" />
                     </div>
                     {* Container For Attached Files*}
@@ -184,9 +208,9 @@
                             {foreach $task.files as $file}
                                 <div class="t-file-item" data-file-ident="{$file.id}">
                                     <a class="t-file-link" href="?module=attachments&action=download&id={$file.id}" title="{$file.name|escape}">
-                                        <i class="icon16 attachment"></i>
+                                        <i class="fas fa-paperclip custom-mr-4"></i>
                                         <span class="t-file-name">{$file.name|escape}</span>
-                                        <span class="t-file-size">{$file.size|wa_format_file_size}</span>
+                                        <span class="t-file-size nowrap">{$file.size|wa_format_file_size}</span>
                                     </a>
                                     <a class="t-file-delete" href="javascript:void(0);"></a>
                                 </div>
@@ -194,9 +218,9 @@
 
                             <div class="t-file-item is-template">
                                 <div class="t-file-link">
-                                    <i class="icon16 attachment"></i>
+                                    <i class="fas fa-paperclip custom-mr-4"></i>
                                     <span class="t-file-name"></span>
-                                    <span class="t-file-size"></span>
+                                    <span class="t-file-size nowrap"></span>
                                 </div>
                                 <a class="t-file-delete" href="javascript:void(0);"></a>
                                 <div class="t-file-error"></div>
@@ -218,11 +242,14 @@
                 {* @event backend_task_edit.%plugin_id%.before_fields *}
                 {foreach $backend_task_edit as $_}{ifset($_.before_fields)}{/foreach}
 
+                <div class="fields custom-mt-40 custom-mt-20-mobile">
+                    <div class="fields-group">
+
                 {* ASSIGN *}
                 <div class="t-form-line field t-team-list-wrapper">
-                    <div class="name">[`Assign to`]</div>
+                    <div class="name custom-pt-4">[`Assign to`]</div>
                     <div class="value">
-                        <ul class="menu-v js-task-users-list">
+                        <ul class="js-task-users-list">
                             {$_count = 0}
                             {$_is_something_checked = false}
                             {foreach $users as $user}
@@ -231,40 +258,53 @@
                                 {$_is_something_checked = $_is_something_checked || $_is_checked}
 
                                 <li class="t-user-item is-shown" data-user-id="{$user.id}">
-                                    <label class="t-user-label set-task-user">
-                                        <input type="radio" name="data[assigned_contact_id]" value="{$user.id}" {if $_is_checked}checked{/if}>
-                                        <i class="icon16 userpic20" style="background-image: url({$user.photo_url})"></i>
-                                        {$user.name|escape}
-                                        {if ($user.id == $wa->user('id'))}
-                                            &nbsp;<span class="gray">([`me`])</span>
-                                        {/if}
+                                    <label class="t-user-label set-task-user flexbox middle space-8">
+                                        <span class="wa-radio">
+                                            <input type="radio" name="data[assigned_contact_id]" value="{$user.id}" {if $_is_checked}checked{/if}>
+                                            <span></span>
+                                        </span>
+                                        <i class="userpic userpic-32" style="background-image: url({$user.photo_url})"></i>
+                                        <span>
+                                            {$user.name|escape}
+                                            {if ($user.id == $wa->user('id'))}
+                                                &nbsp;<span class="gray">([`me`])</span>
+                                            {/if}
+                                        </span>
                                     </label>
                                 </li>
                             {/foreach}
 
                             <li class="t-user-item is-unassigned is-shown" data-user-id="">
-                                <label class="t-user-label set-task-user">
-                                    <input type="radio" name="data[assigned_contact_id]" value="0"{if !$_is_something_checked} checked{/if}>
-                                    <i class="icon16 userpic20" style="background-image: url('{$wa_url}wa-content/img/userpic96.jpg')"></i>
+                                <label class="t-user-label set-task-user flexbox middle space-8">
+                                    <span class="wa-radio">
+                                        <input type="radio" name="data[assigned_contact_id]" value="0"{if !$_is_something_checked} checked{/if}>
+                                        <span></span>
+                                    </span>
+                                    <i class="userpic userpic-32" style="background-image: url('{$wa_url}wa-content/img/userpic.svg')"></i>
                                     <span class="gray">[`Unassigned`]</span>
                                 </label>
                             </li>
 
                             <li class="t-link-item">
-                                <a class="show-team-users inline-link" href="javascript:void(0);"><b><i>[`Show all`]</i></b></a>
+                                <a class="show-team-users small" href="javascript:void(0);">[`Show everyone`]</a>
                             </li>
                         </ul>
                     </div>
 
                 </div>
 
+
+
                 <div class="t-form-line field t-due-date-wrapper">
-                    <div class="name">[`Due date`]</div>
+                    <div class="name for-input">[`Due date`]</div>
                     <div class="value">
-                        <input type="text" class="t-datepicker-due-date bold">
-                        <input type="hidden" name="data[due_date]" value="{$task.due_date|escape}"><i class="icon16 calendar"></i>
+                        <input type="text" class="t-datepicker-due-date">
+                        <input type="hidden" name="data[due_date]" value="{$task.due_date|escape}"><i class="fas fa-flag-checkered custom-ml-4"></i>
                     </div>
                 </div>
+
+            </div>
+        </div>
 
                 {* HIDDEN FIELDS *}
                 <div class="t-form-line t-more-fields-wrapper">
@@ -283,31 +323,9 @@
 
                 {* BUTTONS *}
                 <div class="t-errors-block js-errors-block"></div>
-                <div class="t-form-line t-buttons-block">
-                    <input class="button green t-save-task-link" type="submit" value="{if !empty($task.id)}[`Save task`]{else}[`Create task`]{/if}">
-                    &nbsp;[`or`]&nbsp;
-                    <a class="t-close-link" href="javascript:void(0);">[`cancel`]</a>
-
-                    {*
-                    <ul class="menu-h notice-list-wrapper">
-                        <li>
-                            <label>
-                                <input type="checkbox" name="data[email_notice]">
-                                <i class="icon16 email"></i>
-                                [`Email`]
-                            </label>
-                        </li>
-                        <li>
-                            <label>
-                                <input type="checkbox" name="data[sms_notice]">
-                                <i class="icon16 email"></i>
-                                [`SMS`]
-                            </label>
-                        </li>
-                    </ul>
-
-                    <a class="more-fields-link show-more-fields inline-link" href="javascript:void(0);"><b><i>[`More fields`]</i></b><i class="icon10 darr"></i></a>
-                    *}
+                <div class="t-form-line t-buttons-block flexbox middle space-20">
+                    <button class="button green large t-save-task-link" type="submit">{if !empty($task.id)}[`Save task`]{else}[`Create task`]{/if}</button>
+                    <a class="t-close-link button large light-gray" href="javascript:void(0);">[`Cancel`]</a>
 
                     <!-- plugin hook: 'backend_task_edit.%plugin_id.buttons' -->
                     {* @event backend_task_edit.%plugin_id%.buttons *}

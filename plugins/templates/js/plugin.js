@@ -136,7 +136,7 @@ var TasksTemplatesPlugin = ( function($) { "use strict";
         var applyTemplateOnForm = function (template) {
             var $form = $('#t-edit-task-form');
             $form.find('input[name="data[name]"]').attr('placeholder', $.wa.encodeHTML(template.name || ''));
-            $form.find('textarea[name="data[text]"]').val(template.text || '');
+            $form.find('textarea[name="data[text]"]').val(template.text || '').trigger('change');
         };
 
         var template_id = isAddingContext();

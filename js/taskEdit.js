@@ -149,6 +149,42 @@ var TaskEdit = ( function($) { "use strict";
 
         $.event.trigger("onTaskEditInit", that);
 
+
+        $R('.t-redactor-task-edit', {
+            // 'focus': true,
+            tabindex: 1,
+            imageData: {
+                task_uuid: '{$task_uuid}'
+            },
+            callbacks: {
+                started () {
+                    var that = this,
+                        $el = this.element.getElement().get(0);
+                    // Textarea value changed
+                    $el.onchange = function () {
+                        that.source.setCode($($el).val());
+                        // Broadcast synchronization event between textarea and visual layer
+                        that.broadcast('syncingInverse', $($el).val());
+                    }
+                },
+                synced (html) {
+                    if (that.is_new) {
+                        //Save task draft text
+                        var data = new Date(),
+                        result = data.toLocaleDateString("ru-RU", {
+                            year: "numeric",
+                            month: "2-digit",
+                            day: "2-digit",
+                            hour:"2-digit",
+                            minute: "2-digit"
+                        });
+                        localStorage.setItem('task_text', html);
+                        localStorage.setItem('draft_time', result);
+                    }
+                }
+            }
+        });
+
     };
 
     TaskEdit.prototype.initMilestoneSelector = function () {
@@ -187,7 +223,7 @@ var TaskEdit = ( function($) { "use strict";
             selector.setSelected('');
         }
     };
-    
+
     TaskEdit.prototype.setFilterParams = function () {
         var that = this,
             $task = that.$task,
@@ -830,7 +866,7 @@ var TaskEdit = ( function($) { "use strict";
             $file.remove();
 
         } else {
-            if (confirm($_("Are you sure?"))) {
+            if (confirm($_("Delete the attached file?"))) {
                 var file_ident = $file.data("file-ident"),
                     delete_href = "?module=attachments&action=delete",
                     delete_data = {
@@ -866,19 +902,19 @@ var TaskEdit = ( function($) { "use strict";
             localStorage.setItem('task_title', $task_title.val());
             localStorage.setItem('draft_time', result);
         });
-        $task_text.on('keyup',function(){
-            //Save task draft text
-            var data = new Date(),
-                result = data.toLocaleDateString("ru-RU", {
-                    year: "numeric",
-                    month: "2-digit",
-                    day: "2-digit",
-                    hour:"2-digit",
-                    minute: "2-digit"
-                });
-            localStorage.setItem('task_text', $task_text.val());
-            localStorage.setItem('draft_time', result);
-        });
+        // $task_text.on('keyup',function(){
+        //     //Save task draft text
+        //     var data = new Date(),
+        //         result = data.toLocaleDateString("ru-RU", {
+        //             year: "numeric",
+        //             month: "2-digit",
+        //             day: "2-digit",
+        //             hour:"2-digit",
+        //             minute: "2-digit"
+        //         });
+        //     localStorage.setItem('task_text', $task_text.val());
+        //     localStorage.setItem('draft_time', result);
+        // });
     };
 
     //Show alert task draft
@@ -909,8 +945,9 @@ var TaskEdit = ( function($) { "use strict";
     };
 
     // Submit
-    TaskEdit.prototype.onSubmit = function($form, return_to_new) {
-        var that = this;
+    TaskEdit.prototype.onSubmit = function($form, return_to_new) { 
+        var that = this,
+            $submitButton = $form.find('[type="submit"]');
 
         // Validation Task Type
         var e = new $.Event('task_before_submit');
@@ -936,6 +973,8 @@ var TaskEdit = ( function($) { "use strict";
         $form.showLoading();
         that.clearFileErrors();
 
+        $.tasks.showLoadingButton($submitButton);
+        
         that.uploadFiles({
             onAllDone: function () {
                 $form.showLoading();
@@ -957,6 +996,7 @@ var TaskEdit = ( function($) { "use strict";
                     )
                     .always(function () {
                         $form.hideLoading();
+                        $.tasks.hideLoadingButton($submitButton);
                     });
             },
             onAllAlways: function () {
@@ -993,7 +1033,8 @@ var TaskEdit = ( function($) { "use strict";
         var that = this,
             url = "?module=attachments&action=upload",
             hash = that.files_hash,
-            files = that.attachedFiles;
+            files = that.attachedFiles,
+            waLoading = $.waLoading();
 
         callbacks = $.isPlainObject(callbacks) ? callbacks : {};
         var onAllDone = typeof callbacks.onAllDone === 'function' ? callbacks.onAllDone : null,
@@ -1007,6 +1048,9 @@ var TaskEdit = ( function($) { "use strict";
         }
 
         var all_files_counter = that.files_count;
+
+        // Show progress bar
+        waLoading.animate(6000, 99, true);
 
         $.each(files, function (index, file) {
             // Vars
@@ -1037,6 +1081,8 @@ var TaskEdit = ( function($) { "use strict";
                     all_files_counter--;
                     if (all_files_counter <= 0) {
                         onAllAlways && onAllAlways();
+                        // Hide progress bar
+                        waLoading.hide();
                     }
 
                     if (r.status != 'ok') {

@@ -12,12 +12,12 @@ class tasksExportPlugin extends waPlugin
         if (!$this->isAdmin()) {
             return;
         }
-        $template = wa()->getAppPath("plugins/export/templates/Link.html", 'tasks');
-        return array(
-            'header' => array(
-                'toolbar' => $this->renderTemplate($template)
-            )
-        );
+
+        return [
+            'header' => [
+                'toolbar' => $this->renderTemplate('common', 'Link.html'),
+            ],
+        ];
     }
 
     public function backendAssets()
@@ -30,15 +30,20 @@ class tasksExportPlugin extends waPlugin
         wa()->getResponse()->addCss('plugins/export/css/style.css?v=' . $version, 'tasks');
     }
 
-    protected function renderTemplate($template, $assign = array())
+    protected function renderTemplate($scope, $template_path, $assign = [], $cache_id = null)
     {
         $view = wa()->getView();
         $old_vars = $view->getVars();
+
         $view->clearAllAssign();
         $view->assign($assign);
-        $html = $view->fetch($template);
+
+        $full_templates_path = $this->buildFullTemplatePath($scope, $template_path);
+        $html = $view->fetch($full_templates_path);
+
         $view->clearAllAssign();
         $view->assign($old_vars);
+
         return $html;
     }
 }

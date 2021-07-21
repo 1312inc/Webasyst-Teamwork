@@ -34,6 +34,7 @@ class tasksTasksSaveController extends waJsonController
         if (!$data && !$hash) {
             throw new waException('', 400);
         }
+
         if (isset($data['due_date'])) {
             $ts = @strtotime($data['due_date']);
             if ($ts) {
@@ -42,7 +43,9 @@ class tasksTasksSaveController extends waJsonController
                 $data['due_date'] = null;
             }
         }
+
         $data['files_hash'] = $hash;
+
         return $data;
     }
 
@@ -184,6 +187,10 @@ class tasksTasksSaveController extends waJsonController
 
     protected function add($data)
     {
+        if (empty($data['uuid'])) {
+            $data['uuid'] = tasksUuid4::generate();
+        }
+
         $task_model = new tasksTaskModel();
         $task = $task_model->add($data);
         if (!$task) {

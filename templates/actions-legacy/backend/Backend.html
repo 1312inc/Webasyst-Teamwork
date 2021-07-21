@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    {$_app_name = $wa->appName(true)}
+    {$_account_name = $wa->accountName(true)}
+    {$_title = $wa->title()|escape}
+    <title>{$wa->title()|default:$_app_name} — {$_account_name}</title>
+
+    {strip}{$priorities = []}
+    {foreach $wa->tasks->config('priorities') as $priority}
+        {$priorities[$priority.value] = $priority.name|escape}
+    {/foreach}{/strip}
+    <script src="{$wa_app_static_url}js/legacy/tasks.js?v{$wa->version()}"></script>
+    <script>window.TasksController.initBeforeJQuery({
+        accountName: {$wa->accountName(false)|json_encode},
+        priorities: {$priorities|json_encode},
+        app_icons: {$app_icons|json_encode},
+        contact_id: {$wa->user('id')}
+    });</script>
+
+    {$wa->css()}
+    <link href="{$wa_app_static_url}js/legacy/vendors/jquery-ui.min.css" rel="stylesheet" type="text/css" />
+    <link href="{$wa_app_static_url}css/legacy/tasks.css?v{$wa->version()}" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="{$wa_url}wa-content/js/farbtastic/farbtastic.css" type="text/css" />
+    <link rel="stylesheet" href="{$wa_app_static_url}js/legacy/waGallery/waGallery.css" type="text/css" />
+    <link rel="stylesheet" href="{$wa_url}wa-content/js/prettify/prettify.css" type="text/css" />
+
+    <script src="{$wa_url}wa-content/js/jquery/jquery-1.11.1.min.js"></script>
+    <script src="{$wa_url}wa-content/js/jquery/jquery-migrate-1.2.1.min.js" async></script>
+    <script src="{$wa_url}wa-content/js/prettify/prettify.js"></script>
+
+    <script src="{$wa_app_static_url}js/legacy/tasks.min.js?v{$wa->version()}"></script>
+
+    {$wa->js()}
+    {if $wa->locale() != 'en_US'}
+        <script type="text/javascript" src="{$wa_url}wa-content/js/jquery-ui/i18n/jquery.ui.datepicker-{$wa->locale()}.js" async></script>
+    {/if}
+
+    {* @event backend_assets.%plugin_id% *}
+    {foreach $backend_assets as $item}
+        {$item}
+    {/foreach}
+
+</head>
+<body>
+    {if empty($sidebar_width)}
+        {$sidebar_width = 200}
+    {/if}
+    <div id="wa">
+        {$wa->header()|replace:'></script>':' async></script>'}
+        <div id="wa-app">
+            {* SIDEBAR *}
+            <aside class="t-sidebar-wrapper sidebar left{$sidebar_width}px">
+                {include file="./Sidebar.html" inline}
+            </aside>
+
+            {* MAIN CONTENT *}
+            <main class="t-content-wrapper content left{$sidebar_width}px">
+                <div class="block" id="content" data-loading-string="[`Loading...`]">
+                    [`Loading...`]<i class="icon16 loading"></i>
+                </div>
+            </main>
+        </div>
+        {* DRAGOVER NOTICE *}
+        <div class="f-file-dragover-wrapper">
+            <div class="f-message-wrapper">[`Drop anywhere to upload`]</div>
+        </div>
+    </div>
+
+    {if method_exists($wa->installer, 'reviewWidget')}
+        {$wa->installer->reviewWidget('app/tasks')}
+    {/if}
+
+    <script>$.wa.locale = $.extend($.wa.locale || {}, {
+        'Search': "[`Search`]",
+        'Either text or attachment is required to add comment.': "[`Either text or attachment is required to add comment.`]"
+    });</script>
+    <script>window.TasksController.init();</script>
+</body>
+</html>

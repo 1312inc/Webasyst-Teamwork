@@ -16,7 +16,7 @@ class tasksTasksEditAction extends waViewAction
     {
         $this->projects = $projects = tasksHelper::getProjects();
         if (!$projects) {
-            $this->setTemplate(wa('tasks')->getAppPath('templates/actions/tasks/NoProjectsError.html'));
+            $this->setTemplate(wa('tasks')->getAppPath(tsks()->getUI2TemplatePath('templates/actions%s/tasks/NoProjectsError.html')));
             return;
         }
 
@@ -30,7 +30,7 @@ class tasksTasksEditAction extends waViewAction
         }
 
         $milestone_model = new tasksMilestoneModel();
-        $this->milestones = $milestone_model->where('closed=0')->order('due_date')->fetchAll('id');
+        $this->milestones = $milestone_model->getStatusesWithOrder(false);
 
         $this->users = $this->getUsers();
         $this->projects_users = $this->getProjectsUsers($projects, $this->users);
@@ -56,6 +56,7 @@ class tasksTasksEditAction extends waViewAction
         foreach ($users as $user_id => $user) {
             $users[$user_id]['photo_url'] = waContact::getPhotoUrl($user['id'], $user['photo'], 40, 40, 'person', 0);
         }
+
         return $users;
     }
 
@@ -121,7 +122,7 @@ class tasksTasksEditAction extends waViewAction
     {
         /**
          * @event backend_task_edit
-         * @param int|array|taskTask $task
+         * @param int|array|tasksTask $task
          * @return array[string]array $return[%plugin_id%] array of html output
          *
          * @return string $return[%plugin_id%]['before_header'] html

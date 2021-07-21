@@ -3,11 +3,12 @@ class tasksTaskLogModel extends waModel
 {
     protected $table = 'tasks_task_log';
 
-    const ACTION_TYPE_CREATE = 'create';
-    const ACTION_TYPE_COMMENT = 'comment';
-    const ACTION_TYPE_FORWARD = 'forward';
-    const ACTION_TYPE_RETURN = 'return';
-    const ACTION_TYPE_EDIT = 'edit';
+    public const ACTION_TYPE_CREATE = 'create';
+    public const ACTION_TYPE_COMMENT       = 'comment';
+    public const ACTION_TYPE_FORWARD = 'forward';
+    public const ACTION_TYPE_RETURN = 'return';
+    public const ACTION_TYPE_EDIT = 'edit';
+    public const ACTION_TYPE_EMPTY = '';
 
     /**
      * @param array $data key value of DB record + some special keys
@@ -345,7 +346,7 @@ class tasksTaskLogModel extends waModel
         }
         if ($contacts) {
             $collection = new waContactsCollection('id/'.implode(',', array_keys($contacts)));
-            $contacts = $collection->getContacts('firstname,middlename,lastname,name,company,photo_url');
+            $contacts = $collection->getContacts('login,firstname,middlename,lastname,name,company,photo_url');
             foreach ($contacts as &$c) {
                 $c['name'] = tasksHelper::formatName($c);
             }

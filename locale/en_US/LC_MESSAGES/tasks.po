@@ -12,7 +12,7 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Language: en_US\n"
-"X-Generator: Poedit 2.3\n"
+"X-Generator: Poedit 3.0\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPath-1: .\n"
 
@@ -569,9 +569,6 @@ msgstr ""
 msgid "Today"
 msgstr ""
 
-msgid "A tiny hint describing this milestone."
-msgstr ""
-
 msgid "Archived"
 msgstr ""
 
@@ -644,7 +641,7 @@ msgid "User %s has just completed a task"
 msgstr ""
 
 msgid "Inbox automatically collects all tasks assigned to you. No tasks are assigned to you right now :-)"
-msgstr ""
+msgstr "Inbox automatically collects all tasks assigned to you. No tasks are assigned to you right now."
 
 msgid "Your outbox is empty"
 msgstr ""
@@ -713,13 +710,13 @@ msgstr ""
 msgid "Closed"
 msgstr ""
 
-msgid "%d day left"
-msgid_plural "%d days left"
+msgid "In %d day"
+msgid_plural "In %d days"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%d day overdue"
-msgid_plural "%d days overdue"
+msgid "%d day ago"
+msgid_plural "%d days ago"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -918,7 +915,7 @@ msgid "No active work scopes are defined."
 msgstr ""
 
 msgid "Use <strong>app \"%s\"</strong> to provide access to Tasks app for your teammates."
-msgstr ""
+msgstr "Use <strong>the %s app</strong> to provide access to tasks for your teammates."
 
 msgid "New scope"
 msgstr ""
@@ -993,4 +990,278 @@ msgid "A list name is required."
 msgstr ""
 
 msgid "Scope not found"
+msgstr ""
+
+msgid "Personal settings"
+msgstr ""
+
+msgid "Scopes are not set."
+msgstr ""
+
+msgid "Add a milestone to group tasks into time-based activities such as sprints, releases, or subprojects."
+msgstr ""
+
+msgid "Show %d completed milestone"
+msgid_plural "Show %d completed milestones"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Hide completed milestone"
+msgid_plural "Hide completed milestones"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "My notification preferences"
+msgstr ""
+
+msgid "Notify me on"
+msgstr ""
+
+msgid "All updates and comments"
+msgstr ""
+
+msgid "Assignments only"
+msgstr ""
+
+msgid "Turn off all notifications"
+msgstr ""
+
+msgid "Which tasks"
+msgstr ""
+
+msgid "Tasks assigned to me"
+msgstr ""
+
+msgid "Tasks created by me"
+msgstr ""
+
+msgid "Tasks I’m watching"
+msgstr ""
+
+msgid "Tasks from selected projects"
+msgstr ""
+
+msgid "Button name"
+msgstr ""
+
+msgid "Caption on a button that sends a task into this status. Sometimes it matches the status name, but in most cases, it's a verb."
+msgstr ""
+
+msgid "Background color"
+msgstr ""
+
+msgid "Text color"
+msgstr ""
+
+msgid "Keep the assignee unchanged"
+msgstr ""
+
+msgid "Assign to the user who created the task"
+msgstr ""
+
+msgid "Force assign to"
+msgstr ""
+
+msgid "Allow to select the assignee"
+msgstr ""
+
+msgid "Allow making the task unassigned"
+msgstr ""
+
+msgid "Below is the global list of all statuses a task can pass through. On a project level, custom workflow can be set up by selecting particular statuses only and skipping the unwanted ones."
+msgstr ""
+
+msgid "Commit changes by clicking “Save” when done editing."
+msgstr ""
+
+msgid "All done!"
+msgstr ""
+
+msgid "Congratulations! Everything set to be done in this milestone is marked as complete."
+msgstr ""
+
+msgid "Go to settings"
+msgstr ""
+
+msgid "Set due date"
+msgstr ""
+
+msgid "Filter"
+msgstr ""
+
+msgid "Remove from my filters"
+msgstr ""
+
+msgid "Save to my custom filters"
+msgstr ""
+
+msgid "Selected tasks"
+msgstr ""
+
+msgid "Close tasks"
+msgstr ""
+
+msgid "Delete tasks"
+msgstr ""
+
+msgid "Tag tasks"
+msgstr ""
+
+msgid "All tags"
+msgstr ""
+
+msgid "Show all tags"
+msgstr ""
+
+msgid "Find tag"
+msgstr ""
+
+msgid "Watching"
+msgstr ""
+
+msgid "Return to status"
+msgstr ""
+
+msgid "Return task"
+msgstr ""
+
+msgid "The task is now assigned to:"
+msgstr ""
+
+msgid "Watch"
+msgstr ""
+
+msgid "No due date"
+msgstr ""
+
+msgid "Enter new tag..."
+msgstr ""
+
+msgid "Unlink"
+msgstr ""
+
+msgid "Linked task"
+msgstr ""
+
+msgid "Pin"
+msgstr ""
+
+msgid "Pinned"
+msgstr ""
+
+msgid "Task summary"
+msgstr ""
+
+msgid "Attach files"
+msgstr ""
+
+msgid "Show everyone"
+msgstr ""
+
+msgid "Forward task"
+msgstr ""
+
+msgid "Highlight color for the main task list and the kanban board."
+msgstr ""
+
+msgid "Logo"
+msgstr ""
+
+msgid "Image URL to be used as a tiny project icon all around."
+msgstr ""
+
+msgid "Similar to %s"
+msgstr ""
+
+msgid "DANGER: Deletion will be permanent with no ability to roll back. Are you sure?"
+msgstr ""
+
+msgid "Menu"
+msgstr ""
+
+msgid "Updates"
+msgstr ""
+
+msgid "Kanban"
+msgstr ""
+
+msgid "My filters"
+msgstr ""
+
+msgid "%d open / %d closed"
+msgstr ""
+
+msgid "Add a project to start creating tasks."
+msgstr ""
+
+msgid "Edit custom filter"
+msgstr ""
+
+msgid "Save custom filter"
+msgstr ""
+
+msgid "Only you will see this filter in the app navigation."
+msgstr ""
+
+msgid "Show unassigned"
+msgstr ""
+
+msgid "Assigned to %s %s ago"
+msgstr ""
+
+msgid "Unassigned task"
+msgstr ""
+
+msgid "Restore this milestone"
+msgstr ""
+
+msgid "Mark as complete"
+msgstr ""
+
+msgid "Date"
+msgstr ""
+
+msgid "A tiny hint describing your teammates what this milestone is all about."
+msgstr ""
+
+msgid "Doing"
+msgstr ""
+
+msgid "Start doing"
+msgstr ""
+
+msgid "To test"
+msgstr ""
+
+msgid "On fire!"
+msgstr ""
+
+msgid "Close"
+msgstr ""
+
+msgid "Deleted contact"
+msgstr ""
+
+msgid "All milestones"
+msgstr ""
+
+msgid "All assignees"
+msgstr ""
+
+msgid "Failed to upload image %s."
+msgstr ""
+
+msgid "Save to my filters"
+msgstr ""
+
+msgid "Backlog"
+msgstr ""
+
+msgid "Hide tasks from your inbox for a specific period of time to focus on other important tasks. Your teammates will continue to see your hidden tasks as open and visible."
+msgstr ""
+
+msgid "Template"
+msgstr ""
+
+msgid "Export"
 msgstr ""

@@ -4,11 +4,11 @@
 **}
 
 {function show_userpic o=[]}
-    {$_userpic = "{$wa_url}wa-content/img/userpic96.jpg"}
+    {$_userpic = "{$wa_url}wa-content/img/userpic.svg"}
     {if !empty($o.id) && !empty($o.photo)}
         {$_userpic = waContact::getPhotoUrl($o.id, $o.photo, 40, 40, 'person', 0)}
     {/if}
-    <i class="icon16 userpic20" style="background-image: url({$_userpic|escape})"></i>
+    <i class="userpic userpic-20" style="background-image: url({$_userpic|escape})"></i>
 {/function}
 
 {function print_option_data_attrs o=[] keys=[]}
@@ -27,66 +27,127 @@
 {/function}
 
 {function show_filter filter=[] class='' data_keys=[]}{strip}
-    <div class="t-menu-item js-dropdown-menu {$class|default:''}" data-id="{$filter.id}" data-hash="{$filter.hash|default:''}">
-        <ul class="menu-h dropdown">
-            <li>
-                <a class="t-selected-item js-dropdown-menu-title" href="javascript:void(0);">&nbsp;</a>
-                <ul class="menu-v with-icons">
-                    {foreach $filter.options as $o}
-                        <li class="t-nav-item js-dropdown-menu-item
-                            {if $o.is_empty|default:false} is-empty{/if}
-                            {if $o.selected|default:''} js-dropdown-menu-item-selected{/if}"
-                            {print_option_data_attrs o=$o keys=$data_keys}>
-                                <a href="javascript:void(0);">
+    <li class="dropdown js-dropdown-menu {$class|default:''}" data-id="{$filter.id}" data-hash="{$filter.hash|default:''}" id="t-menu-dropdown-{$filter.id}">
 
-                                    {if !empty($o.icon_html) && ifempty($o.icon) != 'unknown'}
-                                        {$o.icon_html}
-                                    {/if}
+        <a class="t-selected-item js-dropdown-menu-title dropdown-toggle" href="javascript:void(0);">&nbsp;</a>
+        <div class="dropdown-body">
+            <ul class="menu">
+                {foreach $filter.options as $o}
+                    <li class="js-dropdown-menu-item
+                        {if $o.is_empty|default:false} is-empty{/if}
+                        {if $o.selected|default:''} js-dropdown-menu-item-selected{/if}"
+                        {print_option_data_attrs o=$o keys=$data_keys}>
+                            <a href="javascript:void(0);">
 
-                                    {if array_key_exists('photo', $o)}
-                                        {show_userpic o=$o}
-                                    {/if}
+                                {if !empty($o.icon_html) && ifempty($o.icon) != 'unknown'}
+                                    {$o.icon_html}
+                                {/if}
 
-                                    <span class="{if $o@index > 0}is-bold{/if}">{$o.name|escape}</span>
-                                </a>
-                        </li>
-                    {/foreach}
-                </ul>
-            </li>
-        </ul>
-    </div>
+                                {if array_key_exists('photo', $o)}
+                                    {show_userpic o=$o}
+                                {/if}
+
+                                <span class="{if $o@index > 0}is-bold{/if}">{$o.name|escape|truncate:42}</span>
+                            </a>
+                    </li>
+                {/foreach}
+            </ul>
+        </div>
+
+        <script>
+            ( function($) {
+                $("#t-menu-dropdown-{$filter.id}").waDropdown( { hover: false } );
+            })(jQuery);
+        </script>
+
+    </li>
 {/strip}{/function}
 
-{function showTagsCloud class='' cloud=[]}
-    <div class="t-menu-item {$class|default:''}" data-id="tag" data-hash="tag">
-        <ul class="menu-h dropdown">
-            <li>
-                {$_title = '[`Tags`]'}
-                <a class="t-selected-item js-title" href="javascript:void(0);" data-default-title="{$_title}">{$_title}</a>
-                <ul class="menu-v with-icons t-tags-cloud">
-                    <li class="js-show-all" style="display: none;">
-                        <a href="javascript:void(0);" class="js-tag-link" data-id="" data-value="">[`Show all`]</a>
-                    </li>
-                    <li class="t-nav-item t-nav-tags-item">
-                        {if count($cloud) <= tasksTaskTagsModel::TAGS_MAX_COUNT}
-                            {foreach $cloud as $tag}
+{function showTagsCloud class='' cloud=[] title=''}
+    <li class="dropdown {$class|default:''}" data-id="tag" data-hash="tag" id="t-menu-dropdown-tag">
+
+        {if !$title}
+            {$_title = '[`All tags`]'}
+        {else}
+            {$_title = $title}
+        {/if}
+        <button class="dropdown-toggle button light-gray t-selected-item js-title" data-default-title="{$_title}">{$_title}</button>
+
+        <div class="dropdown-body custom-p-8" style="min-width: 320px;">
+            <ul class="menu t-tags-cloud">
+                <li class="js-show-all" style="display: none;">
+                    <a href="javascript:void(0);" class="js-tag-link" data-id="" data-value="">
+                        <span>[`Show all tags`]</span>
+                        <span class="count">{count($cloud)}</span>
+                    </a>
+                </li>
+                <li class="t-nav-tags-item tag">
+
+                    <ul class="chips tags small">
+
+                        {* top tags 'copy-paste #2' *}
+
+                        {$_tag_usage_counts = []}
+                        {foreach $cloud as $tag}
+                            {$_tag_usage_counts[ $tag.id ] = $tag.count}
+                        {/foreach}
+
+                        {capture}{arsort($_tag_usage_counts)}{/capture}
+
+                        {$_top_tags_ids = []}
+                        {$_max_tag_visible = 25}
+                        {$_i = 0}
+                        {foreach $_tag_usage_counts as $_tid => $_tcount}
+                            {$_top_tags_ids[ $_tid ] = $_tcount}
+                            {if $_i >= $_max_tag_visible}
+                                {break}
+                            {/if}
+                            {$_i = $_i + 1}
+                        {/foreach}
+
+                        {$_hidden_tags_counter = 0}
+                        {foreach $cloud as $tag}
+                            {$_visible = $tag.id|array_key_exists:$_top_tags_ids}
+
+                            <li{if !$_visible} class="t-tags-hidden-tag js-tags-hidden-tag"{/if}>
                                 <a href="javascript:void(0)"
                                    class="js-tag-link t-tag-link"
                                    data-id="{$tag.id}"
                                    data-value="{$tag.name|escape}"
-                                   style="font-size: {$tag.size}%; opacity: {$tag.opacity};color: green;text-decoration: underline;">{$tag.name|escape}</a>
-                            {/foreach}
-                        {else}
-                            <span class="hint" style="margin: 1em 0;">{sprintf(_w('There are more than %u tags.'), tasksTaskTagsModel::TAGS_MAX_COUNT)}<br>
-                                [`Start typing in the search field to find a tag.`]
-                            </span>
+                                   >
+                                   <i class="fas fa-hashtag"></i>
+                                   <span>{$tag.name|escape}</span>
+                               </a>
+                            </li>
+                            {if !$_visible}
+                                {$_hidden_tags_counter = $_hidden_tags_counter + 1}
+                            {/if}
+                        {/foreach}
+
+                        {if $_hidden_tags_counter > 0}
+                            <li class="transparent">
+                                <a href="#" style="background: transparent !important; color: rgba(127,127,127,0.5) !important;" class="js-tags-show-all-link">[`Show all tags`] ({count($cloud)})</a>
+                            </li>
                         {/if}
-                    </li>
-                    <li>
-                        <input value="" class="t-input js-t-header-tags-autocomplete" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true" placeholder="[`Search tag...`]">
-                    </li>
-                </ul>
-            </li>
-        </ul>
-    </div>
+                    </ul>
+
+                </li>
+            </ul>
+            <input value="" class="t-input js-t-header-tags-autocomplete small" type="text" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true" placeholder="[`Find tag`]">
+        </div>
+
+        <script>
+            ( function($) {
+                $("#t-menu-dropdown-tag").waDropdown( { hover: false } );
+
+                $('.js-tags-show-all-link').on('click', function (e) {
+                    e.preventDefault();
+                    $(this).closest('.tags').find('.js-tags-hidden-tag').show();
+                    $(this).hide();
+                });
+
+            })(jQuery);
+        </script>
+
+    </li>
 {/function}

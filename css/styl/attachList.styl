@@ -21,9 +21,9 @@
                     margin: 0 0 .25rem
                     text-align center
                     line-height $image_size
-                    background #f7f7f7
-                    border: 1px solid rgba(127,127,127,.1);
-                    border-radius: 2px;
+                    background var(--background-color)
+                    border: 1px solid rgba(127,127,127,.2);
+                    border-radius: 0.25rem
                     font-size 0
 
                     img
@@ -48,18 +48,19 @@
                     color: #aaa
 
                 .t-file-delete
-                    $size = 20px
+                    $size = 24px
                     display block
                     position absolute
                     top: -( $size / 2 )
                     right: -( $size / 2 )
                     width $size
                     height $size
+                    padding 0.25rem
 
-                    border: 1px solid rgba(0,0,0,.33);
+                    box-shadow 0 0.25rem 0.5rem rgba(0,0,0,0.2)
                     border-radius 50%
 
-                    background #fff url("../img/icons/delete-icon.png") 50% no-repeat
+                    background #fff url("../img/times-solid.svg") 50% no-repeat
                     background-size ( $size / 2 )
 
                 .t-file-error
@@ -104,11 +105,16 @@
                     width $delete_size
                     height $delete_size
                     margin: 0 0 0 .5em
+                    padding 0.125rem
 
-                    border: 1px solid rgba(0,0,0,.33);
-                    border-radius 3px
+                    box-shadow none
+                    border-radius 50%
 
-                    background #fff url("../img/icons/delete-icon.png") 50% no-repeat
+                    position relative
+                    top -1px
+                    left -4px
+
+                    background var(--light-gray) url("../img/times-solid.svg") 50% no-repeat
                     background-size ( $delete_size / 2 )
 
                 .t-file-error
@@ -118,17 +124,17 @@
     .t-attach-droparea
         position relative
         padding: 16px
-        border: 1px dashed #aaa
-        border-radius 0 0 3px 3px
+        border: 2px dashed var(--light-gray)
+        border-radius 0 0 0.25rem 0.25rem
         border-top: none
         text-align center
-        background #f3f3f3
+        background var(--background-color)
         color: #aaa;
         transition background 200ms linear
         box-sizing border-box
 
         &.file-hover
-            background #ffa
+            background var(--background-color-editable)
 
         input[type="file"]
             position absolute

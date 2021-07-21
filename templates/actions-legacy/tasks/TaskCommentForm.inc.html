@@ -1,0 +1,93 @@
+{$comment = $comment|default:[]}
+
+<div class="t-comment-form">
+    <form {if $post_action_url|default:''}action="{$post_action_url}"{/if} method="post">
+
+        <div class="profile image32px">
+            <div class="image">
+                <img src="{$wa->user()->getPhoto(64)}" alt="" class="userpic userpic-32">
+            </div>
+            <div class="details">
+                {* TEXTAREA *}
+                <div class="line t-textarea-wrapper">
+                    {$_text = $comment.text|default:''}
+                    <textarea name="data[text]" cols="" rows="" placeholder="[`Enter your comment`]">{$_text|escape}</textarea>
+                </div>
+
+                {* ATTACH *}
+                <div class="line t-attach-wrapper">
+
+                    {* Droparea *}
+                    <div class="t-attach-droparea">
+                        <div class="t-droparea-hint">[`Please click or drop image file here`]</div>
+                        <input type="file" name="files[]" multiple="true" />
+                    </div>
+
+                    {* Container For Attached Files *}
+                    {$_images = $comment.images|default:[]}
+                    {$_files = $comment.files|default:[]}
+                    <div class="t-attached-files-wrapper {if $_images || $_files}is-shown{/if}">
+                        <div class="t-images-list">
+
+                            {foreach $_images as $_image}
+                                <div class="t-image-item" data-file-ident="{$_image.id}">
+                                    <a class="t-image-link" href="?module=attachments&action=download&id={$_image.id}" title="{$_image.name|escape}">
+                                        <img src="?module=attachments&action=download&id={$_image.id}" alt="{$_image.name|escape}">
+                                    </a>
+                                    <div class="t-file-name">{$_image.name|escape}</div>
+                                    <div class="t-file-size">{$_image.size|wa_format_file_size}</div>
+                                    <a class="t-file-delete" href="javascript:void(0);"></a>
+                                </div>
+                            {/foreach}
+
+                            <div class="t-image-item is-template">
+                                <a class="t-image-link" href="javascript:void(0);">
+                                    <img src="" alt="">
+                                </a>
+                                <div class="t-file-name"></div>
+                                <div class="t-file-size"></div>
+                                <a class="t-file-delete" href="javascript:void(0);"></a>
+                                <div class="t-file-error"></div>
+                            </div>
+                        </div>
+
+                        <div class="t-files-list">
+
+                            {foreach $_files as $_file}
+                                <div class="t-file-item" data-file-ident="{$_file.id}">
+                                    <a class="t-file-link" href="?module=attachments&action=download&id={$_file.id}" title="{$_file.name|escape}">
+                                        <i class="icon16 attachment"></i>
+                                        <span class="t-file-name">{$_file.name|escape}</span>
+                                        <span class="t-file-size">{$_file.size|wa_format_file_size}</span>
+                                    </a>
+                                    <a class="t-file-delete" href="javascript:void(0);"></a>
+                                </div>
+                            {/foreach}
+
+                            <div class="t-file-item is-template">
+                                <div class="t-file-link">
+                                    <i class="icon16 attachment"></i>
+                                    <span class="t-file-name"></span>
+                                    <span class="t-file-size"></span>
+                                </div>
+                                <a class="t-file-delete" href="javascript:void(0);"></a>
+                                <div class="t-file-error"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        {* BUTTONS *}
+        <div class="line t-buttons-block">
+            {$_button_text = $button_text|default:_w('Add comment')}
+            <input class="t-add-comment-button button green" type="submit" name="" value="{$_button_text}">
+            {$_cancel_link = $cancel_link|default:''}
+            {if $_cancel_link}
+                [`or`] <a href="javascript:void(0)" class="t-cancel-link">[`cancel`]</a>
+            {/if}
+        </div>
+    </form>
+</div>

@@ -1,3 +1,5 @@
+{include inline file='./includes/Header.inc.html'}
+
 {include file="./Helpers.inc.html" inline}
 
 {sprintf('[`User %s has just completed a task`]', $from.name|escape)}
@@ -13,6 +15,4 @@
 
 {log_block}
 
-<br>
-<br>
-[`via Tasks app`]
+{include inline file='./includes/Footer.inc.html'}
