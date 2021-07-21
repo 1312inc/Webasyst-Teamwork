@@ -2,7 +2,7 @@
 
 return array(
     'name'            => 'Git',
-    'description'     => 'Commits, tests, release handler',
+    'description'     => 'Commits, tests, and releases handler',
     'img'             => 'img/git.png',
     'version'         => '1.0.0',
     'vendor'          => 'webasyst',
