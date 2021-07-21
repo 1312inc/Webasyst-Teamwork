@@ -5,14 +5,12 @@ class tasksPreviewPlugin extends waPlugin
     public function backendTaskEdit($params)
     {
         $task = $params['task'];
+
         //$img = $this->getPluginStaticUrl() . 'img/preview-mode.png';
 
-        $template = wa()->getAppPath("plugins/preview/templates/Link.html", 'tasks');
-        return array(
-            'header' => $this->renderTemplate($template, array(
-                'task' => $task
-            ))
-        );
+        return [
+            'header' => $this->renderTemplate('common', 'Link.html', ['task' => $task]),
+        ];
     }
 
     public function backendAssets()
@@ -22,15 +20,20 @@ class tasksPreviewPlugin extends waPlugin
         wa()->getResponse()->addJs('plugins/preview/js/preview.js?v=' . $version, 'tasks');
     }
 
-    protected function renderTemplate($template, $assign = array())
+    protected function renderTemplate($scope, $template_path, $assign = [], $cache_id = null)
     {
         $view = wa()->getView();
         $old_vars = $view->getVars();
+
         $view->clearAllAssign();
         $view->assign($assign);
-        $html = $view->fetch($template);
+
+        $full_templates_path = $this->buildFullTemplatePath($scope, $template_path);
+        $html = $view->fetch($full_templates_path);
+
         $view->clearAllAssign();
         $view->assign($old_vars);
+
         return $html;
     }
 }
