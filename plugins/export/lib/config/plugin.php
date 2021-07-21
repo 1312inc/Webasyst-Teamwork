@@ -2,10 +2,10 @@
 
 return array(
     'name'            => 'Export',
-    'description'     => 'Export',
-    'img'             => 'img/export.svg',
-    'version'         => '1.0',
-    'vendor'          => 'webasyst',
+    'description'     => 'Exports task list to a CSV (Excel) file',
+    'img'             => 'img/export.png',
+    'version'         => '1.0.0',
+    'vendor'          => '1021997',
     'custom_settings' => 0,
     'handlers'        => array(
         'backend_tasks' => 'backendTasks',
