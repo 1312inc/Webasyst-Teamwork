@@ -1600,10 +1600,11 @@ var Task = ( function($) {
             $.get('?module=tasks&action=sidebarItem&id=' + that.task_id).then(function (html) {
                 var selector = '#t-tasks-wrapper [data-task-id="' + that.task_id + '"]',
                     el = $(selector),
+                    assignedContactId = $(html).data('assignedContactId'),
                     status = $(html).data('statusId');
                 if (el.length) {
                     el.replaceWith(html);
-                    if (+status === -1) {
+                    if (+status === -1 || $.tasks.options.contact_id !== +assignedContactId) {
                         $(selector).fadeOut();
                     }
                 }
