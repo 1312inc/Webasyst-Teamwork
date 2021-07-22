@@ -1275,5 +1275,5 @@ msgstr ""
 msgid "No activity yet"
 msgstr ""
 
-msgid "This screen will present everything you and your team is doing with tasks"
+msgid "This screen will collect and present everything you and your team are doing with tasks."
 msgstr ""
