@@ -1338,3 +1338,9 @@ msgstr "Экспорт"
 
 msgid "Select tasks"
 msgstr "Выбрать задачи"
+
+msgid "No activity yet"
+msgstr "Здесь пока пусто"
+
+msgid "This screen will present everything you and your team is doing with tasks"
+msgstr "В списке событий будут собраны все действия с задачами, которые выполняете вы и ваши сотрудники"
