@@ -137,10 +137,13 @@ h2
 .t-kanban
   height calc(100vh - 10rem)
   width 100%
-  max-width calc(100vw - 17rem)
+  max-width calc(100vw - 16rem - 2rem)
   overflow-x auto
   overflow-y hidden
   margin 1rem
+
+  @media screen and (min-width:761px) and (max-width:1440px)
+    max-width calc(100vw - 13rem - 2rem)
 
   @media forMobile
     height 90vh
