@@ -1271,3 +1271,9 @@ msgstr ""
 
 msgid "Select tasks"
 msgstr ""
+
+msgid "No activity yet"
+msgstr ""
+
+msgid "This screen will present everything you and your team is doing with tasks"
+msgstr ""
