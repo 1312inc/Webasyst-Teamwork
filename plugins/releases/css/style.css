@@ -1,8 +1,8 @@
 .t-releases-plugin-task-edit-block-more-options-link .icon16.darr { top: 0px !important; margin: 0 !important; }
 .t-releases-plugin-task-edit-block-more-options-link .icon16.uarr { top: 1px !important; margin: 0 !important; }
 
-.t-releases-plugin-task-type-selector-wrapper { display: inline-block; width: 10%; float: left; }
-.t-task-name-input { width: 89% !important; float: right; }
+.t-releases-plugin-task-type-selector-wrapper { display: inline-block; width: 12%; float: left; }
+.t-task-name-input { width: 86% !important; float: right; }
 
 /* Types Menu */
 .t-releases-plugin-task-type-selector-wrapper .t-menu-item .dropdown .t-task-type-selector{
