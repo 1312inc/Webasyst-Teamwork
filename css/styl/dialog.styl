@@ -14,11 +14,14 @@
     top: 0
     left: 0
     width: 100%
-    padding: 0 0 0 15rem;
+    padding: 0 0 0 16rem;
     min-height: 100%
     box-sizing border-box
     transition background 200ms linear
     z-index 1
+
+    @media screen and (min-width: 761px) and (max-width: 1440px)
+      padding-left 13rem
 
     @media forMobile
         padding 0
