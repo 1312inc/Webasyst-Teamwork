@@ -76,13 +76,6 @@
     <ul class="menu custom-mt-0">
 
         <li>
-            {* Fix color for favorites task with high priority (dont use red)*}
-            {if !empty($favorites_counts) && isset($favorites_counts.name)}
-                {if $favorites_counts.name == 'High'}
-                    {$favorites_counts.text_color = '#999'}
-                    {$favorites_counts.bg_color = 'transparent'}
-                {/if}
-            {/if}
             <a href="#/tasks/favorites/">
                 <i class="fas fa-star{if $favorites_counts.total} text-yellow{/if}"></i>
                 <span>[`Watching`]</span>

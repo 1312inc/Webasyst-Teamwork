@@ -1129,7 +1129,7 @@
 
                         // if High or Urgent
                         if (value === '1' || value === '2') {
-                            var exclamation_color = value === '1' ? '#ff6c00' : '#ed2509';
+                            var exclamation_color = value === '1' ? 'orange' : 'red';
                             $span
                                 .addClass('t-ornament--exclamation')
                                 .append('<i style="color:' + exclamation_color + ';" class="fas fa-exclamation-circle"></i>');
