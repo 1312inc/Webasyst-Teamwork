@@ -87,13 +87,13 @@ return array(
         ),
         1 => array(
             'name' => _w('High'),
-            'bg_color' => '#ff6c00',
+            'bg_color' => 'orange',
             'text_color' => 'white',
             'value' => 1,
         ),
         2 => array(
             'name' => _w('Urgent'),
-            'bg_color' => '#ed2509',
+            'bg_color' => 'red',
             'text_color' => 'white',
             'value' => 2,
         ),
