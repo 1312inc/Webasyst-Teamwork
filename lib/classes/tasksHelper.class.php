@@ -214,7 +214,7 @@ class tasksHelper
                 {
                     $status['view']['button_html'] = '<a ' .
                         'href="javascript:void(0);" ' .
-                        'class="button rounded t-control-link larger t-change-status-link gray" data-status-id="' . $status['id'] . '"' .
+                        'class="button rounded t-control-link large t-change-status-link gray" data-status-id="' . $status['id'] . '"' .
                         // 'style="background-color:#'.$color.'"'.
                         'data-has-form="0"' .
                         '><span class="t-change-status-link-label"><span class="small"><i class="fas fa-check"></i></span> ' . htmlspecialchars($status['button']) . '</span></a>';
@@ -224,7 +224,7 @@ class tasksHelper
                     $buttonHasForm = (!empty($status['params']['allow_comment']) || ifset($status['params']['assign']) == 'select') ? 1 : 0;
                     $status['view']['button_html'] = '<a ' .
                         'href="javascript:void(0);" ' .
-                        'class="button rounded t-control-link larger t-change-status-link ' . $buttonClassName . '" data-status-id="' . $status['id'] . '"' .
+                        'class="button rounded t-control-link large t-change-status-link ' . $buttonClassName . '" data-status-id="' . $status['id'] . '"' .
                         'style="background-color:#'.$color.'; color:#'.$textcolor.';"'.
                         'data-has-form="' . $buttonHasForm . '"' .
                         '><span class="t-change-status-link-label">' . htmlspecialchars($status['button']) . '</span></a>';
