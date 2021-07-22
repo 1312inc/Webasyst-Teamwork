@@ -1268,3 +1268,6 @@ msgstr ""
 
 msgid "Export"
 msgstr ""
+
+msgid "Select tasks"
+msgstr ""
