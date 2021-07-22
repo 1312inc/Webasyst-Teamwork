@@ -1335,3 +1335,6 @@ msgstr "Шаблон"
 
 msgid "Export"
 msgstr "Экспорт"
+
+msgid "Select tasks"
+msgstr "Выбрать задачи"
