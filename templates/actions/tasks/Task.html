@@ -161,10 +161,6 @@
 
                 </div>
 
-                <!-- plugin hook: 'backend_task.%plugin_id%.header' -->
-                {* @event backend_task.%plugin_id%.header *}
-                {foreach $_backend_task_hook as $_}{$_.header|default:''}{/foreach}
-
                 {* USERS & DEADLINES *}
                 <div class="flexbox space-16 custom-mb-16 wrap-mobile">
 
@@ -277,11 +273,13 @@
                             </div>
                         </div>
 
-
-                        <!-- plugin hook could be here -->
-
                     </div>
                 </div>
+
+                <!-- plugin hook: 'backend_task.%plugin_id%.header' -->
+                {* @event backend_task.%plugin_id%.header *}
+                {foreach $_backend_task_hook as $_}{$_.header|default:''}{/foreach}
+
             </header>
 
             <!-- plugin hook: 'backend_task.%plugin_id%.after_header' -->
@@ -291,7 +289,7 @@
             <hr>
 
             {* TASK BODY *}
-            <div class="flexbox space-12 full-width" style="position: relative;">
+            <div class="flexbox space-12 full-width t-task-body" style="position: relative;">
 
                 <h2 class="custom-m-0 wide">
 
