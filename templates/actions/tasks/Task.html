@@ -784,6 +784,10 @@
                 files_hash: {$_files_hash|json_encode},
                 user_id: {$wa->user('id')|json_encode}
             });
+
+            $.wa.locale = $.extend($.wa.locale || {}, {
+                "before_delete_task": "[`DANGER: Task will be deleted without the ability to restore. Delete?`]"
+            });
         })();</script>
     {/if}
 </div>
