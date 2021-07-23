@@ -237,7 +237,7 @@ var Task = ( function($) {
         });
 
         $task.on("click", ".t-delete-task-link", function() {
-            if (confirm($_("DANGER: Task will be deleted without the ability to restore. Delete?"))) {
+            if (confirm($_("DANGER: This task will be deleted without a recovery option. Delete?"))) {
                 that.deleteTask();
             }
             return false;
@@ -958,7 +958,7 @@ var Task = ( function($) {
                         that.is_status_opened = false;
                     }
                 });
-                
+
             });
 
             that.is_status_opened = true;
@@ -1000,7 +1000,7 @@ var Task = ( function($) {
 
             $commentForm.on("submit", function() {
                 var $submitButton = $(this).find('[type="submit"]');
-                
+
                 $.tasks.showLoadingButton($submitButton);
                 clearCommentErrors();
                 if (validateComment()) {

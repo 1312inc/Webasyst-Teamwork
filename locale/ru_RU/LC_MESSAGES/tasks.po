@@ -1344,3 +1344,6 @@ msgstr "Здесь пока пусто"
 
 msgid "This screen will collect and present everything you and your team are doing with tasks."
 msgstr "В списке событий будут собраны все действия, которые выполняете с задачами вы и ваши сотрудники."
+
+msgid "DANGER: Task will be deleted without the ability to restore. Delete?"
+msgstr "ВНИМАНИЕ: Задача будет удалена без возможности восстановления. Удалить?"
