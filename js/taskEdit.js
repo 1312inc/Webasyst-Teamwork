@@ -153,6 +153,12 @@ var TaskEdit = ( function($) { "use strict";
         $R('.t-redactor-task-edit', {
             // 'focus': true,
             tabindex: 1,
+            toolbarFixedTarget: (function() {
+                return $('#t-dialog-wrapper').length ? '#t-dialog-wrapper' : document
+            })(),
+            toolbarFixedTopOffset: (function() {
+                return $('#t-dialog-wrapper').length ? 0 : 64
+            })(),
             imageData: {
                 task_uuid: '{$task_uuid}'
             },
