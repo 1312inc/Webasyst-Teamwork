@@ -3,11 +3,19 @@
     <span class="t-type-text" style="color: #{$task_type.color|escape}; font-weight: bold;">{$task_type.name|escape}:&nbsp;</span>
     <script>
         (function () {
-            var $wrapper = $('#{$wrapper_id}'),
-                $type_text = $wrapper.find('.t-type-text'),
-                $task_name = $wrapper.closest('.t-task-header').find('.t-task-name-wrapper');
-            $type_text.insertBefore($task_name);
-            $wrapper.remove();
+            {if $wa->whichUI() == '1.3'}
+                var $wrapper = $('#{$wrapper_id}'),
+                    $type_text = $wrapper.find('.t-type-text'),
+                    $task_name = $wrapper.closest('.t-task-header').find('.t-task-name-wrapper');
+                $type_text.insertBefore($task_name);
+                $wrapper.remove();
+            {else}
+                var $_ttype = $('#{$wrapper_id}'),
+                    $type_text = $_ttype.find('.t-type-text'),
+                    $task_name = $('.t-task-body').find('.t-task-name-wrapper');
+                $type_text.insertBefore($task_name);
+                $_ttype.remove();
+            {/if}
         })(jQuery);
     </script>
 </div>
