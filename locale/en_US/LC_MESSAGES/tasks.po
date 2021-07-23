@@ -1277,3 +1277,6 @@ msgstr ""
 
 msgid "This screen will collect and present everything you and your team are doing with tasks."
 msgstr ""
+
+msgid "DANGER: Task will be deleted without the ability to restore. Delete?"
+msgstr ""
