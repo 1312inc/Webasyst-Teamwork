@@ -1,3 +1,87 @@
+{if $wa->whichUi() == '1.3'}
+{$wrapper_id = uniqid('t-plugin-releases-settings-task-types-wrapper')}
+<div class="shadowed t-plugin-releases-settings-task-types-wrapper" id="{$wrapper_id}">
+
+    {$sidebar_html|default:''}
+
+    <div class="content left200px blank bordered-left">
+
+        <div class="hidden block double-padded t-saved bordered-bottom">
+            <i class="icon16 yes"></i>[`Settings successfully updated`]
+        </div>
+
+        <div class="block double-padded blank">
+            <h1>[`Task types`]</h1>
+
+            <div class="block not-padded t-add-settings-wrapper">
+                <ul class="menu-h with-icons" style="margin-top: 15px; margin-bottom: 20px;">
+                    <li>
+                        <a href="javascript:void(0)" class="bold t-add-new-type-link">
+                            <i class="icon16 add"></i>[`New type`]
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <form method="post" class="t-save-settings-form">
+                <div class="t-settings-wrapper">
+                    <div class="t-types-list-wrapper">
+                        <ul class="menu-v t-types-list" style="position: relative;">
+
+                            {$_types = $types}
+                            {$_empty = $empty}
+                            {$_empty.id = '_template_'}
+                            {$_types[$_empty.id] = $_empty}
+
+                            {foreach $_types as $_type}
+                                {$_is_template = $_type.id == '_template_'}
+                                <li data-id="{$_type.id}" class="t-types-list-item {if $_is_template}is-template{/if}">
+                                    <i class="icon16 sort t-sort-handler"></i>
+                                    <span class="t-type-name-text" {if $_type.color}style="color:#{$_type.color|escape}"{/if}>{$_type.name|escape}</span>
+                                    <input type="text" class="t-type-name-input"
+                                           name="data[type][{$_type.id}][name]" value="{$_type.name|escape}"
+                                            style="display: none;" placeholder="Type name">
+                                    <div class="t-type-color-wrapper" style="display: none;">
+                                        <label class="t-type-label-color" style="color: #a29d9d;">[`Color`]</label>
+                                        #<input type="text" class="short js-colorpicker t-type-color-input"
+                                               name="data[type][{$_type.id}][color]" value="{$_type.color|escape}" autocomplete="off">
+                                        <i class="icon16 color" style="background:#{ifset($_type.color, 'f0f0f0')|escape};"></i>
+                                    </div>
+
+                                    <a class="t-delete-type-link" title="[`Delete`]">
+                                        <i class="icon16 delete t-delete"></i>
+                                    </a>
+
+                                    <a class="t-edit-type-link" title="[`Edit`]">
+                                        <i class="icon16 edit t-edit"></i>
+                                    </a>
+                                </li>
+                            {/foreach}
+
+                        </ul>
+                    </div>
+                    <div class="t-save-settings-wrapper">
+                        <input type="submit" class="t-save-button button green" value="[`Save`]">
+                        <i class="icon16 loading t-loading" style="display: none;"></i>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+
+        <div class="clear-both"></div>
+    </div>
+    <script>
+        (function ($) {
+
+            new TasksReleasesPluginTaskTypes({
+                $wrapper: $('#{$wrapper_id}')
+            });
+
+        })(jQuery);
+    </script>
+</div>
+{else}
 {$wrapper_id = uniqid('t-plugin-releases-settings-task-types-wrapper')}
 <div class="flexbox t-plugin-releases-settings-task-types-wrapper" id="{$wrapper_id}">
 
@@ -84,3 +168,4 @@
         })(jQuery);
     </script>
 </div>
+{/if}
