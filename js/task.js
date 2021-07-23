@@ -237,7 +237,7 @@ var Task = ( function($) {
         });
 
         $task.on("click", ".t-delete-task-link", function() {
-            if (confirm($_("DANGER: This task will be deleted without a recovery option. Delete?"))) {
+            if (confirm($_("before_delete_task"))) {
                 that.deleteTask();
             }
             return false;
