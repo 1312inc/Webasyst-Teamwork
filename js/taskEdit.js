@@ -156,9 +156,7 @@ var TaskEdit = ( function($) { "use strict";
             toolbarFixedTarget: (function() {
                 return $('#t-dialog-wrapper').length ? '#t-dialog-wrapper' : document
             })(),
-            toolbarFixedTopOffset: (function() {
-                return $('#t-dialog-wrapper').length ? 0 : 64
-            })(),
+            toolbarFixedTopOffset: 64,
             toolbarContext: false,
             imageData: {
                 task_uuid: '{$task_uuid}'
