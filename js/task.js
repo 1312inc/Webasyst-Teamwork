@@ -1601,10 +1601,15 @@ var Task = ( function($) {
                 var selector = '#t-tasks-wrapper [data-task-id="' + that.task_id + '"]',
                     el = $(selector),
                     assignedContactId = $(html).data('assignedContactId'),
+                    taskHidden = $(html).data('taskHidden'),
                     status = $(html).data('statusId');
                 if (el.length) {
                     el.replaceWith(html);
-                    if (+status === -1 || $.tasks.options.contact_id !== +assignedContactId) {
+                    if (
+                        ($.tasks.last_action_params[0] === 'inbox' && $.tasks.options.contact_id !== +assignedContactId) ||
+                        (taskHidden === 'hidden') ||
+                        (+status === -1)
+                    ) {
                         $(selector).fadeOut();
                     }
                 }
