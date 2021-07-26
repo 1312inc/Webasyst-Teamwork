@@ -10,7 +10,7 @@
 
     {strip}{$priorities = []}
     {foreach $wa->tasks->config('priorities') as $priority}
-        {$priorities[$priority.value] = $priority.name|escape}
+        {$priorities[$priority.value] = _w($priority.name)|escape}
     {/foreach}{/strip}
     <script src="{$wa_app_static_url}js/tasks.js?v{$wa->version()}"></script>
     <script>window.TasksController.initBeforeJQuery({
