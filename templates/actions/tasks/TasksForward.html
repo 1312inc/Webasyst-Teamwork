@@ -52,6 +52,7 @@
                         </li>
                     {/function}
 
+                    {$_there_are_hidden_users = false}
                     {foreach $users as $user}
                         {$_is_shown = ifset($user, 'is_active', false)}
 
@@ -72,6 +73,7 @@
                         {/if}
 
                         <li class="t-user-item {if $_is_shown}is-shown{/if}" data-user-id="{$user.id}">
+                            {if !$_is_shown}{$_there_are_hidden_users = true}{/if}
                             <label class="t-user-label flexbox middle space-8">
                                 <span class="wa-radio">
                                    <input type="radio" name="assigned_contact_id" value="{$user.id}" {if ($selected_user == $user.id)}checked="checked"{/if}>
@@ -98,8 +100,7 @@
                     </li>
 
                     {*Render "show all" link if next user after active - not active. Or if interation more 2 *}
-                    {if ($_active_users && !$_is_shown && !$_render_link) ||
-                        (!$_active_users && count($_active_users) > $_visible_team_count &&  !$_render_link)}
+                    {if $_there_are_hidden_users}
                         {renderLink}
                         {$_render_link = true}
                     {/if}
