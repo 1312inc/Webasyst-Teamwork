@@ -117,7 +117,7 @@
             {$_logGroupIteration=$_logGroupIteration+1}
             {foreach $logGroup.items as $l}{strip}
             <div class="t-comment-item-wrapper custom-mb-20 {if $l.contact_id == $wa->user()->getId()}t-comment-item-wrapper--right{/if}" data-id="{$l.id}">
-                <div class="t-comment-item flexbox space-12{if $l.action == 'comment' || ($l.action == 'forward' && !empty($l.text))} t-comment-with-custom-text{/if}" data-log-id="{$l.id|escape}">
+                <div class="t-comment-item flexbox space-12{if !empty($l.text)} t-comment-with-custom-text{/if}" data-log-id="{$l.id|escape}">
                     <div class="image" style="position: relative;">
                         <a href="#/log/contact_id={$l.contact_id}/" title="{$l.contact.name|escape}">
                             <img class="userpic userpic-48" src="{$l.contact.photo_url}" alt="{$l.contact.name|escape}">
