@@ -230,7 +230,9 @@
                             {$_due_class = ''}
                             {if $task.milestone}
                                 {$_milestone = $task.milestone.name|escape}
-                                {$_due_date = wa_date('humandate', $task.milestone.due_date, waDateTime::getDefaultTimezone())|escape}
+                                {if $task.milestone.due_date}
+                                    {$_due_date = wa_date('humandate', $task.milestone.due_date, waDateTime::getDefaultTimezone())|escape}
+                                {/if}
                                 {$_due_hint = $task.milestone.view.due_text}
                                 {$_due_class = $task.milestone.view.due_color_class}
                             {/if}
