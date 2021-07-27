@@ -7,7 +7,7 @@
     data-task-id="{$task.id}"
     data-task-number="{$_task_number}"
     data-task-uuid="{$task.uuid}"
-    data-status-id="{$task.status.id}"
+    data-status-id="{ifset($task, 'status', 'id', null)}"
     data-assigned-contact-id="{$task.assigned_contact_id}"
     data-task-hidden="{$_task_hidden}"
 >
