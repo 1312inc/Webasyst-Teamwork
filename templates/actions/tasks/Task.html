@@ -521,13 +521,13 @@
 
             <!-- plugin hook: 'backend_task.%plugin_id%.after_description' -->
             {* @event backend_task.%plugin_id%.after_description *}
-            {*** TODO ENABLED WHEN POCKET LISTS IS WA2-ENABLED foreach $_backend_task_hook as $_}
+            {foreach $_backend_task_hook as $_}
                 {if !empty($_.after_description)}
                     <div class="t-task-embedded-block">
                         {$_.after_description}
                     </div>
                 {/if}
-            {/foreach ***}
+            {/foreach}
 
             {* ATTACHMENTS *}
             {if $task.images || $task.files}
@@ -579,13 +579,13 @@
 
                 <!-- plugin hook: 'backend_task.%plugin_id%.after_attachments' -->
                 {* @event backend_task.%plugin_id%.after_attachments *}
-                {*** TODO ENABLED WHEN POCKET LISTS IS WA2-ENABLED foreach $_backend_task_hook as $_}
+                {foreach $_backend_task_hook as $_}
                     {if !empty($_.after_attachments)}
                         <div class="t-task-embedded-block">
                             {$_.after_attachments}
                         </div>
                     {/if}
-                {/foreach ***}
+                {/foreach}
 
             {/if}
 
