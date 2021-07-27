@@ -13,7 +13,7 @@ class tasksAttachmentModel extends waModel
         $result = '';
         $symbols = '1234567890qwertyuiopasdfghjklzxcvbnm';
         for($i = 0; $i < 16; $i++) {
-            $result .= $symbols{mt_rand(0, strlen($symbols)-1)};
+            $result .= $symbols[mt_rand(0, strlen($symbols)-1)];
         }
         return $result;
     }
