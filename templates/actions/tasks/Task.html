@@ -620,7 +620,7 @@
                                 {$_can_edit = $_can_edit && !$_empty_log_item}
                             {/if}
 
-                            <div class="t-comment-item flexbox space-8 {if $task.comment_log_id == $l.id}t-pinned-comment{/if}" data-id="{$l.id}">
+                            <div class="t-comment-item flexbox space-8 {if $l.action == 'comment' || ($l.action == 'forward' && !empty($l.text))}t-comment-with-custom-text {/if}{if $task.comment_log_id == $l.id}t-pinned-comment{/if}" data-id="{$l.id}">
                                 <div class="image">
                                     <a href="{if !empty($l.contact.id)}#/tasks/assigned/{$l.contact.id}/{* tasksHelper::getProfileURL($l.contact.id) *}{else}javascript:void(0);{/if}" title="{$l.contact.name|escape}">
                                         {if !empty({$l.contact.photo_url})}
@@ -679,7 +679,7 @@
                                     {/if}
 
                                     {if !empty($l.text)}
-                                        <div class="t-comment-content custom-mt-8">{tasksTask::formatText($l.text)}</div>
+                                        <div class="t-comment-content">{tasksTask::formatText($l.text)}</div>
                                     {/if}
 
                                     {if $l.assignment_changed}
