@@ -83,10 +83,13 @@
                             <script>
                                 ( function($) {
                                     var $dropdown = $("#projectSelect"),
-                                        $currentProject = $dropdown.find("li:first a");
+                                        $currentProject = $dropdown.find("li:first a"),
+                                        savedProjectId = {$task.project_id};
 
-                                    $dropdown.find('.dropdown-toggle').html($currentProject.html());
-                                    $dropdown.find('[name="data[project_id]"]').val($currentProject.data('value'));
+                                    if (!savedProjectId) {
+                                        $dropdown.find('.dropdown-toggle').html($currentProject.html());
+                                        $dropdown.find('[name="data[project_id]"]').val($currentProject.data('value'));
+                                    }
 
                                     $dropdown.waDropdown({
                                         hover: false,
