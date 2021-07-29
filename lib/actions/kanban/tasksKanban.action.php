@@ -85,12 +85,14 @@ class tasksKanbanAction extends tasksTasksAction
             }
         }
 
+        $isFilterSet = count(array_filter($filters));
+
         $this->view->assign(
             [
                 'kanban_page_hooks' => $pageHooks,
                 'filter_types' => $filterTypes,
                 'click_to_load_more' => $offset > 100,
-                'is_filter_set' => !!$filters,
+                'is_filter_set' => $isFilterSet,
                 'kanban' => $kanban,
                 'tags_cloud' => self::getTagsCloud(),
             ]
