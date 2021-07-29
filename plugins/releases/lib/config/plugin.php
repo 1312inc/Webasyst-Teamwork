@@ -4,7 +4,7 @@ return array(
     'name'            => 'Releases',
     'description'     => 'Releases',
     'img'             => 'img/releases.svg',
-    'version'         => '0.3.0',
+    'version'         => '0.3.1',
     'vendor'          => '1021997',
     'custom_settings' => true,
     'handlers'        => array(
