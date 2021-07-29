@@ -59,6 +59,10 @@ MARKDOWN;
             return;
         }
 
+        if (!wa()->appExists('baza')) {
+            return;
+        }
+
         //waLog::dump(['release', $product], 'telegram/archive.log');
 
         wa('baza');
@@ -162,6 +166,10 @@ MARKDOWN;
     protected function sendMessage($params)
     {
         if (empty($params['product']) || !wa()->appExists('updates')) {
+            return null;
+        }
+
+        if (!wa()->appExists('updates')) {
             return null;
         }
 

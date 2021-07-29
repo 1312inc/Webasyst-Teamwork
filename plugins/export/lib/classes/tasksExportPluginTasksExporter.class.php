@@ -538,10 +538,10 @@ class tasksExportPluginTasksExporter
         if (self::$cache !== null) {
             return self::$cache;
         }
-        $cache = wa('crm')->getConfig()->getCache();
+        $cache = wa('tasks')->getConfig()->getCache();
         if (!($cache instanceof waCache)) {
             $cache_adapter = new waFileCacheAdapter(array());
-            $cache = new waCache($cache_adapter, 'crm');
+            $cache = new waCache($cache_adapter, 'tasks');
         }
         return self::$cache = $cache;
     }
