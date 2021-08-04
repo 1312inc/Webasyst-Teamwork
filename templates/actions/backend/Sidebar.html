@@ -76,13 +76,6 @@
     <ul class="menu custom-mt-0">
 
         <li>
-            {* Fix color for favorites task with high priority (dont use red)*}
-            {if !empty($favorites_counts) && isset($favorites_counts.name)}
-                {if $favorites_counts.name == 'High'}
-                    {$favorites_counts.text_color = '#999'}
-                    {$favorites_counts.bg_color = 'transparent'}
-                {/if}
-            {/if}
             <a href="#/tasks/favorites/">
                 <i class="fas fa-star{if $favorites_counts.total} text-yellow{/if}"></i>
                 <span>[`Watching`]</span>
@@ -197,7 +190,7 @@
 
                                         <div class="progressbar">
                                             <div class="progressbar-line-wrapper">
-                                                <div class="progressbar-outer"><div class="progressbar-inner" style="width: {$scope.closed_percent}%;{if $_scope_is_100_complete}background: var(--green);{elseif !empty($scope.due_date) && $scope.due_date < date('Y-m-d')}background: var(--red);{/if}"></div></div>
+                                                <div class="progressbar-outer"><div class="progressbar-inner" style="{if isset($scope.closed_percent)}width: {$scope.closed_percent}%;{/if}{if $_scope_is_100_complete}background: var(--green);{elseif !empty($scope.due_date) && $scope.due_date < date('Y-m-d')}background: var(--red);{/if}"></div></div>
                                                 <span class="hint t-closed-percent"></span>
                                             </div>
                                         </div>

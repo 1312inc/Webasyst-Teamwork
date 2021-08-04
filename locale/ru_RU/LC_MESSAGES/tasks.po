@@ -463,8 +463,11 @@ msgstr "Все проекты"
 msgid "All statuses"
 msgstr "Все статусы"
 
+msgid "All open"
+msgstr "Все открытые"
+
 msgid "All including closed"
-msgstr "Все, включая завершенные"
+msgstr "Все, включая закрытые"
 
 msgid "Any milestone"
 msgstr "Все сроки"
@@ -1332,3 +1335,15 @@ msgstr "Шаблон"
 
 msgid "Export"
 msgstr "Экспорт"
+
+msgid "Select tasks"
+msgstr "Выбрать задачи"
+
+msgid "No activity yet"
+msgstr "Здесь пока пусто"
+
+msgid "This screen will collect and present everything you and your team are doing with tasks."
+msgstr "В списке событий будут собраны все действия, которые выполняете с задачами вы и ваши сотрудники."
+
+msgid "DANGER: Task will be deleted without the ability to restore. Delete?"
+msgstr "ВНИМАНИЕ: Задача будет удалена без возможности восстановления. Удалить?"

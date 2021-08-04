@@ -14,22 +14,26 @@
     top: 0
     left: 0
     width: 100%
-    padding: 0 0 0 15rem;
-    min-height: 100%
+    height: 100vh
+    padding: 0 0 0 16rem;
+    overflow-y: auto;
     box-sizing border-box
     transition background 200ms linear
     z-index 1
+
+    @media screen and (min-width: 761px) and (max-width: 1440px)
+      padding-left 13rem
 
     @media forMobile
         padding 0
 
     &.has-ornament
         background var(--dialog-background-color)
-        backdrop-filter blur(0.25rem)
+        // backdrop-filter blur(0.25rem)
 
     .t-dialog-content
         position relative
-        top: 93px
+        top: 64px
         width: 100%
         margin: auto
         background var(--background-color-blank)

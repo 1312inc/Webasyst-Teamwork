@@ -1,3 +1,6 @@
+body.dialog-is-shown
+  overflow hidden
+
 h2
   @media forMobile
     font-size 1.5rem
@@ -21,7 +24,7 @@ h2
   animation load8 1.1s infinite linear
 
 #wa-plugins-container
-  .loading, .loading:after 
+  .loading, .loading:after
     display: none
 
 @keyframes load8
@@ -137,10 +140,13 @@ h2
 .t-kanban
   height calc(100vh - 10rem)
   width 100%
-  max-width calc(100vw - 17rem)
+  max-width calc(100vw - 16rem - 2rem)
   overflow-x auto
   overflow-y hidden
   margin 1rem
+
+  @media screen and (min-width:761px) and (max-width:1440px)
+    max-width calc(100vw - 13rem - 2rem)
 
   @media forMobile
     height 90vh
@@ -213,12 +219,22 @@ h2
 
     .t-comment-content
       font-size 0.9375rem
+      margin 0.5rem 0 0.75rem
+      font-weight 500
+
+      blockquote
+        padding 0.75rem 1rem
+        margin 0.25rem 0
 
       p:last-child
-        margin-bottom 0
+        margin-bottom 0.5rem
 
     &.t-pinned-comment
         background var(--highlighted-blue)
+
+    &.t-comment-with-custom-text
+        //background var(--background-color-blank)
+        border 2px solid var(--border-color-soft)
 
     @media forMobile
         width 85%
@@ -234,14 +250,19 @@ h2
         font-size 1rem
 
 .t-task-embedded-block
-    padding 0.75rem 1rem
-    border-radius 1rem
-    background var(--background-color)
+    padding 0 0 1rem
+    margin-top 2rem
+    border-top 1px solid var(--border-color-soft)
 
 .redactor-box.redactor-styles-on
     border-width 2px !important
     border-radius 0.25rem !important
     border-bottom-color transparent !important
+
+.redactor-styles
+    code
+        background-color var(--background-color-blockquote) !important
+        color var(--text-color-stronger) !important
 
 .collapsible
   margin-bottom: 2rem
@@ -355,3 +376,9 @@ h2
 
 .t-header-wrapper .dropdown > .dropdown-body
   top auto
+
+.t-relations-hover-block
+  .break-word
+    white-space nowrap
+    overflow hidden
+    text-overflow ellipsis

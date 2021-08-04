@@ -237,7 +237,7 @@ var Task = ( function($) {
         });
 
         $task.on("click", ".t-delete-task-link", function() {
-            if (confirm($_("DANGER: Task will be deleted without the ability to restore. Delete?"))) {
+            if (confirm($_("before_delete_task"))) {
                 that.deleteTask();
             }
             return false;
@@ -958,7 +958,7 @@ var Task = ( function($) {
                         that.is_status_opened = false;
                     }
                 });
-                
+
             });
 
             that.is_status_opened = true;
@@ -1000,7 +1000,7 @@ var Task = ( function($) {
 
             $commentForm.on("submit", function() {
                 var $submitButton = $(this).find('[type="submit"]');
-                
+
                 $.tasks.showLoadingButton($submitButton);
                 clearCommentErrors();
                 if (validateComment()) {
@@ -1600,10 +1600,16 @@ var Task = ( function($) {
             $.get('?module=tasks&action=sidebarItem&id=' + that.task_id).then(function (html) {
                 var selector = '#t-tasks-wrapper [data-task-id="' + that.task_id + '"]',
                     el = $(selector),
+                    assignedContactId = $(html).data('assignedContactId'),
+                    taskHidden = $(html).data('taskHidden'),
                     status = $(html).data('statusId');
                 if (el.length) {
                     el.replaceWith(html);
-                    if (+status === -1) {
+                    if (
+                        ($.tasks.last_action_params[0] === 'inbox' && $.tasks.options.contact_id !== +assignedContactId) ||
+                        (taskHidden === 'hidden') ||
+                        (+status === -1)
+                    ) {
                         $(selector).fadeOut();
                     }
                 }
