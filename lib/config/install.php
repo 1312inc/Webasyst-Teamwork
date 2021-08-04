@@ -19,15 +19,15 @@ try {
 
     if (!$project_model->countAll() && !$status_model->countAll()) {
 
-        $status_id = $status_model->insert(array(
+        $statusDoingId = $status_model->insert(array(
             'name' => _w('Doing'),
             'button' => _w('Start doing'),
             'sort' => 2,
             'icon' => 'status-yellow-tiny'
         ));
-        if ($status_id) {
+        if ($statusDoingId) {
             $params_model = new tasksStatusParamsModel();
-            $params_model->set($status_id, array(
+            $params_model->set($statusDoingId, array(
                 'assign_user' => '',
                 'assign' => '',
                 'button_color' => 'ffdc2f',
@@ -36,15 +36,15 @@ try {
             ));
         }
 
-        $status_id = $status_model->insert(array(
+        $statusTestingId = $status_model->insert(array(
             'name' => _w('Testing'),
             'button' => _w('To test'),
             'sort' => 3,
             'icon' => 'status-red-tiny'
         ));
-        if ($status_id) {
+        if ($statusTestingId) {
             $params_model = new tasksStatusParamsModel();
-            $params_model->set($status_id, array(
+            $params_model->set($statusTestingId, array(
                 'assign_user' => '',
                 'assign' => 'select',
                 'button_color' => 'ff7416',
@@ -61,7 +61,11 @@ try {
             $project_status_model = new tasksProjectStatusesModel();
             $project_status_model->insert(array(
                 'project_id' => $project_id,
-                'status_id' => $status_id,
+                'status_id' => $statusDoingId,
+            ));
+            $project_status_model->insert(array(
+                'project_id' => $project_id,
+                'status_id' => $statusTestingId,
             ));
         }
     }

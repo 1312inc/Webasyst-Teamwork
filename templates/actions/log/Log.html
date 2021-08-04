@@ -117,7 +117,7 @@
             {$_logGroupIteration=$_logGroupIteration+1}
             {foreach $logGroup.items as $l}{strip}
             <div class="t-comment-item-wrapper custom-mb-20 {if $l.contact_id == $wa->user()->getId()}t-comment-item-wrapper--right{/if}" data-id="{$l.id}">
-                <div class="t-comment-item flexbox space-12" data-log-id="{$l.id|escape}">
+                <div class="t-comment-item flexbox space-12{if !empty($l.text)} t-comment-with-custom-text{/if}" data-log-id="{$l.id|escape}">
                     <div class="image" style="position: relative;">
                         <a href="#/log/contact_id={$l.contact_id}/" title="{$l.contact.name|escape}">
                             <img class="userpic userpic-48" src="{$l.contact.photo_url}" alt="{$l.contact.name|escape}">
@@ -224,13 +224,13 @@
 
             <div id="end-of-logs" class="box align-center custom-my-16">
 
-                    {if $click_to_load_more && $next_page_url}
-                        <span class="js-logs-list-counter semibold">{sprintf("[`%s of %d`]", _w('%d record','%d records', $offset + $count), $total_count)}</span>
-                        <p class="box align-center custom-mt-8">
-                            <span class="button light-gray small click-to-load-more"><a href="javascript:void(0)" class="text-gray">[`Load more...`]</a></span>
-                        </p>
-                    {/if}
-                    <!-- <span class="hidden loading-indicator"><i class="icon16 loading"></i></span> -->
+                {if $click_to_load_more && $next_page_url}
+                    <span class="js-logs-list-counter semibold">{sprintf("[`%s of %d`]", _w('%d record','%d records', $offset + $count), $total_count)}</span>
+                    <p class="box align-center custom-mt-8">
+                        <span class="button light-gray small click-to-load-more"><a href="javascript:void(0)" class="text-gray">[`Load more...`]</a></span>
+                    </p>
+                {/if}
+                <!-- <span class="hidden loading-indicator"><i class="icon16 loading"></i></span> -->
 
                 <script>(function() { "use strict";
                     {* Note that this script has to be inside #t-logs-wrapper for lazy loading to work correctly. *}
@@ -248,7 +248,11 @@
     </div>
     </div>
     {else}
-        {* !!! TODO: nice friendly message when there are no logs in list *}
+        <div class="box align-center opacity-40" style="margin-top: 14vh;">
+            <span style="font-size: 13rem; line-height: normal;" class="text-light-gray"><i class="fas fa-comments"></i></span>
+            <h3>[`No activity yet`]</h3>
+            <div style="max-width: 460px; margin: 0 auto;">[`This screen will collect and present everything you and your team are doing with tasks.`]</div>
+        </div>
     {/if}
 
 </div>

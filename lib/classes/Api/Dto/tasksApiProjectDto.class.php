@@ -57,7 +57,7 @@ final class tasksApiProjectDto implements JsonSerializable
         ?int $tasks_number,
         string $icon,
         string $color,
-        ?string $archive_datetime,
+        ?DateTimeImmutable $archive_datetime,
         int $sort
     ) {
         $this->id = $id;
@@ -67,7 +67,7 @@ final class tasksApiProjectDto implements JsonSerializable
         $this->tasks_number = $tasks_number;
         $this->icon = $icon;
         $this->color = $color;
-        $this->archive_datetime = $archive_datetime;
+        $this->archive_datetime = $archive_datetime ? $archive_datetime->format('Y-m-d H:i:s') : null;
         $this->sort = $sort;
     }
 

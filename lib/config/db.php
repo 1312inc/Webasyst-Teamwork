@@ -30,7 +30,7 @@ return array(
         'params' => array('text'),
         'order' => array('varchar', 32),
         'icon' => array('varchar', 255, 'null' => 0, 'default' => ''),
-        'count' => array('int', 'null' => 0, 'default' => '0'),
+        'count' => array('int', 11, 'null' => 0, 'default' => '0'),
         ':keys' => array(
             'PRIMARY' => 'id',
             'contact_id' => 'contact_id',
@@ -123,6 +123,7 @@ return array(
         'hidden_timestamp' => array('bigint', 20, 'null' => 0, 'default' => '0'),
         'due_date' => array('date'),
         'comment_log_id' => array('int', 11),
+        'uuid' => array('varchar', 36),
         ':keys' => array(
             'PRIMARY' => 'id',
             'project_number' => array('project_id', 'number', 'unique' => 1),

@@ -367,7 +367,7 @@ class tasksTasksAction extends waViewAction
         $status_model = new tasksStatusModel();
 
         $all_statuses = tasksHelper::extendIcon($status_model->getEmptyRow());
-        $all_statuses['name'] = _w('All statuses');
+        $all_statuses['name'] = _w('All open');
 
         $all_statuses_without_archive = tasksHelper::extendIcon($status_model->getEmptyRow());
         $all_statuses_without_archive['name'] = _w('All including closed');

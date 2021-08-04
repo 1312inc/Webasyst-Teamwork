@@ -433,6 +433,9 @@ msgstr ""
 msgid "All statuses"
 msgstr ""
 
+msgid "All open"
+msgstr ""
+
 msgid "All including closed"
 msgstr ""
 
@@ -1264,4 +1267,16 @@ msgid "Template"
 msgstr ""
 
 msgid "Export"
+msgstr ""
+
+msgid "Select tasks"
+msgstr ""
+
+msgid "No activity yet"
+msgstr ""
+
+msgid "This screen will collect and present everything you and your team are doing with tasks."
+msgstr ""
+
+msgid "DANGER: Task will be deleted without the ability to restore. Delete?"
 msgstr ""

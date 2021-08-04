@@ -83,10 +83,13 @@
                             <script>
                                 ( function($) {
                                     var $dropdown = $("#projectSelect"),
-                                        $currentProject = $dropdown.find("li:first a");
+                                        $currentProject = $dropdown.find("li:first a"),
+                                        savedProjectId = {$task.project_id};
 
-                                    $dropdown.find('.dropdown-toggle').html($currentProject.html());
-                                    $dropdown.find('[name="data[project_id]"]').val($currentProject.data('value'));
+                                    if (!savedProjectId) {
+                                        $dropdown.find('.dropdown-toggle').html($currentProject.html());
+                                        $dropdown.find('[name="data[project_id]"]').val($currentProject.data('value'));
+                                    }
 
                                     $dropdown.waDropdown({
                                         hover: false,
@@ -242,7 +245,7 @@
                 {* @event backend_task_edit.%plugin_id%.before_fields *}
                 {foreach $backend_task_edit as $_}{ifset($_.before_fields)}{/foreach}
 
-                <div class="fields custom-mt-40 custom-mt-20-mobile">
+                <div class="fields custom-mt-20">
                     <div class="fields-group">
 
                 {* ASSIGN *}

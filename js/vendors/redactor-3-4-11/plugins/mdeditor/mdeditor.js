@@ -3,7 +3,9 @@ var turndownService = new TurndownService();
 
 // add turndown custom rules
 turndownService.addRule("a", {
-  filter: ["a"],
+  filter: function (node, options) {
+    return node.nodeName === "A" && node.getAttribute('href') === node.innerText;
+  },
   replacement: function (content) {
     return content;
   },

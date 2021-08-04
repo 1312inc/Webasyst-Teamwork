@@ -161,10 +161,6 @@
 
                 </div>
 
-                <!-- plugin hook: 'backend_task.%plugin_id%.header' -->
-                {* @event backend_task.%plugin_id%.header *}
-                {foreach $_backend_task_hook as $_}{$_.header|default:''}{/foreach}
-
                 {* USERS & DEADLINES *}
                 <div class="flexbox space-16 custom-mb-16 wrap-mobile">
 
@@ -234,7 +230,9 @@
                             {$_due_class = ''}
                             {if $task.milestone}
                                 {$_milestone = $task.milestone.name|escape}
-                                {$_due_date = wa_date('humandate', $task.milestone.due_date, waDateTime::getDefaultTimezone())|escape}
+                                {if $task.milestone.due_date}
+                                    {$_due_date = wa_date('humandate', $task.milestone.due_date, waDateTime::getDefaultTimezone())|escape}
+                                {/if}
                                 {$_due_hint = $task.milestone.view.due_text}
                                 {$_due_class = $task.milestone.view.due_color_class}
                             {/if}
@@ -277,11 +275,13 @@
                             </div>
                         </div>
 
-
-                        <!-- plugin hook could be here -->
-
                     </div>
                 </div>
+
+                <!-- plugin hook: 'backend_task.%plugin_id%.header' -->
+                {* @event backend_task.%plugin_id%.header *}
+                {foreach $_backend_task_hook as $_}{$_.header|default:''}{/foreach}
+
             </header>
 
             <!-- plugin hook: 'backend_task.%plugin_id%.after_header' -->
@@ -291,7 +291,7 @@
             <hr>
 
             {* TASK BODY *}
-            <div class="flexbox space-12 full-width" style="position: relative;">
+            <div class="flexbox space-12 full-width t-task-body" style="position: relative;">
 
                 <h2 class="custom-m-0 wide">
 
@@ -483,9 +483,9 @@
                         <ul class="bordered t-relations-hover-block custom-my-0">
                             {foreach $data as $id => $item}
                                 <li data-relation-type="{$relation_type}" data-relation-task="{$id}">
-                                    <div class="flexbox full-width space-12">
+                                    <div class="flexbox full-width middle space-12 small">
                                         <!-- <span class="gray">{$relation_name}:</span> -->
-                                        <span class="wide flexbox space-8">
+                                        <span class="wide flexbox middle space-8" style="min-width: 0; width: 1px;">
                                             <span title="{$relation_name}" class="small custom-mt-4"><i class="fas fa-link text-light-gray"></i></span>
                                             <a title="{$item['name']|escape}" href="#/task/{$item['project']|escape}.{$item['number']|escape}/" class="t-task-link{if $item['status_id'] < 0} gray{/if}"><strong>{$item['project']|escape}.{$item['number']|escape}</strong> {$item['name']|escape}</a>
                                         </span>
@@ -523,13 +523,13 @@
 
             <!-- plugin hook: 'backend_task.%plugin_id%.after_description' -->
             {* @event backend_task.%plugin_id%.after_description *}
-            {*** TODO ENABLED WHEN POCKET LISTS IS WA2-ENABLED foreach $_backend_task_hook as $_}
+            {foreach $_backend_task_hook as $_}
                 {if !empty($_.after_description)}
                     <div class="t-task-embedded-block">
                         {$_.after_description}
                     </div>
                 {/if}
-            {/foreach ***}
+            {/foreach}
 
             {* ATTACHMENTS *}
             {if $task.images || $task.files}
@@ -581,13 +581,13 @@
 
                 <!-- plugin hook: 'backend_task.%plugin_id%.after_attachments' -->
                 {* @event backend_task.%plugin_id%.after_attachments *}
-                {*** TODO ENABLED WHEN POCKET LISTS IS WA2-ENABLED foreach $_backend_task_hook as $_}
+                {foreach $_backend_task_hook as $_}
                     {if !empty($_.after_attachments)}
                         <div class="t-task-embedded-block">
                             {$_.after_attachments}
                         </div>
                     {/if}
-                {/foreach ***}
+                {/foreach}
 
             {/if}
 
@@ -620,7 +620,7 @@
                                 {$_can_edit = $_can_edit && !$_empty_log_item}
                             {/if}
 
-                            <div class="t-comment-item flexbox space-8 {if $task.comment_log_id == $l.id}t-pinned-comment{/if}" data-id="{$l.id}">
+                            <div class="t-comment-item flexbox space-8 {if !empty($l.text)}t-comment-with-custom-text {/if}{if $task.comment_log_id == $l.id}t-pinned-comment{/if}" data-id="{$l.id}">
                                 <div class="image">
                                     <a href="{if !empty($l.contact.id)}#/tasks/assigned/{$l.contact.id}/{* tasksHelper::getProfileURL($l.contact.id) *}{else}javascript:void(0);{/if}" title="{$l.contact.name|escape}">
                                         {if !empty({$l.contact.photo_url})}
@@ -659,11 +659,15 @@
                                         {/if}
 
                                         {if $_can_edit && $l.contact_id == $wa->user()->getId()}
-                                            <a href="javascript:void(0);" class="t-comment-edit-link button circle light-gray small" data-id="{$l.id}"><i class="fas fa-edit text-blue"></i></a>
+                                            <span>
+                                                <a href="javascript:void(0);" class="t-comment-edit-link button circle light-gray small" data-id="{$l.id}"><i class="fas fa-edit text-blue"></i></a>
+                                            </span>
                                         {/if}
 
                                         {if $_can_delete}
-                                            <a href="javascript:void(0);" class="t-comment-delete-link button circle light-gray small" data-id="{$l.id}"><i class="fas fa-trash-alt text-red"></i></a>
+                                            <span>
+                                                <a href="javascript:void(0);" class="t-comment-delete-link button circle light-gray small" data-id="{$l.id}"><i class="fas fa-trash-alt text-red"></i></a>
+                                            </span>
                                         {/if}
 
                                     </header>
@@ -675,7 +679,7 @@
                                     {/if}
 
                                     {if !empty($l.text)}
-                                        <div class="t-comment-content custom-mt-8">{tasksTask::formatText($l.text)}</div>
+                                        <div class="t-comment-content">{tasksTask::formatText($l.text)}</div>
                                     {/if}
 
                                     {if $l.assignment_changed}
@@ -785,6 +789,10 @@
                 time_since_update_template: {$time_since_update_template|json_encode},
                 files_hash: {$_files_hash|json_encode},
                 user_id: {$wa->user('id')|json_encode}
+            });
+
+            $.wa.locale = $.extend($.wa.locale || {}, {
+                "before_delete_task": "[`DANGER: Task will be deleted without the ability to restore. Delete?`]"
             });
         })();</script>
     {/if}
