@@ -128,4 +128,15 @@ class tasksLogChartAction extends tasksLogAction
         }
         return array($start_date, $end_date, $group_by);
     }
+
+    private static function getFilters()
+    {
+        $result = [
+            'project_id' => waRequest::request('project_id', null, 'int'),
+            'contact_id' => waRequest::request('contact_id', null, 'int'),
+            'milestone_id' => waRequest::request('milestone_id', null, 'int'),
+        ];
+
+        return array_filter($result, wa_lambda('$a', 'return !is_null($a);'));
+    }
 }
