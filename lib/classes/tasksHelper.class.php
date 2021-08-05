@@ -282,14 +282,16 @@ class tasksHelper
     public static function getAttachPreviewUrl($attach, $absolute = false)
     {
         $str = str_pad($attach['task_id'], 4, '0', STR_PAD_LEFT);
-        $path = 'tasks/' . substr($str, -2) . '/' . substr(
-                $str,
-                -4,
-                2
-            ) . '/' . $attach['task_id'] . '/' . $attach['id'] . '.' . ifset(
-                $attach['code'],
-                '_'
-            ) . '.600.' . $attach['ext'];
+
+        $path = sprintf(
+            'tasks/%s/%s/%s/%s.%s.600.%s',
+            substr($str, -2),
+            substr($str, -4, 2),
+            $attach['task_id'],
+            $attach['id'],
+            ifset($attach['code'], '_'),
+            $attach['ext']
+        );
 
         return wa()->getDataUrl($path, true, 'tasks', $absolute);
     }
@@ -394,7 +396,7 @@ class tasksHelper
                 $formatNameFromSystem = explode(',', $formatNameFromSystem);
                 $format_name = array_combine($formatNameFromSystem, array_fill(0, count($formatNameFromSystem), true));
             } else {
-                $format_name = wa('tasks')->getConfig()->getOption('format_name');
+                $format_name = tsks()->getOption('format_name');
                 if (!$format_name) {
                     $format_name = [
                         'firstname' => true,

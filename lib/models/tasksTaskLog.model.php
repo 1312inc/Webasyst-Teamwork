@@ -412,7 +412,7 @@ class tasksTaskLogModel extends waModel
         if (array_key_exists('limit', $options)) {
             $limit = (int) $options['limit'];
         } else {
-            $limit = wa('tasks')->getConfig()->getOption('tasks_per_page');
+            $limit = tsks()->getOption('tasks_per_page');
         }
         if ($limit) {
             $start = ifset($options['start'], 0);
