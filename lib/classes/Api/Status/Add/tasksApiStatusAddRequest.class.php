@@ -1,56 +1,56 @@
 <?php
 
-final class tasksApiStatusAddRequest
+class tasksApiStatusAddRequest
 {
     /**
      * @var string
      */
-    private $name;
+    protected $name;
 
     /**
      * @var string
      */
-    private $button;
+    protected $button;
 
     /**
      * @var string
      */
-    private $icon;
+    protected $icon;
 
     /**
      * @var null|int
      */
-    private $assignUser;
+    protected $assignUser;
 
     /**
      * @var null|string
      */
-    private $assign;
+    protected $assign;
 
     /**
      * @var boolean|null
      */
-    private $allowClearAssign;
+    protected $allowClearAssign;
 
     /**
      * @var string|null
      */
-    private $buttonColor;
+    protected $buttonColor;
 
     /**
      * @var string|null
      */
-    private $titleColor;
+    protected $titleColor;
 
     /**
      * @var boolean|null
      */
-    private $allowComment = null;
+    protected $allowComment = null;
 
     /**
      * @var int
      */
-    private $sort;
+    protected $sort;
 
     public function __construct(
         string $name,
