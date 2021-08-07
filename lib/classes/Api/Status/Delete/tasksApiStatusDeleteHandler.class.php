@@ -10,7 +10,7 @@ final class tasksApiStatusDeleteHandler
             throw new tasksResourceNotFoundException(_w('Status not found'));
         }
 
-        $statusParamModel = tsks()->getModel('tasksStatusParam');
+        $statusParamModel = tsks()->getModel('tasksStatusParams');
         $statusModel->deleteById($status['id']);
         $statusParamModel->deleteByField('status_id', $status['id']);
 
