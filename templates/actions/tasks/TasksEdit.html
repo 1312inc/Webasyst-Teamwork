@@ -17,6 +17,7 @@
     window.taskEdit = new TaskEdit({
         $task: $(".t-task-page-wrapper"),
         task_id: {$task.id|default:'null'},
+        task_uuid: '{$task_uuid}',
         is_page: {if $is_page}true{else}false{/if},
         priority: "{$task.priority}",
         project_color: "{$project.color}",
