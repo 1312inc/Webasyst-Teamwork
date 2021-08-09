@@ -27,6 +27,7 @@ var TaskEdit = ( function($) { "use strict";
         // Vars
         that.show_class = "is-shown";
         that.task_id = ( options['task_id'] || false );
+        that.task_uuid = options['task_uuid'];
         that.is_page = options['is_page'];
         that.priority = options.priority;
         that.project_color = ( options['project_color'] || false );
@@ -159,7 +160,7 @@ var TaskEdit = ( function($) { "use strict";
             toolbarFixedTopOffset: 64,
             toolbarContext: false,
             imageData: {
-                task_uuid: '{$task_uuid}'
+                task_uuid: that.task_uuid
             },
             callbacks: {
                 started () {
