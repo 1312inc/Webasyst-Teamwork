@@ -48,7 +48,7 @@ abstract class tasksApiAbstractMethod extends waAPIMethod
      * @throws tasksApiMissingParamException
      * @throws tasksApiWrongParamException
      */
-    public function get($name, $required = false, ?int $type = null, string $format = '')
+    public function get($name, $required = false, ?string $type = null, string $format = '')
     {
         if ($this->jsonParams && array_key_exists($name, $this->jsonParams)) {
             $value = $this->jsonParams[$name];
@@ -124,7 +124,7 @@ abstract class tasksApiAbstractMethod extends waAPIMethod
      * @throws tasksApiMissingParamException
      * @throws tasksApiWrongParamException
      */
-    protected function param($name, $required = false, ?int $type = null, string $format = '')
+    protected function param($name, $required = false, ?string $type = null, string $format = '')
     {
         if ($this->jsonParams && array_key_exists($name, $this->jsonParams)) {
             $param = $this->jsonParams[$name];
