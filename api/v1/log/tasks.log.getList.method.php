@@ -1,6 +1,6 @@
 <?php
 
-class tasksLogsGetListMethod extends tasksApiAbstractMethod
+class tasksLogGetListMethod extends tasksApiAbstractMethod
 {
     /**
      * @return tasksApiResponseInterface
