@@ -193,8 +193,22 @@
         // Keep last update datetime of tasks up to date ('14 mins' => '15 mins')
         initTaskDateUpdater: function() {
             setInterval(function() {
-                $.each(window.Tasks || {}, function() {
-                    this.maybeUpdateTimeCounter && this.maybeUpdateTimeCounter();
+                $.each($('.list .item .t-date-wrapper'), function() {
+                    var since = $(this).data('since'),
+                        date1 = new Date(),
+                        date2 = new Date(since + " UTC"),
+                        diffTime = Math.abs(date2 - date1),
+                        diffMins = diffTime / (1000 * 60);
+
+                    // if minutes range
+                    if(diffMins > 1 && diffMins < 60) {
+                        $(this).html($.wa.locale['mins'].replace('%d', Math.round(diffMins)));
+                    } 
+
+                    // if hours range
+                    if(diffMins > 60 && diffMins < 60 * 24) {
+                        $(this).html($.wa.locale['hr'].replace('%d', Math.round(diffMins / 60)));
+                    }
                 });
             }, 10000);
         },
