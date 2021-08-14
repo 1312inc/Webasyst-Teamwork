@@ -992,6 +992,11 @@ var TaskEdit = ( function($) { "use strict";
                                 that.closePage(response.data, return_to_new);
 
                                 if (that.is_new) {
+                                    // Redirect to the created task
+                                    if (response.data.url) {
+                                        location.hash = '/task/' + response.data.url + '/';
+                                    }
+
                                     // Clear localStorage Task draft
                                     localStorage.removeItem('task_title');
                                     localStorage.removeItem('task_text');

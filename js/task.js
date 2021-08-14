@@ -146,7 +146,7 @@ var Task = ( function($) {
 
         that.initGallery();
 
-        that.maybeUpdateTimeCounter(); // initial call to set last update time
+        // that.maybeUpdateTimeCounter(); // initial call to set last update time
 
         that.initPriorityChanger();
 

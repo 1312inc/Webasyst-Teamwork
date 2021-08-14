@@ -91,7 +91,7 @@
                 {$time_since_update_template = null}
                 {$time_since_update_str = tasksHelper::getDatetime($task.update_datetime, $time_since_update_period, $time_since_update_template)}
 
-                <span class="small gray nowrap semibold">{$time_since_update_str}</span>
+                <span class="t-date-wrapper small gray nowrap semibold" data-since="{$task.update_datetime}">{$time_since_update_str}</span>
 
             </span>
 
