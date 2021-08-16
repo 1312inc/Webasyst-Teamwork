@@ -66,7 +66,7 @@ class tasksBackendAction extends waViewAction
         $tasks_milestone_model = new tasksMilestoneModel();
         $tasks_task_model = new tasksTaskModel();
 
-        $scopes = $tasks_milestone_model->getStatusesWithOrder(false);
+        $scopes = $tasks_milestone_model->getMilestonesWithOrder(false);
         $projects = tasksHelper::getProjects();
 
         foreach ($scopes as $id => $scope) {

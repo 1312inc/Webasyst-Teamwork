@@ -10,12 +10,12 @@ final class tasksApiMilestonesResponse implements tasksApiResponseInterface
     /**
      * tasksApiMilestonesResponse constructor.
      *
-     * @param array<tasksMilestone> $projects
+     * @param array $milestones
      */
-    public function __construct(array $projects)
+    public function __construct(array $milestones)
     {
-        foreach ($projects as $project) {
-            $this->milestones[] = tasksApiMilestoneDto::fromEntity($project);
+        foreach ($milestones as $milestone) {
+            $this->milestones[] = tasksApiMilestoneDto::fromArray($milestone);
         }
     }
 
