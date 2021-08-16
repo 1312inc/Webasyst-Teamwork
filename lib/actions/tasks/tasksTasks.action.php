@@ -383,7 +383,7 @@ class tasksTasksAction extends waViewAction
     protected static function getMilestoneFilterType()
     {
         $milestone_model = new tasksMilestoneModel();
-        $milestones = $milestone_model->getStatusesWithOrder(false);
+        $milestones = $milestone_model->getMilestonesWithOrder(false);
 
         return [
                 '' => [
