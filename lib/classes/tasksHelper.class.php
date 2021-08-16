@@ -164,10 +164,11 @@ class tasksHelper
             ];
 
             foreach ($statuses as $id => $s) {
-                if (wa()->whichUI() == '1.3')
+                if (wa()->whichUI() == '1.3') {
                     $statuses[$id] = self::extendIcon($statuses[$id] + $defaults);
-                else
+                } else {
                     $statuses[$id] = $statuses[$id] + $defaults;
+                }
             }
 
             $status_params_model = new tasksStatusParamsModel();
@@ -195,7 +196,6 @@ class tasksHelper
     public static function workupStatusesForView(&$statuses)
     {
         foreach ($statuses as &$status) {
-
             // view supplies (styles, properties, etc.)
             $status['view'] = [];
 
@@ -210,17 +210,14 @@ class tasksHelper
             }
 
             if (wa()->whichUI() == '2.0') {
-                if ($status['id'] == tasksStatusModel::STATUS_CLOSED_ID)
-                {
+                if ($status['id'] == tasksStatusModel::STATUS_CLOSED_ID) {
                     $status['view']['button_html'] = '<a ' .
                         'href="javascript:void(0);" ' .
                         'class="button rounded t-control-link large t-change-status-link gray" data-status-id="' . $status['id'] . '"' .
                         // 'style="background-color:#'.$color.'"'.
                         'data-has-form="0"' .
                         '><span class="t-change-status-link-label"><span class="small"><i class="fas fa-check"></i></span> ' . htmlspecialchars($status['button']) . '</span></a>';
-                }
-                else
-                {
+                } else {
                     $buttonHasForm = (!empty($status['params']['allow_comment']) || ifset($status['params']['assign']) == 'select') ? 1 : 0;
                     $status['view']['button_html'] = '<a ' .
                         'href="javascript:void(0);" ' .
