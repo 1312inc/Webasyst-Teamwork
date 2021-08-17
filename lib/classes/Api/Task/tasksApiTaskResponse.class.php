@@ -10,9 +10,9 @@ final class tasksApiTaskResponse implements tasksApiResponseInterface
     /**
      * tasksApiTaskResponse constructor.
      *
-     * @param array $task
+     * @param tasksTask $task
      */
-    public function __construct(array $task)
+    public function __construct(tasksTask $task)
     {
         $this->task = tasksApiTaskDtoFactory::create($task);
     }
