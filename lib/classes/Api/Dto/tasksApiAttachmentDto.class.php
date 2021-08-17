@@ -45,16 +45,22 @@ final class tasksApiAttachmentDto implements JsonSerializable
     private $code;
 
     /**
+     * @var string
+     */
+    private $downloadUrl;
+
+    /**
      * tasksApiAttachmentDto constructor.
      *
      * @param int                $id
-     * @param int                $log_id
+     * @param int|null           $log_id
      * @param string             $create_datetime
      * @param tasksApiContactDto $contact
      * @param string             $name
      * @param int                $size
      * @param string             $ext
      * @param string             $code
+     * @param string             $downloadUrl
      */
     public function __construct(
         int $id,
@@ -64,7 +70,8 @@ final class tasksApiAttachmentDto implements JsonSerializable
         string $name,
         int $size,
         string $ext,
-        string $code
+        string $code,
+        string $downloadUrl
     ) {
         $this->id = $id;
         $this->log_id = $log_id;
@@ -74,5 +81,6 @@ final class tasksApiAttachmentDto implements JsonSerializable
         $this->size = $size;
         $this->ext = $ext;
         $this->code = $code;
+        $this->downloadUrl = $downloadUrl;
     }
 }

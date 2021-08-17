@@ -23,7 +23,7 @@ final class tasksApiContactDto implements JsonSerializable
     {
         $this->id = $id;
         $this->name = $name;
-        $this->photoUrl = wa()->getConfig()->getHostUrl() . $photoUrl;
+        $this->photoUrl = $photoUrl;
     }
 
     public function getId(): int
