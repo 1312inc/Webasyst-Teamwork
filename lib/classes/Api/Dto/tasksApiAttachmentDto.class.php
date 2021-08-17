@@ -50,6 +50,16 @@ final class tasksApiAttachmentDto implements JsonSerializable
     private $downloadUrl;
 
     /**
+     * @var bool
+     */
+    private $isImage;
+
+    /**
+     * @var string|null
+     */
+    private $previewUrl;
+
+    /**
      * tasksApiAttachmentDto constructor.
      *
      * @param int                $id
@@ -71,7 +81,9 @@ final class tasksApiAttachmentDto implements JsonSerializable
         int $size,
         string $ext,
         string $code,
-        string $downloadUrl
+        string $downloadUrl,
+        bool $isImage,
+        ?string $previewUrl
     ) {
         $this->id = $id;
         $this->log_id = $log_id;
@@ -82,5 +94,7 @@ final class tasksApiAttachmentDto implements JsonSerializable
         $this->ext = $ext;
         $this->code = $code;
         $this->downloadUrl = $downloadUrl;
+        $this->isImage = $isImage;
+        $this->previewUrl = $previewUrl;
     }
 }

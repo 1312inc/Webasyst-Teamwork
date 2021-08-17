@@ -97,7 +97,7 @@ final class tasksApiTaskDto implements JsonSerializable
     /**
      * @var tasksApiAttachmentDto[]
      */
-    private $all_attachments;
+    private $attachments;
 
     /**
      * @var tasksApiLogDto[]
@@ -182,7 +182,7 @@ final class tasksApiTaskDto implements JsonSerializable
         $this->contact_id = $contact_id;
         $this->hidden_timestamp = $hidden_timestamp;
         $this->due_date = $due_date;
-        $this->all_attachments = $all_attachments;
+        $this->attachments = $all_attachments;
         $this->log = $log;
         $this->tags = $tags;
         $this->project = $project;
