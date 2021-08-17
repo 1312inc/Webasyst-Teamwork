@@ -16,7 +16,7 @@ final class tasksApiTeamGetTopAssigneesResponse implements tasksApiResponseInter
             $this->dtos[] = new tasksApiContactDto(
                 (int) $user['id'],
                 $user['name'],
-                $user['photo_url']
+                wa()->getConfig()->getHostUrl() . $user['photo_url']
             );
         }
     }

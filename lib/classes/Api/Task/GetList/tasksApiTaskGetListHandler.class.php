@@ -25,6 +25,8 @@ final class tasksApiTaskGetListHandler
             $totalCount
         );
 
+        tasksHelper::workupTasksForView($taskRows);
+
         return new tasksApiTasksResponse($taskRows, (int) $totalCount);
     }
 

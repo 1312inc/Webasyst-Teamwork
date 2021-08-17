@@ -58,7 +58,14 @@ final class tasksApiTaskDtoFactory
                     $attachment['name'],
                     (int) $attachment['size'],
                     $attachment['ext'],
-                    $attachment['code']
+                    $attachment['code'],
+                    sprintf(
+                        '%s%s/%s?module=attachments&action=download&id=%d',
+                        wa()->getRootUrl(true),
+                        wa()->getConfig()->getBackendUrl(),
+                        tasksConfig::APP_ID,
+                        $attachment['id']
+                    )
                 );
             }
         }
