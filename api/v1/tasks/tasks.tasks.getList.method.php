@@ -15,7 +15,7 @@ class tasksTasksGetListMethod extends tasksApiAbstractMethod
             (int) $this->get('offset', self::CAST_STRING_TRIM),
             $this->get('limit')
                 ? (int) $this->get('limit', self::CAST_INT)
-                : (int) wa(tasksConfig::APP_ID)->getConfig()->getOption('tasks_per_page'),
+                : tasksOptions::getTasksPerPage(),
             $this->get('since') ? (int) $this->get('since') : null,
             (string) $this->get('order')
         );
