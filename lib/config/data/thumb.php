@@ -38,11 +38,9 @@ $app_config = wa('tasks', 1)->getConfig();
 $protected_path = wa()->getDataPath('tasks/', false, 'tasks');
 var_dump($protected_path);
 
-$public_url = wa()->getDataUrl('tasks/', true, 'tasks');
+$public_url = str_replace(wa()->getRootUrl(),'',wa()->getDataUrl('tasks/', true, 'tasks'));
 wa()->getStorage()->close();
 var_dump($public_url);
-
-var_dump(wa()->getRootUrl());
 
 /** @var tasksConfig $app_config */
 $request_file = $app_config->getRequestUrl(true, true);
