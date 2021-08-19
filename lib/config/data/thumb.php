@@ -42,6 +42,8 @@ $public_url = wa()->getDataUrl('tasks/', true, 'tasks');
 wa()->getStorage()->close();
 var_dump($public_url);
 
+var_dump(wa()->getRootUrl());
+
 /** @var tasksConfig $app_config */
 $request_file = $app_config->getRequestUrl(true, true);
 var_dump($request_file);
