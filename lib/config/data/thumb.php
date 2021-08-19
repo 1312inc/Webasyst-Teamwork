@@ -91,6 +91,7 @@ $attachment_model = new tasksAttachmentModel();
 $attach = $attachment_model->getById($attach_id);
 
 $full_preview_url = tasksHelper::getAttachPreviewUrl($attach);
+print_r($full_preview_url);
 if ($full_preview_url != wa()->getDataUrl($request_file, true, 'tasks', false)) {
     exit_with_tasks_image_not_found();
 }
