@@ -152,7 +152,9 @@ final class tasksApiStatusDto implements JsonSerializable
             $data['icon_class'] ?? null,
             $data['icon_html'] ?? null,
             (int) $data['sort'],
-            tasksApiStatusParamsDto::createFromArray($data['params'] ?: [])
+            tasksApiStatusParamsDto::createFromArray(
+                isset($data['params']) && is_array($data['params']) ? $data['params'] : []
+            )
         );
     }
 }
