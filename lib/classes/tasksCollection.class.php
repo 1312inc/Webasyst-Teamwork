@@ -16,6 +16,18 @@ class tasksCollection
     public const HASH_PROJECT = 'project';
     public const HASH_SCOPE = 'scope';
 
+    public const ORDER_NEWEST = 'newest';
+    public const ORDER_OLDEST = 'oldest';
+    public const ORDER_DUE = 'due';
+    public const ORDER_PRIORITY = 'priority';
+
+    public const ORDER_LIST = [
+        self::ORDER_NEWEST,
+        self::ORDER_OLDEST,
+        self::ORDER_DUE,
+        self::ORDER_PRIORITY,
+    ];
+
     protected $filtered = false;
     protected $prepared;
 
@@ -278,7 +290,7 @@ class tasksCollection
                 $limit = $offset;
                 $offset = 0;
             } else {
-                $limit = wa('tasks')->getConfig()->getOption('tasks_per_page');
+                $limit = tasksOptions::getTasksPerPage();
             }
         }
 
