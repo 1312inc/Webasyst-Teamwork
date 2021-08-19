@@ -128,8 +128,8 @@ final class tasksApiTaskDtoFactory
     private static function createTags(tasksTask $task): array
     {
         $tags = [];
-        foreach ($task->getTags() as $tag) {
-            $tags[(int) $tag['id']] = tasksApiTagDtoFactory::create($tag);
+        foreach ($task->getTags() as $id => $tag) {
+            $tags[] = tasksApiTagDtoFactory::create(['id' => $id, 'name' => $tag, 'favorite' => null]);
         }
 
         return $tags;
