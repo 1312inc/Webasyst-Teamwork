@@ -41,8 +41,13 @@ wa()->getStorage()->close();
 
 /** @var tasksConfig $app_config */
 $request_file = $app_config->getRequestUrl(true, true);
+var_dump($request_file);
+
 $request_file = preg_replace("~^thumb.php(/tasks)?/?~", '', $request_file);
+var_dump($request_file);
+
 $request_file = 'tasks/' . trim(str_replace(trim($public_url, '/'), '', trim($request_file, '/')), '/');
+var_dump($request_file);
 
 /**
  # Two levels of dirs based on task id
