@@ -24,6 +24,9 @@ $_SERVER['SCRIPT_NAME'] = str_replace('/wa-data/public/tasks/tasks/thumb.php', '
 
 $path = realpath(dirname(__FILE__)."/../../../../../");
 $config_path = $path."/wa-config/SystemConfig.class.php";
+
+print_r($config_path);
+
 if (!file_exists($config_path)) {
     return tasks_image_not_found();
 }
