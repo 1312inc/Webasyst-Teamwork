@@ -15,7 +15,7 @@ final class tasksApiTagDto implements JsonSerializable
     private $name;
 
     /**
-     * @var bool
+     * @var bool|null
      */
     private $favorite;
 
@@ -26,7 +26,7 @@ final class tasksApiTagDto implements JsonSerializable
      * @param string $name
      * @param bool   $favorite
      */
-    public function __construct(int $id, string $name, bool $favorite)
+    public function __construct(int $id, string $name, ?bool $favorite)
     {
         $this->id = $id;
         $this->name = $name;
