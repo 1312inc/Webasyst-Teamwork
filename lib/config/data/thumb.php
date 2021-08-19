@@ -14,7 +14,9 @@ function exit_with_tasks_image_not_found()
             print $ex;
         }
     } else {
-        header("Location: ".str_replace('/index.php', '/wa-apps/tasks/img/image-not-found.png', $_SERVER['SCRIPT_NAME']));
+        header(
+            "Location: " . str_replace('/index.php', '/wa-apps/tasks/img/image-not-found.png', $_SERVER['SCRIPT_NAME'])
+        );
     }
     exit;
 }
@@ -22,8 +24,8 @@ function exit_with_tasks_image_not_found()
 // !!! ugly hack to make wa()->getRootUrl() work
 $_SERVER['SCRIPT_NAME'] = str_replace('/wa-data/public/tasks/tasks/thumb.php', '/index.php', $_SERVER['SCRIPT_NAME']);
 
-$path = realpath(__DIR__ ."/../../../../../");
-$config_path = $path."/wa-config/SystemConfig.class.php";
+$path = realpath(__DIR__ . "/../../../../../");
+$config_path = $path . "/wa-config/SystemConfig.class.php";
 if (!file_exists($config_path)) {
     exit_with_tasks_image_not_found();
 }
@@ -40,29 +42,46 @@ wa()->getStorage()->close();
 /** @var tasksConfig $app_config */
 $request_file = $app_config->getRequestUrl(true, true);
 $request_file = preg_replace("~^thumb.php(/tasks)?/?~", '', $request_file);
-$request_file = 'tasks/'.trim(str_replace(trim($public_url, '/'), '', trim($request_file, '/')), '/');
+$request_file = 'tasks/' . trim(str_replace(trim($public_url, '/'), '', trim($request_file, '/')), '/');
 
-print_r($request_file);
+/**
+ # Two levels of dirs based on task id
+ tasks/\d\d/\d\d/
 
-$is_url_ok = preg_match('~^
-    # Two levels of dirs based on task id
-    tasks/tasks/\d\d/\d\d/
+ # Task id dir
+ \d+/
 
-    # Task id dir
-    \d+/
+ # Attachment id
+ (\d+)\.
 
-    # Attachment id
-    (\d+)\.
+ # Attachment hash
+ [^\.]+\.
 
-    # Attachment hash
-    [^\.]+\.
+ # Thumbnail size
+ [^\.]+\.
 
-    # Thumbnail size
-    [^\.]+\.
+ # Extension
+ [a-z0-9]{3,4}
+ */
 
-    # Extension
-    [a-z0-9]{3,4}
-$~ix', $request_file, $matches);
+$regexs = [
+    '~^tasks/\d\d/\d\d/\d+/(\d+)\.[^\.]+\.[^\.]+\.[a-z0-9]{3,4}$~ix',
+    '~^tasks/wa-data/public/tasks/tasks/\d\d/\d\d/\d+/(\d+)\.[^\.]+\.[^\.]+\.[a-z0-9]{3,4}$~ix',
+];
+
+$is_url_ok = false;
+foreach ($regexs as $regex) {
+    $is_url_ok = preg_match(
+        $regex,
+        $request_file,
+        $matches
+    );
+
+    if ($is_url_ok) {
+        break;
+    }
+}
+
 if (!$is_url_ok) {
     exit_with_tasks_image_not_found();
 }
