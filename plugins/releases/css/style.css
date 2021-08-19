@@ -245,3 +245,14 @@
 .t-releases-plugin-tasks-scope-tags .t-graph-wrapper .t-hint-wrapper .t-line .t-value {
     font-weight: bold
 }
+
+.t-releases-plugin-task-color-setting {
+    position: absolute;
+    display: none;
+    right: 0.5rem;
+    top: 0.5rem;
+}
+
+.t-kanban__list__body__item:hover .t-releases-plugin-task-color-setting {
+    display: block;
+}

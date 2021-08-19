@@ -20,5 +20,6 @@ return array(
         'backend_settings_sidebar' => 'backendSettingsSidebar',
         'show_status_form'         => 'showStatusForm',
         'save_status_form'         => 'saveStatusForm',
+        'kanban_status_tasks'      => 'kanbanStatusTasks',
     ),
 );
