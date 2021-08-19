@@ -3,7 +3,7 @@
 final class tasksApiStatusResponse implements tasksApiResponseInterface
 {
     /**
-     * @var array<string, mixed>
+     * @var tasksApiStatusDto
      */
     private $status;
 
@@ -12,7 +12,7 @@ final class tasksApiStatusResponse implements tasksApiResponseInterface
      */
     public function __construct(array $status)
     {
-        $this->status = $status;
+        $this->status = tasksApiStatusDto::createFromArray($status);
     }
 
     public function getStatus(): int
@@ -20,7 +20,7 @@ final class tasksApiStatusResponse implements tasksApiResponseInterface
         return self::HTTP_OK;
     }
 
-    public function getResponseBody(): array
+    public function getResponseBody(): tasksApiStatusDto
     {
         return $this->status;
     }
