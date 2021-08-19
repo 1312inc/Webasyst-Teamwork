@@ -9,6 +9,7 @@ return array(
         'timecosts_fact' => array('int', 11),
         'affected_version' => array('varchar', 32),
         'resolution' => array('varchar', 32),
+        'kanban_color' => array('varchar', 50),
         ':keys' => array(
             'PRIMARY' => 'task_id',
             'type' => 'type',

@@ -95,6 +95,7 @@ class tasksReleasesPlugin extends waPlugin
         wa()->getResponse()->addJs('plugins/releases/js/taskTypes.js?v=' . $version, 'tasks');
         wa()->getResponse()->addJs('plugins/releases/js/milestoneEdit.js?v=' . $version, 'tasks');
         wa()->getResponse()->addJs('plugins/releases/js/tasksScopeStats.js?v=' . $version, 'tasks');
+        wa()->getResponse()->addJs('plugins/releases/js/taskKanbanSettings.js?v=' . $version, 'tasks');
         wa()->getResponse()->addCss('plugins/releases/css/style.css?v=' . $version, 'tasks');
     }
 
@@ -202,4 +203,39 @@ class tasksReleasesPlugin extends waPlugin
         return $form_html;
     }
 
+    public function kanbanStatusTasks($params)
+    {
+        $tasks_releases_task_ext_model = new tasksReleasesPluginTaskExtModel();
+        $task_ids = [];
+        foreach ($params['tasks'] as &$type_tasks) {
+            foreach ($type_tasks['tasks'] as $task) {
+                $task_ids[] = (int)$task->id;
+            }
+        }
+        $kanban_colors = $tasks_releases_task_ext_model->select('task_id, kanban_color')->where('task_id IN (' . implode(',', $task_ids) . ')')->fetchAll('task_id');
+
+        foreach ($params['tasks'] as &$type_tasks) {
+            foreach ($type_tasks['tasks'] as &$task) {
+                /** @var tasksTask $task **/
+                $project = $task->project;
+                $task_id = $task->id;
+                $task_color = isset($kanban_colors[$task_id]['kanban_color']) ? $kanban_colors[$task_id]['kanban_color'] : '';
+                $project['icon_html'] .= <<<HTML
+<span class="t-releases-plugin-task-color-setting" data-kanban-task-color="{$task_color}">
+    <a href="javascript:void(0);" class="t-control-link button light-gray smallest rounded t-return-link kanban-task-link" title="Открыть настройки" data-kanban-task-id="{$task_id}">
+        <i class="fas fa-cog"></i>
+    </a>
+</span>
+<script>
+    (function () {
+        var kanban_task_color = new KanbanTaskColor($task_id);
+        kanban_task_color.setColor();
+    })(jQuery);
+</script>
+HTML;
+                $task->project = $project;
+            }
+        }
+        unset($type_tasks, $task);
+    }
 }
