@@ -24,11 +24,8 @@ $_SERVER['SCRIPT_NAME'] = str_replace('/wa-data/public/tasks/tasks/thumb.php', '
 
 $path = realpath(dirname(__FILE__)."/../../../../../");
 $config_path = $path."/wa-config/SystemConfig.class.php";
-
-print_r($config_path);
-
 if (!file_exists($config_path)) {
-    return tasks_image_not_found();
+    tasks_image_not_found();
 }
 
 require_once($config_path);
@@ -47,7 +44,7 @@ $request_file = 'tasks/'.trim(str_replace(trim($public_url, '/'), '', trim($requ
 
 $is_url_ok = preg_match('~^
     # Two levels of dirs based on task id
-    tasks/\d\d/\d\d/
+    tasks/tasks/\d\d/\d\d/
 
     # Task id dir
     \d+/
@@ -65,7 +62,7 @@ $is_url_ok = preg_match('~^
     [a-z0-9]{3,4}
 $~ix', $request_file, $matches);
 if (!$is_url_ok) {
-    return tasks_image_not_found();
+    tasks_image_not_found();
 }
 
 $attach_id = $matches[1];
@@ -74,7 +71,7 @@ $attach = $attachment_model->getById($attach_id);
 
 $full_preview_url = tasksHelper::getAttachPreviewUrl($attach);
 if ($full_preview_url != wa()->getDataUrl($request_file, true, 'tasks', false)) {
-    return tasks_image_not_found();
+    tasks_image_not_found();
 }
 
 $original_path = tasksHelper::getAttachPath($attach);
@@ -96,13 +93,13 @@ if (file_exists($original_path) && !file_exists($thumb_path)) {
         if (class_exists('waLog')) {
             waLog::log($e->getMessage(), 'wa-apps/tasks/thumb.log');
         }
-        return tasks_image_not_found();
+        tasks_image_not_found();
     }
 }
 
 if (file_exists($thumb_path)) {
     waFiles::readFile($thumb_path);
 } else {
-    return tasks_image_not_found();
+    tasks_image_not_found();
 }
 
