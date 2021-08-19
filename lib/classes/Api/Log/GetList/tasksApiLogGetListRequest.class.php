@@ -36,16 +36,16 @@ final class tasksApiLogGetListRequest
      * @param int      $offset
      * @param int      $limit
      *
-     * @throws cashValidateException
+     * @throws tasksValidateException
      */
     public function __construct(?int $projectId, ?int $contactId, ?int $milestoneId, int $offset, int $limit)
     {
         if ($offset < 0) {
-            throw new cashValidateException('Offset must be 0 or positive');
+            throw new tasksValidateException('Offset must be 0 or positive');
         }
 
         if ($limit < 0) {
-            throw new cashValidateException('Limit must be 0 or positive');
+            throw new tasksValidateException('Limit must be 0 or positive');
         }
 
         $this->offset = $offset;

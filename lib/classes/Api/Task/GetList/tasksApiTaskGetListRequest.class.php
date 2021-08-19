@@ -35,35 +35,39 @@ final class tasksApiTaskGetListRequest
     /**
      * tasksApiGetListRequest constructor.
      *
-     * @param string $hash
-     * @param string $filters
-     * @param int    $offset
-     * @param int    $limit
-     * @param ?int   $since
-     * @param string $order
+     * @param string  $hash
+     * @param ?string $filters
+     * @param int     $offset
+     * @param int     $limit
+     * @param ?int    $since
+     * @param ?string $order
      *
-     * @throws cashValidateException
+     * @throws tasksValidateException
      */
-    public function __construct(string $hash, string $filters, int $offset, int $limit, ?int $since, string $order)
+    public function __construct(string $hash, ?string $filters, int $offset, int $limit, ?int $since, ?string $order)
     {
         $this->hash = $hash;
-        $this->filters = $filters;
+        $this->filters = (string) $filters;
 
         if ($offset < 0) {
-            throw new cashValidateException('Offset must be 0 or positive');
+            throw new tasksValidateException('Offset must be 0 or positive');
         }
         $this->offset = $offset;
 
         if ($limit < 0) {
-            throw new cashValidateException('Limit must be 0 or positive');
+            throw new tasksValidateException('Limit must be 0 or positive');
         }
         $this->limit = $limit;
 
         if ($since < 0) {
-            throw new cashValidateException('Since must be 0 or positive');
+            throw new tasksValidateException('Since must be 0 or positive');
         }
         $this->since = $since;
-        $this->order = $order;
+
+        $this->order = $order ?: tasksCollection::ORDER_PRIORITY;
+        if (!in_array($this->order, tasksCollection::ORDER_LIST, true)) {
+            throw new tasksValidateException('Wrong order value');
+        }
     }
 
     public function getHash(): string
