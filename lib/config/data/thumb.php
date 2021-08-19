@@ -36,60 +36,33 @@ waSystem::getInstance(null, $config);
 
 $app_config = wa('tasks', 1)->getConfig();
 $protected_path = wa()->getDataPath('tasks/', false, 'tasks');
-var_dump($protected_path);
-
 $public_url = str_replace(wa()->getRootUrl(),'',wa()->getDataUrl('tasks/', true, 'tasks'));
 wa()->getStorage()->close();
-var_dump($public_url);
 
 /** @var tasksConfig $app_config */
 $request_file = $app_config->getRequestUrl(true, true);
-var_dump($request_file);
-
 $request_file = preg_replace("~^thumb.php(/tasks)?/?~", '', $request_file);
-var_dump($request_file);
-
 $request_file = 'tasks/' . trim(str_replace(trim($public_url, '/'), '', trim($request_file, '/')), '/');
-var_dump($request_file);
 
-/**
- # Two levels of dirs based on task id
- tasks/\d\d/\d\d/
+$is_url_ok = preg_match('~^
+    # Two levels of dirs based on task id
+    tasks/\d\d/\d\d/
 
- # Task id dir
- \d+/
+    # Task id dir
+    \d+/
 
- # Attachment id
- (\d+)\.
+    # Attachment id
+    (\d+)\.
 
- # Attachment hash
- [^\.]+\.
+    # Attachment hash
+    [^\.]+\.
 
- # Thumbnail size
- [^\.]+\.
+    # Thumbnail size
+    [^\.]+\.
 
- # Extension
- [a-z0-9]{3,4}
- */
-
-$regexs = [
-    '~^tasks/\d\d/\d\d/\d+/(\d+)\.[^\.]+\.[^\.]+\.[a-z0-9]{3,4}$~ix',
-    '~^tasks/wa-data/public/tasks/tasks/\d\d/\d\d/\d+/(\d+)\.[^\.]+\.[^\.]+\.[a-z0-9]{3,4}$~ix',
-];
-
-$is_url_ok = false;
-foreach ($regexs as $regex) {
-    $is_url_ok = preg_match(
-        $regex,
-        $request_file,
-        $matches
-    );
-
-    if ($is_url_ok) {
-        break;
-    }
-}
-
+    # Extension
+    [a-z0-9]{3,4}
+$~ix', $request_file, $matches);
 if (!$is_url_ok) {
     exit_with_tasks_image_not_found();
 }
@@ -99,8 +72,6 @@ $attachment_model = new tasksAttachmentModel();
 $attach = $attachment_model->getById($attach_id);
 
 $full_preview_url = tasksHelper::getAttachPreviewUrl($attach);
-print_r($full_preview_url);
-print_r(wa()->getDataUrl($request_file, true, 'tasks', false));
 if ($full_preview_url !== wa()->getDataUrl($request_file, true, 'tasks', false)) {
     exit_with_tasks_image_not_found();
 }
