@@ -3,7 +3,7 @@
 final class tasksApiStatusesResponse implements tasksApiResponseInterface
 {
     /**
-     * @var array<array<string, mixed>>
+     * @var array<tasksApiStatusDto>
      */
     private $statuses;
 

@@ -57,8 +57,7 @@ final class tasksApiStatusParamsDto implements JsonSerializable
             !empty($params['button_color']) ? $params['button_color'] : null,
             !empty($params['title_color']) ? $params['title_color'] : null,
             !empty($params['allow_comment']) ? filter_var($params['allow_comment'], FILTER_VALIDATE_BOOLEAN) : false,
-            !empty($params['assign']) ? $params['assign'] : null,
-
+            !empty($params['assign']) ? $params['assign'] : null
         );
     }
 
