@@ -1,0 +1,128 @@
+<div class="t-main-wrapper t-log-page">
+    <header class="t-header-wrapper">
+        <div class="t-general-menu is-shown flexbox space-20">
+            {*
+             * Filters by project, milestone and user
+             *}
+            <div class="wide t-menu-wrapper flexbox wrap middle space-12">
+                {foreach $filter_types as $ft_id => $options}
+                    <div class="dropdown t-menu-item" id="{$ft_id}" data-filter-id="{$ft_id}">
+                        <button class="dropdown-toggle button t-selected-item light-gray"></button>
+                        <div class="dropdown-body">
+                            <ul class="menu">
+                                {foreach $options as $o}
+                                    <li class="t-nav-item" data-value="{$o.id}"><a href="javascript:void(0);">
+                                        {if !empty($o.icon_html) && ifempty($o.icon) != 'unknown'}
+                                            {$o.icon_html}
+                                        {/if}
+
+                                        {if !empty($o.id) && array_key_exists('photo', $o)}
+                                            {$_userpic = "{$wa_url}wa-content/img/userpic.svg"}
+                                            {if !empty($o.photo)}
+                                                {$_userpic = waContact::getPhotoUrl($o.id, $o.photo, 40, 40, 'person', 0)}
+                                            {/if}
+                                            <i class="userpic" style="background-image: url({$_userpic|escape})"></i>
+                                        {/if}
+
+                                        <span class="{if $o@index > 0}is-bold{/if}">{$o.name|escape}</span>
+                                    </a></li>
+                                {/foreach}
+                            </ul>
+                        </div>
+                        <script>
+                            ( function($) {
+                                $("#{$ft_id}").waDropdown({
+                                    hover: false
+                                });
+                            })(jQuery);
+                        </script>
+                    </div>
+                {/foreach}
+                {if !empty($is_filter_set)}
+                    <div class="t-menu-item">
+                        <span class="t-menu-name">
+                            <a href="#/cfd/" class="t-remove-filters-link">
+                                <i class="far fa-times-circle" title="[`Clear filters`]"></i>
+                            </a>
+                        </span>
+                    </div>
+                {/if}
+            </div>
+
+            {*
+             * Chart period selector
+             *}
+            <div class="t-right-column flexbox middle space-16">
+
+                <div class="hidden t-custom-timeframe flexbox middle space-8">
+                    <span>[`from`]</span>
+                    <input type="text" name="from" style="max-width: 120px;">
+                    <span>[`to`]</span>
+                    <input type="text" name="to" style="max-width: 120px;">
+                    <div class="wa-select">
+                        <select name="groupby">
+                            <option value="days">[`by day`]</option>
+                            <option value="months">[`by month`]</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="dropdown t-menu-item" id="timeframe">
+                    <button class="dropdown-toggle button t-selected-item light-gray"></button>
+                    <div class="dropdown-body t-logs-timeframe">
+                        <ul class="menu t-logs-timeframe-dropdown">
+                            <li data-timeframe="30" data-groupby="days"><a href="javascript:void(0)" class="nowrap">{_w('Last %d day', 'Last %d days', 30)}</a></li>
+                            <li data-timeframe="90" data-groupby="days" data-default-choice="1"><a href="javascript:void(0)" class="nowrap">{_w('Last %d day', 'Last %d days', 90)}</a></li>
+                            <li data-timeframe="365" data-groupby="months"><a href="javascript:void(0)" class="nowrap">{_w('Last %d day', 'Last %d days', 365)}</a></li>
+                            <li data-timeframe="all" data-groupby="months"><a href="javascript:void(0)" class="nowrap">[`All time`]</a></li>
+                            <li data-timeframe="custom"><a href="javascript:void(0)" class="nowrap">[`Select dates...`]</a></li>
+                        </ul>
+                    </div>
+                    <script>
+                        ( function($) {
+                            $("#timeframe").waDropdown({
+                                hover: false,
+                                items: ".menu > li > a",
+                                change: function(event, target, dropdown) {
+                                    return false;
+                                }
+                            });
+                        })(jQuery);
+                    </script>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="article">
+        <div class="article-body">
+        <div>
+            {* !!! TODO *}
+            <h1>Hello, World!</h1>
+            {$filters|wa_dumpc}
+        </div>
+    </div>
+
+</div>
+
+<script>(function() { "use strict";
+
+    var $main_menu = $('.t-header-wrapper');
+    var list_hash = $.tasks.cleanHash(window.location.hash) || '#/cfd/';
+    var list_params = list_hash.substr(6).split('/')[0];
+
+    TasksReleasesPlugin.initReportsTimeframeSelector($('#timeframe'), '#/cfd/');
+
+    // Set <a href=...> on filters
+    $main_menu.find(".t-nav-item[data-value]").each(function() {
+        var $nav_item = $(this),
+            filter_id = $nav_item.closest(".t-menu-item").data("filter-id"),
+            params = $.tasks.replaceParam(list_params, filter_id, $nav_item.data('value')),
+            item_hash = '#/cfd/'+params+(params ? '/' : '');
+        $nav_item.find("a").attr('href', item_hash);
+        if (item_hash == list_hash) {
+            $nav_item.closest(".t-menu-item").find(".t-selected-item").html($nav_item.find('a').html());
+        }
+    });
+
+})();</script>
