@@ -25,6 +25,11 @@ final class tasksApiTaskDto implements JsonSerializable
     private $create_contact;
 
     /**
+     * @var tasksApiContactDto|null
+     */
+    private $visavis_contact;
+
+    /**
      * @var string
      */
     private $create_datetime;
@@ -121,9 +126,10 @@ final class tasksApiTaskDto implements JsonSerializable
      * @param string                  $name
      * @param string                  $text
      * @param tasksApiContactDto      $create_contact
+     * @param tasksApiContactDto|null $visavis_contact
      * @param string                  $create_datetime
      * @param string|null             $update_datetime
-     * @param tasksApiContactDto      $assigned_contact
+     * @param tasksApiContactDto|null $assigned_contact
      * @param int                     $project_id
      * @param int|null                $milestone_id
      * @param int                     $number
@@ -145,6 +151,7 @@ final class tasksApiTaskDto implements JsonSerializable
         string $name,
         string $text,
         tasksApiContactDto $create_contact,
+        ?tasksApiContactDto $visavis_contact,
         string $create_datetime,
         ?string $update_datetime,
         ?tasksApiContactDto $assigned_contact,
@@ -186,5 +193,6 @@ final class tasksApiTaskDto implements JsonSerializable
         $this->log = $log;
         $this->tags = $tags;
         $this->project = $project;
+        $this->visavis_contact = $visavis_contact;
     }
 }
