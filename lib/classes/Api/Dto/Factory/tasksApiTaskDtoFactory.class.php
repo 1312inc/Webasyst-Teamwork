@@ -10,11 +10,19 @@ final class tasksApiTaskDtoFactory
     public static function create(tasksTask $task): tasksApiTaskDto
     {
         if (!isset(self::$tasks[$task->id])) {
+            $visavisContact = null;
+            if ($task->assigned_contact_id == wa()->getUser()->getId()) {
+                $visavisContact = $task->getAssignmentCreator();
+            } elseif ($task->assigned_contact_id) {
+                $visavisContact = $task->getAssignedContact();
+            }
+
             self::$tasks[$task->id] = new tasksApiTaskDto(
                 (int) $task->id,
                 $task['name'],
                 $task['text'],
                 tasksApiContactDtoFactory::fromContactId($task['create_contact_id']),
+                $visavisContact ? tasksApiContactDtoFactory::fromContact($visavisContact) : null,
                 $task['create_datetime'],
                 $task['update_datetime'] ?? null,
                 !empty($task['assigned_contact_id'])
