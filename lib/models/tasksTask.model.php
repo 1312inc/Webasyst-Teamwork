@@ -170,7 +170,7 @@ class tasksTaskModel extends waModel
             'bg_color' => 'transparent',
             'value' => -100500,
         ];
-        $priorities = wa('tasks')->getConfig()->getOption('priorities');
+        $priorities = tasksOptions::getTasksPriorities();
         $sql = "SELECT t.priority, count(*) AS `count`
                 FROM {$this->table} AS t
                     JOIN tasks_favorite AS f
@@ -192,42 +192,11 @@ class tasksTaskModel extends waModel
         return $result;
     }
 
-    /** Count non-done tasks for all projects: total and highest priority. */
-    public function getProjectCounts()
-    {
-        $result = [];
-        $priorities = wa('tasks')->getConfig()->getOption('priorities');
-
-        // For the purpose of sidebar counts we only differentiate
-        // between urgent=2 and everything else being normal=0.
-        $priority_field = "IF(t.priority=2, 2, 0)";
-
-        $sql = "SELECT t.project_id, {$priority_field} AS priority, count(*) AS `count`
-                FROM {$this->table} t JOIN tasks_project p ON t.project_id = p.id
-                WHERE t.status_id > -1 AND p.archive_datetime IS NULL
-                GROUP BY t.project_id, {$priority_field}";
-        foreach ($this->query($sql) as $row) {
-            if (empty($result[$row['project_id']])) {
-                $result[$row['project_id']] = $priorities[$row['priority']] + $row + [
-                        'total' => 0,
-                    ];
-            } else {
-                if ($result[$row['project_id']]['value'] < $row['priority']) {
-                    $result[$row['project_id']] = $priorities[$row['priority']] + $row + $result[$row['project_id']];
-                }
-            }
-
-            $result[$row['project_id']]['total'] += $row['count'];
-        }
-
-        return $result;
-    }
-
     /** Count assigned tasks for all users: total and highest priority. */
     public function getTeamCounts()
     {
         $result = [];
-        $priorities = wa('tasks')->getConfig()->getOption('priorities');
+        $priorities = tasksOptions::getTasksPriorities();
 
         // For the purpose of sidebar counts we only differentiate
         // between urgent=2 and onfire=3 and everything else being normal=0.
@@ -311,4 +280,3 @@ class tasksTaskModel extends waModel
             ->fetchAll();
     }
 }
-

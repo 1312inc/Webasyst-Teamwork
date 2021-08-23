@@ -10,7 +10,7 @@ final class tasksApiMilestoneUpdateHandler
      * @throws tasksException
      * @throws waException
      */
-    public function add(tasksApiMilestoneUpdateRequest $updateRequest): tasksMilestone
+    public function update(tasksApiMilestoneUpdateRequest $updateRequest): tasksMilestone
     {
         if (!tsks()->getRightResolver()->contactHasFullAccess(wa()->getUser())) {
             throw new tasksAccessException();
@@ -18,15 +18,21 @@ final class tasksApiMilestoneUpdateHandler
 
         /** @var tasksMilestone|null $milestone */
         $milestone = tsks()->getEntityRepository(tasksMilestone::class)->findById($updateRequest->getId());
-        if ($milestone) {
+        if (!$milestone) {
             throw new tasksException('No milestone found', 404);
         }
 
         $milestone
             ->setProjectId($updateRequest->getProjectId())
-            ->setDueDate($updateRequest->getDueDate())
-            ->setDescription($updateRequest->getDescription())
             ->setName($updateRequest->getName());
+
+        if ($updateRequest->getDueDate()) {
+            $milestone->setDueDate($updateRequest->getDueDate());
+        }
+
+        if ($updateRequest->getDescription() !== null) {
+            $milestone->setDescription($updateRequest->getDescription());
+        }
 
         (new tasksMilestoneValidator())->isValid($milestone);
 

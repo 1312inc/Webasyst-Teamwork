@@ -42,7 +42,7 @@ final class tasksApiTaskDtoFactory
                 array_values(self::createAttachments($task)),
                 array_values(self::createLogs($task)),
                 array_values(self::createTags($task)),
-                !empty($task['project']) ? tasksApiProjectDtoFactory::create($task['project']) : null
+                !empty($task['project']) ? tasksApiProjectDtoFactory::createFromArray($task['project']) : null
             );
         }
 

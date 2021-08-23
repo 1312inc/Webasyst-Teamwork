@@ -7,7 +7,7 @@ final class tasksApiProjectDtoFactory
      */
     private static $projects;
 
-    public static function create(array $data): tasksApiProjectDto
+    public static function createFromArray(array $data): tasksApiProjectDto
     {
         $id = (int) $data['id'];
         if (!isset(self::$projects[$id])) {
@@ -16,31 +16,32 @@ final class tasksApiProjectDtoFactory
                 $data['name'],
                 (int) $data['contact_id'],
                 DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $data['create_datetime']),
-                (int) $data['tasks_number'],
                 $data['icon'],
                 $data['color'],
                 !empty($data['archive_datetime']) ? $data['archive_datetime'] : null,
-                (int) $data['sort']
+                (int) $data['sort'],
+                tasksApiCountsDtoFactory::createFromArray($data)
             );
         }
 
         return self::$projects[$id];
     }
 
-    public static function fromEntity(tasksProject $project): tasksApiProjectDto
+    public static function fromEntity(tasksProject $project, tasksApiCountsDto $countsDto): tasksApiProjectDto
     {
         $id = (int) $project->getId();
+
         if (!isset(self::$projects[$id])) {
             self::$projects[$id] = new tasksApiProjectDto(
                 $id,
                 $project->getName(),
                 $project->getContactId(),
                 $project->getCreateDatetime(),
-                $project->getTasksNumber(),
                 $project->getIcon(),
                 $project->getColor(),
                 $project->getArchiveDatetime(),
-                $project->getSort()
+                $project->getSort(),
+                $countsDto
             );
         }
 

@@ -14,21 +14,14 @@ class tasksMilestonesUpdateMethod extends tasksApiAbstractMethod
      */
     public function run(): tasksApiResponseInterface
     {
-        $dueDate = $this->post('due_date');
-        if ($dueDate) {
-            $dueDate = DateTimeImmutable::createFromFormat('Y-m-d', $dueDate);
-            if (!$dueDate) {
-                throw new tasksApiWrongParamException('due_date', "'Y-m-d' format please");
-            }
-        }
-
-        $request = new tasksApiMilestoneAddRequest(
-            $this->post('name', true),
-            $this->post('description') ?? '',
-            (int) $this->post('project_id', true),
-            $dueDate
+        $request = new tasksApiMilestoneUpdateRequest(
+            $this->post('id', true, self::CAST_INT),
+            $this->post('name', true,self::CAST_STRING),
+            $this->post('description'),
+            $this->post('project_id', true, self::CAST_INT),
+            $this->post('due_date', false, self::CAST_DATETIME, 'Y-m-d')
         );
 
-        return new tasksApiMilestoneResponse((new tasksApiMilestoneAddHandler())->add($request));
+        return new tasksApiMilestoneResponse((new tasksApiMilestoneUpdateHandler())->update($request));
     }
 }
