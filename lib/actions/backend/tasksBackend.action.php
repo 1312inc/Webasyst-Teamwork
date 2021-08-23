@@ -135,7 +135,8 @@ class tasksBackendAction extends waViewAction
 
         // Prepare counts for projects user has full access to
         if ($managed_project_ids) {
-            $project_counts = self::getModel()->getProjectCounts();
+            $project_counts = (new tasksTasksCounterService())->getProjectCounts();
+//            $project_counts = self::getModel()->getProjectCounts();
             foreach ($project_counts as $id => $c) {
                 if (!empty($managed_project_ids[$id]) && !empty($projects[$id])) {
                     $projects[$id]['count'] = $c['count'];

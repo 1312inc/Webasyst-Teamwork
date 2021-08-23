@@ -5,7 +5,7 @@ final class tasksApiMilestoneResponse implements tasksApiResponseInterface
     /**
      * @var tasksApiMilestoneDto
      */
-    private $project;
+    private $milestoneDto;
 
     /**
      * tasksApiMilestoneResponse constructor.
@@ -14,7 +14,10 @@ final class tasksApiMilestoneResponse implements tasksApiResponseInterface
      */
     public function __construct(tasksMilestone $milestone)
     {
-        $this->project = tasksApiMilestoneDto::fromEntity($milestone);
+        $this->milestoneDto = tasksApiMilestoneDtoFactory::fromEntity(
+            $milestone,
+            tasksApiCountsDtoFactory::createForMilestoneId($milestone->getId())
+        );
     }
 
     public function getStatus(): int
@@ -24,6 +27,6 @@ final class tasksApiMilestoneResponse implements tasksApiResponseInterface
 
     public function getResponseBody(): tasksApiMilestoneDto
     {
-        return $this->project;
+        return $this->milestoneDto;
     }
 }

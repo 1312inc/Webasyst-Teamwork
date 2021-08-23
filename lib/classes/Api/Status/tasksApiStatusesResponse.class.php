@@ -12,8 +12,13 @@ final class tasksApiStatusesResponse implements tasksApiResponseInterface
      */
     public function __construct(array $statuses)
     {
+        $counts = tasksApiCountsDtoFactory::createForStatuses();
+
         foreach ($statuses as $status) {
-            $this->statuses[] = tasksApiStatusDto::createFromArray($status);
+            $this->statuses[] = tasksApiStatusDtoFactory::createFromArray(
+                $status,
+                $counts[$status['id']] ?? tasksApiCountsDtoFactory::createEmpty()
+            );
         }
     }
 

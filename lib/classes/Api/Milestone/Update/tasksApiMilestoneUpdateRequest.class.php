@@ -13,7 +13,7 @@ final class tasksApiMilestoneUpdateRequest
     private $name;
 
     /**
-     * @var string
+     * @var ?string
      */
     private $description;
 
@@ -32,14 +32,14 @@ final class tasksApiMilestoneUpdateRequest
      *
      * @param int                    $id
      * @param string                 $name
-     * @param string                 $description
+     * @param string|null            $description
      * @param int                    $project_id
      * @param DateTimeImmutable|null $due_date
      */
     public function __construct(
         int $id,
         string $name,
-        string $description,
+        ?string $description,
         int $project_id,
         ?DateTimeImmutable $due_date
     ) {
@@ -50,41 +50,26 @@ final class tasksApiMilestoneUpdateRequest
         $this->id = $id;
     }
 
-    /**
-     * @return int
-     */
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @return string
-     */
-    public function getDescription(): string
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    /**
-     * @return int
-     */
     public function getProjectId(): int
     {
         return $this->project_id;
     }
 
-    /**
-     * @return DateTimeImmutable|null
-     */
     public function getDueDate(): ?DateTimeImmutable
     {
         return $this->due_date;
