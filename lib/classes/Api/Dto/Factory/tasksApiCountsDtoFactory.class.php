@@ -7,7 +7,9 @@ final class tasksApiCountsDtoFactory
     public static function createFromArray(array $data): tasksApiCountsDto
     {
         return new tasksApiCountsDto(
-            (int) ($data['count'] ?? 0),
+            (int) ($data['closed'] ?? 0),
+            (int) ($data['active_priority'] ?? 0),
+            (int) ($data['active'] ?? 0),
             (int) ($data['total'] ?? 0)
         );
     }
