@@ -262,3 +262,18 @@
     color: #323232;
     text-decoration: underline;
 }
+
+.days-points {
+    justify-content: flex-end;
+}
+
+.days-points.red .day-point {
+    background-color: #f00;
+}
+
+.day-point {
+    width: 4px;
+    height: 4px;
+    border-radius: 100%;
+    background-color: #000;
+}
