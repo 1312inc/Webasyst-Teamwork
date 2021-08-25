@@ -214,29 +214,54 @@ class tasksReleasesPlugin extends waPlugin
         }
         $kanban_colors = $tasks_releases_task_ext_model->select('task_id, kanban_color')->where('task_id IN (' . implode(',', $task_ids) . ')')->fetchAll('task_id');
 
-        foreach ($params['tasks'] as &$type_tasks) {
-            foreach ($type_tasks['tasks'] as &$task) {
+        $data = [];
+
+        foreach ($params['tasks'] as $type_tasks) {
+            foreach ($type_tasks['tasks'] as $task) {
                 /** @var tasksTask $task **/
-                $project = $task->project;
                 $task_id = $task->id;
+                $changed_time = null;
+                $date_difference = 0;
+                foreach ($task->getLog() as $log) {
+                    if ($log['project_id'] == $task->project_id && $log['before_status_id'] != $log['after_status_id']
+                        && ($log['before_status_id'] == null || $log['before_status_id'] == $task->status_id
+                            || $log['after_status_id'] == $task->status_id)
+                    ) {
+                        if ($log['after_status_id'] == $task->status_id) {
+                            $changed_time = strtotime($log['create_datetime']);
+                        } elseif ($changed_time && $log['before_status_id'] == $task->status_id) {
+                            $date_difference += strtotime($log['create_datetime']) - $changed_time;
+                            $changed_time = null;
+                        }
+                    }
+                }
+                if ($changed_time) {
+                    $date_difference += time() - $changed_time;
+                }
+                $days_difference = floor(($date_difference) / 3600 / 24);
+                $points = str_repeat('<div class="day-point"></div>', $days_difference);
+                $red_class = $days_difference > 7 ? 'red' : '';
                 $task_color = isset($kanban_colors[$task_id]['kanban_color']) ? $kanban_colors[$task_id]['kanban_color'] : '';
-                $project['icon_html'] .= <<<HTML
+                $data[$task_id]['after_body'] = <<<HTML
 <span class="t-releases-plugin-task-color-setting" data-kanban-task-color="{$task_color}">
     <a href="javascript:void(0);" class="t-control-link button light-gray smallest rounded t-return-link kanban-task-link" title="Открыть настройки" data-kanban-task-id="{$task_id}">
         <i class="fas fa-cog"></i>
     </a>
+    <script>
+        (function () {
+            var kanban_task_color = new KanbanTaskColor($task_id);
+            kanban_task_color.setColor();
+        })(jQuery);
+    </script>
 </span>
-<script>
-    (function () {
-        var kanban_task_color = new KanbanTaskColor($task_id);
-        kanban_task_color.setColor();
-    })(jQuery);
-</script>
+<div class="days-points flexbox space-8 custom-p-4 $red_class" title="Количество дней после изменения статуса: $days_difference">
+    $points
+</div>
 HTML;
-                $task->project = $project;
             }
         }
-        unset($type_tasks, $task);
+
+        return $data;
     }
 
     public function kanbanPage($params)
