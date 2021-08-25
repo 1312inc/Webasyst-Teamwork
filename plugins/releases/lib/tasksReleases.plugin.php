@@ -243,6 +243,11 @@ HTML;
     {
         $request = waRequest::get();
         $milestone_id = ifset($request, 'milestone_id', null);
+        $data = [
+            'header' => [
+                'filters' => ''
+            ]
+        ];
 
         if (isset($milestone_id) && count($request) === 2 && isset($request['module'])) {
             $tasks_releases_milestone_ext_model = new tasksReleasesPluginMilestoneExtModel();
@@ -256,12 +261,35 @@ HTML;
 </script>
 SCRIPT;
 
-            $data = [
-                'header' => [
-                    'filters' => $script
-                ]
-            ];
-            return $data;
+            $data['header']['filters'] .= $script;
         }
+
+        $hide_new_and_completed_tasks = (bool)wa()->getUser()->getSettings('tasks', 'hide_new_and_completed_tasks', false);
+        $checked = $hide_new_and_completed_tasks ? 'checked' : '';
+        $selector = <<<SELECTOR
+<div class="t-checkbox-column" id="js-hide-new-and-completed-tasks">
+    <label>
+        <span class="wa-checkbox">
+            <input type="checkbox" name="hide_new_and_completed_tasks" value="1" $checked/>
+            <span>
+                <span class="icon">
+                    <i class="fas fa-check"></i>
+                </span>
+            </span>
+        </span>
+        <span class="custom-ml-4">Спрятать Новые и Завершённые</span>
+    </label>
+</div>
+<script>
+    (function () {
+        var kanban_task_settings_hide_new_and_completed = new KanbanTaskSettingHideNewAndCompleted($hide_new_and_completed_tasks);
+        kanban_task_settings_hide_new_and_completed.init();
+    })(jQuery);
+</script>
+SELECTOR;
+
+        $data['header']['filters'] .= $selector;
+
+        return $data;
     }
 }
