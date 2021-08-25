@@ -1,3 +1,36 @@
+function KanbanTaskSettingHideNewAndCompleted(is_checked) {
+    this.is_checked = is_checked;
+}
+
+KanbanTaskSettingHideNewAndCompleted.prototype.init = function () {
+    var that = this;
+
+    $('input[name="hide_new_and_completed_tasks"]').click(function () {
+        var url = '?plugin=releases&module=kanban&action=hideNewAndCompletedSave',
+            is_checked = $(this).prop('checked');
+
+        $.post(url, { hide_new_and_completed_tasks: is_checked })
+            .done(function (r) {
+                that.is_checked = is_checked;
+                hideNewAndCompletedTasks();
+            })
+            .error(function (r) {
+                console.log(r);
+            });
+    });
+
+    function hideNewAndCompletedTasks() {
+        if (that.is_checked) {
+            $('.t-kanban__list:first-of-type').hide();
+            $('.t-kanban__list:last-of-type').hide();
+        } else {
+            $('.t-kanban__list:first-of-type').show();
+            $('.t-kanban__list:last-of-type').show();
+        }
+    }
+    hideNewAndCompletedTasks();
+};
+
 function KanbanTaskSettings(limits) {
     this.limits = limits;
 }
