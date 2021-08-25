@@ -21,5 +21,6 @@ return array(
         'show_status_form'         => 'showStatusForm',
         'save_status_form'         => 'saveStatusForm',
         'kanban_status_tasks'      => 'kanbanStatusTasks',
+        'kanban_page'              => 'kanbanPage',
     ),
 );
