@@ -238,4 +238,30 @@ HTML;
         }
         unset($type_tasks, $task);
     }
+
+    public function kanbanPage($params)
+    {
+        $request = waRequest::get();
+        $milestone_id = ifset($request, 'milestone_id', null);
+
+        if (isset($milestone_id) && count($request) === 2 && isset($request['module'])) {
+            $tasks_releases_milestone_ext_model = new tasksReleasesPluginMilestoneExtModel();
+            $limits = json_encode($tasks_releases_milestone_ext_model->where('milestone_id =' . (int)$milestone_id)->fetchAll('status_id'));
+            $script = <<<SCRIPT
+<script>
+    (function () {
+        var kanban_task_settings = new KanbanTaskSettings($limits);
+        kanban_task_settings.init();
+    })(jQuery);
+</script>
+SCRIPT;
+
+            $data = [
+                'header' => [
+                    'filters' => $script
+                ]
+            ];
+            return $data;
+        }
+    }
 }

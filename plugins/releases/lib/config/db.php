@@ -17,6 +17,14 @@ return array(
             'resolution' => 'resolution'
         ),
     ),
+    'tasks_releases_milestone_ext' => array(
+        'status_id' => array('int', 11, 'null' => 0),
+        'milestone_id' => array('int', 11, 'null' => 0),
+        'limit' => array('int', 11),
+        ':keys' => array(
+            'PRIMARY' => array('status_id', 'milestone_id')
+        ),
+    ),
     'tasks_releases_milestone_projects' => array(
         'milestone_id' => array('int', 11, 'null' => 0),
         'project_id' => array('int', 11, 'null' => 0),

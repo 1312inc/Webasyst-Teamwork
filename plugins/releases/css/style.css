@@ -256,3 +256,9 @@
 .t-kanban__list__body__item:hover .t-releases-plugin-task-color-setting {
     display: block;
 }
+
+.js-maximum-tasks-number:hover {
+    cursor: default;
+    color: #323232;
+    text-decoration: underline;
+}
