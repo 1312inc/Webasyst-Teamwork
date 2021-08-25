@@ -4,7 +4,7 @@
         {if !$count}
             {$total}
         {elseif $count == $total}
-            <span class="{if $bg_color == '#ff0000'}badge{/if}" style="background:{ifempty($bg_color, 'transparent')};color:{ifempty($text_color, '#999')}">{$count}</span>
+            <span class="badge" style="background:{ifempty($bg_color, 'transparent')};color:{ifempty($text_color, '#999')}">{$count}</span>
         {else}
             <span class="badge custom-mr-4" style="background:{ifempty($bg_color, 'transparent')};color:{ifempty($text_color, '#999')}">{$count}</span>
             {$total}

@@ -414,6 +414,7 @@ var Task = ( function($) {
                     if (response["status"] == "ok") {
                         that.reloadTask();
                         hidePriorityChanger();
+                        $.tasks.reloadSidebar();
                     }
                 });
             }, timer_time);
