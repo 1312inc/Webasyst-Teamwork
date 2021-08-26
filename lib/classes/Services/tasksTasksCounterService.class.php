@@ -53,7 +53,7 @@ final class tasksTasksCounterService
             $this->priorityField
         );
 
-        return $this->collectCountWithPriorityInfo($sql);
+        return $this->collectCount($sql);
     }
 
     public function getProjectCount(int $projectId): array
