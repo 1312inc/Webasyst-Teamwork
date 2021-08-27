@@ -50,6 +50,9 @@ class tasksReleasesPlugin extends waPlugin
         foreach ($component->getFieldsHtml() as $task_id => $html) {
             $result[$task_id]['before_buttons'] = $html;
         }
+        foreach ($component->getButtonsHtml() as $task_id => $html) {
+            $result[$task_id]['buttons'] = $html;
+        }
         foreach ($component->getTypeHtml() as $task_id => $html) {
             $result[$task_id]['header'] = $html;
         }
