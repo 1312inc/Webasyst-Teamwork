@@ -1547,7 +1547,8 @@ var Task = ( function($) {
         var that = this,
             is_selected = (typeof tasksHeader !== 'undefined') ? tasksHeader.selectedTasks.hasOwnProperty(that.task_id) : undefined,
             update_href,
-            params = {};
+            params = {},
+            waLoading = $.waLoading();
 
         callbacks = callbacks || {};
         var afterReplace = typeof callbacks.afterReplace === 'function' ? callbacks.afterReplace : null;
@@ -1574,7 +1575,12 @@ var Task = ( function($) {
             that.selectTask(false);
         }
 
+        // Show progress bar
+        waLoading.animate(6000, 99, true);
+
         $.get(update_href, params, function(response) {
+
+            waLoading.hide();
 
             var $updatedTask = $(response).find(".t-task-outer-container");
 
