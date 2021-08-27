@@ -70,4 +70,20 @@ class tasksReleasesPluginTasksComponent extends tasksReleasesPluginComponent
 
         return $blocks;
     }
+
+    public function getButtonsHtml()
+    {
+        $blocks = array();
+        foreach ($this->tasks as $task) {
+            $milestone_id = $task->milestone_id;
+            if (empty($milestone_id)) {
+                $blocks[$task['id']] = $this->render("tasks/TaskButtons.html", [
+                        'task_id' => $task->id,
+                    ]
+                );
+            }
+        }
+
+        return $blocks;
+    }
 }

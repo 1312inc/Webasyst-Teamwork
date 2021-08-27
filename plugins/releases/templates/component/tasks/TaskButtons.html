@@ -1,0 +1,31 @@
+{if $wa->whichUi() == '1.3'}
+    <span class="t-task-buttons">
+        <span class="t-task-controls">
+            <a href="?plugin=releases&module=task&action=inBugs" class="t-control-link t-change-status-link js-task-in-bugs" style="background-color:#eeeeee; color:#000000;" data-task-id="{$task_id}">
+                <span class="t-change-status-link-label">В баги на исправление</span>
+            </a>
+        </span>
+    </span>
+{else}
+    <div>
+        <a href="?plugin=releases&module=task&action=inBugs" class="t-control-link button light-gray large rounded js-task-in-bugs" title="В баги на исправление" data-task-id="{$task_id}">
+            В баги на исправление
+        </a>
+    </div>
+{/if}
+<script>
+    var $in_bugs_button = $('.js-task-in-bugs');
+
+    $in_bugs_button.click(function (e) {
+        var $that = $(this);
+        e.preventDefault();
+
+        $.post($in_bugs_button.attr('href'), { task_id: $in_bugs_button.data('task-id') })
+            .done(function (r) {
+                $that.hide();
+            })
+            .error(function (r) {
+                console.log(r);
+            });
+    });
+</script>
