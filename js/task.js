@@ -1411,7 +1411,7 @@ var Task = ( function($) {
     Task.prototype.deleteRelations = function ($this) {
         if (confirm( $_('Unlink these tasks?') )) {
             var that = this,
-                $parent = $this.parent(),
+                $parent = $this.closest('li'),
                 type = $parent.data('relation-type'),
                 relation_task_id = $parent.data('relation-task'),
                 delete_href = "?module=tasks&action=deleteRelations",
