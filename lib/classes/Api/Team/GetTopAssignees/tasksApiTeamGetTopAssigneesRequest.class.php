@@ -5,11 +5,6 @@ final class tasksApiTeamGetTopAssigneesRequest
     /**
      * @var int
      */
-    private $createContactId;
-
-    /**
-     * @var int
-     */
     private $projectId;
 
     /**
@@ -17,16 +12,10 @@ final class tasksApiTeamGetTopAssigneesRequest
      */
     private $statusId;
 
-    public function __construct(int $createContactId, int $projectId, ?int $statusId)
+    public function __construct(int $projectId, ?int $statusId)
     {
-        $this->createContactId = $createContactId;
         $this->statusId = $statusId;
         $this->projectId = $projectId;
-    }
-
-    public function getCreateContactId(): int
-    {
-        return $this->createContactId;
     }
 
     public function getProjectId(): int
