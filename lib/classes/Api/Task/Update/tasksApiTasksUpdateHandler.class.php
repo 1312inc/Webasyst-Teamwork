@@ -50,7 +50,19 @@ final class tasksApiTasksUpdateHandler
         }
 
         if ($updateRequest->getFilesHash()) {
-            (new tasksAttachmentModel())->addAttachmentsByHash($task2->getId(), null, $updateRequest->getFilesHash());
+            tsks()->getModel(tasksAttachment::class)
+                ->addAttachmentsByHash($task2->getId(), null, $updateRequest->getFilesHash());
+        }
+
+        $attachmentDeleteHandler = new tasksApiAttachmentDeleteHandler();
+        if ($updateRequest->getAttachmentsToDelete()) {
+            foreach ($updateRequest->getAttachmentsToDelete() as $attachmentId) {
+                try {
+                    $attachmentDeleteHandler->delete(new tasksApiAttachmentDeleteRequest((int) $attachmentId));
+                } catch (tasksResourceNotFoundException $exception) {
+                    // silence
+                }
+            }
         }
 
         (new tasksTagSaveHandler())->handle($task2, $prevTask2);

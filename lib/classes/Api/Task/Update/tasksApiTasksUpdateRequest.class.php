@@ -20,17 +20,17 @@ final class tasksApiTasksUpdateRequest
     /**
      * @var int|null
      */
-    private $assigned_contact_id;
+    private $assignedContactId;
 
     /**
      * @var int|null
      */
-    private $project_id;
+    private $projectId;
 
     /**
      * @var int|null
      */
-    private $milestone_id;
+    private $milestoneId;
 
     /**
      * @var int|null
@@ -40,38 +40,27 @@ final class tasksApiTasksUpdateRequest
     /**
      * @var int|null
      */
-    private $status_id;
+    private $statusId;
 
     /**
      * @var int|null
      */
-    private $hidden_timestamp;
+    private $hiddenTimestamp;
 
     /**
      * @var DateTimeImmutable|null
      */
-    private $due_date;
+    private $dueDate;
 
     /**
      * @var string|null
      */
-    private $files_hash;
-
+    private $filesHash;
     /**
-     * tasksApiTasksAddRequest constructor.
-     *
-     * @param int                    $id
-     * @param string                 $name
-     * @param string|null            $text
-     * @param int|null               $assigned_contact_id
-     * @param int|null               $project_id
-     * @param int|null               $milestone_id
-     * @param int|null               $priority
-     * @param int|null               $status_id
-     * @param int|null               $hidden_timestamp
-     * @param DateTimeImmutable|null $due_date
-     * @param string|null            $files_hash
+     * @var array|null
      */
+    private $attachmentsToDelete;
+
     public function __construct(
         int $id,
         string $name,
@@ -83,19 +72,21 @@ final class tasksApiTasksUpdateRequest
         ?int $status_id,
         ?int $hidden_timestamp,
         ?DateTimeImmutable $due_date,
-        ?string $files_hash
+        ?string $files_hash,
+        ?array $attachmentsToDelete
     ) {
         $this->name = $name;
         $this->text = $text;
-        $this->assigned_contact_id = $assigned_contact_id;
-        $this->project_id = $project_id;
-        $this->milestone_id = $milestone_id;
+        $this->assignedContactId = $assigned_contact_id;
+        $this->projectId = $project_id;
+        $this->milestoneId = $milestone_id;
         $this->priority = $priority;
-        $this->status_id = $status_id;
-        $this->hidden_timestamp = $hidden_timestamp;
-        $this->due_date = $due_date;
-        $this->files_hash = $files_hash;
+        $this->statusId = $status_id;
+        $this->hiddenTimestamp = $hidden_timestamp;
+        $this->dueDate = $due_date;
+        $this->filesHash = $files_hash;
         $this->id = $id;
+        $this->attachmentsToDelete = $attachmentsToDelete;
     }
 
     public function getName(): string
@@ -110,17 +101,17 @@ final class tasksApiTasksUpdateRequest
 
     public function getAssignedContactId(): ?int
     {
-        return $this->assigned_contact_id;
+        return $this->assignedContactId;
     }
 
     public function getProjectId(): ?int
     {
-        return $this->project_id;
+        return $this->projectId;
     }
 
     public function getMilestoneId(): ?int
     {
-        return $this->milestone_id;
+        return $this->milestoneId;
     }
 
     public function getPriority(): ?int
@@ -130,26 +121,31 @@ final class tasksApiTasksUpdateRequest
 
     public function getStatusId(): ?int
     {
-        return $this->status_id;
+        return $this->statusId;
     }
 
     public function getHiddenTimestamp(): ?int
     {
-        return $this->hidden_timestamp;
+        return $this->hiddenTimestamp;
     }
 
     public function getDueDate(): ?DateTimeImmutable
     {
-        return $this->due_date;
+        return $this->dueDate;
     }
 
     public function getFilesHash(): ?string
     {
-        return $this->files_hash;
+        return $this->filesHash;
     }
 
     public function getId(): int
     {
         return $this->id;
+    }
+
+    public function getAttachmentsToDelete(): ?array
+    {
+        return $this->attachmentsToDelete;
     }
 }
