@@ -14,7 +14,7 @@ class tasksProjectsAddMethod extends tasksApiAbstractMethod
      */
     public function run(): tasksApiResponseInterface
     {
-        $workflow = $this->post('workflow', true);
+        $workflow = $this->post('workflow', true, self::CAST_ARRAY);
         if (!is_array($workflow)) {
             throw new tasksApiWrongParamException('workflow', 'Should by array');
         }
