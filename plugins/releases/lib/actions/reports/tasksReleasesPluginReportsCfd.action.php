@@ -51,12 +51,12 @@ class tasksReleasesPluginReportsCfdAction extends tasksLogAction
         if (isset($filters['project_id'])) {
             $join_tasks = true;
             $where_sql[] = 't.project_id='.((int) $filters['project_id']);
-            $tasks_where_sql = end($where_sql);
+            $tasks_where_sql[] = end($where_sql);
         }
         if (isset($filters['milestone_id'])) {
             $join_tasks = true;
             $where_sql[] = 't.milestone_id='.((int) $filters['milestone_id']);
-            $tasks_where_sql = end($where_sql);
+            $tasks_where_sql[] = end($where_sql);
         }
 
         $join_tasks_sql = '';
@@ -159,7 +159,9 @@ class tasksReleasesPluginReportsCfdAction extends tasksLogAction
         ];
 
         // Если выбран фильтр по сроку и/или по контакту, то добавить в список даже те задачи, по которым не было действий
-        if (isset($filters['milestone_id']) || isset($filters['contact_id'])) {
+        if (isset($filters['milestone_id']) || isset($filters['project_id'])) {
+            $tasks_where_sql[] = '1=1';
+            $tasks_where_sql = join(' AND ', $tasks_where_sql);
             $sql = "SELECT t.id, t.status_id, t.assigned_contact_id
                     FROM tasks_task AS t
                     WHERE {$tasks_where_sql}";
