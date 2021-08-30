@@ -201,7 +201,6 @@ class tasksReleasesPluginReportsCfdAction extends tasksLogAction
             'contact_id' => waRequest::request('contact_id', null, 'int'),
             'milestone_id' => waRequest::request('milestone_id', null, 'int'),
         ];
-
         return array_filter($result, wa_lambda('$a', 'return !is_null($a);'));
     }
 }
