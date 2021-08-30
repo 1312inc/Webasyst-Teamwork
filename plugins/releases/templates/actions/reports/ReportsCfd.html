@@ -54,7 +54,7 @@
              *}
             <div class="t-right-column flexbox middle space-16">
 
-                <div class="hidden t-custom-timeframe flexbox middle space-8">
+                <div class="t-custom-timeframe flexbox middle space-8" style="display:none">
                     <span>[`from`]</span>
                     <input type="text" name="from" style="max-width: 120px;">
                     <span>[`to`]</span>
@@ -97,9 +97,23 @@
     <div class="article">
         <div class="article-body">
         <div>
+            <h1>Cumulative Flow Diagram</h1>
+
             {* !!! TODO *}
-            <h1>Hello, World!</h1>
-            {$filters|wa_dumpc}
+
+            <pre>$start_date = {$start_date|wa_dump_helper}
+$end_date = {$end_date|wa_dump_helper}
+$filters = {$filters|wa_dump_helper}
+            </pre>
+
+            <pre>$statuses = ({$statuses|count}) {array_slice($statuses, 0, 1)|ref|wa_dump_helper}
+            </pre>
+
+            <pre>$chart_data = ({$chart_data|count}) {array_slice($chart_data, 0, 1)|ref|wa_dump_helper}
+            </pre>
+
+            <pre>$timestamps = ({$timestamps|count}) {array_slice($timestamps, 0, 1)|ref|wa_dump_helper}
+            </pre>
         </div>
     </div>
 
