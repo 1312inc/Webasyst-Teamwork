@@ -68,6 +68,8 @@ var TasksHeader = ( function($) {
 
         that.initMultiDeadlineSetter();
 
+        that.fixOutboxFilter();
+
         if (!that.is_single_page) {
             //
             that.initMyListToggle();
@@ -1025,6 +1027,17 @@ var TasksHeader = ( function($) {
             $('#t-priority-multi-changer').closest('.dialog').remove();
         }
 
+    };
+
+    Header.fixOutboxFilter = function () {
+        var hash = location.hash.replace('#/tasks/', ''),
+            parsed = $.tasks.parseTasksHash(hash);
+
+        if (parsed.hash === 'outbox') {
+            var $list = $('.t-tasks-filter[data-hash="status"] .menu');
+            $list.find('li:first').remove();
+            $list.find('li:last').detach().prependTo($list);
+        }
     };
 
     return TasksHeader;

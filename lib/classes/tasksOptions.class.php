@@ -6,4 +6,9 @@ final class tasksOptions
     {
         return (int) tsks()->getOption('tasks_per_page');
     }
+
+    public static function getTasksPriorities(): array
+    {
+        return tsks()->getOption('priorities');
+    }
 }

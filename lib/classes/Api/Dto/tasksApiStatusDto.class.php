@@ -55,6 +55,11 @@ final class tasksApiStatusDto implements JsonSerializable
     private $params;
 
     /**
+     * @var tasksApiCountsDto
+     */
+    private $counts;
+
+    /**
      * @param int                     $id
      * @param string                  $name
      * @param string                  $button
@@ -76,7 +81,8 @@ final class tasksApiStatusDto implements JsonSerializable
         ?string $icon_class,
         ?string $icon_html,
         int $sort,
-        tasksApiStatusParamsDto $params
+        tasksApiStatusParamsDto $params,
+        tasksApiCountsDto $counts
     ) {
         $this->id = $id;
         $this->name = $name;
@@ -88,6 +94,7 @@ final class tasksApiStatusDto implements JsonSerializable
         $this->icon_html = $icon_html;
         $this->sort = $sort;
         $this->params = $params;
+        $this->counts = $counts;
     }
 
     public function getId(): int

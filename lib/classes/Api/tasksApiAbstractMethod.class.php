@@ -214,8 +214,10 @@ abstract class tasksApiAbstractMethod extends waAPIMethod
                 break;
 
             case self::CAST_STRING:
-            default:
                 return (string) $var;
+
+            default:
+                return $var;
         }
 
         return $var;
