@@ -3,23 +3,37 @@ var TasksReleasesPlugin = ( function($) { "use strict";
     TasksReleasesPlugin = {};
 
     // ACTION + PANIC RECOVERING
-
     window.TasksController.settingsTypesAction = function () {
         var that = this;
         that.load('?plugin=releases&module=types');
     };
 
     window.TasksController.cfdAction = function(params) {
+        if (params === undefined) {
+            params = 'contact_id=me';
+        }
         this.load('?plugin=releases&module=reports&action=cfd&'+(params||''));
     };
 
-    var history = window.TasksController.dispatchHistory,
-        item = history[history.length - 1],
-        url_pattern = /#\/settings\/types\//;
+    window.TasksController.freqAction = function(params) {
+        if (params === undefined) {
+            params = 'contact_id=me';
+        }
+        this.load('?plugin=releases&module=reports&action=freq&'+(params||''));
+    };
 
-    if (item && ((item.hash || '').match(url_pattern))) {
-        window.TasksController.load_protector = null;
-        window.TasksController.settingsTypesAction();
+    var history = window.TasksController.dispatchHistory,
+        item = history[history.length - 1];
+
+    // Without this code, reloading a plugin page will not work
+    if (item && item.hash && item.hash.substr) {
+        $.each(['#/settings/types/', '#/cfd/', '#/freq/'], function(i, el) {
+            if (item.hash.substr(0, el.length) == el) {
+                window.TasksController.setHash(item.hash);
+                window.TasksController.load_protector = null;
+                window.TasksController.dispatch(item.hash);
+            }
+        });
     }
 
     // show resolution filter only task type Bug & Sr
