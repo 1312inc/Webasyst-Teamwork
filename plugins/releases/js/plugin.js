@@ -9,16 +9,10 @@ var TasksReleasesPlugin = ( function($) { "use strict";
     };
 
     window.TasksController.cfdAction = function(params) {
-        if (params === undefined) {
-            params = 'contact_id=me';
-        }
         this.load('?plugin=releases&module=reports&action=cfd&'+(params||''));
     };
 
     window.TasksController.freqAction = function(params) {
-        if (params === undefined) {
-            params = 'contact_id=me';
-        }
         this.load('?plugin=releases&module=reports&action=freq&'+(params||''));
     };
 
@@ -121,7 +115,7 @@ var TasksReleasesPlugin = ( function($) { "use strict";
         // Load chart based on current selected dates
         function reloadChart() {
             var timeframe = getTimeframeData();
-            var params = window.location.hash.substr(6).split('/')[0] || '';
+            var params = window.location.hash.substr(hash_prefix.length).split('/')[0] || '';
             'to from groupby timeframe'.split(' ').forEach(function(name) {
                 params = $.tasks.replaceParam(params, name, timeframe[name] || '');
             });
@@ -137,7 +131,7 @@ var TasksReleasesPlugin = ( function($) { "use strict";
                 $li = $wrapper.find('ul li.selected').first();
                 if (!$li.length) {
                     // Determine active timeframe from url hash and find corresponding <li>
-                    var params = window.location.hash.substr(6).split('/')[0] || '';
+                    var params = window.location.hash.substr(hash_prefix.length).split('/')[0] || '';
                     var timeframe = $.tasks.deparam(params);
                     if (timeframe.timeframe && timeframe.groupby) {
                         $wrapper.find('ul li').each(function() {
