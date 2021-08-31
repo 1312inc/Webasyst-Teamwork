@@ -50,6 +50,9 @@ class tasksReleasesPlugin extends waPlugin
         foreach ($component->getFieldsHtml() as $task_id => $html) {
             $result[$task_id]['before_buttons'] = $html;
         }
+        foreach ($component->getButtonsHtml() as $task_id => $html) {
+            $result[$task_id]['buttons'] = $html;
+        }
         foreach ($component->getTypeHtml() as $task_id => $html) {
             $result[$task_id]['header'] = $html;
         }
@@ -95,6 +98,7 @@ class tasksReleasesPlugin extends waPlugin
         wa()->getResponse()->addJs('plugins/releases/js/taskTypes.js?v=' . $version, 'tasks');
         wa()->getResponse()->addJs('plugins/releases/js/milestoneEdit.js?v=' . $version, 'tasks');
         wa()->getResponse()->addJs('plugins/releases/js/tasksScopeStats.js?v=' . $version, 'tasks');
+        wa()->getResponse()->addJs('plugins/releases/js/taskKanbanSettings.js?v=' . $version, 'tasks');
         wa()->getResponse()->addCss('plugins/releases/css/style.css?v=' . $version, 'tasks');
     }
 
@@ -202,4 +206,118 @@ class tasksReleasesPlugin extends waPlugin
         return $form_html;
     }
 
+    public function kanbanStatusTasks($params)
+    {
+        $tasks_releases_task_ext_model = new tasksReleasesPluginTaskExtModel();
+        $task_ids = [];
+        foreach ($params['tasks'] as &$type_tasks) {
+            foreach ($type_tasks['tasks'] as $task) {
+                $task_ids[] = (int)$task->id;
+            }
+        }
+        $kanban_colors = $tasks_releases_task_ext_model->select('task_id, kanban_color')->where('task_id IN (' . implode(',', $task_ids) . ')')->fetchAll('task_id');
+
+        $data = [];
+
+        foreach ($params['tasks'] as $type_tasks) {
+            foreach ($type_tasks['tasks'] as $task) {
+                /** @var tasksTask $task **/
+                $task_id = $task->id;
+                $changed_time = null;
+                $date_difference = 0;
+                foreach ($task->getLog() as $log) {
+                    if ($log['project_id'] == $task->project_id && $log['before_status_id'] != $log['after_status_id']
+                        && ($log['before_status_id'] == null || $log['before_status_id'] == $task->status_id
+                            || $log['after_status_id'] == $task->status_id)
+                    ) {
+                        if ($log['after_status_id'] == $task->status_id) {
+                            $changed_time = strtotime($log['create_datetime']);
+                        } elseif ($changed_time && $log['before_status_id'] == $task->status_id) {
+                            $date_difference += strtotime($log['create_datetime']) - $changed_time;
+                            $changed_time = null;
+                        }
+                    }
+                }
+                if ($changed_time) {
+                    $date_difference += time() - $changed_time;
+                }
+                $days_difference = floor(($date_difference) / 3600 / 24);
+                $points = str_repeat('<div class="day-point"></div>', $days_difference);
+                $red_class = $days_difference > 7 ? 'red' : '';
+                $task_color = isset($kanban_colors[$task_id]['kanban_color']) ? $kanban_colors[$task_id]['kanban_color'] : '';
+                $data[$task_id]['after_body'] = <<<HTML
+<span class="t-releases-plugin-task-color-setting" data-kanban-task-color="{$task_color}">
+    <a href="javascript:void(0);" class="t-control-link button light-gray smallest rounded t-return-link kanban-task-link" title="Открыть настройки" data-kanban-task-id="{$task_id}">
+        <i class="fas fa-cog"></i>
+    </a>
+    <script>
+        (function () {
+            var kanban_task_color = new KanbanTaskColor($task_id);
+            kanban_task_color.setColor();
+        })(jQuery);
+    </script>
+</span>
+<div class="days-points flexbox space-8 custom-p-4 $red_class" title="Количество дней после изменения статуса: $days_difference">
+    $points
+</div>
+HTML;
+            }
+        }
+
+        return $data;
+    }
+
+    public function kanbanPage($params)
+    {
+        $request = waRequest::get();
+        $milestone_id = ifset($request, 'milestone_id', null);
+        $data = [
+            'header' => [
+                'filters' => ''
+            ]
+        ];
+
+        if (isset($milestone_id) && count($request) === 2 && isset($request['module'])) {
+            $tasks_releases_milestone_ext_model = new tasksReleasesPluginMilestoneExtModel();
+            $limits = json_encode($tasks_releases_milestone_ext_model->where('milestone_id =' . (int)$milestone_id)->fetchAll('status_id'));
+            $script = <<<SCRIPT
+<script>
+    (function () {
+        var kanban_task_settings = new KanbanTaskSettings($limits);
+        kanban_task_settings.init();
+    })(jQuery);
+</script>
+SCRIPT;
+
+            $data['header']['filters'] .= $script;
+        }
+
+        $hide_new_and_completed_tasks = (bool)wa()->getUser()->getSettings('tasks', 'hide_new_and_completed_tasks', false);
+        $checked = $hide_new_and_completed_tasks ? 'checked' : '';
+        $selector = <<<SELECTOR
+<div class="t-checkbox-column" id="js-hide-new-and-completed-tasks">
+    <label>
+        <span class="wa-checkbox">
+            <input type="checkbox" name="hide_new_and_completed_tasks" value="1" $checked/>
+            <span>
+                <span class="icon">
+                    <i class="fas fa-check"></i>
+                </span>
+            </span>
+        </span>
+        <span class="custom-ml-4">Спрятать Новые и Завершённые</span>
+    </label>
+</div>
+<script>
+    (function () {
+        var kanban_task_settings_hide_new_and_completed = new KanbanTaskSettingHideNewAndCompleted($hide_new_and_completed_tasks);
+        kanban_task_settings_hide_new_and_completed.init();
+    })(jQuery);
+</script>
+SELECTOR;
+
+        $data['header']['filters'] .= $selector;
+
+        return $data;
+    }
 }

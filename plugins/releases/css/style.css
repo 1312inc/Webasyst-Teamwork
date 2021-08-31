@@ -245,3 +245,35 @@
 .t-releases-plugin-tasks-scope-tags .t-graph-wrapper .t-hint-wrapper .t-line .t-value {
     font-weight: bold
 }
+
+.t-releases-plugin-task-color-setting {
+    position: absolute;
+    display: none;
+    right: 0.5rem;
+    top: 0.5rem;
+}
+
+.t-kanban__list__body__item:hover .t-releases-plugin-task-color-setting {
+    display: block;
+}
+
+.js-maximum-tasks-number:hover {
+    cursor: default;
+    color: #323232;
+    text-decoration: underline;
+}
+
+.days-points {
+    justify-content: flex-end;
+}
+
+.days-points.red .day-point {
+    background-color: #f00;
+}
+
+.day-point {
+    width: 4px;
+    height: 4px;
+    border-radius: 100%;
+    background-color: #000;
+}
