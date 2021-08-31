@@ -59,6 +59,13 @@ class tasksReleasesPluginReportsFreqAction extends tasksLogAction
             $where_sql[] = 'tl.assigned_contact_id='.((int) $filters['contact_id']);
         }
 
+        $m = new waModel();
+        $ext_join_sql = '';
+        if (isset($filters['task_type'])) {
+            $ext_join_sql = 'JOIN tasks_releases_task_ext AS te ON te.task_id=tl.task_id';
+            $where_sql[] = "te.type='".$m->escape($filters['task_type'])."'";
+        }
+
         $join_tasks_sql = '';
         if ($join_tasks) {
             $join_tasks_sql = "JOIN tasks_task AS t ON t.id=tl.task_id";
@@ -69,10 +76,10 @@ class tasksReleasesPluginReportsFreqAction extends tasksLogAction
         $sql = "SELECT DISTINCT tl.task_id
                 FROM tasks_task_log AS tl
                     $join_tasks_sql
+                    $ext_join_sql
                 WHERE {$where_sql}
                 ORDER BY task_id";
 
-        $m = new waModel();
         $task_ids = array_keys($m->query($sql)->fetchAll('task_id'));
 
         $result_groups = [];
@@ -136,7 +143,39 @@ class tasksReleasesPluginReportsFreqAction extends tasksLogAction
             'project_id' => waRequest::request('project_id', null, 'int'),
             'contact_id' => waRequest::request('contact_id', null, 'int'),
             'milestone_id' => waRequest::request('milestone_id', null, 'int'),
+            'task_type' => waRequest::request('task_type'),
         ];
+
+        if (!in_array($result['task_type'], ['sr', 'dev', 'bug'])) {
+            unset($result['task_type']);
+        }
+
         return array_filter($result, wa_lambda('$a', 'return !is_null($a);'));
+    }
+
+    protected static function getLogFilterTypes()
+    {
+        $result = parent::getLogFilterTypes();
+
+        $result['task_type'] = [
+            '' => [
+                'id' => '',
+                'name' => 'Все типы задач',
+            ],
+            'sr' => [
+                'id' => 'sr',
+                'name' => 'SR',
+            ],
+            'dev' => [
+                'id' => 'dev',
+                'name' => 'Dev',
+            ],
+            'bug' => [
+                'id' => 'bug',
+                'name' => 'Bug',
+            ],
+        ];
+
+        return $result;
     }
 }
