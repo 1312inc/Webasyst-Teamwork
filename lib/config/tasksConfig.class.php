@@ -501,7 +501,7 @@ class tasksConfig extends waAppConfig
     {
         if (!function_exists('tsks')) {
             /**
-             * @return tasksConfig|SystemConfig|waAppConfig
+             * @return tasksConfig
              */
             function tsks()
             {

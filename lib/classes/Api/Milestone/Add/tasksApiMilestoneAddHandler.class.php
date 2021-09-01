@@ -16,7 +16,8 @@ final class tasksApiMilestoneAddHandler
             throw new tasksAccessException();
         }
 
-        $milestone = tsks()->getEntityFactory(tasksMilestone::class)->createFromApiVo($addRequest);
+        $milestone = tsks()->getEntityFactory(tasksMilestone::class)
+            ->createFromApiVo($addRequest);
 
         if (!tsks()->getEntityRepository(tasksMilestone::class)->save($milestone)) {
             throw new tasksException('Error on milestone add');

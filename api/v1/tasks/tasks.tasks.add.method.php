@@ -34,6 +34,6 @@ class tasksTasksAddMethod extends tasksApiAbstractMethod
         $collection = new tasksCollection([$task->getId()]);
         $tasks = $collection->getTasks(tasksCollection::FIELDS_TO_GET);
 
-        return new tasksApiTaskResponse(reset($tasks));
+        return new tasksApiTaskResponse(new tasksTask(reset($tasks)));
     }
 }

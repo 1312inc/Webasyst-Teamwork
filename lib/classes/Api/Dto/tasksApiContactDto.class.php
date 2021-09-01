@@ -15,15 +15,15 @@ final class tasksApiContactDto implements JsonSerializable
     private $name;
 
     /**
-     * tasksApiContactVo constructor.
-     *
-     * @param int    $id
-     * @param string $name
+     * @var string|null
      */
-    public function __construct(int $id, string $name)
+    private $photoUrl;
+
+    public function __construct(int $id, string $name, ?string $photoUrl)
     {
         $this->id = $id;
         $this->name = $name;
+        $this->photoUrl = $photoUrl;
     }
 
     public function getId(): int
@@ -34,5 +34,10 @@ final class tasksApiContactDto implements JsonSerializable
     public function getName(): string
     {
         return $this->name;
+    }
+
+    public function getPhotoUrl(): ?string
+    {
+        return $this->photoUrl;
     }
 }

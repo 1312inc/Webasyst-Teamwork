@@ -10,7 +10,7 @@ class tasksTasksAction extends waViewAction
         $hash = waRequest::get('hash', '', 'string');
         $filters = waRequest::get('filters', '', 'string');
         $offset = waRequest::get('offset', 0, 'int');
-        $limit = wa('tasks')->getConfig()->getOption('tasks_per_page');
+        $limit = tasksOptions::getTasksPerPage();
         $since = waRequest::request('since', null, 'int');
 
         $c = new tasksCollection($hash);
@@ -383,7 +383,7 @@ class tasksTasksAction extends waViewAction
     protected static function getMilestoneFilterType()
     {
         $milestone_model = new tasksMilestoneModel();
-        $milestones = $milestone_model->getStatusesWithOrder(false);
+        $milestones = $milestone_model->getMilestonesWithOrder(false);
 
         return [
                 '' => [

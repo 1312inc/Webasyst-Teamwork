@@ -10,12 +10,14 @@ abstract class tasksApiAbstractMethod extends waAPIMethod
     public const METHOD_DELETE = 'DELETE';
     public const METHOD_PUT    = 'PUT';
 
-    public const CAST_INT         = 1;
-    public const CAST_FLOAT       = 2;
-    public const CAST_ARRAY       = 3;
-    public const CAST_STRING      = 4;
-    public const CAST_STRING_TRIM = 5;
-    public const CAST_DATETIME    = 6;
+    public const CAST_INT         = 'int';
+    public const CAST_FLOAT       = 'float';
+    public const CAST_ARRAY       = 'array';
+    public const CAST_STRING      = 'string';
+    public const CAST_STRING_TRIM = 'string_trim';
+    public const CAST_DATETIME    = 'datetime';
+    public const CAST_ENUM        = 'enum';
+    public const CAST_BOOLEAN     = 'boolean';
 
     /**
      * @var array
@@ -46,7 +48,7 @@ abstract class tasksApiAbstractMethod extends waAPIMethod
      * @throws tasksApiMissingParamException
      * @throws tasksApiWrongParamException
      */
-    public function get($name, $required = false, ?int $type = null, string $format = '')
+    public function get($name, $required = false, ?string $type = null, string $format = '')
     {
         if ($this->jsonParams && array_key_exists($name, $this->jsonParams)) {
             $value = $this->jsonParams[$name];
@@ -66,16 +68,16 @@ abstract class tasksApiAbstractMethod extends waAPIMethod
     }
 
     /**
-     * @param string   $name
-     * @param bool     $required
-     * @param null|int $type
-     * @param string   $format
+     * @param string      $name
+     * @param bool        $required
+     * @param null|string $type
+     * @param mixed       $format
      *
      * @return array|int|mixed|null
      * @throws tasksApiMissingParamException
      * @throws tasksApiWrongParamException
      */
-    public function post($name, $required = false, ?int $type = null, string $format = '')
+    public function post($name, $required = false, ?string $type = null, $format = null)
     {
         if ($this->jsonParams && array_key_exists($name, $this->jsonParams)) {
             $value = $this->jsonParams[$name];
@@ -122,7 +124,7 @@ abstract class tasksApiAbstractMethod extends waAPIMethod
      * @throws tasksApiMissingParamException
      * @throws tasksApiWrongParamException
      */
-    protected function param($name, $required = false, ?int $type = null, string $format = '')
+    protected function param($name, $required = false, ?string $type = null, string $format = '')
     {
         if ($this->jsonParams && array_key_exists($name, $this->jsonParams)) {
             $param = $this->jsonParams[$name];
@@ -170,14 +172,14 @@ abstract class tasksApiAbstractMethod extends waAPIMethod
     }
 
     /**
-     * @param        $var
-     * @param int|null    $type
-     * @param string $format
+     * @param             $var
+     * @param string|null $type
+     * @param mixed       $format
      *
      * @return array|DateTimeImmutable|float|int|string
      * @throws tasksException
      */
-    private function cast($var, ?int $type, string $format = '')
+    private function cast($var, ?string $type, $format = null)
     {
         switch ($type) {
             case self::CAST_INT:
@@ -185,6 +187,9 @@ abstract class tasksApiAbstractMethod extends waAPIMethod
 
             case self::CAST_FLOAT:
                 return (float) $var;
+
+            case self::CAST_BOOLEAN:
+                return filter_var($var, FILTER_VALIDATE_BOOLEAN);
 
             case self::CAST_ARRAY:
                 return (array) $var;
@@ -200,9 +205,19 @@ abstract class tasksApiAbstractMethod extends waAPIMethod
 
                 return $var;
 
+            case self::CAST_ENUM:
+                if (is_array($format) && !in_array($var, $format, true)) {
+                    throw new tasksException(
+                        sprintf('Wrong value %s. Expected one of %s', $var, implode(', ', $format))
+                    );
+                }
+                break;
+
             case self::CAST_STRING:
-            default:
                 return (string) $var;
+
+            default:
+                return $var;
         }
 
         return $var;

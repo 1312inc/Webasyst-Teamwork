@@ -25,6 +25,8 @@ final class tasksApiTaskGetListHandler
             $totalCount
         );
 
+        tasksHelper::workupTasksForView($taskRows);
+
         return new tasksApiTasksResponse($taskRows, (int) $totalCount);
     }
 
@@ -49,7 +51,14 @@ final class tasksApiTaskGetListHandler
         }
 
         $type = $collection->getType();
-        if (!in_array($type, ['search', 'outbox', 'status', 'id']) && (strpos($filters, 'status_id') === false)) {
+        if (!in_array($type, [
+                tasksCollection::HASH_SEARCH,
+                tasksCollection::HASH_OUTBOX,
+                tasksCollection::HASH_STATUS,
+                tasksCollection::HASH_ID,
+            ], true)
+            && (strpos($filters, 'status_id') === false)
+        ) {
             $collection->addWhere('t.status_id >= 0');
         }
     }
@@ -57,23 +66,23 @@ final class tasksApiTaskGetListHandler
     private function applySince(tasksCollection $collection, ?int $since): void
     {
         if ($since) {
-            $collection->addWhere("t.update_datetime > '" . date('Y-m-d H:i:s', $since) . "'");
+            $collection->addWhere(sprintf("t.update_datetime > '%s'", date('Y-m-d H:i:s', $since)));
         }
     }
 
     private function applyOrder(tasksCollection $c, $order)
     {
         switch ($order) {
-            case 'newest':
+            case tasksCollection::ORDER_NEWEST:
                 $c->orderBy('update_datetime', 'DESC');
                 break;
-            case 'oldest':
+            case tasksCollection::ORDER_OLDEST:
                 $c->orderBy('create_datetime');
                 break;
-            case 'due':
+            case tasksCollection::ORDER_DUE:
                 $c->orderByDue();
                 break;
-            case 'priority':
+            case tasksCollection::ORDER_PRIORITY:
             default:
                 break; // Nothing to do: collection defaults to priority ordering
         }
@@ -118,7 +127,7 @@ final class tasksApiTaskGetListHandler
     private function getOrderKey(tasksCollection $collection): string
     {
         $type = $collection->getType();
-        if ($type !== 'status') {
+        if ($type !== tasksCollection::HASH_STATUS) {
             return "tasks/tasks_order/{$type}";
         }
 

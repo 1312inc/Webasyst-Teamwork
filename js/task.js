@@ -146,7 +146,7 @@ var Task = ( function($) {
 
         that.initGallery();
 
-        that.maybeUpdateTimeCounter(); // initial call to set last update time
+        // that.maybeUpdateTimeCounter(); // initial call to set last update time
 
         that.initPriorityChanger();
 
@@ -414,6 +414,7 @@ var Task = ( function($) {
                     if (response["status"] == "ok") {
                         that.reloadTask();
                         hidePriorityChanger();
+                        $.tasks.reloadSidebar();
                     }
                 });
             }, timer_time);
@@ -1410,7 +1411,7 @@ var Task = ( function($) {
     Task.prototype.deleteRelations = function ($this) {
         if (confirm( $_('Unlink these tasks?') )) {
             var that = this,
-                $parent = $this.parent(),
+                $parent = $this.closest('li'),
                 type = $parent.data('relation-type'),
                 relation_task_id = $parent.data('relation-task'),
                 delete_href = "?module=tasks&action=deleteRelations",
@@ -1546,7 +1547,8 @@ var Task = ( function($) {
         var that = this,
             is_selected = (typeof tasksHeader !== 'undefined') ? tasksHeader.selectedTasks.hasOwnProperty(that.task_id) : undefined,
             update_href,
-            params = {};
+            params = {},
+            waLoading = $.waLoading();
 
         callbacks = callbacks || {};
         var afterReplace = typeof callbacks.afterReplace === 'function' ? callbacks.afterReplace : null;
@@ -1573,7 +1575,12 @@ var Task = ( function($) {
             that.selectTask(false);
         }
 
+        // Show progress bar
+        waLoading.animate(6000, 99, true);
+
         $.get(update_href, params, function(response) {
+
+            waLoading.hide();
 
             var $updatedTask = $(response).find(".t-task-outer-container");
 
