@@ -242,7 +242,7 @@ class tasksReleasesPlugin extends waPlugin
                     $date_difference += time() - $changed_time;
                 }
                 $days_difference = floor(($date_difference) / 3600 / 24);
-                $points = str_repeat('<div class="day-point"></div>', $days_difference);
+                $points = str_repeat('<div class="day-point"></div>', min(10, $days_difference));
                 $red_class = $days_difference > 7 ? 'red' : '';
                 $task_color = isset($kanban_colors[$task_id]['kanban_color']) ? $kanban_colors[$task_id]['kanban_color'] : '';
                 $data[$task_id]['after_body'] = <<<HTML
