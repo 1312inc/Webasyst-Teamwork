@@ -5,7 +5,7 @@ function KanbanTaskSettingHideNewAndCompleted(is_checked) {
 KanbanTaskSettingHideNewAndCompleted.prototype.init = function () {
     var that = this;
 
-    $('input[name="hide_new_and_completed_tasks"]').click(function () {
+    $('input[name="hide_new_and_completed_tasks"]').change(function () {
         var url = '?plugin=releases&module=kanban&action=hideNewAndCompletedSave',
             is_checked = $(this).prop('checked');
 
