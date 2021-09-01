@@ -131,10 +131,10 @@
         });
 
         if (list_params.indexOf('with_backlog=1') !== -1) {
-            $main_menu.find(':checkbox').prop('checked', true);
+            $main_menu.find('input[name="with_backlog"]').prop('checked', true);
         }
 
-        $main_menu.on('click', ':checkbox', function (e) {
+        $main_menu.on('click', 'input[name="with_backlog"]', function (e) {
             var $this = $(this);
 
             if ($this.is(':checked')) {
