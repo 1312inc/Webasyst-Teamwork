@@ -56,47 +56,11 @@ final class tasksApiTaskDtoFactory
     {
         $allAttachments = [];
         foreach ($task->getFiles() as $attachment) {
-            $allAttachments[(int) $attachment['id']] = new tasksApiAttachmentDto(
-                (int) $attachment['id'],
-                !empty($attachment['log_id']) ? (int) $attachment['log_id'] : null,
-                (string) $attachment['create_datetime'],
-                tasksApiContactDtoFactory::fromContactId($attachment['contact_id']),
-                $attachment['name'],
-                (int) $attachment['size'],
-                $attachment['ext'],
-                $attachment['code'],
-                sprintf(
-                    '%s%s/%s?module=attachments&action=download&id=%d',
-                    wa()->getRootUrl(true),
-                    wa()->getConfig()->getBackendUrl(),
-                    tasksConfig::APP_ID,
-                    $attachment['id']
-                ),
-                false,
-                null
-            );
+            $allAttachments[(int) $attachment['id']] = tasksApiAttachmentDtoFactory::createFromArray($attachment);
         }
 
         foreach ($task->getImages() as $attachment) {
-            $allAttachments[(int) $attachment['id']] = new tasksApiAttachmentDto(
-                (int) $attachment['id'],
-                !empty($attachment['log_id']) ? (int) $attachment['log_id'] : null,
-                (string) $attachment['create_datetime'],
-                tasksApiContactDtoFactory::fromContactId($attachment['contact_id']),
-                $attachment['name'],
-                (int) $attachment['size'],
-                $attachment['ext'],
-                $attachment['code'],
-                sprintf(
-                    '%s%s/%s?module=attachments&action=download&id=%d',
-                    wa()->getRootUrl(true),
-                    wa()->getConfig()->getBackendUrl(),
-                    tasksConfig::APP_ID,
-                    $attachment['id']
-                ),
-                true,
-                tasksHelper::getAttachPreviewUrl($attachment, true)
-            );
+            $allAttachments[(int) $attachment['id']] = tasksApiAttachmentDtoFactory::createFromArray($attachment);
         }
 
         return $allAttachments;
@@ -109,22 +73,7 @@ final class tasksApiTaskDtoFactory
     {
         $logs = [];
         foreach ($task->getLog() as $log) {
-            $logs[(int) $log['id']] = new tasksApiLogDto(
-                (int) $log['id'],
-                isset($log['project_id']) ? (int) $log['project_id'] : null,
-                (int) $log['task_id'],
-                tasksApiContactDtoFactory::fromContactId($log['contact_id']),
-                $log['text'],
-                (string) $log['create_datetime'],
-                isset($log['before_status_id']) ? (int) $log['before_status_id'] : null,
-                isset($log['after_status_id']) ? (int) $log['after_status_id'] : null,
-                (string) $log['action'],
-                !empty($log['assigned_contact_id'])
-                    ? tasksApiContactDtoFactory::fromContactId($log['assigned_contact_id'])
-                    : null,
-                (bool) $log['status_changed'],
-                (bool) $log['assignment_changed']
-            );
+            $logs[(int) $log['id']] = tasksApiLogDtoFactory::createFromArray($log);
         }
 
         return $logs;

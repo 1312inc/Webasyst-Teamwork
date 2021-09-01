@@ -4,8 +4,9 @@ class tasksLogGetListMethod extends tasksApiAbstractMethod
 {
     /**
      * @return tasksApiResponseInterface
-     * @throws cashValidateException
      * @throws tasksApiMissingParamException
+     * @throws tasksApiWrongParamException
+     * @throws tasksValidateException
      */
     public function run(): tasksApiResponseInterface
     {

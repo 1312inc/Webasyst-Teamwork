@@ -1,85 +1,69 @@
 <?php
 
-final class tasksApiLogDto implements JsonSerializable
+class tasksApiLogDto implements JsonSerializable
 {
     use tasksApiJsonSerializableTrait;
 
     /**
      * @var int
      */
-    private $id;
+    protected $id;
 
     /**
      * @var ?int
      */
-    private $project_id;
+    protected $project_id;
 
     /**
      * @var int
      */
-    private $task_id;
+    protected $task_id;
 
     /**
      * @var tasksApiContactDto
      */
-    private $contact;
+    protected $contact;
 
     /**
      * @var string
      */
-    private $text;
+    protected $text;
 
     /**
      * @var string
      */
-    private $create_datetime;
+    protected $create_datetime;
 
     /**
      * @var int|null
      */
-    private $before_status_id;
+    protected $before_status_id;
 
     /**
      * @var int|null
      */
-    private $after_status_id;
+    protected $after_status_id;
 
     /**
      * @var string
      */
-    private $action;
+    protected $action;
 
     /**
      * @var tasksApiContactDto|null
      */
-    private $assigned_contact;
+    protected $assigned_contact;
 
     /**
      * @var bool
      */
-    private $status_changed;
+    protected $status_changed;
 
     /**
      * @var bool
      */
-    private $assignment_changed;
+    protected $assignment_changed;
 
-    /**
-     * tasksApiLogDto constructor.
-     *
-     * @param int                     $id
-     * @param int                     $project_id
-     * @param int                     $task_id
-     * @param tasksApiContactDto      $contact
-     * @param string                  $text
-     * @param string                  $create_datetime
-     * @param int|null                $before_status_id
-     * @param int|null                $after_status_id
-     * @param string                  $action
-     * @param tasksApiContactDto|null $assigned_contact
-     * @param bool                    $status_changed
-     * @param bool                    $assignment_changed
-     */
     public function __construct(
         int $id,
         ?int $project_id,

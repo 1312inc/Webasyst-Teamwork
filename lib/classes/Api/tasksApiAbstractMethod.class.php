@@ -105,7 +105,7 @@ abstract class tasksApiAbstractMethod extends waAPIMethod
             wa()->getResponse()->setStatus($handlerResult->getStatus());
         } catch (Throwable $exception) {
             $this->response = tasksApiErrorResponse::fromException($exception);
-            wa()->getResponse()->setStatus($this->response->getStatus());
+            wa()->getResponse()->setStatus($exception->getCode() ?: $this->response->getStatus());
         }
     }
 
