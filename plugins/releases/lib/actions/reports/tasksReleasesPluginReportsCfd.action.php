@@ -18,6 +18,8 @@ class tasksReleasesPluginReportsCfdAction extends tasksLogAction
         list($start_date, $end_date, $group_by) = tasksLogChartAction::getTimeframeParams();
 
         $statuses = tasksHelper::getStatuses(null, false);
+        $statuses[0]['params']['button_color'] = '22d13d';
+        $statuses[-1]['params']['button_color'] = 'cccccc';
         list($chart_data, $timestamps) = self::getChartData($statuses, $filters, $start_date, $end_date, $group_by);
         $this->view->assign(array(
             'statuses' => $statuses,
@@ -26,8 +28,6 @@ class tasksReleasesPluginReportsCfdAction extends tasksLogAction
             'start_date' => $start_date,
             'end_date' => $end_date,
             'chart_data' => $chart_data,
-            'start_date' => $start_date,
-            'end_date' => $end_date,
             'group_by' => $group_by,
             'timestamps' => $timestamps,
         ));
@@ -96,7 +96,7 @@ class tasksReleasesPluginReportsCfdAction extends tasksLogAction
                 // используя данные в $current_day_tasks и положить в $all_days.
                 $timestamps[] = [
                     'ts' => $current_day_ts,
-                    'date' => date('Y-m-d', $current_day_ts),
+                    'date' => date('d.m', $current_day_ts),
                 ];
                 $current_day_ts = $next_day_ts;
                 $next_day_ts = strtotime(date('Y-m-d H:i:s', $current_day_ts) . ' +1 day');
@@ -155,7 +155,7 @@ class tasksReleasesPluginReportsCfdAction extends tasksLogAction
         $all_days[] = self::makeOneDayRow($empty_row, $current_day_tasks, $filters);
         $timestamps[] = [
             'ts' => $current_day_ts,
-            'date' => date('Y-m-d', $current_day_ts),
+            'date' => date('d.m', $current_day_ts),
         ];
 
         // Если выбран фильтр по сроку и/или по контакту, то добавить в список даже те задачи, по которым не было действий
