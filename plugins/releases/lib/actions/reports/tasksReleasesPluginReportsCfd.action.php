@@ -22,7 +22,7 @@ class tasksReleasesPluginReportsCfdAction extends tasksLogAction
         $statuses[-1]['params']['button_color'] = 'cccccc';
         list($chart_data, $timestamps) = self::getChartData($statuses, $filters, $start_date, $end_date, $group_by);
         $this->view->assign(array(
-            'statuses' => $statuses,
+            'statuses' => array_values($statuses),
             'filter_types' => self::getLogFilterTypes(),
             'filters' => $filters,
             'start_date' => $start_date,
