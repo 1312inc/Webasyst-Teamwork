@@ -67,6 +67,11 @@ final class tasksApiTaskDto implements JsonSerializable
     /**
      * @var int|null
      */
+    private $next_status_id;
+
+    /**
+     * @var int|null
+     */
     private $parent_id;
 
     /**
@@ -119,54 +124,28 @@ final class tasksApiTaskDto implements JsonSerializable
      */
     private $project;
 
-    /**
-     * tasksApiTaskDto constructor.
-     *
-     * @param int                     $id
-     * @param string                  $name
-     * @param string                  $text
-     * @param tasksApiContactDto      $create_contact
-     * @param tasksApiContactDto|null $visavis_contact
-     * @param string                  $create_datetime
-     * @param string|null             $update_datetime
-     * @param tasksApiContactDto|null $assigned_contact
-     * @param int                     $project_id
-     * @param int|null                $milestone_id
-     * @param int                     $number
-     * @param int                     $status_id
-     * @param int|null                $parent_id
-     * @param int                     $priority
-     * @param int|null                $assign_log_id
-     * @param int|null                $comment_log_id
-     * @param int|null                $contact_id
-     * @param int                     $hidden_timestamp
-     * @param string|null             $due_date
-     * @param tasksApiAttachmentDto[] $all_attachments
-     * @param tasksApiLogDto[]        $log
-     * @param tasksApiTagDto[]        $tags
-     * @param tasksApiProjectDto|null $project
-     */
     public function __construct(
         int $id,
         string $name,
         string $text,
-        tasksApiContactDto $create_contact,
-        ?tasksApiContactDto $visavis_contact,
-        string $create_datetime,
-        ?string $update_datetime,
-        ?tasksApiContactDto $assigned_contact,
-        int $project_id,
-        ?int $milestone_id,
+        tasksApiContactDto $createContact,
+        ?tasksApiContactDto $visavisContact,
+        string $createDatetime,
+        ?string $updateDatetime,
+        ?tasksApiContactDto $assignedContact,
+        int $projectId,
+        ?int $milestoneId,
         int $number,
-        int $status_id,
-        ?int $parent_id,
+        int $statusId,
+        ?int $nextStatusId,
+        ?int $parentId,
         int $priority,
-        ?int $assign_log_id,
-        ?int $comment_log_id,
-        ?int $contact_id,
-        int $hidden_timestamp,
-        ?string $due_date,
-        array $all_attachments,
+        ?int $assignLogId,
+        ?int $commentLogId,
+        ?int $contactId,
+        int $hiddenTimestamp,
+        ?string $dueDate,
+        array $allAttachments,
         array $log,
         array $tags,
         ?tasksApiProjectDto $project
@@ -174,25 +153,26 @@ final class tasksApiTaskDto implements JsonSerializable
         $this->id = $id;
         $this->name = $name;
         $this->text = $text;
-        $this->create_contact = $create_contact;
-        $this->create_datetime = $create_datetime;
-        $this->update_datetime = $update_datetime;
-        $this->assigned_contact = $assigned_contact;
-        $this->project_id = $project_id;
-        $this->milestone_id = $milestone_id;
+        $this->create_contact = $createContact;
+        $this->create_datetime = $createDatetime;
+        $this->update_datetime = $updateDatetime;
+        $this->assigned_contact = $assignedContact;
+        $this->project_id = $projectId;
+        $this->milestone_id = $milestoneId;
         $this->number = $number;
-        $this->status_id = $status_id;
-        $this->parent_id = $parent_id;
+        $this->status_id = $statusId;
+        $this->parent_id = $parentId;
         $this->priority = $priority;
-        $this->assign_log_id = $assign_log_id;
-        $this->comment_log_id = $comment_log_id;
-        $this->contact_id = $contact_id;
-        $this->hidden_timestamp = $hidden_timestamp;
-        $this->due_date = $due_date;
-        $this->attachments = $all_attachments;
+        $this->assign_log_id = $assignLogId;
+        $this->comment_log_id = $commentLogId;
+        $this->contact_id = $contactId;
+        $this->hidden_timestamp = $hiddenTimestamp;
+        $this->due_date = $dueDate;
+        $this->attachments = $allAttachments;
         $this->log = $log;
         $this->tags = $tags;
         $this->project = $project;
-        $this->visavis_contact = $visavis_contact;
+        $this->visavis_contact = $visavisContact;
+        $this->next_status_id = $nextStatusId;
     }
 }

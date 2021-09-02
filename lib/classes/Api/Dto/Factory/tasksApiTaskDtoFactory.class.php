@@ -17,6 +17,8 @@ final class tasksApiTaskDtoFactory
                 $visavisContact = $task->getAssignedContact();
             }
 
+            $nextStatus = $task->getNextStatus();
+
             self::$tasks[$task->id] = new tasksApiTaskDto(
                 (int) $task->id,
                 $task['name'],
@@ -32,6 +34,7 @@ final class tasksApiTaskDtoFactory
                 !empty($task['milestone_id']) ? (int) $task['milestone_id'] : null,
                 (int) $task['number'],
                 (int) $task['status_id'],
+                $nextStatus ? (int) $nextStatus['id'] : null,
                 !empty($task['parent_id']) ? (int) $task['parent_id'] : null,
                 (int) $task['priority'],
                 !empty($task['assign_log_id']) ? (int) $task['assign_log_id'] : null,
