@@ -1,0 +1,215 @@
+openapi: 3.0.0
+info:
+  title: 'Tasks API'
+  version: 1.0.0
+servers:
+  - url: /api.php
+    description: Current host server
+
+paths:
+  /tasks.tasks.getList:
+    get:
+      tags:
+        - Таски
+      summary: 'Возвращает список тасков по заданному хешу с фильтрацией'
+      security:
+        - ApiKeyAuth: [ ]
+      parameters:
+        - in: query
+          name: hash
+          required: true
+          description: |
+            основной фильтр (условие) для выборки задач:
+            + id/ID - поиск по id таска
+            + all - все таски
+            + search/TERM - поиск по слову
+            + scope/ID - поиск по работе (milestone)
+            + project/ID - поиск по проекту
+            + inbox - входящие
+            + assigned/ID - назначенные на пользователя
+            + outbox - исходящие
+            + favorites - любименькое
+            + urgent
+            + hidden - ?
+            + creator/ID - создателя
+            + contact/ID - ?
+            + status/{inprogress|done|ID}
+            + unassigned - без исполнителя
+            + tag/TAG - поиск по тегу
+          schema:
+            type: string
+            nullable: true
+            example: inbox
+        - $ref: '#/components/parameters/offset'
+        - $ref: '#/components/parameters/limit'
+        - in: query
+          name: filters
+          description: |
+            дополнительный фильтр внутри выборки по hash:
+            + assigned_contact_id=1
+            + milestone_id=5
+            + status_id=-1
+            + и т.д
+          schema:
+            type: string
+            nullable: true
+            example: assigned_contact_id=1
+        - in: query
+          name: since
+          required: false
+          description: вернет таски, обновленные после этого timestamp
+          schema:
+            type: number
+            nullable: true
+        - in: query
+          name: order
+          description: сортировка
+          required: false
+          schema:
+            type: string
+            enum:
+              - priority
+              - oldest
+              - newest
+              - due
+            default: priority
+      responses:
+        200:
+          description: Пагинированный список тасков
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getTasksListResponse'
+        403:
+          description: Запрещено
+        500:
+          description: Все плохо
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: query
+      name: access_token
+
+  schemas:
+    getTasksListResponse:
+      type: object
+      properties:
+        total_count:
+          type: number
+          description: сколько всего тасков найдено
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/taskInfo'
+
+    taskInfo:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Идентификатор таски
+        name:
+          type: string
+        text:
+          type: string
+        create_contact:
+          $ref: '#/components/schemas/contactInfo'
+        visavis_contact:
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/contactInfo'
+        assigned_contact:
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/contactInfo'
+        create_datetime:
+          type: string
+          format: date-time
+        update_datetime:
+          type: string
+          format: date-time
+        project_id:
+          type: integer
+          description: Идентификатор проекта
+        milestone_id:
+          nullable: true
+          type: integer
+          description: Идентификатор работы
+        number:
+          type: integer
+          description: Порядковый номер в проекте
+        status_id:
+          type: integer
+          description: Идентификатор статуса
+        next_status_id:
+          type: integer
+          description: Идентификатор следующего по workflow статуса
+        parent_id:
+          nullable: false
+          type: integer
+        priority:
+          type: integer
+        assign_log_id:
+          nullable: true
+          type: integer
+          description: ??
+        comment_log_id:
+          nullable: true
+          type: integer
+          description: Идентификатор лога с закрепленным комментарием
+        contact_id:
+          nullable: true
+          type: integer
+          description: ???
+        hidden_timestamp:
+          nullable: true
+          type: integer
+          description: ???
+        due_date:
+          type: string
+          format: date
+          description: Дедлайн
+        attachments:
+          type: array
+        log:
+          type: array
+        tags:
+          type: array
+        project:
+          $ref: '#/components/schemas/projectInfo'
+
+    projectInfo:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+
+    contactInfo:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+
+  parameters:
+    offset:
+      in: query
+      name: offset
+      required: true
+      schema:
+        type: number
+        minimum: 0
+    limit:
+      in: query
+      name: offset
+      description: максимальное в ответе. не может быть более 500.
+      schema:
+        type: number
+        nullable: true
+        minimum: 0
+        default: 30
