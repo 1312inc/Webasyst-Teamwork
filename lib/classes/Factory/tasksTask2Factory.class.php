@@ -29,7 +29,9 @@ class tasksTask2Factory extends tasksBaseFactory
             ->setCreateContactId($addRequest->getCreateContactId())
             ->setPriority($addRequest->getPriority())
             ->setHiddenTimestamp($addRequest->getHiddenTimestamp())
-            ->setAssignedContactId($addRequest->getAssignedContactId());
+            ->setAssignedContactId($addRequest->getAssignedContactId())
+            ->setUuid($addRequest->getUuid())
+        ;
 
         return $task;
     }

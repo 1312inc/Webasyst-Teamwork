@@ -7,62 +7,67 @@ class tasksApiLogDto implements JsonSerializable
     /**
      * @var int
      */
-    protected $id;
+    private $id;
 
     /**
      * @var ?int
      */
-    protected $project_id;
+    private $project_id;
 
     /**
      * @var int
      */
-    protected $task_id;
+    private $task_id;
 
     /**
      * @var tasksApiContactDto
      */
-    protected $contact;
+    private $contact;
 
     /**
      * @var string
      */
-    protected $text;
+    private $text;
 
     /**
      * @var string
      */
-    protected $create_datetime;
+    private $create_datetime;
 
     /**
      * @var int|null
      */
-    protected $before_status_id;
+    private $before_status_id;
 
     /**
      * @var int|null
      */
-    protected $after_status_id;
+    private $after_status_id;
 
     /**
      * @var string
      */
-    protected $action;
+    private $action;
 
     /**
      * @var tasksApiContactDto|null
      */
-    protected $assigned_contact;
+    private $assigned_contact;
 
     /**
-     * @var bool
+     * @var bool|null
      */
-    protected $status_changed;
+    private $status_changed;
 
     /**
-     * @var bool
+     * @var bool|null
      */
-    protected $assignment_changed;
+    private $assignment_changed;
+
+    /**
+     * @var array<tasksApiAttachmentDto>
+     */
+    private $attachments;
 
     public function __construct(
         int $id,
@@ -75,8 +80,9 @@ class tasksApiLogDto implements JsonSerializable
         ?int $after_status_id,
         string $action,
         ?tasksApiContactDto $assigned_contact,
-        bool $status_changed,
-        bool $assignment_changed
+        ?bool $status_changed,
+        ?bool $assignment_changed,
+        array $attachments
     ) {
         $this->id = $id;
         $this->project_id = $project_id;
@@ -90,5 +96,6 @@ class tasksApiLogDto implements JsonSerializable
         $this->assigned_contact = $assigned_contact;
         $this->status_changed = $status_changed;
         $this->assignment_changed = $assignment_changed;
+        $this->attachments = $attachments;
     }
 }

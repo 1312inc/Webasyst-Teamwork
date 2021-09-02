@@ -25,7 +25,7 @@ class tasksCommentsUpdateMethod extends tasksApiAbstractMethod
             return new tasksApiResponse();
         }
 
-        $logResponse = tasksApiLogDtoFactory::createFromArrayWithAttachments($logData);
+        $logResponse = tasksApiLogDtoFactory::createFromArrayWithAttachmentsFetch($logData);
 
         return new tasksApiResponse(tasksApiResponseInterface::HTTP_OK, $logResponse);
     }

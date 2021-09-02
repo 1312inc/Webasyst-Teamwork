@@ -8,7 +8,7 @@ final class tasksApiTasksActionHandler
      * @throws waException
      * @throws tasksException
      */
-    public function action(tasksApiTasksActionRequest $actionRequest): int
+    public function action(tasksApiTasksActionRequest $actionRequest): array
     {
         $task = tsks()->getModel(tasksTask::class)
             ->getById($actionRequest->getTaskId());
@@ -36,7 +36,7 @@ final class tasksApiTasksActionHandler
      * @throws waException
      * @throws tasksValidationException
      */
-    private function forward(tasksApiTasksActionRequest $actionRequest, array $task): int
+    private function forward(tasksApiTasksActionRequest $actionRequest, array $task): array
     {
         if (!$actionRequest->getAssignedContactId()) {
             throw new tasksValidationException('assigned_contact_id is required for forward action');
@@ -53,14 +53,14 @@ final class tasksApiTasksActionHandler
         tsks()->getModel('waLog')
             ->add('task_forward', $log['task_id'] . ':' . $log['id']);
 
-        return (int) $log['id'];
+        return $log;
     }
 
     /**
      * @throws waException
      * @throws tasksException
      */
-    private function return(tasksApiTasksActionRequest $actionRequest, array $taskData): int
+    private function return(tasksApiTasksActionRequest $actionRequest, array $taskData): array
     {
         $statusId = (int) $actionRequest->getStatusId();
         $prevActorId = (int) $actionRequest->getAssignedContactId();
@@ -81,17 +81,17 @@ final class tasksApiTasksActionHandler
         tsks()->getModel('waLog')
             ->add('task_return', $log['task_id'] . ':' . $log['id']);
 
-        return (int) $log['id'];
+        return $log;
     }
 
     /**
      * @throws waException
      */
-    private function default(tasksApiTasksActionRequest $actionRequest, array $task): int
+    private function default(tasksApiTasksActionRequest $actionRequest, array $task): array
     {
         $data = [
             'action' => tasksTaskLogModel::ACTION_TYPE_EMPTY,
-            'status_id' => $actionRequest->getStatusId() ?: -1,
+            'status_id' => $actionRequest->getStatusId() ?: tasksStatusModel::STATUS_CLOSED_ID,
             'text' => (string) $actionRequest->getText(),
         ];
 
@@ -138,6 +138,6 @@ final class tasksApiTasksActionHandler
         tsks()->getModel('waLog')
             ->add('task_action', $log['task_id'] . ':' . $log['id']);
 
-        return (int) $log['id'];
+        return $log;
     }
 }

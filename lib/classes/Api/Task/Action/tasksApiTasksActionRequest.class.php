@@ -2,10 +2,13 @@
 
 final class tasksApiTasksActionRequest
 {
+    public const ACTION_TYPE_CLOSE = 'close';
+
     public const ALLOWED_ACTION = [
         tasksTaskLogModel::ACTION_TYPE_EMPTY,
         tasksTaskLogModel::ACTION_TYPE_RETURN,
         tasksTaskLogModel::ACTION_TYPE_FORWARD,
+        self::ACTION_TYPE_CLOSE,
     ];
 
     /**

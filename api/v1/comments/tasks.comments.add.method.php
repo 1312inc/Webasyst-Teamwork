@@ -8,7 +8,7 @@ class tasksCommentsAddMethod extends tasksApiAbstractMethod
      * @return tasksApiResponseInterface
      * @throws tasksApiMissingParamException
      * @throws tasksApiWrongParamException
-     * @throws waAPIException
+     * @throws tasksResourceNotFoundException
      * @throws waException
      * @throws waRightsException
      */
@@ -25,7 +25,7 @@ class tasksCommentsAddMethod extends tasksApiAbstractMethod
         );
 
         $logData = (new tasksApiCommentAddHandler())->add($request);
-        $logResponse = tasksApiLogDtoFactory::createFromArrayWithAttachments($logData);
+        $logResponse = tasksApiLogDtoFactory::createFromArrayWithAttachmentsFetch($logData);
 
         return new tasksApiResponse(tasksApiResponseInterface::HTTP_OK, $logResponse);
     }

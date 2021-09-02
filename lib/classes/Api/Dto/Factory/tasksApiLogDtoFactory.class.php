@@ -18,11 +18,12 @@ class tasksApiLogDtoFactory
                 ? tasksApiContactDtoFactory::fromContactId((int) $data['assigned_contact_id'])
                 : null,
             isset($data['status_changed']) && $data['status_changed'],
-            isset($data['assignment_changed']) && $data['assignment_changed']
+            isset($data['assignment_changed']) && $data['assignment_changed'],
+            $data['attachments'] ?? []
         );
     }
 
-    public static function createFromArrayWithAttachments(array $data): tasksApiLogWithAttachmentDto
+    public static function createFromArrayWithAttachmentsFetch(array $data): tasksApiLogDto
     {
         $attachments = tsks()->getModel(tasksAttachment::class)->getByLogId($data['id']);
         $attachmentDtos = [];
@@ -30,7 +31,7 @@ class tasksApiLogDtoFactory
             $attachmentDtos[] = tasksApiAttachmentDtoFactory::createFromArray($attachment);
         }
 
-        return new tasksApiLogWithAttachmentDto(
+        return new tasksApiLogDto(
             (int) $data['id'],
             isset($data['project_id']) ? (int) $data['project_id'] : null,
             (int) $data['task_id'],
@@ -43,8 +44,8 @@ class tasksApiLogDtoFactory
             !empty($data['assigned_contact_id'])
                 ? tasksApiContactDtoFactory::fromContactId((int) $data['assigned_contact_id'])
                 : null,
-            isset($data['status_changed']) && $data['status_changed'],
-            isset($data['assignment_changed']) && $data['assignment_changed'],
+            isset($data['status_changed']) ? (bool) $data['status_changed'] : null,
+            isset($data['assignment_changed']) ? (bool) $data['assignment_changed'] : null,
             $attachmentDtos
         );
     }

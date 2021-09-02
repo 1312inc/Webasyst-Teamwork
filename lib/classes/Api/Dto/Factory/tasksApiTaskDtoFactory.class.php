@@ -76,6 +76,12 @@ final class tasksApiTaskDtoFactory
     {
         $logs = [];
         foreach ($task->getLog() as $log) {
+            $attachments = $task->getLogAttachments($log['id']);
+            $log['attachments'] = [];
+            foreach (array_merge($attachments['images'], $attachments['files']) as $attachment) {
+                $log['attachments'][] = tasksApiAttachmentDtoFactory::createFromArray($attachment);
+            }
+
             $logs[(int) $log['id']] = tasksApiLogDtoFactory::createFromArray($log);
         }
 
