@@ -4,6 +4,8 @@ class tasksApiAttachmentDtoFactory
 {
     public static function createFromArray(array $data): tasksApiAttachmentDto
     {
+        $isImage = self::isImageAttachment($data);
+
         return new tasksApiAttachmentDto(
             (int) $data['id'],
             !empty($data['log_id']) ? (int) $data['log_id'] : null,
@@ -20,8 +22,8 @@ class tasksApiAttachmentDtoFactory
                 tasksConfig::APP_ID,
                 $data['id']
             ),
-            self::isImageAttachment($data),
-            null
+            $isImage,
+            $isImage ? tasksHelper::getAttachPreviewUrl($data, true) : null
         );
     }
 
