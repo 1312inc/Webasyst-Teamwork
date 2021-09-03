@@ -84,7 +84,24 @@ paths:
           description: Запрещено
         500:
           description: Все плохо
-
+  /tasks.statuses.getList:
+    get:
+      tags:
+        - Статусы
+      summary: 'Возвращает список статусов'
+      security:
+        - ApiKeyAuth: [ ]
+      responses:
+        200:
+          description: Список статусов
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getStatusesListResponse'
+        403:
+          description: Запрещено
+        500:
+          description: Все плохо
 components:
   securitySchemes:
     ApiKeyAuth:
@@ -104,6 +121,16 @@ components:
           items:
             $ref: '#/components/schemas/taskInfo'
 
+    getStatusesListResponse:
+      type: object
+      properties:
+        total_count:
+          type: number
+          description: сколько всего статусов
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/statusInfo'
     taskInfo:
       type: object
       properties:
@@ -179,7 +206,6 @@ components:
           type: array
         project:
           $ref: '#/components/schemas/projectInfo'
-
     projectInfo:
       type: object
       properties:
@@ -187,7 +213,6 @@ components:
           type: integer
         name:
           type: string
-
     contactInfo:
       type: object
       properties:
@@ -195,7 +220,89 @@ components:
           type: integer
         name:
           type: string
-
+    statusInfo:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Идентификатор статуса
+        name:
+          type: string
+          description: Название статуса
+        button:
+          type: string
+          description: Текст на кнопке, которая переводит задачу в этот статус. Иногда может совпадать с названием статуса, но чаще всего все-таки является глаголом и поэтому отличается
+        special:
+          type: boolean
+        icon:
+          type: string
+        icon_url:
+          type: string
+        icon_class:
+          type: string
+        icon_html:
+          type: string
+        sort:
+          type: integer
+        params:
+          $ref: '#/components/schemas/statusParams'
+        count:
+          $ref: '#/components/schemas/taskCountInfo'
+    statusParams:
+      type: object
+      properties:
+        assign_user:
+          nullable: true
+          type: integer
+          description: Новый назначенный пользователь
+        button_color:
+          nullable: true
+          type: string
+          description: Цвет фона
+        title_color:
+          nullable: true
+          type: string
+          description: Цвет текста
+        allow_comment:
+          type: boolean
+          description: Разрешить комментировать
+        allow_clear_assign:
+          nullable: true
+          type: boolean
+          description: Разрешить оставить задачу без назначения
+        assign:
+          type: string
+          enum:
+            - "author"
+            - "user"
+            - "select"
+            - ""
+          description: |
+            Кому назначить таску:
+            + "author" - Назначить задачу ее постановщику
+            + "user" - Назначить выбранному пользователю
+            + "select" - Предлагать выбрать исполнителя
+            + "" - Оставить исполнителя без изменения
+    taskCountInfo:
+      type: object
+      description: Содержит информацию о количестве тасков для текущего контекста (статус, проект)
+      properties:
+        total:
+          type: integer
+          minimum: 0
+          description: Всего тасков
+        closed:
+          type: integer
+          minimum: 0
+          description: Всего закрытых тасков
+        active:
+          type: integer
+          minimum: 0
+          description: Всего открытых тасков
+        active_priority:
+          type: integer
+          minimum: 0
+          description: Всего открытых тасков с высоким приоритетом
   parameters:
     offset:
       in: query

@@ -30,24 +30,24 @@ final class tasksApiStatusParamsDto implements JsonSerializable
     private $assign;
 
     /**
-     * @param int|null $assign_user
-     * @param string|null $button_color
-     * @param string|null $title_color
-     * @param bool $allow_comment
-     * @param string|null $assign
+     * @var bool|null
      */
+    private $allow_clear_assign;
+
     public function __construct(
-        ?int $assign_user,
-        ?string $button_color,
-        ?string $title_color,
-        bool $allow_comment,
-        ?string $assign
+        ?int $assignUser,
+        ?string $buttonColor,
+        ?string $titleColor,
+        bool $allowComment,
+        ?string $assign,
+        ?bool $allowClearAssign
     ) {
-        $this->assign_user = $assign_user;
-        $this->button_color = $button_color;
-        $this->title_color = $title_color;
-        $this->allow_comment = $allow_comment;
+        $this->assign_user = $assignUser;
+        $this->button_color = $buttonColor;
+        $this->title_color = $titleColor;
+        $this->allow_comment = $allowComment;
         $this->assign = $assign;
+        $this->allow_clear_assign = $allowClearAssign;
     }
 
     public static function createFromArray(array $params): tasksApiStatusParamsDto
@@ -56,33 +56,13 @@ final class tasksApiStatusParamsDto implements JsonSerializable
             !empty($params['assign_user']) ? (int) $params['assign_user'] : null,
             !empty($params['button_color']) ? $params['button_color'] : null,
             !empty($params['title_color']) ? $params['title_color'] : null,
-            !empty($params['allow_comment']) ? filter_var($params['allow_comment'], FILTER_VALIDATE_BOOLEAN) : false,
-            !empty($params['assign']) ? $params['assign'] : null
+            isset($params['allow_comment'])
+                ? filter_var($params['allow_comment'], FILTER_VALIDATE_BOOLEAN)
+                : false,
+            !empty($params['assign']) ? $params['assign'] : null,
+            isset($params['allow_clear_assign'])
+                ? filter_var($params['allow_clear_assign'], FILTER_VALIDATE_BOOLEAN)
+                : null
         );
-    }
-
-    public function getAssignUser(): ?int
-    {
-        return $this->assign_user;
-    }
-
-    public function getButtonColor(): ?string
-    {
-        return $this->button_color;
-    }
-
-    public function getTitleColor(): ?string
-    {
-        return $this->title_color;
-    }
-
-    public function isAllowComment(): bool
-    {
-        return $this->allow_comment;
-    }
-
-    public function getAssign(): ?string
-    {
-        return $this->assign;
     }
 }

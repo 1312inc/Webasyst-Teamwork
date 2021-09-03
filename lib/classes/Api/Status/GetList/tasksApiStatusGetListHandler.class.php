@@ -7,6 +7,17 @@ final class tasksApiStatusGetListHandler
      */
     public function getStatuses(): array
     {
-        return tasksHelper::getStatuses(null, false);
+        $statusesData = tasksHelper::getStatuses(null, false);
+
+        $statusesData[tasksStatusModel::STATUS_OPEN_ID]['params'] = [
+            'button_color' => '#22d13d',
+            'title_color' => '#ffffff',
+        ];
+        $statusesData[tasksStatusModel::STATUS_CLOSED_ID]['params'] = [
+            'button_color' => '#888888',
+            'title_color' => '#ffffff',
+        ];
+
+        return $statusesData;
     }
 }
