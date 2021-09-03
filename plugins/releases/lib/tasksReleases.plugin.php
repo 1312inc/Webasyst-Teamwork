@@ -10,6 +10,14 @@ class tasksReleasesPlugin extends waPlugin
         );
     }
 
+    public function backendSidebar()
+    {
+        $component = new tasksReleasesPluginSidebarComponent();
+        return array(
+            'section' => $component->getSidebarItem()
+        );
+    }
+
     public function backendTaskEdit($params)
     {
         $component = new tasksReleasesPluginTaskComponent($params['task']);
@@ -99,8 +107,8 @@ class tasksReleasesPlugin extends waPlugin
         wa()->getResponse()->addJs('plugins/releases/js/milestoneEdit.js?v=' . $version, 'tasks');
         wa()->getResponse()->addJs('plugins/releases/js/tasksScopeStats.js?v=' . $version, 'tasks');
         wa()->getResponse()->addJs('plugins/releases/js/taskKanbanSettings.js?v=' . $version, 'tasks');
+        wa()->getResponse()->addJs('plugins/releases/js/chart.min.js?v=' . $version, 'tasks');
         wa()->getResponse()->addCss('plugins/releases/css/style.css?v=' . $version, 'tasks');
-        wa()->getResponse()->addJs('https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.1/chart.min.js?v=' . $version);
     }
 
     public function tasksCollectionSearch($params)

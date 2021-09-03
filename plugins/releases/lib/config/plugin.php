@@ -18,6 +18,7 @@ return array(
         'tasks_collection_search'  => 'tasksCollectionSearch',
         'backend_milestone_edit'   => 'backendMilestoneEdit',
         'backend_settings_sidebar' => 'backendSettingsSidebar',
+        'backend_sidebar'          => 'backendSidebar',
         'show_status_form'         => 'showStatusForm',
         'save_status_form'         => 'saveStatusForm',
         'kanban_status_tasks'      => 'kanbanStatusTasks',

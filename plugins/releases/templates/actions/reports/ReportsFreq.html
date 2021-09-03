@@ -94,21 +94,10 @@
         </div>
     </header>
 
-    <div class="article">
-        <div class="article-body">
-        <div>
-            <h1>Частотная диаграмма времени выполнения задач</h1>
-
-            {* !!! TODO *}
-
-            <pre>$start_date = {$start_date|wa_dump_helper}
-$end_date = {$end_date|wa_dump_helper}
-$filters = {$filters|wa_dump_helper}
-            </pre>
-
-            <pre>// Количество дней => список task_ids
-$chart_data = ({$chart_data|count}) {$chart_data|wa_dump_helper}
-            </pre>
+    <div class="freq-chart-wrapper">
+        <h1 class="align-center">Частотная диаграмма времени выполнения задач</h1>
+        <div class="freq-chart-canvas" style="position: relative; margin: 0 auto; height:80vh; width:80vw">
+            <canvas id="freq-chart"></canvas>
         </div>
     </div>
 
@@ -119,6 +108,63 @@ $chart_data = ({$chart_data|count}) {$chart_data|wa_dump_helper}
     var $main_menu = $('.t-header-wrapper');
     var list_hash = $.tasks.cleanHash(window.location.hash) || '#/freq/';
     var list_params = list_hash.substr(7).split('/')[0];
+
+    var freq_canvas = document.getElementById('freq-chart').getContext('2d');
+
+    var count_tasks = [],
+        time_labels = [],
+        tasks_by_time = {$chart_data|json_encode};
+
+    $.each(tasks_by_time, function (index, value) {
+        count_tasks.push(value.length);
+        time_labels.push(index);
+    });
+
+    var freq_data = {
+        labels: time_labels,
+        datasets: [{
+            label: 'Количество задач',
+            data: count_tasks,
+            backgroundColor: 'rgb(153, 102, 255)',
+        }],
+    };
+
+    var freq_chart = new Chart(freq_canvas, {
+        type: 'bar',
+        data: freq_data,
+        options: {
+            responsive: true,
+            plugins: {
+                tooltip: {
+                    mode: 'index'
+                },
+            },
+            interaction: {
+                axis: 'x',
+                intersect: false
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Время производства (календарных дней от обязательства до поставки)'
+                    }
+                },
+                y: {
+                    stacked: true,
+                    title: {
+                        display: true,
+                        text: 'Количество элементов с указанным временем производства'
+                    }
+                }
+            },
+            elements: {
+                bar: {
+                    borderWidth: 0,
+                },
+            }
+        }
+    });
 
     TasksReleasesPlugin.initReportsTimeframeSelector($('#timeframe'), '#/freq/');
 
