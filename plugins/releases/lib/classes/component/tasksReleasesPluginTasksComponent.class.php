@@ -86,4 +86,9 @@ class tasksReleasesPluginTasksComponent extends tasksReleasesPluginComponent
 
         return $blocks;
     }
+
+    public function getButtonsScript()
+    {
+        return $this->render("tasks/TaskButtonsScript.html");
+    }
 }
