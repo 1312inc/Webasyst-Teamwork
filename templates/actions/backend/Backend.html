@@ -10,7 +10,7 @@
 
     {strip}{$priorities = []}
     {foreach $wa->tasks->config('priorities') as $priority}
-        {$priorities[$priority.value] = $priority.name|escape}
+        {$priorities[$priority.value] = _w($priority.name)|escape}
     {/foreach}{/strip}
     <script src="{$wa_app_static_url}js/tasks.js?v{$wa->version()}"></script>
     <script>window.TasksController.initBeforeJQuery({
@@ -48,7 +48,8 @@
     <script>
         $R.options = {
             lang: '{$loc[0]}',
-            buttons: ['bold', 'italic', 'ol', 'ul', 'link', 'image'],
+            buttons: ['format', 'bold', 'italic', 'ol', 'ul', 'link', 'image'],
+            formatting: ['p', 'h3', 'h4', 'h5'],
             source: false,
             minHeight: '200px',
             plugins: ['mdeditor', 'watags', 'imgupload'],

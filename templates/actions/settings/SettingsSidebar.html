@@ -12,12 +12,15 @@
             </span>
             [`Task statuses`]
         </a>
-
-        <!-- plugin hook: 'backend_settings_sidebar.top_li' -->
-        {* @event backend_settings_sidebar.%plugin_id%.top_li *}
-        {foreach $_backend_sidebar as $_}{ifset($_.top_li)}{/foreach}
-
     </div>
+
+    <!-- plugin hook: 'backend_settings_sidebar.top_li' -->
+    {* @event backend_settings_sidebar.%plugin_id%.top_li *}
+    {if !empty($_backend_sidebar) && count($_backend_sidebar) > 0}
+        <ul class="menu">
+            {foreach $_backend_sidebar as $_}{ifset($_.top_li)}{/foreach}
+        </ul>
+    {/if}
 
     <!-- SCOPES -->
     <h5 class="heading black">

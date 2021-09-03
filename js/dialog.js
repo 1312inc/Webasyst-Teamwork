@@ -108,15 +108,15 @@ var Dialog = ( function($) { "use strict";
             easing = "linear";
 
         // Detect $task
-        var $task = (that.task && that.task.$task && that.task.$task.length) ? that.task.$task : false,
-            top = ($task) ? $task.offset().top : $("#content .t-main-wrapper").offset().top;
+        var $task = (that.task && that.task.$task && that.task.$task.length) ? that.task.$task : false;
+            // top = ($task) ? $task.offset().top : $("#content .t-main-wrapper").offset().top;
 
         // hidden load
         $content
             .html(that.html)
             .css({
                 visibility: "hidden",
-                top: top
+                // top: top
             });
 
         // show class

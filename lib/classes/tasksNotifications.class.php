@@ -114,7 +114,7 @@ class tasksNotifications
 
         switch ($event) {
             case 'new':
-                $subject = sprintf( '✅ ' . _w('NEW: %s %s'), $task['project_id'].'.'.$task['number'], $task['name']);
+                $subject = sprintf( _w('NEW: %s %s'), $task['project_id'].'.'.$task['number'], $task['name']);
                 break;
             case 'assign':
                 $subject = sprintf( '➡️ ' . _w('ASSIGNED: %s %s'), $task['project_id'].'.'.$task['number'], $task['name']);
