@@ -84,6 +84,41 @@ paths:
           description: Запрещено
         500:
           description: Все плохо
+  /tasks.tasks.delete:
+    post:
+      tags:
+        - Таски
+      summary: 'Удаляет 1 или несколько тасков'
+      security:
+        - ApiKeyAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: integer
+                    minItems: 1
+      responses:
+        200:
+          description: Список id тасков, которые успешно удалили
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ids:
+                    type: array
+                    items:
+                      type: integer
+                      minItems: 1
+        403:
+          description: Запрещено
+        500:
+          description: Все плохо
   /tasks.statuses.getList:
     get:
       tags:
