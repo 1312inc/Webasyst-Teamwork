@@ -48,6 +48,8 @@ class tasksReleasesPlugin extends waPlugin
         $component = new tasksReleasesPluginFiltersComponent();
         $result['header']['filters'] = $component->getFilterBlocks();
         $result['body']['top'] = $this->getScopeStats($params);
+        $tasks_component = new tasksReleasesPluginTasksComponent();
+        $result['body']['bottom'] = $tasks_component->getButtonsScript();
         return $result;
     }
 
