@@ -24,8 +24,6 @@ class tasksReleasesPluginReportsFreqAction extends tasksLogAction
             'start_date' => $start_date,
             'end_date' => $end_date,
             'chart_data' => $chart_data,
-            'start_date' => $start_date,
-            'end_date' => $end_date,
             'group_by' => $group_by,
         ));
     }
