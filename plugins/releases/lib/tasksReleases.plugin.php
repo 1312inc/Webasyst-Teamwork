@@ -66,6 +66,9 @@ class tasksReleasesPlugin extends waPlugin
         foreach ($component->getTypeHtml() as $task_id => $html) {
             $result[$task_id]['header'] = $html;
         }
+        if (count($tasks) === 1) {
+            $result[$task_id]['after_buttons'] = $component->getButtonsScript();
+        }
         return $result;
     }
 

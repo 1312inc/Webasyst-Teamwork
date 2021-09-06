@@ -5,12 +5,12 @@
     e.preventDefault();
     var $that = $(this);
 
-    $.post($in_bugs_button.attr('href'), { task_id: $in_bugs_button.data('task-id') })
-            .done(function (r) {
-              $that.hide();
-            })
-            .error(function (r) {
-              console.log(r);
-            });
+    $.post($that.attr('href'), { task_id: $that.data('task-id') })
+        .done(function (r) {
+          $that.hide();
+        })
+        .error(function (r) {
+          console.log(r);
+        });
   });
 </script>
