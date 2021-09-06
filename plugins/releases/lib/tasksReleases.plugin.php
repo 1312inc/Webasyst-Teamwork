@@ -268,7 +268,7 @@ class tasksReleasesPlugin extends waPlugin
         })(jQuery);
     </script>
 </span>
-<div class="days-points flexbox space-8 custom-p-4 $red_class" title="Количество дней после изменения статуса: $days_difference">
+<div class="days-points flexbox space-8 custom-p-4 $red_class" title="Количество дней в этом статусе: $days_difference">
     $points
 </div>
 HTML;
