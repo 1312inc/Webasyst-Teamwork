@@ -294,7 +294,7 @@ HTML;
             $script = <<<SCRIPT
 <script>
     (function () {
-        var kanban_task_settings = new KanbanTaskSettings($limits);
+        var kanban_task_settings = new KanbanTaskSettings($limits, $milestone_id);
         kanban_task_settings.init();
     })(jQuery);
 </script>
