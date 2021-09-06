@@ -4,7 +4,7 @@ class tasksReleasesPluginKanbanLimitSaveController extends waJsonController
 {
     public function execute()
     {
-        $milestone_id = waRequest::get('milestone_id', null, waRequest::TYPE_INT);
+        $milestone_id = waRequest::post('milestone_id', null, waRequest::TYPE_INT);
         $status_id = waRequest::post('status_id', null, waRequest::TYPE_INT);
         $limit = waRequest::post('limit', null, waRequest::TYPE_INT);
 

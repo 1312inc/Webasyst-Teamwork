@@ -31,8 +31,9 @@ KanbanTaskSettingHideNewAndCompleted.prototype.init = function () {
     hideNewAndCompletedTasks();
 };
 
-function KanbanTaskSettings(limits) {
+function KanbanTaskSettings(limits, milestone_id) {
     this.limits = limits;
+    this.milestone_id = milestone_id;
 }
 
 KanbanTaskSettings.prototype.init = function () {
@@ -40,7 +41,8 @@ KanbanTaskSettings.prototype.init = function () {
             '<span class="js-maximum-tasks-number">&infin;</span>\n' +
             '<input type="text" class="smallest js-maximum-tasks-input" style="display: none">\n' +
         '</span>',
-        limits = this.limits;
+        limits = this.limits,
+        milestone_id = this.milestone_id;
 
     $('.t-kanban__list').each(function (indx, el) {
         var $kanban_list = $(el),
@@ -70,7 +72,7 @@ KanbanTaskSettings.prototype.init = function () {
                 url = '?plugin=releases&module=kanban&action=limitSave',
                 status_id = $('div[data-kanban-list-status-id="' + $that.data('status-id') + '"]').data('kanban-list-status-id');
 
-            $.post(url, { status_id: status_id, limit: $that.val() })
+            $.post(url, { status_id: status_id, limit: $that.val(), milestone_id: milestone_id })
                 .done(function (r) {
                     $that.siblings('.js-maximum-tasks-number').html($that.val()).show();
                     var $kanban_list = $that.parents('.t-kanban__list');
