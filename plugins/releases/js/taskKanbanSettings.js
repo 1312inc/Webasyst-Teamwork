@@ -39,7 +39,7 @@ function KanbanTaskSettings(limits, milestone_id) {
 KanbanTaskSettings.prototype.init = function () {
     var $html_template = '<span class="js-maximum-tasks-wrapper gray bold" style="display: none"> / \n' +
             '<span class="js-maximum-tasks-number">&infin;</span>\n' +
-            '<input type="text" class="smallest js-maximum-tasks-input" style="display: none">\n' +
+            '<input type="text" class="smallest js-maximum-tasks-input" style="display: none; width: 60px;">\n' +
         '</span>',
         limits = this.limits,
         milestone_id = this.milestone_id;
@@ -51,14 +51,14 @@ KanbanTaskSettings.prototype.init = function () {
             $new_block = $count_list.after($html_template).siblings('.js-maximum-tasks-wrapper');
 
         $new_block.find('.js-maximum-tasks-input').attr('name', 'task_limit[' + status_id + ']').data('status-id', status_id);
+        $new_block.show();
 
         if (status_id in limits) {
             $new_block.find('.js-maximum-tasks-number').html(limits[status_id]['limit']);
-            if ($count_list.html() > limits[status_id]['limit']) {
+            if (Number($count_list.html()) > Number(limits[status_id]['limit'])) {
                 $kanban_list.css('background-color', '#fcc');
             }
         }
-        $new_block.show();
     });
 
     $('.js-maximum-tasks-number').dblclick(function () {
@@ -76,9 +76,10 @@ KanbanTaskSettings.prototype.init = function () {
                 .done(function (r) {
                     $that.siblings('.js-maximum-tasks-number').html($that.val()).show();
                     var $kanban_list = $that.parents('.t-kanban__list');
-
-                    if ($kanban_list.find('.t-kanban__list__count').html() > $that.val()) {
+                    if (Number($kanban_list.find('.t-kanban__list__count').html()) > Number($that.val())) {
                         $kanban_list.css('background-color', '#fcc');
+                    } else {
+                        $kanban_list.css('background-color', '');
                     }
                     $that.hide();
                 })
