@@ -190,8 +190,7 @@
                 $.get(url, task_ids)
                     .done(function (html) {
                         $('#content').html(html);
-                        $('#t-menu-dropdown-order').hide();
-                        $('#t-filters-toggle').hide();
+                        $('#t-menu-dropdown-order, #t-filters-toggle').hide();
                     })
                     .error(function (r) {
                         console.log(r);
