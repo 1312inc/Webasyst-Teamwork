@@ -171,9 +171,36 @@
                 bar: {
                     borderWidth: 0,
                 },
-            }
+            },
+            onClick: handleClick
         }
     });
+
+    function handleClick(evt)
+    {
+        var activeElement = freq_chart.getElementsAtEventForMode(evt, 'nearest', { intersect: true }, true);
+
+        if (activeElement.length) {
+            var element_index = activeElement[0].index;
+            if (element_index in tasks_by_time) {
+                var url = '?module=tasks',
+                    task_ids = {
+                        hash: 'id/' + tasks_by_time[element_index].join(',')
+                    }
+                $.get(url, task_ids)
+                    .done(function (html) {
+                        $('#content').html(html);
+                        $('#t-menu-dropdown-order').hide();
+                        $('#t-filters-toggle').hide();
+                    })
+                    .error(function (r) {
+                        console.log(r);
+                    });
+            } else {
+                console.log('Element not found');
+            }
+        }
+    }
 
     TasksReleasesPlugin.initReportsTimeframeSelector($('#timeframe'), '#/freq/');
 
