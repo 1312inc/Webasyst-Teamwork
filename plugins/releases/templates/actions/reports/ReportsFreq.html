@@ -113,11 +113,19 @@
 
     var count_tasks = [],
         time_labels = [],
+        last_index = 0,
         tasks_by_time = {$chart_data|json_encode};
 
     $.each(tasks_by_time, function (index, value) {
+        if (Number(index) - last_index > 1) {
+            for (var i = last_index + 1; i < Number(index); i++) {
+                count_tasks.push(0);
+                time_labels.push(i);
+            }
+        }
         count_tasks.push(value.length);
         time_labels.push(index);
+        last_index = Number(index);
     });
 
     var freq_data = {
@@ -155,7 +163,8 @@
                     title: {
                         display: true,
                         text: 'Количество элементов с указанным временем производства'
-                    }
+                    },
+                    suggestedMax: 5
                 }
             },
             elements: {
