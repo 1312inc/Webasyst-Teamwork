@@ -137,6 +137,24 @@ paths:
           description: Запрещено
         500:
           description: Все плохо
+  /tasks.counts.forHash:
+    get:
+      tags:
+        - Счетчики
+      summary: 'Возвращает список счетчиков для текущего пользователя по разным критериям'
+      security:
+        - ApiKeyAuth: [ ]
+      responses:
+        200:
+          description: Список счетчиков
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getCountsHashListResponse'
+        403:
+          description: Запрещено
+        500:
+          description: Все плохо
 components:
   securitySchemes:
     ApiKeyAuth:
@@ -166,6 +184,15 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/statusInfo'
+
+    getCountsHashListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/countHashInfo'
+
     taskInfo:
       type: object
       properties:
@@ -325,19 +352,37 @@ components:
         total:
           type: integer
           minimum: 0
-          description: Всего тасков
+          description: Всего тасков (null - нет информации)
+          nullable: true
         closed:
           type: integer
           minimum: 0
-          description: Всего закрытых тасков
+          description: Всего закрытых тасков (null - нет информации)
+          nullable: true
         active:
           type: integer
           minimum: 0
-          description: Всего открытых тасков
+          description: Всего открытых тасков (null - нет информации)
+          nullable: true
         active_priority:
           type: integer
           minimum: 0
-          description: Всего открытых тасков с высоким приоритетом
+          description: Всего открытых тасков с высоким приоритетом (null - нет информации)
+          nullable: true
+    countHashInfo:
+      type: object
+      description: Содержит информацию о количестве тасков для различных критериев
+      properties:
+        hash:
+          type: string
+          enum:
+            - inbox
+            - outbox
+            - favorites
+            - urgent
+          description: Хеш критерия
+        counts:
+          $ref: '#/components/schemas/taskCountInfo'
   parameters:
     offset:
       in: query

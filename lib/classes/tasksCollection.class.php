@@ -15,6 +15,7 @@ class tasksCollection
     public const HASH_UUID = 'uuid';
     public const HASH_PROJECT = 'project';
     public const HASH_SCOPE = 'scope';
+    public const HASH_URGENT = 'urgent';
 
     public const ORDER_NEWEST = 'newest';
     public const ORDER_OLDEST = 'oldest';
