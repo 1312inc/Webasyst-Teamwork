@@ -117,15 +117,16 @@
         tasks_by_time = {$chart_data|json_encode};
 
     $.each(tasks_by_time, function (index, value) {
-        if (Number(index) - last_index > 1) {
-            for (var i = last_index + 1; i < Number(index); i++) {
+        var day_index = Number(index) + 1;
+        if (day_index - last_index > 1) {
+            for (var i = last_index + 1; i < day_index; i++) {
                 count_tasks.push(0);
                 time_labels.push(i);
             }
         }
         count_tasks.push(value.length);
-        time_labels.push(index);
-        last_index = Number(index);
+        time_labels.push(day_index);
+        last_index = day_index;
     });
 
     var freq_data = {
@@ -191,6 +192,7 @@
                     .done(function (html) {
                         $('#content').html(html);
                         $('#t-menu-dropdown-order, #t-filters-toggle').hide();
+                        $(window).trigger($.Event('wa_loaded'));
                     })
                     .error(function (r) {
                         console.log(r);
