@@ -155,6 +155,40 @@ paths:
           description: Запрещено
         500:
           description: Все плохо
+  /tasks.team.getTopAssignees:
+    get:
+      tags:
+        - Команда
+      summary: 'Возвращает список людей в тасках по разным критериям'
+      security:
+        - ApiKeyAuth: [ ]
+      parameters:
+        - in: query
+          name: project_id
+          required: true
+          description: Для конкретного проекта
+          schema:
+            type: integer
+            nullable: true
+            example: 1
+        - in: query
+          name: status_id
+          description: Для конкретного статуса
+          schema:
+            type: integer
+            nullable: true
+            example: -1
+      responses:
+        200:
+          description: Список людей
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getTeamGetTopAssigneesResponse'
+        403:
+          description: Запрещено
+        500:
+          description: Все плохо
 components:
   securitySchemes:
     ApiKeyAuth:
@@ -192,6 +226,14 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/countHashInfo'
+
+    getTeamGetTopAssigneesResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/contactInfo'
 
     taskInfo:
       type: object
@@ -282,6 +324,12 @@ components:
           type: integer
         name:
           type: string
+        photoUrl:
+          type: string
+          description: Абсолютная ссылка на аватар
+        isMe:
+          type: boolean
+          description: Флаг, является ли пользователь текущим
     statusInfo:
       type: object
       properties:
@@ -389,14 +437,15 @@ components:
       name: offset
       required: true
       schema:
-        type: number
+        type: integer
+        default: 0
         minimum: 0
     limit:
       in: query
-      name: offset
+      name: limit
       description: максимальное в ответе. не может быть более 500.
       schema:
-        type: number
+        type: integer
         nullable: true
         minimum: 0
         default: 30
