@@ -21,6 +21,7 @@ class tasksGitMethod extends waAPIMethod
         }
 
         if (waSystemConfig::isDebug()) {
+            waLog::dump(waRequest::server(), 'tasks.git.log');
             waLog::dump($input, 'tasks.git.log');
             waLog::dump($this->data, 'tasks.git.log');
             waLog::dump($_REQUEST, 'tasks.git.log');
