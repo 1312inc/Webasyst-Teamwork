@@ -15,7 +15,7 @@ class tasksMilestonesArchiveMethod extends tasksApiAbstractMethod
     {
         $request = new tasksApiMilestoneArchiveRequest(
             (int) $this->post('id', true),
-            (bool) $this->post('archive')
+            $this->post('archive', true, self::CAST_BOOLEAN)
         );
 
         (new tasksApiMilestoneArchiveHandler())->archive($request);

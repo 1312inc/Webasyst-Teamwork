@@ -71,31 +71,31 @@ class tasksApiLogDto implements JsonSerializable
 
     public function __construct(
         int $id,
-        ?int $project_id,
-        int $task_id,
+        ?int $projectId,
+        int $taskId,
         tasksApiContactDto $contact,
         string $text,
-        string $create_datetime,
-        ?int $before_status_id,
-        ?int $after_status_id,
+        string $createDatetime,
+        ?int $beforeStatusId,
+        ?int $afterStatusId,
         string $action,
-        ?tasksApiContactDto $assigned_contact,
-        ?bool $status_changed,
-        ?bool $assignment_changed,
+        ?tasksApiContactDto $assignedContact,
+        ?bool $statusChanged,
+        ?bool $assignmentChanged,
         array $attachments
     ) {
         $this->id = $id;
-        $this->project_id = $project_id;
-        $this->task_id = $task_id;
+        $this->project_id = $projectId;
+        $this->task_id = $taskId;
         $this->contact = $contact;
         $this->text = $text;
-        $this->create_datetime = $create_datetime;
-        $this->before_status_id = $before_status_id;
-        $this->after_status_id = $after_status_id;
+        $this->create_datetime = $createDatetime;
+        $this->before_status_id = $beforeStatusId;
+        $this->after_status_id = $afterStatusId;
         $this->action = $action;
-        $this->assigned_contact = $assigned_contact;
-        $this->status_changed = $status_changed;
-        $this->assignment_changed = $assignment_changed;
+        $this->assigned_contact = $assignedContact;
+        $this->status_changed = $statusChanged;
+        $this->assignment_changed = $assignmentChanged;
         $this->attachments = $attachments;
     }
 }

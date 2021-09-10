@@ -19,13 +19,6 @@ final class tasksApiTagDto implements JsonSerializable
      */
     private $favorite;
 
-    /**
-     * tasksApiTagDto constructor.
-     *
-     * @param int    $id
-     * @param string $name
-     * @param bool   $favorite
-     */
     public function __construct(int $id, string $name, ?bool $favorite)
     {
         $this->id = $id;

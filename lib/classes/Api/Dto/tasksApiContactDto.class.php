@@ -17,19 +17,19 @@ final class tasksApiContactDto implements JsonSerializable
     /**
      * @var string|null
      */
-    private $photoUrl;
+    private $photo_url;
 
     /**
      * @var bool
      */
-    private $isMe;
+    private $is_me;
 
     public function __construct(int $id, string $name, ?string $photoUrl, bool $isMe = false)
     {
         $this->id = $id;
         $this->name = $name;
-        $this->photoUrl = $photoUrl;
-        $this->isMe = $isMe;
+        $this->photo_url = $photoUrl;
+        $this->is_me = $isMe;
     }
 
     public function getId(): int
@@ -44,11 +44,11 @@ final class tasksApiContactDto implements JsonSerializable
 
     public function getPhotoUrl(): ?string
     {
-        return $this->photoUrl;
+        return $this->photo_url;
     }
 
     public function isMe(): bool
     {
-        return $this->isMe;
+        return $this->is_me;
     }
 }

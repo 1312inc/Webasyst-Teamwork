@@ -52,21 +52,21 @@ final class tasksApiProjectDto implements JsonSerializable
     public function __construct(
         int $id,
         string $name,
-        int $contact_id,
-        DateTimeImmutable $create_datetime,
+        int $contactId,
+        DateTimeImmutable $createDatetime,
         string $icon,
         string $color,
-        ?DateTimeImmutable $archive_datetime,
+        ?DateTimeImmutable $archiveDatetime,
         int $sort,
         tasksApiCountsDto $counts
     ) {
         $this->id = $id;
         $this->name = $name;
-        $this->contact = tasksApiContactDtoFactory::fromContactId($contact_id);
-        $this->create_datetime = $create_datetime->format('Y-m-d H:i:s');
+        $this->contact = tasksApiContactDtoFactory::fromContactId($contactId);
+        $this->create_datetime = $createDatetime->format('Y-m-d H:i:s');
         $this->icon = $icon;
         $this->color = $color;
-        $this->archive_datetime = $archive_datetime ? $archive_datetime->format('Y-m-d H:i:s') : null;
+        $this->archive_datetime = $archiveDatetime ? $archiveDatetime->format('Y-m-d H:i:s') : null;
         $this->sort = $sort;
         $this->counts = $counts;
     }

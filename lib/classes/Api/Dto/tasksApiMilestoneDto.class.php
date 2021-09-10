@@ -51,9 +51,9 @@ final class tasksApiMilestoneDto implements JsonSerializable
     public function __construct(
         int $id,
         string $name,
-        int $project_id,
+        int $projectId,
         string $description,
-        ?string $due_date,
+        ?string $dueDate,
         bool $closed,
         ?int $daysLeft,
         ?string $text,
@@ -62,9 +62,9 @@ final class tasksApiMilestoneDto implements JsonSerializable
     ) {
         $this->id = $id;
         $this->name = $name;
-        $this->project_id = $project_id;
+        $this->project_id = $projectId;
         $this->description = $description;
-        $this->due_date = $due_date;
+        $this->due_date = $dueDate;
         $this->closed = $closed;
 
         if ($this->due_date) {

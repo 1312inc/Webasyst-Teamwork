@@ -22,11 +22,11 @@ class tasksProjectsAddMethod extends tasksApiAbstractMethod
         $workflow = array_flip($workflow);
 
         $request = new tasksApiProjectAddRequest(
-            $this->post('name', true),
-            $this->post('icon'),
-            $this->post('color'),
-            $this->post('icon_url'),
-            $this->post('sort') ?: 0,
+            $this->post('name', true, self::CAST_STRING_TRIM),
+            $this->post('icon', false, self::CAST_STRING_TRIM),
+            $this->post('color', false, self::CAST_STRING_TRIM),
+            $this->post('icon_url', false, self::CAST_STRING_TRIM),
+            (int) $this->post('sort', false, self::CAST_INT),
             $workflow
         );
 
