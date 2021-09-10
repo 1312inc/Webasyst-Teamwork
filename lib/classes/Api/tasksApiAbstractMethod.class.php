@@ -223,10 +223,7 @@ abstract class tasksApiAbstractMethod extends waAPIMethod
         return $var;
     }
 
-    /**
-     * @return tasksApiResponseInterface
-     */
-    public function __invoke()
+    public function __invoke(): tasksApiResponseInterface
     {
         return $this->run();
     }
