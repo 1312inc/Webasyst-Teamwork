@@ -156,7 +156,7 @@ class tasksGitMethod extends waAPIMethod
             'params' => [
                 'git.id' => $commit['id'] ?? null,
                 'git.branch' => $this->data['branch'] ?? '_NO_BRANCH_',
-                'git.homepage' => $this->data['repository']['homepage'] ?? '_NO_REPOSITORY_HOMEPAGE_',
+                'git.homepage' => $this->data['repository']['homepage'] ?? ($this->data['repository']['url'] ?? '_NO_REPOSITORY_HOMEPAGE_'),
             ],
         ];
     }
