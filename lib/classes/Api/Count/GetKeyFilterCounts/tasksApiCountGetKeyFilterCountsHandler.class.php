@@ -1,6 +1,6 @@
 <?php
 
-final class tasksApiCountForHashHandler
+final class tasksApiCountGetKeyFilterCountsHandler
 {
     /**
      * @var tasksUserTasksCounterService

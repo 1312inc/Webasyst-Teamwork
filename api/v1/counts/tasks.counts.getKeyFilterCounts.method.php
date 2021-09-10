@@ -1,10 +1,10 @@
 <?php
 
-class tasksCountsForHashMethod extends tasksApiAbstractMethod
+class tasksCountsGetKeyFilterCountsMethod extends tasksApiAbstractMethod
 {
     public function run(): tasksApiResponseInterface
     {
-        $countData = (new tasksApiCountForHashHandler())->get();
+        $countData = (new tasksApiCountGetKeyFilterCountsHandler())->get();
 
         $response = [];
         /**

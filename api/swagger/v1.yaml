@@ -137,7 +137,7 @@ paths:
           description: Запрещено
         500:
           description: Все плохо
-  /tasks.counts.forHash:
+  /tasks.counts.getKeyFilterCounts:
     get:
       tags:
         - Счетчики
@@ -150,7 +150,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/getCountsHashListResponse'
+                $ref: '#/components/schemas/getKeyFilterCountsResponse'
         403:
           description: Запрещено
         500:
@@ -219,7 +219,7 @@ components:
           items:
             $ref: '#/components/schemas/statusInfo'
 
-    getCountsHashListResponse:
+    getKeyFilterCountsResponse:
       type: object
       properties:
         data:
