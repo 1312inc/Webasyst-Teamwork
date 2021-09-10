@@ -14,12 +14,17 @@ class tasksGitMethod extends waAPIMethod
          */
         $input = file_get_contents("php://input");
 
-        if (waSystemConfig::isDebug()) {
-            waLog::dump($input, 'tasks.git.log');
-            waLog::dump($_REQUEST, 'tasks.git.log');
+        $this->data = json_decode($input, true);
+
+        if (waRequest::server('GitHub-Event') === 'push') {
+            $this->data['object_kind'] = 'push';
         }
 
-        $this->data = json_decode($input, true);
+        if (waSystemConfig::isDebug()) {
+            waLog::dump($input, 'tasks.git.log');
+            waLog::dump($this->data, 'tasks.git.log');
+            waLog::dump($_REQUEST, 'tasks.git.log');
+        }
     }
 
     public function execute()
