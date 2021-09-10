@@ -2,11 +2,11 @@
 
 class tasksGitPlugin extends waPlugin
 {
-    protected $plugin_id = array('tasks', 'git');
+    protected $plugin_id = ['tasks', 'git'];
 
     public function tasksLog(&$logs_by_task)
     {
-        foreach($logs_by_task as $id => &$log) {
+        foreach ($logs_by_task as $id => &$log) {
             $this->taskLog($log);
         }
         unset($log);
@@ -40,7 +40,7 @@ MARKDOWN;
         if ($product['type'] == 'APP') {
             $formatted_slug = $product['app_id'];
         } elseif ($product['type'] == 'PLUGIN') {
-            $app_id = str_replace('wa-plugins/','',$product['app_id']);
+            $app_id = str_replace('wa-plugins/', '', $product['app_id']);
             $formatted_slug = "{$app_id}/plugin/{$product['ext_id']}";
         } elseif ($product['type'] == 'THEME') {
             $formatted_slug = "{$product['app_id']}/theme/{$product['ext_id']}";
@@ -71,12 +71,13 @@ MARKDOWN;
         if ($is_framework) {
             $store_url = 'https://www.webasyst.ru/platform/updates/';
         } elseif (!empty($product['license']) && $product['license'] !== 'HIDDEN') {
-            $store_url = bazaHelper::getStoreUrl($product, false, 'ru_RU').'changelog/';
+            $store_url = bazaHelper::getStoreUrl($product, false, 'ru_RU') . 'changelog/';
         }
 
         $baza_url = null;
         if (!empty($product['id'])) {
-            $baza_url = wa()->getRootUrl(true) . wa()->getConfig()->getBackendUrl()."/baza/#/developer/product/{$product['id']}/";
+            $baza_url = wa()->getRootUrl(true) . wa()->getConfig()->getBackendUrl(
+                ) . "/baza/#/developer/product/{$product['id']}/";
         }
 
         $this->formatProductSlug($product);
@@ -97,14 +98,14 @@ MARKDOWN;
 
         $template_path = wa('tasks')->getAppPath('plugins/git/templates/messages/telegram-release.html');
 
-        $params = array(
+        $params = [
             'template_path' => $template_path,
-            'product'       => $product,
-            'vars'          => array(
-                'baza_url'  => $baza_url,
+            'product' => $product,
+            'vars' => [
+                'baza_url' => $baza_url,
                 'store_url' => $store_url,
-            ),
-        );
+            ],
+        ];
         foreach ($telegram_release_chat_ids as $release_chat_id) {
             if (empty($release_chat_id)) {
                 continue;
@@ -138,7 +139,8 @@ MARKDOWN;
 
         $baza_changelog_url = null;
         if (!empty($product['id'])) {
-            $baza_changelog_url = wa()->getRootUrl(true) . wa()->getConfig()->getBackendUrl()."/baza/#/developer/product/{$product['id']}/changelog/";
+            $baza_changelog_url = wa()->getRootUrl(true) . wa()->getConfig()->getBackendUrl(
+                ) . "/baza/#/developer/product/{$product['id']}/changelog/";
         }
 
         $telegram_archives_chat_ids = wa()->getSetting('telegram_archives_chat_id', null, $this->plugin_id);
@@ -146,13 +148,13 @@ MARKDOWN;
 
         $template_path = wa('tasks')->getAppPath('plugins/git/templates/messages/telegram-archive.html');
 
-        $params = array(
+        $params = [
             'template_path' => $template_path,
-            'product'       => $product,
-            'vars'          => array(
+            'product' => $product,
+            'vars' => [
                 'baza_changelog_url' => $baza_changelog_url,
-            ),
-        );
+            ],
+        ];
 
         foreach ($telegram_archives_chat_ids as $archive_chat_id) {
             if (empty($archive_chat_id)) {
@@ -166,10 +168,6 @@ MARKDOWN;
     protected function sendMessage($params)
     {
         if (empty($params['product']) || !wa()->appExists('updates')) {
-            return null;
-        }
-
-        if (!wa()->appExists('updates')) {
             return null;
         }
 
@@ -196,24 +194,24 @@ MARKDOWN;
             $view->assign($params['vars']);
         }
         $text = $view->fetch($params['template_path']);
-        $message_params = array(
+        $message_params = [
             'chat_id' => $params['chat_id'],
-            'text'    => $text,
-        );
+            'text' => $text,
+        ];
 
         return $telegram->sendMessage($message_params);
     }
 
     protected function getNetOptions()
     {
-        $http_proxy_options = array(
+        $http_proxy_options = [
             'proxy_host' => wa()->getSetting('http_proxy_host', '', $this->plugin_id),
             'proxy_port' => wa()->getSetting('http_proxy_port', '', $this->plugin_id),
-        );
+        ];
 
-        return array(
+        return [
             'proxy_options' => $http_proxy_options,
-            'timeout'       => 8,
-        );
+            'timeout' => 8,
+        ];
     }
 }

@@ -5,7 +5,7 @@ class tasksGitPluginSettingsAction extends waViewAction
     public function execute()
     {
         $token_model = new waApiTokensModel();
-        $token = $token_model->getToken(0, 'tasks/git', 'tasks');
+        $token = $token_model->getToken('tasks/git', wa()->getUser()->getId(), 'tasks');
 
         $root_url = wa()->getRootUrl(true, false);
 
