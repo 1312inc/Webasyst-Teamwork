@@ -32,7 +32,7 @@ class tasksApiErrorResponse implements tasksApiResponseInterface, JsonSerializab
      * @param string $error
      * @param int    $status
      */
-    public function __construct($errorMessage, $error = 'fail', $status = 400)
+    public function __construct($errorMessage, $error = tasksApiResponseInterface::RESPONSE_FAIL, $status = 400)
     {
         $this->errorMessage = $errorMessage;
         $this->error = $error;
