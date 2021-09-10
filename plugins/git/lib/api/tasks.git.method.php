@@ -16,7 +16,7 @@ class tasksGitMethod extends waAPIMethod
 
         $this->data = json_decode($input, true);
 
-        if (waRequest::server('GitHub-Event') === 'push') {
+        if (waRequest::server('HTTP_X_GITHUB_EVENT') === 'push') {
             $this->data['object_kind'] = 'push';
         }
 
