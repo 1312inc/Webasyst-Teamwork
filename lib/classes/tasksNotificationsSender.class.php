@@ -6,23 +6,23 @@ class tasksNotificationsSender
     protected $log_item;
     protected $actions;
 
-    protected $options = array(
-        'check_rights' => true
-    );
+    protected $options = [
+        'check_rights' => true,
+    ];
 
     // in sort of priority, don't change it
-    protected $available_actions = array(
+    protected $available_actions = [
         'done',
         'new',
         'assign',
         'edit',
-        'comment'
-    );
+        'comment',
+    ];
 
-    public function __construct($task, $actions = null, $options = array())
+    public function __construct($task, $actions = null, $options = [])
     {
-        $actions = is_scalar($actions) ? (array)$actions : $actions;
-        $actions = is_array($actions) ? $actions : array();
+        $actions = is_scalar($actions) ? (array) $actions : $actions;
+        $actions = is_array($actions) ? $actions : [];
         if (!$actions) {
             $actions = $this->available_actions;
         }
@@ -45,8 +45,8 @@ class tasksNotificationsSender
      *
      * Make sure that sent each contact not more than one notification
      *
-     * @see __construct
      * @throws waException
+     * @see __construct
      */
     public function send()
     {
@@ -67,8 +67,8 @@ class tasksNotificationsSender
             }
         }
 
-        $already_sent = array();
-        foreach($send_map as $action => $contact_ids) {
+        $already_sent = [];
+        foreach ($send_map as $action => $contact_ids) {
             $contact_ids = array_unique($contact_ids);
             foreach ($contact_ids as $contact_id) {
                 if (empty($already_sent[$contact_id])) {
@@ -81,8 +81,10 @@ class tasksNotificationsSender
 
     /**
      * Send notification to contact
+     *
      * @param string $type
-     * @param int $to_contact_id
+     * @param int    $to_contact_id
+     *
      * @throws waException
      */
     protected function sendOne($type, $to_contact_id)
@@ -92,17 +94,18 @@ class tasksNotificationsSender
 
     /**
      * Get map for each action to which contacts send notification
+     *
      * @return array <string> => int[]
      * @throws waException
      */
     protected function prepareSendMap()
     {
-        $settings = $this->getContactsNotificationSettings('all', array(
+        $settings = $this->getContactsNotificationSettings('all', [
             $this->task['create_contact_id'],
-            $this->task['assigned_contact_id']
-        ));
+            $this->task['assigned_contact_id'],
+        ]);
 
-        $send_map = array();
+        $send_map = [];
         foreach ($this->actions as $action) {
             $send_map[$action] = $this->getContactIdsNeedSentTo($action, $settings);
         }
@@ -112,8 +115,10 @@ class tasksNotificationsSender
 
     /**
      * Merge maps and extract unique values
+     *
      * @param $ar1
      * @param $ar2
+     *
      * @return array
      */
     protected function uniqueMerge($ar1, $ar2)
@@ -121,45 +126,55 @@ class tasksNotificationsSender
         $ar1 = array_merge($ar1, $ar2);
         $ar1 = array_unique($ar1);
         $ar1 = array_values($ar1);
+
         return $ar1;
     }
 
     /**
      * Get contact IDS to which need sent notification if this action occurred
+     *
      * @param string $action
-     * @param array $settings
+     * @param array  $settings
+     *
      * @return array
      * @throws waException
      */
-    protected function getContactIdsNeedSentTo($action, $settings) {
+    protected function getContactIdsNeedSentTo($action, $settings)
+    {
         $contact_ids = array_keys($settings);
-        $send_to = array();
+        $send_to = [];
         foreach ($contact_ids as $contact_id) {
             if (isset($settings[$contact_id]) &&
-                    $this->needSent($contact_id, $action, $settings[$contact_id])) {
+                $this->needSent($contact_id, $action, $settings[$contact_id])) {
                 $send_to[] = $contact_id;
             }
         }
+
         return array_unique($send_to);
     }
 
     /**
      * Check need sent notification to this contact
-     * @param int $contact_id
+     *
+     * @param int    $contact_id
      * @param string $action
-     * @param array $settings - sent settings for this contact
+     * @param array  $settings - sent settings for this contact
+     *
      * @return bool
      * @throws waException
      */
-    protected function needSent($contact_id, $action, $settings) {
+    protected function needSent($contact_id, $action, $settings)
+    {
         return $this->checkNeedSentByAction($action, $settings) &&
-                $this->checkNeedSentByTask($contact_id, $settings);
+            $this->checkNeedSentByTask($contact_id, $settings);
     }
 
     /**
      * Check need sent notification to this contact by exploration 'action' setting of sent settings
+     *
      * @param string $action
-     * @param array $settings - sent settings for THIS CONTACT
+     * @param array  $settings - sent settings for THIS CONTACT
+     *
      * @return bool
      */
     protected function checkNeedSentByAction($action, $settings)
@@ -170,14 +185,17 @@ class tasksNotificationsSender
         if ($settings['action'] === 'off') {
             return false;
         }
+
         // consider that new is always assignment
         return $settings['action'] === 'assign' && ($action === 'assign' || $action === 'new');
     }
 
     /**
      * Check need sent notification to this contact by exploration 'task' setting of sent settings
-     * @param int $contact_id
+     *
+     * @param int   $contact_id
      * @param array $settings
+     *
      * @return bool
      * @throws waException
      */
@@ -204,9 +222,10 @@ class tasksNotificationsSender
         }
         if (!empty($task_map['favorites'])) {
             $fm = new tasksFavoriteModel();
-            if ($fm->getByField(array(
+            if ($fm->getByField([
                 'contact_id' => $contact_id,
-                'task_id' => $this->task['id']))) {
+                'task_id' => $this->task['id'],
+            ])) {
                 return true;
             }
         }
@@ -219,6 +238,7 @@ class tasksNotificationsSender
                 }
             }
         }
+
         return false;
     }
 
@@ -229,9 +249,10 @@ class tasksNotificationsSender
      *   - 'all' means all contacts that have personal settings saved
      *
      * @param int[] $extra_contact_ids
+     *
      * @return array
      */
-    protected function getContactsNotificationSettings($contact_id = null, $extra_contact_ids = array())
+    protected function getContactsNotificationSettings($contact_id = null, $extra_contact_ids = [])
     {
         /**
          * @var $config tasksConfig
@@ -239,7 +260,7 @@ class tasksNotificationsSender
         $config = wa('tasks')->getConfig();
         $settings = $config->getPersonalSettings($contact_id);
         if (is_scalar($contact_id) && $contact_id !== 'all') {
-            $settings = array($contact_id => $settings);
+            $settings = [$contact_id => $settings];
         }
         $extra = $config->getPersonalSettings($extra_contact_ids);
         $settings = waUtils::getFieldValues($settings, 'notification', true);
@@ -250,6 +271,7 @@ class tasksNotificationsSender
         if (is_scalar($contact_id) && $contact_id !== 'all' && !$extra_contact_ids) {
             $settings = $settings[$contact_id];
         }
+
         return $settings;
     }
 }
