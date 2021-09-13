@@ -4,7 +4,7 @@
  *
  * Этот класс - модифицированная копипаста из tasksLogAction и tasksLogChartAction.
  */
-class tasksReleasesPluginReportsFreqAction extends tasksLogAction
+class tasksReleasesPluginReportsLtdcAction extends tasksLogAction
 {
     public function execute()
     {
