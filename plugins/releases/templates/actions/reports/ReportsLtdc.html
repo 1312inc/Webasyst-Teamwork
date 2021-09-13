@@ -41,7 +41,7 @@
                 {if !empty($is_filter_set)}
                     <div class="t-menu-item">
                         <span class="t-menu-name">
-                            <a href="#/freq/" class="t-remove-filters-link">
+                            <a href="#/ltdc/" class="t-remove-filters-link">
                                 <i class="far fa-times-circle" title="[`Clear filters`]"></i>
                             </a>
                         </span>
@@ -59,12 +59,6 @@
                     <input type="text" name="from" style="max-width: 120px;">
                     <span>[`to`]</span>
                     <input type="text" name="to" style="max-width: 120px;">
-                    <div class="wa-select">
-                        <select name="groupby">
-                            <option value="days">[`by day`]</option>
-                            <option value="months">[`by month`]</option>
-                        </select>
-                    </div>
                 </div>
 
                 <div class="dropdown t-menu-item" id="timeframe">
@@ -94,10 +88,11 @@
         </div>
     </header>
 
-    <div class="freq-chart-wrapper">
+    <div class="ltdc-chart-wrapper">
         <h1 class="align-center">Частотная диаграмма времени выполнения задач</h1>
-        <div class="freq-chart-canvas" style="position: relative; margin: 0 auto; height:80vh; width:80vw">
-            <canvas id="freq-chart"></canvas>
+        <div class="align-center">Всего задач - <span id="quantity-tasks"></span></div>
+        <div class="ltdc-chart-canvas" style="position: relative; margin: 0 auto; height:80vh; width:80vw">
+            <canvas id="ltdc-chart"></canvas>
         </div>
     </div>
 
@@ -106,14 +101,15 @@
 <script>(function() { "use strict";
 
     var $main_menu = $('.t-header-wrapper');
-    var list_hash = $.tasks.cleanHash(window.location.hash) || '#/freq/';
+    var list_hash = $.tasks.cleanHash(window.location.hash) || '#/ltdc/';
     var list_params = list_hash.substr(7).split('/')[0];
 
-    var freq_canvas = document.getElementById('freq-chart').getContext('2d');
+    var ltdc_canvas = document.getElementById('ltdc-chart').getContext('2d');
 
     var count_tasks = [],
         time_labels = [],
         last_index = 0,
+        quantity_tasks = 0,
         tasks_by_time = {$chart_data|json_encode};
 
     $.each(tasks_by_time, function (index, value) {
@@ -124,12 +120,15 @@
                 time_labels.push(i);
             }
         }
+        quantity_tasks += value.length;
         count_tasks.push(value.length);
         time_labels.push(day_index);
         last_index = day_index;
     });
 
-    var freq_data = {
+    $('#quantity-tasks').html(quantity_tasks);
+
+    var ltdc_data = {
         labels: time_labels,
         datasets: [{
             label: 'Количество задач',
@@ -138,9 +137,9 @@
         }],
     };
 
-    var freq_chart = new Chart(freq_canvas, {
+    var ltdc_chart = new Chart(ltdc_canvas, {
         type: 'bar',
-        data: freq_data,
+        data: ltdc_data,
         options: {
             responsive: true,
             plugins: {
@@ -179,38 +178,27 @@
 
     function handleClick(evt)
     {
-        var activeElement = freq_chart.getElementsAtEventForMode(evt, 'nearest', { intersect: true }, true);
+        var activeElement = ltdc_chart.getElementsAtEventForMode(evt, 'nearest', { intersect: true }, true);
 
         if (activeElement.length) {
             var element_index = activeElement[0].index;
             if (element_index in tasks_by_time) {
-                var url = '?module=tasks',
-                    task_ids = {
-                        hash: 'id/' + tasks_by_time[element_index].join(',')
-                    }
-                $.get(url, task_ids)
-                    .done(function (html) {
-                        $('#content').html(html);
-                        $('#t-menu-dropdown-order, #t-filters-toggle').hide();
-                        $(window).trigger($.Event('wa_loaded'));
-                    })
-                    .error(function (r) {
-                        console.log(r);
-                    });
+                var url = '#/ids/' + tasks_by_time[element_index].join(',');
+                window.open(url, '_blank');
             } else {
                 console.log('Element not found');
             }
         }
     }
 
-    TasksReleasesPlugin.initReportsTimeframeSelector($('#timeframe'), '#/freq/');
+    TasksReleasesPlugin.initReportsTimeframeSelector($('#timeframe'), '#/ltdc/');
 
     // Set <a href=...> on filters
     $main_menu.find(".t-nav-item[data-value]").each(function() {
         var $nav_item = $(this),
             filter_id = $nav_item.closest(".t-menu-item").data("filter-id"),
             params = $.tasks.replaceParam(list_params, filter_id, $nav_item.data('value')),
-            item_hash = '#/freq/'+params+(params ? '/' : '');
+            item_hash = '#/ltdc/'+params+(params ? '/' : '');
         $nav_item.find("a").attr('href', item_hash);
         if (item_hash == list_hash) {
             $nav_item.closest(".t-menu-item").find(".t-selected-item").html($nav_item.find('a').html());

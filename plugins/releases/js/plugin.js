@@ -12,8 +12,24 @@ var TasksReleasesPlugin = ( function($) { "use strict";
         this.load('?plugin=releases&module=reports&action=cfd&'+(params||''));
     };
 
-    window.TasksController.freqAction = function(params) {
-        this.load('?plugin=releases&module=reports&action=freq&'+(params||''));
+    window.TasksController.ltdcAction = function(params) {
+        this.load('?plugin=releases&module=reports&action=ltdc&'+(params||''));
+    };
+
+    window.TasksController.idsAction = function(params) {
+        var url = '?module=tasks',
+            task_ids = {
+                hash: 'id/' + (params||'')
+            }
+        $.get(url, task_ids)
+            .done(function (html) {
+                $('#content').html(html);
+                $('#t-menu-dropdown-order, #t-filters-toggle').hide();
+                $(window).trigger($.Event('wa_loaded'));
+            })
+            .error(function (r) {
+                console.log(r);
+            });
     };
 
     var history = window.TasksController.dispatchHistory,
@@ -21,7 +37,7 @@ var TasksReleasesPlugin = ( function($) { "use strict";
 
     // Without this code, reloading a plugin page will not work
     if (item && item.hash && item.hash.substr) {
-        $.each(['#/settings/types/', '#/cfd/', '#/freq/'], function(i, el) {
+        $.each(['#/settings/types/', '#/cfd/', '#/ltdc/', '#/ids/'], function(i, el) {
             if (item.hash.substr(0, el.length) == el) {
                 window.TasksController.setHash(item.hash);
                 window.TasksController.load_protector = null;
