@@ -10,7 +10,7 @@ final class tasksApiAttachmentDto implements JsonSerializable
     private $id;
 
     /**
-     * @var ?int
+     * @var int|null
      */
     private $log_id;
 

@@ -69,6 +69,11 @@ class tasksApiLogDto implements JsonSerializable
      */
     private $attachments;
 
+    /**
+     * @var array
+     */
+    private $params;
+
     public function __construct(
         int $id,
         ?int $projectId,
@@ -82,7 +87,8 @@ class tasksApiLogDto implements JsonSerializable
         ?tasksApiContactDto $assignedContact,
         ?bool $statusChanged,
         ?bool $assignmentChanged,
-        array $attachments
+        array $attachments,
+        array $params
     ) {
         $this->id = $id;
         $this->project_id = $projectId;
@@ -97,5 +103,76 @@ class tasksApiLogDto implements JsonSerializable
         $this->status_changed = $statusChanged;
         $this->assignment_changed = $assignmentChanged;
         $this->attachments = $attachments;
+        $this->params = $params;
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function getProjectId(): ?int
+    {
+        return $this->project_id;
+    }
+
+    public function getTaskId(): int
+    {
+        return $this->task_id;
+    }
+
+    public function getContact(): tasksApiContactDto
+    {
+        return $this->contact;
+    }
+
+    public function getText(): string
+    {
+        return $this->text;
+    }
+
+    public function getCreateDatetime(): string
+    {
+        return $this->create_datetime;
+    }
+
+    public function getBeforeStatusId(): ?int
+    {
+        return $this->before_status_id;
+    }
+
+    public function getAfterStatusId(): ?int
+    {
+        return $this->after_status_id;
+    }
+
+    public function getAction(): string
+    {
+        return $this->action;
+    }
+
+    public function getAssignedContact(): ?tasksApiContactDto
+    {
+        return $this->assigned_contact;
+    }
+
+    public function getStatusChanged(): ?bool
+    {
+        return $this->status_changed;
+    }
+
+    public function getAssignmentChanged(): ?bool
+    {
+        return $this->assignment_changed;
+    }
+
+    public function getAttachments(): array
+    {
+        return $this->attachments;
+    }
+
+    public function getParams(): array
+    {
+        return $this->params;
     }
 }

@@ -19,7 +19,8 @@ class tasksApiLogDtoFactory
                 : null,
             isset($data['status_changed']) && $data['status_changed'],
             isset($data['assignment_changed']) && $data['assignment_changed'],
-            $data['attachments'] ?? []
+            $data['attachments'] ?? [],
+            $data['params'] ?? []
         );
     }
 
@@ -46,7 +47,8 @@ class tasksApiLogDtoFactory
                 : null,
             isset($data['status_changed']) ? (bool) $data['status_changed'] : null,
             isset($data['assignment_changed']) ? (bool) $data['assignment_changed'] : null,
-            $attachmentDtos
+            $attachmentDtos,
+            $data['params'] ?? []
         );
     }
 }

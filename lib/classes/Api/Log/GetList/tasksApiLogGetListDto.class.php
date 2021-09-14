@@ -13,7 +13,7 @@ final class tasksApiLogGetListDto
     private $count;
 
     /**
-     * @var array
+     * @var array<tasksApiLogDto>
      */
     private $logs;
 
@@ -21,7 +21,9 @@ final class tasksApiLogGetListDto
     {
         $this->total = $total;
         $this->count = $count;
-        $this->logs = $logs;
+        foreach ($logs as $log) {
+            $this->logs[] = tasksApiLogDtoFactory::createFromArray($log);
+        }
     }
 
     public function getTotal(): int
@@ -47,10 +49,12 @@ final class tasksApiLogGetListDto
         $grouped = [
             $today => [
                 'group' => _w('Today'),
+                'date' => $today,
                 'items' => [],
             ],
             $yesterday => [
                 'group' => _w('Yesterday'),
+                'date' => $yesterday,
                 'items' => [],
             ],
         ];
@@ -58,18 +62,19 @@ final class tasksApiLogGetListDto
         $monthNames = waDateTime::getMonthNames();
 
         foreach ($this->logs as $log) {
-            $groupBy = waDateTime::date('Y-m-d', strtotime($log['create_datetime']));
+            $groupBy = waDateTime::date('Y-m-d', strtotime($log->getCreateDatetime()));
             if (isset($grouped[$groupBy])) {
                 $grouped[$groupBy]['items'][] = $log;
 
                 continue;
             }
 
-            $groupBy = waDateTime::date('n-Y', strtotime($log['create_datetime']));
+            $groupBy = waDateTime::date('n-Y', strtotime($log->getCreateDatetime()));
             $groupByExploded = explode('-', $groupBy);
             if (!isset($grouped[$groupBy])) {
                 $grouped[$groupBy] = [
                     'group' => sprintf('%s %d', $monthNames[$groupByExploded[0]], $groupByExploded[1]),
+                    'date' => waDateTime::date('Y-m-01', strtotime($log->getCreateDatetime())),
                     'items' => [],
                 ];
             }

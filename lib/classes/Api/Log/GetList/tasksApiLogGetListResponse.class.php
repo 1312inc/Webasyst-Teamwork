@@ -27,7 +27,7 @@ final class tasksApiLogGetListResponse implements tasksApiResponseInterface
             'count' => $this->dto->getCount(),
             'data' => [
                 'log' => $this->dto->getLogs(),
-                'log_grouped' => $this->dto->groupLogsByDates(),
+                'log_grouped' => array_values($this->dto->groupLogsByDates()),
             ],
         ];
     }
