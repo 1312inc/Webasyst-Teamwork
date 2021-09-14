@@ -409,14 +409,6 @@ components:
           description: Текст на кнопке, которая переводит задачу в этот статус. Иногда может совпадать с названием статуса, но чаще всего все-таки является глаголом и поэтому отличается
         special:
           type: boolean
-        icon:
-          type: string
-        icon_url:
-          type: string
-        icon_class:
-          type: string
-        icon_html:
-          type: string
         sort:
           type: integer
         params:

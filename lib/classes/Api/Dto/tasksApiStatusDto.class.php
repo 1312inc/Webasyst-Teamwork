@@ -25,26 +25,6 @@ final class tasksApiStatusDto implements JsonSerializable
     private $special;
 
     /**
-     * @var string
-     */
-    private $icon;
-
-    /**
-     * @var string|null
-     */
-    private $icon_url;
-
-    /**
-     * @var string|null
-     */
-    private $icon_class;
-
-    /**
-     * @var string|null
-     */
-    private $icon_html;
-
-    /**
      * @var int
      */
     private $sort;
@@ -64,10 +44,6 @@ final class tasksApiStatusDto implements JsonSerializable
         string $name,
         string $button,
         bool $special,
-        string $icon,
-        ?string $iconUrl,
-        ?string $iconClass,
-        ?string $iconHtml,
         int $sort,
         tasksApiStatusParamsDto $params,
         tasksApiCountsDto $counts
@@ -76,12 +52,43 @@ final class tasksApiStatusDto implements JsonSerializable
         $this->name = $name;
         $this->button = $button;
         $this->special = $special;
-        $this->icon = $icon;
-        $this->icon_url = $iconUrl;
-        $this->icon_class = $iconClass;
-        $this->icon_html = $iconHtml;
         $this->sort = $sort;
         $this->params = $params;
         $this->counts = $counts;
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function getButton(): string
+    {
+        return $this->button;
+    }
+
+    public function isSpecial(): bool
+    {
+        return $this->special;
+    }
+
+    public function getSort(): int
+    {
+        return $this->sort;
+    }
+
+    public function getParams(): tasksApiStatusParamsDto
+    {
+        return $this->params;
+    }
+
+    public function getCounts(): tasksApiCountsDto
+    {
+        return $this->counts;
     }
 }
