@@ -30,6 +30,11 @@ final class tasksApiTaskDto implements JsonSerializable
     private $visavis_contact;
 
     /**
+     * @var tasksApiContactDto|null
+     */
+    private $assignment_creator_contact;
+
+    /**
      * @var string
      */
     private $create_datetime;
@@ -68,6 +73,11 @@ final class tasksApiTaskDto implements JsonSerializable
      * @var int|null
      */
     private $next_status_id;
+
+    /**
+     * @var int|null
+     */
+    private $return_status_id;
 
     /**
      * @var int|null
@@ -130,6 +140,7 @@ final class tasksApiTaskDto implements JsonSerializable
         string $text,
         tasksApiContactDto $createContact,
         ?tasksApiContactDto $visavisContact,
+        ?tasksApiContactDto $assignmentCreatorContact,
         string $createDatetime,
         ?string $updateDatetime,
         ?tasksApiContactDto $assignedContact,
@@ -138,6 +149,7 @@ final class tasksApiTaskDto implements JsonSerializable
         int $number,
         int $statusId,
         ?int $nextStatusId,
+        ?int $returnStatusId,
         ?int $parentId,
         int $priority,
         ?int $assignLogId,
@@ -157,6 +169,7 @@ final class tasksApiTaskDto implements JsonSerializable
         $this->create_datetime = $createDatetime;
         $this->update_datetime = $updateDatetime;
         $this->assigned_contact = $assignedContact;
+        $this->assignment_creator_contact = $assignmentCreatorContact;
         $this->project_id = $projectId;
         $this->milestone_id = $milestoneId;
         $this->number = $number;
@@ -174,5 +187,136 @@ final class tasksApiTaskDto implements JsonSerializable
         $this->project = $project;
         $this->visavis_contact = $visavisContact;
         $this->next_status_id = $nextStatusId;
+        $this->return_status_id = $returnStatusId;
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function getText(): string
+    {
+        return $this->text;
+    }
+
+    public function getCreateContact(): tasksApiContactDto
+    {
+        return $this->create_contact;
+    }
+
+    public function getVisavisContact(): ?tasksApiContactDto
+    {
+        return $this->visavis_contact;
+    }
+
+    public function getAssignmentCreatorContact(): ?tasksApiContactDto
+    {
+        return $this->assignment_creator_contact;
+    }
+
+    public function getCreateDatetime(): string
+    {
+        return $this->create_datetime;
+    }
+
+    public function getUpdateDatetime(): ?string
+    {
+        return $this->update_datetime;
+    }
+
+    public function getAssignedContact(): ?tasksApiContactDto
+    {
+        return $this->assigned_contact;
+    }
+
+    public function getProjectId(): int
+    {
+        return $this->project_id;
+    }
+
+    public function getMilestoneId(): ?int
+    {
+        return $this->milestone_id;
+    }
+
+    public function getNumber(): int
+    {
+        return $this->number;
+    }
+
+    public function getStatusId(): int
+    {
+        return $this->status_id;
+    }
+
+    public function getNextStatusId(): ?int
+    {
+        return $this->next_status_id;
+    }
+
+    public function getReturnStatusId(): ?int
+    {
+        return $this->return_status_id;
+    }
+
+    public function getParentId(): ?int
+    {
+        return $this->parent_id;
+    }
+
+    public function getPriority(): int
+    {
+        return $this->priority;
+    }
+
+    public function getAssignLogId(): ?int
+    {
+        return $this->assign_log_id;
+    }
+
+    public function getCommentLogId(): ?int
+    {
+        return $this->comment_log_id;
+    }
+
+    public function getContactId(): ?int
+    {
+        return $this->contact_id;
+    }
+
+    public function getHiddenTimestamp(): int
+    {
+        return $this->hidden_timestamp;
+    }
+
+    public function getDueDate(): ?string
+    {
+        return $this->due_date;
+    }
+
+    public function getAttachments(): array
+    {
+        return $this->attachments;
+    }
+
+    public function getLog(): array
+    {
+        return $this->log;
+    }
+
+    public function getTags(): array
+    {
+        return $this->tags;
+    }
+
+    public function getProject(): ?tasksApiProjectDto
+    {
+        return $this->project;
     }
 }

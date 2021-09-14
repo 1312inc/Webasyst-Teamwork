@@ -18,6 +18,7 @@ final class tasksApiTaskDtoFactory
             }
 
             $nextStatus = $task->getNextStatus();
+            $returnStatus = $task->getReturnStatus();
 
             self::$tasks[$task->id] = new tasksApiTaskDto(
                 (int) $task->id,
@@ -25,6 +26,7 @@ final class tasksApiTaskDtoFactory
                 $task['text'],
                 tasksApiContactDtoFactory::fromContactId($task['create_contact_id']),
                 $visavisContact ? tasksApiContactDtoFactory::fromContact($visavisContact) : null,
+                tasksApiContactDtoFactory::fromContactId($task->getAssignmentCreatorId()),
                 $task['create_datetime'],
                 $task['update_datetime'] ?? null,
                 !empty($task['assigned_contact_id'])
@@ -35,6 +37,7 @@ final class tasksApiTaskDtoFactory
                 (int) $task['number'],
                 (int) $task['status_id'],
                 $nextStatus ? (int) $nextStatus['id'] : null,
+                $returnStatus ? (int) $returnStatus['id'] : null,
                 !empty($task['parent_id']) ? (int) $task['parent_id'] : null,
                 (int) $task['priority'],
                 !empty($task['assign_log_id']) ? (int) $task['assign_log_id'] : null,

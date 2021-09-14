@@ -320,6 +320,11 @@ components:
           nullable: true
           allOf:
             - $ref: '#/components/schemas/contactInfo'
+        assignment_creator_contact:
+          description: Тот, кто добавил назначение, либо создатель
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/contactInfo'
         create_datetime:
           type: string
           format: date-time
@@ -342,6 +347,9 @@ components:
         next_status_id:
           type: integer
           description: Идентификатор следующего по workflow статуса
+        return_status_id:
+          type: integer
+          description: Идентификатор статуса по workflow, на который вожно вернуть таску
         parent_id:
           nullable: false
           type: integer
