@@ -91,7 +91,7 @@ final class tasksApiTasksActionHandler
     {
         $data = [
             'action' => tasksTaskLogModel::ACTION_TYPE_EMPTY,
-            'status_id' => $actionRequest->getStatusId() ?: tasksStatusModel::STATUS_CLOSED_ID,
+            'status_id' => $actionRequest->getStatusId() ?? tasksStatusModel::STATUS_CLOSED_ID,
             'text' => (string) $actionRequest->getText(),
         ];
 
