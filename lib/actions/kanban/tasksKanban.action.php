@@ -113,7 +113,7 @@ class tasksKanbanAction extends tasksTasksAction
     protected static function getMilestoneFilterType(): array
     {
         $result = parent::getMilestoneFilterType();
-        $result['0']['id'] = '0';
+        unset($result['0']);
 
         return $result;
     }
