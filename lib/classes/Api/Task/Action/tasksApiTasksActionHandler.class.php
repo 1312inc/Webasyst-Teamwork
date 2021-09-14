@@ -38,14 +38,10 @@ final class tasksApiTasksActionHandler
      */
     private function forward(tasksApiTasksActionRequest $actionRequest, array $task): array
     {
-        if (!$actionRequest->getAssignedContactId()) {
-            throw new tasksValidationException('assigned_contact_id is required for forward action');
-        }
-
         $log = tasksHelper::addLog($task, [
             'action' => $actionRequest->getAction(),
-            'status_id' => (int) $actionRequest->getStatusId(),
-            'assigned_contact_id' => (int) $actionRequest->getAssignedContactId(),
+            'status_id' => $actionRequest->getStatusId(),
+            'assigned_contact_id' => $actionRequest->getAssignedContactId(),
             'text' => (string) $actionRequest->getText(),
             'attachments_hash' => (string) $actionRequest->getFilesHash(),
         ]);
