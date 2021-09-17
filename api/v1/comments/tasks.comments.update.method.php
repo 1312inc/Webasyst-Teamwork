@@ -22,7 +22,7 @@ class tasksCommentsUpdateMethod extends tasksApiAbstractMethod
 
         $logData = (new tasksApiCommentUpdateHandler())->update($request);
         if (!$logData) {
-            return new tasksApiResponse();
+            throw new tasksException(tasksApiResponseInterface::RESPONSE_FAIL);
         }
 
         $logResponse = tasksApiLogDtoFactory::createFromArrayWithAttachmentsFetch($logData);

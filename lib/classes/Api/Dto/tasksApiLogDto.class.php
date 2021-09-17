@@ -10,7 +10,7 @@ class tasksApiLogDto implements JsonSerializable
     private $id;
 
     /**
-     * @var ?int
+     * @var int|null
      */
     private $project_id;
 

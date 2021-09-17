@@ -14,10 +14,6 @@ class tasksCommentsAddMethod extends tasksApiAbstractMethod
      */
     public function run(): tasksApiResponseInterface
     {
-        if (!wa()->getUser()->isAdmin('tasks')) {
-            throw new waRightsException(_w('Access denied'));
-        }
-
         $request = new tasksApiCommentAddRequest(
             $this->post('task_id', true, self::CAST_INT),
             $this->post('text', true, self::CAST_STRING),

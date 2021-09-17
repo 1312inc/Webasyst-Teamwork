@@ -15,7 +15,7 @@ class tasksTasksActionMethod extends tasksApiAbstractMethod
      */
     public function run(): tasksApiResponseInterface
     {
-        $action = $this->post('action', true, self::CAST_STRING, tasksApiTasksActionRequest::ALLOWED_ACTION);
+        $action = $this->post('action', true, self::CAST_ENUM, tasksApiTasksActionRequest::ALLOWED_ACTION);
         $statusId = $this->post('status_id', false, self::CAST_INT) ?? 0;
 
         if ($action == tasksApiTasksActionRequest::ACTION_TYPE_CLOSE) {

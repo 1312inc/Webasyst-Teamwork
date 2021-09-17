@@ -17,7 +17,7 @@ class tasksMilestonesUpdateMethod extends tasksApiAbstractMethod
         $request = new tasksApiMilestoneUpdateRequest(
             $this->post('id', true, self::CAST_INT),
             $this->post('name', true,self::CAST_STRING),
-            $this->post('description', self::CAST_STRING_TRIM),
+            $this->post('description', false, self::CAST_STRING_TRIM),
             $this->post('project_id', true, self::CAST_INT),
             $this->post('due_date', false, self::CAST_DATETIME, 'Y-m-d')
         );

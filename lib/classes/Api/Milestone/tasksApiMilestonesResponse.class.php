@@ -31,6 +31,9 @@ final class tasksApiMilestonesResponse implements tasksApiResponseInterface
 
     public function getResponseBody(): array
     {
-        return $this->milestones;
+        return [
+            'total_count' => count($this->milestones),
+            'data' => $this->milestones,
+        ];
     }
 }

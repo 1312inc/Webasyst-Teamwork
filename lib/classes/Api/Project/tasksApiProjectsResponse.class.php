@@ -31,6 +31,9 @@ final class tasksApiProjectsResponse implements tasksApiResponseInterface
 
     public function getResponseBody(): array
     {
-        return $this->projects;
+        return [
+            'total_count' => count($this->projects),
+            'data' => $this->projects,
+        ];
     }
 }

@@ -1,8 +1,8 @@
 <?php
 
-final class tasksApiCommentAssignHandler
+final class tasksApiCommentPinHandler
 {
-    public function assign(tasksApiCommentAssignRequest $assignRequest): bool
+    public function pin(tasksApiCommentPinRequest $assignRequest): bool
     {
         $task = tsks()->getModel(tasksTask::class)
             ->getById($assignRequest->getTaskId());

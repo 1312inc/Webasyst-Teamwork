@@ -12,10 +12,10 @@ class tasksMilestonesDeleteMethod extends tasksApiAbstractMethod
      */
     public function run(): tasksApiResponseInterface
     {
-        $request = new tasksApiMilestoneDeleteRequest((int) $this->post('id', true));
+        $request = new tasksApiMilestoneDeleteRequest($this->post('id', true, self::CAST_INT));
 
         (new tasksApiMilestoneDeleteHandler())->delete($request);
 
-        return new tasksApiResponse();
+        return new tasksApiResponse(tasksApiResponseInterface::HTTP_OK, tasksApiResponseInterface::RESPONSE_OK);
     }
 }

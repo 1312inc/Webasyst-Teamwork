@@ -21,7 +21,7 @@ final class tasksApiMilestoneArchiveHandler
         /** @var tasksMilestone $milestone */
         $milestone = $repository->findById($archiveRequest->getId());
         if (!$milestone) {
-            throw new tasksException('Milestone not found', 404);
+            throw new tasksResourceNotFoundException('Milestone not found');
         }
 
         $milestone->setClosed($archiveRequest->isArchive());

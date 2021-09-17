@@ -12,13 +12,13 @@ final class tasksApiProjectDeleteHandler
     public function delete(tasksApiProjectDeleteRequest $deleteRequest): bool
     {
         if (!tsks()->getRightResolver()->contactCanAddProject(wa()->getUser())) {
-            throw new tasksException('Project not found', 404);
+            throw new tasksAccessException('Not allowed');
         }
 
         /** @var tasksProject $project */
         $project = tsks()->getEntityRepository(tasksProject::class)->findById($deleteRequest->getId());
         if (!$project) {
-            throw new tasksException('Project not found', 404);
+            throw new tasksResourceNotFoundException('Project not found');
         }
 
         if (!tsks()->getEntityRepository(tasksProject::class)->delete($project)) {

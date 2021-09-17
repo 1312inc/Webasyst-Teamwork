@@ -17,6 +17,6 @@ class tasksAttachmentsDownloadMethod extends tasksApiAbstractMethod
 
         (new tasksApiAttachmentDownloadHandler())->download($request);
 
-        return new tasksApiResponse(tasksApiResponse::HTTP_OK, 'fail');
+        throw new tasksResourceNotFoundException('File not found');
     }
 }

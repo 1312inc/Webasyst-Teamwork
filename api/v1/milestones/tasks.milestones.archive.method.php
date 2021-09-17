@@ -20,6 +20,6 @@ class tasksMilestonesArchiveMethod extends tasksApiAbstractMethod
 
         (new tasksApiMilestoneArchiveHandler())->archive($request);
 
-        return new tasksApiResponse();
+        return new tasksApiResponse(tasksApiResponseInterface::HTTP_OK, tasksApiResponseInterface::RESPONSE_OK);
     }
 }

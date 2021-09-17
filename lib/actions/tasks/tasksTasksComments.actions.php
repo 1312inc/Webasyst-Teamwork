@@ -154,8 +154,8 @@ class tasksTasksCommentsActions extends waJsonActions
     public function assignAction()
     {
         try {
-            $this->response = (new tasksApiCommentAssignHandler())->assign(
-                new tasksApiCommentAssignRequest((int) waRequest::post('task_id'), (int) waRequest::post('log_id'))
+            $this->response = (new tasksApiCommentPinHandler())->pin(
+                new tasksApiCommentPinRequest((int) waRequest::post('task_id'), (int) waRequest::post('log_id'))
             );
         } catch (Exception $exception) {
             $this->errors = $exception->getMessage();

@@ -16,10 +16,9 @@ class tasksApiAttachmentDtoFactory
             $data['ext'],
             $data['code'],
             sprintf(
-                '%s%s/%s?module=attachments&action=download&id=%d',
+                '%s%s/api.php/tasks.attachments.download.method.php?id=%d',
                 wa()->getRootUrl(true),
                 wa()->getConfig()->getBackendUrl(),
-                tasksConfig::APP_ID,
                 $data['id']
             ),
             $isImage,

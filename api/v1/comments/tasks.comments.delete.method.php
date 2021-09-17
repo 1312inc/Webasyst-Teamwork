@@ -9,6 +9,7 @@ class tasksCommentsDeleteMethod extends tasksApiAbstractMethod
      * @throws tasksAccessException
      * @throws tasksApiMissingParamException
      * @throws tasksApiWrongParamException
+     * @throws tasksException
      * @throws tasksResourceNotFoundException
      * @throws waException
      */
@@ -20,6 +21,6 @@ class tasksCommentsDeleteMethod extends tasksApiAbstractMethod
             return new tasksApiResponse();
         }
 
-        return new tasksApiResponse(tasksApiResponseInterface::HTTP_FAIL, 'fail');
+        throw new tasksException(tasksApiResponseInterface::RESPONSE_FAIL);
     }
 }

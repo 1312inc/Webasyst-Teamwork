@@ -18,6 +18,6 @@ class tasksStatusesDeleteMethod extends tasksApiAbstractMethod
 
         (new tasksApiStatusDeleteHandler())->delete($request);
 
-        return new tasksApiResponse();
+        return new tasksApiResponse(tasksApiResponseInterface::HTTP_OK, tasksApiResponseInterface::RESPONSE_OK);
     }
 }

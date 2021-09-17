@@ -1,6 +1,6 @@
 <?php
 
-final class tasksApiCommentAssignRequest
+final class tasksApiCommentPinRequest
 {
     /**
      * @var int

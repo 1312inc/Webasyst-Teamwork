@@ -1,6 +1,6 @@
 <?php
 
-class tasksCommentsAssignMethod extends tasksApiAbstractMethod
+class tasksCommentPinMethod extends tasksApiAbstractMethod
 {
     protected $method = [self::METHOD_POST];
 
@@ -8,19 +8,20 @@ class tasksCommentsAssignMethod extends tasksApiAbstractMethod
      * @return tasksApiResponseInterface
      * @throws tasksApiMissingParamException
      * @throws tasksApiWrongParamException
+     * @throws tasksException
      * @throws tasksResourceNotFoundException
      */
     public function run(): tasksApiResponseInterface
     {
-        $request = new tasksApiCommentAssignRequest(
+        $request = new tasksApiCommentPinRequest(
             $this->post('task_id', true, self::CAST_INT),
             $this->post('id', true, self::CAST_INT)
         );
 
-        if ((new tasksApiCommentAssignHandler())->assign($request)) {
+        if ((new tasksApiCommentPinHandler())->pin($request)) {
             return new tasksApiResponse();
         }
 
-        return new tasksApiResponse(tasksApiResponseInterface::HTTP_FAIL, 'fail');
+        throw new tasksException(tasksApiResponseInterface::RESPONSE_FAIL);
     }
 }
