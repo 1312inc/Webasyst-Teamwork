@@ -11,4 +11,9 @@ final class tasksOptions
     {
         return tsks()->getOption('priorities');
     }
+
+    public static function getLogsPerPage(): int
+    {
+        return (int) tsks()->getOption('logs_per_page');
+    }
 }

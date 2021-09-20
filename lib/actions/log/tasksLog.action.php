@@ -13,7 +13,7 @@ class tasksLogAction extends tasksTasksAction
             waRequest::request('contact_id', null, 'int') ?: null,
             waRequest::request('milestone_id', null, 'int') ?: null,
             (int) waRequest::get('offset', 0, 'int'),
-            (int) tsks()->getOption('logs_per_page')
+            tasksOptions::getLogsPerPage()
         );
 
         $response = (new tasksApiLogGetListHandler())->getLogs($request);
