@@ -673,6 +673,7 @@ var TaskEdit = ( function($) { "use strict";
                     $.get('?module=tasks&hash='+encodeURIComponent('id/'+saved_response.id), {}, function(r) {
                         var $new_elements = $('<div>').html(r).find('#t-tasks-wrapper').children(':not(#end-of-tasks)').hide().addClass('new-task highlighted');
                         $new_elements.prependTo('#t-tasks-wrapper').slideDown();
+                        $new_elements.find('.item[data-task-number="'+saved_response.url+'"] a').first().trigger('click');
                         $dialog.find(".t-close-dialog-link").trigger("click");
 
                         // return to adding form
@@ -992,11 +993,6 @@ var TaskEdit = ( function($) { "use strict";
                                 that.closePage(response.data, return_to_new);
 
                                 if (that.is_new) {
-                                    // Redirect to the created task
-                                    if (response.data.url) {
-                                        location.hash = '/task/' + response.data.url + '/';
-                                    }
-
                                     // Clear localStorage Task draft
                                     localStorage.removeItem('task_title');
                                     localStorage.removeItem('task_text');
