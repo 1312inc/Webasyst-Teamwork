@@ -36,7 +36,9 @@ class tasksApiMilestoneDtoFactory
             $data['name'] ?? '',
             (int) $data['project_id'],
             $data['description'] ?? '',
-            !empty($data['due_date']) ? $data['due_date'] : null,
+            !empty($data['due_date'])
+                ? DateTimeImmutable::createFromFormat('Y-m-d', $data['due_date'])->format('Y-m-d')
+                : null,
             isset($data['closed']) ? filter_var($data['closed'], FILTER_VALIDATE_BOOLEAN) : false,
             (int) $data['days_left'],
             $data['view']['due_text'] ?? null,
