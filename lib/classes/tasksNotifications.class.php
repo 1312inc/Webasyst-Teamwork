@@ -118,21 +118,21 @@ class tasksNotifications
         ]);
 
         switch ($event) {
-            case 'new':
+            case tasksNotificationsSender::EVENT_NEW:
                 $subject = sprintf(_w('NEW: %s %s'), $task['project_id'] . '.' . $task['number'], $task['name']);
                 break;
-            case 'assign':
+            case tasksNotificationsSender::EVENT_ASSIGN:
                 $subject = sprintf(
                     '➡️ ' . _w('ASSIGNED: %s %s'),
                     $task['project_id'] . '.' . $task['number'],
                     $task['name']
                 );
                 break;
-            case 'done':
+            case tasksNotificationsSender::EVENT_DONE:
                 $subject = sprintf('☑️ ' . _w('DONE: %s was completed'), $task['project_id'] . '.' . $task['number']);
                 break;
-            case 'comment':
-            case 'edit':
+            case tasksNotificationsSender::EVENT_COMMENT:
+            case tasksNotificationsSender::EVENT_EDIT:
             default:
                 $subject = sprintf('⚡ ' . _w('EDIT: %s was edited'), $task['project_id'] . '.' . $task['number']);
                 break;

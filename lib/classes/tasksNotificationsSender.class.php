@@ -2,6 +2,12 @@
 
 class tasksNotificationsSender
 {
+    public const EVENT_DONE    = 'done';
+    public const EVENT_NEW     = 'new';
+    public const EVENT_ASSIGN  = 'assign';
+    public const EVENT_EDIT    = 'edit';
+    public const EVENT_COMMENT = 'comment';
+
     protected $task;
     protected $log_item;
     protected $actions;
@@ -12,12 +18,17 @@ class tasksNotificationsSender
 
     // in sort of priority, don't change it
     protected $available_actions = [
-        'done',
-        'new',
-        'assign',
-        'edit',
-        'comment',
+        self::EVENT_DONE,
+        self::EVENT_NEW,
+        self::EVENT_ASSIGN,
+        self::EVENT_EDIT,
+        self::EVENT_COMMENT,
     ];
+
+    /**
+     * @var tasksPushSenderService
+     */
+    private $pushSender;
 
     public function __construct($task, $actions = null, $options = [])
     {
@@ -37,6 +48,8 @@ class tasksNotificationsSender
         $this->log_item = $log_model->getLast($this->task['id']);
 
         $this->options = array_merge($this->options, $options);
+
+        $this->pushSender = new tasksPushSenderService();
     }
 
     /**
@@ -87,9 +100,13 @@ class tasksNotificationsSender
      *
      * @throws waException
      */
-    protected function sendOne($type, $to_contact_id)
+    protected function sendOne($type, $to_contact_id): void
     {
-        return tasksNotifications::send($type, $this->task, $this->log_item, new waContact($to_contact_id));
+        $to = new waContact($to_contact_id);
+
+        tasksNotifications::send($type, $this->task, $this->log_item, $to);
+
+        $this->pushSender->send($type, $this->task, $this->log_item, $to);
     }
 
     /**

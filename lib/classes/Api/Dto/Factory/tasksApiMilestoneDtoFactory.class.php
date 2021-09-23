@@ -9,7 +9,9 @@ class tasksApiMilestoneDtoFactory
         $color = null;
         $dueDate = null;
         if ($milestone->getDueDate()) {
-            $dueDate = $milestone->getDueDate()->format('Y-m-d');
+            $dueDate = $milestone->getDueDate()
+                ->setTimezone(new DateTimeZone('UTC'))
+                ->format('Y-m-d');
             $daysLeft = tasksHelper::calcDatesDiffInDays($dueDate, 'today');
             $text = tasksHelper::formatDueText($daysLeft);
             $color = tasksHelper::formatDueColor($daysLeft);

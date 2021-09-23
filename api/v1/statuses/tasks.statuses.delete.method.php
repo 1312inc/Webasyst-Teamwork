@@ -6,6 +6,10 @@ class tasksStatusesDeleteMethod extends tasksApiAbstractMethod
 
     /**
      * @return tasksApiResponseInterface
+     * @throws tasksApiMissingParamException
+     * @throws tasksApiWrongParamException
+     * @throws tasksResourceNotFoundException
+     * @throws waException
      * @throws waRightsException
      */
     public function run(): tasksApiResponseInterface

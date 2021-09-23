@@ -21,17 +21,16 @@ class tasksTask2Factory extends tasksBaseFactory
 
         $task
             ->setName($addRequest->getName())
-            ->setText($addRequest->getText())
+            ->setText($addRequest->getText() ?: '')
             ->setDueDate($addRequest->getDueDate())
             ->setProjectId($addRequest->getProjectId())
             ->setMilestoneId($addRequest->getMilestoneId())
-            ->setStatusId($addRequest->getStatusId())
+            ->setStatusId($addRequest->getStatusId() ?: 0)
             ->setCreateContactId($addRequest->getCreateContactId())
             ->setPriority($addRequest->getPriority())
             ->setHiddenTimestamp($addRequest->getHiddenTimestamp())
             ->setAssignedContactId($addRequest->getAssignedContactId())
-            ->setUuid($addRequest->getUuid())
-        ;
+            ->setUuid($addRequest->getUuid());
 
         return $task;
     }

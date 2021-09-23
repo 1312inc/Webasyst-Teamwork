@@ -268,7 +268,7 @@ paths:
                 - action
       responses:
         200:
-          $ref: '#/components/schemas/200ok'
+          $ref: '#/components/schemas/logInfo'
         403:
           description: Запрещено
         500:
@@ -1216,6 +1216,60 @@ paths:
           description: Не найдено
         500:
           description: Все плохо
+  /tasks.push.enable:
+    post:
+      tags:
+        - Пуши
+      summary: 'Включает пуши для клиента'
+      security:
+        - ApiKeyAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                client_id:
+                  type: string
+                  description: Onesignal client id
+              required:
+                - client_id
+      responses:
+        200:
+          $ref: '#/components/schemas/200ok'
+        400:
+          $ref: '#/components/schemas/400fail'
+        403:
+          description: Запрещено
+        500:
+          description: Все плохо
+  /tasks.push.disable:
+    post:
+      tags:
+        - Пуши
+      summary: 'Отключает пуши для клиента'
+      security:
+        - ApiKeyAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                client_id:
+                  type: string
+                  description: Onesignal client id
+              required:
+                - client_id
+      responses:
+        200:
+          $ref: '#/components/schemas/200ok'
+        400:
+          $ref: '#/components/schemas/400fail'
+        403:
+          description: Запрещено
+        500:
+          description: Все плохо
 
 components:
   securitySchemes:
@@ -1287,18 +1341,9 @@ components:
           type: integer
           minimum: 0
         data:
-          type: object
-          properties:
-            log:
-              type: array
-              items:
-                $ref: '#/components/schemas/logInfo'
-            log_grouped:
-              type: array
-              description: Записи, сгруппированные по дате (сегодня, вчера, месяцы)
-              items:
-                $ref: '#/components/schemas/groupedByDateLogInfo'
-
+          type: array
+          items:
+            $ref: '#/components/schemas/logInfo'
 
     getTeamGetTopAssigneesResponse:
       type: object
@@ -1644,6 +1689,9 @@ components:
       type: string
       example: 'ok'
     200fail:
+      type: string
+      example: 'fail'
+    400fail:
       type: string
       example: 'fail'
     datetime:

@@ -63,10 +63,12 @@ final class tasksApiProjectDto implements JsonSerializable
         $this->id = $id;
         $this->name = $name;
         $this->contact = tasksApiContactDtoFactory::fromContactId($contactId);
-        $this->create_datetime = $createDatetime->format('Y-m-d\TH:i:sP');
+        $this->create_datetime = $createDatetime->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d\TH:i:sP');
         $this->icon = $icon;
         $this->color = $color;
-        $this->archive_datetime = $archiveDatetime ? $archiveDatetime->format('Y-m-d\TH:i:sP') : null;
+        $this->archive_datetime = $archiveDatetime
+            ? $archiveDatetime->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d\TH:i:sP')
+            : null;
         $this->sort = $sort;
         $this->counts = $counts;
     }

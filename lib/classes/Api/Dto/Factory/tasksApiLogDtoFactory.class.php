@@ -10,7 +10,9 @@ class tasksApiLogDtoFactory
             (int) $data['task_id'],
             tasksApiContactDtoFactory::fromContactId((int) $data['contact_id']),
             (string) $data['text'],
-            DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $data['create_datetime'])->format('Y-m-d\TH:i:sP'),
+            DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $data['create_datetime'])
+                ->setTimezone(new DateTimeZone('UTC'))
+                ->format('Y-m-d\TH:i:sP'),
             isset($data['before_status_id']) ? (int) $data['before_status_id'] : null,
             isset($data['after_status_id']) ? (int) $data['after_status_id'] : null,
             (string) $data['action'],

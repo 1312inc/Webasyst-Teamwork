@@ -32,8 +32,11 @@ class tasksApiErrorResponse implements tasksApiResponseInterface, JsonSerializab
      * @param string $error
      * @param int    $status
      */
-    public function __construct($errorMessage, $error = tasksApiResponseInterface::RESPONSE_FAIL, $status = 400)
-    {
+    public function __construct(
+        string $errorMessage,
+        string $error = tasksApiResponseInterface::RESPONSE_FAIL,
+        int $status = tasksApiResponseInterface::HTTP_FAIL
+    ) {
         $this->errorMessage = $errorMessage;
         $this->error = $error;
         $this->status = $status;
@@ -48,6 +51,7 @@ class tasksApiErrorResponse implements tasksApiResponseInterface, JsonSerializab
     {
         $response = new self($ex->getMessage(), 'error', $ex->getCode());
         $response->trace = $ex->getTrace();
+        $response->status = $ex->getCode() ?: tasksApiResponseInterface::HTTP_FAIL;
 
         return $response;
     }

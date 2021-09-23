@@ -9,7 +9,9 @@ class tasksApiAttachmentDtoFactory
         return new tasksApiAttachmentDto(
             (int) $data['id'],
             !empty($data['log_id']) ? (int) $data['log_id'] : null,
-            DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $data['create_datetime'])->format('Y-m-d\TH:i:sP'),
+            DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $data['create_datetime'])
+                ->setTimezone(new DateTimeZone('UTC'))
+                ->format('Y-m-d\TH:i:sP'),
             tasksApiContactDtoFactory::fromContactId($data['contact_id']),
             $data['name'],
             (int) $data['size'],

@@ -77,6 +77,17 @@ return array(
             'PRIMARY' => array('project_id', 'status_id'),
         ),
     ),
+    'tasks_push_client' => array(
+        'client_id' => array('varchar', 255, 'null' => 0),
+        'contact_id' => array('int', 11, 'null' => 0),
+        'api_token' => array('int', 11),
+        'create_datetime' => array('datetime', 'null' => 0),
+        ':keys' => array(
+            'PRIMARY' => 'client_id',
+            'tasks_push_client_client_id_uindex' => array('client_id', 'unique' => 1),
+            'tasks_push_client_contact_id_index' => 'contact_id',
+        ),
+    ),
     'tasks_status' => array(
         'id' => array('int', 11, 'null' => 0, 'autoincrement' => 1),
         'name' => array('varchar', 255, 'null' => 0),

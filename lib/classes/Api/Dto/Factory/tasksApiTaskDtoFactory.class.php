@@ -27,9 +27,13 @@ final class tasksApiTaskDtoFactory
                 tasksApiContactDtoFactory::fromContactId($task['create_contact_id']),
                 $visavisContact ? tasksApiContactDtoFactory::fromContact($visavisContact) : null,
                 tasksApiContactDtoFactory::fromContactId($task->getAssignmentCreatorId()),
-                DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $task['create_datetime'])->format('Y-m-d\TH:i:sP'),
+                DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $task['create_datetime'])
+                    ->setTimezone(new DateTimeZone('UTC'))
+                    ->format('Y-m-d\TH:i:sP'),
                 isset($task['update_datetime'])
-                    ?  DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $task['update_datetime'])->format('Y-m-d\TH:i:sP')
+                    ? DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $task['update_datetime'])
+                        ->setTimezone(new DateTimeZone('UTC'))
+                        ->format('Y-m-d\TH:i:sP')
                     : null,
                 !empty($task['assigned_contact_id'])
                     ? tasksApiContactDtoFactory::fromContactId($task['assigned_contact_id'])
