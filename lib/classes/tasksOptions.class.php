@@ -16,4 +16,9 @@ final class tasksOptions
     {
         return (int) tsks()->getOption('logs_per_page');
     }
+
+    public static function getTagsCloudCacheTtl(): int
+    {
+        return (int) tsks()->getOption('tags_cloud_cache_ttl');
+    }
 }

@@ -1270,6 +1270,26 @@ paths:
           description: Запрещено
         500:
           description: Все плохо
+  /tasks.tags.getList:
+    get:
+      tags:
+        - Теги
+      summary: 'Отдает облако тегов'
+      security:
+        - ApiKeyAuth: [ ]
+      responses:
+        200:
+          description: Все теги
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getTagsListResponse'
+        400:
+          $ref: '#/components/schemas/400fail'
+        403:
+          description: Запрещено
+        500:
+          description: Все плохо
 
 components:
   securitySchemes:
@@ -1311,6 +1331,17 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/milestoneInfo'
+
+    getTagsListResponse:
+      type: object
+      properties:
+        total_count:
+          type: number
+          description: сколько всего тегов
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/tagInfo'
 
     getProjectsListResponse:
       type: object
@@ -1428,10 +1459,16 @@ components:
           description: Дедлайн
         attachments:
           type: array
+          items:
+            $ref: '#/components/schemas/attachmentInfo'
         log:
           type: array
+          items:
+            $ref: '#/components/schemas/logInfo'
         tags:
           type: array
+          items:
+            $ref: '#/components/schemas/tagInfo'
         project:
           $ref: '#/components/schemas/projectInfo'
     projectInfo:
@@ -1685,6 +1722,14 @@ components:
           type: boolean
         counts:
           $ref: '#/components/schemas/taskCountInfo'
+    tagInfo:
+      type: object
+      description: Описание тега
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
     200ok:
       type: string
       example: 'ok'

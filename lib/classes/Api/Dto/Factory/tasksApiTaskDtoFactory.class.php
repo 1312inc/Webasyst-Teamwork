@@ -104,7 +104,7 @@ final class tasksApiTaskDtoFactory
     {
         $tags = [];
         foreach ($task->getTags() as $id => $tag) {
-            $tags[] = tasksApiTagDtoFactory::create(['id' => $id, 'name' => $tag, 'favorite' => null]);
+            $tags[] = tasksApiTagDtoFactory::create(['id' => $id, 'name' => $tag]);
         }
 
         return $tags;
