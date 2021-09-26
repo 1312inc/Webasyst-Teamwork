@@ -85,6 +85,9 @@ class tasksGitMethod extends waAPIMethod
                     // Ignore commits that were already in the log (possibly in another branch)
                     $commit_hash = ifempty($log, 'params', 'git.id', null);
                     if (!empty($commit_hash) && !empty($know_commits[$commit_hash])) {
+                        waLog::log('Ignore commits that were already in the log (possibly in another branch)', 'tasks.git.log');
+                        waLog::dump($know_commits[$commit_hash], 'tasks.git.log');
+
                         continue 3;
                     }
 
