@@ -75,7 +75,7 @@ final class tasksApiCountsDtoFactory
      */
     public static function createForStatuses(): array
     {
-        $statusesCounts = self::getCountService()->getMilestonesCounts();
+        $statusesCounts = self::getCountService()->getStatusesCounts();
 
         $counts = [];
         foreach ($statusesCounts as $id => $statusCounts) {

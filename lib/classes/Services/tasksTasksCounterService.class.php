@@ -117,7 +117,6 @@ final class tasksTasksCounterService
         $sql = sprintf(
             "SELECT t.status_id relevant_id, t.status_id, %s AS priority, count(*) AS `count`
                     FROM %s t 
-                    JOIN tasks_status p ON t.status_id = p.id
                     GROUP BY relevant_id, t.status_id, %s",
             $this->priorityField,
             $this->taskModel->getTableName(),
@@ -132,7 +131,6 @@ final class tasksTasksCounterService
         $sql = sprintf(
             "SELECT t.status_id relevant_id, t.status_id, %s AS priority, count(*) AS `count`
                     FROM %s t 
-                    JOIN tasks_status p ON t.status_id = p.id
                     WHERE t.status_id = %d
                     GROUP BY relevant_id, t.status_id, %s",
             $this->priorityField,
