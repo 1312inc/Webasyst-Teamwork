@@ -1,8 +1,6 @@
 {strip}
 
-{$ident = rand(0, 1024)}
-
-<div class="t-return-form-block" id="return-wrapper-{$ident}">
+<div class="t-return-form-block" id="return-wrapper-{$task.id}">
     <form method="post" action="?module=tasksLog&action=return&id={$task.id}">
     <div class="fields">
         <div class="field">
@@ -40,7 +38,7 @@
 
 <script>
     (function ($) {
-        $R('#return-wrapper-{$ident} .t-redactor-comments', {
+        $R('#return-wrapper-{$task.id} .t-redactor-comments', {
             'focus': true,
             imageData: {
                 task_uuid: '{$task.uuid}'
