@@ -85,7 +85,7 @@ window.showLogsChart = function(dataset, options) {
         },
         getHeight: function() {
             var width = this.getWidth();
-            return (width > 989) ? "350" : (width * 9)/(16 * 1.7);
+            return (width > 1280) ? "300" : (width * 9)/(16 * 3);
         },
         getInnerWidth: function() {
             return this.getWidth() - this.padding.left - this.padding.right;
