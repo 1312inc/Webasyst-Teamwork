@@ -40,9 +40,7 @@ class tasksGitMethod extends waAPIMethod
         $this->data['branch'] = end($tmp);
         switch ($this->data['object_kind']) {
             case 'push':
-                if (!in_array($this->data['branch'], ['master', 'main'])) {
-                    $this->handlePush($this->data['commits']);
-                }
+                $this->handlePush($this->data['commits']);
                 break;
         }
     }
@@ -100,7 +98,10 @@ class tasksGitMethod extends waAPIMethod
                     // Ignore commits that were already in the log (possibly in another branch)
                     $commit_hash = ifempty($log, 'params', 'git.id', null);
                     if (!empty($commit_hash) && !empty($know_commits[$commit_hash])) {
-                        waLog::log('Ignore commits that were already in the log (possibly in another branch)', 'tasks.git.log');
+                        waLog::log(
+                            'Ignore commits that were already in the log (possibly in another branch)',
+                            'tasks.git.log'
+                        );
                         waLog::dump($know_commits[$commit_hash], 'tasks.git.log');
 
                         continue 3;
