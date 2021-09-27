@@ -939,6 +939,8 @@ var Task = ( function($) {
                 $.waDrawer({
                     html: wrappedHtml,
                     direction: direction,
+                    esc: false,
+                    lock_body_scroll: false,
                     onOpen: function ($drawer, drawer_instance) {
                         // Focus
                         $drawer.find("textarea").focus();
