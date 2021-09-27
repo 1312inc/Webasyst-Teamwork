@@ -54,6 +54,7 @@ class tasksGitMethod extends waAPIMethod
         }
 
         // #100.500 is task 500 at project 100
+        // 100.500: is task 500 at project 100
         $patterns = [
             '~(?:\#(\d+?)\.(\d+|new))~uis',
             '~(?:(\d+)\.(\d+|new):.*)~uisU',
@@ -72,16 +73,30 @@ class tasksGitMethod extends waAPIMethod
             }
         }
 
+        waLog::log('$commit_hashes', 'tasks.git.debug.log');
+        waLog::dump($commit_hashes, 'tasks.git.debug.log');
+
         $know_commits = $task_log_params_model->getByField(['name' => 'git.id', 'value' => $commit_hashes], 'value');
+
+        waLog::log('$know_commits', 'tasks.git.debug.log');
+        waLog::dump($know_commits, 'tasks.git.debug.log');
 
         foreach ($commits as $c) {
             foreach ($patterns as $pattern) {
                 if (!preg_match_all($pattern, $c['message'], $matches, PREG_SET_ORDER)) {
+                    waLog::log('no match with ' . $pattern, 'tasks.git.debug.log');
+
                     continue;
                 }
 
                 foreach ($matches as $match) {
+                    waLog::log('process match ' . $match, 'tasks.git.debug.log');
+
                     $log = $this->parseCommit($c);
+
+                    waLog::log('parseCommit', 'tasks.git.debug.log');
+                    waLog::dump($log, 'tasks.git.debug.log');
+
                     // Ignore commits that were already in the log (possibly in another branch)
                     $commit_hash = ifempty($log, 'params', 'git.id', null);
                     if (!empty($commit_hash) && !empty($know_commits[$commit_hash])) {
@@ -103,8 +118,13 @@ class tasksGitMethod extends waAPIMethod
                                 'text' => $c['message'],
                             ]);
                             $log_model->add('task_add', $task['id'], null, $log['contact_id']);
+
+                            waLog::log('new task', 'tasks.git.debug.log');
                         } else {
                             $task = $task_model->getByField(compact('project_id', 'number'));
+
+                            waLog::log('old task', 'tasks.git.debug.log');
+                            waLog::dump($task, 'tasks.git.debug.log');
                         }
                     } catch (waException $e) {
                         //echo((string)$e);
@@ -113,6 +133,8 @@ class tasksGitMethod extends waAPIMethod
                     }
 
                     if ($task) {
+                        waLog::log('add log', 'tasks.git.debug.log');
+
                         // add log, but not send notification
                         $log = tasksHelper::addLog($task, $log, false);
                         $log_model->add(
@@ -123,6 +145,8 @@ class tasksGitMethod extends waAPIMethod
                         );
                     }
                 }
+
+                break; // only first matched pattern
             }
         }
     }
