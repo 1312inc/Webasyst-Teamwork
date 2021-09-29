@@ -13,7 +13,7 @@ final class tasksLogger
             return;
         }
 
-        if (is_scalar($msg) || method_exists($msg, '__toString')) {
+        if (is_scalar($msg) || (is_object($msg) && method_exists($msg, '__toString'))) {
             self::log($msg);
         } else {
             waLog::dump($msg, 'tasks/tasks.log');

@@ -20,12 +20,10 @@ class tasksGitMethod extends waAPIMethod
             $this->data['object_kind'] = 'push';
         }
 
-        if (waSystemConfig::isDebug()) {
-            waLog::dump(waRequest::server(), 'tasks.git.log');
-            waLog::dump($input, 'tasks.git.log');
-            waLog::dump($this->data, 'tasks.git.log');
-            waLog::dump($_REQUEST, 'tasks.git.log');
-        }
+        tasksLogger::debug(waRequest::server(), 'tasks.git.log');
+        tasksLogger::debug($input, 'tasks.git.log');
+        tasksLogger::debug($this->data, 'tasks.git.log');
+        tasksLogger::debug($_REQUEST, 'tasks.git.log');
     }
 
     public function execute()
@@ -71,38 +69,31 @@ class tasksGitMethod extends waAPIMethod
             }
         }
 
-        waLog::log('$commit_hashes', 'tasks.git.debug.log');
-        waLog::dump($commit_hashes, 'tasks.git.debug.log');
-
         $know_commits = $task_log_params_model->getByField(['name' => 'git.id', 'value' => $commit_hashes], 'value');
-
-        waLog::log('$know_commits', 'tasks.git.debug.log');
-        waLog::dump($know_commits, 'tasks.git.debug.log');
 
         foreach ($commits as $c) {
             foreach ($patterns as $pattern) {
                 if (!preg_match_all($pattern, $c['message'], $matches, PREG_SET_ORDER)) {
-                    waLog::log('no match with ' . $pattern, 'tasks.git.debug.log');
+                    tasksLogger::debug('no match with ' . $pattern, 'tasks.git.debug.log');
 
                     continue;
                 }
 
                 foreach ($matches as $match) {
-                    waLog::log('process match ' . $match, 'tasks.git.debug.log');
+                    tasksLogger::debug('process match ' . $match, 'tasks.git.debug.log');
 
                     $log = $this->parseCommit($c);
 
-                    waLog::log('parseCommit', 'tasks.git.debug.log');
-                    waLog::dump($log, 'tasks.git.debug.log');
+                    tasksLogger::debug($log, 'tasks.git.debug.log');
 
                     // Ignore commits that were already in the log (possibly in another branch)
                     $commit_hash = ifempty($log, 'params', 'git.id', null);
                     if (!empty($commit_hash) && !empty($know_commits[$commit_hash])) {
-                        waLog::log(
+                        tasksLogger::debug(
                             'Ignore commits that were already in the log (possibly in another branch)',
                             'tasks.git.log'
                         );
-                        waLog::dump($know_commits[$commit_hash], 'tasks.git.log');
+                        tasksLogger::debug($know_commits[$commit_hash], 'tasks.git.log');
 
                         continue 3;
                     }
@@ -120,21 +111,19 @@ class tasksGitMethod extends waAPIMethod
                             ]);
                             $log_model->add('task_add', $task['id'], null, $log['contact_id']);
 
-                            waLog::log('new task', 'tasks.git.debug.log');
+                            tasksLogger::debug('new task', 'tasks.git.debug.log');
                         } else {
                             $task = $task_model->getByField(compact('project_id', 'number'));
 
-                            waLog::log('old task', 'tasks.git.debug.log');
-                            waLog::dump($task, 'tasks.git.debug.log');
+                            tasksLogger::debug('old task', 'tasks.git.debug.log');
+                            tasksLogger::debug($task, 'tasks.git.debug.log');
                         }
                     } catch (waException $e) {
-                        //echo((string)$e);
-                        waLog::log($e->getMessage(), 'tasks.git.error.log');
-                        waLog::log($e->getTraceAsString(), 'tasks.git.error.log');
+                        tasksLogger::error($e);
                     }
 
                     if ($task) {
-                        waLog::log('add log', 'tasks.git.debug.log');
+                        tasksLogger::debug('add log', 'tasks.git.debug.log');
 
                         // add log, but not send notification
                         $log = tasksHelper::addLog($task, $log, false);
