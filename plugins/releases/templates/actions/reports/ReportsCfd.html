@@ -118,7 +118,7 @@
     var chart_datasets = [],
         statuses_id = {},
         i = 0,
-        statuses = {$statuses|json_encode};
+        statuses = {$statuses|array_reverse|json_encode};
 
     $.each(statuses, function (index, value) {
         var dataset = {
