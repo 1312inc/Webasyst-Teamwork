@@ -841,8 +841,11 @@
             this.load('?module=from&action=hub&id='+topic_id);
         },
 
-        kanbanAction: function(params) {
+        kanbanAction: function (params) {
+            var kanbanLoader = $ ? $.waLoading() : undefined;
+            if (kanbanLoader) kanbanLoader.animate(3000, 99, true);
             this.load('?module=kanban&' + (params || ''), function () {
+                if (kanbanLoader) kanbanLoader.done();
                 Kanban.init();
             });
         },
