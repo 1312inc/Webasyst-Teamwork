@@ -18,7 +18,9 @@ final class tasksApiProjectDtoFactory
                 DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $data['create_datetime']),
                 $data['icon'],
                 $data['color'],
-                !empty($data['archive_datetime']) ? $data['archive_datetime'] : null,
+                !empty($data['archive_datetime'])
+                    ? DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $data['archive_datetime'])
+                    : null,
                 (int) $data['sort'],
                 tasksApiCountsDtoFactory::createFromArray($data)
             );
