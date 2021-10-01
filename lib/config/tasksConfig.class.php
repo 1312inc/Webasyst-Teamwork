@@ -99,11 +99,9 @@ class tasksConfig extends waAppConfig
     }
 
     /**
-     * @param string|null $entity
-     *
      * @return mixed|tasksModel
      */
-    public function getModel(?string $entity)
+    public function getModel(?string $entity = null)
     {
         if ($entity === null) {
             return $this->models[''];
@@ -459,6 +457,7 @@ class tasksConfig extends waAppConfig
     /**
      * The method returns a counter to show in backend header near applications' icons.
      * Three types of response are allowed.
+     *
      * @return string|int|array - A prime number in the form of a int or string
      * @return array - Array with keys 'count' - the value of the counter and 'url' - icon url
      * @return array - An associative array in which the key is the object key from app.php, from the header_items.
@@ -495,6 +494,19 @@ class tasksConfig extends waAppConfig
         }
 
         return null;
+    }
+
+    public function getCache($type = 'default'): waCache
+    {
+        if ($this->cache === null) {
+            $this->cache = parent::getCache($type)
+                ?: new waCache(
+                    new tasksCacheAdapter(['type' => 'file']),
+                    self::APP_ID
+                );
+        }
+
+        return $this->cache;
     }
 
     private function registerGlobal(): void

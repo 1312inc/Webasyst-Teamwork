@@ -14,6 +14,31 @@ class tasksTeamGetTopAssigneesMethod extends tasksApiAbstractMethod
             $this->get('status_id', false, self::CAST_INT)
         );
 
-        return new tasksApiTeamGetTopAssigneesResponse((new tasksApiTeamGetTopAssigneesHandler())->getUsers($request));
+        $users = (new tasksApiTeamGetTopAssigneesHandler())->getUsers($request);
+
+        $statusService = new tasksTeammateStatusService();
+
+        $list = [];
+        foreach ($users as $user) {
+            $contact = new waContact($user['id']);
+            $status = $statusService->getForContact($contact, new DateTimeImmutable());
+
+            $list[] = new tasksApiTeammateDto(
+                new tasksApiContactDto(
+                    (int) $user['id'],
+                    $user['name'],
+                    wa()->getConfig()->getHostUrl() . $user['photo_url'],
+                    wa()->getUser()->getId() == $user['id']
+                ),
+                $status
+                    ? new tasksApiContactStatusDto(
+                    $status->getName(),
+                    $status->getBgColor(),
+                    $status->getFontColor()
+                ) : null
+            );
+        }
+
+        return new tasksApiResponse(tasksApiResponseInterface::HTTP_OK, ['data' => $list]);
     }
 }

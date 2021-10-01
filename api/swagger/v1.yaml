@@ -634,6 +634,24 @@ paths:
           description: Запрещено
         500:
           description: Все плохо
+  /tasks.team.getList:
+    get:
+      tags:
+        - Команда
+      summary: 'Возвращает список людей'
+      security:
+        - ApiKeyAuth: [ ]
+      responses:
+        200:
+          description: Список людей
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getTeamGetListResponse'
+        403:
+          description: Запрещено
+        500:
+          description: Все плохо
 # attachments
   /tasks.attachments.add:
     post:
@@ -1382,7 +1400,39 @@ components:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/contactInfo'
+            type: object
+            properties:
+              contact:
+                $ref: '#/components/schemas/contactInfo'
+              status:
+                nullable: true
+                allOf:
+                  - $ref: '#/components/schemas/teammateStatusInfo'
+
+    getTeamGetListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              contact:
+                $ref: '#/components/schemas/contactInfo'
+              contact_info:
+                $ref: '#/components/schemas/teammateContactInfo'
+              status:
+                nullable: true
+                allOf:
+                  - $ref: '#/components/schemas/teammateStatusInfo'
+              last_log:
+                nullable: true
+                allOf:
+                  - $ref: '#/components/schemas/logInfo'
+              groups:
+                type: array
+                items:
+                  type: string
 
     taskInfo:
       type: object
@@ -1412,7 +1462,9 @@ components:
         create_datetime:
           $ref: '#/components/schemas/datetime'
         update_datetime:
-          $ref: '#/components/schemas/datetime'
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/datetime'
         project_id:
           type: integer
           description: Идентификатор проекта
@@ -1489,12 +1541,185 @@ components:
         archive_datetime:
           nullable: true
           allOf:
-            - $ref: '#/components/schemas/contactInfo'
+            - $ref: '#/components/schemas/datetime'
         sort:
           type: integer
           minimum: 0
         count:
           $ref: '#/components/schemas/taskCountInfo'
+    teammateStatusInfo:
+      type: object
+      properties:
+        name:
+          type: string
+          description: название статуса
+          example: Отпуск
+        bg_color:
+          type: string
+          description: hex цвет фона
+          example: '#000000'
+        font_color:
+          type: string
+          description: hex цвет текста
+          example: '#ffffff'
+    teammateContactInfo:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Имя пользователя
+        title:
+          type: string
+          nullable: true
+          description: Обращение
+        firstname:
+          type: string
+          nullable: true
+          description: Имя
+        middlename:
+          type: string
+          nullable: true
+          description: Отчество
+        lastname:
+          type: string
+          nullable: true
+          description: Фамилия
+        jobtitle:
+          type: string
+          nullable: true
+          description: Должность
+        company:
+          type: string
+          nullable: true
+          description: Компания
+        email:
+          type: array
+          description: Список email
+          items:
+            type: object
+            properties:
+              ext:
+                type: string
+                description: Тип, один из перечисления или кастомный
+                enum:
+                  - "work"
+                  - "personal"
+                  - ""
+              value:
+                type: string
+        phone:
+          type: array
+          description: Список телефонов
+          items:
+            type: object
+            properties:
+              ext:
+                type: string
+                description: Тип, один из перечисления или кастомный
+                enum:
+                  - "work"
+                  - "mobile"
+                  - "home"
+                  - ""
+              value:
+                type: string
+        gender:
+          description: Пол
+          nullable: true
+          type: string
+          enum:
+            - "m"
+            - "f"
+            - ""
+        im:
+          type: array
+          description: Список мессенджеров
+          items:
+            type: object
+            properties:
+              ext:
+                type: string
+                description: Тип, один из перечисления или кастомный
+                enum:
+                  - "whatsapp"
+                  - "telegram"
+                  - "signal"
+                  - "viber"
+                  - "facebook"
+                  - "skype"
+                  - "wechat"
+                  - "imessage"
+                  - "line"
+                  - "qq"
+                  - "icq"
+                  - ""
+              value:
+                type: string
+        address:
+          type: array
+          description: Список адресов
+          items:
+            type: object
+            properties:
+              ext:
+                type: string
+                description: Тип, один из перечисления или кастомный
+                enum:
+                  - "work"
+                  - "shipping"
+                  - "billing"
+                  - "home"
+                  - ""
+              value:
+                type: string
+        url:
+          type: array
+          description: Список веб-сайтов
+          items:
+            type: object
+            properties:
+              ext:
+                type: string
+                description: Тип, один из перечисления или кастомный
+                enum:
+                  - "work"
+                  - "personal"
+                  - ""
+              value:
+                type: string
+        birthday:
+          nullable: true
+          type: string
+          format: date
+        locale:
+          nullable: true
+          type: string
+        timezone:
+          nullable: true
+          type: string
+        socialnetwork:
+          type: array
+          description: Список соц сетей
+          items:
+            type: object
+            properties:
+              ext:
+                type: string
+                description: Тип, один из перечисления или кастомный
+                enum:
+                  - "facebook"
+                  - "instagram"
+                  - "tiktok"
+                  - "twitter"
+                  - "linkedin"
+                  - "vkontakte"
+                  - ""
+              value:
+                type: string
+        about:
+          nullable: true
+          description: Описание себя любимого
+          type: string
     contactInfo:
       type: object
       properties:

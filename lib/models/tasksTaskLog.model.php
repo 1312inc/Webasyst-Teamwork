@@ -1,20 +1,22 @@
 <?php
+
 class tasksTaskLogModel extends waModel
 {
     protected $table = 'tasks_task_log';
 
-    public const ACTION_TYPE_CREATE = 'create';
-    public const ACTION_TYPE_COMMENT       = 'comment';
+    public const ACTION_TYPE_CREATE  = 'create';
+    public const ACTION_TYPE_COMMENT = 'comment';
     public const ACTION_TYPE_FORWARD = 'forward';
-    public const ACTION_TYPE_RETURN = 'return';
-    public const ACTION_TYPE_EDIT = 'edit';
-    public const ACTION_TYPE_EMPTY = '';
+    public const ACTION_TYPE_RETURN  = 'return';
+    public const ACTION_TYPE_EDIT    = 'edit';
+    public const ACTION_TYPE_EMPTY   = '';
 
     /**
      * @param array $data key value of DB record + some special keys
-     *   - 'params' key-value map of log params
-     *   - 'attachments_hash' hash by which can be found files to attach
-     *   - 'attachments' array of paths to files to attach
+     *                    - 'params' key-value map of log params
+     *                    - 'attachments_hash' hash by which can be found files to attach
+     *                    - 'attachments' array of paths to files to attach
+     *
      * @return bool|int
      * @throws waException
      */
@@ -40,14 +42,14 @@ class tasksTaskLogModel extends waModel
         if (!empty($data['params'])) {
             $params_model = new tasksTaskLogParamsModel();
             $task_id = $data['task_id'];
-            $params = array();
+            $params = [];
             foreach ($data['params'] as $name => $value) {
-                $params[] = array(
+                $params[] = [
                     'task_id' => $task_id,
                     'log_id' => $log_id,
                     'name' => $name,
-                    'value' => is_array($value) ? json_encode($value) : $value
-                );
+                    'value' => is_array($value) ? json_encode($value) : $value,
+                ];
             }
             $params_model->multipleInsert($params);
         }
@@ -70,37 +72,42 @@ class tasksTaskLogModel extends waModel
      */
     public function getContactIds()
     {
-        $sql = 'SELECT DISTINCT contact_id FROM '.$this->table.'
+        $sql = 'SELECT DISTINCT contact_id FROM ' . $this->table . '
                 UNION
-                SELECT DISTINCT assigned_contact_id FROM '.$this->table.' WHERE assigned_contact_id IS NOT NULL';
+                SELECT DISTINCT assigned_contact_id FROM ' . $this->table . ' WHERE assigned_contact_id IS NOT NULL';
+
         return $this->query($sql)->fetchAll(null, true);
     }
 
     public function getTaskComments($task_id)
     {
-        $where = $this->getWhereByField(array(
+        $where = $this->getWhereByField([
             'task_id' => $task_id,
-            'action' => self::ACTION_TYPE_COMMENT
-        ));
+            'action' => self::ACTION_TYPE_COMMENT,
+        ]);
+
         return $this->select('*')->where($where)->order('id')->fetchAll('id');
     }
 
     /**
-     * @param int $id
+     * @param int             $id
      * @param string|string[] $type - default is ACTION_TYPE_COMMENT
+     *
      * @return array|null COMMENT (of any other specified by $type) log item from DB with extra calculated fields
-     * @see getComments
      * @throws waException
+     * @see getComments
      */
     public function getComment($id, $type = self::ACTION_TYPE_COMMENT)
     {
         $comments = $this->getComments($id, $type);
+
         return isset($comments[$id]) ? $comments[$id] : null;
     }
 
     /**
-     * @param int[] $ids
+     * @param int[]           $ids
      * @param string|string[] $type - default is ACTION_TYPE_COMMENT
+     *
      * @return array of COMMENT (of any other specified by $type) log items indexed by 'id' field
      *   Each item also has extra calculated fields
      *    - bool 'is_empty' Empty item is when NO text and NO attachments
@@ -114,7 +121,7 @@ class tasksTaskLogModel extends waModel
         $ids = tasksHelper::dropNotPositive($ids);
 
         if (!is_array($ids) || empty($ids)) {
-            return array();
+            return [];
         }
 
         $types = tasksHelper::toStrArray($type);
@@ -123,13 +130,13 @@ class tasksTaskLogModel extends waModel
             $types[] = self::ACTION_TYPE_COMMENT;
         }
 
-        $comments = $this->getByField(array(
+        $comments = $this->getByField([
             'id' => $ids,
-            'action' => $types
-        ), 'id');
+            'action' => $types,
+        ], 'id');
 
         if (!$comments) {
-            return array();
+            return [];
         }
 
         $comment_ids = array_keys($comments);
@@ -154,31 +161,35 @@ class tasksTaskLogModel extends waModel
                     AND create_datetime>=?
                     AND assigned_contact_id IS NOT NULL
                 GROUP BY project_id, assigned_contact_id";
-        $result = array();
-        foreach($this->query($sql, (int)$contact_id, date('Y-m-d H:i:s', strtotime('-1 MONTH'))) as $row) {
+        $result = [];
+        foreach ($this->query($sql, (int) $contact_id, date('Y-m-d H:i:s', strtotime('-1 MONTH'))) as $row) {
             // !!! or vice versa
             $result[$row['assigned_contact_id']][$row['project_id']] = $row['project_id'];
         }
+
         return $result;
     }
 
     /**
      * @param int $contact_id
      * @param int $project_id
+     *
      * @return array
      */
     public function getRelatedContactIds($contact_id, $project_id = null)
     {
         $sql = 'SELECT assigned_contact_id
-                FROM '.$this->table.'
+                FROM ' . $this->table . '
                 WHERE contact_id = i:0
                     AND create_datetime>=s:1
                     AND assigned_contact_id IS NOT NULL
-                    '.($project_id ? 'AND project_id = i:2' : '').'
+                    ' . ($project_id ? 'AND project_id = i:2' : '') . '
                 GROUP BY assigned_contact_id
                 ORDER BY MAX(id) DESC';
-        return $this->query($sql,
-            (int)$contact_id,
+
+        return $this->query(
+            $sql,
+            (int) $contact_id,
             date('Y-m-d H:i:s', strtotime('-1 MONTH')),
             $project_id
         )->fetchAll(null, true);
@@ -186,6 +197,7 @@ class tasksTaskLogModel extends waModel
 
     /**
      * @param int $contact_id
+     *
      * @return array
      */
     public function getRelatedProjects($contact_id)
@@ -196,7 +208,13 @@ class tasksTaskLogModel extends waModel
                     AND create_datetime >= s:1
                 GROUP BY project_id
                 ORDER BY dt DESC";
-        return array_keys($this->query($sql, (int)$contact_id, date('Y-m-d H:i:s', strtotime('-1 MONTH')))->fetchAll('project_id', true));
+
+        return array_keys(
+            $this->query($sql, (int) $contact_id, date('Y-m-d H:i:s', strtotime('-1 MONTH')))->fetchAll(
+                'project_id',
+                true
+            )
+        );
     }
 
     public function delete($id)
@@ -209,24 +227,25 @@ class tasksTaskLogModel extends waModel
 
     public function getData(tasksTask $task)
     {
-        $logs = $this->getByTasks(array($task));
-        return ifempty($logs[$task['id']], array());
+        $logs = $this->getByTasks([$task]);
+
+        return ifempty($logs[$task['id']], []);
     }
 
     public function getByTasks($tasks)
     {
-        $result = array();
-        foreach($tasks as $t) {
+        $result = [];
+        foreach ($tasks as $t) {
             if (wa_is_int($t['id']) && wa_is_int($t['project_id'])) {
-                $result[$t['id']] = array();
+                $result[$t['id']] = [];
             }
         }
         if (!$result) {
             return $result;
         }
 
-        $sql = 'SELECT * FROM '.$this->table.' WHERE task_id IN (?) ORDER BY id ASC';
-        $logs = $this->query($sql, array(array_keys($result)))->fetchAll('id');
+        $sql = 'SELECT * FROM ' . $this->table . ' WHERE task_id IN (?) ORDER BY id ASC';
+        $logs = $this->query($sql, [array_keys($result)])->fetchAll('id');
         if (!$logs) {
             return $result;
         }
@@ -241,9 +260,9 @@ class tasksTaskLogModel extends waModel
         // Addintional log info based on previous log records of the same task
         // (e.g. whether the assignment changed)
         $empty_row = $this->getEmptyRow();
-        foreach($result as $task_id => $task_logs) {
+        foreach ($result as $task_id => $task_logs) {
             $prev_log = $empty_row;
-            foreach($task_logs as $log_id => $log) {
+            foreach ($task_logs as $log_id => $log) {
                 $result[$task_id][$log_id]['assignment_changed']
                     = $prev_log['assigned_contact_id'] != $log['assigned_contact_id'];
                 $prev_log = $log;
@@ -253,7 +272,7 @@ class tasksTaskLogModel extends waModel
         return $result;
     }
 
-    public static function workupLogs(&$logs, $options = array())
+    public static function workupLogs(&$logs, $options = [])
     {
         if (!$logs) {
             return;
@@ -270,12 +289,12 @@ class tasksTaskLogModel extends waModel
         // Fetch contact data
         $contacts = self::getLogContacts($logs);
 
-        $tasks = array();
+        $tasks = [];
         if (isset($options['tasks']) && $options['tasks'] === true) {
             $tasks = self::getLogTasks($logs);
         }
 
-        $empty_contact = array(
+        $empty_contact = [
             'id' => '',
             'name' => '',
             'photo_url' => '',
@@ -283,8 +302,8 @@ class tasksTaskLogModel extends waModel
             'middlename' => '',
             'lastname' => '',
             'company' => '',
-        );
-        $statuses = array();
+        ];
+        $statuses = [];
 
         $action_names = self::getActionsNames();
 
@@ -293,7 +312,7 @@ class tasksTaskLogModel extends waModel
             $log['contact'] = ifempty($contacts[$log['contact_id']], $empty_contact);
             $log['assigned_contact'] = ifempty($contacts[$log['assigned_contact_id']], $empty_contact);
             $log['status_changed'] = $log['before_status_id'] != $log['after_status_id'];
-            $log['params'] = ifempty($log['params'], array());
+            $log['params'] = ifempty($log['params'], []);
             foreach ($log['params'] as $k => $v) {
                 if (substr($k, -10) == 'contact_id') {
                     $log['params'][str_replace('contact_id', 'contact', $k)] = ifempty($contacts[$v], $empty_contact);
@@ -305,9 +324,9 @@ class tasksTaskLogModel extends waModel
                 if (!isset($statuses[$log['project_id']])) {
                     $statuses[$log['project_id']] = tasksHelper::getStatuses($log['project_id'], false);
                 }
-                $s = ifset($statuses[$log['project_id']][$log['after_status_id']], array(
+                $s = ifset($statuses[$log['project_id']][$log['after_status_id']], [
                     'name' => $log['after_status_id'],
-                ));
+                ]);
                 $log['action_name'] = ifempty($s['action_name'], $s['name']);
             }
 
@@ -317,18 +336,18 @@ class tasksTaskLogModel extends waModel
 
     public static function getActionsNames()
     {
-        return array(
+        return [
             self::ACTION_TYPE_CREATE => _w('created'),
             self::ACTION_TYPE_COMMENT => _w('added comment'),
             self::ACTION_TYPE_FORWARD => _w('forwarded'),
             self::ACTION_TYPE_RETURN => _w('returned'),
-            self::ACTION_TYPE_EDIT => _w('edit')
-        );
+            self::ACTION_TYPE_EDIT => _w('edit'),
+        ];
     }
 
     public static function getLogContacts($logs)
     {
-        $contacts = array();
+        $contacts = [];
         foreach ($logs as $log) {
             if ($log['contact_id']) {
                 $contacts[$log['contact_id']] = true;
@@ -345,28 +364,30 @@ class tasksTaskLogModel extends waModel
             }
         }
         if ($contacts) {
-            $collection = new waContactsCollection('id/'.implode(',', array_keys($contacts)));
+            $collection = new waContactsCollection('id/' . implode(',', array_keys($contacts)));
             $contacts = $collection->getContacts('login,firstname,middlename,lastname,name,company,photo_url');
             foreach ($contacts as &$c) {
                 $c['name'] = tasksHelper::formatName($c);
             }
             unset($c);
         }
+
         return $contacts;
     }
 
     protected static function getLogTasks($logs)
     {
-        $task_ids = array();
+        $task_ids = [];
         foreach ($logs as $log) {
             $task_ids[] = $log['task_id'];
         }
         $task_ids = array_unique($task_ids);
         if (!$task_ids) {
-            return array();
+            return [];
         }
         $hash = 'id/' . implode(',', $task_ids);
         $collection = new tasksCollection($hash);
+
         return $collection->getTasks('*,project');
     }
 
@@ -377,6 +398,7 @@ class tasksTaskLogModel extends waModel
         if (isset($options['milestone_id'])) {
             $milestone_join = "JOIN tasks_task AS t ON t.id=tl.task_id";
         }
+
         return "FROM tasks_task_log AS tl {$milestone_join}";
     }
 
@@ -385,13 +407,13 @@ class tasksTaskLogModel extends waModel
     {
         $contact_sql = '';
         if (!empty($options['contact_id'])) {
-            $contact_sql = "AND tl.contact_id=".((int)$options['contact_id']);
+            $contact_sql = "AND tl.contact_id=" . ((int) $options['contact_id']);
         }
 
         $milestone_sql = '';
         if (isset($options['milestone_id'])) {
             if ($options['milestone_id']) {
-                $milestone_sql = "AND t.milestone_id=".((int)$options['milestone_id']);
+                $milestone_sql = "AND t.milestone_id=" . ((int) $options['milestone_id']);
             } else {
                 $milestone_sql = "AND t.milestone_id IS NULL";
             }
@@ -399,13 +421,13 @@ class tasksTaskLogModel extends waModel
 
         $project_sql = '';
         if (!empty($options['project_id'])) {
-            $project_sql = "AND tl.project_id=".((int)$options['project_id']);
+            $project_sql = "AND tl.project_id=" . ((int) $options['project_id']);
         }
 
         return "WHERE 1=1 {$contact_sql} {$milestone_sql} {$project_sql}";
     }
 
-    public function getList($options, &$total_count=null)
+    public function getList($options, &$total_count = null)
     {
         $limit = null;
         $limit_sql = '';
@@ -420,14 +442,15 @@ class tasksTaskLogModel extends waModel
         }
 
         $sql = "SELECT SQL_CALC_FOUND_ROWS tl.*
-                ".self::getFromSQL($options)."
-                ".self::getWhereSQL($options)."
+                " . self::getFromSQL($options) . "
+                " . self::getWhereSQL($options) . "
                 ORDER BY id DESC
                 {$limit_sql}";
         $logs = $this->query($sql)->fetchAll('id');
         if (!$logs) {
             $total_count = 0;
-            return array();
+
+            return [];
         }
         $total_count = (int) $this->query('SELECT FOUND_ROWS()')->fetchField();
         self::workupLogs($logs, $options);
@@ -437,7 +460,7 @@ class tasksTaskLogModel extends waModel
 
     public function getPeriodByDate($options)
     {
-        if(empty($options['start_date']) || empty($options['end_date'])) {
+        if (empty($options['start_date']) || empty($options['end_date'])) {
             throw new waException('Time period is required.');
         }
 
@@ -447,20 +470,21 @@ class tasksTaskLogModel extends waModel
         }
 
         $sql = "SELECT {$date_sql} AS `date`, after_status_id AS status_id, count(*) AS `count`
-                ".self::getFromSQL($options)."
-                ".self::getWhereSQL($options)."
+                " . self::getFromSQL($options) . "
+                " . self::getWhereSQL($options) . "
                     AND tl.create_datetime >= ?
                     AND tl.create_datetime <= ?
                 GROUP BY `date`, status_id";
-        $rows = $this->query($sql, array(
+        $rows = $this->query($sql, [
             $options['start_date'],
             $options['end_date'],
-        ));
+        ]);
 
-        $result = array();
-        foreach($rows as $row) {
+        $result = [];
+        foreach ($rows as $row) {
             $result[$row['date']][$row['status_id']] = (int) $row['count'];
         }
+
         return $result;
     }
 
@@ -468,17 +492,35 @@ class tasksTaskLogModel extends waModel
     {
         // !!! TODO: create index tasks_task_log.create_datetime
         $sql = "SELECT DATE(MIN(create_datetime)) FROM tasks_task_log WHERE create_datetime!='0000-00-00'";
+
         return $this->query($sql)->fetchField();
     }
 
     public function countAttachments($log_id)
     {
         $am = new tasksAttachmentModel();
+
         return $am->countByLogId($log_id);
     }
 
     public function getLast($task_id)
     {
         return $this->select('*')->where('task_id = ?', $task_id)->order('id DESC')->fetchAssoc();
+    }
+
+    public function getLastByContactIds(array $contactIds): array
+    {
+        return $this->query(
+            sprintf(
+                'select * from %s where id in (
+        select max(id) id
+        from %s
+        where contact_id in (i:contact_ids)
+        group by contact_id)',
+                $this->table,
+                $this->table
+            ),
+            ['contact_ids' => $contactIds]
+        )->fetchAll('contact_id');
     }
 }
