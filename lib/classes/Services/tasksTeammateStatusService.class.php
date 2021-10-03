@@ -51,12 +51,12 @@ SQL;
         return $statuses;
     }
 
-    public function getForContact(
-        waContact $contact,
+    public function getForContactId(
+        $contactId,
         DateTimeInterface $date,
         bool $force = false
     ): ?tasksTeammateStatusDto {
-        $key = 'getForContact' . $contact->getId() . $date->format('Y-m-d');
+        $key = 'getForContact' . $contactId . $date->format('Y-m-d');
         $result = tsks()->getCache()->get($key);
         if (!$force && $result) {
             return $result;
@@ -93,7 +93,7 @@ SQL;
         $result = tsks()->getModel()->query(
             $sql,
             [
-                'contact_id' => $contact->getId(),
+                'contact_id' => $contactId,
                 'date1' => $date->format('Y-m-d 00:00:00'),
                 'date2' => $date->format('Y-m-d 23:59:59'),
                 'date3' => $date->format('Y-m-d H:i:s'),

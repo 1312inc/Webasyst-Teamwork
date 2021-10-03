@@ -15,6 +15,8 @@ class tasksBackendAction extends waViewAction
         $tag_model = new tasksTaskTagsModel();
         $cloud = $tag_model->getCloud();
 
+        $users = tasksHelper::getTeam(null, true, false, true);
+
         $countService = new tasksUserTasksCounterService();
         $viewData = [
             'team_counts' => $countService->getTeamCounts(wa()->getUser()),
@@ -30,6 +32,7 @@ class tasksBackendAction extends waViewAction
             'cloud' => $cloud,
             'scopes' => $this->getScopes(),
             'team_app_name' => $this->getTeamAppName(),
+            'users' => $users,
         ];
 
         $this->view->assign($viewData);

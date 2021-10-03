@@ -301,7 +301,7 @@ class tasksHelper
         return $path . $attach['id'] . ($attach['ext'] ? '.' . $attach['ext'] : '');
     }
 
-    public static function getTeam($project_id = null, $only_active = false, $withDisabled = false)
+    public static function getTeam($project_id = null, $only_active = false, $withDisabled = false, $withCalendarStatus = false)
     {
         static $contacts = null;
 
@@ -320,6 +320,7 @@ class tasksHelper
                 foreach ($data as $contact_id => $c) {
                     $data[$contact_id]['name'] = self::formatName($c);
                     $data[$contact_id]['is_active'] = false;
+                    $data[$contact_id]['calendar_status'] = null;
                 }
 
                 uasort(
@@ -366,6 +367,13 @@ class tasksHelper
                 if ($c['is_user'] == -1) {
                     unset($data[$contact_id]);
                 }
+            }
+        }
+
+        if ($withCalendarStatus) {
+            $statusService = new tasksTeammateStatusService();
+            foreach ($data as $contact_id => $c) {
+                $data[$contact_id]['calendar_status'] = $statusService->getForContactId($contact_id, new DateTimeImmutable());
             }
         }
 

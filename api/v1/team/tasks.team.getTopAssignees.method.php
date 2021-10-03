@@ -16,13 +16,8 @@ class tasksTeamGetTopAssigneesMethod extends tasksApiAbstractMethod
 
         $users = (new tasksApiTeamGetTopAssigneesHandler())->getUsers($request);
 
-        $statusService = new tasksTeammateStatusService();
-
         $list = [];
         foreach ($users as $user) {
-            $contact = new waContact($user['id']);
-            $status = $statusService->getForContact($contact, new DateTimeImmutable());
-
             $list[] = new tasksApiTeammateDto(
                 new tasksApiContactDto(
                     (int) $user['id'],
@@ -30,11 +25,11 @@ class tasksTeamGetTopAssigneesMethod extends tasksApiAbstractMethod
                     wa()->getConfig()->getHostUrl() . $user['photo_url'],
                     wa()->getUser()->getId() == $user['id']
                 ),
-                $status
+                $user['calendar_status']
                     ? new tasksApiContactStatusDto(
-                    $status->getName(),
-                    $status->getBgColor(),
-                    $status->getFontColor()
+                    $user['calendar_status']->getName(),
+                    $user['calendar_status']->getBgColor(),
+                    $user['calendar_status']->getFontColor()
                 ) : null
             );
         }

@@ -14,7 +14,7 @@ class tasksTasksForwardAction extends waViewAction
             }
 
             $this->view->assign(array(
-                'users' => tasksHelper::getTeam($task['project_id']),
+                'users' => tasksHelper::getTeam($task['project_id'], false, false, true),
                 'statuses' => tasksHelper::getStatuses($task['project_id']),
                 'form_url' => '?module=tasksLog&action=forward&id='.$task['id'],
                 'selected_user' => $task['assigned_contact_id'],
@@ -25,7 +25,7 @@ class tasksTasksForwardAction extends waViewAction
         } else {
             $this->view->assign(array(
                 'projects' => tasksHelper::getProjects(),
-                'users' => tasksHelper::getTeam(),
+                'users' => tasksHelper::getTeam(null, false, false, true),
                 'statuses' => tasksHelper::getStatuses(),
                 'form_url' => '?module=tasksBulk&action=forward',
                 'selected_status_id' => null,

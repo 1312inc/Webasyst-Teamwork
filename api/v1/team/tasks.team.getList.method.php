@@ -10,21 +10,17 @@ class tasksTeamGetListMethod extends tasksApiAbstractMethod
         $logs = tsks()->getModel('tasksTaskLog')
             ->getLastByContactIds(array_column($users, 'id'));
 
-        $statusService = new tasksTeammateStatusService();
-
         foreach ($users as $user) {
             $contact = new waContact($user['id']);
-
-            $status = $statusService->getForContact($contact, new DateTimeImmutable());
 
             $list[] = new tasksApiTeammateDetailsDto(
                 tasksApiContactDtoFactory::fromContact($contact),
                 tasksApiTeammateContactInfoDtoFactory::createFromContact($contact),
-                $status
+                $user['calendar_status']
                     ? new tasksApiContactStatusDto(
-                    $status->getName(),
-                    $status->getBgColor(),
-                    $status->getFontColor()
+                    $user['calendar_status']->getName(),
+                    $user['calendar_status']->getBgColor(),
+                    $user['calendar_status']->getFontColor()
                 ) : null,
                 isset($logs[$user['id']]) ? tasksApiLogDtoFactory::createFromArray($logs[$user['id']]) : null,
                 (new waUserGroupsModel())->getGroups($contact->getId()) ?? []
