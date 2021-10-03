@@ -8,7 +8,7 @@ final class tasksApiPushEnableHandler
 
         $existingClient = $pushClientModel->getById($enableRequest->getClientId());
         if ($existingClient) {
-            throw new tasksException('Already subscribed');
+            return true;
         }
 
         return (bool) $pushClientModel->insert([
