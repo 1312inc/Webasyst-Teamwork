@@ -8,13 +8,18 @@ class tasksCountsGetKeyFilterCountsMethod extends tasksApiAbstractMethod
 
         $response = [];
         /**
-         * @var string $hash
+         * @var string                     $hash
          * @var tasksUserTasksCountPairDto $countDatum
          */
         foreach ($countData as $hash => $countDatum) {
             $response[] = new tasksApiHashCountDto(
                 $hash,
-                new tasksApiCountsDto(null, $countDatum->getCountRed(), $countDatum->getTotal(), null)
+                new tasksApiCountsDto(
+                    null,
+                    $countDatum->getCountRed(),
+                    $countDatum->getTotal(),
+                    $countDatum->getTotal()
+                )
             );
         }
 
