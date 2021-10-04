@@ -28,14 +28,13 @@ final class tasksProjectIconUploader
             $newName = tasksUuid4::generate() . '.' . $image->getExt();
             $success = $image->save(sprintf('%s/%s', $path, $newName));
             if ($success) {
+                $this->clear($iconDir);
+
                 return sprintf('%s/%s', $this->getProjectIconsUrl($projectId), $newName);
             }
         }
 
-        try {
-            waFiles::delete($iconDir);
-        } catch (waException $e) {
-        }
+        $this->clear($iconDir);
 
         return false;
     }
@@ -51,5 +50,13 @@ final class tasksProjectIconUploader
     private function getProjectIconsUrl($projectId): string
     {
         return wa()->getDataUrl(self::BASE_DIR . $projectId, true, 'tasks', true);
+    }
+
+    private function clear($iconDir)
+    {
+        try {
+            waFiles::delete($iconDir);
+        } catch (waException $e) {
+        }
     }
 }
