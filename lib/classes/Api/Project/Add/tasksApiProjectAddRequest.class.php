@@ -33,22 +33,18 @@ final class tasksApiProjectAddRequest
     private $workflow;
 
     /**
-     * tasksApiProjectAddRequest constructor.
-     *
-     * @param string                 $name
-     * @param string|null            $icon
-     * @param string|null            $color
-     * @param string|null            $icon_url
-     * @param int                    $sort
-     * @param array|null             $workflow
+     * @var string|null
      */
+    private $icon_hash;
+
     public function __construct(
         string $name,
         ?string $icon,
         ?string $color,
         ?string $icon_url,
         int $sort,
-        ?array $workflow
+        ?array $workflow,
+        ?string $icon_hash
     ) {
         $this->name = $name;
         $this->icon = $icon;
@@ -56,6 +52,7 @@ final class tasksApiProjectAddRequest
         $this->sort = $sort;
         $this->icon_url = $icon_url;
         $this->workflow = $workflow;
+        $this->icon_hash = $icon_hash;
     }
 
     public function getName(): string
@@ -86,5 +83,10 @@ final class tasksApiProjectAddRequest
     public function getWorkflow(): ?array
     {
         return $this->workflow;
+    }
+
+    public function getIconHash(): ?string
+    {
+        return $this->icon_hash;
     }
 }

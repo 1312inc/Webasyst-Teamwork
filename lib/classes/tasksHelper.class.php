@@ -541,29 +541,37 @@ class tasksHelper
         $timestamp = time() - $timestamp;
         if ($timestamp < 60) {
             return _w('Just now');
-        } elseif ($timestamp < 3600) {
+        }
+
+        if ($timestamp < 3600) {
             return _w('%d min', '%d mins', round($timestamp / 60));
-        } elseif ($timestamp < 24 * 3600) {
+        }
+
+        if ($timestamp < 24 * 3600) {
             $period = 3600;
             $string = _w('%d hr', '%d hrs', 5, false);
 
             return _w('%d hr', '%d hrs', round($timestamp / 3600));
-        } elseif ($timestamp < 30 * 24 * 3600) {
+        }
+
+        if ($timestamp < 30 * 24 * 3600) {
             $period = 24 * 3600;
             $string = _w('%d d');
 
             return sprintf(_w('%d d'), round($timestamp / (24 * 3600)));
-        } elseif ($timestamp < 365 * 24 * 3600) {
+        }
+
+        if ($timestamp < 365 * 24 * 3600) {
             $period = 30 * 24 * 3600;
             $string = _w('%d mo', '%d mo', 5, false);
 
             return _w('%d mo', '%d mo', round($timestamp / (30 * 24 * 3600)));
-        } else {
-            $period = 365 * 24 * 3600;
-            $string = _w('%d yr', '%d yrs', 5, false);
-
-            return _w('%d yr', '%d yrs', round($timestamp / (365 * 24 * 3600)));
         }
+
+        $period = 365 * 24 * 3600;
+        $string = _w('%d yr', '%d yrs', 5, false);
+
+        return _w('%d yr', '%d yrs', round($timestamp / (365 * 24 * 3600)));
     }
 
     public static function addLog($task, $log, $send_notification = true)

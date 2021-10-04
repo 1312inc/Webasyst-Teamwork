@@ -27,7 +27,8 @@ class tasksProjectsAddMethod extends tasksApiAbstractMethod
             $this->post('color', false, self::CAST_STRING_TRIM),
             $this->post('icon_url', false, self::CAST_STRING_TRIM),
             (int) $this->post('sort', false, self::CAST_INT),
-            $workflow
+            $workflow,
+            $this->post('icon_hash', false, self::CAST_STRING_TRIM)
         );
 
         return new tasksApiProjectResponse((new tasksApiProjectAddHandler())->add($request));

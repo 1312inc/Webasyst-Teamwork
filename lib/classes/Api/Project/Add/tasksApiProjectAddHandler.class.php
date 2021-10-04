@@ -30,6 +30,14 @@ final class tasksApiProjectAddHandler
             throw new tasksException('Error on project add');
         }
 
+        if ($addRequest->getIconHash()) {
+            $iconUrl = (new tasksProjectIconUploader())->uploadIcon($addRequest->getIconHash(), $project->getId());
+            if ($iconUrl) {
+                $project->setIcon($iconUrl);
+                tsks()->getPersister()->save($project);
+            }
+        }
+
         return $project;
     }
 }

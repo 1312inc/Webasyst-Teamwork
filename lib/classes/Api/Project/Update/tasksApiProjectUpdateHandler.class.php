@@ -37,6 +37,13 @@ final class tasksApiProjectUpdateHandler
             }
         }
 
+        if ($updateRequest->getIconHash()) {
+            $iconUrl = (new tasksProjectIconUploader())->uploadIcon($updateRequest->getIconHash(), $project->getId());
+            if ($iconUrl) {
+                $project->setIcon($iconUrl);
+            }
+        }
+
         if (!tsks()->getEntityRepository(tasksProject::class)->save($project, $newStatuses)) {
             throw new tasksException('Error on project update');
         }

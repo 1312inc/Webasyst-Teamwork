@@ -1103,6 +1103,10 @@ paths:
                 icon_url:
                   type: string
                   nullable: true
+                icon_hash:
+                  description: хеш загруженного файла с логотипом
+                  type: string
+                  nullable: true
                 sort:
                   type: integer
                   default: 0
@@ -1153,6 +1157,10 @@ paths:
                   type: string
                   nullable: true
                 icon_url:
+                  type: string
+                  nullable: true
+                icon_hash:
+                  description: хеш загруженного файла с логотипом
                   type: string
                   nullable: true
                 sort:

@@ -24,11 +24,12 @@ class tasksProjectsUpdateMethod extends tasksApiAbstractMethod
         $request = new tasksApiProjectUpdateRequest(
             $this->post('id', true, self::CAST_INT),
             $this->post('name', true, self::CAST_STRING_TRIM),
-            $this->post('icon', true, self::CAST_STRING_TRIM),
-            $this->post('color', true, self::CAST_STRING_TRIM),
-            $this->post('icon_url', true, self::CAST_STRING_TRIM),
+            $this->post('icon', false, self::CAST_STRING_TRIM),
+            $this->post('color', false, self::CAST_STRING_TRIM),
+            $this->post('icon_url', false, self::CAST_STRING_TRIM),
             $this->post('sort', true, self::CAST_INT),
-            $workflow
+            $workflow,
+            $this->post('icon_hash', false, self::CAST_STRING_TRIM)
         );
 
         return new tasksApiProjectResponse((new tasksApiProjectUpdateHandler())->update($request));

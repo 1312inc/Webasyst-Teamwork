@@ -25,6 +25,8 @@ final class tasksApiProjectDeleteHandler
             throw new tasksException('Error on project delete');
         }
 
+        waFiles::delete((new tasksProjectIconUploader())->getProjectIconsPath($project->getId()), true);
+
         return true;
     }
 }
