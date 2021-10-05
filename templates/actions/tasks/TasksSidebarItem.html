@@ -155,7 +155,7 @@
             {if !empty($task['log'][$log_id])}
                 {$_l = $task.log[$log_id]}
                 {if $_l.text}
-                    <div class="box custom-mb-8 t-pinned-comment blue smaller"><i class="icon userpic middle" style="background-image: url('{$_l.contact.photo_url}');"></i> {$_l.text|escape|truncate:255} <span class="hint nowrap">{$_l.create_datetime|wa_datetime:'humandatetime'}</span></div>
+                    <div class="box custom-mb-8 t-pinned-comment blue smaller break-word"><i class="icon userpic middle" style="background-image: url('{$_l.contact.photo_url}');"></i> {$_l.text|escape|truncate:255} <span class="hint nowrap">{$_l.create_datetime|wa_datetime:'humandatetime'}</span></div>
                 {/if}
             {/if}
         {/foreach}
