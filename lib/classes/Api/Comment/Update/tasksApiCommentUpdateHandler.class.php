@@ -56,8 +56,10 @@ final class tasksApiCommentUpdateHandler
             throw new tasksException('Error on delete comment');
         }
 
-        tsks()->getModel('waLog')
-            ->add('task_comment_edit', $comment['task_id'] . ':' . $comment['id']);
+        (new tasksWaLogManager())->logAction(
+            tasksWaLogManager::LOG_COMMENT_EDIT,
+            sprintf('%d:%d:%s', $comment['task_id'], $comment['id'], $updateRequest->getText())
+        );
 
         return $comment;
     }

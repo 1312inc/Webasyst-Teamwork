@@ -29,7 +29,7 @@ final class tasksPushSenderService
 
         $waidCredentials = (new waAppSettingsModel())->get('webasyst', 'waid_credentials');
         $waidCredentials = json_decode($waidCredentials, true);
-        $this->waInstallationId = $waidCredentials['client_id'] ?: null;
+        $this->waInstallationId = $waidCredentials['client_id'] ?? null;
     }
 
     /**

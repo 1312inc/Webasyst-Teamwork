@@ -19,11 +19,18 @@ final class tasksApiCommentAddHandler
             ]
         );
 
-        tsks()->getModel('waLog')
-            ->add('task_comment', sprintf('%d:%d', $addRequest->getTaskId(), $log['id']));
-
         tsks()->getModel(tasksTask::class)
             ->update($addRequest->getTaskId(), ['comment_log_id' => $log['id']]);
+
+        (new tasksWaLogManager())->logAction(
+            tasksWaLogManager::LOG_COMMENT,
+            sprintf(
+                '%d:%d:%s',
+                $addRequest->getTaskId(),
+                $log['id'],
+                json_encode(['comment_text' => $addRequest->getText()], JSON_UNESCAPED_UNICODE)
+            )
+        );
 
         return $log;
     }

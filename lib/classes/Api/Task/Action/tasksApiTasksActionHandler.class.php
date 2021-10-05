@@ -46,8 +46,15 @@ final class tasksApiTasksActionHandler
             'attachments_hash' => (string) $actionRequest->getFilesHash(),
         ]);
 
-        tsks()->getModel('waLog')
-            ->add('task_forward', $log['task_id'] . ':' . $log['id']);
+        (new tasksWaLogManager())->logAction(
+            tasksWaLogManager::LOG_FORWARD,
+            sprintf(
+                '%d:%d:%s',
+                $log['task_id'],
+                $log['id'],
+                json_encode(['action_text' => $actionRequest->getText()], JSON_UNESCAPED_UNICODE)
+            )
+        );
 
         return $log;
     }
@@ -74,8 +81,16 @@ final class tasksApiTasksActionHandler
             'attachments_hash' => (string) $actionRequest->getFilesHash(),
         ]);
 
-        tsks()->getModel('waLog')
-            ->add('task_return', $log['task_id'] . ':' . $log['id']);
+
+        (new tasksWaLogManager())->logAction(
+            tasksWaLogManager::LOG_RETURN,
+            sprintf(
+                '%d:%d:%s',
+                $log['task_id'],
+                $log['id'],
+                json_encode(['action_text' => $actionRequest->getText()], JSON_UNESCAPED_UNICODE)
+            )
+        );
 
         return $log;
     }
@@ -131,8 +146,15 @@ final class tasksApiTasksActionHandler
 
         wa('tasks')->event('save_status_form', $params);
 
-        tsks()->getModel('waLog')
-            ->add('task_action', $log['task_id'] . ':' . $log['id']);
+        (new tasksWaLogManager())->logAction(
+            tasksWaLogManager::LOG_ACTION,
+            sprintf(
+                '%d:%d:%s',
+                $log['task_id'],
+                $log['id'],
+                json_encode(['action_text' => $actionRequest->getText()], JSON_UNESCAPED_UNICODE)
+            )
+        );
 
         return $log;
     }

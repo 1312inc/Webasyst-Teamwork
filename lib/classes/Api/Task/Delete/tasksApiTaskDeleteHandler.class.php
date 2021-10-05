@@ -53,8 +53,7 @@ final class tasksApiTaskDeleteHandler
         tsks()->getModel('tasksTag')
             ->deleteUnusedTags();
 
-        tsks()->getModel('waLog')
-            ->add('task_delete', count($taskIds));
+        (new tasksWaLogManager())->logDelete(count($taskIds));
 
         return $taskIds;
     }
