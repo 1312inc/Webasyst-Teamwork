@@ -6,6 +6,7 @@ class tasksCollection
 
     public const HASH_SEARCH     = 'search';
     public const HASH_UNASSIGNED = 'unassigned';
+    public const HASH_ASSIGNED   = 'assigned';
     public const HASH_TAG        = 'tag';
     public const HASH_INBOX      = 'inbox';
     public const HASH_FAVORITES  = 'favorites';
