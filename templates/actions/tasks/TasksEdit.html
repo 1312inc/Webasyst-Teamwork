@@ -271,9 +271,9 @@
                                         <span>
                                             {$user.name|escape}
                                             {if ($user.id == $wa->user('id'))}
-                                                &nbsp;<span class="gray">([`me`])</span>
+                                                <span class="gray custom-ml-4">([`me`])</span>
                                             {/if}
-                                            {if $user.calendar_status}<span class="badge" style="background-color: {$user.calendar_status->getBgColor()};color: {$user.calendar_status->getFontColor()};">{$user.calendar_status->getName()}</span>{/if}
+                                            {if $user.calendar_status}<span class="badge small nowrap custom-ml-4" style="background-color: {$user.calendar_status->getBgColor()};color: {$user.calendar_status->getFontColor()};" title="{$user.calendar_status->getName()|escape}">{$user.calendar_status->getName()|escape|truncate:42}</span>{/if}
                                         </span>
                                     </label>
                                 </li>

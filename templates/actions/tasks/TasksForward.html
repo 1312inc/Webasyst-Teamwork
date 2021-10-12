@@ -79,12 +79,14 @@
                                    <input type="radio" name="assigned_contact_id" value="{$user.id}" {if ($selected_user == $user.id)}checked="checked"{/if}>
                                    <span></span>
                                </span>
-                                <i class="userpic userpic-32" style="background-image: url({$_userpic});"></i>
+                               <i class="userpic userpic-32" style="background-image: url({$_userpic});"></i>
+                               <span>
                                 <span>{$user.name|escape}</span>
                                 {if ($user.id == $wa->user('id'))}
-                                    <span class="gray">([`me`])</span>
+                                    <span class="gray custom-ml-4">([`me`])</span>
                                 {/if}
-                                {if $user.calendar_status}<span class="badge" style="background-color: {$user.calendar_status->getBgColor()};color: {$user.calendar_status->getFontColor()};">{$user.calendar_status->getName()}</span>{/if}
+                                {if $user.calendar_status}<span class="badge smaller nowrap custom-ml-4" style="background-color: {$user.calendar_status->getBgColor()};color: {$user.calendar_status->getFontColor()};" title="{$user.calendar_status->getName()|escape}">{$user.calendar_status->getName()|escape|truncate:23}</span>{/if}
+                               </span>
                             </label>
                         </li>
                     {/foreach}

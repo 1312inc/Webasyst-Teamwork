@@ -275,8 +275,10 @@
                                     <i class="userpic" style="background-image: url({waContact::getPhotoUrl($user.id, $user.photo, 40, 40, 'person', 0)})"></i>
                                 </span>
                                 <span>{$user.name|escape}</span>
-                                {if $user.calendar_status}<span class="badge" style="background-color: {$user.calendar_status->getBgColor()};color: {$user.calendar_status->getFontColor()};">{$user.calendar_status->getName()}</span>{/if}
-                                <span class="count">{user_count user_id=$user.id}</span>
+                                <span class="count">
+                                    {user_count user_id=$user.id}
+                                    {if $user.calendar_status}<span class="badge small nowrap" style="background-color: {$user.calendar_status->getBgColor()};color: {$user.calendar_status->getFontColor()};" title="{$user.calendar_status->getName()|escape}">{$user.calendar_status->getName()|escape|truncate:13}</span>{/if}
+                                </span>
                             </a>
                         </li>
                     {/foreach}
