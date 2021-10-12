@@ -67,7 +67,7 @@ class tasksLogAction extends tasksTasksAction
         ];
     }
 
-    protected static function getMilestoneFilterType()
+    protected static function getMilestoneFilterType(): array
     {
         $result = parent::getMilestoneFilterType();
         $result['0']['id'] = '0';
