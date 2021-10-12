@@ -205,6 +205,9 @@
                                         <p class="small custom-mb-0">
                                             {if empty($_assigned_contact.delete) && $_assigned_contact.id}
                                                 <a href="#/tasks/assigned/{$_assigned_contact.id}/" class="black bold">{$_assigned_contact.name|escape}</a>
+                                                {if $taskAssignedContactStatus}
+                                                    <span class="badge smaller nowrap custom-ml-4" style="background-color: {$taskAssignedContactStatus->getBgColor()};color: {$taskAssignedContactStatus->getFontColor()};" title="{$taskAssignedContactStatus->getName()|escape}">{$taskAssignedContactStatus->getName()|escape|truncate:23}</span>
+                                                {/if}
                                             {else}
                                                 <strong class="gray">[`Unassigned`]</strong>
                                             {/if}
