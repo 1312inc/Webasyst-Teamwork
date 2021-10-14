@@ -90,8 +90,11 @@
                 {$time_since_update_period = null}
                 {$time_since_update_template = null}
                 {$time_since_update_str = tasksHelper::getDatetime($task.update_datetime, $time_since_update_period, $time_since_update_template)}
+                
+                {* js updateTimeCounter fix *}
+                {$time_since_update_str = str_replace('mins', 'min', $time_since_update_str)}
 
-                <span class="t-date-wrapper small gray nowrap semibold" data-since="{$task.update_datetime}">{$time_since_update_str}</span>
+                <span class="t-date-wrapper small gray nowrap semibold" data-since='{$task.update_datetime|wa_datetime:"Y-m-d H:i:s"}'>{$time_since_update_str}</span> 
 
             </span>
 

@@ -196,7 +196,7 @@
                 $.each($('.list .item .t-date-wrapper'), function() {
                     var since = $(this).data('since'),
                         date1 = new Date(),
-                        date2 = new Date(since + " UTC"),
+                        date2 = new Date(since),
                         diffTime = Math.abs(date2 - date1),
                         diffMins = diffTime / (1000 * 60);
 
