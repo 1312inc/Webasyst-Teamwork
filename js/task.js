@@ -467,11 +467,21 @@ var Task = ( function($) {
 
             $task.on("click", ".t-forward-link", function() {
                 showForwardForm();
+                var $link = $(this);
+                $link.addClass('disabled');
+                setTimeout(function () {
+                    $link.removeClass('disabled');
+                }, 1000);
                 return false;
             });
 
             $task.on("click", ".t-return-link", function() {
                 showReturnForm();
+                var $link = $(this);
+                $link.addClass('disabled');
+                setTimeout(function () {
+                    $link.removeClass('disabled');
+                }, 1000);
                 return false;
             });
 
@@ -481,6 +491,11 @@ var Task = ( function($) {
                     status_id = $link.data('statusId'),
                     current_user_id = that.user_id,
                     skip_form = !!e.shiftKey;
+
+                $link.addClass('disabled');
+                setTimeout(function () {
+                    $link.removeClass('disabled');
+                }, 1000);
 
                 // Show spinner if Status has no form
                 if ($link.data('has-form') === 0) {
