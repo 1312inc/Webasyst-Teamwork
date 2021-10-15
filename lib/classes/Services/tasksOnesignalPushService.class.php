@@ -28,7 +28,7 @@ class tasksOnesignalPushService extends onesignalPush
     {
         $requestData = $this->prepareRequestData($data->toArray());
 
-        $clientIds = $this->tasksPushClientModel->getByField('contact_id', $contact_id);
+        $clientIds = $this->tasksPushClientModel->getByField('contact_id', $contact_id) ?: [];
 
         $result = [];
         foreach ($clientIds as $clientId) {

@@ -2,13 +2,13 @@
 
 class tasksRights
 {
-    const PROJECT_ACCESS_NONE = 0;
-    const PROJECT_ACCESS_VIEW_ASSIGNED_TASKS = 1;
-    const PROJECT_ACCESS_FULL = 2;
+    public const PROJECT_ACCESS_NONE                = 0;
+    public const PROJECT_ACCESS_VIEW_ASSIGNED_TASKS = 1;
+    public const PROJECT_ACCESS_FULL                = 2;
 
     /**
      * @param tasksTask[]|array[] $tasks
-     * @param int|int[] $contact_id
+     * @param int|int[]           $contact_id
      */
     public function extendTasksByRightsInfo(&$tasks, $contact_id = null)
     {
@@ -20,19 +20,19 @@ class tasksRights
             return;
         }
 
-        $empty_rights = array(
+        $empty_rights = [
             'can_view' => false,
             'can_edit' => false,
             'can_delete' => false,
             'access' => 0  // raw access to project
-        );
+        ];
 
         // First of all extend by raw access value each
         $tasks_access = $this->getTasksAccess($tasks, $contact_ids);
         foreach ($tasks as &$task) {
             $collected_rights_info = array_fill_keys($contact_ids, $empty_rights);
             foreach ($contact_ids as $contact_id) {
-                $collected_rights_info[$contact_id]['access'] = (int)ifset($tasks_access[$task['id']][$contact_id]);
+                $collected_rights_info[$contact_id]['access'] = (int) ifset($tasks_access[$task['id']][$contact_id]);
             }
             $task['rights_info'] = $collected_rights_info;
         }
@@ -41,7 +41,7 @@ class tasksRights
         // For establish 'can_delete' we need for each contact fetch task counters of 'not own' log items
         // see below
         // [<contact_id>][<task_id>] = <count>
-        $log_items_counters = array();
+        $log_items_counters = [];
 
         // First pass through just for preparation before extracting auxiliary data
         foreach ($tasks as $task) {
@@ -94,7 +94,7 @@ class tasksRights
                     // * BUT if with this task already work other users ($counter > 0) author CAN NOT delete
                     $rights_info['can_delete'] = $is_author;
                     if ($rights_info['can_delete']) {
-                        $counter = (int)ifset($log_items_counters[$contact_id][$task['id']]);
+                        $counter = (int) ifset($log_items_counters[$contact_id][$task['id']]);
                         if ($counter > 0) {
                             $rights_info['can_delete'] = false;
                         }
@@ -104,7 +104,7 @@ class tasksRights
                     $rights_info['can_view'] = $is_assigned || $is_author;
 
                     // establish 'can_edit'
-                    $rights_info['can_edit']  = $is_author;
+                    $rights_info['can_edit'] = $is_author;
 
                     continue;
                 }
@@ -133,12 +133,13 @@ class tasksRights
 
     /**
      * @param array|tasksTask|int $task
-     * @param int|waContact|null $contact
-     * @param array $options
+     * @param int|waContact|null  $contact
+     * @param array               $options
      *   'can_view_clarify' bool If need clarify can_view right
+     *
      * @return bool
      */
-    public function getTaskRightsInfo($task, $contact = null, $options = array())
+    public function getTaskRightsInfo($task, $contact = null, $options = [])
     {
         $contact_id = $this->getContactId($contact);
         if ($contact_id === false) {
@@ -153,20 +154,20 @@ class tasksRights
             }
         }
 
-        $tasks = array($task);
+        $tasks = [$task];
         $this->extendTasksByRightsInfo($tasks, $contact_id);
         $task = reset($tasks);
         $info = $task['rights_info'];
 
-        $options = is_array($options) ? $options : array();
-        $can_view_clarify = (bool)ifset($options['can_view_clarify']);
+        $options = is_array($options) ? $options : [];
+        $can_view_clarify = (bool) ifset($options['can_view_clarify']);
 
         // special case - can_view clarifying by checking last log item
         if (!$info['can_view'] && $info['access'] == self::PROJECT_ACCESS_VIEW_ASSIGNED_TASKS && $can_view_clarify) {
             if (!isset($task['log'])) {
                 $lm = new tasksTaskLogModel();
-                $log = $lm->getByTasks(array($task['id'] => $task));
-                $task['log'] = isset($log[$task['id']]) ? $log[$task['id']] : array();
+                $log = $lm->getByTasks([$task['id'] => $task]);
+                $task['log'] = isset($log[$task['id']]) ? $log[$task['id']] : [];
             }
             $log = $task['log'];
             $log_item = end($log);
@@ -186,11 +187,11 @@ class tasksRights
             $contact = wa()->getUser()->getId();
         }
         if (wa_is_int($contact)) {
-            return (int)$contact;
+            return (int) $contact;
         } elseif (is_array($contact) && isset($contact['id'])) {
-            return (int)$contact['id'];
+            return (int) $contact['id'];
         } elseif ($contact instanceof waContact) {
-            return (int)$contact['id'];
+            return (int) $contact['id'];
         } else {
             return false;
         }
@@ -198,8 +199,9 @@ class tasksRights
 
     /**
      * @param array|tasksTask|int $task
-     * @param int|waContact|null $contact
-     * @param $clarify bool Extra checking for clarify right
+     * @param int|waContact|null  $contact
+     * @param                     $clarify bool Extra checking for clarify right
+     *
      * @return bool
      */
     public function canViewTask($task, $contact = null, $clarify = false)
@@ -208,50 +210,58 @@ class tasksRights
         if ($contact_id === false) {
             return false;
         }
-        $info = $this->getTaskRightsInfo($task, $contact, array(
-            'can_view_clarify' => $clarify
-        ));
+        $info = $this->getTaskRightsInfo($task, $contact, [
+            'can_view_clarify' => $clarify,
+        ]);
+
         return $info !== false && $info['can_view'];
     }
 
     /**
      * @param array|tasksTask|int $task
-     * @param int|waContact|null $contact
+     * @param int|waContact|null  $contact
+     *
      * @return bool
      */
     public function canEditTask($task, $contact = null)
     {
         $info = $this->getTaskRightsInfo($task, $contact);
+
         return $info !== false && $info['can_edit'];
     }
 
     /**
      * @param array|tasksTask|int $task
-     * @param int|waContact|null $contact
+     * @param int|waContact|null  $contact
+     *
      * @return bool
      */
     public function canDeleteTask($task, $contact = null)
     {
         $info = $this->getTaskRightsInfo($task, $contact);
+
         return $info !== false && $info['can_delete'];
     }
 
     /**
      * @param array|tasksTask|int $task
-     * @param int|waContact|null $contact
+     * @param int|waContact|null  $contact
+     *
      * @return bool
      */
     public function hasFullAccessToTask($task, $contact = null)
     {
         $info = $this->getTaskRightsInfo($task, $contact);
+
         return $info !== false && $info['access'] == self::PROJECT_ACCESS_FULL;
     }
 
     /**
      * Extend array of log items by information about rights to each log_item for each contact
      **
-     * @param array $log_items Array of DB-record (DB-record is also associative array: field => value)
-     *   Each log_item MUST has field: 'id', 'text', 'action'
+     *
+     * @param array          $log_items  Array of DB-record (DB-record is also associative array: field => value)
+     *                                   Each log_item MUST has field: 'id', 'text', 'action'
      *
      * Log items passed by &, so each log item will be modified - extended by
      *   array 'rights_info' - Rights info descriptor
@@ -259,7 +269,7 @@ class tasksRights
      *     - bool 'can_delete' Can contact delete log_item?
      *
      * @param int|int[]|null $contact_id one or more contact IDs for which rights info will be defined
-     *   If $contact_id IS NULL than get current user id
+     *                                   If $contact_id IS NULL than get current user id
      */
     public function extendLogItemsByRightsInfo(&$log_items, $contact_id = null)
     {
@@ -287,15 +297,15 @@ class tasksRights
         $attachment_counters = $lm->countAttachments($log_item_ids);
 
         // Collect task IDs - cause rights of tasks matter also
-        $task_ids = array();
+        $task_ids = [];
         foreach ($log_items as $log_item) {
             $log_item_id = $log_item['id'];
-            $attachment_count = (int)ifset($attachment_counters[$log_item_id]);
-            $log_item_text = isset($log_item['text']) && is_scalar($log_item['text']) ? (string)$log_item['text'] : '';
+            $attachment_count = (int) ifset($attachment_counters[$log_item_id]);
+            $log_item_text = isset($log_item['text']) && is_scalar($log_item['text']) ? (string) $log_item['text'] : '';
 
             // For empty log_item not get task (and define rights for task) - a little bit optimization
             if (strlen($log_item_text) > 0 || $attachment_count > 0) {
-                $task_ids[] = (int)$log_item['task_id'];
+                $task_ids[] = (int) $log_item['task_id'];
             }
         }
 
@@ -306,17 +316,17 @@ class tasksRights
         $this->extendTasksByRightsInfo($tasks, $contact_ids);
 
         // Default empty right_info descriptor - for initial filling
-        $empty_rights = array(
+        $empty_rights = [
             'can_edit' => false,
-            'can_delete' => false
-        );
+            'can_delete' => false,
+        ];
 
         // TOP LEVEL MAIN LOOP
         // Visit each log item and define rights for each contact
         foreach ($log_items as &$log_item) {
 
             $log_item_id = $log_item['id'];
-            $attachment_count = (int)ifset($attachment_counters[$log_item_id]);
+            $attachment_count = (int) ifset($attachment_counters[$log_item_id]);
 
             // here is collected rights for each contact ID
             // Initial filling with default empty right_info descriptor
@@ -331,7 +341,9 @@ class tasksRights
                 $rights_info = &$collected_rights_info[$contact_id];
 
                 $is_comment = $log_item['action'] == tasksTaskLogModel::ACTION_TYPE_COMMENT;
-                $log_item_text = isset($log_item['text']) && is_scalar($log_item['text']) ? (string)$log_item['text'] : '';
+                $log_item_text = isset($log_item['text']) && is_scalar(
+                    $log_item['text']
+                ) ? (string) $log_item['text'] : '';
 
                 // 'empty' COMMENT must be allowed to be deleted
                 // 'empty' log item - skip - isn't editable, isn't deletable
@@ -399,8 +411,9 @@ class tasksRights
     }
 
     /**
-     * @param int|array $log_item ID or DB record of comment
+     * @param int|array          $log_item ID or DB record of comment
      * @param int|waContact|null $contact
+     *
      * @return mixed
      */
     public function getLogItemRightsInfo($log_item, $contact = null)
@@ -418,30 +431,36 @@ class tasksRights
             }
         }
 
-        $log_items = array($log_item);
+        $log_items = [$log_item];
         $this->extendLogItemsByRightsInfo($log_items, $contact_id);
         $log_item = reset($log_items);
+
         return $log_item['rights_info'];
     }
 
     /**
-     * @param int|array $log_item ID or DB record of comment
+     * @param int|array          $log_item ID or DB record of comment
      * @param int|waContact|null $contact
+     *
      * @return mixed
      */
-    public function canEditLogItem($log_item, $contact = null) {
+    public function canEditLogItem($log_item, $contact = null)
+    {
         $rights_info = $this->getLogItemRightsInfo($log_item, $contact);
+
         return $rights_info !== false && $rights_info['can_edit'];
     }
 
     /**
-     * @param int|array $log_item ID or DB record of comment
+     * @param int|array          $log_item ID or DB record of comment
      * @param int|waContact|null $contact
+     *
      * @return mixed
      */
     public function canDeleteLogItem($log_item, $contact = null)
     {
         $rights_info = $this->getLogItemRightsInfo($log_item, $contact);
+
         return $rights_info !== false && $rights_info['can_delete'];
     }
 
@@ -450,22 +469,22 @@ class tasksRights
         if (!$tasks || !$contact_ids) {
             return;
         }
-        $project_ids = array();
+        $project_ids = [];
         foreach ($tasks as $task) {
             $project_ids[] = $task['project_id'];
         }
         $project_ids = array_unique($project_ids);
 
-        $access_map = array();
+        $access_map = [];
         foreach ($contact_ids as $contact_id) {
             $contact = new waContact($contact_id);
             foreach ($project_ids as $project_id) {
-                $access = $contact->getRights('tasks', 'project.'.$project_id);
+                $access = $contact->getRights('tasks', 'project.' . $project_id);
                 $access_map[$contact_id][$project_id] = $access;
             }
         }
 
-        $tasks_access_map = array();
+        $tasks_access_map = [];
         foreach ($tasks as $task) {
             $project_id = $task['project_id'];
             foreach ($contact_ids as $contact_id) {
@@ -487,7 +506,7 @@ class tasksRights
     {
         $task_ids = tasksHelper::toIntArray($task_ids);
         $task_ids = tasksHelper::dropNotPositive($task_ids);
-        $contact_id = (int)$contact_id;
+        $contact_id = (int) $contact_id;
         if (!$task_ids || !$contact_id) {
             return 0;
         }
@@ -497,13 +516,14 @@ class tasksRights
                       FROM `tasks_task_log` 
                       WHERE `task_id` IN (:task_ids) AND `contact_id` != :contact_id
                       GROUP BY `task_id`";
-        $result = $m->query($sql, array(
+        $result = $m->query($sql, [
             'task_ids' => $task_ids,
-            'contact_id' => $contact_id
-        ))->fetchAll();
+            'contact_id' => $contact_id,
+        ])->fetchAll();
         foreach ($result as $item) {
             $counters[$item['task_id']] = $item['count'];
         }
+
         return $counters;
     }
 }

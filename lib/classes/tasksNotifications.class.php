@@ -67,7 +67,7 @@ class tasksNotifications
         ]);
     }
 
-    public static function send($event, $task, $log, waContact $to)
+    public static function send($event, $task, $log, waContact $to, array $templateData = []): void
     {
         $email = $to->get('email', 'default');
         if (!$email) {
@@ -109,13 +109,23 @@ class tasksNotifications
             }
         }
 
-        $body = self::renderTemplate($template_path, [
-            'app_backend_url' => wa()->getRootUrl(true) . wa()->getConfig()->getBackendUrl(false) . '/tasks/',
-            'log' => $log,
-            'task' => $task,
-            'from' => wa()->getUser(),
-            'to' => $to,
-        ]);
+        $body = self::renderTemplate(
+            $template_path,
+            array_merge(
+                $templateData,
+                [
+                    'app_backend_url' => sprintf(
+                        '%s%s/tasks/',
+                        wa()->getRootUrl(true),
+                        wa()->getConfig()->getBackendUrl(false)
+                    ),
+                    'log' => $log,
+                    'task' => $task,
+                    'from' => wa()->getUser(),
+                    'to' => $to,
+                ]
+            )
+        );
 
         switch ($event) {
             case tasksNotificationsSender::EVENT_NEW:
@@ -155,7 +165,7 @@ class tasksNotifications
      *
      * @return null|tasksTask
      */
-    protected static function getTask($task, $contact_id)
+    protected static function getTask($task, $contact_id): ?tasksTask
     {
         $task_id = self::toTaskId($task);
         if ($task_id <= 0) {
@@ -178,13 +188,21 @@ class tasksNotifications
         return $task;
     }
 
-    protected static function toTaskId($task)
+    protected static function toTaskId($task): ?int
     {
         if (is_array($task) && isset($task['id'])) {
             return (int) $task['id'];
-        } elseif (is_scalar($task)) {
+        }
+
+        if (is_scalar($task)) {
             return (int) $task;
         }
+
+        if ($task instanceof tasksTask) {
+            return (int) $task->id;
+        }
+
+        return null;
     }
 
     /**
@@ -196,7 +214,7 @@ class tasksNotifications
      *
      * @return array|null
      */
-    protected static function obtainTask($task_id, $contact_id)
+    protected static function obtainTask($task_id, $contact_id): ?array
     {
         $collection = new tasksCollection('id/' . $task_id, [
             'check_rights' => false,
@@ -216,7 +234,7 @@ class tasksNotifications
 
     }
 
-    protected static function renderTemplate($template, $assign = [])
+    protected static function renderTemplate($template, $assign = []): string
     {
         $view = wa()->getView();
         $old_vars = $view->getVars();

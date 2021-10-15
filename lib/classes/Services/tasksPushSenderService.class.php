@@ -35,7 +35,7 @@ final class tasksPushSenderService
     /**
      * @throws waException
      */
-    public function send(string $type, array $task, array $logItem, waContact $toContact): void
+    public function send(string $type, $task, array $logItem, waContact $toContact): void
     {
         if (!$this->pushAdapter || !$this->pushAdapter->isEnabled()) {
             return;
@@ -56,7 +56,7 @@ final class tasksPushSenderService
         $this->pushAdapter->sendByContact($toContact->getId(), $dto);
     }
 
-    private function getMessage(string $type, array $task): string
+    private function getMessage(string $type, $task): string
     {
         switch ($type) {
             case tasksNotificationsSender::EVENT_NEW:
@@ -79,7 +79,7 @@ final class tasksPushSenderService
         }
     }
 
-    private function getTitle(string $type, array $task): string
+    private function getTitle(string $type, $task): string
     {
         switch ($type) {
             case tasksNotificationsSender::EVENT_NEW:

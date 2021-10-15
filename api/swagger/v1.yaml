@@ -652,6 +652,54 @@ paths:
           description: Запрещено
         500:
           description: Все плохо
+  /tasks.team.inviteToTask:
+    post:
+      tags:
+        - Команда
+      summary: 'Шлет приглашение новому пользователю на почту и назначает на него таску'
+      security:
+        - ApiKeyAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                task_id:
+                  type: integer
+                access_right:
+                  description: |
+                    Права для контакте:
+                    + 0 - минимальные
+                    + 1 - доступ ко всем проектам и таскам
+                    + 2 - полный доступ к приложению
+                  type: integer
+                  enum:
+                    - 0
+                    - 1
+                    - 2
+              required:
+                - email
+                - task_id
+      responses:
+        200:
+          description: Идентификатор пользователя, если успешно отправилось приглашение
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  contact:
+                    type: integer
+        400:
+          description: Ошибка
+        403:
+          description: Запрещено
+        500:
+          description: Все плохо
   /tasks.team.getList:
     get:
       tags:

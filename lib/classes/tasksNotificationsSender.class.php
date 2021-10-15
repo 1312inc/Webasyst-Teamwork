@@ -5,6 +5,7 @@ class tasksNotificationsSender
     public const EVENT_DONE    = 'done';
     public const EVENT_NEW     = 'new';
     public const EVENT_ASSIGN  = 'assign';
+    public const EVENT_INVITE_ASSIGN  = 'inviteAssign';
     public const EVENT_EDIT    = 'edit';
     public const EVENT_COMMENT = 'comment';
 
@@ -21,6 +22,7 @@ class tasksNotificationsSender
         self::EVENT_DONE,
         self::EVENT_NEW,
         self::EVENT_ASSIGN,
+        self::EVENT_INVITE_ASSIGN,
         self::EVENT_EDIT,
         self::EVENT_COMMENT,
     ];
@@ -100,11 +102,11 @@ class tasksNotificationsSender
      *
      * @throws waException
      */
-    protected function sendOne($type, $to_contact_id): void
+    public function sendOne(string $type, $to_contact_id): void
     {
         $to = new waContact($to_contact_id);
 
-        tasksNotifications::send($type, $this->task, $this->log_item, $to);
+        tasksNotifications::send($type, $this->task, $this->log_item, $to, $this->options['templateData'] ?: []);
 
         $this->pushSender->send($type, $this->task, $this->log_item, $to);
     }
