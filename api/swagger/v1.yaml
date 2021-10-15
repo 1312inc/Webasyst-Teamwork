@@ -600,6 +600,24 @@ paths:
         500:
           description: Все плохо
 # team
+  /tasks.team.getMySettings:
+    get:
+      tags:
+        - Команда
+      summary: 'Возвращает ID текущего пользователя, таймзону, настройки по правам и другие полезности'
+      security:
+        - ApiKeyAuth: [ ]
+      responses:
+        200:
+          description: Настройки текущего пользователя
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/teamGetMySettingsResponse'
+        403:
+          description: Запрещено
+        500:
+          description: Все плохо
   /tasks.team.getTopAssignees:
     get:
       tags:
@@ -1417,6 +1435,25 @@ components:
                 allOf:
                   - $ref: '#/components/schemas/teammateStatusInfo'
 
+    teamGetMySettingsResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: number
+              description: Идентификатор пользователя
+              minimum: 1
+            timezone:
+              type: string
+              nullable: true
+            rights:
+              $ref: '#/components/schemas/rightInfo'
+            ts:
+              type: number
+              description: UNIX время сервера
+
     getTeamGetListResponse:
       type: object
       properties:
@@ -1965,6 +2002,30 @@ components:
           type: integer
         name:
           type: string
+    rightInfo:
+      type: object
+      properties:
+        is_admin:
+          type: boolean
+          description: Пользователь админ или имеет полный доступ к приложению
+        projects_assigned:
+          type: array
+          description: Массив ID проектов, в которых пользователь может видеть только назначенные на себя таски
+          items:
+            type: integer
+            minimum: 1
+        projects_assigned_all:
+          type: boolean
+          description: Флаг, что пользователь может видеть только назначенные на себя таски во всех проектах
+        projects_full:
+          type: array
+          description: Массив ID проектов, в которых пользователь имеет полный доступ
+          items:
+            type: integer
+            minimum: 1
+        projects_full_all:
+          type: boolean
+          description: Флаг, что пользователь имеет полный доступ ко всем проектам
     200ok:
       type: string
       example: 'ok'
