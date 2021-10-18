@@ -15,6 +15,7 @@
             this.tagRegExp = new RegExp("#[a-zA-Z0-9._-]+");
 
             // local
+            this.ajax = null
             this.tagsHandleTrigger =
                 typeof this.opts.tagsHandleTrigger !== "undefined"
                     ? this.opts.tagsHandleTrigger
@@ -56,6 +57,12 @@
         _navigate: function (e) {
             var key = e.which;
             var arrows = [38, 40]; // up and down
+
+            if (key === this.keycodes.SPACE || key === this.keycodes.BACKSPACE) {
+                if (this.ajax) {
+                    this.ajax.xhr.abort();
+                }
+            }
 
             if (key === this.keycodes.SPACE) {
                 var $current = this.selection.getCurrent();
@@ -142,7 +149,10 @@
         },
         _load: function () {
             var csrf = document.cookie.match(new RegExp("(?:^|; )_csrf=([^;]*)"));
-            $R.ajax.post({
+            if (this.ajax) {
+                this.ajax.xhr.abort();
+            }
+            this.ajax = $R.ajax.post({
                 url: this.opts.tagsHandle,
                 data: "term=" + this.handleStr + "&_csrf=" + csrf[1],
                 success: this._parse.bind(this),
@@ -190,8 +200,6 @@
             }
 
             // position
-            var $container = this.container.getElement();
-            var containerOffset = $container.offset();
             var pos = this.selection.getPosition();
 
             this.$list.css({
