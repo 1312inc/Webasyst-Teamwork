@@ -131,12 +131,19 @@
             e.preventDefault();
             var $link = $(this).parent(),
                 number = $link.data('task-number'),
-                $taskWrapper = $('#task-preview-wrapper');
-                $taskSkeletonContainer = $('#taskSkeleton');
+                $taskWrapper = $('#task-preview-wrapper'),
+                $taskSkeletonContainer = $('#taskSkeleton'),
+                waLoading = $.waLoading();
 
             $taskWrapper.html($taskSkeletonContainer.html());
 
+            // Show progress bar
+            waLoading.animate(4000, 99, true);
+
             $.get('?module=tasks&action=info&n=' + number + '&from_hash_type=' + $('#t-tasks-wrapper').data('tasks-hash-type'), function (html) {
+                // Hide progress bar
+                waLoading.hide();
+
                 $taskWrapper.html(html);
                 window.TasksController.skipDispatch = 1;
                 window.TasksController.setHash('/task/' + number + '/');
