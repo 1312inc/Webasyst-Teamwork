@@ -682,34 +682,6 @@ var TaskEdit = ( function($) { "use strict";
                             return;
                         }
 
-                        // stay in current context
-                        // wait for a while, than try remove task or leave it here
-                        (function (task_id, timeout) {
-                            setTimeout(function () {
-                                var task = Tasks[task_id];
-                                if (!task) {
-                                   return;
-                                }
-                                task.reloadTask({
-                                    beforeReplace: function ($new_task, def) {
-
-                                        task.$task.removeClass('new-task highlighted');
-
-                                        // task belongs to current context - just leave
-                                        if ($new_task.length) {
-                                            def.resolve();
-                                            return;
-                                        }
-
-                                        // task doesn't belong to current context - remove task
-                                        task.moveTask("right", function () {
-                                            def.resolve();
-                                        });
-                                    }
-                                });
-                            }, timeout);
-                        })(saved_response.id, 15000);
-
                     });
                 } else {
                     $dialog.find(".t-close-dialog-link").trigger("click");
