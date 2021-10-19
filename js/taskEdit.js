@@ -671,9 +671,17 @@ var TaskEdit = ( function($) { "use strict";
 
                 if (saved_response) {
                     $.get('?module=tasks&hash='+encodeURIComponent('id/'+saved_response.id), {}, function(r) {
-                        var $new_elements = $('<div>').html(r).find('#t-tasks-wrapper').children(':not(#end-of-tasks)').addClass('new-task highlighted');
+                        var $new_elements = $('<div>').html(r).find('#t-tasks-wrapper').children(':not(#end-of-tasks)');
+                        var $new_elements_li = $new_elements.find('.item[data-task-number="'+saved_response.url+'"]');
+                        
                         $new_elements.prependTo('#t-tasks-wrapper').slideDown();
-                        $new_elements.find('.item[data-task-number="'+saved_response.url+'"] a').first().trigger('click');
+
+                        // Select created item
+                        $('#t-tasks-wrapper .list .item').removeClass('selected');
+                        $new_elements_li.addClass('selected');
+
+                        // Open created item detail page
+                        $new_elements_li.find('a').first().trigger('click');
                         $dialog.find(".t-close-dialog-link").trigger("click");
 
                         // return to adding form
