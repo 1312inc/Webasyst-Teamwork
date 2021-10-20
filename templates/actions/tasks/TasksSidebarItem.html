@@ -80,6 +80,27 @@
 
                 {/if}
 
+                {* HISTORY COUNTERS *}
+                {strip}
+                    {$_count_comment = 0}
+                    {$_count_action = 0}
+                    {foreach $task.log as $_k => $_v}
+                        {if $_v.action == 'comment'}
+                            {$_count_comment = $_count_comment + 1}
+                        {elseif $_v.action != 'add' && $_v.action != 'create'}
+                            {$_count_action = $_count_action + 1}
+                        {/if}
+                    {/foreach}
+                {/strip}
+                <span class="nowrap bold hint" title="[`History &amp; Comments`]">
+                    {if $_count_action}
+                        <i class="fas fa-exchange-alt custom-ml-4"></i> {$_count_action}
+                    {/if}
+                    {if $_count_comment}
+                        <i class="fas fa-comment custom-ml-4"></i> {$_count_comment}
+                    {/if}
+                </span>
+
             </span>
 
             <span class="count align-right">
@@ -104,27 +125,6 @@
 
             {* PREVIEW *}
             <span class="break-word">{strip_tags($task.text)|truncate:128}</span>
-
-            {* HISTORY COUNTERS *}
-            {strip}
-                {$_count_comment = 0}
-                {$_count_action = 0}
-                {foreach $task.log as $_k => $_v}
-                    {if $_v.action == 'comment'}
-                        {$_count_comment = $_count_comment + 1}
-                    {elseif $_v.action != 'add' && $_v.action != 'create'}
-                        {$_count_action = $_count_action + 1}
-                    {/if}
-                {/foreach}
-            {/strip}
-            <span class="nowrap bold" title="[`History &amp; Comments`]">
-                {if $_count_action}
-                    <i class="fas fa-exchange-alt custom-ml-4"></i> {$_count_action}
-                {/if}
-                {if $_count_comment}
-                    <i class="fas fa-comment custom-ml-4"></i> {$_count_comment}
-                {/if}
-            </span>
 
         </p>
 
