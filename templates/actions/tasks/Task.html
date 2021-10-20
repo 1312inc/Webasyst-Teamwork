@@ -164,7 +164,7 @@
                 {* USERS & DEADLINES *}
                 <div class="flexbox space-16 custom-mb-16 wrap-mobile">
 
-                    <div class="wide" style="position: relative;">
+                    <div class="wide t-task-users-box" style="position: relative;">
 
                         {* AUTHOR OF THE LAST ASSIGNMENT *}
                         {$_assignment_creator = $task.assignment_creator}
@@ -190,7 +190,7 @@
                                         <i class="fas fa-check-circle text-light-gray"></i>
                                     </span>
                                     <div class="wide">
-                                        <p class="small custom-mb-0 semibold text-gray">
+                                        <p class="small custom-mb-4 semibold text-gray">
                                             [`Closed`]
                                         </p>
 
@@ -202,11 +202,11 @@
                                         <img class="userpic userpic48" src="{waContact::getPhotoUrl($_assigned_contact.id, $_assigned_contact.photo, 96)}" alt="{$_assigned_contact.name|escape}">
                                     </a>
                                     <div class="wide">
-                                        <p class="small custom-mb-0">
+                                        <p class="small custom-mb-4">
                                             {if empty($_assigned_contact.delete) && $_assigned_contact.id}
                                                 <a href="#/tasks/assigned/{$_assigned_contact.id}/" class="black bold">{$_assigned_contact.name|escape}</a>
                                                 {if $taskAssignedContactStatus}
-                                                    <span class="badge smaller nowrap custom-ml-4" style="background-color: {$taskAssignedContactStatus->getBgColor()};color: {$taskAssignedContactStatus->getFontColor()};" title="{$taskAssignedContactStatus->getName()|escape}">{$taskAssignedContactStatus->getName()|escape|truncate:23}</span>
+                                                    <span class="badge small nowrap custom-ml-4" style="background-color: {$taskAssignedContactStatus->getBgColor()};color: {$taskAssignedContactStatus->getFontColor()};" title="{$taskAssignedContactStatus->getName()|escape}">{$taskAssignedContactStatus->getName()|escape|truncate:23}</span>
                                                 {/if}
                                             {else}
                                                 <strong class="gray">[`Unassigned`]</strong>
@@ -251,7 +251,7 @@
                                 </span>
                             </a>
                             <div class="wide">
-                                <p class="small custom-mb-0">
+                                <p class="small custom-mb-4">
                                     {if $_milestone}
                                         <strong>{$_milestone}</strong>
                                     {elseif $_due_date}
@@ -309,7 +309,6 @@
 
                     {* TITLE *}
                     <span class="t-task-name-wrapper{if $task.status_id == -1} gray{/if}" href="#/task/{$task.project_id}.{$task.number}/">{$task.name|escape|default:"(no name)"}</span>
-
 
                     {* STATUS *}
                     {if !empty($task.status.name)}

@@ -69,9 +69,6 @@
                     {$task.project_id}.{$task.number}
                 </span>
 
-                {* TITLE *}
-                <span class="{if !empty($task.priority) && ($task.priority == '1' || $task.priority == '2' || $task.priority == '3')}bold{else}semibold{/if}{if !empty($task.priority) && $task.priority == '-1'} text-gray{/if}">{$task.name|escape|default:"(no name)"|truncate:64}</span>
-
                 {* STATUS *}
                 {if !empty($task.status.name)}
 
@@ -90,15 +87,18 @@
                 {$time_since_update_period = null}
                 {$time_since_update_template = null}
                 {$time_since_update_str = tasksHelper::getDatetime($task.update_datetime, $time_since_update_period, $time_since_update_template)}
-                
+
                 {* js updateTimeCounter fix *}
                 {$time_since_update_str = str_replace('mins', 'min', $time_since_update_str)}
 
-                <span class="t-date-wrapper small gray nowrap semibold" data-since='{$task.update_datetime|wa_datetime:"Y-m-d H:i:s"}'>{$time_since_update_str}</span> 
+                <span class="t-date-wrapper small gray nowrap semibold" data-since='{$task.update_datetime|wa_datetime:"Y-m-d H:i:s"}'>{$time_since_update_str}</span>
 
             </span>
 
         </div>
+
+        {* TITLE *}
+        <span class="t-task-item-title {if !empty($task.priority) && ($task.priority == '1' || $task.priority == '2' || $task.priority == '3')}bold{else}semibold{/if}{if !empty($task.priority) && $task.priority == '-1'} text-gray{/if}">{$task.name|escape|default:"(no name)"|truncate:64}</span>
 
         <p class="hint custom-mb-8">
 
