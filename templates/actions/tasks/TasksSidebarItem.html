@@ -100,7 +100,7 @@
         {* TITLE *}
         <span class="t-task-item-title {if !empty($task.priority) && ($task.priority == '1' || $task.priority == '2' || $task.priority == '3')}bold{else}semibold{/if}{if !empty($task.priority) && $task.priority == '-1'} text-gray{/if}">{$task.name|escape|default:"(no name)"|truncate:64}</span>
 
-        <p class="hint custom-mb-8">
+        <p class="hint custom-mb-0">
 
             {* PREVIEW *}
             <span class="break-word">{strip_tags($task.text)|truncate:128}</span>
@@ -131,7 +131,7 @@
         {* DUE *}
         {if !empty($task.due_date)}
             {* manually set due date overrides milestone general due date *}
-            <p class="small custom-mt-0 custom-mb-4">
+            <p class="small custom-mt-4 custom-mb-0">
                 <span class="small nowrap t-due-date-hint-{$task.view.due_color_class|default:'green
 >'} custom-mr-4">
                     <i class="fas fa-flag-checkered"></i>
@@ -142,7 +142,7 @@
                 {/if}
             </p>
         {else if !empty($task.milestone.due_date)}
-            <p class="small custom-mt-0 custom-mb-4">
+            <p class="small custom-mt-4 custom-mb-0">
                 <span class="small nowrap t-due-date-hint-{$task.milestone.view.due_color_class|default:'green'} custom-mr-4">
                     <i class="fas fa-flag-checkered"></i>
                     {wa_date('humandate', $task.milestone.due_date, waDateTime::getDefaultTimezone())|escape}
@@ -158,7 +158,7 @@
             {if !empty($task['log'][$log_id])}
                 {$_l = $task.log[$log_id]}
                 {if $_l.text}
-                    <div class="box custom-mb-8 t-pinned-comment blue smaller break-word"><i class="icon userpic middle" style="background-image: url('{$_l.contact.photo_url}');"></i> {$_l.text|escape|truncate:255} <span class="hint nowrap">{$_l.create_datetime|wa_datetime:'humandatetime'}</span></div>
+                    <div class="box custom-mt-8 t-pinned-comment blue smaller break-word"><i class="icon userpic middle" style="background-image: url('{$_l.contact.photo_url}');"></i> {$_l.text|escape|truncate:255} <span class="hint nowrap">{$_l.create_datetime|wa_datetime:'humandatetime'}</span></div>
                 {/if}
             {/if}
         {/foreach}
