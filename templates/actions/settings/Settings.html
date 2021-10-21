@@ -82,6 +82,7 @@
                                 <div class="name for-input bold">[`Status name`]</div>
                                 <div class="value">
                                     <input type="text" name="status[{$status.id}][name]" value="{$status.name|escape}" placeholder="[`New status`]" class="t-control-status-name bold short">
+                                    <span class="state-error-hint"></span>
                                 </div>
                             </div>
 
@@ -89,6 +90,7 @@
                                 <div class="name for-input bold">[`Button name`]</div>
                                 <div class="value">
                                     <input class="t-control-link-input bold short" type="text" name="status[{$status.id}][button]" value="{$status.button|escape}" placeholder="[`Button label`]">
+                                    <span class="state-error-hint"></span>
                                     <p class="hint">[`Caption on a button that sends a task into this status. Sometimes it matches the status name, but in most cases, it's a verb.`]</p>
                                 </div>
                             </div>
@@ -264,13 +266,16 @@
                 if (r.status == 'fail') {
                     // Show form validation errors
                     $.each(r.errors, function(field_name, error) {
-                        var $field = $form.find('[name="'+field_name+'"]:first').addClass('error');
+                        var $field = $form.find('[name="'+field_name+'"]:first');
+                        $field.addClass('state-error');
+                        $field.closest('.value').find('.state-error-hint').text(error);
+
                         if ($field.length) {
-                            showStatusForm( $field.closest('.t-settings-item') );
+                            // showStatusForm( $field.closest('.t-settings-item') );
                         } else {
                             $field = $form.find(':submit:first');
                         }
-                        $field.after($('<em class="errormsg"></em>').text(error));
+
                     });
                     $form.hideLoading();
                 } else {
@@ -338,8 +343,8 @@
             $wrapper.on('keyup', '.t-control-status-name', function() {
                 var $input = $(this);
                 if (!$(this).parent().find('.t-control-link-input').length) {
-                    $(this).parent().find('[name$="[button]"]').val($input.val());
-                    $input.closest('.t-settings-item').find('.t-control-link.color').text($input.val());
+                    $(this).parent().find('[name$="[button]"]').val($input.val() ? $input.val() : '-');
+                    $input.closest('.t-settings-item').find('.t-control-link.color').text($input.val() ? $input.val() : '-');
                 }
             });
         })();
