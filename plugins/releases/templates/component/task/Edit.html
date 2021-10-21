@@ -78,6 +78,7 @@
                 {show_select id='resolution' values=$resolutions selected=$ext_info.resolution}
             </div>
         </div>
+        <input type="hidden" name="{$input_ns}[kanban_color]" value="{$ext_info.kanban_color|default:''}">
     </div>
 
     <script>
@@ -182,6 +183,7 @@
                 {show_select id='resolution' values=$resolutions selected=$ext_info.resolution|default:''}
             </div>
         </div>
+        <input type="hidden" name="{$input_ns}[kanban_color]" value="{$ext_info.kanban_color|default:''}">
     </div>
 
     <script>
@@ -201,4 +203,3 @@
 
 </div>
 {/if}
-<input type="hidden" name="{$input_ns}[kanban_color]" value="{if isset($ext_info.kanban_color)}{$ext_info.kanban_color)}{/if}">
