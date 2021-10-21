@@ -16,6 +16,7 @@ class tasksReleasesPluginReportsLtdcAction extends tasksLogAction
         // Get parameters from GET/POST
         $filters = self::getFilters();
         list($start_date, $end_date, $group_by) = tasksLogChartAction::getTimeframeParams();
+        $status_params =
 
         $chart_data = self::getChartData($filters, $start_date, $end_date, $group_by);
         $this->view->assign(array(
@@ -87,6 +88,12 @@ class tasksReleasesPluginReportsLtdcAction extends tasksLogAction
                 FROM tasks_task_log AS tl
                 WHERE task_id IN (?)
                 ORDER BY task_id";
+        $statuses = tasksHelper::getStatuses(null, false);
+        $statuses_keys = array_keys($statuses);
+        $reopen_key = array_search($filters['end_status'], $statuses_keys);
+        $reopen_statuses = $reopen_key === false ? array_slice($statuses_keys, 0, $reopen_key, true) : array_filter($statuses_keys, function ($v) { return $v >= 0; });
+        $closed_key = array_search($filters['end_status'], $statuses_keys);
+        $closed_statuses = $closed_key !== false ? array_slice($statuses_keys, $closed_key, null, true) : [-1];
         while ($task_ids) {
             $batch = array_splice($task_ids, 0, 50);
             $current_task_id = null;
@@ -104,15 +111,15 @@ class tasksReleasesPluginReportsLtdcAction extends tasksLogAction
                     $task_start_datetime = null;
                     $task_end_datetime = null;
                 }
-                if (!$task_start_datetime && $log['after_status_id'] > 0) {
+                if (!$task_start_datetime && $log['after_status_id'] == $filters['start_status']) {
                     // Задача взята в работу
                     $task_start_datetime = $log['date'];
                 }
-                if ($task_end_datetime && $log['after_status_id'] >= 0) {
+                if ($task_end_datetime && in_array($log['after_status_id'], $reopen_statuses)) {
                     // Задача переоткрыта
                     $task_end_datetime = null;
                 }
-                if (!$task_end_datetime && $log['after_status_id'] < 0) {
+                if (!$task_end_datetime && in_array($log['after_status_id'], $closed_statuses)) {
                     // Задача закрыта
                     $task_end_datetime = $log['date'];
                 }
@@ -142,6 +149,8 @@ class tasksReleasesPluginReportsLtdcAction extends tasksLogAction
             'contact_id' => waRequest::request('contact_id', null, 'int'),
             'milestone_id' => waRequest::request('milestone_id', null, 'int'),
             'task_type' => waRequest::request('task_type'),
+            'start_status' => waRequest::request('start_status', 0, 'int'),
+            'end_status' => waRequest::request('end_status', -1, 'int'),
         ];
 
         if (!in_array($result['task_type'], ['sr', 'dev', 'bug'])) {

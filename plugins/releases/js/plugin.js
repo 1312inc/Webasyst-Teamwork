@@ -91,6 +91,77 @@ var TasksReleasesPlugin = ( function($) { "use strict";
 
     };
 
+    TasksReleasesPlugin.initReportsStatusSelector = function($wrapper, hash_prefix, field_id) {
+        var $visible_option = $wrapper.children('.dropdown-toggle');
+
+        var status = getStatusData();
+        setActiveLi(status.$li);
+
+        // Change selection when user clicks on dropdown list item
+        $wrapper.children('.dropdown-body').on('click', 'li:not(.selected)', function() {
+            var $li = $(this);
+            setActiveLi($li);
+            reloadChart();
+        });
+
+        // Load chart based on current selected dates
+        function reloadChart() {
+            var status = getStatusData();
+            var params = window.location.hash.substr(hash_prefix.length).split('/')[0] || '';
+
+            params = $.tasks.replaceParam(params, field_id, status['status'] || '');
+            $.wa.setHash($.tasks.cleanHash(hash_prefix + params + '/'));
+        }
+
+        // Helper to set active timeframe <li>
+        function setActiveLi($li) {
+            $visible_option.text($li.text());
+            $li.addClass('selected').siblings('.selected').removeClass('selected');
+        }
+
+        function getStatusData($li) {
+            var result;
+            if (!$li || !$li.length) {
+                $li = $wrapper.find('ul li.selected').first();
+                if (!$li.length) {
+                    // Determine active timeframe from url hash and find corresponding <li>
+                    var params = window.location.hash.substr(hash_prefix.length).split('/')[0] || '';
+                    var exploded_params = $.tasks.deparam(params);
+                    if (exploded_params[field_id]) {
+                        $wrapper.find('ul li').each(function() {
+                            var status_data = getStatusData($(this));
+                            console.log(status_data, exploded_params);
+                            if (status_data.status == exploded_params[field_id]) {
+                                $li = $(this);
+                                return false;
+                            }
+                        });
+                        if ($li) {
+                            result = {
+                                $li: $li,
+                                status: exploded_params[field_id],
+                            };
+                            return result;
+                        }
+                    }
+                }
+                if (!$li.length) {
+                    $li = $wrapper.find('ul li[data-default-choice]').first();
+                }
+                if (!$li.length) {
+                    throw new Error("Something's badly wrong with the status selector.");
+                }
+            }
+
+            result = {
+                $li: $li,
+                status: ($li && $li.data('status-id')) || '',
+            };
+
+            return result;
+        }
+    }
+
     // более-менее копипаста из initLogsTimeframeSelector, см. tasks/js/d3chart-logs.js
     // там захардкожены урлы, поэтому пришлось копировать
     TasksReleasesPlugin.initReportsTimeframeSelector = function($wrapper, hash_prefix) {
