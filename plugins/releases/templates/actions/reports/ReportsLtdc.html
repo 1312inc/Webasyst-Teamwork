@@ -54,6 +54,55 @@
              *}
             <div class="t-right-column flexbox middle space-16">
 
+                {$statuses = tasksHelper::getStatuses(null, false)}
+                <div class="dropdown t-menu-item" id="start-status" title="[`Начальный статус`]">
+                    <button class="dropdown-toggle button t-selected-item light-gray"></button>
+                    <div class="dropdown-body">
+                        <ul class="menu">
+                            {foreach $statuses as $status}
+                                <li data-status-id="{$status.id}" {if $status.id == 0}data-default-choice="1"{/if}>
+                                    <a href="javascript:void(0)" class="nowrap">{$status.name}</a>
+                                </li>
+                            {/foreach}
+                        </ul>
+                    </div>
+                    <script>
+                        ( function($) {
+                            $("#start-status").waDropdown({
+                                hover: false,
+                                items: "#start-status > li > a",
+                                change: function(event, target, dropdown) {
+                                    return false;
+                                }
+                            });
+                        })(jQuery);
+                    </script>
+                </div>
+
+                <div class="dropdown t-menu-item" id="end-status" title="[`Конечный статус`]">
+                    <button class="dropdown-toggle button t-selected-item light-gray"></button>
+                    <div class="dropdown-body t-logs-timeframe">
+                        <ul class="menu t-logs-timeframe-dropdown">
+                            {foreach $statuses as $status}
+                                <li data-status-id="{$status.id}" {if $status.id == -1}data-default-choice="1"{/if}>
+                                    <a href="javascript:void(0)" class="nowrap">{$status.name}</a>
+                                </li>
+                            {/foreach}
+                        </ul>
+                    </div>
+                    <script>
+                        ( function($) {
+                            $("#end-status").waDropdown({
+                                hover: false,
+                                items: "#end-status > li > a",
+                                change: function(event, target, dropdown) {
+                                    return false;
+                                }
+                            });
+                        })(jQuery);
+                    </script>
+                </div>
+
                 <div class="t-custom-timeframe flexbox middle space-8" style="display:none">
                     <span>[`from`]</span>
                     <input type="text" name="from" style="max-width: 120px;">
@@ -191,6 +240,8 @@
         }
     }
 
+    TasksReleasesPlugin.initReportsStatusSelector($('#start-status'), '#/ltdc/', 'start_status');
+    TasksReleasesPlugin.initReportsStatusSelector($('#end-status'), '#/ltdc/', 'end_status');
     TasksReleasesPlugin.initReportsTimeframeSelector($('#timeframe'), '#/ltdc/');
 
     // Set <a href=...> on filters
