@@ -3,17 +3,20 @@
 final class tasksApiAttachmentDeleteRequest
 {
     /**
-     * @var int
+     * @var array<int>
      */
-    private $id;
+    private $ids;
 
-    public function __construct(int $id)
+    public function __construct(array $ids)
     {
-        $this->id = $id;
+        $this->ids = $ids;
     }
 
-    public function getId(): int
+    /**
+     * @return array<int>
+     */
+    public function getIds(): array
     {
-        return $this->id;
+        return $this->ids;
     }
 }

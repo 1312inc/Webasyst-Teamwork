@@ -833,7 +833,7 @@ paths:
     post:
       tags:
         - Аттачменты
-      summary: 'Удаляет аттачмент'
+      summary: 'Удаляет аттачменты'
       security:
         - ApiKeyAuth: [ ]
       requestBody:
@@ -842,10 +842,11 @@ paths:
             schema:
               type: object
               properties:
-                id:
-                  type: integer
+                ids:
+                  type: array
                   required: true
-                  minimum: 0
+                  items:
+                    type: integer
       responses:
         200:
           description: Без ошибок
@@ -855,6 +856,8 @@ paths:
                 oneOf:
                   - $ref: '#/components/schemas/200ok'
                   - $ref: '#/components/schemas/200fail'
+        400:
+          $ref: '#/components/schemas/400fail'
         403:
           description: Запрещено
         500:

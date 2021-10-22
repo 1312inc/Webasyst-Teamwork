@@ -12,12 +12,12 @@ class tasksAttachmentsDeleteMethod extends tasksApiAbstractMethod
      */
     public function run(): tasksApiResponseInterface
     {
-        $request = new tasksApiAttachmentDeleteRequest($this->post('id', true, self::CAST_INT));
+        $request = new tasksApiAttachmentDeleteRequest($this->post('id', true, self::CAST_ARRAY));
 
         if ((new tasksApiAttachmentDeleteHandler())->delete($request)) {
-            return new tasksApiResponse(tasksApiResponse::HTTP_OK);
+            return new tasksApiResponse();
         }
 
-        return new tasksApiResponse(tasksApiResponse::HTTP_OK, 'fail');
+        return new tasksApiErrorResponse('Some error');
     }
 }
