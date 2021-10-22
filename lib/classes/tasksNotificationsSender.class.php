@@ -106,9 +106,17 @@ class tasksNotificationsSender
     {
         $to = new waContact($to_contact_id);
 
-        tasksNotifications::send($type, $this->task, $this->log_item, $to, $this->options['templateData'] ?? []);
+        $oldLocale = wa()->getLocale();
+        try {
+            wa()->setLocale($to->getLocale());
 
-        $this->pushSender->send($type, $this->task, $this->log_item, $to);
+            tasksNotifications::send($type, $this->task, $this->log_item, $to, $this->options['templateData'] ?? []);
+
+            $this->pushSender->send($type, $this->task, $this->log_item, $to);
+        } catch (Exception $exception) {
+            tasksLogger::error($exception);
+        }
+        wa()->setLocale($oldLocale);
     }
 
     /**
