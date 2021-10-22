@@ -16,7 +16,6 @@ class tasksReleasesPluginReportsLtdcAction extends tasksLogAction
         // Get parameters from GET/POST
         $filters = self::getFilters();
         list($start_date, $end_date, $group_by) = tasksLogChartAction::getTimeframeParams();
-        $status_params =
 
         $chart_data = self::getChartData($filters, $start_date, $end_date, $group_by);
         $this->view->assign(array(
@@ -90,10 +89,17 @@ class tasksReleasesPluginReportsLtdcAction extends tasksLogAction
                 ORDER BY task_id";
         $statuses = tasksHelper::getStatuses(null, false);
         $statuses_keys = array_keys($statuses);
-        $reopen_key = array_search($filters['end_status'], $statuses_keys);
-        $reopen_statuses = $reopen_key === false ? array_slice($statuses_keys, 0, $reopen_key, true) : array_filter($statuses_keys, function ($v) { return $v >= 0; });
+        $open_key = array_search($filters['start_status'], $statuses_keys);
+        $open_statuses = $open_key !== false ?
+            array_slice($statuses_keys, $open_key, null) : array_slice($statuses_keys, array_search(0, $statuses_keys), null);
         $closed_key = array_search($filters['end_status'], $statuses_keys);
-        $closed_statuses = $closed_key !== false ? array_slice($statuses_keys, $closed_key, null, true) : [-1];
+        if ($closed_key !== false) {
+            $reopen_statuses = array_slice($statuses_keys, 0, $closed_key);
+            $closed_statuses = array_slice($statuses_keys, $closed_key, null);
+        } else {
+            $reopen_statuses = array_filter($statuses_keys, function ($v) { return $v >= 0; });
+            $closed_statuses = [-1];
+        }
         while ($task_ids) {
             $batch = array_splice($task_ids, 0, 50);
             $current_task_id = null;
@@ -111,7 +117,7 @@ class tasksReleasesPluginReportsLtdcAction extends tasksLogAction
                     $task_start_datetime = null;
                     $task_end_datetime = null;
                 }
-                if (!$task_start_datetime && $log['after_status_id'] == $filters['start_status']) {
+                if (!$task_start_datetime && in_array($log['after_status_id'], $open_statuses)) {
                     // Задача взята в работу
                     $task_start_datetime = $log['date'];
                 }
