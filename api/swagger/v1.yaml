@@ -273,6 +273,40 @@ paths:
           description: Запрещено
         500:
           description: Все плохо
+  /tasks.tasks.favorite:
+    post:
+      tags:
+        - Таски
+      summary: 'Добавляет таск в избранное'
+      security:
+        - ApiKeyAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                task_id:
+                  type: integer
+                  minimum: 1
+                favorite:
+                  type: boolean
+                contact_id:
+                  type: integer
+                  nullable: true
+                  description: Если не передавать, то в избранное для текущего пользователя. Если передать, то для переданного, при условии, что контакт имеет доступ к таску (ну и вообще существует).
+              required:
+                - task_id
+                - favorite
+      responses:
+        200:
+          $ref: '#/components/schemas/200ok'
+        400:
+          description: Ошибка
+        403:
+          description: Запрещено
+        500:
+          description: Все плохо
   /tasks.tasks.delete:
     post:
       tags:
