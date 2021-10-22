@@ -1654,6 +1654,8 @@ components:
             $ref: '#/components/schemas/tagInfo'
         project:
           $ref: '#/components/schemas/projectInfo'
+        favorite:
+          type: boolean
     projectInfo:
       type: object
       properties:

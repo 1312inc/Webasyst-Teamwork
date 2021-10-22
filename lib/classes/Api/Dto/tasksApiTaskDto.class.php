@@ -134,6 +134,11 @@ final class tasksApiTaskDto implements JsonSerializable
      */
     private $project;
 
+    /**
+     * @var bool
+     */
+    private $favorite;
+
     public function __construct(
         int $id,
         string $name,
@@ -160,7 +165,8 @@ final class tasksApiTaskDto implements JsonSerializable
         array $allAttachments,
         array $log,
         array $tags,
-        ?tasksApiProjectDto $project
+        ?tasksApiProjectDto $project,
+        bool $favorite
     ) {
         $this->id = $id;
         $this->name = $name;
@@ -188,6 +194,7 @@ final class tasksApiTaskDto implements JsonSerializable
         $this->visavis_contact = $visavisContact;
         $this->next_status_id = $nextStatusId;
         $this->return_status_id = $returnStatusId;
+        $this->favorite = $favorite;
     }
 
     public function getId(): int
@@ -318,5 +325,10 @@ final class tasksApiTaskDto implements JsonSerializable
     public function getProject(): ?tasksApiProjectDto
     {
         return $this->project;
+    }
+
+    public function isFavorite(): bool
+    {
+        return $this->favorite;
     }
 }
