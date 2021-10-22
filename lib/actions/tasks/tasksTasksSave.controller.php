@@ -202,7 +202,7 @@ class tasksTasksSaveController extends waJsonController
 
         $this->saveTaskRelations($task);
 
-        $this->addLogItem($task, null, 'add');
+        $this->addLogItem($task, null, tasksTaskLogModel::ACTION_TYPE_ADD);
 
         $this->logAction('task_add', $task['id']);
 

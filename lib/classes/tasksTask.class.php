@@ -547,7 +547,7 @@ class tasksTask implements ArrayAccess
             'after_status_id' => $this['status_id'],
             'create_datetime' => $this['create_datetime'],
             'contact_id' => $this['contact_id'],
-            'action' => 'create',
+            'action' => tasksTaskLogModel::ACTION_TYPE_ADD,
         ) + $log_model->getEmptyRow();
     }
 

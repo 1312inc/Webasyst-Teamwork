@@ -1968,6 +1968,14 @@ components:
           nullable: true
         action:
           type: string
+          enum:
+            - 'add'
+            - 'create'
+            - 'comment'
+            - 'forward'
+            - 'return'
+            - 'edit'
+            - ''
         assigned_contact:
           nullable: true
           allOf:

@@ -5,6 +5,7 @@ class tasksTaskLogModel extends waModel
     protected $table = 'tasks_task_log';
 
     public const ACTION_TYPE_CREATE  = 'create';
+    public const ACTION_TYPE_ADD     = 'add';
     public const ACTION_TYPE_COMMENT = 'comment';
     public const ACTION_TYPE_FORWARD = 'forward';
     public const ACTION_TYPE_RETURN  = 'return';
@@ -338,6 +339,7 @@ class tasksTaskLogModel extends waModel
     {
         return [
             self::ACTION_TYPE_CREATE => _w('created'),
+            self::ACTION_TYPE_ADD => _w('created'),
             self::ACTION_TYPE_COMMENT => _w('added comment'),
             self::ACTION_TYPE_FORWARD => _w('forwarded'),
             self::ACTION_TYPE_RETURN => _w('returned'),

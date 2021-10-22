@@ -71,7 +71,7 @@ final class tasksApiTasksUpdateHandler
         $logItem = (new tasksLogItemHandler())->log(
             $task2,
             $prevTask2->getStatusId(),
-            tasksLogItemHandler::ACTION_EDIT
+            tasksTaskLogModel::ACTION_TYPE_EDIT
         );
 
         if ($projectChanged) {

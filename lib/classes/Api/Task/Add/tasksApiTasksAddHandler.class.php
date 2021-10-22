@@ -49,7 +49,7 @@ final class tasksApiTasksAddHandler
 
         (new tasksTagSaveHandler())->handle($task2);
         (new tasksRelationsSaveHandler())->handle($task2);
-        (new tasksLogItemHandler())->log($task2, null, tasksLogItemHandler::ACTION_ADD);
+        (new tasksLogItemHandler())->log($task2, null, tasksTaskLogModel::ACTION_TYPE_ADD);
 
         (new tasksWaLogManager())->lodAdd($task2);
 
