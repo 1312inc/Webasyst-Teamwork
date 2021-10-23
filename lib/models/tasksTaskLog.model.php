@@ -510,7 +510,7 @@ class tasksTaskLogModel extends waModel
         return $this->select('*')->where('task_id = ?', $task_id)->order('id DESC')->fetchAssoc();
     }
 
-    public function getLastByContactIds(array $contactIds): array
+    public function getLastByContactIds(array $contactIds, ?int $projectId = null): array
     {
         return $this->query(
             sprintf(
@@ -518,11 +518,13 @@ class tasksTaskLogModel extends waModel
         select max(id) id
         from %s
         where contact_id in (i:contact_ids)
+        %s
         group by contact_id)',
                 $this->table,
-                $this->table
+                $this->table,
+                $projectId ? ' and project_id = i:project_id ' : ''
             ),
-            ['contact_ids' => $contactIds]
+            ['contact_ids' => $contactIds, 'project_id' => $projectId]
         )->fetchAll('contact_id');
     }
 }

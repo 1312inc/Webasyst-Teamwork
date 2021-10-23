@@ -662,19 +662,12 @@ paths:
       parameters:
         - in: query
           name: project_id
-          required: true
+          required: false
           description: Для конкретного проекта
           schema:
             type: integer
             nullable: true
             example: 1
-        - in: query
-          name: status_id
-          description: Для конкретного статуса
-          schema:
-            type: integer
-            nullable: true
-            example: -1
       responses:
         200:
           description: Список людей

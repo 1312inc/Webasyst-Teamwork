@@ -6,7 +6,7 @@ class tasksProjectsArchiveController extends waJsonController
     {
         $project_id = waRequest::post('id', 0, 'int');
 
-        if ($this->getUser()->getRights('tasks', 'project.'.$project_id) < tasksRightConfig::RIGHT_FULL) {
+        if ($this->getUser()->getRights('tasks', 'project.'.$project_id) < tasksRights::PROJECT_ACCESS_FULL) {
             throw new waRightsException(_ws('Access denied'));
         }
 

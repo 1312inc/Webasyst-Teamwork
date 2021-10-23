@@ -40,7 +40,7 @@ class tasksApiContactRightsDto implements JsonSerializable
                 if (strpos($right, 'project') === 0) {
                     [$project, $id] = explode('.', $right);
                     switch ($value) {
-                        case tasksRightConfig::RIGHT_ASSIGNED:
+                        case tasksRights::PROJECT_ACCESS_VIEW_ASSIGNED_TASKS:
                             if ($id === 'all') {
                                 $this->projects_assigned_all = true;
                             } else {
@@ -48,7 +48,7 @@ class tasksApiContactRightsDto implements JsonSerializable
                             }
                             break;
 
-                        case tasksRightConfig::RIGHT_FULL:
+                        case tasksRights::PROJECT_ACCESS_FULL:
                             if ($id === 'all') {
                                 $this->projects_full_all = true;
                             } else {

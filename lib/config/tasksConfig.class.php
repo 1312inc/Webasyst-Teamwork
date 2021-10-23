@@ -204,9 +204,9 @@ class tasksConfig extends waAppConfig
         if (!$is_admin && $rights) {
             $rights_collect = [];
             foreach ($rights as $project_id => $right) {
-                if ((int) $right == tasksRightConfig::RIGHT_ASSIGNED) {
+                if ((int) $right == tasksRights::PROJECT_ACCESS_VIEW_ASSIGNED_TASKS) {
                     $rights_collect['assign'][] = $project_id;
-                } elseif ((int) $right >= tasksRightConfig::RIGHT_FULL) {
+                } elseif ((int) $right >= tasksRights::PROJECT_ACCESS_FULL) {
                     $rights_collect['admin'][] = $project_id;
                 }
             }

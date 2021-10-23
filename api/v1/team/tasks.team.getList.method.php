@@ -4,7 +4,7 @@ class tasksTeamGetListMethod extends tasksApiAbstractMethod
 {
     public function run(): tasksApiResponseInterface
     {
-        $users = (new tasksApiTeamGetTopAssigneesHandler())->getUsers(new tasksApiTeamGetTopAssigneesRequest(0, 0));
+        $users = (new tasksApiTeamGetTopAssigneesHandler())->getUsers(new tasksApiTeamGetTopAssigneesRequest(null));
 
         $list = [];
         $logs = tsks()->getModel('tasksTaskLog')

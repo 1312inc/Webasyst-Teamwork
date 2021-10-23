@@ -37,7 +37,7 @@ class tasksTasksEditAction extends waViewAction
         $this->milestones = $milestone_model->getMilestonesWithOrder(false);
 
         $this->users = (new tasksApiTeamGetTopAssigneesHandler())
-            ->getUsers(new tasksApiTeamGetTopAssigneesRequest(0, 0, null));
+            ->getUsers(new tasksApiTeamGetTopAssigneesRequest($this->project['id']));
         $this->projects_users = $this->getProjectsUsers($projects, $this->users);
 
         $backend_task_edit = $this->triggerEvent($task);

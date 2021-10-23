@@ -9,10 +9,7 @@ class tasksTeamGetTopAssigneesMethod extends tasksApiAbstractMethod
      */
     public function run(): tasksApiResponseInterface
     {
-        $request = new tasksApiTeamGetTopAssigneesRequest(
-            $this->get('project_id', true, self::CAST_INT),
-            $this->get('status_id', false, self::CAST_INT)
-        );
+        $request = new tasksApiTeamGetTopAssigneesRequest($this->get('project_id', false, self::CAST_INT));
 
         $users = (new tasksApiTeamGetTopAssigneesHandler())->getUsers($request);
 

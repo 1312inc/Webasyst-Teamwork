@@ -3,28 +3,17 @@
 final class tasksApiTeamGetTopAssigneesRequest
 {
     /**
-     * @var int
+     * @var int|null
      */
     private $projectId;
 
-    /**
-     * @var int|null
-     */
-    private $statusId;
-
-    public function __construct(int $projectId, ?int $statusId)
+    public function __construct(?int $projectId)
     {
-        $this->statusId = $statusId;
         $this->projectId = $projectId;
     }
 
-    public function getProjectId(): int
+    public function getProjectId(): ?int
     {
         return $this->projectId;
-    }
-
-    public function getStatusId(): ?int
-    {
-        return $this->statusId;
     }
 }
