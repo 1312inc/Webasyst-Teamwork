@@ -593,16 +593,16 @@ msgid "created"
 msgstr "создана"
 
 msgid "added comment"
-msgstr "добавлен комментарий"
+msgstr "добавил комментарий"
 
 msgid "forwarded"
-msgstr "назначена"
+msgstr "назначил ответственного"
 
 msgid "returned"
-msgstr "возвращена"
+msgstr "вернул задачу"
 
 msgid "edited"
-msgstr "отредактирована"
+msgstr "отредактировал задачу"
 
 msgid "Drop anywhere to upload"
 msgstr "Перетащите в любое место, чтобы загрузить"
@@ -638,7 +638,7 @@ msgid "Edit"
 msgstr "Редактировать"
 
 msgid "edit"
-msgstr "отредактирована"
+msgstr "отредактировал задачу"
 
 msgid "Enter your comment"
 msgstr "Введите свой комментарий"

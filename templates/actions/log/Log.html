@@ -44,7 +44,7 @@
                     <div class="t-menu-item">
                         <span class="t-menu-name">
                             <a href="#/log/" class="t-remove-filters-link">
-                                <i class="far fa-times-circle" title="[`Clear filters`]"></i>
+                                <i class="fas fa-times-circle gray large" title="[`Clear filters`]"></i>
                             </a>
                         </span>
                     </div>
@@ -117,73 +117,56 @@
             {$_logGroupIteration=$_logGroupIteration+1}
             {** @var tasksApiLogDto $l **}
             {foreach $logGroup.items as $l}{strip}
-            <div class="t-comment-item-wrapper custom-mb-20 {if $l.contact_id == $wa->user()->getId()}t-comment-item-wrapper--right{/if}" data-id="{$l.id}">
+            <div class="t-comment-item-wrapper {if $l.contact_id == $wa->user()->getId()}t-comment-item-wrapper--right{/if}" data-id="{$l.id}">
                 <div class="t-comment-item flexbox space-12{if !empty($l.text)} t-comment-with-custom-text{/if}" data-log-id="{$l.id|escape}">
-                    <div class="image" style="position: relative;">
-                        <a href="#/log/contact_id={$l.contact_id}/" title="{$l.contact.name|escape}">
+                    <div class="image flexbox space-8">
+                        <a href="#/tasks/assigned/{$l.contact_id}/" title="{$l.contact.name|escape}">
                             <img class="userpic userpic-48" src="{$l.contact.photo_url}" alt="{$l.contact.name|escape}">
                         </a>
-                        {if !empty($l.task.project.icon_html)}
-                        {$_task_number = '#/task/'|cat:$l.task.project_id|cat:'.'|cat:$l.task.number}
-                        <a href="{$_task_number}">
-                            <span class="t-project-icon" style="line-height: normal;top: 30px;left: 30px;">
-                                {$l.task.project.icon_html}
-                            </span>
-                        </a>
+                        {if $l.action == 'forward' || $l.action == 'return'}
+                            {if $l.assigned_contact_id}
+                                <span class="gray smallest custom-pt-12">→</span>
+                                <a href="#/tasks/assigned/{$l.assigned_contact.id}/" title="{$l.assigned_contact.name|escape}">
+                                    <img class="userpic userpic-48" src="{$l.assigned_contact.photo_url}" alt="{$l.assigned_contact.name|escape}">
+                                </a>
+                            {/if}
                         {/if}
                     </div>
                     <div class="details">
+
                         <header class="t-comment-header small">
 
-                            {$_task = $l.task|default:null}
-                            {if $_task}
-                                {$_project = $_task.project|default:null}
-                                {if $_project}
-                                    {$_task_str_id = $_task.project_id|cat:'.':$_task.number}
+                            {* ACTION AUTHOR *}
+                            <a href="#/tasks/assigned/{$l.contact_id}/" title="{$l.contact.name|escape}" class="custom-mr-4 semibold">
+                                {$l.contact.name|escape}
+                            </a>
+
+                            {if $l.action == 'edit' || $l.action == 'comment' || $l.action == 'forward' || $l.action == 'return'}
+                                <span class="t-comment-action">{$l.action_name}</span>
+                            {/if}
+
+                            {if $l.action == 'forward'}
+                                {if $l.assigned_contact_id}
+                                    <a href="#/tasks/assigned/{$l.assigned_contact.id}/" title="{$l.assigned_contact.name|escape}" class="bold custom-mr-4">
+                                        {$l.assigned_contact.name|escape}
+                                    </a>
                                 {else}
-                                    {$_task_str_id = $_task.number}
+                                    <span class="t-comment-assignment-change text-light-gray">
+                                        [`Unassigned`]
+                                    </span>
                                 {/if}
-                                <span class="t-log-item-project-task-names" data-task-id="{$l.task.id}">
-                                    <span class="t-log-item-task-name semibold"><a href="#/task/{$l.task_id}/"><b>{$_task_str_id}</b>:&nbsp;{$_task.name|escape}</a></span>
-                                </span>
-                            {else}
-                                <!-- TASK NOT FOUND (ID={$l.task_id}) -->
                             {/if}
 
-                            {if $l.action == 'edit' || $l.action == 'comment' || $l.action == 'forward'}
-                                <span class="t-comment-action custom-ml-4">{$l.action_name}</span>
-                            {/if}
-
-                            <span class="t-comment-date hint nowrap custom-ml-4">{$l.create_datetime|wa_datetime:"humandatetime"}</span>
+                            <span class="t-comment-date hint nowrap">{$l.create_datetime|wa_datetime:"humandatetime"}</span>
 
                         </header>
 
-                        {if $l.status_changed}
-                            <div class="t-comment-status-change small gray">
-                                {if isset($l.before_status_id)}
-                                    {tasksHelper::statusNameHTML($l.before_status_id)}
-                                    &nbsp;→&nbsp;
-                                {/if}
-                                {tasksHelper::statusNameHTML($l.after_status_id)}
-                            </div>
-                        {/if}
-
+                        {* LOG ITEM CORE *}
                         {if !empty($l.text)}
                             <div class="t-comment-content">{tasksTask::formatText($l.text)}</div>
                         {/if}
 
-                        {if $l.action == 'forward'}
-                            {if $l.assigned_contact_id}
-                                <div class="t-comment-assignment-change small gray">
-                                    [`Assigned:`] <strong>{$l.assigned_contact.name|escape}</strong>
-                                </div>
-                            {else}
-                                <div class="t-comment-assignment-change">
-                                    <em>[`Unassigned`]</em>
-                                </div>
-                            {/if}
-                        {/if}
-
+                        {* ATTACHMENTS *}
                         {$log_attachments = ['files' => [], 'images' => []]} {* !!! *}
                         {if $log_attachments.files || $log_attachments.images}
                             <div class="t-attach-wrapper">
@@ -216,7 +199,39 @@
                                 </div>
                             </div>
                         {/if}
+
+                        {* TASK TITLE & STATUS *}
+                        {if 1 || $l.status_changed}
+                            <span class="t-comment-status-change small gray custom-mr-4">
+                                {if isset($l.before_status_id) && $l.before_status_id != $l.after_status_id}
+                                    {tasksHelper::statusNameHTML($l.before_status_id)}
+                                    &nbsp;→&nbsp;
+                                {/if}
+                                {tasksHelper::statusNameHTML($l.after_status_id)}
+                            </span>
+                        {/if}
+                        {$_task = $l.task|default:null}
+                        {if $_task}
+                            {$_project = $_task.project|default:null}
+                            {if $_project}
+                                {$_task_str_id = $_task.project_id|cat:'.':$_task.number}
+                            {else}
+                                {$_task_str_id = $_task.number}
+                            {/if}
+                            <span class="t-log-item-project-task-names small" data-task-id="{$l.task.id}">
+                                <span class="t-log-item-task-name"><a href="#/task/{$l.task_id}/"><b>{$_task_str_id}</b>{if !empty($_task.name)}:&nbsp;{$_task.name|escape}{/if}</a></span>
+                            </span>
+                        {else}
+                            <!-- TASK NOT FOUND (ID={$l.task_id}) -->
+                        {/if}
+
                     </div>
+                    {if !empty($l.task.project.icon_html)}
+                        {$_task_number = '#/task/'|cat:$l.task.project_id|cat:'.'|cat:$l.task.number}
+                        <a href="{$_task_number}" class="image t-log-project-icon">
+                            {$l.task.project.icon_html}
+                        </a>
+                    {/if}
                 </div>
             </div>
             {/strip}{/foreach}

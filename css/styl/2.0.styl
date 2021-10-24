@@ -200,19 +200,21 @@ pre
 
   .t-comment-item
     width 80%
-    border-radius 0.5rem
-    padding 0.75rem
-    background var(--background-color)
+    padding 1.25rem 0
+    border-bottom 1px solid var(--border-color-soft)
 
     .details
       margin-top -0.25rem
       flex-grow 1
 
     .t-comment-content
-      font-size 0.875rem
+      font-size 0.9375rem
       margin 0.5rem 0 0.75rem
       font-weight 500
       word-break break-word
+      background var(--background-color)
+      border-radius 0.5rem
+      padding 0.5rem 1.25rem
 
       blockquote
         padding 0.75rem 1rem
@@ -225,11 +227,13 @@ pre
         background var(--highlighted-blue)
 
     &.t-comment-with-custom-text
-        //background var(--background-color-blank)
-        border 2px solid var(--border-color-soft)
+        //background var(--background-color)
+        //border-radius 0.5rem
+        //margin 1rem 0 0
+        //border none
 
     @media forMobile
-        width 85%
+        width 100%
 
 .t-pinned-comment
     background var(--highlighted-blue)
@@ -239,6 +243,46 @@ pre
 
     .icon
         font-size 1rem
+
+.t-task-wrapper
+    .t-comment-item-wrapper
+
+      .t-comment-item
+         //width 100%
+         border-bottom none
+         flex-direction row
+         padding 1rem 0
+
+         .image
+            margin-right 0.75rem
+
+         .details
+             background var(--background-color)
+             border-radius 0.5rem
+             padding 0.75rem 1rem
+
+         .t-comment-content
+             padding 0
+
+      .t-pinned-comment
+         background transparent
+
+         .t-comment-content,
+         .details
+                background var(--highlighted-blue)
+
+      .t-comment-with-custom-text
+         .details
+            border 2px solid var(--border-color-soft)
+
+      &--right
+         .t-comment-item
+             flex-direction row-reverse
+
+             .image
+                margin-right 0
+                margin-left 0.75rem
+
 
 .t-task-embedded-block
     padding 0 0 1rem

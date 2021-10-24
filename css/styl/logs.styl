@@ -135,24 +135,34 @@
         // border-top 1px solid rgba(127,127,127,0.1)
 
         .t-comment-item
-            padding 1em 1em 0.5em
-            min-height 3.5rem
+            padding 1rem 0
+            min-height 2.5rem
 
             .image
-                font-size: 0
+                max-height 3rem
+                font-size 2rem
+                text-align center
+                vertical-align top
+
+                &.t-log-project-icon
+                    margin-right 0.25rem
+                    margin-top -0.25rem
 
             .details
                 min-height 32px
+                line-height 1.3
 
             .t-comment-header
-                font-size 0.9375rem
+                font-size 0.875rem
+                margin-bottom 0.25rem
+                margin-top 0.125rem
 
                 .t-comment-author
                 .t-comment-date
                 .t-comment-action
                     display inline-block
                     vertical-align baseline
-                    margin: 0 .5rem 0 0
+                    margin: 0 .25rem 0 0
                     line-height 20px
 
                 .t-comment-author
@@ -165,13 +175,11 @@
             .t-comment-assignment-change
                 margin 0.5rem 0 0.75rem
                 line-height 1.5em
+                font-size 0.9375rem
 
                 p
                     margin: .5rem 0 0
                     padding: 0
-
-                    &:first-child
-                        margin-top: 0
 
             .t-comment-status-change
                 margin: .25em 0 0

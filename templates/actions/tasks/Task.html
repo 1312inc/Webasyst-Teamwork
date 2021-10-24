@@ -607,7 +607,7 @@
 
                 <div class="t-comments-list-wrapper js-comments-list-wrapper">
                     {foreach $task.log as $l}
-                        <div class="t-comment-item-wrapper custom-mb-20 {if $l.contact_id == $wa->user()->getId()}t-comment-item-wrapper--right{/if}" data-id="{$l.id}">
+                        <div class="t-comment-item-wrapper {if $l.contact_id == $wa->user()->getId()}t-comment-item-wrapper--right{/if}" data-id="{$l.id}">
 
                             {$_rights_info = $l.rights_info|default:[]}
                             {$_can_edit = $_rights_info.can_edit|default:false}
@@ -625,7 +625,7 @@
                                 {$_can_edit = $_can_edit && !$_empty_log_item}
                             {/if}
 
-                            <div class="t-comment-item flexbox space-8 {if !empty($l.text)}t-comment-with-custom-text {/if}{if $task.comment_log_id == $l.id}t-pinned-comment{/if}" data-id="{$l.id}">
+                            <div class="t-comment-item flexbox {if !empty($l.text)}t-comment-with-custom-text {/if}{if $task.comment_log_id == $l.id}t-pinned-comment{/if}" data-id="{$l.id}">
                                 <div class="image">
                                     <a href="{if !empty($l.contact.id)}#/tasks/assigned/{$l.contact.id}/{* tasksHelper::getProfileURL($l.contact.id) *}{else}javascript:void(0);{/if}" title="{$l.contact.name|escape}">
                                         {if !empty({$l.contact.photo_url})}
@@ -638,19 +638,43 @@
                                 <div class="details">
                                     <header class="t-comment-header wrap-mobile flexbox full-width middle space-8">
                                         <div class="wide flexbox wrap space-4">
+
+                                            {if $l.status_changed}
+                                                <div class="t-comment-status-change small gray">
+                                                    {if isset($l.before_status_id) && $l.before_status_id != $l.after_status_id}
+                                                        {tasksHelper::statusNameHTML($l.before_status_id)}
+                                                        &nbsp;→&nbsp;
+                                                    {/if}
+                                                    {tasksHelper::statusNameHTML($l.after_status_id)}
+                                                </div>
+                                            {/if}
+
                                             <span class="t-comment-author small">
-                                                <a href="{if !empty($l.contact.id)}#/tasks/assigned/{$l.contact.id}/{* tasksHelper::getProfileURL($l.contact.id) *}{else}javascript:void(0);{/if}" class="bold">{$l.contact.name|escape}</a>
+                                                <a href="{if !empty($l.contact.id)}#/tasks/assigned/{$l.contact.id}/{* tasksHelper::getProfileURL($l.contact.id) *}{else}javascript:void(0);{/if}" class="bold">{$l.contact.name|escape|default:_w('(no name)')}</a>
                                             </span>
-                                            {if $l.action == 'edit' || $l.action == 'comment' || $l.action == 'forward'}
+                                            {if $l.action == 'edit' || $l.action == 'comment' || $l.action == 'forward'|| $l.action == 'return'}
                                                 <span class="t-comment-action small">{$l.action_name}</span>
                                             {/if}
+
+                                            {if $l.assignment_changed}
+                                                <div class="t-comment-assignment-change small">
+                                                    {if $l.assigned_contact_id}
+                                                        {if !empty($l.assigned_contact.name)}<span class="gray custom-mx-4">→</span>{/if}
+                                                        <a href="#/tasks/assigned/{$l.assigned_contact.id}/" class="bold">{$l.assigned_contact.name|escape}</a>
+                                                    {else}
+                                                        <span class="gray">→</span>
+                                                        <span class="gray">[`Assignment removed`]</span>
+                                                    {/if}
+                                                </div>
+                                            {/if}
+
                                             <span class="t-comment-date nowrap hint middle">{$l.create_datetime|wa_datetime:"humandatetime"}</span>
                                         </div>
 
                                         {* MARK LAST NOT EMPTY FORWARD LOG ITEM *}
-                                        {if $_is_forward && !$_empty_log_item && $task.assign_log_id && $task.assign_log_id == $l.id}
+                                        {*** [wtf is that?] if $_is_forward && !$_empty_log_item && $task.assign_log_id && $task.assign_log_id == $l.id}
                                             <span><i class="fas fa-bolt"></i></span>
-                                        {/if}
+                                        {/if ***}
 
                                         {if $_is_comment}
                                             {if !($task.comment_log_id == $l.id)}
@@ -677,26 +701,8 @@
 
                                     </header>
 
-                                    {if $l.status_changed}
-                                        <div class="t-comment-status-change small gray">
-                                            {if $l.before_status_id}{tasksHelper::statusNameHTML($l.before_status_id)} → {/if}{tasksHelper::statusNameHTML($l.after_status_id)}
-                                        </div>
-                                    {/if}
-
                                     {if !empty($l.text)}
                                         <div class="t-comment-content">{tasksTask::formatText($l.text)}</div>
-                                    {/if}
-
-                                    {if $l.assignment_changed}
-                                        {if $l.assigned_contact_id}
-                                            <div class="t-comment-assignment-change small gray">
-                                                [`Assigned:`] <strong>{$l.assigned_contact.name|escape}</strong>
-                                            </div>
-                                        {else}
-                                            <div class="t-comment-assignment-change small gray">
-                                                [`Assignment removed`]
-                                            </div>
-                                        {/if}
                                     {/if}
 
                                     {if $log_attachments.files || $log_attachments.images}
