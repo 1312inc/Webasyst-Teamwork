@@ -32,9 +32,6 @@
 
 {$_priority_icon = ""}
 {if !empty($task.priority)}
-    {if $task.priority == '-1'}
-        {$_priority_icon = "<i class=\"fas fa-hourglass-half\" style=\"color: var(--light-gray);\"></i>"}
-    {/if}
     {if $task.priority == '0'}
         {$_priority_icon = "<i class=\"fas fa-hashtag\" style=\"color: var(--light-gray);\"></i>"}
     {/if}
