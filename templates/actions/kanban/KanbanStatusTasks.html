@@ -34,14 +34,15 @@
         <div class="flexbox space-8 middle t-kanban-item-body">
 
             <div class="flexbox space-8 middle wide t-kanban-item-project">
-                <div>
-                    {* PROJECT ICON *}
-                    {if !empty($task.project.icon_html)}
+
+                {* PROJECT ICON *}
+                {if !empty($task.project.icon_html)}
+                    <div>
                         {strip}<span class="t-project-icon">
                             {$task.project.icon_html}
                         </span>{/strip}
-                    {/if}
-                </div>
+                    </div>
+                {/if}
                 <div>
                     <p class="small gray">
                         {if !empty($task.milestone.name)}
