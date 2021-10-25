@@ -995,7 +995,7 @@
         initSidebar: function() {
             self.initCollapsibleSidebar();
 
-            $("#add-task-link").on("click", function(event) {
+            $(".add-task-link").on("click", function(event) {
                 if (event.which != 1) { return; } // not a left-mouse-button click
                 $(this).addClass('rotated');
                 setTimeout(() => {
