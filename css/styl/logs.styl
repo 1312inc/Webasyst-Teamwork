@@ -144,6 +144,21 @@
                 text-align center
                 vertical-align top
 
+                &.t-userpic-stack
+                    width 5rem
+                    position relative
+                    text-align left
+
+                    .t-userpic-stacked
+                        z-index 1
+                        position absolute
+                        right -3px
+
+                        .userpic
+                            border 3px solid var(--background-color-blank)
+                            box-sizing content-box
+                            top -3px
+
                 &.t-log-project-icon
                     margin-right 0.25rem
                     margin-top -0.25rem
@@ -154,7 +169,7 @@
 
             .t-comment-header
                 font-size 0.875rem
-                margin-bottom 0.25rem
+                margin-bottom 0.125rem
                 margin-top 0.125rem
 
                 .t-comment-author
@@ -173,7 +188,7 @@
 
             .t-comment-content
             .t-comment-assignment-change
-                margin 0.5rem 0 0.75rem
+                margin 0.75rem 0 0.75rem
                 line-height 1.5em
                 font-size 0.9375rem
 

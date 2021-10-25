@@ -199,7 +199,7 @@ pre
     justify-content flex-end
 
   .t-comment-item
-    width 80%
+    width 100%
     padding 1.25rem 0
     border-bottom 1px solid var(--border-color-soft)
 
@@ -232,9 +232,6 @@ pre
         //margin 1rem 0 0
         //border none
 
-    @media forMobile
-        width 100%
-
 .t-pinned-comment
     background var(--highlighted-blue)
     border-radius 0.25rem
@@ -248,7 +245,7 @@ pre
     .t-comment-item-wrapper
 
       .t-comment-item
-         //width 100%
+         width calc(100% - 2.75rem)
          border-bottom none
          flex-direction row
          padding 1rem 0
@@ -263,6 +260,9 @@ pre
 
          .t-comment-content
              padding 0
+
+      @media forMobile
+         width 100%
 
       .t-pinned-comment
          background transparent
@@ -291,7 +291,8 @@ pre
 
 .redactor-box.redactor-styles-on
     border-width 2px !important
-    border-radius 0.25rem !important
+    border-radius 0.5rem 0.5rem 0 0 !important
+    border-color var(--border-color-soft) !important
     border-bottom-color transparent !important
 
 .redactor-styles
@@ -423,3 +424,11 @@ pre
 
 .t-description-wrapper
   font-size 0.9375rem
+
+.t-comment-edit-form-wrapper
+  flex 1
+
+.t-comment-form
+  margin-top 0.75rem
+  margin-bottom 1.25rem
+  width calc(100% - 2.75rem)

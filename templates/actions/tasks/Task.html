@@ -629,9 +629,9 @@
                                 <div class="image">
                                     <a href="{if !empty($l.contact.id)}#/tasks/assigned/{$l.contact.id}/{* tasksHelper::getProfileURL($l.contact.id) *}{else}javascript:void(0);{/if}" title="{$l.contact.name|escape}">
                                         {if !empty({$l.contact.photo_url})}
-                                            <img class="userpic userpic-32" src="{$l.contact.photo_url}" alt="{$l.contact.name|escape}">
+                                            <img class="userpic userpic-32 custom-mt-4" src="{$l.contact.photo_url}" alt="{$l.contact.name|escape}">
                                             {else}
-                                            <img class="userpic userpic-32" src="/wa-content/img/userpic96@2x.jpg">
+                                            <img class="userpic userpic-32 custom-mt-4" src="/wa-content/img/userpic96@2x.jpg">
                                         {/if}
                                     </a>
                                 </div>
