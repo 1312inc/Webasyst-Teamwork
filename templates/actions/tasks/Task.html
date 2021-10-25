@@ -317,7 +317,7 @@
                     {* MILESTONE & DEADLINE *}
                     <div class="t-task-flag-box">
 
-                        <div class="flexbox space-8 t-task-flag-box-content">
+                        <div class="flexbox space-8 t-task-flag-box-content custom-mt-4">
                             {$_milestone = ''}
                             {$_due_date = ''}
                             {$_due_hint = ''}
@@ -336,36 +336,34 @@
                                 {$_due_hint = $task.view.due_text}
                                 {$_due_class = $task.view.due_color_class}
                             {/if}
-                            <a href="#" class="custom-m-8 custom-mr-16{if !$task.milestone && !$task.due_date} text-light-gray{else} text-black{/if}">
+                            <a href="#" class="custom-mr-16{if !$task.milestone && !$task.due_date} text-light-gray{else} text-black{/if}">
                                 <span class="icon size-32">
                                     <i class="fas fa-flag-checkered"></i>
                                 </span>
                             </a>
-                            <div class="wide">
+                            <div class="wide middle">
                                 <p class="small custom-mb-4">
                                     {if $_milestone}
                                         <strong>{$_milestone}</strong>
                                     {elseif $_due_date}
                                         <span class="badge nowrap squared {$_due_class} custom-mr-4">{$_due_date}</span>
-                                        {if $_due_hint}
-                                            <span class="small nowrap">{$_due_hint}</span>
-                                        {/if}
                                     {else}
-                                        <span class="gray nowrap">[`No milestone`]</span>
+                                        <span class="gray nowrap">[`No due date`]</span>
                                     {/if}
                                 </p>
-                                <p class="hint custom-mt-0">
-                                    {if $_due_date && $_milestone}
-                                        <span class="t-due-date-bl badge nowrap squared {$_due_class} custom-mr-4">{$_due_date}</span>
-                                        {if $_due_hint}
-                                            <span class="small">{$_due_hint}</span>
+                                {if $_due_date}
+                                    <p class="hint custom-mt-0">
+                                        {if $_milestone}
+                                            <span class="t-due-date-bl badge nowrap squared {$_due_class} custom-mr-4">{$_due_date}</span>
                                         {/if}
-                                    {elseif !$_due_date || $_milestone}
-                                        [`No due date`]
-                                    {else}
-                                        [`No milestone`]
-                                    {/if}
-                                </p>
+                                        <strong class="small nowrap">{$_due_hint}</strong>
+                                    </p>
+                                {/if}
+                                {if $_milestone && !$_due_date}
+                                    <p class="hint custom-mt-0">
+                                        <span class="gray nowrap">[`No due date`]</span>
+                                    </p>
+                                {/if}
                             </div>
                         </div>
 
