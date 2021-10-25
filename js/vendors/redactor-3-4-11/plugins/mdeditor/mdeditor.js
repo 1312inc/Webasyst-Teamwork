@@ -74,7 +74,7 @@ md.set({
       this.app.source.setCode(mdRender);
 
       // set initial md in textarea
-      // this.app.source.getElement().val(startedContent);
+      this.app.source.getElement().val(startedContent);
 
       this.app.broadcast('mdRendered', mdRender);
     },
