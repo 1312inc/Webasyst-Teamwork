@@ -40,6 +40,8 @@
                             items: ".menu > li > a",
                             change: function(event, target, dropdown) {
                                 $("[name=\"data[milestone_id]\"]").val( $(target).data("value") );
+                                var due = $(target).find('.t-milestone-due-date').text().trim();
+                                $('.t-dialog-content .t-datepicker-due-date').attr("placeholder", due);
                             },
                             ready: function (dropdown) {
                                 $("#milestoneSelect").find('.menu > li a.selected').trigger('click');
