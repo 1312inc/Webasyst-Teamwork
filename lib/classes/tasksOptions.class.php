@@ -21,4 +21,9 @@ final class tasksOptions
     {
         return (int) tsks()->getOption('tags_cloud_cache_ttl');
     }
+
+    public static function getBulkNotificationLimit(): int
+    {
+        return (int) tsks()->getOption('bulk_notifications_limit');
+    }
 }

@@ -15,7 +15,7 @@ class tasksTasksBulkActions extends waJsonActions
             return;
         }
 
-        $email_one_by_one = (count($tasks) <= wa('tasks')->getConfig()->getOption('bulk_notifications_limit'));
+        $email_one_by_one = (count($tasks) <= tasksOptions::getBulkNotificationLimit());
         $email_one_by_one = true; // !!! TODO bulk email sending is not implemented for Done action
 
         // Send tasks to Done state
@@ -57,7 +57,7 @@ class tasksTasksBulkActions extends waJsonActions
         $text = waRequest::post('text', null, 'string');
         $status_id = waRequest::post('status_id', null, 'int');
         $assigned_contact_id = waRequest::post('assigned_contact_id', null, 'int');
-        $email_one_by_one = (count($tasks) <= wa('tasks')->getConfig()->getOption('bulk_notifications_limit'));
+        $email_one_by_one = (count($tasks) <= tasksOptions::getBulkNotificationLimit());
 
         $project_id = waRequest::post('project_id', null, 'int');
         if ($project_id) {
