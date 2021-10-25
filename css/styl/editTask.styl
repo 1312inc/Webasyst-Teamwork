@@ -48,6 +48,13 @@ $yellow_color = #ffffe3;
                     text-align right
                     vertical-align middle
 
+                    @media forMobile
+                        width 100%
+                        margin 1.25rem 0 0.5rem
+
+                @media forMobile
+                    display block
+
         .t-task-name-wrapper
             input
                 width 100%
@@ -129,3 +136,7 @@ $yellow_color = #ffffe3;
 
 .t-user-item.is-unassigned
     display block
+
+.t-milestone-wrapper
+  @media forMobile
+    margin-top 0.75rem
