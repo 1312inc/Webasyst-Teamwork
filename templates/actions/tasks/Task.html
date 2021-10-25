@@ -75,6 +75,20 @@
 
                     <div class="t-controls-wrapper flexbox middle wrap-mobile space-16">
 
+                        {if count($task.tags) === 0}
+                            <a class="tags-toggle button circle" href="#">
+                                <i class="fas fa-hashtag"></i>
+                            </a>
+                            <script>
+                                (function($) {
+                                    $('.tags-toggle').on('click', function (e) {
+                                        e.preventDefault();
+                                        $('.t-task-header .t-tags-wrapper').slideToggle(200);
+                                    });
+                                })(jQuery);
+                            </script>
+                        {/if}
+
                         {* HIDE FROM INBOX OPTIONS *}
                         {$_hash_type = $hash_type|default:''}
                         {if ($_hash_type == 'inbox' || $_hash_type == 'hidden') && $task.priority <= 1}
@@ -161,7 +175,7 @@
                 </div>
 
                 {* TAGS *}
-                <div class="t-tags-wrapper">
+                <div class="t-tags-wrapper" style="{if count($task.tags) === 0}display: none;{/if}">
                     <li class="tag is-template">
                         <a class="t-tag-item" href="javascript:void(0);" data-tag-id="">
                             <i class="fas fa-hashtag"></i>
