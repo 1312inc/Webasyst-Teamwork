@@ -65,7 +65,7 @@
         </a>
     </div>
 
-    <ul class="menu custom-mt-0">
+    <ul class="menu custom-mt-0 mobile-friendly">
 
         <li>
             <a href="#/tasks/favorites/">
@@ -99,7 +99,7 @@
         <div class="box custom-py-0">
             <hr>
         </div>
-        <ul class="menu">
+        <ul class="menu mobile-friendly">
             <li>
                 <a href="#/log/">
                     <i class="fas fa-bolt"></i>
@@ -124,7 +124,7 @@
                 </span>
             </h5>
             <div class="collapsible__content">
-                <ul class="menu t-view-list hide-when-collapsed">
+                <ul class="menu t-view-list hide-when-collapsed mobile-friendly">
 
                     {foreach $lists as $_list}
                         <li data-id="{$_list.id}">
@@ -166,7 +166,7 @@
             </h5>
             <div class="collapsible__content">
                 {if $scopes}
-                    <ul class="t-scopes menu hide-when-collapsed">
+                    <ul class="t-scopes menu mobile-friendly hide-when-collapsed">
                         {foreach $scopes as $scope}
                             {$_scope_is_100_complete = isset($scope.closed_percent) && $scope.closed_percent >= 100}
                             <li class="t-scope">
@@ -222,7 +222,7 @@
             {/if}
         </h5>
         <div class="collapsible__content">
-            <ul class="menu">
+            <ul class="menu mobile-friendly">
                 {foreach tasksHelper::getStatuses() as $s}
                     <li>
                         <a href="#/tasks/status/{$s.id}/">
@@ -259,7 +259,7 @@
         </h5>
         <div class="collapsible__content">
             {if !empty($users)}
-                <ul class="menu hide-when-collapsed">
+                <ul class="menu mobile-friendly hide-when-collapsed">
                     {foreach $users as $user}
                         <li>
                             <a href="#/tasks/assigned/{$user.id}/">
@@ -303,7 +303,7 @@
             </h5>
             <div class="collapsible__content">
                 {if $projects}
-                    <ul class="menu hide-when-collapsed">
+                    <ul class="menu hide-when-collapsed mobile-friendly">
                         {foreach $projects as $project}
                             <li>
                                 <a href="#/tasks/project/{$project.id}/">
