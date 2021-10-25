@@ -186,15 +186,20 @@ class tasksRights
         if ($contact == null) {
             $contact = wa()->getUser()->getId();
         }
+
         if (wa_is_int($contact)) {
             return (int) $contact;
-        } elseif (is_array($contact) && isset($contact['id'])) {
-            return (int) $contact['id'];
-        } elseif ($contact instanceof waContact) {
-            return (int) $contact['id'];
-        } else {
-            return false;
         }
+
+        if (is_array($contact) && isset($contact['id'])) {
+            return (int) $contact['id'];
+        }
+
+        if ($contact instanceof waContact) {
+            return (int) $contact['id'];
+        }
+
+        return false;
     }
 
     /**
@@ -500,6 +505,11 @@ class tasksRights
         }
 
         return $tasks_access_map;
+    }
+
+    public function contactHasAccessToProject(waContact $contact, $projectId): bool
+    {
+        return $contact->getRights('tasks', 'project.' . $projectId) > 0;
     }
 
     protected function getCountersOfNotOwnLogItems($contact_id, $task_ids)
