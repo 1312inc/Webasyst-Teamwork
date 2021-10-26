@@ -450,8 +450,20 @@ pre
 
 .t-assignee
   cursor pointer
-  
+  opacity 0.5
+
+  img
+    border 3px solid transparent
+
+  .smaller
+    position relative
+    display block
+    overflow hidden
+    text-overflow ellipsis
+
   &.active
+    opacity 1
+
     img
       border 3px solid var(--blue)
     
