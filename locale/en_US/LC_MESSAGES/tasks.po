@@ -1137,7 +1137,10 @@ msgstr ""
 msgid "No due date"
 msgstr ""
 
-msgid "Enter new tag..."
+msgid "Create new tag"
+msgstr ""
+
+msgid "Popular tags:"
 msgstr ""
 
 msgid "Unlink"

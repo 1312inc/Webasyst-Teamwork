@@ -1204,8 +1204,11 @@ msgstr "Наблюдать"
 msgid "No due date"
 msgstr "Нет дедлайна"
 
-msgid "Enter new tag..."
-msgstr "Добавить тег..."
+msgid "Create new tag"
+msgstr "Создать новый тег"
+
+msgid "Popular tags:"
+msgstr "Популярные теги:"
 
 msgid "Unlink"
 msgstr "Удалить связь"

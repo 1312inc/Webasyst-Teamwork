@@ -73,10 +73,10 @@
 
                     </div>
 
-                    <div class="t-controls-wrapper flexbox middle wrap-mobile space-16">
+                    <div class="t-controls-wrapper flexbox middle wrap-mobile space-12">
 
                         {if count($task.tags) === 0}
-                            <a class="tags-toggle button circle" href="#">
+                            <a class="tags-toggle button circle light-gray" href="#">
                                 <i class="fas fa-hashtag"></i>
                             </a>
                             <script>
@@ -222,6 +222,7 @@
 
                                 {$_hidden_tags_counter = 0}
                                 <ul class="chips tags small">
+                                    {if count($tags_cloud)}<li class="transparent"><span>[`Popular tags:`]</span></li>{/if}
                                     {foreach $tags_cloud as $tag}
                                         {$_visible = $tag.id|array_key_exists:$_top_tags_ids}
 
@@ -243,7 +244,7 @@
 
                                 <div class="t-input-wrapper">
                                     <input value="" class="t-input js-t-task-tags-autocomplete small" type="text" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true"
-                                        placeholder="[`Enter new tag...`]">
+                                        placeholder="[`Create new tag`]">
                                 </div>
                             </div>
 
@@ -267,7 +268,7 @@
                 </div>
 
                 {* USERS & DEADLINES *}
-                <div class="flexbox space-16 custom-mb-12 custom-mt-16 wrap-mobile">
+                <div class="flexbox space-16 custom-mb-8 custom-mt-16 wrap-mobile">
 
                     <div class="wide t-task-users-box" style="position: relative;">
 
@@ -394,7 +395,7 @@
             {* @event backend_task.%plugin_id%.after_header *}
             {foreach $_backend_task_hook as $_}{$_.after_header|default:''}{/foreach}
 
-            <hr class="desktop-and-tablet-only" />
+            <hr class="desktop-and-tablet-only t-task-header-divider" />
 
             {* TASK BODY *}
             <div class="flexbox space-12 full-width t-task-body" style="position: relative;">
