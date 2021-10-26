@@ -1011,6 +1011,7 @@ var Task = ( function($) {
         var bindEvents = function() {
 
             $R('.t-redactor-comments', {
+                minHeight: '150px',
                 imageData: {
                     task_uuid: that.task_uuid
                 }
