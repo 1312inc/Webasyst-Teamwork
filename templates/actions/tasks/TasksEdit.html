@@ -250,55 +250,25 @@
                     <div class="fields-group">
 
                 {* ASSIGN *}
-                <div class="t-form-line field t-team-list-wrapper">
+                <div class="t-form-line field">
                     <div class="name custom-pt-4">[`Assign to`]</div>
                     <div class="value">
-                        <ul class="js-task-users-list">
-                            {$_count = 0}
-                            {$_is_something_checked = false}
-                            {foreach $users as $user}
-                                {$_is_checked = !$task.assigned_contact_id && $user@iteration == 1 && !$task.id}
-                                {$_is_checked = $_is_checked || $user.id == $task.assigned_contact_id}
-                                {$_is_something_checked = $_is_something_checked || $_is_checked}
-
-                                <li class="t-user-item is-shown" data-user-id="{$user.id}">
-                                    <label class="t-user-label set-task-user flexbox middle space-8">
-                                        <span class="wa-radio">
-                                            <input type="radio" name="data[assigned_contact_id]" value="{$user.id}" {if $_is_checked}checked{/if}>
-                                            <span></span>
-                                        </span>
-                                        <i class="userpic userpic-32" style="background-image: url({$user.photo_url})"></i>
-                                        <span>
-                                            {$user.name|escape}
-                                            {if ($user.id == $wa->user('id'))}
-                                                <span class="gray custom-ml-4">([`me`])</span>
-                                            {/if}
-                                            {if $user.calendar_status}<span class="badge small nowrap custom-ml-4" style="background-color: {$user.calendar_status->getBgColor()};color: {$user.calendar_status->getFontColor()};" title="{$user.calendar_status->getName()|escape}">{$user.calendar_status->getName()|escape|truncate:42}</span>{/if}
-                                        </span>
-                                    </label>
-                                </li>
-                            {/foreach}
-
-                            <li class="t-user-item is-unassigned is-shown" data-user-id="">
-                                <label class="t-user-label set-task-user flexbox middle space-8">
-                                    <span class="wa-radio">
-                                        <input type="radio" name="data[assigned_contact_id]" value="0"{if !$_is_something_checked} checked{/if}>
-                                        <span></span>
-                                    </span>
-                                    <i class="userpic userpic-32" style="background-image: url('{$wa_url}wa-content/img/userpic.svg')"></i>
-                                    <span class="gray">[`Unassigned`]</span>
-                                </label>
-                            </li>
-
-                            <li class="t-link-item">
-                                <a class="show-team-users small" href="javascript:void(0);">[`Show everyone`]</a>
-                            </li>
-                        </ul>
+                        <input type="hidden" name="data[assigned_contact_id]" value="{$task.assigned_contact_id}">
+                        <div class="t-team-list-wrapper"></div>
+                        <script>
+                            (function ($) {
+                                $.tasks.teamList(
+                                    $('#t-edit-task-form .t-team-list-wrapper'), 
+                                    $('#t-edit-task-form [name="data[assigned_contact_id]"]'),
+                                    "[`Unassigned`]",
+                                    {$task.project_id},
+                                    {$task.assigned_contact_id}
+                                );
+                            })(jQuery);
+                        </script>
                     </div>
-
                 </div>
-
-
+                
 
                 <div class="t-form-line field t-due-date-wrapper">
                     <div class="name for-input">[`Due date`]</div>

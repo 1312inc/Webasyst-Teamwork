@@ -1529,6 +1529,44 @@
             setTimeout(function () {
                 $button.removeAttr('disabled').removeClass('button--loading');
             }, 1000);
+        },
+
+        teamList: function ($container, $targetField, unassignedLabel, projectId, assignedContactId = "") {
+            $.get('?module=tasks&action=getUsersForProject&project_id=' + projectId, function (data) {
+                var assignees = data.data,
+                    maxVisible = 5;
+
+                if (assignees.length) {
+                    var $assigneesContainer = $('<div>', {
+                        class: 'flexbox space-8'
+                    });
+
+                    $assigneesContainer.append("<div class=\"t-assignee align-center\" data-user-id=\"\" style=\"width:60px;\"><div class=\"custom-mb-4\"><img src='/wa-content/img/userpic.svg' class=\"userpic userpic-48\" /></div><div class=\"smaller\">" + unassignedLabel + "</div></div>");
+                    assignees.forEach(function (a, i) {
+                        var $assignee = "<div class='t-assignee align-center" + (i > (maxVisible - 1) ? ' hidden' : '') + "' data-user-id=\"" + a.id + "\" style=\"width:60px;\"><div class=\"custom-mb-4\"><img src='" + a.photo_url + "' class=\"userpic userpic-48\" /></div><div class=\"smaller\">" + a.firstname + ' ' + a.lastname + "</div></div>";
+                        $assigneesContainer.append($assignee);
+                    });
+                    $container.append($assigneesContainer);
+                    if (assignees.length > maxVisible) {
+                        $assigneesContainer.append("<div class=\"t-toggle-all-assignee align-center\" style=\"width:60px;\"><span class=\"icon userpic size-48\" style=\"background: var(--light-gray);\"><i class=\"fas fa-chevron-down\" style=\"width:0.2em;\"></i></span></div>");
+                    }
+
+                    // initial selection
+                    $container.find('.t-assignee[data-user-id=\"' + assignedContactId + '\"]').addClass('active');
+
+                    $container.find('.t-assignee').on('click', function () {
+                        $container.find('.t-assignee').removeClass('active');
+                        $(this).addClass('active');
+                        $targetField.val($(this).data('user-id'));
+                    });
+
+                    $container.find('.t-toggle-all-assignee').on('click', function () {
+                        $container.find('.t-assignee').removeClass('hidden');
+                        $(this).hide();
+                    });
+
+                }
+            });
         }
     };
 })();
