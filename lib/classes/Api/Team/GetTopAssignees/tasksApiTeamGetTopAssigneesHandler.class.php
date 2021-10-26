@@ -9,9 +9,9 @@ final class tasksApiTeamGetTopAssigneesHandler
      */
     public function getUsers(tasksApiTeamGetTopAssigneesRequest $request): array
     {
-        if (!(new tasksRights())->contactHasAccessToProject(wa()->getUser(), $request->getProjectId())) {
-            throw new tasksAccessException(_w('No access to project'));
-        }
+//        if (!(new tasksRights())->contactHasAccessToProject(wa()->getUser(), $request->getProjectId())) {
+//            throw new tasksAccessException(_w('No access to project'));
+//        }
 
         $users = tasksHelper::getTeam($request->getProjectId(), false, false, true);
         foreach ($users as $user_id => $user) {
