@@ -15,7 +15,9 @@ class tasksTasksEditAction extends waViewAction
 
     public function execute()
     {
+        $fcuk = 1;
         $this->projects = $projects = tasksHelper::getProjects();
+        waLog::log($fcuk++, '500fcuk.log');
         if (!$projects) {
             $this->setTemplate(
                 wa('tasks')->getAppPath(tsks()->getUI2TemplatePath('templates/actions%s/tasks/NoProjectsError.html'))
@@ -23,24 +25,32 @@ class tasksTasksEditAction extends waViewAction
 
             return;
         }
+        waLog::log($fcuk++, '500fcuk.log');
 
         $this->task = $task = $this->getTask($projects);
+        waLog::log($fcuk++, '500fcuk.log');
 
         if (empty($projects[$task['project_id']])) {
             $project_model = new tasksProjectModel();
             $this->project = tasksHelper::extendIcon($project_model->getEmptyRow());
+            waLog::log($fcuk++, '500fcuk.log');
         } else {
             $this->project = $projects[$task['project_id']];
+            waLog::log($fcuk++, '500fcuk.log');
         }
 
         $milestone_model = new tasksMilestoneModel();
         $this->milestones = $milestone_model->getMilestonesWithOrder(false);
+        waLog::log($fcuk++, '500fcuk.log');
 
         $this->users = (new tasksApiTeamGetTopAssigneesHandler())
             ->getUsers(new tasksApiTeamGetTopAssigneesRequest($this->project['id']));
+        waLog::log($fcuk++, '500fcuk.log');
         $this->projects_users = $this->getProjectsUsers($projects, $this->users);
+        waLog::log($fcuk++, '500fcuk.log');
 
         $backend_task_edit = $this->triggerEvent($task);
+        waLog::log($fcuk++, '500fcuk.log');
 
         $this->view->assign([
             'task' => $task,
@@ -52,7 +62,7 @@ class tasksTasksEditAction extends waViewAction
             'users' => $this->users,
             'backend_task_edit' => ifempty($backend_task_edit, []),
         ]);
-
+        waLog::log($fcuk++, '500fcuk.log');
     }
 
     protected function getProjectsUsers($projects, $users)
