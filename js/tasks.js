@@ -1531,7 +1531,15 @@
             }, 1000);
         },
 
-        teamList: function ($container, $targetField, unassignedLabel, projectId, assignedContactId = "") {
+        teamList: function (options) {
+
+            var $container = options.container,
+                $targetField = options.targetField,
+                projectId = options.projectId,
+                assignedContactId = options.assignedContactId,
+                unassignedLabel = $.wa.locale.unassigned,
+                meLabel = $.wa.locale.me;
+
             $.get('?module=tasks&action=getUsersForProject&project_id=' + projectId, function (data) {
                 var assignees = data.data,
                     maxVisible = 5,
@@ -1543,17 +1551,45 @@
                     });
 
                     assignees.forEach(function (a, i) {
-                        var $assignee = "<div class='t-assignee align-center" + (i > (maxVisible - 1) ? ' hidden' : '') + "' data-user-id=\"" + a.id + "\" style=\"width:60px;\"><div class=\"custom-mb-4\"><img src='" + a.photo_url + "' class=\"userpic userpic-48\" /></div><div class=\"smaller\">" + a.firstname + ' ' + a.lastname + "</div></div>";
+                        var $assignee = `
+                            <div class="t-assignee align-center ${i > (maxVisible - 1) ? 'hidden' : ''}" data-user-id="${a.id}" style="width: 72px;">
+                                <div class="custom-mb-4">
+                                    <img src="${a.photo_url}" class="userpic userpic-48" />
+                                </div>
+                                <div class="smaller">
+                                    ${a.firstname + ' ' + a.lastname} ${$.tasks.options.contact_id === +a.id ? `(${meLabel})` : ''}
+                                </div>
+                            </div>
+                        `;
                         $assigneesContainer.append($assignee);
                     });
-                    $assigneesContainer.append("<div class=\"t-assignee align-center\" data-user-id=\"\" style=\"width:60px;\"><div class=\"custom-mb-4\"><img src='" + wa_url + "wa-content/img/userpic.svg' class=\"userpic userpic-48\" /></div><div class=\"smaller\">" + unassignedLabel + "</div></div>");
-                    $container.append($assigneesContainer);
+                    $assigneesContainer.append(`
+                        <div class="t-assignee align-center" data-user-id="" style="width: 72px;">
+                            <div class="custom-mb-4">
+                                <img src="${wa_url}wa-content/img/userpic.svg" class="userpic userpic-48" />
+                            </div>
+                            <div class="smaller">
+                                ${unassignedLabel}
+                            </div>
+                        </div>
+                    `);
+                    $container.html($assigneesContainer);
                     if (assignees.length > maxVisible) {
-                        $assigneesContainer.append("<div class=\"t-toggle-all-assignee align-center\" style=\"width:60px;\"><span class=\"icon userpic size-48\" style=\"background: var(--light-gray);\"><i class=\"fas fa-chevron-down\" style=\"width:0.2em;\"></i></span></div>");
+                        $assigneesContainer.append(`
+                            <div class="t-toggle-all-assignee align-center" style="width: 72px;">
+                                <span class="icon userpic size-48" style="background: var(--light-gray);">
+                                <i class="fas fa-chevron-down" style="width: 0.2em;"></i>
+                                </span>
+                            </div>
+                        `);
                     }
 
                     // initial selection
-                    $container.find('.t-assignee[data-user-id=\"' + assignedContactId + '\"]').addClass('active');
+                    if(assignedContactId) {
+                        $container.find('.t-assignee[data-user-id=\"' + assignedContactId + '\"]').addClass('active');
+                    } else {
+                        $container.find('.t-assignee').first().addClass('active');
+                    }
 
                     $container.find('.t-assignee').on('click', function () {
                         $container.find('.t-assignee').removeClass('active');

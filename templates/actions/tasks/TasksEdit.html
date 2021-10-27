@@ -98,6 +98,14 @@
                                         change: function(event, target, dropdown) {
                                             $("[name=\"data[project_id]\"]").val( $(target).data("value") );
                                             taskEdit.onProjectChange();
+                                            
+                                            $.tasks.teamList({
+                                                container: $('#t-edit-task-form .t-team-list-wrapper'), 
+                                                targetField: $('#t-edit-task-form [name="data[assigned_contact_id]"]'),
+                                                projectId: $(target).data("value"),
+                                                assignedContactId: {$task.assigned_contact_id|default:"\"\""}
+                                            });
+
                                         }
                                     });
                                 })(jQuery);
@@ -257,13 +265,12 @@
                         <div class="t-team-list-wrapper"></div>
                         <script>
                             (function ($) {
-                                $.tasks.teamList(
-                                    $('#t-edit-task-form .t-team-list-wrapper'), 
-                                    $('#t-edit-task-form [name="data[assigned_contact_id]"]'),
-                                    "[`Unassigned`]",
-                                    {$task.project_id},
-                                    {$task.assigned_contact_id}
-                                );
+                                $.tasks.teamList({
+                                    container: $('#t-edit-task-form .t-team-list-wrapper'), 
+                                    targetField: $('#t-edit-task-form [name="data[assigned_contact_id]"]'),
+                                    projectId: {$task.project_id},
+                                    assignedContactId: {$task.assigned_contact_id|default:"\"\""}
+                                });
                             })(jQuery);
                         </script>
                     </div>
