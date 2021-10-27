@@ -954,6 +954,8 @@ var TasksHeader = ( function($) {
                         altFormat: 'yy-mm-dd'
                     });
 
+                    dialog_instance.resize();
+
                     $dialog.on('submit', 'form', function (e) {
                         e.preventDefault();
                         var $loading = $dialog.find('.t-loading'),
