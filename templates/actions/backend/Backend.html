@@ -152,10 +152,10 @@
     <script>window.TasksController.init();</script>
 
     <script>
-        ( function($) {
+        (function($) {
             var $sidebar = $('#sidebar');
-            $sidebar.waShowSidebar({
-                direction: "down"
+            var t = $sidebar.waShowSidebar({
+                is_open: true
             });
         })(jQuery);
     </script>
