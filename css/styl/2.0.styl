@@ -46,10 +46,10 @@ h2
     transform rotate(360deg)
 
 .sidebar.t-task-list-sidebar
-  width 26rem
+  width 25rem
 
   @media forMedium
-    width 24rem
+    width 22rem
 
   @media forMobile
     width 100%
@@ -420,6 +420,15 @@ pre
   top auto
 
 .t-relations-hover-block
+  list-style none
+  padding 0
+
+  li
+    padding 0.25rem 0.5rem 0.5rem
+
+    &:hover
+      background var(--background-color-table-row-hover)
+
   .break-word
     white-space nowrap
     overflow hidden
@@ -427,6 +436,8 @@ pre
 
 .t-description-wrapper
   font-size 0.9375rem
+  margin-top 1rem
+  margin-bottom 1.25rem
 
   @media forMobile
     font-size 1rem
