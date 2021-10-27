@@ -1522,12 +1522,12 @@
             if (!$icon.length) {
                 $button.addClass('custom-pl-40');
             }
-            $button.prop("disabled", true).addClass('button--loading');
+            $button.prop("disabled", true).addClass('button--loading disabled');
         },
 
         hideLoadingButton: function ($button) {
             setTimeout(function () {
-                $button.removeAttr('disabled').removeClass('button--loading');
+                $button.removeAttr('disabled').removeClass('button--loading disabled');
             }, 1000);
         },
 

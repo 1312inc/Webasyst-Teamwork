@@ -490,7 +490,8 @@ var Task = ( function($) {
                     assigned_contact_id = that.task.assigned_contact_id,
                     status_id = $link.data('statusId'),
                     current_user_id = that.user_id,
-                    skip_form = !!e.shiftKey;
+                    skip_form = !!e.shiftKey,
+                    isCloseButton = +$link.data('status-id') === -1;
 
                 $link.addClass('disabled');
                 setTimeout(function () {
@@ -498,7 +499,7 @@ var Task = ( function($) {
                 }, 1000);
 
                 // Show spinner if Status has no form
-                if ($link.data('has-form') === 0) {
+                if ($link.data('has-form') === 0 && !isCloseButton ) {
                     $.tasks.showLoadingButton($link);
                 }
 
@@ -507,6 +508,9 @@ var Task = ( function($) {
                         assigned_contact_id !== current_user_id;
 
                 if (!need_show_confirm_dialog) {
+                    if (isCloseButton) {
+                        $.tasks.showLoadingButton($link);
+                    }
                     onChangeStatus($link, skip_form);
                     return false;
                 }
