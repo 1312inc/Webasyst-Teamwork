@@ -2,20 +2,21 @@
 
 {include file="./Helpers.inc.html" inline}
 
-{**  $log.assigned_contact еще нет **}
+{** $log.assigned_contact var is not yet available **}
+
+{sprintf('[`User %s sent you a task.`]', $from.name|escape)}
 
 <br>
 <br>
-
-{$invite_link}
 
 {project_title}
 {task_title}
 {priority_title}
-{tags_title}
 
-{task_block}
-
-{log_block}
+[`To see the task details, add comments, and mark it as completed, accept the invitation to join the team:`]
+<br><br>
+<div style="text-align: center;">
+<a href="{$invite_link}" style="display: inline-block; background: gold; padding: 15px 25px; color: #000; border-radius: 6px;">[`Accept invitation`]</a>
+</div>
 
 {include inline file='./includes/Footer.inc.html'}
