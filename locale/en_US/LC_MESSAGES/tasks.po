@@ -624,7 +624,7 @@ msgid "Change priority"
 msgstr ""
 
 msgid "User %s sent you a new task"
-msgstr ""
+msgstr "%s sent you the new task"
 
 msgid "via Tasks app"
 msgstr ""
@@ -635,13 +635,13 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "User %s edited a task you are assigned to:"
-msgstr ""
+msgstr "%s edited the task you are assigned to:"
 
 msgid "%s editoed a task you created:"
 msgstr ""
 
 msgid "User %s has just completed a task"
-msgstr ""
+msgstr "%s has completed the task"
 
 msgid "Inbox automatically collects all tasks assigned to you. No tasks are assigned to you right now :-)"
 msgstr "Inbox automatically collects all tasks assigned to you. No tasks are assigned to you right now."
@@ -747,37 +747,37 @@ msgid "<a href=\"%s\">%s</a> from %s"
 msgstr ""
 
 msgid "User %s sent you your task."
-msgstr ""
+msgstr "%s sent you the task you created."
 
 msgid "User %s sent you a task."
-msgstr ""
+msgstr "%s sent you the task."
 
 msgid "User %s sent a task to %s."
-msgstr ""
+msgstr "%s forwarded the task to %s."
 
 msgid "User %s edited a task you created:"
-msgstr ""
+msgstr "%s edited the task you created:"
 
 msgid "User %s edited a task:"
-msgstr ""
+msgstr "%s edited the task:"
 
 msgid "User %s wrote a comment to a task you are assigned to:"
-msgstr ""
+msgstr "%s commented on the task you are assigned to:"
 
 msgid "User %s wrote a comment to a task you created:"
-msgstr ""
+msgstr "%s commented on the task you created:"
 
 msgid "User %s wrote a comment:"
-msgstr ""
+msgstr "%s commented:"
 
 msgid "Files"
 msgstr ""
 
 msgid "User %s sent you your task"
-msgstr ""
+msgstr "%s sent you the task you created"
 
 msgid "User %s sent a new task to user %s"
-msgstr ""
+msgstr "%s sent the new task to %s"
 
 msgid "Scopes"
 msgstr ""

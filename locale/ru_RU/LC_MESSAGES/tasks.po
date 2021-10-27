@@ -671,10 +671,10 @@ msgid "Change priority"
 msgstr "Изменить приоритет"
 
 msgid "User %s sent you a new task"
-msgstr "Пользователь %s отправил вам новую задачу"
+msgstr "%s поставил вам новую задачу"
 
 msgid "via Tasks app"
-msgstr "из приложения «Задачи»"
+msgstr "Отправлено из «Webasyst Задачи»"
 
 msgid "%d new task"
 msgid_plural "%d new tasks"
@@ -686,13 +686,13 @@ msgid "<a href=\"%s\">%s</a> from %s"
 msgstr "<a href=\"%s\">%s</a> от %s"
 
 msgid "User %s edited a task you are assigned to:"
-msgstr "Пользователь %s отредактировал назначенную на вас задачу:"
+msgstr "%s отредактировал назначенную на вас задачу:"
 
 msgid "User %s edited a task you created:"
-msgstr "Пользователь %s отредактировал созданную вами задачу:"
+msgstr "%s отредактировал созданную вами задачу:"
 
 msgid "User %s has just completed a task"
-msgstr "Пользователь %s только что выполнил задачу"
+msgstr "%s выполнил задачу"
 
 msgid "Inbox automatically collects all tasks assigned to you. No tasks are assigned to you right now :-)"
 msgstr "Раздел «Входящие» содержит все назначенные на вас задачи. Сейчас на вас не назначено ни одной задачи."
@@ -923,13 +923,13 @@ msgstr[1] "%d часа"
 msgstr[2] "%d часов"
 
 msgid "User %s sent you your task."
-msgstr "Пользователь %s отправил вам вашу задачу."
+msgstr "%s отправил вам вашу задачу."
 
 msgid "User %s sent you a task."
-msgstr "Пользователь %s отправил вам задачу."
+msgstr "%s поставил вам задачу."
 
 msgid "User %s sent a task to %s."
-msgstr "Пользователь %s отправил задачу пользователю %s."
+msgstr "%s назначил %s ответственным за задачу."
 
 msgid "Personal settings"
 msgstr "Персональные настройки"
@@ -974,25 +974,25 @@ msgid "Remove from my lists"
 msgstr "Убрать из моих списков"
 
 msgid "User %s wrote a comment to a task you are assigned to:"
-msgstr "Пользователь %s добавил комментарий к назначенной на вас задаче:"
+msgstr "%s добавил комментарий к назначенной на вас задаче:"
 
 msgid "User %s wrote a comment to a task you created:"
-msgstr "Пользователь %s добавил комментарий к созданной вами задаче:"
+msgstr "%s добавил комментарий к созданной вами задаче:"
 
 msgid "User %s wrote a comment:"
-msgstr "Пользователь %s добавил комментарий:"
+msgstr "%s добавил комментарий:"
 
 msgid "Files"
 msgstr "Файлы"
 
 msgid "User %s sent you your task"
-msgstr "Пользователь %s отправил вам вашу задачу"
+msgstr "%s отправил вам вашу задачу"
 
 msgid "User %s sent a new task to user %s"
-msgstr "Пользователь %s отправил новую задачу пользователю %s"
+msgstr "%s отправил новую задачу пользователю %s"
 
 msgid "User %s edited a task:"
-msgstr "Пользователь %s отредактировал задачу:"
+msgstr "%s отредактировал задачу:"
 
 msgid "Date is not set."
 msgstr "Дата не указана."
