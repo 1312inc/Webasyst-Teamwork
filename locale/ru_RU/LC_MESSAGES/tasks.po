@@ -1350,3 +1350,9 @@ msgstr "В списке событий будут собраны все дейс
 
 msgid "DANGER: Task will be deleted without the ability to restore. Delete?"
 msgstr "ВНИМАНИЕ: Задача будет удалена без возможности восстановления. Удалить?"
+
+msgid "Join the %s team on Webasyst to start working on the task:"
+msgstr "Подключайтесь к команде %s на Webasyst, чтобы начать работать над задачей:"
+
+msgid "Accept invitation"
+msgstr "Принять приглашение"

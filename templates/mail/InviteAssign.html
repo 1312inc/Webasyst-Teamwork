@@ -13,10 +13,11 @@
 {task_title}
 {priority_title}
 
-[`To see the task details, add comments, and mark it as completed, accept the invitation to join the team:`]
+<hr>
+{sprintf('[`Join the %s team on Webasyst to start working on the task:`]', $wa->accountName())}
 <br><br>
 <div style="text-align: center;">
-<a href="{$invite_link}" style="display: inline-block; background: gold; padding: 15px 25px; color: #000; border-radius: 6px;">[`Accept invitation`]</a>
+<a href="{$invite_link}" style="display: inline-block; background: #ffdc2f; padding: 15px 25px; color: #000000; font-weight: bold; border-radius: 6px;">[`Accept invitation`]</a>
 </div>
 
 {include inline file='./includes/Footer.inc.html'}

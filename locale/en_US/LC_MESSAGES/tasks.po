@@ -1283,3 +1283,9 @@ msgstr ""
 
 msgid "DANGER: Task will be deleted without the ability to restore. Delete?"
 msgstr ""
+
+msgid "Join the %s team on Webasyst to start working on the task:"
+msgstr ""
+
+msgid "Accept invitation"
+msgstr ""
