@@ -332,7 +332,7 @@
                     {* MILESTONE & DEADLINE *}
                     <div class="t-task-flag-box">
 
-                        <div class="flexbox space-8 t-task-flag-box-content custom-mt-4">
+                        <div class="flexbox space-8 t-task-flag-box-content custom-mt-0">
                             {$_milestone = ''}
                             {$_due_date = ''}
                             {$_due_hint = ''}
@@ -395,7 +395,7 @@
             {* @event backend_task.%plugin_id%.after_header *}
             {foreach $_backend_task_hook as $_}{$_.after_header|default:''}{/foreach}
 
-            <hr class="desktop-and-tablet-only t-task-header-divider" />
+
 
             {* TASK BODY *}
             <div class="flexbox space-12 full-width t-task-body" style="position: relative;">
@@ -454,21 +454,30 @@
             {foreach $_backend_task_hook as $_}{$_.before_buttons|default:''}{/foreach}
 
             {* TASK BUTTONS *}
+            <hr class="t-task-buttons-divider" />
             <div class="t-task-buttons">
 
                 {* PRIMARY ACTION BUTTONS *}
                 <div class="t-task-controls flexbox wrap space-12 full-width">
-                    <div>
-                        <a href="javascript:void(0);" class="t-control-link button light-gray large rounded t-return-link" title="[`Return`]"> <i class="fas fa-arrow-left"></i> [`Return`]</a>
+                    <div class="t-task-button t-task-return">
+                        <a href="javascript:void(0);" class="t-control-link button light-gray t-return-link" title="[`Return`]"> <span class="icon"><i class="fas fa-arrow-left"></i></span> <span class="t-button-label">[`Return`]</span></a>
                     </div>
-                    <div class="wide">
-                        {$task->buttonHtml()}
-                        {if $task.next_status && $task.next_status.id != -1 && (($task.contact_id == $wa->user('id') && $task.assigned_contact_id == $task.contact_id) || $task->hasFullAccess())}
+                    {if $task.next_status && $task.next_status.id != -1 && (($task.contact_id == $wa->user('id') && $task.assigned_contact_id == $task.contact_id) || $task->hasFullAccess())}
+                        {* action & close buttons *}
+                        <div class="t-task-button t-task-action">
+                            {$task->buttonHtml()}
+                        </div>
+                        <div class="t-task-button t-task-close wide">
                             {$task->buttonHtml(-1)}
-                        {/if}
-                    </div>
-                    <div>
-                        <a href="javascript:void(0);" class="t-control-link button light-gray large rounded t-forward-link" title="[`Forward`]"> <i class="fas fa-arrow-right"></i> [`Forward`]</a>
+                        </div>
+                    {else}
+                        {* close button only *}
+                        <div class="t-task-button t-task-close wide">
+                            {$task->buttonHtml()}
+                        </div>
+                    {/if}
+                    <div class="t-task-button t-task-forward">
+                        <a href="javascript:void(0);" class="t-control-link button light-gray t-forward-link" title="[`Forward`]"> <span class="icon"><i class="fas fa-arrow-right"></i></span> <span class="t-button-label">[`Forward`]</span></a>
                     </div>
                 </div>
 
@@ -477,6 +486,7 @@
                 {foreach $_backend_task_hook as $_}{$_.buttons|default:''}{/foreach}
 
             </div>
+            <hr class="t-task-buttons-divider" />
 
             <!-- plugin hook: 'backend_task.%plugin_id%.after_buttons' -->
             {* @event backend_task.%plugin_id%.after_buttons *}
@@ -492,21 +502,24 @@
             {foreach $_backend_task_hook as $_}{$_.before_description|default:''}{/foreach}
 
             {* TASK CONTENT *}
-            <div class="t-description-wrapper js-description-wrapper custom-mb-20">
+            <div class="t-description-wrapper js-description-wrapper">
 
                 {function insertRelations data=null relation_name=null relation_type=null}
-                    <ul class="bordered t-relations-hover-block custom-my-0">
+                    <ul class="t-relations-hover-block custom-my-0">
                         {foreach $data as $id => $item}
-                            <li data-relation-type="{$relation_type}" data-relation-task="{$id}">
+                            <li data-relation-type="{$relation_type}" data-relation-task="{$id}" style="border: none;">
                                 <div class="flexbox full-width middle space-12 small">
                                     <!-- <span class="gray">{$relation_name}:</span> -->
                                     <span class="wide flexbox middle space-8" style="min-width: 0; width: 1px;">
                                         <span title="{$relation_name}" class="small custom-mt-4"><i class="fas fa-link text-light-gray"></i></span>
-                                        <a title="{$item['name']|escape}" href="#/task/{$item['project']|escape}.{$item['number']|escape}/" class="t-task-link{if $item['status_id'] < 0} gray{/if}"><strong>{$item['project']|escape}.{$item['number']|escape}</strong> {$item['name']|escape}</a>
+                                        <a title="{$item['name']|escape}" href="#/task/{$item['project']|escape}.{$item['number']|escape}/" class="t-task-link{if $item['status_id'] < 0} gray{/if}">
+                                            {if !empty($statuses[$item['status_id']])}
+                                                <span class="custom-mx-4">{tasksHelper::statusNameHTML($item['status_id'])}</span>
+                                            {/if}
+                                            <strong class="custom-mr-4">{$item['project']|escape}.{$item['number']|escape}</strong>
+                                            <span>{$item['name']|escape}</span>
+                                        </a>
                                     </span>
-                                    {if !empty($statuses[$item['status_id']])}
-                                        <span>{tasksHelper::statusNameHTML($item['status_id'])}</span>
-                                    {/if}
                                     {*
                                         legacy
                                         <a class="js-t-invert-relations t-relations-btn js-no-app-icon small" href="javascript:void(0);"><i class="icon10 larr"></i><span>[`invert`]</span></a>&nbsp;
