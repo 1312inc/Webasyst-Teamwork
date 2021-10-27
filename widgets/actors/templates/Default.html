@@ -5,9 +5,9 @@
 .t-content-wrapper {
     position: absolute;
     overflow-y: auto;
-    top: 2.6rem; 
-    right: 1rem; 
-    bottom: 1rem; 
+    top: 2.6rem;
+    right: 1rem;
+    bottom: 1rem;
     left: 1rem;
 }
 </style>
@@ -16,7 +16,7 @@
 <div class="t-content-wrapper hide-scrollbar">
     <ul class="menu custom-m-0">
         {foreach $stats as $item}
-            <li class="custom-mt-12">                  
+            <li class="custom-mt-12">
                 <div class="flexbox middle space-4 custom-mb-4">
                     <i class="userpic userpic-20" style="background-image: url('{$item.contact.photo_url}')"></i>
                     <span class="wide">{$item.contact.name|escape}</span>
@@ -24,7 +24,14 @@
                         {waLocale::format($item.total_count, 0)}{if $item.overdue_count}&nbsp;/&nbsp;<strong class="text-red">{waLocale::format($item.overdue_count, 0)}</strong>{/if}
                     </span>
                 </div>
-                <progress max="100" value="{$item.total_loading}"></progress>
+                <div class="progressbar">
+                    <div class="progressbar-line-wrapper text-inside">
+                        <div class="progressbar-outer">
+                            <div class="progressbar-inner" style="width: {$item.total_loading}%;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </li>
         {/foreach}
     </ul>

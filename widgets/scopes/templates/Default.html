@@ -14,7 +14,14 @@
                     <div class="custom-mb-4">
                         {$_item.name|escape}
                     </div>
-                    <progress max="100" value="{$_item.progress}"></progress>
+                    <div class="progressbar">
+                        <div class="progressbar-line-wrapper text-inside">
+                            <div class="progressbar-outer">
+                                <div class="progressbar-inner" style="width: {$_item.progress}%;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 {/if}
             </div>
         </div>
@@ -53,9 +60,9 @@
 .t-content-wrapper {
     position: absolute;
     overflow-y: auto;
-    top: 2.2rem; 
-    right: 1rem; 
-    bottom: 1rem; 
+    top: 2.2rem;
+    right: 1rem;
+    bottom: 1rem;
     left: 1rem;
 }
 </style>
