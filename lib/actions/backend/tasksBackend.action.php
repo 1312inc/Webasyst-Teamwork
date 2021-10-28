@@ -33,6 +33,7 @@ class tasksBackendAction extends waViewAction
             'scopes' => $this->getScopes(),
             'team_app_name' => $this->getTeamAppName(),
             'users' => $users,
+            'text_editor' => wa()->getUser()->getSettings('tasks', 'text_editor', 'wysiwyg'),
         ];
 
         $this->view->assign($viewData);

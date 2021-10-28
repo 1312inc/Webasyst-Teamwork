@@ -57,6 +57,37 @@
                         </div>
                     </div>
                 </div>
+                <div class="field-group">
+                    <div class="field">
+                        <div class="name">
+                            [`Text editor`]
+                        </div>
+                        <div class="value">
+                            <ul class="menu custom-mt-4">
+                                <li>
+                                    <label>
+                                        <span class="wa-radio">
+                                            <input type="radio" name="settings[text_editor]" value="wysiwyg" class="js-settings-text_editor"
+                                                   {if $settings.text_editor == 'wysiwyg'}checked="checked"{/if}>
+                                            <span></span>
+                                        </span>
+                                        [`WYSIWYG`]
+                                    </label>
+                                </li>
+                                <li>
+                                    <label>
+                                        <span class="wa-radio">
+                                            <input type="radio" name="settings[text_editor]" value="markdown" class="js-settings-text_editor"
+                                                   {if $settings.text_editor == 'markdown'}checked="checked"{/if}>
+                                            <span></span>
+                                        </span>
+                                        [`Markdown`]
+                                    </label>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
                 <div class="field-group custom-mt-16">
                     <div class="field">
                         <div class="value submit t-settings-buttons">

@@ -229,7 +229,7 @@ class tasksConfig extends waAppConfig
      *
      * @return array|mixed
      */
-    public function getPersonalSettings($contact_id = null)
+    public function getPersonalNotificationSettings($contact_id = null)
     {
         if ($contact_id === null) {
             $contact_id = wa()->getUser()->getId();
@@ -325,7 +325,7 @@ class tasksConfig extends waAppConfig
         }
     }
 
-    public function setPersonalSettings($settings, $contact_id = null)
+    public function setPersonalNotificationSettings($settings, $contact_id = null)
     {
         if ($contact_id === null) {
             $contact_id = wa()->getUser()->getId();
@@ -346,7 +346,7 @@ class tasksConfig extends waAppConfig
         if ($notification) {
             $csm->set($contact_id, 'tasks', 'settings/notification', $notification);
 
-            $settings = $this->getPersonalSettings($contact_id);
+            $settings = $this->getPersonalNotificationSettings($contact_id);
             $notification = $settings['notification'];
 
             $looks_like_default = false;

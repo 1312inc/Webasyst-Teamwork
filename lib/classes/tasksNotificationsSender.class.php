@@ -285,11 +285,11 @@ class tasksNotificationsSender
          * @var $config tasksConfig
          */
         $config = wa('tasks')->getConfig();
-        $settings = $config->getPersonalSettings($contact_id);
+        $settings = $config->getPersonalNotificationSettings($contact_id);
         if (is_scalar($contact_id) && $contact_id !== 'all') {
             $settings = [$contact_id => $settings];
         }
-        $extra = $config->getPersonalSettings($extra_contact_ids);
+        $extra = $config->getPersonalNotificationSettings($extra_contact_ids);
         $settings = waUtils::getFieldValues($settings, 'notification', true);
         $extra = waUtils::getFieldValues($extra, 'notification', true);
         foreach ($extra as $id => $ar) {
