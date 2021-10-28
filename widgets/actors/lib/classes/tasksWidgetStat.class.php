@@ -4,27 +4,27 @@ class tasksWidgetStat
 {
     protected $projects;
     protected $scopes;
-    protected $options = array();
+    protected $options = [];
 
-    public function __construct($filter = array(), $options = array())
+    public function __construct($filter = [], $options = [])
     {
         if (!is_array($filter)) {
-            $filter = array();
+            $filter = [];
         }
 
         $type = isset($filter['type']) && is_scalar($filter['type']) ? $filter['type'] : '';
-        if (!in_array($type, array('all', 'projects', 'scopes', true))) {
+        if (!in_array($type, ['all', 'projects', 'scopes', true], true)) {
             $type = 'all';
         }
         $filter['type'] = $type;
 
         if ($type === 'projects') {
-            $projects = isset($filter['projects']) && is_array($filter['projects']) ? $filter['projects'] : array();
+            $projects = isset($filter['projects']) && is_array($filter['projects']) ? $filter['projects'] : [];
             $projects = tasksHelper::toIntArray($projects);
             $projects = tasksHelper::dropNotPositive($projects);
             $this->projects = $projects;
-        } else if ($type === 'scopes') {
-            $scopes = isset($filter['scopes']) && is_array($filter['scopes']) ? $filter['scopes'] : array();
+        } elseif ($type === 'scopes') {
+            $scopes = isset($filter['scopes']) && is_array($filter['scopes']) ? $filter['scopes'] : [];
             $scopes = tasksHelper::toIntArray($scopes);
             $scopes = tasksHelper::dropNotPositive($scopes);
             $this->scopes = $scopes;
@@ -33,8 +33,8 @@ class tasksWidgetStat
 
     protected function buildActorsQuery($offset, $limit)
     {
-        $offset = (int)$offset;
-        $limit = (int)$limit;
+        $offset = (int) $offset;
+        $limit = (int) $limit;
 
         // get actors (assigned contacts for not closed tasks) with total count of opened tasks
         $query_builder = new tasksWidgetQueryBuilder();
@@ -50,18 +50,25 @@ class tasksWidgetStat
 
         if ($this->projects !== null) {
             if ($this->projects) {
-                $query_builder->addWhere('`task`.`project_id` IN (:project_ids)', 'project_ids',
-                    array_keys($this->projects));
+                $query_builder->addWhere(
+                    '`task`.`project_id` IN (:project_ids)',
+                    'project_ids',
+                    array_keys($this->projects)
+                );
             } else {
                 $query_builder->addWhere(0);
             }
         }
+
         if ($this->scopes !== null) {
             if ($this->scopes) {
                 $query_builder
                     ->addJoin('`tasks_milestone` `milestone` ON `milestone`.`id` = `task`.`milestone_id`')
-                    ->addWhere('`milestone`.`id` IN (:scope_ids)', 'scope_ids',
-                        array_keys($this->scopes));
+                    ->addWhere(
+                        '`milestone`.`id` IN (:scope_ids)',
+                        'scope_ids',
+                        array_keys($this->scopes)
+                    );
             } else {
                 $query_builder->addWhere(0);
             }
@@ -71,7 +78,7 @@ class tasksWidgetStat
         $query = $query_builder->getQuery();
         $bind_params = $query_builder->getParams();
 
-        return array($query, $bind_params);
+        return [$query, $bind_params];
     }
 
     protected function buildOverdueQuery($contact_ids)
@@ -96,8 +103,11 @@ class tasksWidgetStat
 
         if ($this->projects !== null) {
             if ($this->projects) {
-                $query_builder->addWhere('`task`.`project_id` IN (:project_ids)', 'project_ids',
-                    array_keys($this->projects));
+                $query_builder->addWhere(
+                    '`task`.`project_id` IN (:project_ids)',
+                    'project_ids',
+                    array_keys($this->projects)
+                );
             } else {
                 $query_builder->addWhere(0);
             }
@@ -105,8 +115,11 @@ class tasksWidgetStat
         if ($this->scopes !== null) {
             if ($this->scopes) {
                 $query_builder
-                    ->addWhere('`milestone`.`id` IN (:scope_ids)', 'scope_ids',
-                        array_keys($this->scopes));
+                    ->addWhere(
+                        '`milestone`.`id` IN (:scope_ids)',
+                        'scope_ids',
+                        array_keys($this->scopes)
+                    );
             } else {
                 $query_builder->addWhere(0);
             }
@@ -116,28 +129,41 @@ class tasksWidgetStat
         $query = $query_builder->getQuery();
         $bind_params = $query_builder->getParams();
 
-        return array($query, $bind_params);
+        return [$query, $bind_params];
     }
 
     public function getStat($offset, $limit)
     {
         $tm = new tasksTaskModel();
 
-        $offset = (int)$offset;
-        $limit = (int)$limit;
+        $offset = (int) $offset;
+        $limit = (int) $limit;
 
-        list($query, $bind_params) = $this->buildActorsQuery($offset, $limit);
+        [$query, $bind_params] = $this->buildActorsQuery($offset, $limit);
         $stats = $tm->query($query, $bind_params)->fetchAll('assigned_contact_id');
 
         $contact_ids = array_keys($stats);
         if (!$contact_ids) {
-            return array();
+            return [];
         }
 
-        list($query, $bind_params) = $this->buildOverdueQuery($contact_ids);
+        [$query, $bind_params] = $this->buildOverdueQuery($contact_ids);
         $overdue_stats = $tm->query($query, $bind_params)->fetchAll('assigned_contact_id');
 
-        foreach ($stats as &$item) {
+        $activeContactIds = (new tasksTaskLogModel())->getContactIds();
+        $userId = wa()->getUser()->getId();
+        foreach ($stats as $contactId => &$item) {
+            if (!in_array($contactId, $activeContactIds) || $contactId == $userId) {
+                unset($stats[$contactId]);
+                continue;
+            }
+
+            $contact = new waContact($contactId);
+            if ($contact['is_user'] == -1) {
+                unset($stats[$contactId]);
+                continue;
+            }
+
             $item['overdue_count'] = 0;
             if (isset($overdue_stats[$item['assigned_contact_id']])) {
                 $item['overdue_count'] = $overdue_stats[$item['assigned_contact_id']]['count'];
@@ -162,8 +188,11 @@ class tasksWidgetStat
 
         if ($this->projects !== null) {
             if ($this->projects) {
-                $query_builder->addWhere('`task`.`project_id` IN (:project_ids)', 'project_ids',
-                    array_keys($this->projects));
+                $query_builder->addWhere(
+                    '`task`.`project_id` IN (:project_ids)',
+                    'project_ids',
+                    array_keys($this->projects)
+                );
             } else {
                 $query_builder->addWhere(0);
             }
@@ -172,8 +201,11 @@ class tasksWidgetStat
             if ($this->scopes) {
                 $query_builder
                     ->addJoin('`tasks_milestone` `milestone` ON `milestone`.`id` = `task`.`milestone_id`')
-                    ->addWhere('`milestone`.`id` IN (:scope_ids)', 'scope_ids',
-                        array_keys($this->scopes));
+                    ->addWhere(
+                        '`milestone`.`id` IN (:scope_ids)',
+                        'scope_ids',
+                        array_keys($this->scopes)
+                    );
             } else {
                 $query_builder->addWhere(0);
             }
@@ -185,14 +217,15 @@ class tasksWidgetStat
 
         $bind_params = $query_builder->getParams();
 
-        return array($query, $bind_params);
+        return [$query, $bind_params];
     }
 
 
     public function calcMaxCount()
     {
         $tm = new tasksTaskModel();
-        list($query, $bind_params) = $this->buildMaxCountQuery();
+        [$query, $bind_params] = $this->buildMaxCountQuery();
+
         return $tm->query($query, $bind_params)->fetchField();
     }
 }

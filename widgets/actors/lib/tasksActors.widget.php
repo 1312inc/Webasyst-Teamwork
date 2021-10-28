@@ -2,16 +2,60 @@
 
 class tasksActorsWidget extends waWidget
 {
+    public static function getCustomFilterControl($name, $params)
+    {
+        $root_dir = realpath(dirname(__FILE__) . '/../');
+        $templates_dir = $root_dir . '/templates/';
+        $template_path = $templates_dir . 'FilterControl.html';
+
+        $model = new tasksMilestoneModel();
+        $milestones = $model->select('*')
+            ->where('closed=0')
+            ->order('closed DESC, due_date')->fetchAll('id');
+
+        $widget_id = $params['widget_id'];
+        $widget = wa()->getWidget($widget_id);
+        $widget_info = $widget->getInfo();
+
+        $app_url = wa()->getAppStaticUrl('tasks', true);
+        $js_url = $app_url . 'widgets/actors/js/filterControl.js?v=' . $widget_info['version'];
+
+        return self::renderTemplate($template_path, [
+            'name' => $name,
+            'params' => $params,
+            'widget' => $widget_info,
+            'projects' => tasksHelper::getProjects(),
+            'scopes' => $milestones,
+            'js_url' => $js_url,
+        ]);
+    }
+
+    protected static function renderTemplate($template, $assign = [])
+    {
+        if (!file_exists($template)) {
+            return '';
+        }
+        $view = wa()->getView();
+        $old_vars = $view->getVars();
+        $view->clearAllAssign();
+        $view->assign($assign);
+        $html = $view->fetch($template);
+        $view->clearAllAssign();
+        $view->assign($old_vars);
+
+        return $html;
+    }
+
     public function defaultAction()
     {
-        $this->display(array(
+        $this->display([
             'widget_id' => $this->id,
             'stats' => $this->getStats(),
             'widget_url' => $this->getStaticUrl(),
-            'title' => $this->getSettings('title')
-        ));
+            'title' => $this->getSettings('title'),
+        ]);
     }
-    
+
     protected function getStats()
     {
         $limit = $this->getLimit();
@@ -39,32 +83,8 @@ class tasksActorsWidget extends waWidget
             $item['relative_overdue_loading'] = ($item['overdue_count'] / $item['total_count']) * 100;
         }
         unset($item);
-        
+
         return $stats;
-    }
-
-    protected function getContactInfo($id)
-    {
-        $contact = new waContact($id);
-
-        $name = 'Unknown #' . $contact->getId();
-        $photo_url = wa()->getRootUrl() . 'wa-content/img/userpic20.jpg';
-
-        if ($contact->exists()) {
-            $name = trim($contact->get('lastname') . ' ' . $contact->get('firstname'));
-            $photo_url = $contact->getPhotoUrl($contact->getId(), $contact->get('photo'), 20);
-        }
-
-        return array(
-            'id' => $contact->getId(),
-            'name' => $name,
-            'photo_url' =>  $photo_url
-        );
-    }
-
-    protected function calcPercentages($count, $max_count)
-    {
-        return ($count / $max_count) * 100;
     }
 
     protected function getLimit()
@@ -74,14 +94,23 @@ class tasksActorsWidget extends waWidget
 
     protected function getOffset()
     {
-        $offset = (int)$this->getSettings('offset');
+        $offset = (int) $this->getSettings('offset');
         $offset = $offset > 0 ? $offset : 0;
+
         return $offset;
+    }
+
+    protected function getRawStats($offset, $limit)
+    {
+        $filter = $this->getSettings('filter');
+        $stat = new tasksWidgetStat($filter);
+
+        return $stat->getStat($offset, $limit);
     }
 
     protected function setOffset($offset)
     {
-        $offset = (int)$offset;
+        $offset = (int) $offset;
         $offset = $offset > 0 ? $offset : 0;
         $this->setOneSettingValue('offset', $offset);
     }
@@ -96,7 +125,7 @@ class tasksActorsWidget extends waWidget
     protected function getMaxCount()
     {
         $cache = $this->getSettings('cache');
-        $cache = is_array($cache) ? $cache : array();
+        $cache = is_array($cache) ? $cache : [];
 
         if (isset($cache['max_count']) && is_array($cache['max_count'])) {
 
@@ -121,10 +150,10 @@ class tasksActorsWidget extends waWidget
         $value = $this->calcMaxCount();
 
         // write cache
-        $cache['max_count'] = array(
+        $cache['max_count'] = [
             'value' => $value,
-            'time' => time()
-        );
+            'time' => time(),
+        ];
         $this->setOneSettingValue('cache', $cache);
 
         // return value
@@ -135,62 +164,38 @@ class tasksActorsWidget extends waWidget
     {
         $filter = $this->getSettings('filter');
         $stat = new tasksWidgetStat($filter);
+
         return $stat->calcMaxCount();
     }
 
-    protected function getRawStats($offset, $limit)
+    protected function getContactInfo($id)
     {
-        $filter = $this->getSettings('filter');
-        $stat = new tasksWidgetStat($filter);
-        return $stat->getStat($offset, $limit);
+        $contact = new waContact($id);
+
+        $name = 'Unknown #' . $contact->getId();
+        $photo_url = wa()->getRootUrl() . 'wa-content/img/userpic20.jpg';
+
+        if ($contact->exists()) {
+            $name = trim($contact->get('lastname') . ' ' . $contact->get('firstname'));
+            $photo_url = $contact->getPhotoUrl($contact->getId(), $contact->get('photo'), 20);
+        }
+
+        return [
+            'id' => $contact->getId(),
+            'name' => $name,
+            'photo_url' => $photo_url,
+        ];
+    }
+
+    protected function calcPercentages($count, $max_count)
+    {
+        return ($count / $max_count) * 100;
     }
 
     protected function getProjectIds()
     {
         $projects = tasksHelper::getProjects('active');
+
         return waUtils::getFieldValues($projects, 'id');
-    }
-
-    public static function getCustomFilterControl($name, $params)
-    {
-        $root_dir = realpath(dirname(__FILE__) . '/../');
-        $templates_dir = $root_dir . '/templates/';
-        $template_path = $templates_dir . 'FilterControl.html';
-
-        $model = new tasksMilestoneModel();
-        $milestones = $model->select('*')
-            ->where('closed=0')
-            ->order('closed DESC, due_date')->fetchAll('id');
-
-        $widget_id = $params['widget_id'];
-        $widget = wa()->getWidget($widget_id);
-        $widget_info = $widget->getInfo();
-
-        $app_url = wa()->getAppStaticUrl('tasks', true);
-        $js_url = $app_url . 'widgets/actors/js/filterControl.js?v=' . $widget_info['version'];
-
-        return self::renderTemplate($template_path, array(
-            'name' => $name,
-            'params' => $params,
-            'widget' => $widget_info,
-            'projects' => tasksHelper::getProjects(),
-            'scopes' => $milestones,
-            'js_url' => $js_url
-        ));
-    }
-
-    protected static function renderTemplate($template, $assign = array())
-    {
-        if (!file_exists($template)) {
-            return '';
-        }
-        $view = wa()->getView();
-        $old_vars = $view->getVars();
-        $view->clearAllAssign();
-        $view->assign($assign);
-        $html = $view->fetch($template);
-        $view->clearAllAssign();
-        $view->assign($old_vars);
-        return $html;
     }
 }
