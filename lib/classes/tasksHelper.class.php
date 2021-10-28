@@ -366,27 +366,19 @@ class tasksHelper
                     foreach ($logs as $log) {
                         if (isset($data[$log['contact_id']])) {
                             $dataWithLogs[$log['contact_id']] = $data[$log['contact_id']];
+                            $dataWithLogs[$log['contact_id']]['last_log_id'] = $log['id'];
                         }
                     }
-
-                    waLog::delete('tasks.debug.log');
-
-                    waLog::dump($dataWithLogs, 'tasks.debug.log');
-                    waLog::dump(array_keys($dataWithLogs), 'tasks.debug.log');
 
                     uasort(
                         $dataWithLogs,
                         static function ($a, $b) {
-                            return -($a['id'] <=> $b['id']);
+                            return -($a['last_log_id'] <=> $b['last_log_id']);
                         }
                     );
 
-                    waLog::dump(array_keys($dataWithLogs), 'tasks.debug.log');
-                    waLog::dump(array_keys($data), 'tasks.debug.log');
-
                     // sort with logs in beginning
                     $data = $dataWithLogs + $data;
-                    waLog::dump(array_keys($data), 'tasks.debug.log');
                 }
             }
             if (!$project_id) {
