@@ -1554,7 +1554,7 @@
 
                     assignees.forEach(function (a, i) {
                         var $assignee = `
-                            <div class="t-assignee align-center ${i > (maxVisible - 1) ? 'hidden' : ''}" data-user-id="${a.id}" style="width: 72px;">
+                            <div class="t-assignee align-center ${(assignees.length - maxVisible >= 2) ? (i > (maxVisible - 1) ? 'hidden' : '') : ''}" data-user-id="${a.id}" style="width: 72px;">
                                 <div class="custom-mb-4">
                                     <img src="${a.photo_url}" class="userpic userpic-48" />
                                 </div>
@@ -1582,7 +1582,7 @@
                         </div>
                     `);
                     $container.html($assigneesContainer);
-                    if (assignees.length > maxVisible) {
+                    if (assignees.length >= maxVisible + 2) {
                         $assigneesContainer.append(`
                             <div class="t-toggle-all-assignee align-center" style="width: 72px;">
                                 <span class="icon userpic size-48" style="background: var(--light-gray);">
