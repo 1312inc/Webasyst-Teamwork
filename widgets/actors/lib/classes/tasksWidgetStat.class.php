@@ -158,7 +158,7 @@ class tasksWidgetStat
             }
 
             $contact = new waContact($contactId);
-            if ($contact['is_user'] == -1) {
+            if (!$contact->exists() || $contact['is_user'] == -1) {
                 unset($stats[$contactId]);
                 continue;
             }
