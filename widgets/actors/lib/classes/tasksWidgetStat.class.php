@@ -151,9 +151,8 @@ class tasksWidgetStat
         $overdue_stats = $tm->query($query, $bind_params)->fetchAll('assigned_contact_id');
 
         $activeContactIds = (new tasksTaskLogModel())->getContactIds();
-        $userId = wa()->getUser()->getId();
         foreach ($stats as $contactId => &$item) {
-            if (!in_array($contactId, $activeContactIds) || $contactId == $userId) {
+            if (!in_array($contactId, $activeContactIds)) {
                 unset($stats[$contactId]);
                 continue;
             }
