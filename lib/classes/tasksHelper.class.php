@@ -369,6 +369,11 @@ class tasksHelper
                         }
                     }
 
+                    waLog::delete('tasks.debug.log');
+
+                    waLog::dump($dataWithLogs, 'tasks.debug.log');
+                    waLog::dump(array_keys($dataWithLogs), 'tasks.debug.log');
+
                     uasort(
                         $dataWithLogs,
                         static function ($a, $b) {
