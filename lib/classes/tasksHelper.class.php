@@ -376,8 +376,12 @@ class tasksHelper
                         }
                     );
 
+                    waLog::dump(array_keys($dataWithLogs), 'tasks.debug.log');
+                    waLog::dump(array_keys($data), 'tasks.debug.log');
+
                     // sort with logs in beginning
                     $data = $dataWithLogs + $data;
+                    waLog::dump(array_keys($data), 'tasks.debug.log');
                 }
             }
             if (!$project_id) {
