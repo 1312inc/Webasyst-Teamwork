@@ -118,12 +118,9 @@
         {* TITLE *}
         <span class="t-task-item-title {if !empty($task.priority) && ($task.priority == '1' || $task.priority == '2' || $task.priority == '3')}bold{else}semibold{/if}{if !empty($task.priority) && $task.priority == '-1'} text-gray{/if}">{$task.name|escape|default:"(no name)"|truncate:64}</span>
 
-        <p class="hint custom-mb-0">
-
-            {* PREVIEW *}
+        {* SUMMARY PREVIEW <p class="hint custom-mb-0">
             <span class="break-word">{strip_tags($task.text)|truncate:128}</span>
-
-        </p>
+        </p> *}
 
         {* DUE *}
         {if !empty($task.due_date)}

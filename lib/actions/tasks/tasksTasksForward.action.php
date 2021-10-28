@@ -21,6 +21,7 @@ class tasksTasksForwardAction extends waViewAction
                 'selected_status_id' => $task['status_id'],
                 'is_bulk' => false,
                 'task_uuid' => $task['uuid'],
+                'task' => $task,
             ));
         } else {
             $this->view->assign(array(

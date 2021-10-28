@@ -21,7 +21,8 @@
                     <i class="userpic userpic-20" style="background-image: url('{$item.contact.photo_url}')"></i>
                     <span class="wide">{$item.contact.name|escape}</span>
                     <span class="small">
-                        {waLocale::format($item.total_count, 0)}{if $item.overdue_count}&nbsp;/&nbsp;<strong class="text-red">{waLocale::format($item.overdue_count, 0)}</strong>{/if}
+                        {if $item.overdue_count}<strong class="badge red custom-mr-4"><i class="fas fa-flag-checkered fa-xs"></i> {waLocale::format($item.overdue_count, 0)}</strong>{/if}
+                        {waLocale::format($item.total_count, 0)}
                     </span>
                 </div>
                 <div class="progressbar">

@@ -38,77 +38,8 @@
         <div class="field">
             <div class="name custom-mt-4">[`Assign to`]</div>
             <div class="value">
-
-                <ul class="t-team-list-wrapper custom-my-0">
-                    {$_count = count($users)}
-                    {$_visible_team_count = 5}
-
-                    {$_active_users = false}
-                    {$_render_link = false}
-
-                    {function renderLink}
-                        <li class="t-link-item is-shown small">
-                            <a class="show-team-users" href="javascript:void(0);">[`Show everyone`]</a>
-                        </li>
-                    {/function}
-
-                    {$_there_are_hidden_users = false}
-                    {foreach $users as $user}
-                        {$_is_shown = ifset($user, 'is_active', false)}
-
-                        {*If find acive users, show only them*}
-                        {if $_is_shown}
-                            {$_active_users = true}
-                        {/if}
-
-                        {*If not found active user need show first 5 users *}
-                        {if $user@iteration <= $_visible_team_count && !$_active_users}
-                            {$_is_shown = true}
-                        {/if}
-
-                        {$_userpic = "{$wa_url}wa-content/img/userpic.svg"}
-
-                        {if !empty($user.photo)}
-                            {$_userpic = waContact::getPhotoUrl($user.id, $user.photo, 40, 40, 'person', 0)}
-                        {/if}
-
-                        <li class="t-user-item {if $_is_shown}is-shown{/if}" data-user-id="{$user.id}">
-                            {if !$_is_shown}{$_there_are_hidden_users = true}{/if}
-                            <label class="t-user-label flexbox middle space-8">
-                                <span class="wa-radio">
-                                   <input type="radio" name="assigned_contact_id" value="{$user.id}" {if ($selected_user == $user.id)}checked="checked"{/if}>
-                                   <span></span>
-                               </span>
-                               <i class="userpic userpic-32" style="background-image: url({$_userpic});"></i>
-                               <span>
-                                <span>{$user.name|escape}</span>
-                                {if ($user.id == $wa->user('id'))}
-                                    <span class="gray custom-ml-4">([`me`])</span>
-                                {/if}
-                                {if $user.calendar_status}<span class="badge smaller nowrap custom-ml-4" style="background-color: {$user.calendar_status->getBgColor()};color: {$user.calendar_status->getFontColor()};" title="{$user.calendar_status->getName()|escape}">{$user.calendar_status->getName()|escape|truncate:23}</span>{/if}
-                               </span>
-                            </label>
-                        </li>
-                    {/foreach}
-
-                    <li class="t-user-item is-unassigned {if $_count < $_visible_team_count}is-shown{/if}" data-user-id="">
-                        <label class="t-user-label flexbox middle space-8">
-                            <span class="wa-radio">
-                                <input type="radio" name="assigned_contact_id" value="0">
-                                <span></span>
-                            </span>
-                            <i class="userpic userpic-32" style="background-image: url('{$wa_url}wa-content/img/userpic.svg')"></i>
-                            <span class="gray">[`Unassigned`]</span>
-                        </label>
-                    </li>
-
-                    {*Render "show all" link if next user after active - not active. Or if interation more 2 *}
-                    {if $_there_are_hidden_users}
-                        {renderLink}
-                        {$_render_link = true}
-                    {/if}
-
-                </ul>
+                <input type="hidden" name="assigned_contact_id" value="">
+                <div class="t-team-list-wrapper"></div>
 
                 <script>
                     (function ($) {
@@ -156,6 +87,21 @@
                                 task_uuid: '{$task_uuid}'
                             }
                          });
+
+                        function fetchTeamList(project_id) {
+                            $.tasks.teamList({
+                                container: $wrapper.find('.t-team-list-wrapper'), 
+                                targetField: $wrapper.find('[name="assigned_contact_id"]'),
+                                projectId: project_id,
+                                assignedContactId: {$task.assigned_contact_id|default:"\"\""}
+                            });
+                        }
+
+                        $wrapper.find('[name="project_id"]').on('change', function (e) {
+                            fetchTeamList(e.target.value);
+                        });
+
+                        fetchTeamList({$task.project_id|default:"\"\""});
 
                     })(jQuery);
                 </script>
