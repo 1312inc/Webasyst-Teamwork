@@ -150,11 +150,20 @@
         'me': "[`me`]",
     });</script>
     <script>window.TasksController.init();</script>
-
+    
+    {if $wa->isMobile()}
     <script>
-        (function($) {
-            $('#sidebar').waShowSidebar();
-        })(jQuery);
+        (function ($) {
+                var $sidebar = $('#sidebar').waShowSidebar(),
+                    sidebarInst = $sidebar.data('sidebar');
+
+                window.onhashchange = function () {
+                    window.scrollTo(0, 0);
+                    sidebarInst.$sidebar_content.hide();
+                };
+            })(jQuery);
     </script>
+    {/if}
+
 </body>
 </html>
