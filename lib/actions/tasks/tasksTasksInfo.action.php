@@ -51,14 +51,11 @@ class tasksTasksInfoAction extends waViewAction
         }
 
         $milestones = (new tasksMilestoneModel())->getMilestonesWithOrder(false);
-        $projects = tasksHelper::getProjects();
 
         foreach ($milestones as $id => $milestone) {
-            if (!isset($projects[$milestone['project_id']])) {
+            if ($milestone['project_id'] != $task->project_id) {
                 unset($milestones[$id]);
-                continue;
             }
-//            $milestones[$id]['project'] = $projects[$milestone['project_id']];
         }
 
         $this->view->assign('tags_cloud', $tasks_tags_model->getCloud($task->project_id));
