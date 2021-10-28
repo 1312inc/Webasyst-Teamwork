@@ -468,11 +468,19 @@ pre
     border 3px solid transparent
     box-sizing content-box
 
-  .smaller
+  div.smaller
     position relative
     display block
     overflow hidden
     text-overflow ellipsis
+
+  .badge
+    max-width 100%
+    display inline-block
+    white-space nowrap
+    text-overflow ellipsis
+    overflow hidden
+    box-sizing border-box
 
   &.active
     opacity 1

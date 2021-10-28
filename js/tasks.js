@@ -1547,7 +1547,7 @@
 
                 if (assignees.length) {
                     var $assigneesContainer = $('<div>', {
-                        class: 'flexbox wrap space-8'
+                        class: 'flexbox wrap'
                     });
 
                     assignees.forEach(function (a, i) {
@@ -1557,8 +1557,14 @@
                                     <img src="${a.photo_url}" class="userpic userpic-48" />
                                 </div>
                                 <div class="smaller">
-                                    ${a.firstname + ' ' + a.lastname} ${$.tasks.options.contact_id === +a.id ? `(${meLabel})` : ''}
+                                    ${a.name} ${$.tasks.options.contact_id === +a.id ? `(${meLabel})` : ''}
                                 </div>
+                                ${a.calendar_status !== null ? `
+                                    <div class="custom-mt-4">
+                                        <span class="badge smaller" style="background:${a.calendar_status.bg_color};color:${a.calendar_status.font_color};">
+                                            ${a.calendar_status.name}
+                                        </span>
+                                    </div>` : ''}
                             </div>
                         `;
                         $assigneesContainer.append($assignee);
