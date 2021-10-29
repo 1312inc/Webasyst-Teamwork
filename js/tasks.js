@@ -203,7 +203,7 @@
                     // if minutes range
                     if(diffMins > 1 && diffMins < 60) {
                         $(this).html($.wa.locale['mins'].replace('%d', Math.round(diffMins)));
-                    } 
+                    }
 
                     // if hours range
                     if(diffMins > 60 && diffMins < 60 * 24) {
@@ -1554,12 +1554,12 @@
 
                     assignees.forEach(function (a, i) {
                         var $assignee = `
-                            <div class="t-assignee align-center ${(assignees.length - maxVisible >= 2) ? (i > (maxVisible - 1) ? 'hidden' : '') : ''}" data-user-id="${a.id}" style="width: 72px;">
+                            <div class="t-assignee align-center ${(assignees.length - maxVisible >= 2) ? (i > (maxVisible - 1) ? 'hidden' : '') : ''}" data-user-id="${a.id}" style="width: 70px;">
                                 <div class="custom-mb-4">
                                     <img src="${a.photo_url}" class="userpic userpic-48" />
                                 </div>
                                 <div class="smaller">
-                                    ${a.name} ${$.tasks.options.contact_id === +a.id ? `(${meLabel})` : ''}
+                                    ${a.name} ${$.tasks.options.contact_id === +a.id ? `<br>(${meLabel})` : ''}
                                 </div>
                                 ${a.calendar_status !== null ? `
                                     <div class="custom-mt-4">

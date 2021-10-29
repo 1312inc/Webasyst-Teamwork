@@ -98,9 +98,9 @@
                                         change: function(event, target, dropdown) {
                                             $("[name=\"data[project_id]\"]").val( $(target).data("value") );
                                             taskEdit.onProjectChange();
-                                            
+
                                             $.tasks.teamList({
-                                                container: $('#t-edit-task-form .t-team-list-wrapper'), 
+                                                container: $('#t-edit-task-form .t-team-list-wrapper'),
                                                 targetField: $('#t-edit-task-form [name="data[assigned_contact_id]"]'),
                                                 projectId: $(target).data("value"),
                                                 assignedContactId: {$task.assigned_contact_id|default:"\"\""}
@@ -254,19 +254,19 @@
                 {* @event backend_task_edit.%plugin_id%.before_fields *}
                 {foreach $backend_task_edit as $_}{ifset($_.before_fields)}{/foreach}
 
-                <div class="fields custom-mt-20">
+                <div class="fields custom-mt-16">
                     <div class="fields-group">
 
                 {* ASSIGN *}
                 <div class="t-form-line field">
-                    <div class="name custom-pt-4">[`Assign to`]</div>
+                    <div class="name custom-pt-20">[`Assign to`]</div>
                     <div class="value">
                         <input type="hidden" name="data[assigned_contact_id]" value="{$task.assigned_contact_id}">
                         <div class="t-team-list-wrapper"></div>
                         <script>
                             (function ($) {
                                 $.tasks.teamList({
-                                    container: $('#t-edit-task-form .t-team-list-wrapper'), 
+                                    container: $('#t-edit-task-form .t-team-list-wrapper'),
                                     targetField: $('#t-edit-task-form [name="data[assigned_contact_id]"]'),
                                     projectId: {$task.project_id},
                                     assignedContactId: {$task.assigned_contact_id|default:"\"\""}
@@ -275,7 +275,7 @@
                         </script>
                     </div>
                 </div>
-                
+
 
                 <div class="t-form-line field t-due-date-wrapper">
                     <div class="name for-input">[`Due date`]</div>
@@ -305,7 +305,7 @@
 
                 {* BUTTONS *}
                 <div class="t-errors-block js-errors-block"></div>
-                <div class="t-form-line t-buttons-block flexbox middle space-20">
+                <div class="t-form-line t-buttons-block flexbox middle space-16">
                     <button class="button green large t-save-task-link" type="submit">{if !empty($task.id)}[`Save task`]{else}[`Create task`]{/if}</button>
                     <a class="t-close-link button large light-gray" href="javascript:void(0);">[`Cancel`]</a>
 

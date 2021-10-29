@@ -237,7 +237,7 @@ var TasksHeader = ( function($) {
                     break;
             }
         }
-        
+
         //add tasks count to title
         if (that.total_count > 0) {
             title += ' — ' + that.messages.tasks_count;
@@ -478,24 +478,24 @@ var TasksHeader = ( function($) {
                             var $content = $dialog.find('form');
                             var $buttons = $dialog.find('.dialog-buttons-gradient').empty();
                             var $form = $content;
-            
+
                             // Show dialog title
                             $content.prepend($('<h1 class="custom-mt-0">').text(title));
-            
+
                             // Move buttons where appropriate
                             $content.find('.t-hiddenform-cancel-link').show();
                             $content.find('.t-buttons-block').remove();
-            
+
                             // Add hidden ids to form
                             task_ids.forEach(function(task_id) {
                                 $form.prepend($.parseHTML('<input type="hidden" name="ids[]" value="'+task_id+'">'));
                             });
-            
+
                             // Submit form when a button is clicked
                             $buttons.find(':submit').click(function() {
                                 $form.submit();
                             });
-            
+
                             // Form submit via XHR
                             $form.submit(function() {
                                 $buttons.append('<i class="icon16 loading"></i>').find(':submit').prop('disabled', true);
@@ -516,7 +516,7 @@ var TasksHeader = ( function($) {
                                 });
                                 return false;
                             });
-            
+
                         }
 
                     });
@@ -618,13 +618,13 @@ var TasksHeader = ( function($) {
             if (that.selected_count > 0) {
                 that.$mainMenu.removeClass(storage.shown_class);
                 that.$selectedMenu.addClass(storage.shown_class);
-                $selectedCounter.text( that.selected_count );
+                $selectedCounter.find('.counter-number').text( that.selected_count );
                 $selectedCounter.show();
 
             } else {
                 that.$selectedMenu.removeClass(storage.shown_class);
                 that.$mainMenu.addClass(storage.shown_class);
-                $selectedCounter.text("");
+                $selectedCounter.find('.counter-number').text("");
                 $selectedCounter.hide();
             }
 
@@ -1002,7 +1002,7 @@ var TasksHeader = ( function($) {
             $.waDialog({
                 html: options.html,
                 onOpen: function ($dialog, dialog_instance) {
-                    $.tasks.initPrioritySlider( $("#t-priority-multi-changer") );  
+                    $.tasks.initPrioritySlider( $("#t-priority-multi-changer") );
                     $dialog.on('click', '[type="submit"]', function (e) {
                         e.preventDefault();
                         submitDialog($dialog, dialog_instance);
