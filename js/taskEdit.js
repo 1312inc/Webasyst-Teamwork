@@ -675,19 +675,20 @@ var TaskEdit = ( function($) { "use strict";
                         var $new_elements = $('<div>').html(r).find('#t-tasks-wrapper').children(':not(#end-of-tasks)');
                         var $new_elements_li = $new_elements.find('.item[data-task-number="' + saved_response.url + '"]');
 
-                        if ($('.t-notice-list').length) {
-                            $('.t-notice-list').replaceWith($('<div class="t-tasks-wrapper is-detailed" id="t-tasks-wrapper">').html($new_elements));
-                        } else {
-                            $new_elements.prependTo('#t-tasks-wrapper');
-                        }
-
                         // Select created item
                         $('#t-tasks-wrapper .list .item').removeClass('selected');
                         $new_elements_li.addClass('selected');
 
-                        // Open created item detail page
-                        $new_elements_li.find('a').first().trigger('click');
                         $dialog.find(".t-close-dialog-link").trigger("click");
+
+                        if ($('.t-notice-list').length) {
+                            // $('.t-notice-list').replaceWith($('<div class="t-tasks-wrapper is-detailed" id="t-tasks-wrapper">').html($new_elements));
+                            $.waLoading().animate(1000, 99, true);
+                            window.location.hash = '#/task/' + $new_elements_li.data('task-number') + '/';
+                        } else {
+                            $new_elements.prependTo('#t-tasks-wrapper');
+                            $new_elements_li.find('a').first().trigger('click');
+                        }
 
                         // return to adding form
                         if (return_to_new) {
