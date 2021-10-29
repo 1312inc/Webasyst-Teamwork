@@ -80,13 +80,15 @@
                             $wrapper.find('.t-team-list-wrapper').prepend($parent);
                         }
 
-                        $R('#forward-wrapper-{$ident} .t-redactor-comments', {
-                            'focus': true,
-                            minHeight: '150px',
-                            imageData: {
-                                task_uuid: '{$task_uuid}'
-                            }
-                         });
+                        if ($.tasks.options.text_editor === 'wysiwyg') {
+                            $R('#forward-wrapper-{$ident} .t-redactor-comments', {
+                                'focus': true,
+                                minHeight: '150px',
+                                imageData: {
+                                    task_uuid: '{$task_uuid}'
+                                }
+                            });
+                        }
 
                         function fetchTeamList(project_id) {
                             $.tasks.teamList({

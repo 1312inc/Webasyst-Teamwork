@@ -150,46 +150,47 @@ var TaskEdit = ( function($) { "use strict";
 
         $.event.trigger("onTaskEditInit", that);
 
-
-        $R('.t-redactor-task-edit', {
-            // 'focus': true,
-            tabindex: 1,
-            toolbarFixedTarget: (function() {
-                return $('#t-dialog-wrapper').length ? '#t-dialog-wrapper' : document
-            })(),
-            toolbarFixedTopOffset: 64,
-            toolbarContext: false,
-            imageData: {
-                task_uuid: that.task_uuid
-            },
-            callbacks: {
-                started () {
-                    var that = this,
-                        $el = this.element.getElement().get(0);
-                    // Textarea value changed
-                    $el.onchange = function () {
-                        that.source.setCode($($el).val());
-                        // Broadcast synchronization event between textarea and visual layer
-                        that.broadcast('syncingInverse', $($el).val());
-                    }
+        if ($.tasks.options.text_editor === 'wysiwyg') {
+            $R('.t-redactor-task-edit', {
+                // 'focus': true,
+                tabindex: 1,
+                toolbarFixedTarget: (function () {
+                    return $('#t-dialog-wrapper').length ? '#t-dialog-wrapper' : document;
+                })(),
+                toolbarFixedTopOffset: 64,
+                toolbarContext: false,
+                imageData: {
+                    task_uuid: that.task_uuid
                 },
-                synced (html) {
-                    if (that.is_new) {
-                        //Save task draft text
-                        var data = new Date(),
-                        result = data.toLocaleDateString("ru-RU", {
-                            year: "numeric",
-                            month: "2-digit",
-                            day: "2-digit",
-                            hour:"2-digit",
-                            minute: "2-digit"
-                        });
-                        localStorage.setItem('task_text', html);
-                        localStorage.setItem('draft_time', result);
+                callbacks: {
+                    started () {
+                        var that = this,
+                            $el = this.element.getElement().get(0);
+                        // Textarea value changed
+                        $el.onchange = function () {
+                            that.source.setCode($($el).val());
+                            // Broadcast synchronization event between textarea and visual layer
+                            that.broadcast('syncingInverse', $($el).val());
+                        };
+                    },
+                    synced (html) {
+                        if (that.is_new) {
+                            //Save task draft text
+                            var data = new Date(),
+                                result = data.toLocaleDateString("ru-RU", {
+                                    year: "numeric",
+                                    month: "2-digit",
+                                    day: "2-digit",
+                                    hour: "2-digit",
+                                    minute: "2-digit"
+                                });
+                            localStorage.setItem('task_text', html);
+                            localStorage.setItem('draft_time', result);
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
 
     };
 

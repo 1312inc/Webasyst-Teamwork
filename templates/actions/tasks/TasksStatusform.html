@@ -46,13 +46,15 @@
 
 <script>
     (function ($) {
-        $R('#status-form-wrapper-{$task.id} .t-redactor-comments', {
-            'focus': true,
-            minHeight: '150px',
-            imageData: {
-                task_uuid: '{$task.uuid}'
-            }
-        });
+        if ($.tasks.options.text_editor === 'wysiwyg') {
+            $R('#status-form-wrapper-{$task.id} .t-redactor-comments', {
+                'focus': true,
+                minHeight: '150px',
+                imageData: {
+                    task_uuid: '{$task.uuid}'
+                }
+            });
+        }
     })(jQuery);
 </script>
 

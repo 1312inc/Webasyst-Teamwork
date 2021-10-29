@@ -1014,12 +1014,14 @@ var Task = ( function($) {
 
         var bindEvents = function() {
 
-            $R('.t-redactor-comments', {
-                minHeight: '150px',
-                imageData: {
-                    task_uuid: that.task_uuid
-                }
-            });
+            if ($.tasks.options.text_editor === 'wysiwyg') {
+                $R('.t-redactor-comments', {
+                    minHeight: '150px',
+                    imageData: {
+                        task_uuid: that.task_uuid
+                    }
+                });
+            }
 
             $commentForm.on("submit", function() {
                 var $submitButton = $(this).find('[type="submit"]');
