@@ -672,9 +672,13 @@ var TaskEdit = ( function($) { "use strict";
                 if (saved_response) {
                     $.get('?module=tasks&hash='+encodeURIComponent('id/'+saved_response.id), {}, function(r) {
                         var $new_elements = $('<div>').html(r).find('#t-tasks-wrapper').children(':not(#end-of-tasks)');
-                        var $new_elements_li = $new_elements.find('.item[data-task-number="'+saved_response.url+'"]');
-                        
-                        $new_elements.prependTo('#t-tasks-wrapper').slideDown();
+                        var $new_elements_li = $new_elements.find('.item[data-task-number="' + saved_response.url + '"]');
+
+                        if ($('.t-notice-list').length) {
+                            $('.t-notice-list').replaceWith($('<div class="t-tasks-wrapper is-detailed" id="t-tasks-wrapper">').html($new_elements));
+                        } else {
+                            $new_elements.prependTo('#t-tasks-wrapper');
+                        }
 
                         // Select created item
                         $('#t-tasks-wrapper .list .item').removeClass('selected');
