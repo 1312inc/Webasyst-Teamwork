@@ -360,7 +360,7 @@ class tasksHelper
 
                 if ($project_id) {
                     $logs = tsks()->getModel('tasksTaskLog')
-                        ->getLastByContactIds(array_keys($data));
+                        ->getLastByContactIds(array_keys($data), $project_id);
 
                     $dataWithLogs = [];
                     foreach ($logs as $log) {
@@ -378,7 +378,25 @@ class tasksHelper
                     );
 
                     // sort with logs in beginning
-                    $data = $dataWithLogs + $data;
+                    $sorted = $dataWithLogs + $data;
+
+                    // move current user to 4 position
+                    $userId = wa()->getUser()->getId();
+
+                    $i = 0;
+                    $data = [];
+                    foreach ($sorted as $contactId => $datum) {
+                        $i++;
+                        if ($i < 4 && $userId == $contactId) {
+                            continue;
+                        }
+                        $data[$contactId] = $datum;
+
+                        if ($i === 4) {
+                            $data[$userId] = $sorted[$userId];
+                            unset($sorted[$userId]);
+                        }
+                    }
                 }
             }
             if (!$project_id) {
