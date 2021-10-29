@@ -119,11 +119,11 @@
             {foreach $logGroup.items as $l}{strip}
             <div class="t-comment-item-wrapper {if $l.contact_id == $wa->user()->getId()}t-comment-item-wrapper--right{/if}" data-id="{$l.id}">
                 <div class="t-comment-item flexbox space-12{if !empty($l.text)} t-comment-with-custom-text{/if}" data-log-id="{$l.id|escape}">
-                    <div class="image{if ($l.action == 'return' || $l.action == 'forward') && $l.assigned_contact_id} t-userpic-stack{/if}">
+                    <div class="image{if ($l.action == 'return' || $l.action == 'forward' || $l.action == 'add') && $l.assigned_contact_id} t-userpic-stack{/if}">
                         <a href="#/tasks/assigned/{$l.contact_id}/" title="{$l.contact.name|escape}">
                             <img class="userpic userpic-48" src="{$l.contact.photo_url}" alt="{$l.contact.name|escape}">
                         </a>
-                        {if ($l.action == 'return' || $l.action == 'forward') && $l.assigned_contact_id}
+                        {if ($l.action == 'return' || $l.action == 'forward' || $l.action == 'add') && $l.assigned_contact_id}
                             <a href="#/tasks/assigned/{$l.assigned_contact.id}/" title="{$l.assigned_contact.name|escape}" class="t-userpic-stacked">
                                 <img class="userpic userpic-48" src="{$l.assigned_contact.photo_url}" alt="{$l.assigned_contact.name|escape}">
                             </a>
@@ -138,11 +138,11 @@
                                 {$l.contact.name|escape}
                             </a>
 
-                            {if $l.action == 'edit' || $l.action == 'comment' || $l.action == 'forward' || $l.action == 'return'}
+                            {if $l.action == 'edit' || $l.action == 'comment' || $l.action == 'forward' || $l.action == 'return' || $l.action == 'add' || ($l.action == '' && $l.after_status_id == -1)}
                                 <span class="t-comment-action">{$l.action_name}</span>
                             {/if}
 
-                            {if $l.action == 'return' || $l.action == 'forward'}
+                            {if $l.action == 'return' || $l.action == 'forward' || $l.action == 'add'}
                                 {if $l.assigned_contact_id}
                                     <a href="#/tasks/assigned/{$l.assigned_contact.id}/" title="{$l.assigned_contact.name|escape}" class="bold custom-mr-4">
                                         {$l.assigned_contact.name|escape}

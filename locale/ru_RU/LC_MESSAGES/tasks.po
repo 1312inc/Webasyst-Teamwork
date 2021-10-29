@@ -539,7 +539,7 @@ msgid "New"
 msgstr "Новые"
 
 msgid "done"
-msgstr "выполнено"
+msgstr "закрыл задачу"
 
 msgid "Just now"
 msgstr "Только что"
@@ -590,7 +590,7 @@ msgid "Create task from this"
 msgstr "Создать из этого задачу"
 
 msgid "created"
-msgstr "создана"
+msgstr "поставил задачу"
 
 msgid "added comment"
 msgstr "добавил комментарий"

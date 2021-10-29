@@ -499,7 +499,7 @@ msgid "New"
 msgstr ""
 
 msgid "done"
-msgstr ""
+msgstr "closed the task"
 
 msgid "Just now"
 msgstr ""
@@ -543,19 +543,19 @@ msgid "Create task from this"
 msgstr ""
 
 msgid "created"
-msgstr ""
+msgstr "sent the new task to"
 
 msgid "added comment"
-msgstr ""
+msgstr "commented"
 
 msgid "forwarded"
-msgstr ""
+msgstr "assigned the task to"
 
 msgid "returned"
-msgstr ""
+msgstr "returned the task to"
 
 msgid "edited"
-msgstr ""
+msgstr "edited the task"
 
 msgid "Drop anywhere to upload"
 msgstr ""
