@@ -36,7 +36,7 @@
             </div>
         </div>
         <div class="field">
-            <div class="name custom-mt-4">[`Assign to`]</div>
+            <div class="name custom-pt-16">[`Assign to`]</div>
             <div class="value">
                 <input type="hidden" name="assigned_contact_id" value="">
                 <div class="t-team-list-wrapper"></div>
@@ -90,7 +90,7 @@
 
                         function fetchTeamList(project_id) {
                             $.tasks.teamList({
-                                container: $wrapper.find('.t-team-list-wrapper'), 
+                                container: $wrapper.find('.t-team-list-wrapper'),
                                 targetField: $wrapper.find('[name="assigned_contact_id"]'),
                                 projectId: project_id,
                                 assignedContactId: {$task.assigned_contact_id|default:"\"\""}

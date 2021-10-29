@@ -357,70 +357,92 @@
                                 </span>
                             </a>
                             <div class="wide middle">
-                                <div class="dropdown" id="milestoneSelector">
-                                    <div class="dropdown-toggle">
+                                {if count($milestones)}
+
+                                    {* inline milestone selector (dropdown) *}
+
+                                    <div class="dropdown" id="milestoneSelector">
+                                        <div class="dropdown-toggle">
+                                            <p class="small custom-mb-0">
+                                                {if $_milestone}
+                                                    <strong>{$_milestone|truncate:32}</strong>
+                                                {elseif $_due_date}
+                                                    <span class="badge nowrap squared {$_due_class} custom-mr-4">{$_due_date}</span>
+                                                {else}
+                                                    <span class="gray nowrap">[`No milestone`]</span>
+                                                {/if}
+                                            </p>
+                                        </div>
+                                        <div class="dropdown-body right">
+                                            <ul class="menu">
+                                                <li class="bordered-bottom">
+                                                    <a href="javascript:void(0);" data-id="">
+                                                        <span>
+                                                            [`No milestone`]
+                                                        </span>
+                                                    </a>
+                                                </li>
+                                                {foreach $milestones as $milestone}
+                                                <li>
+                                                    <a href="javascript:void(0);" data-id="{$milestone.id}">
+                                                        <span>
+                                                            <span class="milestoneName">{$milestone.name}</span><br>
+                                                            <span class="hint">{wa_date('humandate', $milestone.due_date, waDateTime::getDefaultTimezone())|escape}</span>
+                                                        </span>
+                                                    </a>
+                                                </li>
+                                                {/foreach}
+                                            </ul>
+                                        </div>
+                                        <script>
+                                            (function ($) {
+                                                    $("#milestoneSelector").waDropdown({
+                                                        hover: false,
+                                                        items: ".menu > li > a",
+                                                        update_title: false,
+                                                        change: function (event, target, dropdown) {
+                                                            var formData = new FormData();
+                                                            formData.append("data[milestone_id]", $(target).data("id"));
+
+                                                            var waLoading = $.waLoading();
+
+                                                            waLoading.animate(6000, 99, true);
+
+                                                            $.ajax({
+                                                                url: "?module=tasks&action=save&id={$task.id}",
+                                                                data: formData,
+                                                                cache: false,
+                                                                contentType: false,
+                                                                processData: false,
+                                                                type: 'POST',
+                                                                success: function () {
+                                                                    $.tasks.redispatch(function () {
+                                                                        waLoading.hide();
+                                                                    });
+                                                                }
+                                                            });
+                                                        }
+                                                    });
+                                                })(jQuery);
+                                        </script>
+                                    </div>
+
+                                {else}
+
+                                    {* no milstones in the project => no dropdown*}
+
+                                    <p class="small custom-mb-4">
                                         {if $_milestone}
-                                            <strong>{$_milestone}</strong>
+                                            <strong>{$_milestone|truncate:32}</strong>
                                         {elseif $_due_date}
                                             <span class="badge nowrap squared {$_due_class} custom-mr-4">{$_due_date}</span>
                                         {else}
                                             <span class="gray nowrap">[`No due date`]</span>
                                         {/if}
-                                    </div>
-                                    <div class="dropdown-body">
-                                        <ul class="menu">
-                                            <li>
-                                                <a href="javascript:void(0);" data-id="">
-                                                    <span>
-                                                        [`No milestone`]
-                                                    </span>
-                                                </a>
-                                            </li>
-                                            {foreach $milestones as $milestone}
-                                            <li>
-                                                <a href="javascript:void(0);" data-id="{$milestone.id}">
-                                                    <span>
-                                                        <span class="milestoneName">{$milestone.name}</span><br>
-                                                        <span class="gray">{wa_date('humandate', $milestone.due_date, waDateTime::getDefaultTimezone())|escape}</span>
-                                                    </span>
-                                                </a>
-                                            </li>
-                                            {/foreach}
-                                        </ul>
-                                    </div>
-                                    <script>
-                                        (function ($) {
-                                                $("#milestoneSelector").waDropdown({
-                                                    hover: false,
-                                                    items: ".menu > li > a",
-                                                    update_title: false,
-                                                    change: function (event, target, dropdown) {
-                                                        var formData = new FormData();
-                                                        formData.append("data[milestone_id]", $(target).data("id"));
+                                    </p>
 
-                                                        var waLoading = $.waLoading();
-                                                        
-                                                        waLoading.animate(6000, 99, true);
+                                {/if}
 
-                                                        $.ajax({
-                                                            url: "?module=tasks&action=save&id={$task.id}",
-                                                            data: formData,
-                                                            cache: false,
-                                                            contentType: false,
-                                                            processData: false,
-                                                            type: 'POST',
-                                                            success: function () {
-                                                                $.tasks.redispatch(function () {
-                                                                    waLoading.hide();
-                                                                });
-                                                            }
-                                                        });
-                                                    }
-                                                });
-                                            })(jQuery);
-                                    </script>
-                                </div>
-                                
                                 {if $_due_date}
                                     <p class="hint custom-mt-0">
                                         {if $_milestone}
@@ -434,6 +456,7 @@
                                         <span class="gray nowrap">[`No due date`]</span>
                                     </p>
                                 {/if}
+
                             </div>
                         </div>
 
