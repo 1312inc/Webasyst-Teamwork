@@ -14,13 +14,19 @@
         </a>
     </div>
 
-    <!-- plugin hook: 'backend_settings_sidebar.top_li' -->
-    {* @event backend_settings_sidebar.%plugin_id%.top_li *}
-    {if !empty($_backend_sidebar) && count($_backend_sidebar) > 0}
-        <ul class="menu">
+    <ul class="menu">
+        <li>
+            <a href="#/personal-settings/">
+                <span class="icon"><img src="{$wa->user()->getPhoto(96)}" class="userpic"></span>
+                <span>[`My preferences`]</span>
+            </a>
+        </li>
+        <!-- plugin hook: 'backend_settings_sidebar.top_li' -->
+        {* @event backend_settings_sidebar.%plugin_id%.top_li *}
+        {if !empty($_backend_sidebar) && count($_backend_sidebar) > 0}
             {foreach $_backend_sidebar as $_}{ifset($_.top_li)}{/foreach}
-        </ul>
-    {/if}
+        {/if}
+    </ul>
 
     <!-- SCOPES -->
     <h5 class="heading black">

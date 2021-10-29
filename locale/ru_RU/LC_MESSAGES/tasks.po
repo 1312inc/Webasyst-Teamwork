@@ -1356,3 +1356,6 @@ msgstr "Подключайтесь к команде %s на Webasyst, чтоб�
 
 msgid "Accept invitation"
 msgstr "Принять приглашение"
+
+msgid "Text editor"
+msgstr "Редактор"

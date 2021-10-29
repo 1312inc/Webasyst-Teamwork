@@ -1289,3 +1289,6 @@ msgstr ""
 
 msgid "Accept invitation"
 msgstr ""
+
+msgid "Text editor"
+msgstr ""

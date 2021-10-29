@@ -393,12 +393,6 @@
 <div class="sidebar-footer shadowed">
 
     <ul class="menu">
-        <li>
-            <a href="#/personal-settings/">
-                <i class="fas fa-bell"></i>
-                <span>[`Notifications`]</span>
-            </a>
-        </li>
         {if $is_admin}
             <li>
                 <a href="#/settings/">
@@ -410,6 +404,13 @@
                 <a href="#/plugins/">
                     <i class="fas fa-plug"></i>
                     <span>[s`Plugins`]</span>
+                </a>
+            </li>
+        {else}
+            <li>
+                <a href="#/personal-settings/">
+                    <i class="fas fa-cog"></i>
+                    <span>[`Settings`]</span>
                 </a>
             </li>
         {/if}
