@@ -1592,13 +1592,6 @@
                         `);
                     }
 
-                    // initial selection
-                    if(assignedContactId) {
-                        $container.find('.t-assignee[data-user-id=\"' + assignedContactId + '\"]').addClass('active');
-                    } else {
-                        $container.find('.t-assignee').first().addClass('active');
-                    }
-
                     $container.find('.t-assignee').on('click', function () {
                         $container.find('.t-assignee').removeClass('active');
                         $(this).addClass('active');
@@ -1609,6 +1602,13 @@
                         $container.find('.t-assignee').removeClass('hidden');
                         $(this).hide();
                     });
+
+                    // initial selection
+                    if(assignedContactId) {
+                        $container.find('.t-assignee[data-user-id=\"' + assignedContactId + '\"]').addClass('active');
+                    } else {
+                        $container.find('.t-assignee').first().trigger('click');
+                    }
 
                 }
             }).always(function () {
