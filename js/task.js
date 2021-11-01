@@ -68,6 +68,8 @@ var Task = ( function($) {
             that.$statusWrapper = that.$task.find(".t-status-data-container");
         }
 
+        that.initCommentBackground();
+
         // INIT
         that.initTask();
     };
@@ -134,6 +136,20 @@ var Task = ( function($) {
             });
         };
     };
+
+    Task.prototype.initCommentBackground = function () {
+        var $bg = $('.t-single-task-wrapper'),
+            $contentBlockTitle = $('.t-comments-h3');
+
+        function recalculateBackground () {
+            var commentsFromTop = $contentBlockTitle.offset().top - 100;
+            if (commentsFromTop > 0) {
+                $bg.css('background', 'linear-gradient(180deg, var(--background-color-blank), var(--background-color-blank) ' + commentsFromTop + 'px, var(--background-color) ' + commentsFromTop + 'px)');
+            }
+        }
+
+        new ResizeObserver(recalculateBackground).observe($bg.get(0));
+    }
 
     Task.prototype.initTask = function() {
         var that = this;
