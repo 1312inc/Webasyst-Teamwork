@@ -145,7 +145,8 @@ var TasksSettingsPersonal = (function ($) {
 
             $.post(url, data)
                 .done(function () {
-                    $.tasks.redispatch();
+                    // $.tasks.redispatch();
+                    document.location.reload();
                 })
                 .always(function () {
                     $icon.hide();
