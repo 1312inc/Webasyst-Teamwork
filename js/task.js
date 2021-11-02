@@ -142,7 +142,7 @@ var Task = ( function($) {
             $contentBlockTitle = document.querySelector('.t-comments-h3');
 
         function recalculateBackground () {
-            var commentsFromTop = $contentBlockTitle.getBoundingClientRect().top - $bg.getBoundingClientRect().top - 35;
+            var commentsFromTop = $contentBlockTitle.getBoundingClientRect().top - $bg.getBoundingClientRect().top - 20;
             if (commentsFromTop > 0) {
                 setTimeout(function () {
                     $bg.style.background = 'linear-gradient(180deg, var(--background-color-blank), var(--background-color-blank) ' + commentsFromTop + 'px, var(--background-color-history) ' + commentsFromTop + 'px)';
