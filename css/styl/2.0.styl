@@ -253,7 +253,7 @@ pre
             margin-right 0.75rem
 
          .details
-             background var(--background-color)
+             background var(--background-color-input)
              border-radius 0.375rem
              padding 0.75rem 1rem
 
@@ -266,13 +266,18 @@ pre
       .t-pinned-comment
          background transparent
 
-         .t-comment-content,
-         .details
-                background var(--highlighted-blue)
+//         .t-comment-content,
+//         .details
+//                background var(--highlighted-blue)
 
       .t-comment-with-custom-text
+         .t-comment-content
+            background var(--background-color-blank) !important
+
          .details
-            border 2px solid var(--border-color-soft)
+            border 1px solid var(--border-color-soft)
+            background var(--background-color-blank) !important
+            box-shadow 0 0.5rem 1.5rem -1rem var(--dialog-shadow-color)
 
       &--right
          .t-comment-item
@@ -453,7 +458,7 @@ textarea.t-redactor-comments
 .t-description-wrapper
   font-size 0.9375rem
   margin-top 1rem
-  margin-bottom 1.25rem
+  margin-bottom 3rem
 
   @media forMobile
     font-size 1rem

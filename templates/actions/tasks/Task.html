@@ -770,14 +770,14 @@
                                             <span><i class="fas fa-bolt"></i></span>
                                         {/if ***}
 
-                                        {if $_is_comment}
+                                        {if $_is_comment && !empty($l.text)}
                                             {if !($task.comment_log_id == $l.id)}
-                                                <a href="javascript:void(0);" class="t-assign-comment-link button rounded white small nowrap" data-id="{$l.id}">
-                                                    <i class="fas fa-thumbtack"></i> <span class="small">[`Pin`]</span>
+                                                <a href="javascript:void(0);" class="t-assign-comment-link button rounded light-gray small nowrap" data-id="{$l.id}">
+                                                    <i class="fas fa-thumbtack fa-xs text-blue"></i> <span class="small">[`Pin`]</span>
                                                     <!-- <i class="icon16 loading t-loading"></i> -->
                                                 </a>
                                             {else}
-                                                <span class="small gray nowrap"><i class="fas fa-thumbtack"></i> [`Pinned`]</span>
+                                                <span class="small gray nowrap"><i class="fas fa-thumbtack text-blue"></i> [`Pinned`]</span>
                                             {/if}
                                         {/if}
 

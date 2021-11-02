@@ -142,9 +142,9 @@ var Task = ( function($) {
             $contentBlockTitle = $('.t-comments-h3');
 
         function recalculateBackground () {
-            var commentsFromTop = $contentBlockTitle.offset().top - 100;
+            var commentsFromTop = $contentBlockTitle.offset().top - 85;
             if (commentsFromTop > 0) {
-                $bg.css('background', 'linear-gradient(180deg, var(--background-color-blank), var(--background-color-blank) ' + commentsFromTop + 'px, var(--background-color) ' + commentsFromTop + 'px)');
+                $bg.css('background', 'linear-gradient(180deg, var(--background-color-blank), var(--background-color-blank) ' + commentsFromTop + 'px, var(--background-color-history) ' + commentsFromTop + 'px)');
             }
         }
 
