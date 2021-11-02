@@ -138,17 +138,21 @@ var Task = ( function($) {
     };
 
     Task.prototype.initCommentBackground = function () {
-        var $bg = $('.t-single-task-wrapper'),
-            $contentBlockTitle = $('.t-comments-h3');
+        var $bg = document.querySelector('.t-single-task-wrapper'),
+            $contentBlockTitle = document.querySelector('.t-comments-h3');
 
         function recalculateBackground () {
-            var commentsFromTop = $contentBlockTitle.offset().top - 85;
+            var commentsFromTop = $contentBlockTitle.getBoundingClientRect().top - $bg.getBoundingClientRect().top - 35;
             if (commentsFromTop > 0) {
-                $bg.css('background', 'linear-gradient(180deg, var(--background-color-blank), var(--background-color-blank) ' + commentsFromTop + 'px, var(--background-color-history) ' + commentsFromTop + 'px)');
+                setTimeout(function () {
+                    $bg.style.background = 'linear-gradient(180deg, var(--background-color-blank), var(--background-color-blank) ' + commentsFromTop + 'px, var(--background-color-history) ' + commentsFromTop + 'px)';
+                }, 0);
             }
         }
 
-        new ResizeObserver(recalculateBackground).observe($bg.get(0));
+        if ($bg && $contentBlockTitle) {
+            new ResizeObserver(recalculateBackground).observe($bg);
+        }
     }
 
     Task.prototype.initTask = function() {
