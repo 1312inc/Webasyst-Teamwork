@@ -263,20 +263,16 @@ pre
       @media forMobile
          width 100%
 
-      .t-pinned-comment
+      .t-comment-item.t-pinned-comment
          background transparent
 
-//         .t-comment-content,
-//         .details
-//                background var(--highlighted-blue)
-
-      .t-comment-with-custom-text
+      .t-comment-item.t-comment-with-custom-text
          .t-comment-content
-            background var(--background-color-blank) !important
+            background var(--background-color-blank)
 
          .details
-            border 1px solid var(--border-color-soft)
-            background var(--background-color-blank) !important
+            border 2px solid var(--border-color-soft)
+            background var(--background-color-blank)
             box-shadow 0 0.5rem 1.5rem -1rem var(--dialog-shadow-color)
 
       &--right
