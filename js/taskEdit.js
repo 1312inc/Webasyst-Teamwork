@@ -895,19 +895,19 @@ var TaskEdit = ( function($) { "use strict";
             localStorage.setItem('task_title', $task_title.val());
             localStorage.setItem('draft_time', result);
         });
-        // $task_text.on('keyup',function(){
-        //     //Save task draft text
-        //     var data = new Date(),
-        //         result = data.toLocaleDateString("ru-RU", {
-        //             year: "numeric",
-        //             month: "2-digit",
-        //             day: "2-digit",
-        //             hour:"2-digit",
-        //             minute: "2-digit"
-        //         });
-        //     localStorage.setItem('task_text', $task_text.val());
-        //     localStorage.setItem('draft_time', result);
-        // });
+        $task_text.on('keyup',function(){
+            //Save task draft text
+            var data = new Date(),
+                result = data.toLocaleDateString("ru-RU", {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                    hour:"2-digit",
+                    minute: "2-digit"
+                });
+            localStorage.setItem('task_text', $task_text.val());
+            localStorage.setItem('draft_time', result);
+        });
     };
 
     //Show alert task draft
