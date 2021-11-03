@@ -360,7 +360,7 @@ class tasksHelper
 
                 if ($project_id) {
                     $logs = tsks()->getModel('tasksTaskLog')
-                        ->getLastByContactIds(array_keys($data), $project_id);
+                        ->getLastByContactIdsAndAssignedContactIds(array_keys($data), $project_id);
 
                     $dataWithLogs = [];
                     foreach ($logs as $log) {

@@ -527,4 +527,41 @@ class tasksTaskLogModel extends waModel
             ['contact_ids' => $contactIds, 'project_id' => $projectId]
         )->fetchAll('contact_id');
     }
+
+    public function getLastByContactIdsAndAssignedContactIds(array $contactIds, int $projectId): array
+    {
+        $sqlBase = 'select id, %s as contact_id from %s where id in (
+        select max(id) id
+        from %s
+        where %s in (i:contact_ids)
+        and project_id = i:project_id
+        group by %s)';
+
+        $sqlByContactIds = sprintf(
+            $sqlBase,
+            'contact_id',
+            $this->table,
+            $this->table,
+            'contact_id',
+            'contact_id'
+        );
+
+        $sqlByAssignContactIds = sprintf(
+            $sqlBase,
+            'assigned_contact_id',
+            $this->table,
+            $this->table,
+            'assigned_contact_id',
+            'assigned_contact_id'
+        );
+
+        return $this->query(
+            sprintf(
+                'select max(id) id, contact_id from (%s union %s) laslogs group by contact_id',
+                $sqlByContactIds,
+                $sqlByAssignContactIds
+            ),
+            ['contact_ids' => $contactIds, 'project_id' => $projectId]
+        )->fetchAll('contact_id');
+    }
 }
