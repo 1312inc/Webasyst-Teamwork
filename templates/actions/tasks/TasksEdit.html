@@ -103,7 +103,8 @@
                                                 container: $('#t-edit-task-form .t-team-list-wrapper'),
                                                 targetField: $('#t-edit-task-form [name="data[assigned_contact_id]"]'),
                                                 projectId: $(target).data("value"),
-                                                assignedContactId: {$task.assigned_contact_id|default:"\"\""}
+                                                assignedContactId: {if !empty($task.id)}{$task.assigned_contact_id|default:"\"\""}{else}""{/if},
+                                                updateMode: {if !empty($task.id)}true{else}false{/if}
                                             });
 
                                         }
@@ -268,8 +269,9 @@
                                 $.tasks.teamList({
                                     container: $('#t-edit-task-form .t-team-list-wrapper'),
                                     targetField: $('#t-edit-task-form [name="data[assigned_contact_id]"]'),
-                                    projectId: {$task.project_id},
-                                    assignedContactId: {$task.assigned_contact_id|default:"\"\""}
+                                    projectId: {if !empty($task.id)}{$task.project_id}{else}""{/if},
+                                    assignedContactId: {if !empty($task.id)}{$task.assigned_contact_id|default:"\"\""}{else}""{/if},
+                                    updateMode: {if !empty($task.id)}true{else}false{/if}
                                 });
                             })(jQuery);
                         </script>

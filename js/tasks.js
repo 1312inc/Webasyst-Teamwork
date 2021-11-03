@@ -1538,7 +1538,8 @@
                 projectId = options.projectId,
                 assignedContactId = options.assignedContactId,
                 unassignedLabel = $.wa.locale.unassigned,
-                meLabel = $.wa.locale.me;
+                meLabel = $.wa.locale.me,
+                updateMode = options.updateMode;
 
             $container.css('pointer-events', 'none').fadeTo("fast", 0.33);
 
@@ -1604,7 +1605,7 @@
                     });
 
                     // initial selection
-                    if(assignedContactId) {
+                    if(updateMode) {
                         $container.find('.t-assignee[data-user-id=\"' + assignedContactId + '\"]').addClass('active');
                     } else {
                         $container.find('.t-assignee').first().trigger('click');
