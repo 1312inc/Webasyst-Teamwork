@@ -22,7 +22,9 @@ class tasksApiLogDtoFactory
             isset($data['status_changed']) && $data['status_changed'],
             isset($data['assignment_changed']) && $data['assignment_changed'],
             $data['attachments'] ?? [],
-            $data['params'] ?? []
+            $data['params'] ?? [],
+            $data['task']['name'] ?? null,
+            $data['task']['number'] ?? null
         );
     }
 

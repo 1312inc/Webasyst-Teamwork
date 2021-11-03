@@ -74,6 +74,16 @@ class tasksApiLogDto implements JsonSerializable
      */
     private $params;
 
+    /**
+     * @var null|string
+     */
+    private $task_number = null;
+
+    /**
+     * @var null|string
+     */
+    private $task_name = null;
+
     public function __construct(
         int $id,
         ?int $projectId,
@@ -88,7 +98,9 @@ class tasksApiLogDto implements JsonSerializable
         ?bool $statusChanged,
         ?bool $assignmentChanged,
         array $attachments,
-        array $params
+        array $params,
+        ?string $task_name,
+        ?int $task_number
     ) {
         $this->id = $id;
         $this->project_id = $projectId;
@@ -104,6 +116,8 @@ class tasksApiLogDto implements JsonSerializable
         $this->assignment_changed = $assignmentChanged;
         $this->attachments = $attachments;
         $this->params = $params;
+        $this->task_name = $task_name;
+        $this->task_number = $task_number;
     }
 
     public function getId(): int

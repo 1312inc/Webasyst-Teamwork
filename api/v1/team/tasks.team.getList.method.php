@@ -10,6 +10,22 @@ class tasksTeamGetListMethod extends tasksApiAbstractMethod
         $logs = tsks()->getModel('tasksTaskLog')
             ->getLastByContactIds(array_column($users, 'id'));
 
+        $taskIds = array_unique(array_column($logs, 'task_id'));
+        $tasks = [];
+        if ($taskIds) {
+            $hash = 'id/' . implode(',', $taskIds);
+            $collection = new tasksCollection($hash);
+            $tasks = $collection->getTasks('*');
+        }
+
+        foreach ($logs as $i => $log) {
+            if (!isset($tasks[$log['task_id']])) {
+                continue;
+            }
+
+            $logs[$i]['task'] = new tasksTask($tasks[$log['task_id']]);
+        }
+
         foreach ($users as $user) {
             $contact = new waContact($user['id']);
 

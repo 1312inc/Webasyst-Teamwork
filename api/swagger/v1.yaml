@@ -1990,6 +1990,12 @@ components:
             $ref: '#/components/schemas/attachmentInfo'
         params:
           type: array
+        task_number:
+          type: integer
+          nullable: true
+        task_name:
+          type: integer
+          nullable: true
     groupedByDateLogInfo:
       type: object
       description: Сгруппированные по дате логи
