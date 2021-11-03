@@ -131,7 +131,9 @@ var TaskEdit = ( function($) { "use strict";
             that.setTaskDraft();
         }
 
-        that.initTextareaAutocomplete();
+        if ($.tasks.options.text_editor === 'markdown') {
+            that.initTextareaAutocomplete();
+        }
 
         // Make sure everything that depend on current selected project
         // is rendered correctly
@@ -455,7 +457,7 @@ var TaskEdit = ( function($) { "use strict";
     TaskEdit.prototype.initTextareaAutocomplete = function() {
         this.$form.find('textarea').textareaAutocomplete({
             url: '?action=tagsatcmpl',
-            appendTo: '#content',
+            // appendTo: '#content',
             autoFocus: false,
             delay: 300
         });
