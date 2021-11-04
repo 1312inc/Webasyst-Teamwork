@@ -459,7 +459,7 @@ class tasksTasksAction extends waViewAction
                     'name' => 'user-assigned',
                     'title' => sprintf_wp("%s's task list is empty", htmlspecialchars($c->getName())),
                     'message' => sprintf_wp(
-                        'No tasks are assigned to %s right now.',
+                        wa()->getUser()->isAdmin('tasks') ? 'Involve %s to the teamwork just by sending a new task.' : 'There are no task assigned to %s in projects you collaborate on together.',
                         htmlspecialchars($c->getName())
                     ),
                     //'img_url' => $c->getPhoto(192, 192),
@@ -491,7 +491,7 @@ class tasksTasksAction extends waViewAction
                 return [
                     'name' => 'project',
                     'title' => sprintf_wp("No tasks in %s project", htmlspecialchars($info['name'])),
-                    'message' => _w('There are no tasks in this project.'),
+                    'message' => wa()->getUser()->isAdmin('tasks') ? _w('Use projects to organize tasks and manage access rights for your teammates.') : _w('There are no tasks in this project that require your attention at the moment. If you think its by mistake, ask the account admin to check your access rights.'),
                     'img_url' => wa()->getAppStaticUrl('tasks') . 'img/notice/welcome.png',
                 ];
             }

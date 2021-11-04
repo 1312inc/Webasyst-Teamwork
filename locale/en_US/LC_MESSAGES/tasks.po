@@ -455,13 +455,13 @@ msgid "Your favorites list is empty"
 msgstr ""
 
 msgid "To add a task to your personal favorite list, click on a tiny star icon next to task name."
-msgstr ""
+msgstr "To start watching on a task progress, click on a tiny little star button next to a task name."
 
 msgid "Task list is empty"
 msgstr ""
 
 msgid "No tasks matching your search criteria."
-msgstr ""
+msgstr "No tasks matching this search criteria."
 
 msgid "Task not found"
 msgstr ""
@@ -644,18 +644,21 @@ msgid "User %s has just completed a task"
 msgstr "%s has completed the task"
 
 msgid "Inbox automatically collects all tasks assigned to you. No tasks are assigned to you right now :-)"
-msgstr "Inbox automatically collects all tasks assigned to you. No tasks are assigned to you right now."
+msgstr "No tasks are assigned to you at the moment. Ask your teammates to send you a task or simply do this on your own."
 
 msgid "Your outbox is empty"
 msgstr ""
 
 msgid "Outbox automatically collects all tasks you’ve created."
-msgstr ""
+msgstr "Outbox automatically collects all tasks you’ve been participating."
 
 msgid "Your favorite task list is empty"
+msgstr "Your watch list is empty"
+
+msgid "Use projects to organize tasks and manage access rights for your teammates."
 msgstr ""
 
-msgid "There are no tasks in this project."
+msgid "There are no tasks in this project that require your attention at the moment. If you think its by mistake, ask the account admin to check your access rights."
 msgstr ""
 
 msgid "No tasks match your search criteria."
@@ -889,6 +892,9 @@ msgstr ""
 
 msgid "Add comment"
 msgstr ""
+
+msgid "Involve %s to the teamwork just by sending a new task."
+msgstr "Create a new task and involve %s to the teamwork."
 
 msgid "You are about to leave the page without saving the task. Are you sure?"
 msgstr ""
@@ -1291,4 +1297,48 @@ msgid "Accept invitation"
 msgstr ""
 
 msgid "Text editor"
+msgstr ""
+
+msgid "WYSIWYG"
+msgstr "Full-featured editor (WYSIWYG)"
+
+msgid "Markdown"
+msgstr "Markdown (plain text)"
+
+msgid "Status not found"
+msgstr ""
+
+msgid "No access to project"
+msgstr ""
+
+msgid "Contact not found"
+msgstr ""
+
+msgid "You cannot edit task"
+msgstr ""
+
+msgid "Contact cannot view task"
+msgstr ""
+
+msgid "%d hour"
+msgid_plural "%d hours"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Email not send"
+msgstr "Email not sent"
+
+msgid "This contact was banned"
+msgstr ""
+
+msgid "Already in our team!"
+msgstr "The user is in your team already!"
+
+msgid "Invitation token can't created"
+msgstr "Invitation token can't be created"
+
+msgid "This is a required field."
+msgstr "Required field"
+
+msgid "This does not look like a valid email"
 msgstr ""
