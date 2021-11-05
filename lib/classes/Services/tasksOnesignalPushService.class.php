@@ -29,6 +29,8 @@ class tasksOnesignalPushService extends onesignalPush
         $requestData = $this->prepareRequestData($data->toArray());
 
         $clientIds = $this->tasksPushClientModel->getByField('contact_id', $contact_id) ?: [];
+        tasksLogger::debug('Send to client ids:');
+        tasksLogger::debug($clientIds);
 
         $result = [];
         foreach ($clientIds as $clientId) {

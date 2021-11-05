@@ -37,7 +37,17 @@ final class tasksPushSenderService
      */
     public function send(string $type, $task, array $logItem, waContact $toContact): void
     {
+        tasksLogger::debug(
+            sprintf(
+                'Start to send push notifications about task %s to contact %s',
+                $task['name'] ?? '',
+                $toContact->getName()
+            )
+        );
+
         if (!$this->pushAdapter || !$this->pushAdapter->isEnabled()) {
+            tasksLogger::debug('Push adapter is not initialized or is not enables. Go to system settings');
+
             return;
         }
 
@@ -52,6 +62,8 @@ final class tasksPushSenderService
             ],
             null
         );
+
+        tasksLogger::debug($dto);
 
         $this->pushAdapter->sendByContact($toContact->getId(), $dto);
     }
