@@ -81,6 +81,7 @@ var TasksHeader = ( function($) {
 
         if (!that.is_in_my_list && !that.is_single_page) {
            $('.t-preview-name').text(that.buildTitle());
+           $('.t-preview-description').text(that.buildDesc());
         }
 
         // hide/show sidebar/content if single page on phone
@@ -246,6 +247,23 @@ var TasksHeader = ( function($) {
         }
 
         return title;
+    };
+
+    Header.buildDesc = function () {
+        var that = this;
+        var parts = [];
+        that.$mainMenu.find(".js-header-title-participant").each(function () {
+            var pageFilter = $(this).data('pageFilter');
+            if (pageFilter && typeof pageFilter.getDescriptionPartForHeader === 'function') {
+                parts.push(pageFilter.getDescriptionPartForHeader());
+            }
+        });
+
+        parts = $.grep(parts, function(n) {
+            return n || n === 0;
+        });
+
+        return parts.join(' / ');
     };
 
     Header.initMyListToggle = function () {

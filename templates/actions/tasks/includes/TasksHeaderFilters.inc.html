@@ -42,7 +42,7 @@
 {foreach $filter_types as $id => $filter}
     {$_data_keys = []}
     {if $id === 'milestone_id'}
-        {$_data_keys = ['project_id']}
+        {$_data_keys = ['project_id','description']}
     {/if}
     {show_filter class='t-tasks-filter js-header-title-participant' filter=$filter data_keys=$_data_keys}
 {/foreach}
