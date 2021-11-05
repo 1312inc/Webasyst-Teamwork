@@ -1994,7 +1994,7 @@ components:
           type: integer
           nullable: true
         task_name:
-          type: integer
+          type: string
           nullable: true
     groupedByDateLogInfo:
       type: object
