@@ -488,10 +488,10 @@ msgid "Your favorites list is empty"
 msgstr "Ваш список избранных задач пуст"
 
 msgid "To add a task to your personal favorite list, click on a tiny star icon next to task name."
-msgstr "Чтобы добавить задачу в список избранных, щелкните по звездочке рядом с ее названием."
+msgstr "Чтобы следить за работой над задачей, нажмите по звездочке рядом с ее названием."
 
 msgid "Task list is empty"
-msgstr "Список задач пуст"
+msgstr "Задач нет"
 
 msgid "No tasks matching your search criteria."
 msgstr "Нет задач, соответствующих критериям поиска."
@@ -695,19 +695,22 @@ msgid "User %s has just completed a task"
 msgstr "%s выполнил задачу"
 
 msgid "Inbox automatically collects all tasks assigned to you. No tasks are assigned to you right now :-)"
-msgstr "Раздел «Входящие» содержит все назначенные на вас задачи. Сейчас на вас не назначено ни одной задачи."
+msgstr "Сейчас на вас не назначено ни одной задачи. Попросите коллег поставить вам задачу или сделайте это сами."
 
 msgid "Your outbox is empty"
-msgstr "Список исходящих пуст"
+msgstr "Исходящих задач нет"
 
 msgid "Outbox automatically collects all tasks you’ve created."
-msgstr "Раздел «Исходящие» содержит все созданные вами задачи."
+msgstr "Здесь будут собраны все задачи, в работе над которыми вы принимали участие."
 
 msgid "Your favorite task list is empty"
-msgstr "Ваш список избранных задач пуст"
+msgstr "Избранных задач нет"
 
-msgid "There are no tasks in this project."
-msgstr "В этом проекте нет задач."
+msgid "Use projects to organize tasks and manage access rights for your teammates."
+msgstr "Используйте проекты для удобной организации задач и настройки прав доступа для сотрудников."
+
+msgid "There are no tasks in this project that require your attention at the moment. If you think its by mistake, ask the account admin to check your access rights."
+msgstr "В этом проекте нет задач, которые требовали бы вашего внимания. Если вы считаете, что тут что-то не так, попросите своего начальника проверить выданные вам права доступа."
 
 msgid "No tasks match your search criteria."
 msgstr "Нет задач, соответствующих критериям поиска."
@@ -797,10 +800,10 @@ msgid "You have unsaved changes. Are you sure you want to leave?"
 msgstr "У вас есть несохраненные изменения на этой странице. Уйти, не сохранив изменения?"
 
 msgid "No tasks in %s project"
-msgstr "Нет задач в проекте «%s»"
+msgstr "В проекте «%s» нет задач"
 
 msgid "No tasks in %s status"
-msgstr "Нет задач в статусе «%s»"
+msgstr "В статусе «%s» нет задач"
 
 msgid "There are currently no tasks in %s status."
 msgstr "В статусе «%s» нет ни одной задачи."
@@ -838,11 +841,14 @@ msgstr "для всех"
 msgid "Add comment"
 msgstr "Добавить комментарий"
 
-msgid "No tasks are assigned to %s right now."
-msgstr "В данный момент нет задач, назначенных на пользователя %s."
+msgid "Involve %s to the teamwork just by sending a new task."
+msgstr "Создайте новую задачу и подключайте %s к совместной работе."
+
+msgid "There are no task assigned to %s in projects you collaborate on together."
+msgstr "В проектах, над которыми вы работаете совместно, на %s не назначено ни одной задачи."
 
 msgid "%s's task list is empty"
-msgstr "Список задач пользователя %s пуст"
+msgstr "У %s нет задач"
 
 msgid "My lists"
 msgstr "Мои списки"
@@ -1359,3 +1365,42 @@ msgstr "Принять приглашение"
 
 msgid "Text editor"
 msgstr "Редактор"
+
+msgid "WYSIWYG"
+msgstr "Полноценный визуальный редактор (WYSIWYG)"
+
+msgid "Markdown"
+msgstr "Markdown (просто текст)"
+
+msgid "Status not found"
+msgstr "Статус не найден"
+
+msgid "No access to project"
+msgstr "Нет доступа к проекту"
+
+msgid "Contact not found"
+msgstr "Контакт не найден"
+
+msgid "You cannot edit task"
+msgstr "Вам не разрешено редактировать эту задачу"
+
+msgid "Contact cannot view task"
+msgstr "У пользователя нет доступа к задаче"
+
+msgid "Email not send"
+msgstr "Письмо не отправлено"
+
+msgid "This contact was banned"
+msgstr "Этот контакт был заблокирован ранее"
+
+msgid "Already in our team!"
+msgstr "Пользователь уже в вашей команде!"
+
+msgid "Invitation token can't created"
+msgstr "Не получилось создать ссылку-приложение"
+
+msgid "This is a required field."
+msgstr "Обязательное поле"
+
+msgid "This does not look like a valid email"
+msgstr "Не похоже это на адрес email"
