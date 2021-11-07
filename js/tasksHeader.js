@@ -81,7 +81,11 @@ var TasksHeader = ( function($) {
 
         if (!that.is_in_my_list && !that.is_single_page) {
            $('.t-preview-name').text(that.buildTitle());
-           $('.t-preview-description').text(that.buildDesc());
+           var _description = that.buildDesc();
+           if ( _description.length > 0 ) {
+                $('.t-preview-description').html( '<p class="t-preview-description-content"></p>' );
+                $('.t-preview-description .t-preview-description-content').text( _description );
+           }
         }
 
         // hide/show sidebar/content if single page on phone
