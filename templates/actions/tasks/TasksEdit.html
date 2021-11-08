@@ -266,10 +266,11 @@
                         <div class="t-team-list-wrapper"></div>
                         <script>
                             (function ($) {
+                                var initialProjectID = $("#projectSelect").find("li:first a").data('value');
                                 $.tasks.teamList({
                                     container: $('#t-edit-task-form .t-team-list-wrapper'),
                                     targetField: $('#t-edit-task-form [name="data[assigned_contact_id]"]'),
-                                    projectId: {if !empty($task.id)}{$task.project_id}{else}""{/if},
+                                    projectId: {if !empty($task.id)}{$task.project_id}{else}initialProjectID{/if},
                                     assignedContactId: {if !empty($task.id)}{$task.assigned_contact_id|default:"\"\""}{else}""{/if},
                                     updateMode: {if !empty($task.id)}true{else}false{/if}
                                 });
