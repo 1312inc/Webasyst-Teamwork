@@ -22,7 +22,7 @@ final class tasksPushSenderService
                 waAutoload::getInstance()->add('onesignalPush', $onePushClass);
             }
 
-            $this->pushAdapter = new tasksOnesignalPushService();
+            $this->pushAdapter = new tasksOnesignalPushService(tasksOptions::getOneSignalToken());
         } catch (waException $e) {
             tasksLogger::debug('Unable to load wa-system/push/adapters/onesignal/onesignalPush.class.php');
         }
@@ -46,7 +46,7 @@ final class tasksPushSenderService
         );
 
         if (!$this->pushAdapter || !$this->pushAdapter->isEnabled()) {
-            tasksLogger::debug('Push adapter is not initialized or is not enables. Go to system settings');
+            tasksLogger::debug('Push adapter is not initialized or is not enables');
 
             return;
         }

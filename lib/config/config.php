@@ -115,4 +115,6 @@ return array(
     'tags_cloud_cache_ttl' => 600,
 
     'redactor_image_size' => 1000,
+
+    'onesignal_token' => '',
 );

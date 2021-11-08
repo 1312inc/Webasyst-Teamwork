@@ -26,4 +26,9 @@ final class tasksOptions
     {
         return (int) tsks()->getOption('bulk_notifications_limit');
     }
+
+    public static function getOneSignalToken(): ?string
+    {
+        return tsks()->getOption('onesignal_token') ?: null;
+    }
 }

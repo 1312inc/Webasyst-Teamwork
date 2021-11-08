@@ -7,9 +7,12 @@ class tasksOnesignalPushService extends onesignalPush
      */
     private $tasksPushClientModel;
 
-    public function __construct()
+    protected $tasksApiToken;
+
+    public function __construct(?string $tasksApiToken)
     {
         $this->tasksPushClientModel = new tasksPushClientModel();
+        $this->tasksApiToken = $tasksApiToken;
     }
 
     public function getId(): string
@@ -47,6 +50,22 @@ class tasksOnesignalPushService extends onesignalPush
 
     public function isEnabled(): bool
     {
-        return !empty($this->getSettings(self::API_TOKEN));
+        return !empty($this->tasksApiToken);
+    }
+
+    protected function getNet(): waNet
+    {
+        if ($this->net === null) {
+            $options = ['format' => waNet::FORMAT_JSON];
+
+            $custom_headers = [
+                'timeout' => 7,
+                'Authorization' => 'Basic ' . $this->tasksApiToken,
+            ];
+
+            $this->net = new waNet($options, $custom_headers);
+        }
+
+        return $this->net;
     }
 }
