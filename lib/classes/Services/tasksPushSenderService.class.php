@@ -39,9 +39,10 @@ final class tasksPushSenderService
     {
         tasksLogger::debug(
             sprintf(
-                'Start to send push notifications about task %s to contact %s',
+                'Start to send push notifications about task "%s" to contact %s (%s)',
                 $task['name'] ?? '',
-                $toContact->getName()
+                $toContact->getName(),
+                $toContact->getId()
             )
         );
 
@@ -63,7 +64,7 @@ final class tasksPushSenderService
             null
         );
 
-        tasksLogger::debug($dto);
+        tasksLogger::debug($dto->toArray());
 
         $this->pushAdapter->sendByContact($toContact->getId(), $dto);
     }
