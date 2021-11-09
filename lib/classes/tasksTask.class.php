@@ -384,12 +384,18 @@ class tasksTask implements ArrayAccess
         $link_pattern = str_replace('{$url}', $url_pattern, $link_pattern);
 
         $replace_map = array();
+        $replace_map2 = array();
         foreach ($tags as $tag) {
             $link = str_replace('{$tag}', $tag, $link_pattern);
-            $replace_map['#'.$tag] = $link;
+            $replace_map[sprintf('/#%s\b/',preg_quote($tag,'/'))] = $link;
+            $replace_map2['#'.$tag] = $link;
         }
 
-        $text = tasksHelper::strReplace($text, $replace_map);
+        $res = preg_replace(array_keys($replace_map), array_values($replace_map), $text);
+        if (!$res) {
+            $res = tasksHelper::strReplace($text, $replace_map2);
+        }
+        $text = $res;
 
         return $text;
     }
