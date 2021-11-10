@@ -37,19 +37,19 @@ class tasksOnesignalPushService extends onesignalPush
         $clientIds = $this->tasksPushClientModel->getByField('contact_id', $contact_id, true) ?: [];
         tasksLogger::debug('Send to client ids:');
 
-        $result = [];
-        foreach (array_column($clientIds, 'client_id') as $clientId) {
-            tasksLogger::debug($clientId);
-            $push_data = $requestData;
-            $push_data['app_id'] = $this->tasksApiAppId;
-            $push_data['include_player_ids'][] = $clientId;
-            $response = $this->request('notifications', $push_data, waNet::METHOD_POST);
-            tasksLogger::debug($response);
+        if (!$clientIds) {
+            tasksLogger::debug('No client ids');
 
-            $result[] = $response;
+            return [];
         }
 
-        return $result;
+        $push_data = $requestData;
+        $push_data['app_id'] = $this->tasksApiAppId;
+        $push_data['include_player_ids'] = array_column($clientIds, 'client_id');
+        $response = $this->request('notifications', $push_data, waNet::METHOD_POST);
+        tasksLogger::debug($response);
+
+        return $response;
     }
 
     public function isEnabled(): bool
