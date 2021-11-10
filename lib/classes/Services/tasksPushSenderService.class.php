@@ -22,7 +22,7 @@ final class tasksPushSenderService
                 waAutoload::getInstance()->add('onesignalPush', $onePushClass);
             }
 
-            $this->pushAdapter = new tasksOnesignalPushService(tasksOptions::getOneSignalToken());
+            $this->pushAdapter = new tasksOnesignalPushService(tasksOptions::getOneSignalAppId());
         } catch (waException $e) {
             tasksLogger::debug('Unable to load wa-system/push/adapters/onesignal/onesignalPush.class.php');
         }

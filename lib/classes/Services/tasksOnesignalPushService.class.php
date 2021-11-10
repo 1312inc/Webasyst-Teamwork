@@ -7,12 +7,15 @@ class tasksOnesignalPushService extends onesignalPush
      */
     private $tasksPushClientModel;
 
-    protected $tasksApiToken;
+    /**
+     * @var string|null
+     */
+    private $tasksApiAppId;
 
-    public function __construct(?string $tasksApiToken)
+    public function __construct(?string $tasksApiAppId)
     {
         $this->tasksPushClientModel = new tasksPushClientModel();
-        $this->tasksApiToken = $tasksApiToken;
+        $this->tasksApiAppId = $tasksApiAppId;
     }
 
     public function getId(): string
@@ -31,13 +34,14 @@ class tasksOnesignalPushService extends onesignalPush
     {
         $requestData = $this->prepareRequestData($data->toArray());
 
-        $clientIds = $this->tasksPushClientModel->getByField('contact_id', $contact_id);
+        $clientIds = $this->tasksPushClientModel->getByField('contact_id', $contact_id) ?: [];
         tasksLogger::debug('Send to client ids:');
         tasksLogger::debug($clientIds);
 
         $result = [];
         foreach ($clientIds as $clientId) {
             $push_data = $requestData;
+            $push_data['app_id'] = $this->tasksApiAppId;
             $push_data['include_player_ids'] = $clientId;
             $response = $this->request('notifications', $push_data, waNet::METHOD_POST);
             tasksLogger::debug($response);
@@ -50,18 +54,14 @@ class tasksOnesignalPushService extends onesignalPush
 
     public function isEnabled(): bool
     {
-        return !empty($this->tasksApiToken);
+        return !empty($this->tasksApiAppId);
     }
 
     protected function getNet(): waNet
     {
         if ($this->net === null) {
             $options = ['format' => waNet::FORMAT_JSON];
-
-            $custom_headers = [
-                'timeout' => 7,
-                'Authorization' => 'Basic ' . $this->tasksApiToken,
-            ];
+            $custom_headers = ['timeout' => 5];
 
             $this->net = new waNet($options, $custom_headers);
         }
