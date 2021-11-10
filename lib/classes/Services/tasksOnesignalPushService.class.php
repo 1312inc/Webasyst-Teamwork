@@ -42,7 +42,7 @@ class tasksOnesignalPushService extends onesignalPush
         foreach ($clientIds as $clientId) {
             $push_data = $requestData;
             $push_data['app_id'] = $this->tasksApiAppId;
-            $push_data['include_player_ids'] = $clientId;
+            $push_data['include_player_ids'][] = $clientId;
             $response = $this->request('notifications', $push_data, waNet::METHOD_POST);
             tasksLogger::debug($response);
 
