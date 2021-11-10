@@ -678,10 +678,10 @@ msgid "ASSIGNED: %s %s"
 msgstr ""
 
 msgid "DONE: %s was completed"
-msgstr ""
+msgstr "DONE: %s"
 
 msgid "EDIT: %s was edited"
-msgstr ""
+msgstr "UPDATE: %s"
 
 msgid "created a task"
 msgstr ""

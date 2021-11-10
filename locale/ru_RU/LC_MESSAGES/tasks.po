@@ -734,10 +734,10 @@ msgid "NEW: %s %s"
 msgstr "НОВОЕ: %s %s"
 
 msgid "DONE: %s was completed"
-msgstr "ВЫПОЛНЕНО: %s была выполнена"
+msgstr "ВЫПОЛНЕНО: %s"
 
 msgid "EDIT: %s was edited"
-msgstr "ОБНОВЛЕНО: %s была отредактирована"
+msgstr "ОБНОВЛЕНО: %s"
 
 msgid "created a task"
 msgstr "создал задачу"
