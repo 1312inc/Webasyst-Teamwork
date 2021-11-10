@@ -53,7 +53,7 @@ final class tasksPushSenderService
         }
 
         $dto = new tasksPushDataDto(
-            $this->getMessage($type, $task),
+            $this->getTitle($type, $task),
             $this->getMessage($type, $task),
             null,
             [
