@@ -49,6 +49,10 @@ class tasksOnesignalPushService extends onesignalPush
         $response = $this->request('notifications', $push_data, waNet::METHOD_POST);
         tasksLogger::debug($response);
 
+        if (isset($response['errors']['invalid_player_ids'])) {
+            $this->tasksPushClientModel->deleteById($response['errors']['invalid_player_ids']);
+        }
+
         return $response;
     }
 
