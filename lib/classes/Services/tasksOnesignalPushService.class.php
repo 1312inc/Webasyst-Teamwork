@@ -34,15 +34,15 @@ class tasksOnesignalPushService extends onesignalPush
     {
         $requestData = $this->prepareRequestData($data->toArray());
 
-        $clientIds = $this->tasksPushClientModel->getByField('contact_id', $contact_id) ?: [];
+        $clientIds = $this->tasksPushClientModel->getByField('contact_id', $contact_id, true) ?: [];
         tasksLogger::debug('Send to client ids:');
 
         $result = [];
-        foreach ($clientIds as $clientId) {
+        foreach (array_column($clientIds, 'client_id') as $clientId) {
             tasksLogger::debug($clientId);
             $push_data = $requestData;
             $push_data['app_id'] = $this->tasksApiAppId;
-            $push_data['include_player_ids'][] = $clientId['client_id'];
+            $push_data['include_player_ids'][] = $clientId;
             $response = $this->request('notifications', $push_data, waNet::METHOD_POST);
             tasksLogger::debug($response);
 
