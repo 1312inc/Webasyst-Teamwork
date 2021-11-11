@@ -11,6 +11,7 @@ class tasksSettingsPersonalAction extends waViewAction
         $this->view->assign([
             'projects' => tasksHelper::getProjects(),
             'settings' => $settings,
+            'sidebar_html' => $this->getUser()->isAdmin('tasks') ? (new tasksSettingsSidebarAction())->display() : '',
         ]);
     }
 }
