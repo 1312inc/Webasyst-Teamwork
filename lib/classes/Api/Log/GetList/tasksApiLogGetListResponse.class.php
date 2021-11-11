@@ -27,7 +27,8 @@ final class tasksApiLogGetListResponse implements tasksApiResponseInterface
             'count' => $this->dto->getCount(),
             'data' => array_map(
                 static function ($log) {
-                    return tasksApiLogDtoFactory::createFromArray($log);
+                    // todo: сразу получать все аттачменты
+                    return tasksApiLogDtoFactory::createFromArrayWithAttachmentsFetch($log);
                 },
                 $this->dto->getLogs()
             ),

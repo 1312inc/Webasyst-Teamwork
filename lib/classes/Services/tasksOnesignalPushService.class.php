@@ -30,7 +30,7 @@ class tasksOnesignalPushService extends onesignalPush
      * @return array
      * @throws waException
      */
-    public function sendByContact($contact_id, $data): array
+    public function sendByContact($contact_id, $data): ?array
     {
         $requestData = $this->prepareRequestData($data->toArray());
 
