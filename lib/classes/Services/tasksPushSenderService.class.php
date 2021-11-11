@@ -54,7 +54,7 @@ final class tasksPushSenderService
 
         $dto = new tasksPushDataDto(
             $this->getTitle($type, $task),
-            $this->getMessage($type, $task),
+            $this->getMessage($type, $task, $toContact, $logItem),
             null,
             [
                 'task_id' => $task['id'],
@@ -69,49 +69,50 @@ final class tasksPushSenderService
         $this->pushAdapter->sendByContact($toContact->getId(), $dto);
     }
 
-    private function getMessage(string $type, $task): string
+    private function getMessage(string $type, $task, $to, $log): string
     {
-        switch ($type) {
-            case tasksNotificationsSender::EVENT_NEW:
-                return sprintf(_w('NEW: %s %s'), $task['project_id'] . '.' . $task['number'], $task['name']);
-
-            case tasksNotificationsSender::EVENT_ASSIGN:
-                return sprintf(
-                    '➡️ ' . _w('ASSIGNED: %s %s'),
-                    $task['project_id'] . '.' . $task['number'],
-                    $task['name']
-                );
-
-            case tasksNotificationsSender::EVENT_DONE:
-                return sprintf('☑️ ' . _w('DONE: %s was completed'), $task['project_id'] . '.' . $task['number']);
-
-            case tasksNotificationsSender::EVENT_COMMENT:
-            case tasksNotificationsSender::EVENT_EDIT:
-            default:
-                return sprintf('⚡ ' . _w('EDIT: %s was edited'), $task['project_id'] . '.' . $task['number']);
+        $templatePath = wa()->getAppPath('templates/push/' . ucfirst($type) . '.html', 'tasks');
+        if (!file_exists($templatePath)) {
+            return '';
         }
+
+        $log['assigned_contact'] = new waContact($log['assigned_contact_id']);
+        if (!$log['assigned_contact']->exists()) {
+            $log['assigned_contact'] = null;
+        }
+
+        $view = wa()->getView();
+        $old_vars = $view->getVars();
+        $view->clearAllAssign($old_vars);
+        $view->assign([
+            'log' => $log,
+            'task' => $task,
+            'from' => wa()->getUser(),
+            'to' => $to,
+        ]);
+        $body = $view->fetch($templatePath);
+        $view->clearAllAssign();
+        $view->assign($old_vars);
+
+        return trim($body);
     }
 
     private function getTitle(string $type, $task): string
     {
         switch ($type) {
             case tasksNotificationsSender::EVENT_NEW:
-                return sprintf(_w('NEW: %s %s'), $task['project_id'] . '.' . $task['number'], $task['name']);
+                return sprintf(_w('%s %s'), $task['project_id'] . '.' . $task['number'], $task['name']);
 
             case tasksNotificationsSender::EVENT_ASSIGN:
-                return sprintf(
-                    '➡️ ' . _w('ASSIGNED: %s %s'),
-                    $task['project_id'] . '.' . $task['number'],
-                    $task['name']
-                );
+                return sprintf('➡️ ' . _w('%s %s'), $task['project_id'] . '.' . $task['number'], $task['name']);
 
             case tasksNotificationsSender::EVENT_DONE:
-                return sprintf('☑️ ' . _w('DONE: %s was completed'), $task['project_id'] . '.' . $task['number']);
+                return sprintf('☑️️ ' . _w('%s %s'), $task['project_id'] . '.' . $task['number'], $task['name']);
 
             case tasksNotificationsSender::EVENT_COMMENT:
             case tasksNotificationsSender::EVENT_EDIT:
             default:
-                return sprintf('⚡ ' . _w('EDIT: %s was edited'), $task['project_id'] . '.' . $task['number']);
+                return sprintf('⚡ ' . _w('%s %s'), $task['project_id'] . '.' . $task['number'], $task['name']);
         }
     }
 }
