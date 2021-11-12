@@ -95,7 +95,7 @@ class tasksNotificationsSender
     }
 
     /**
-     * Send notification to contact
+     * Send notification to contact (except myself)
      *
      * @param string $type
      * @param int    $to_contact_id
@@ -104,6 +104,10 @@ class tasksNotificationsSender
      */
     public function sendOne(string $type, $to_contact_id): void
     {
+        if ($to_contact_id == wa()->getUser()->getId()) {
+            return;
+        }
+
         $to = new waContact($to_contact_id);
 
         $oldLocale = wa()->getLocale();

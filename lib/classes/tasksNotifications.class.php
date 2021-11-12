@@ -74,10 +74,6 @@ class tasksNotifications
             return;
         }
 
-        if ($to->getId() == wa()->getUser()->getId()) {
-            return;
-        }
-
         $template_path = wa()->getAppPath('templates/mail/' . ucfirst($event) . '.html', 'tasks');
         if (!file_exists($template_path)) {
             return;
