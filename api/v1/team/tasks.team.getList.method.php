@@ -27,6 +27,10 @@ class tasksTeamGetListMethod extends tasksApiAbstractMethod
         }
 
         foreach ($users as $user) {
+            if ($user['id'] == wa()->getUser()->getId()) {
+                continue;
+            }
+
             $contact = new waContact($user['id']);
 
             $list[] = new tasksApiTeammateDetailsDto(
