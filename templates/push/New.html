@@ -1,3 +1,4 @@
+{include file="./PushHelpers.inc.html" inline}
 {if $to.id == $log.assigned_contact_id}
     {if $to.id == $task.create_contact_id}
         {* MUST NEVER HAPPENED, BUT JUST IN CASE  *}
@@ -13,3 +14,4 @@
         {sprintf('[`User %s sent a new task to user %s`]', $from.name|escape, 'contact with id = '|cat:$assigned_contact.id)}
     {/if}
 {/if}
+{push_log_block}
