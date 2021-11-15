@@ -1,5 +1,5 @@
 {function push_log_block}
     {if strlen($log.text)}
-        {strip_tags(tasksTask::formatText($log.text))|truncate:256}
+        {tasksHelper::convertToMarkdownAndStripTags($log.text, 256)}
     {/if}
 {/function}

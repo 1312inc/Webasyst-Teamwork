@@ -94,7 +94,8 @@ final class tasksPushSenderService
         $view->clearAllAssign();
         $view->assign($old_vars);
 
-        return trim($body);
+        return trim(preg_replace('/
++/mu', '', preg_replace('/\s+/mu', ' ', $body)));
     }
 
     private function getTitle(string $type, $task): string
