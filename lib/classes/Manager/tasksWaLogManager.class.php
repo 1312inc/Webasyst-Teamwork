@@ -178,9 +178,10 @@ class tasksWaLogManager
                             $commentParams = json_decode($paramsExploded[2], true);
                         }
 
-                        $logs[$l_id]['params_html'] .= !empty($commentParams['comment_text'])
-                            ? '<br>' . $commentParams['comment_text']
-                            : '';
+                        if (!empty($commentParams['comment_text'])) {
+                            $comment = substr(strip_tags(tasksTask::formatText($commentParams['comment_text'])), 0, 512);
+                            $logs[$l_id]['params_html'] = '<br>' . $comment;
+                        }
                         break;
                 }
             }
