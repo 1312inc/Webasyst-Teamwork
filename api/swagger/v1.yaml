@@ -1567,6 +1567,9 @@ components:
           type: string
         text:
           type: string
+        text_stripped:
+          description: Текст таски без тегов, обрезанный до 256 символов
+          type: string
         create_contact:
           $ref: '#/components/schemas/contactInfo'
         visavis_contact:
@@ -1955,6 +1958,9 @@ components:
         contact:
           $ref: '#/components/schemas/contactInfo'
         text:
+          type: string
+        text_stripped:
+          description: Текст лога без тегов, обрезанный до 256 символов
           type: string
         create_datetime:
           $ref: '#/components/schemas/datetime'

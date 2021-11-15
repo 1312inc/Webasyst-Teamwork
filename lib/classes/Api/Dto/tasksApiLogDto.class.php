@@ -32,6 +32,11 @@ class tasksApiLogDto implements JsonSerializable
     /**
      * @var string
      */
+    private $text_stripped;
+
+    /**
+     * @var string
+     */
     private $create_datetime;
 
     /**
@@ -100,7 +105,8 @@ class tasksApiLogDto implements JsonSerializable
         array $attachments,
         array $params,
         ?string $task_name,
-        ?int $task_number
+        ?int $task_number,
+        string $text_stripped
     ) {
         $this->id = $id;
         $this->project_id = $projectId;
@@ -118,6 +124,7 @@ class tasksApiLogDto implements JsonSerializable
         $this->params = $params;
         $this->task_name = $task_name;
         $this->task_number = $task_number;
+        $this->text_stripped = $text_stripped;
     }
 
     public function getId(): int
@@ -188,5 +195,20 @@ class tasksApiLogDto implements JsonSerializable
     public function getParams(): array
     {
         return $this->params;
+    }
+
+    public function getTextStripped(): string
+    {
+        return $this->text_stripped;
+    }
+
+    public function getTaskNumber(): ?string
+    {
+        return $this->task_number;
+    }
+
+    public function getTaskName(): ?string
+    {
+        return $this->task_name;
     }
 }

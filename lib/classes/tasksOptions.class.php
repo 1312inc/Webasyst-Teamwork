@@ -31,4 +31,9 @@ final class tasksOptions
     {
         return tsks()->getOption('onesignal_app_id') ?: null;
     }
+
+    public static function getApiTextStrippedTruncateLength(): int
+    {
+        return (int) tsks()->getOption('api_text_stripped_truncate_length');
+    }
 }

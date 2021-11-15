@@ -32,8 +32,8 @@ final class tasksApiTaskDtoFactory
                     ->format('Y-m-d\TH:i:sP'),
                 isset($task['update_datetime'])
                     ? DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $task['update_datetime'])
-                        ->setTimezone(new DateTimeZone('UTC'))
-                        ->format('Y-m-d\TH:i:sP')
+                    ->setTimezone(new DateTimeZone('UTC'))
+                    ->format('Y-m-d\TH:i:sP')
                     : null,
                 !empty($task['assigned_contact_id'])
                     ? tasksApiContactDtoFactory::fromContactId($task['assigned_contact_id'])
@@ -55,7 +55,8 @@ final class tasksApiTaskDtoFactory
                 array_values(self::createLogs($task)),
                 array_values(self::createTags($task)),
                 !empty($task['project']) ? tasksApiProjectDtoFactory::createFromArray($task['project']) : null,
-                !empty($task->getFavorite())
+                !empty($task->getFavorite()),
+                tasksHelper::convertToMarkdownAndStripTags($task->text, tasksOptions::getApiTextStrippedTruncateLength())
             );
         }
 

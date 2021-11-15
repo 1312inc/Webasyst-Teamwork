@@ -24,7 +24,8 @@ class tasksApiLogDtoFactory
             $data['attachments'] ?? [],
             $data['params'] ?? [],
             $data['task']['name'] ?? null,
-            $data['task']['number'] ?? null
+            $data['task']['number'] ?? null,
+            tasksHelper::convertToMarkdownAndStripTags((string) $data['text'], tasksOptions::getApiTextStrippedTruncateLength())
         );
     }
 

@@ -20,6 +20,11 @@ final class tasksApiTaskDto implements JsonSerializable
     private $text;
 
     /**
+     * @var string
+     */
+    private $text_stripped;
+
+    /**
      * @var tasksApiContactDto
      */
     private $create_contact;
@@ -166,7 +171,8 @@ final class tasksApiTaskDto implements JsonSerializable
         array $log,
         array $tags,
         ?tasksApiProjectDto $project,
-        bool $favorite
+        bool $favorite,
+        string $text_stripped
     ) {
         $this->id = $id;
         $this->name = $name;
@@ -195,6 +201,7 @@ final class tasksApiTaskDto implements JsonSerializable
         $this->next_status_id = $nextStatusId;
         $this->return_status_id = $returnStatusId;
         $this->favorite = $favorite;
+        $this->text_stripped = $text_stripped;
     }
 
     public function getId(): int
@@ -330,5 +337,10 @@ final class tasksApiTaskDto implements JsonSerializable
     public function isFavorite(): bool
     {
         return $this->favorite;
+    }
+
+    public function getTextStripped(): string
+    {
+        return $this->text_stripped;
     }
 }

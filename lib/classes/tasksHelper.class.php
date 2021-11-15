@@ -920,6 +920,13 @@ class tasksHelper
         return str_replace(array_keys($replace), array_values($replace), $str);
     }
 
+    public static function convertToMarkdownAndStripTags(string $text, int $truncate = 0): string
+    {
+        $stripped = strip_tags(tasksTask::formatText($text));
+
+        return $truncate ? substr($stripped, 0, $truncate) : $stripped;
+    }
+
     public static function getProfileURL($contact_id)
     {
         $active_app = wa()->getConfig()->getApplication();

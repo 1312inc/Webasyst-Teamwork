@@ -179,7 +179,7 @@ class tasksWaLogManager
                         }
 
                         if (!empty($commentParams['comment_text'])) {
-                            $comment = substr(strip_tags(tasksTask::formatText($commentParams['comment_text'])), 0, 512);
+                            $comment = tasksHelper::convertToMarkdownAndStripTags($commentParams['comment_text'], 512);
                             $logs[$l_id]['params_html'] = '<br>' . $comment;
                         }
                         break;
