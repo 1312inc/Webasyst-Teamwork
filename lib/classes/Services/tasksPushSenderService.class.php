@@ -69,33 +69,96 @@ final class tasksPushSenderService
         $this->pushAdapter->sendByContact($toContact->getId(), $dto);
     }
 
-    private function getMessage(string $type, $task, $to, $log): string
+    private function getMessage(string $type, $task, waContact $to, $log): string
     {
-        $templatePath = wa()->getAppPath('templates/push/' . ucfirst($type) . '.html', 'tasks');
-        if (!file_exists($templatePath)) {
-            return '';
-        }
-
         $log['assigned_contact'] = new waContact($log['assigned_contact_id']);
         if (!$log['assigned_contact']->exists()) {
             $log['assigned_contact'] = null;
         }
 
-        $view = wa()->getView();
-        $old_vars = $view->getVars();
-        $view->clearAllAssign($old_vars);
-        $view->assign([
-            'log' => $log,
-            'task' => $task,
-            'from' => wa()->getUser(),
-            'to' => $to,
-        ]);
-        $body = $view->fetch($templatePath);
-        $view->clearAllAssign();
-        $view->assign($old_vars);
+        if (trim($log['text']) !== '') {
+            $logText = $this->prepare(tasksHelper::convertToMarkdownAndStripTags($log['text'], 256));
 
-        return trim(preg_replace('/
-+/mu', '', preg_replace('/\s+/mu', ' ', $body)));
+            return sprintf('%s: %s', wa()->getUser()->getName(), $this->prepare($logText));
+        }
+
+        switch ($type) {
+            case tasksNotificationsSender::EVENT_NEW:
+                if ($to->getId() == $log['assigned_contact_id']) {
+                    if ($to->getId() == $task['create_contact_id']) {
+                        /* MUST NEVER HAPPENED, BUT JUST IN CASE  */
+                        return sprintf('User %s sent you your task', wa()->getUser()->getName());
+                    } else {
+                        return sprintf('User %s sent you a new task', wa()->getUser()->getName());
+                    }
+                }
+
+                $_assigned_contact = $log['assigned_contact']?:null;
+                if ($_assigned_contact) {
+                    return sprintf(
+                        'User %s sent a new task to user %s',
+                        wa()->getUser()->getName(),
+                        $_assigned_contact->getName()
+                    );
+                }
+
+                return sprintf('User %s sent a new task to user %s', wa()->getUser()->getName(), 'contact with id = ');
+
+            case tasksNotificationsSender::EVENT_INVITE_ASSIGN:
+                return sprintf_wp('User %s sent you a task', wa()->getUser()->getName());
+
+            case tasksNotificationsSender::EVENT_ASSIGN:
+                if ($to->getId() == $log['assigned_contact_id']) {
+                    if ($to->getId() == $task['create_contact_id']) {
+                        return sprintf_wp('User %s sent you your task',  wa()->getUser()->getName());
+                    }
+
+                    return sprintf_wp('User %s sent you a task', wa()->getUser()->getName());
+                }
+
+                $_assigned_contact = $log['assigned_contact'] ?: null;
+                if ($_assigned_contact) {
+                    return sprintf_wp('User %s sent a task to %s', wa()->getUser()->getName(), $_assigned_contact->getName());
+                }
+
+                return sprintf_wp('User %s sent a task to %s.', wa()->getUser()->getName(), 'contact with id = ');
+
+            case tasksNotificationsSender::EVENT_DONE:
+                return sprintf_wp('User %s has just completed a task', wa()->getUser()->getName());
+
+            case tasksNotificationsSender::EVENT_COMMENT:
+                if ($to->getId() == $log['assigned_contact_id']) {
+                    return sprintf_wp(
+                        'User %s wrote a comment to a task you are assigned to',
+                        wa()->getUser()->getName()
+                    );
+                }
+
+                if ($to->getId() == $task['create_contact_id']) {
+                    return sprintf_wp('User %s wrote a comment to a task you created', wa()->getUser()->getName());
+                }
+
+                return sprintf_wp('User %s wrote a comment.', wa()->getUser()->getName());
+
+            case tasksNotificationsSender::EVENT_EDIT:
+                if ($to->getId() == $log['assigned_contact_id']) {
+                    return sprintf_wp('User %s edited a task you are assigned to', wa()->getUser()->getName());
+                }
+
+                if ($to->getId() == $task['create_contact_id']) {
+                    return sprintf_wp('User %s edited a task you created', wa()->getUser()->getName());
+                }
+
+                return sprintf_wp('User %s edited a task', wa()->getUser()->getName());
+
+            default:
+                return $type;
+        }
+    }
+
+    private function prepare(string $str): string
+    {
+        return trim(preg_replace("/\n+/mu", '', preg_replace('/\s+/mu', ' ', $str)));
     }
 
     private function getTitle(string $type, $task): string
