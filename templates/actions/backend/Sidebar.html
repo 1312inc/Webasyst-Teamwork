@@ -175,7 +175,7 @@
                                     <span>
                                         <span class="flexbox">
                                             <span class="wide">
-                                                {$scope.name|escape}
+                                                {$scope.name|escape|truncate:42}
                                             </span>
                                             <span class="count{if $_scope_is_100_complete} text-green bold{elseif !empty($scope.due_date) && $scope.due_date < date('Y-m-d')} text-red{/if}">{if $_scope_is_100_complete}<i class="fas fa-check-circle text-green"></i> {/if}{if isset($scope.closed_percent)}{$scope.closed_percent}%{/if}</span>
                                         </span>
@@ -308,7 +308,7 @@
                             <li>
                                 <a href="#/tasks/project/{$project.id}/">
                                     {$project.icon_html}
-                                    <span>{$project.name|escape}</span>
+                                    <span>{$project.name|escape|truncate:42}</span>
                                     {if $project.count !== null}
                                         <span class="count">{counts_pair total=$project.total count=$project.count bg_color=$project.priority_count.bg_color text_color=$project.priority_count.text_color}</span>
                                     {/if}
