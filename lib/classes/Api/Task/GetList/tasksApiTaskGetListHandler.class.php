@@ -12,10 +12,15 @@ final class tasksApiTaskGetListHandler
         $collection = new tasksCollection($filter->getHash());
         $collectionInfo = $collection->getInfo();
 
-        $order = $this->getOrder($collection, $filter->getOrder());
+        tasksLogger::debug(sprintf('Into %s. %s', __CLASS__, $filter->getHash()));
+        tasksLogger::debug($collectionInfo);
+
         $this->applyFilters($collection, $filter->getFilters());
         $this->applySince($collection, $filter->getSince());
-        $this->applyOrder($collection, $order);
+        $this->applyOrder($collection, $filter->getOrder() ?: $this->getDefaultOrder($collection));
+
+        tasksLogger::debug(sprintf('Into %s. Collection.', __CLASS__));
+        tasksLogger::debug($collection);
 
         $totalCount = null;
         $taskRows = $collection->getTasks(
@@ -25,23 +30,13 @@ final class tasksApiTaskGetListHandler
             $totalCount
         );
 
+        tasksLogger::debug(sprintf('Into %s. Collection done.', __CLASS__));
+
         tasksHelper::workupTasksForView($taskRows);
 
+        tasksLogger::debug(sprintf('Into %s. workupTasksForView done.', __CLASS__));
+
         return new tasksApiTasksResponse($taskRows, (int) $totalCount);
-    }
-
-    private function getOrder(tasksCollection $collection, string $order): string
-    {
-        if ($order === '') {
-            $order = $this->getSavedOrder($collection);
-        }
-        if ($order === '') {
-            $order = $this->getDefaultOrder($collection);
-        }
-
-        $this->saveOrder($collection, $order);
-
-        return $order;
     }
 
     private function applyFilters(tasksCollection $collection, $filters): void
@@ -88,27 +83,6 @@ final class tasksApiTaskGetListHandler
         }
     }
 
-    private function saveOrder(tasksCollection $collection, $order): void
-    {
-        $key = $this->getOrderKey($collection);
-        $order = is_scalar($order) ? (string) $order : '';
-        $csm = new waContactSettingsModel();
-        if ($order === '' || $order === $this->getDefaultOrder($collection)) {
-            $csm->delete(wa()->getUser()->getId(), tasksConfig::APP_ID, $key);
-        } else {
-            $csm->set(wa()->getUser()->getId(), tasksConfig::APP_ID, $key, $order);
-        }
-    }
-
-    private function getSavedOrder(tasksCollection $collection): string
-    {
-        $key = $this->getOrderKey($collection);
-        $csm = new waContactSettingsModel();
-        $order = $csm->getOne(wa()->getUser()->getId(), tasksConfig::APP_ID, $key);
-
-        return is_scalar($order) ? (string) $order : '';
-    }
-
     private function getDefaultOrder(tasksCollection $collection): string
     {
         $type = $collection->getType();
@@ -122,17 +96,5 @@ final class tasksApiTaskGetListHandler
         }
 
         return $order;
-    }
-
-    private function getOrderKey(tasksCollection $collection): string
-    {
-        $type = $collection->getType();
-        if ($type !== tasksCollection::HASH_STATUS) {
-            return "tasks/tasks_order/{$type}";
-        }
-
-        $info = $collection->getInfo();
-
-        return "tasks/tasks_order/{$type}/{$info['id']}";
     }
 }
