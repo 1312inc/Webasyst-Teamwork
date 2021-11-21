@@ -33,6 +33,10 @@ final class tasksApiTasksResponse implements tasksApiResponseInterface
 
     public function getResponseBody(): array
     {
+        tasksLogger::debug(
+            sprintf('Into %s %s. Return data: %d, %d', __CLASS__, __METHOD__, $this->total_count, count($this->tasks))
+        );
+
         return [
             'total_count' => $this->total_count,
             'data' => $this->tasks,

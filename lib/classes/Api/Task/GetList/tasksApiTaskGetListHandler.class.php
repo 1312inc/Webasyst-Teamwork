@@ -34,7 +34,7 @@ final class tasksApiTaskGetListHandler
 
         tasksHelper::workupTasksForView($taskRows);
 
-        tasksLogger::debug(sprintf('Into %s. workupTasksForView done.', __CLASS__));
+        tasksLogger::debug(sprintf('Into %s. workupTasksForView done. Total count %d, tasksRows %d', __CLASS__, $totalCount, count($taskRows)));
 
         return new tasksApiTasksResponse($taskRows, (int) $totalCount);
     }

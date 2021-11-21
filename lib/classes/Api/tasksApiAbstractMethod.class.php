@@ -102,7 +102,8 @@ abstract class tasksApiAbstractMethod extends waAPIMethod
             $handlerResult = $this->run();
 
             $this->response = $handlerResult->getResponseBody();
-            wa()->getResponse()->setStatus($handlerResult->getStatus());
+
+            $responseCode = $handlerResult->getStatus();
         } catch (Throwable $exception) {
             $this->response = tasksApiErrorResponse::fromException($exception);
             $responseCode = $exception->getCode();
@@ -111,9 +112,11 @@ abstract class tasksApiAbstractMethod extends waAPIMethod
             } else {
                 $responseCode = 400;
             }
-
-            wa()->getResponse()->setStatus($responseCode);
         }
+        wa()->getResponse()->setStatus($responseCode);
+
+        tasksLogger::debug(sprintf('Response of %s. Status: %d', __CLASS__, $responseCode));
+        tasksLogger::debug($this->response);
     }
 
     /**
