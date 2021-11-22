@@ -12,15 +12,9 @@ final class tasksApiTaskGetListHandler
         $collection = new tasksCollection($filter->getHash());
         $collectionInfo = $collection->getInfo();
 
-        tasksLogger::debug(sprintf('Into %s. %s', __CLASS__, $filter->getHash()));
-        tasksLogger::debug($collectionInfo);
-
         $this->applyFilters($collection, $filter->getFilters());
         $this->applySince($collection, $filter->getSince());
         $this->applyOrder($collection, $filter->getOrder() ?: $this->getDefaultOrder($collection));
-
-        tasksLogger::debug(sprintf('Into %s. Collection.', __CLASS__));
-        tasksLogger::debug($collection);
 
         $totalCount = null;
         $taskRows = $collection->getTasks(
@@ -30,11 +24,7 @@ final class tasksApiTaskGetListHandler
             $totalCount
         );
 
-        tasksLogger::debug(sprintf('Into %s. Collection done.', __CLASS__));
-
         tasksHelper::workupTasksForView($taskRows);
-
-        tasksLogger::debug(sprintf('Into %s. workupTasksForView done. Total count %d, tasksRows %d', __CLASS__, $totalCount, count($taskRows)));
 
         return new tasksApiTasksResponse($taskRows, (int) $totalCount);
     }

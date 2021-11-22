@@ -924,7 +924,7 @@ class tasksHelper
     {
         $stripped = strip_tags(tasksTask::formatText($text));
 
-        return $truncate ? substr($stripped, 0, $truncate) : $stripped;
+        return $truncate ? mb_substr($stripped, 0, $truncate) : $stripped;
     }
 
     public static function getProfileURL($contact_id)

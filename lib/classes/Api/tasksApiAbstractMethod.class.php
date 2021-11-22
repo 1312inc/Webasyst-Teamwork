@@ -113,10 +113,8 @@ abstract class tasksApiAbstractMethod extends waAPIMethod
                 $responseCode = 400;
             }
         }
-        wa()->getResponse()->setStatus($responseCode);
 
-        tasksLogger::debug(sprintf('Response of %s. Status: %d', __CLASS__, $responseCode));
-        tasksLogger::debug($this->response);
+        wa()->getResponse()->setStatus($responseCode);
     }
 
     /**
