@@ -7,6 +7,17 @@
     &.fixed-to-bottom
         z-index 1
 
+    .bricks
+        a
+            @media forMobile
+                font-size 1rem
+                padding 0.75rem 1rem
+                width calc(50% - 3rem)
+                
+            .icon
+                @media forMobile
+                    font-size 2rem
+
 // COLLAPSIBLE SECTIONS IN SIDEBAR
 // .block.collapsed
 //     .hide-when-collapsed

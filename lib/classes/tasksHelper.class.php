@@ -103,7 +103,7 @@ class tasksHelper
             $item['icon_class'] = false;
             $item['icon_url'] = $item['icon'];
             if (wa()->whichUI() == '2.0') {
-                $item['icon_html'] = '<span class="icon"><i class="size-20 t-project-icon-rounded" style="background-image: url(\''.$item['icon'].'\');"'.$title.'></i></span>';
+                $item['icon_html'] = '<span class="icon"><i class="size-20 t-project-icon-rounded" style="background-image: url(\'' . $item['icon'] . '\');"' . $title . '></i></span>';
             } else {
                 $item['icon_html'] = '<i class="icon16" style="background-image: url(\'' . $item['icon'] . '\'); background-repeat: no-repeat; background-size: 16px; background-position: center center;"' . $title . '></i>';
             }
@@ -164,10 +164,11 @@ class tasksHelper
             ];
 
             foreach ($statuses as $id => $s) {
-                if (wa()->whichUI() == '1.3')
+                if (wa()->whichUI() == '1.3') {
                     $statuses[$id] = self::extendIcon($statuses[$id] + $defaults);
-                else
+                } else {
                     $statuses[$id] = $statuses[$id] + $defaults;
+                }
             }
 
             $status_params_model = new tasksStatusParamsModel();
@@ -195,7 +196,6 @@ class tasksHelper
     public static function workupStatusesForView(&$statuses)
     {
         foreach ($statuses as &$status) {
-
             // view supplies (styles, properties, etc.)
             $status['view'] = [];
 
@@ -210,30 +210,33 @@ class tasksHelper
             }
 
             if (wa()->whichUI() == '2.0') {
-                if ($status['id'] == tasksStatusModel::STATUS_CLOSED_ID)
-                {
+                if ($status['id'] == tasksStatusModel::STATUS_CLOSED_ID) {
                     $status['view']['button_html'] = '<a ' .
                         'href="javascript:void(0);" ' .
-                        'class="button rounded t-control-link large t-change-status-link gray" data-status-id="' . $status['id'] . '"' .
+                        'class="button t-control-link t-change-status-link gray" data-status-id="' . $status['id'] . '"' .
                         // 'style="background-color:#'.$color.'"'.
                         'data-has-form="0"' .
-                        '><span class="t-change-status-link-label"><span class="small"><i class="fas fa-check"></i></span> ' . htmlspecialchars($status['button']) . '</span></a>';
-                }
-                else
-                {
-                    $buttonHasForm = (!empty($status['params']['allow_comment']) || ifset($status['params']['assign']) == 'select') ? 1 : 0;
+                        '><span class="t-change-status-link-label"><span class="icon"><i class="fas fa-check"></i></span> <span class="t-button-label">' . htmlspecialchars(
+                            $status['button']
+                        ) . '</span> </span></a>';
+                } else {
+                    $buttonHasForm = (!empty($status['params']['allow_comment']) || ifset(
+                            $status['params']['assign']
+                        ) == 'select') ? 1 : 0;
                     $status['view']['button_html'] = '<a ' .
                         'href="javascript:void(0);" ' .
-                        'class="button rounded t-control-link large t-change-status-link ' . $buttonClassName . '" data-status-id="' . $status['id'] . '"' .
-                        'style="background-color:#'.$color.'; color:#'.$textcolor.';"'.
+                        'class="button t-control-link t-change-status-link ' . $buttonClassName . '" data-status-id="' . $status['id'] . '"' .
+                        'style="background-color:#' . $color . '; color:#' . $textcolor . ';"' .
                         'data-has-form="' . $buttonHasForm . '"' .
-                        '><span class="t-change-status-link-label">' . htmlspecialchars($status['button']) . '</span></a>';
+                        '><span class="t-change-status-link-label">' . htmlspecialchars(
+                            $status['button']
+                        ) . '</span></a>';
                 }
             } else {
                 $status['view']['button_html'] = '<a ' .
                     'href="javascript:void(0);" ' .
                     'class="t-control-link t-change-status-link" data-status-id="' . $status['id'] . '"' .
-                    'style="background-color:#' . $color . '; color:#'.$textcolor.';"' .
+                    'style="background-color:#' . $color . '; color:#' . $textcolor . ';"' .
                     '><span class="t-change-status-link-label">' . htmlspecialchars($status['button']) . '</span></a>';
             }
         }
@@ -282,14 +285,16 @@ class tasksHelper
     public static function getAttachPreviewUrl($attach, $absolute = false)
     {
         $str = str_pad($attach['task_id'], 4, '0', STR_PAD_LEFT);
-        $path = 'tasks/' . substr($str, -2) . '/' . substr(
-                $str,
-                -4,
-                2
-            ) . '/' . $attach['task_id'] . '/' . $attach['id'] . '.' . ifset(
-                $attach['code'],
-                '_'
-            ) . '.600.' . $attach['ext'];
+
+        $path = sprintf(
+            'tasks/%s/%s/%s/%s.%s.600.%s',
+            substr($str, -2),
+            substr($str, -4, 2),
+            $attach['task_id'],
+            $attach['id'],
+            ifset($attach['code'], '_'),
+            $attach['ext']
+        );
 
         return wa()->getDataUrl($path, true, 'tasks', $absolute);
     }
@@ -302,8 +307,12 @@ class tasksHelper
         return $path . $attach['id'] . ($attach['ext'] ? '.' . $attach['ext'] : '');
     }
 
-    public static function getTeam($project_id = null, $only_active = false, $withDisabled = false)
-    {
+    public static function getTeam(
+        $project_id = null,
+        $only_active = false,
+        $withDisabled = false,
+        $withCalendarStatus = false
+    ) {
         static $contacts = null;
 
         //Model
@@ -321,14 +330,8 @@ class tasksHelper
                 foreach ($data as $contact_id => $c) {
                     $data[$contact_id]['name'] = self::formatName($c);
                     $data[$contact_id]['is_active'] = false;
+                    $data[$contact_id]['calendar_status'] = null;
                 }
-
-                uasort(
-                    $data,
-                    static function ($a, $b) {
-                        return strcmp($a["name"], $b["name"]);
-                    }
-                );
 
                 $contact_ids = $log_model->getRelatedContactIds(wa()->getUser()->getId(), $project_id);
                 if ($contact_ids) {
@@ -340,19 +343,60 @@ class tasksHelper
                         }
                     }
 
-                    uasort(
-                        $tmp,
-                        static function ($a, $b) {
-                            return strcmp($a["name"], $b["name"]);
-                        }
-                    );
-
                     foreach ($data as $contact_id => $contact) {
                         if (!isset($tmp[$contact_id])) {
                             $tmp[$contact_id] = $contact;
                         }
                     }
                     $data = $tmp;
+                }
+
+                uasort(
+                    $data,
+                    static function ($a, $b) {
+                        return strcmp($a['name'], $b['name']);
+                    }
+                );
+
+                if ($project_id) {
+                    $logs = tsks()->getModel('tasksTaskLog')
+                        ->getLastByContactIdsAndAssignedContactIds(array_keys($data), $project_id);
+
+                    $dataWithLogs = [];
+                    foreach ($logs as $log) {
+                        if (isset($data[$log['contact_id']])) {
+                            $dataWithLogs[$log['contact_id']] = $data[$log['contact_id']];
+                            $dataWithLogs[$log['contact_id']]['last_log_id'] = $log['id'];
+                        }
+                    }
+
+                    uasort(
+                        $dataWithLogs,
+                        static function ($a, $b) {
+                            return -($a['last_log_id'] <=> $b['last_log_id']);
+                        }
+                    );
+
+                    // sort with logs in beginning
+                    $sorted = $dataWithLogs + $data;
+
+                    // move current user to 4 position
+                    $userId = wa()->getUser()->getId();
+
+                    $i = 0;
+                    $data = [];
+                    foreach ($sorted as $contactId => $datum) {
+                        $i++;
+                        if ($i < 4 && $userId == $contactId) {
+                            continue;
+                        }
+                        $data[$contactId] = $datum;
+
+                        if ($i === 4) {
+                            $data[$userId] = $sorted[$userId];
+                            unset($sorted[$userId]);
+                        }
+                    }
                 }
             }
             if (!$project_id) {
@@ -367,6 +411,16 @@ class tasksHelper
                 if ($c['is_user'] == -1) {
                     unset($data[$contact_id]);
                 }
+            }
+        }
+
+        if ($withCalendarStatus) {
+            $statusService = new tasksTeammateStatusService();
+            foreach ($data as $contact_id => $c) {
+                $data[$contact_id]['calendar_status'] = $statusService->getForContactId(
+                    $contact_id,
+                    new DateTimeImmutable()
+                );
             }
         }
 
@@ -394,7 +448,7 @@ class tasksHelper
                 $formatNameFromSystem = explode(',', $formatNameFromSystem);
                 $format_name = array_combine($formatNameFromSystem, array_fill(0, count($formatNameFromSystem), true));
             } else {
-                $format_name = wa('tasks')->getConfig()->getOption('format_name');
+                $format_name = tsks()->getOption('format_name');
                 if (!$format_name) {
                     $format_name = [
                         'firstname' => true,
@@ -470,20 +524,22 @@ class tasksHelper
     {
         $style = [];
         if (!empty($status['params']['title_color'])) {
-            $color = '#'.$status['params']['title_color'];
+            $color = '#' . $status['params']['title_color'];
         } else {
-            if (wa()->whichUI() == '1.3')
+            if (wa()->whichUI() == '1.3') {
                 $color = '#000';
-            else
+            } else {
                 $color = 'var(--text-color-strongest)';
+            }
         }
         if (!empty($status['params']['button_color'])) {
-            $style[] = 'background: #'.$status['params']['button_color'];
+            $style[] = 'background: #' . $status['params']['button_color'];
         } else {
-            if (wa()->whichUI() == '1.3')
+            if (wa()->whichUI() == '1.3') {
                 $style[] = 'background: #f0f0f0';
-            else
+            } else {
                 $style[] = 'background: var(--light-gray)';
+            }
         }
         $style[] = 'color:' . htmlspecialchars($color);
         if (wa()->whichUI() == '1.3' && !empty($status['params']['title_style_italic'])) {
@@ -509,12 +565,20 @@ class tasksHelper
         $s = $statuses[$status_id];
 
         $class = [];
-        if ($status_id == -1)
+        if ($status_id == -1) {
             $class[] = "is-done";
-        elseif ($status_id == 0)
+        } elseif ($status_id == 0) {
             $class[] = "is-new";
+        }
 
-        return '<span class="badge t-status-wrapper ' . join(' ', $class) . ' ' . $status_additional_class . '" style="' . ( $status_id > 0 ? self::getStatusHeaderStyles($s) : '' ) . '">' . ( $status_id < 0 ? '<span class="small"><i class="fas fa-check"></i></span> ' : '' ) . htmlspecialchars($s['name']) . '</span>';
+        return '<span class="badge t-status-wrapper ' . join(
+                ' ',
+                $class
+            ) . ' ' . $status_additional_class . '" style="' . ($status_id > 0 ? self::getStatusHeaderStyles(
+                $s
+            ) : '') . '">' . ($status_id < 0 ? '<span class="small"><i class="fas fa-check"></i></span> ' : '') . htmlspecialchars(
+                $s['name']
+            ) . '</span>';
     }
 
     /**
@@ -534,29 +598,37 @@ class tasksHelper
         $timestamp = time() - $timestamp;
         if ($timestamp < 60) {
             return _w('Just now');
-        } elseif ($timestamp < 3600) {
+        }
+
+        if ($timestamp < 3600) {
             return _w('%d min', '%d mins', round($timestamp / 60));
-        } elseif ($timestamp < 24 * 3600) {
+        }
+
+        if ($timestamp < 24 * 3600) {
             $period = 3600;
             $string = _w('%d hr', '%d hrs', 5, false);
 
             return _w('%d hr', '%d hrs', round($timestamp / 3600));
-        } elseif ($timestamp < 30 * 24 * 3600) {
+        }
+
+        if ($timestamp < 30 * 24 * 3600) {
             $period = 24 * 3600;
             $string = _w('%d d');
 
             return sprintf(_w('%d d'), round($timestamp / (24 * 3600)));
-        } elseif ($timestamp < 365 * 24 * 3600) {
+        }
+
+        if ($timestamp < 365 * 24 * 3600) {
             $period = 30 * 24 * 3600;
             $string = _w('%d mo', '%d mo', 5, false);
 
             return _w('%d mo', '%d mo', round($timestamp / (30 * 24 * 3600)));
-        } else {
-            $period = 365 * 24 * 3600;
-            $string = _w('%d yr', '%d yrs', 5, false);
-
-            return _w('%d yr', '%d yrs', round($timestamp / (365 * 24 * 3600)));
         }
+
+        $period = 365 * 24 * 3600;
+        $string = _w('%d yr', '%d yrs', 5, false);
+
+        return _w('%d yr', '%d yrs', round($timestamp / (365 * 24 * 3600)));
     }
 
     public static function addLog($task, $log, $send_notification = true)
@@ -846,6 +918,13 @@ class tasksHelper
     public static function strReplace($str, $replace)
     {
         return str_replace(array_keys($replace), array_values($replace), $str);
+    }
+
+    public static function convertToMarkdownAndStripTags(string $text, int $truncate = 0): string
+    {
+        $stripped = strip_tags(tasksTask::formatText($text));
+
+        return $truncate ? mb_substr($stripped, 0, $truncate) : $stripped;
     }
 
     public static function getProfileURL($contact_id)

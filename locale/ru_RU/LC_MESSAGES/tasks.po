@@ -488,10 +488,10 @@ msgid "Your favorites list is empty"
 msgstr "Ваш список избранных задач пуст"
 
 msgid "To add a task to your personal favorite list, click on a tiny star icon next to task name."
-msgstr "Чтобы добавить задачу в список избранных, щелкните по звездочке рядом с ее названием."
+msgstr "Чтобы следить за работой над задачей, нажмите по звездочке рядом с ее названием."
 
 msgid "Task list is empty"
-msgstr "Список задач пуст"
+msgstr "Задач нет"
 
 msgid "No tasks matching your search criteria."
 msgstr "Нет задач, соответствующих критериям поиска."
@@ -539,7 +539,7 @@ msgid "New"
 msgstr "Новые"
 
 msgid "done"
-msgstr "выполнено"
+msgstr "закрыл задачу"
 
 msgid "Just now"
 msgstr "Только что"
@@ -590,19 +590,19 @@ msgid "Create task from this"
 msgstr "Создать из этого задачу"
 
 msgid "created"
-msgstr "создана"
+msgstr "поставил задачу"
 
 msgid "added comment"
-msgstr "добавлен комментарий"
+msgstr "добавил комментарий"
 
 msgid "forwarded"
-msgstr "назначена"
+msgstr "назначил ответственного"
 
 msgid "returned"
-msgstr "возвращена"
+msgstr "вернул задачу"
 
 msgid "edited"
-msgstr "отредактирована"
+msgstr "отредактировал задачу"
 
 msgid "Drop anywhere to upload"
 msgstr "Перетащите в любое место, чтобы загрузить"
@@ -638,7 +638,7 @@ msgid "Edit"
 msgstr "Редактировать"
 
 msgid "edit"
-msgstr "отредактирована"
+msgstr "отредактировал задачу"
 
 msgid "Enter your comment"
 msgstr "Введите свой комментарий"
@@ -671,10 +671,10 @@ msgid "Change priority"
 msgstr "Изменить приоритет"
 
 msgid "User %s sent you a new task"
-msgstr "Пользователь %s отправил вам новую задачу"
+msgstr "%s поставил вам новую задачу"
 
 msgid "via Tasks app"
-msgstr "из приложения «Задачи»"
+msgstr "Отправлено из «Webasyst Задачи»"
 
 msgid "%d new task"
 msgid_plural "%d new tasks"
@@ -686,28 +686,31 @@ msgid "<a href=\"%s\">%s</a> from %s"
 msgstr "<a href=\"%s\">%s</a> от %s"
 
 msgid "User %s edited a task you are assigned to:"
-msgstr "Пользователь %s отредактировал назначенную на вас задачу:"
+msgstr "%s отредактировал назначенную на вас задачу:"
 
 msgid "User %s edited a task you created:"
-msgstr "Пользователь %s отредактировал созданную вами задачу:"
+msgstr "%s отредактировал созданную вами задачу:"
 
 msgid "User %s has just completed a task"
-msgstr "Пользователь %s только что выполнил задачу"
+msgstr "%s выполнил задачу"
 
 msgid "Inbox automatically collects all tasks assigned to you. No tasks are assigned to you right now :-)"
-msgstr "Раздел «Входящие» содержит все назначенные на вас задачи. Сейчас на вас не назначено ни одной задачи."
+msgstr "Сейчас на вас не назначено ни одной задачи. Попросите коллег поставить вам задачу или сделайте это сами."
 
 msgid "Your outbox is empty"
-msgstr "Список исходящих пуст"
+msgstr "Исходящих задач нет"
 
 msgid "Outbox automatically collects all tasks you’ve created."
-msgstr "Раздел «Исходящие» содержит все созданные вами задачи."
+msgstr "Здесь будут собраны все задачи, в работе над которыми вы принимали участие."
 
 msgid "Your favorite task list is empty"
-msgstr "Ваш список избранных задач пуст"
+msgstr "Избранных задач нет"
 
-msgid "There are no tasks in this project."
-msgstr "В этом проекте нет задач."
+msgid "Use projects to organize tasks and manage access rights for your teammates."
+msgstr "Используйте проекты для удобной организации задач и настройки прав доступа для сотрудников."
+
+msgid "There are no tasks in this project that require your attention at the moment. If you think its by mistake, ask the account admin to check your access rights."
+msgstr "В этом проекте нет задач, которые требовали бы вашего внимания. Если вы считаете, что тут что-то не так, попросите своего начальника проверить выданные вам права доступа."
 
 msgid "No tasks match your search criteria."
 msgstr "Нет задач, соответствующих критериям поиска."
@@ -731,10 +734,10 @@ msgid "NEW: %s %s"
 msgstr "НОВОЕ: %s %s"
 
 msgid "DONE: %s was completed"
-msgstr "ВЫПОЛНЕНО: %s была выполнена"
+msgstr "ВЫПОЛНЕНО: %s"
 
 msgid "EDIT: %s was edited"
-msgstr "ОБНОВЛЕНО: %s была отредактирована"
+msgstr "ОБНОВЛЕНО: %s"
 
 msgid "created a task"
 msgstr "создал задачу"
@@ -797,10 +800,10 @@ msgid "You have unsaved changes. Are you sure you want to leave?"
 msgstr "У вас есть несохраненные изменения на этой странице. Уйти, не сохранив изменения?"
 
 msgid "No tasks in %s project"
-msgstr "Нет задач в проекте «%s»"
+msgstr "В проекте «%s» нет задач"
 
 msgid "No tasks in %s status"
-msgstr "Нет задач в статусе «%s»"
+msgstr "В статусе «%s» нет задач"
 
 msgid "There are currently no tasks in %s status."
 msgstr "В статусе «%s» нет ни одной задачи."
@@ -838,11 +841,14 @@ msgstr "для всех"
 msgid "Add comment"
 msgstr "Добавить комментарий"
 
-msgid "No tasks are assigned to %s right now."
-msgstr "В данный момент нет задач, назначенных на пользователя %s."
+msgid "Involve %s to the teamwork just by sending a new task."
+msgstr "Создайте новую задачу и подключайте %s к совместной работе."
+
+msgid "There are no task assigned to %s in projects you collaborate on together."
+msgstr "В проектах, над которыми вы работаете совместно, на %s не назначено ни одной задачи."
 
 msgid "%s's task list is empty"
-msgstr "Список задач пользователя %s пуст"
+msgstr "У %s нет задач"
 
 msgid "My lists"
 msgstr "Мои списки"
@@ -923,13 +929,13 @@ msgstr[1] "%d часа"
 msgstr[2] "%d часов"
 
 msgid "User %s sent you your task."
-msgstr "Пользователь %s отправил вам вашу задачу."
+msgstr "%s отправил вам вашу задачу."
 
 msgid "User %s sent you a task."
-msgstr "Пользователь %s отправил вам задачу."
+msgstr "%s поставил вам задачу."
 
 msgid "User %s sent a task to %s."
-msgstr "Пользователь %s отправил задачу пользователю %s."
+msgstr "%s назначил %s ответственным за задачу."
 
 msgid "Personal settings"
 msgstr "Персональные настройки"
@@ -974,25 +980,25 @@ msgid "Remove from my lists"
 msgstr "Убрать из моих списков"
 
 msgid "User %s wrote a comment to a task you are assigned to:"
-msgstr "Пользователь %s добавил комментарий к назначенной на вас задаче:"
+msgstr "%s добавил комментарий к назначенной на вас задаче:"
 
 msgid "User %s wrote a comment to a task you created:"
-msgstr "Пользователь %s добавил комментарий к созданной вами задаче:"
+msgstr "%s добавил комментарий к созданной вами задаче:"
 
 msgid "User %s wrote a comment:"
-msgstr "Пользователь %s добавил комментарий:"
+msgstr "%s добавил комментарий:"
 
 msgid "Files"
 msgstr "Файлы"
 
 msgid "User %s sent you your task"
-msgstr "Пользователь %s отправил вам вашу задачу"
+msgstr "%s отправил вам вашу задачу"
 
 msgid "User %s sent a new task to user %s"
-msgstr "Пользователь %s отправил новую задачу пользователю %s"
+msgstr "%s отправил новую задачу пользователю %s"
 
 msgid "User %s edited a task:"
-msgstr "Пользователь %s отредактировал задачу:"
+msgstr "%s отредактировал задачу:"
 
 msgid "Date is not set."
 msgstr "Дата не указана."
@@ -1204,8 +1210,11 @@ msgstr "Наблюдать"
 msgid "No due date"
 msgstr "Нет дедлайна"
 
-msgid "Enter new tag..."
-msgstr "Добавить тег..."
+msgid "Create new tag"
+msgstr "Создать новый тег"
+
+msgid "Popular tags:"
+msgstr "Популярные теги:"
 
 msgid "Unlink"
 msgstr "Удалить связь"
@@ -1347,3 +1356,51 @@ msgstr "В списке событий будут собраны все дейс
 
 msgid "DANGER: Task will be deleted without the ability to restore. Delete?"
 msgstr "ВНИМАНИЕ: Задача будет удалена без возможности восстановления. Удалить?"
+
+msgid "Join the %s team on Webasyst to start working on the task:"
+msgstr "Подключайтесь к команде %s на Webasyst, чтобы начать работать над задачей:"
+
+msgid "Accept invitation"
+msgstr "Принять приглашение"
+
+msgid "Text editor"
+msgstr "Редактор"
+
+msgid "WYSIWYG"
+msgstr "Полноценный визуальный редактор (WYSIWYG)"
+
+msgid "Markdown"
+msgstr "Markdown (просто текст)"
+
+msgid "Status not found"
+msgstr "Статус не найден"
+
+msgid "No access to project"
+msgstr "Нет доступа к проекту"
+
+msgid "Contact not found"
+msgstr "Контакт не найден"
+
+msgid "You cannot edit task"
+msgstr "Вам не разрешено редактировать эту задачу"
+
+msgid "Contact cannot view task"
+msgstr "У пользователя нет доступа к задаче"
+
+msgid "Email not send"
+msgstr "Письмо не отправлено"
+
+msgid "This contact was banned"
+msgstr "Этот контакт был заблокирован ранее"
+
+msgid "Already in our team!"
+msgstr "Пользователь уже в вашей команде!"
+
+msgid "Invitation token can't created"
+msgstr "Не получилось создать ссылку-приложение"
+
+msgid "This is a required field."
+msgstr "Обязательное поле"
+
+msgid "This does not look like a valid email"
+msgstr "Не похоже это на адрес email"

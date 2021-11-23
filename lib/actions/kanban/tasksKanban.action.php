@@ -8,7 +8,7 @@ class tasksKanbanAction extends tasksTasksAction
     public function execute()
     {
         $offset = waRequest::get('offset', 0, waRequest::TYPE_INT);
-        $limit = wa('tasks')->getConfig()->getOption('tasks_per_kanban');
+        $limit = tasksOptions::getTasksPerPage();
 
         $filters = $this->getFilters();
         $statuses = $this->getStatusesForFilters($filters);
@@ -113,7 +113,7 @@ class tasksKanbanAction extends tasksTasksAction
     protected static function getMilestoneFilterType(): array
     {
         $result = parent::getMilestoneFilterType();
-        $result['0']['id'] = '0';
+        unset($result['0']);
 
         return $result;
     }

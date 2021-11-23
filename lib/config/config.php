@@ -115,4 +115,8 @@ return array(
     'tags_cloud_cache_ttl' => 600,
 
     'redactor_image_size' => 1000,
+
+    'onesignal_app_id' => '0b068b1d-4c22-4c6c-bae4-c47d430bc9e9',
+
+    'api_text_stripped_truncate_length' => 256,
 );

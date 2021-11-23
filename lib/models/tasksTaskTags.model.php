@@ -52,13 +52,14 @@ class tasksTaskTagsModel extends waModel
     /**
      * @param null $project_id
      * @param null $key
+     *
      * @return array|null
      */
-    public function getCloud($project_id = null, $key = null)
+    public function getCloud($project_id = null, $key = null): ?array
     {
         // Get from cache.
         $cache_key = "tasks_tag_/{$project_id}/{$key}";
-        $ttl = (int)wa()->getConfig()->getOption('tags_cloud_cache_ttl');
+        $ttl = tasksOptions::getTagsCloudCacheTtl();
         $cache_tags = new waVarExportCache($cache_key, $ttl, 'tasks');
 
         // If not cached, this is null.
@@ -70,8 +71,8 @@ class tasksTaskTagsModel extends waModel
         }
 
         $cache_tags->set($tags);
-        return $tags;
 
+        return $tags;
     }
 
     protected function buildCloud($project_id = null, $key = null)

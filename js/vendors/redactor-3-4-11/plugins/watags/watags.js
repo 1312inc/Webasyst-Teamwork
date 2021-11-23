@@ -12,9 +12,10 @@
             this.selection = app.selection;
             this.insertion = app.insertion;
 
-            this.tagRegExp = new RegExp("#[a-zA-Z0-9._-]+");
+            this.tagRegExp = new RegExp("#[a-zA-Z0-9._-]+", "g");
 
             // local
+            this.ajax = null
             this.tagsHandleTrigger =
                 typeof this.opts.tagsHandleTrigger !== "undefined"
                     ? this.opts.tagsHandleTrigger
@@ -57,18 +58,24 @@
             var key = e.which;
             var arrows = [38, 40]; // up and down
 
-            if (key === this.keycodes.SPACE ) {
+            if (key === this.keycodes.SPACE || key === this.keycodes.BACKSPACE) {
+                if (this.ajax) {
+                    this.ajax.xhr.abort();
+                }
+            }
+
+            if (key === this.keycodes.SPACE) {
                 var $current = this.selection.getCurrent();
-                if($current.parentElement.className !== 'redactor-tag') {
+                if ($current.parentElement.className !== 'redactor-tag') {
                     var currentText = $current.textContent;
-                    if(this.tagRegExp.test(currentText)) {
+                    if (this.tagRegExp.test(currentText)) {
                         $current.textContent = '';
                         insertionTag = currentText.replace(this.tagRegExp, function (match) {
                             return "<span class=\"redactor-tag\">" + match + "</span><span></span>";
                         });
                         this.insertion.insertHtml(insertionTag);
                     }
-                }                
+                }
             }
 
             if (
@@ -142,7 +149,10 @@
         },
         _load: function () {
             var csrf = document.cookie.match(new RegExp("(?:^|; )_csrf=([^;]*)"));
-            $R.ajax.post({
+            if (this.ajax) {
+                this.ajax.xhr.abort();
+            }
+            this.ajax = $R.ajax.post({
                 url: this.opts.tagsHandle,
                 data: "term=" + this.handleStr + "&_csrf=" + csrf[1],
                 success: this._parse.bind(this),
@@ -153,8 +163,10 @@
 
             var data = typeof json === "object" ? json : JSON.parse(json);
 
-            this._build();
-            this._buildData(data.data.splice(0, 5));
+            if (this.container.getElement().nodes[0]?.classList.contains('redactor-focus')) {
+                this._build();
+                this._buildData(data.data.splice(0, 5));
+            }
         },
         _build: function () {
             this.$list = $R.dom("#redactor-handle-list");
@@ -188,8 +200,6 @@
             }
 
             // position
-            var $container = this.container.getElement();
-            var containerOffset = $container.offset();
             var pos = this.selection.getPosition();
 
             this.$list.css({

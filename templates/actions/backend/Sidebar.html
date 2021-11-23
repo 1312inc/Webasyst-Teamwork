@@ -4,7 +4,7 @@
         {if !$count}
             {$total}
         {elseif $count == $total}
-            <span class="{if $bg_color == '#ff0000'}badge{/if}" style="background:{ifempty($bg_color, 'transparent')};color:{ifempty($text_color, '#999')}">{$count}</span>
+            <span class="badge" style="background:{ifempty($bg_color, 'transparent')};color:{ifempty($text_color, '#999')}">{$count}</span>
         {else}
             <span class="badge custom-mr-4" style="background:{ifempty($bg_color, 'transparent')};color:{ifempty($text_color, '#999')}">{$count}</span>
             {$total}
@@ -26,7 +26,7 @@
     bg_color => 'transparent'
 ]}
 
-<div class="sidebar-body hide-scrollbar t-sidebar-block wa-gradient-overlay-light" id="t-sidebar">
+<div class="sidebar-body hide-scrollbar t-sidebar-block" id="t-sidebar">
     <div class="box custom-mt-4">
         <div class="flexbox space-8">
             <div class="wide">
@@ -37,20 +37,12 @@
                 <!-- <input class="t-sidebar-search-submit js-search-submit" type="button" value=""> -->
             </div>
             <div>
-                <a id="add-task-link" class="circle button " href="#/add/">
+                <a class="add-task-link circle button desktop-and-tablet-only" href="#/add/">
                     <i class="fas fa-plus"></i>
                 </a>
             </div>
         </div>
     </div>
-    <!-- <div class="box custom-mt-4">
-        <a id="add-task-link" class="button align-center width-90" href="#/add/">
-            <i class="fas fa-plus-circle"></i>
-            <span>[`New task`]</span>
-        </a>
-    </div> -->
-
-
 
     <div class="bricks custom-mt-4">
         <a href="#/tasks/inbox/" class="brick">
@@ -73,7 +65,7 @@
         </a>
     </div>
 
-    <ul class="menu custom-mt-0">
+    <ul class="menu custom-mt-0 mobile-friendly">
 
         <li>
             <a href="#/tasks/favorites/">
@@ -104,10 +96,10 @@
     </ul>
 
     {if $is_admin}
-        <div class="box custom-py-0">
+        <div class="box custom-py-0 desktop-and-tablet-only">
             <hr>
         </div>
-        <ul class="menu">
+        <ul class="menu mobile-friendly">
             <li>
                 <a href="#/log/">
                     <i class="fas fa-bolt"></i>
@@ -132,7 +124,7 @@
                 </span>
             </h5>
             <div class="collapsible__content">
-                <ul class="menu t-view-list hide-when-collapsed">
+                <ul class="menu t-view-list hide-when-collapsed mobile-friendly">
 
                     {foreach $lists as $_list}
                         <li data-id="{$_list.id}">
@@ -174,7 +166,7 @@
             </h5>
             <div class="collapsible__content">
                 {if $scopes}
-                    <ul class="t-scopes menu hide-when-collapsed">
+                    <ul class="t-scopes menu mobile-friendly hide-when-collapsed">
                         {foreach $scopes as $scope}
                             {$_scope_is_100_complete = isset($scope.closed_percent) && $scope.closed_percent >= 100}
                             <li class="t-scope">
@@ -183,7 +175,7 @@
                                     <span>
                                         <span class="flexbox">
                                             <span class="wide">
-                                                {$scope.name|escape}
+                                                {$scope.name|escape|truncate:42}
                                             </span>
                                             <span class="count{if $_scope_is_100_complete} text-green bold{elseif !empty($scope.due_date) && $scope.due_date < date('Y-m-d')} text-red{/if}">{if $_scope_is_100_complete}<i class="fas fa-check-circle text-green"></i> {/if}{if isset($scope.closed_percent)}{$scope.closed_percent}%{/if}</span>
                                         </span>
@@ -230,7 +222,7 @@
             {/if}
         </h5>
         <div class="collapsible__content">
-            <ul class="menu">
+            <ul class="menu mobile-friendly">
                 {foreach tasksHelper::getStatuses() as $s}
                     <li>
                         <a href="#/tasks/status/{$s.id}/">
@@ -265,18 +257,20 @@
                 [`Team`]
             </span>
         </h5>
-        {$_users = tasksHelper::getTeam(null, true)}
         <div class="collapsible__content">
-            {if !empty($_users)}
-                <ul class="menu hide-when-collapsed">
-                    {foreach $_users as $user}
+            {if !empty($users)}
+                <ul class="menu mobile-friendly hide-when-collapsed">
+                    {foreach $users as $user}
                         <li>
                             <a href="#/tasks/assigned/{$user.id}/">
                                 <span class="icon">
                                     <i class="userpic" style="background-image: url({waContact::getPhotoUrl($user.id, $user.photo, 40, 40, 'person', 0)})"></i>
                                 </span>
                                 <span>{$user.name|escape}</span>
-                                <span class="count">{user_count user_id=$user.id}</span>
+                                <span class="count">
+                                    {user_count user_id=$user.id}
+                                    {if $user.calendar_status}<span class="badge small nowrap" style="background-color: {$user.calendar_status->getBgColor()};color: {$user.calendar_status->getFontColor()};" title="{$user.calendar_status->getName()|escape}">{$user.calendar_status->getName()|escape|truncate:13}</span>{/if}
+                                </span>
                             </a>
                         </li>
                     {/foreach}
@@ -309,12 +303,12 @@
             </h5>
             <div class="collapsible__content">
                 {if $projects}
-                    <ul class="menu hide-when-collapsed">
+                    <ul class="menu hide-when-collapsed mobile-friendly">
                         {foreach $projects as $project}
                             <li>
                                 <a href="#/tasks/project/{$project.id}/">
                                     {$project.icon_html}
-                                    <span>{$project.name|escape}</span>
+                                    <span>{$project.name|escape|truncate:42}</span>
                                     {if $project.count !== null}
                                         <span class="count">{counts_pair total=$project.total count=$project.count bg_color=$project.priority_count.bg_color text_color=$project.priority_count.text_color}</span>
                                     {/if}
@@ -399,12 +393,6 @@
 <div class="sidebar-footer shadowed">
 
     <ul class="menu">
-        <li>
-            <a href="#/personal-settings/">
-                <i class="fas fa-bell"></i>
-                <span>[`Notifications`]</span>
-            </a>
-        </li>
         {if $is_admin}
             <li>
                 <a href="#/settings/">
@@ -416,6 +404,13 @@
                 <a href="#/plugins/">
                     <i class="fas fa-plug"></i>
                     <span>[s`Plugins`]</span>
+                </a>
+            </li>
+        {else}
+            <li>
+                <a href="#/personal-settings/">
+                    <i class="fas fa-cog"></i>
+                    <span>[`Settings`]</span>
                 </a>
             </li>
         {/if}

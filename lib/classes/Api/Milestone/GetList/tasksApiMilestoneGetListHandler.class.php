@@ -3,14 +3,20 @@
 final class tasksApiMilestoneGetListHandler
 {
     /**
-     * @return array<tasksMilestone>
+     * @return array
      */
     public function getMilestones(): array
     {
-        /** @var tasksMilestone[] $milestones */
-        $milestones = tsks()->getEntityRepository(tasksMilestone::class)->findAll();
+        $milestones = tsks()->getModel(tasksMilestone::class)
+            ->getMilestonesWithOrder(false);
 
-//        $statuses = tsks()->getModel(tasksMilestone::class)->getMilestoneStatuses();
+        tasksMilestoneModel::workup($milestones);
+
+        foreach(tsks()->getModel(tasksMilestone::class)->getMilestoneStatuses() as $mid => $statuses) {
+            if (!empty($milestones[$mid])) {
+                $milestones[$mid]['statuses'] = array_keys($statuses);
+            }
+        }
 
         return $milestones;
     }

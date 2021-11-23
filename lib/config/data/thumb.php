@@ -1,6 +1,6 @@
 <?php
 
-function tasks_image_not_found()
+function exit_with_tasks_image_not_found()
 {
     if (waSystemConfig::isDebug()) {
         try {
@@ -14,7 +14,9 @@ function tasks_image_not_found()
             print $ex;
         }
     } else {
-        header("Location: ".str_replace('/index.php', '/wa-apps/tasks/img/image-not-found.png', $_SERVER['SCRIPT_NAME']));
+        header(
+            "Location: " . str_replace('/index.php', '/wa-apps/tasks/img/image-not-found.png', $_SERVER['SCRIPT_NAME'])
+        );
     }
     exit;
 }
@@ -22,10 +24,10 @@ function tasks_image_not_found()
 // !!! ugly hack to make wa()->getRootUrl() work
 $_SERVER['SCRIPT_NAME'] = str_replace('/wa-data/public/tasks/tasks/thumb.php', '/index.php', $_SERVER['SCRIPT_NAME']);
 
-$path = realpath(dirname(__FILE__)."/../../../../../");
-$config_path = $path."/wa-config/SystemConfig.class.php";
+$path = realpath(__DIR__ . "/../../../../../");
+$config_path = $path . "/wa-config/SystemConfig.class.php";
 if (!file_exists($config_path)) {
-    return tasks_image_not_found();
+    exit_with_tasks_image_not_found();
 }
 
 require_once($config_path);
@@ -34,13 +36,13 @@ waSystem::getInstance(null, $config);
 
 $app_config = wa('tasks', 1)->getConfig();
 $protected_path = wa()->getDataPath('tasks/', false, 'tasks');
-$public_url = wa()->getDataUrl('tasks/', true, 'tasks');
+$public_url = str_replace(wa()->getRootUrl(true),'',wa()->getDataUrl('tasks/', true, 'tasks'));
 wa()->getStorage()->close();
 
 /** @var tasksConfig $app_config */
 $request_file = $app_config->getRequestUrl(true, true);
 $request_file = preg_replace("~^thumb.php(/tasks)?/?~", '', $request_file);
-$request_file = 'tasks/'.trim(str_replace(trim($public_url, '/'), '', trim($request_file, '/')), '/');
+$request_file = 'tasks/' . trim(str_replace(trim($public_url, '/'), '', trim($request_file, '/')), '/');
 
 $is_url_ok = preg_match('~^
     # Two levels of dirs based on task id
@@ -62,7 +64,7 @@ $is_url_ok = preg_match('~^
     [a-z0-9]{3,4}
 $~ix', $request_file, $matches);
 if (!$is_url_ok) {
-    return tasks_image_not_found();
+    exit_with_tasks_image_not_found();
 }
 
 $attach_id = $matches[1];
@@ -70,8 +72,8 @@ $attachment_model = new tasksAttachmentModel();
 $attach = $attachment_model->getById($attach_id);
 
 $full_preview_url = tasksHelper::getAttachPreviewUrl($attach);
-if ($full_preview_url != wa()->getDataUrl($request_file, true, 'tasks', false)) {
-    return tasks_image_not_found();
+if ($full_preview_url !== wa()->getDataUrl($request_file, true, 'tasks', false)) {
+    exit_with_tasks_image_not_found();
 }
 
 $original_path = tasksHelper::getAttachPath($attach);
@@ -93,13 +95,13 @@ if (file_exists($original_path) && !file_exists($thumb_path)) {
         if (class_exists('waLog')) {
             waLog::log($e->getMessage(), 'wa-apps/tasks/thumb.log');
         }
-        return tasks_image_not_found();
+        exit_with_tasks_image_not_found();
     }
 }
 
 if (file_exists($thumb_path)) {
     waFiles::readFile($thumb_path);
 } else {
-    return tasks_image_not_found();
+    exit_with_tasks_image_not_found();
 }
 

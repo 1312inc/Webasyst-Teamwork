@@ -225,12 +225,13 @@
                         <ul class="menu-v js-task-users-list">
                             {$_count = 0}
                             {$_is_something_checked = false}
+
                             {foreach $users as $user}
                                 {$_is_checked = !$task.assigned_contact_id && $user@iteration == 1 && !$task.id}
                                 {$_is_checked = $_is_checked || $user.id == $task.assigned_contact_id}
                                 {$_is_something_checked = $_is_something_checked || $_is_checked}
 
-                                <li class="t-user-item is-shown" data-user-id="{$user.id}">
+                                <li class="t-user-item is-shown" data-user-id="{$user.id}" style="display: block !important;">
                                     <label class="t-user-label set-task-user">
                                         <input type="radio" name="data[assigned_contact_id]" value="{$user.id}" {if $_is_checked}checked{/if}>
                                         <i class="icon16 userpic20" style="background-image: url({$user.photo_url})"></i>
@@ -250,9 +251,9 @@
                                 </label>
                             </li>
 
-                            <li class="t-link-item">
+                            {* <li class="t-link-item">
                                 <a class="show-team-users inline-link" href="javascript:void(0);"><b><i>[`Show all`]</i></b></a>
-                            </li>
+                            </li> *}
                         </ul>
                     </div>
 

@@ -1,0 +1,2160 @@
+openapi: 3.0.0
+info:
+  title: 'Tasks API'
+  version: 1.0.0
+servers:
+  - url: /api.php
+    description: Current host server
+
+paths:
+# tasks
+  /tasks.tasks.getList:
+    get:
+      tags:
+        - Таски
+      summary: 'Возвращает список тасков по заданному хешу с фильтрацией'
+      security:
+        - ApiKeyAuth: [ ]
+      parameters:
+        - in: query
+          name: hash
+          description: |
+            основной фильтр (условие) для выборки задач:
+            + id/ID - поиск по id таска
+            + all - все таски
+            + search/TERM - поиск по слову
+            + scope/ID - поиск по работе (milestone)
+            + project/ID - поиск по проекту
+            + inbox - входящие
+            + assigned/ID - назначенные на пользователя
+            + outbox - исходящие
+            + favorites - любименькое
+            + urgent
+            + hidden - ?
+            + creator/ID - создателя
+            + contact/ID - ?
+            + status/{inprogress|done|ID}
+            + unassigned - без исполнителя
+            + tag/TAG - поиск по тегу
+          schema:
+            type: string
+            nullable: true
+            example: inbox
+        - $ref: '#/components/parameters/offset'
+        - $ref: '#/components/parameters/limit'
+        - in: query
+          name: filters
+          description: |
+            дополнительный фильтр внутри выборки по hash:
+            + assigned_contact_id=1
+            + milestone_id=5
+            + status_id=-1
+            + и т.д
+          schema:
+            type: string
+            nullable: true
+        - in: query
+          name: since
+          required: false
+          description: вернет таски, обновленные после этого timestamp
+          schema:
+            type: number
+            nullable: true
+        - in: query
+          name: order
+          description: сортировка
+          required: false
+          schema:
+            type: string
+            enum:
+              - priority
+              - oldest
+              - newest
+              - due
+            default: priority
+      responses:
+        200:
+          description: Пагинированный список тасков
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getTasksListResponse'
+        403:
+          description: Запрещено
+        500:
+          description: Все плохо
+  /tasks.tasks.add:
+    post:
+      tags:
+        - Таски
+      summary: 'Добавляет новый таск'
+      security:
+        - ApiKeyAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  minLength: 1
+                text:
+                  type: string
+                  nullable: true
+                assigned_contact_id:
+                  type: integer
+                  nullable: true
+                  minimum: 0
+                project_id:
+                  type: integer
+                  nullable: true
+                  minimum: 0
+                milestone_id:
+                  type: integer
+                  nullable: true
+                  minimum: 0
+                priority:
+                  type: integer
+                  nullable: true
+                status_id:
+                  type: integer
+                  nullable: true
+                  minimum: 0
+                hidden_timestamp:
+                  type: integer
+                  nullable: true
+                  minimum: 0
+                due_date:
+                  nullable: true
+                  type: string
+                  format: date
+                files_hash:
+                  type: string
+                  nullable: true
+                uuid:
+                  type: string
+              required:
+                - name
+                - uuid
+      responses:
+        200:
+          description: Новый таск
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/taskInfo'
+        403:
+          description: Запрещено
+        500:
+          description: Все плохо
+  /tasks.tasks.update:
+    post:
+      tags:
+        - Таски
+      summary: 'Обновляет таск'
+      security:
+        - ApiKeyAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  minimum: 1
+                name:
+                  type: string
+                  minLength: 1
+                text:
+                  type: string
+                  nullable: true
+                assigned_contact_id:
+                  type: integer
+                  nullable: true
+                  minimum: 0
+                project_id:
+                  type: integer
+                  nullable: true
+                  minimum: 0
+                milestone_id:
+                  type: integer
+                  nullable: true
+                  minimum: 0
+                priority:
+                  type: integer
+                  nullable: true
+                status_id:
+                  type: integer
+                  nullable: true
+                  minimum: 0
+                hidden_timestamp:
+                  type: integer
+                  nullable: true
+                  minimum: 0
+                due_date:
+                  nullable: true
+                  type: string
+                  format: date
+                files_hash:
+                  type: string
+                  nullable: true
+                attachments_to_delete:
+                  type: array
+                  items:
+                    type: integer
+                    minimum: 1
+              required:
+                - id
+                - name
+                - text
+                - assigned_contact_id
+                - project_id
+                - milestone_id
+                - project_id
+                - status_id
+                - hidden_timestamp
+                - due_date
+                - files_hash
+      responses:
+        200:
+          description: Обвновленный таск
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/taskInfo'
+        403:
+          description: Запрещено
+        500:
+          description: Все плохо
+  /tasks.tasks.action:
+    post:
+      tags:
+        - Таски
+      summary: 'Двигает таск по статусам'
+      security:
+        - ApiKeyAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  minimum: 1
+                status_id:
+                  type: integer
+                  default: 0
+                action:
+                  type: string
+                  enum:
+                    - ""
+                    - "return"
+                    - "forward"
+                    - "close"
+                text:
+                  type: string
+                  nullable: true
+                assigned_contact_id:
+                  type: integer
+                  nullable: true
+                files_hash:
+                  type: string
+                  nullable: true
+              required:
+                - id
+                - action
+      responses:
+        200:
+          $ref: '#/components/schemas/logInfo'
+        403:
+          description: Запрещено
+        500:
+          description: Все плохо
+  /tasks.tasks.favorite:
+    post:
+      tags:
+        - Таски
+      summary: 'Добавляет таск в избранное'
+      security:
+        - ApiKeyAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                task_id:
+                  type: integer
+                  minimum: 1
+                favorite:
+                  type: boolean
+                contact_id:
+                  type: integer
+                  nullable: true
+                  description: Если не передавать, то в избранное для текущего пользователя. Если передать, то для переданного, при условии, что контакт имеет доступ к таску (ну и вообще существует).
+              required:
+                - task_id
+                - favorite
+      responses:
+        200:
+          $ref: '#/components/schemas/200ok'
+        400:
+          description: Ошибка
+        403:
+          description: Запрещено
+        500:
+          description: Все плохо
+  /tasks.tasks.delete:
+    post:
+      tags:
+        - Таски
+      summary: 'Удаляет 1 или несколько тасков'
+      security:
+        - ApiKeyAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: integer
+                    minItems: 1
+      responses:
+        200:
+          description: Список id тасков, которые успешно удалили
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ids:
+                    type: array
+                    items:
+                      type: integer
+                      minItems: 1
+        403:
+          description: Запрещено
+        500:
+          description: Все плохо
+# statuses
+  /tasks.statuses.getList:
+    get:
+      tags:
+        - Статусы
+      summary: 'Возвращает список статусов'
+      security:
+        - ApiKeyAuth: [ ]
+      responses:
+        200:
+          description: Список статусов
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getStatusesListResponse'
+        403:
+          description: Запрещено
+        500:
+          description: Все плохо
+  /tasks.statuses.add:
+    post:
+      tags:
+        - Статусы
+      summary: 'Добавляет новый статус. Только админы'
+      security:
+        - ApiKeyAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  minLength: 1
+                button:
+                  type: string
+                  minLength: 1
+                  description: Текст на кнопке, которая переводит задачу в этот статус. Иногда может совпадать с названием статуса, но чаще всего все-таки является глаголом и поэтому отличается
+                icon:
+                  type: string
+                  nullable: true
+                assign:
+                  type: string
+                  enum:
+                    - ""
+                    - "user"
+                    - "author"
+                    - "select"
+                  description: |
+                    Кому назначить таску:
+                    + "author" - Назначить задачу ее постановщику
+                    + "user" - Назначить выбранному пользователю
+                    + "select" - Предлагать выбрать исполнителя
+                    + "" - Оставить исполнителя без изменения
+                assign_user:
+                  type: integer
+                  nullable: true
+                  description: Новый назначенный пользователь
+                allow_clear_assign:
+                  type: boolean
+                  nullable: true
+                  description: Разрешить оставить задачу без назначения
+                button_color:
+                  nullable: true
+                  type: string
+                  description: Цвет фона
+                title_color:
+                  nullable: true
+                  type: string
+                  description: Цвет текста
+                allow_comment:
+                  type: boolean
+                  description: Разрешить комментировать
+                sort:
+                  type: integer
+              required:
+                - name
+                - button
+      responses:
+        200:
+          description: Информация о добавленном статусе
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/statusInfo'
+        403:
+          description: Запрещено
+        500:
+          description: Все плохо
+  /tasks.statuses.update:
+    post:
+      tags:
+        - Статусы
+      summary: 'Обновляет статус. Только админы'
+      security:
+        - ApiKeyAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+                  minLength: 1
+                button:
+                  type: string
+                  minLength: 1
+                  description: Текст на кнопке, которая переводит задачу в этот статус. Иногда может совпадать с названием статуса, но чаще всего все-таки является глаголом и поэтому отличается
+                icon:
+                  type: string
+                  nullable: true
+                assign:
+                  type: string
+                  enum:
+                    - ""
+                    - "user"
+                    - "author"
+                    - "select"
+                  description: |
+                    Кому назначить таску:
+                    + "author" - Назначить задачу ее постановщику
+                    + "user" - Назначить выбранному пользователю
+                    + "select" - Предлагать выбрать исполнителя
+                    + "" - Оставить исполнителя без изменения
+                assign_user:
+                  type: integer
+                  nullable: true
+                  description: Новый назначенный пользователь
+                allow_clear_assign:
+                  type: boolean
+                  nullable: true
+                  description: Разрешить оставить задачу без назначения
+                button_color:
+                  nullable: true
+                  type: string
+                  description: Цвет фона
+                title_color:
+                  nullable: true
+                  type: string
+                  description: Цвет текста
+                allow_comment:
+                  type: boolean
+                  description: Разрешить комментировать
+                sort:
+                  type: integer
+              required:
+                - id
+                - name
+                - button
+                - icon
+                - assign_user
+                - assign
+                - allow_clear_assign
+                - button_color
+                - title_color
+                - allow_comment
+                - sort
+      responses:
+        200:
+          description: Информация об обновленном статусе
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/statusInfo'
+        403:
+          description: Запрещено
+        404:
+          description: Не найдено
+        500:
+          description: Все плохо
+  /tasks.statuses.delete:
+    post:
+      tags:
+        - Статусы
+      summary: 'Удаляет статус. Только админы'
+      security:
+        - ApiKeyAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+              required:
+                - id
+      responses:
+        200:
+          $ref: '#/components/schemas/200ok'
+        403:
+          description: Запрещено
+        404:
+          description: Не найдено
+        500:
+          description: Все плохо
+  /tasks.statuses.sort:
+    post:
+      tags:
+        - Статусы
+      summary: 'Сортирует. Только админы'
+      security:
+        - ApiKeyAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sorted_ids:
+                  description: Отсортированный массив id статусов
+                  type: array
+                  items:
+                    type: integer
+              required:
+                - sorted_ids
+      responses:
+        200:
+          $ref: '#/components/schemas/getStatusesListResponse'
+        403:
+          description: Запрещено
+        404:
+          description: Не найдено
+        500:
+          description: Все плохо
+# counts
+  /tasks.counts.getKeyFilterCounts:
+    get:
+      tags:
+        - Счетчики
+      summary: 'Возвращает список счетчиков для текущего пользователя по разным критериям'
+      security:
+        - ApiKeyAuth: [ ]
+      responses:
+        200:
+          description: Список счетчиков
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getKeyFilterCountsResponse'
+        403:
+          description: Запрещено
+        500:
+          description: Все плохо
+# log
+  /tasks.log.getList:
+    get:
+      tags:
+        - Логи
+      summary: 'Возвращает список действий с тасками'
+      security:
+        - ApiKeyAuth: [ ]
+      parameters:
+        - in: query
+          name: project_id
+          required: false
+          description: Фильтр по проекту
+          schema:
+            type: integer
+            nullable: true
+        - in: query
+          name: milestone_id
+          required: false
+          description: Фильтр по работе
+          schema:
+            type: integer
+            nullable: true
+        - in: query
+          name: contact_id
+          required: false
+          description: Фильтр по пользователю
+          schema:
+            type: integer
+            nullable: true
+        - $ref: '#/components/parameters/offset'
+        - $ref: '#/components/parameters/limit'
+      responses:
+        200:
+          description: Список "логов"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getLogsListResponse'
+        403:
+          description: Запрещено
+        500:
+          description: Все плохо
+# team
+  /tasks.team.getMySettings:
+    get:
+      tags:
+        - Команда
+      summary: 'Возвращает ID текущего пользователя, таймзону, настройки по правам и другие полезности'
+      security:
+        - ApiKeyAuth: [ ]
+      responses:
+        200:
+          description: Настройки текущего пользователя
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/teamGetMySettingsResponse'
+        403:
+          description: Запрещено
+        500:
+          description: Все плохо
+  /tasks.team.getTopAssignees:
+    get:
+      tags:
+        - Команда
+      summary: 'Возвращает список людей в тасках по разным критериям'
+      security:
+        - ApiKeyAuth: [ ]
+      parameters:
+        - in: query
+          name: project_id
+          required: false
+          description: Для конкретного проекта
+          schema:
+            type: integer
+            nullable: true
+            example: 1
+      responses:
+        200:
+          description: Список людей
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getTeamGetTopAssigneesResponse'
+        403:
+          description: Запрещено
+        500:
+          description: Все плохо
+  /tasks.team.inviteToTask:
+    post:
+      tags:
+        - Команда
+      summary: 'Шлет приглашение новому пользователю на почту и назначает на него таску'
+      security:
+        - ApiKeyAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                task_id:
+                  type: integer
+                access_right:
+                  description: |
+                    Права для контакте:
+                    + 0 - минимальные
+                    + 1 - доступ ко всем проектам и таскам
+                    + 2 - полный доступ к приложению
+                  type: integer
+                  enum:
+                    - 0
+                    - 1
+                    - 2
+              required:
+                - email
+                - task_id
+      responses:
+        200:
+          description: Идентификатор пользователя, если успешно отправилось приглашение
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  contact:
+                    type: integer
+        400:
+          description: Ошибка
+        403:
+          description: Запрещено
+        500:
+          description: Все плохо
+  /tasks.team.getList:
+    get:
+      tags:
+        - Команда
+      summary: 'Возвращает список людей, кроме текущего пользователя'
+      security:
+        - ApiKeyAuth: [ ]
+      responses:
+        200:
+          description: Список людей
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getTeamGetListResponse'
+        403:
+          description: Запрещено
+        500:
+          description: Все плохо
+# attachments
+  /tasks.attachments.add:
+    post:
+      tags:
+        - Аттачменты
+      summary: 'Загружает файлы и создает аттачменты'
+      security:
+        - ApiKeyAuth: [ ]
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                hash:
+                  type: string
+                  minLength: 1
+                  description: Хеш, который нужно указывать при создании таски/комментария/действия, чтобы связать его с загруженными аттачметнами
+                task_id:
+                  type: integer
+                  description: ID таски, к которой прикрепить аттачменты
+                files[]:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+              required:
+                - hash
+                - files[]
+      responses:
+        200:
+          description: Список имен файлов, которые успешно загрузились
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  files:
+                    type: array
+                    items:
+                      type: string
+                      minItems: 0
+        403:
+          description: Запрещено
+        500:
+          description: Все плохо
+  /tasks.attachments.download:
+    get:
+      tags:
+        - Аттачменты
+      summary: 'Скачивает аттачмент'
+      security:
+        - ApiKeyAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  required: true
+                  minimum: 0
+      responses:
+        200:
+          description: Содержимое файла или fail
+          content:
+            text/plain:
+              schema:
+                type: string
+                format: binary
+        403:
+          description: Запрещено
+        404:
+          description: Не найден
+        500:
+          description: Все плохо
+  /tasks.attachments.delete:
+    post:
+      tags:
+        - Аттачменты
+      summary: 'Удаляет аттачменты'
+      security:
+        - ApiKeyAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ids:
+                  type: array
+                  required: true
+                  items:
+                    type: integer
+      responses:
+        200:
+          description: Без ошибок
+          content:
+            text/plain:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/200ok'
+                  - $ref: '#/components/schemas/200fail'
+        400:
+          $ref: '#/components/schemas/400fail'
+        403:
+          description: Запрещено
+        500:
+          description: Все плохо
+# comments
+  /tasks.comments.add:
+    post:
+      tags:
+        - Комментарии
+      summary: 'Добавляет комментарий к таску'
+      security:
+        - ApiKeyAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                task_id:
+                  type: integer
+                text:
+                  type: string
+                  minLength: 0
+                files_hash:
+                  type: string
+                  minLength: 1
+                  description: Хеш загрузки, который нужно указывать при создании комментария, чтобы связать его с загруженными аттачметнами
+              required:
+                - task_id
+                - text
+      responses:
+        200:
+          description: Информация о логе, который создался при добавлении комментария
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/logInfo'
+        403:
+          description: Запрещено
+        404:
+          description: Не найдено
+        500:
+          description: Все плохо
+  /tasks.comments.update:
+    post:
+      tags:
+        - Комментарии
+      summary: 'Обновляет комментарий'
+      security:
+        - ApiKeyAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  description: ID комментария
+                  type: integer
+                text:
+                  type: string
+                  minLength: 0
+                files_hash:
+                  type: string
+                  minLength: 1
+                  description: Хеш загрузки, который нужно указывать при создании комментария, чтобы связать его с загруженными аттачметнами
+              required:
+                - id
+                - text
+      responses:
+        200:
+          description: Информация о логе, который обновился при добавлении комментария
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/logInfo'
+        403:
+          description: Запрещено
+        404:
+          description: Не найдено
+        500:
+          description: Все плохо
+  /tasks.comments.pin:
+    post:
+      tags:
+        - Комментарии
+      summary: 'Закрепляет комментарий для таска'
+      security:
+        - ApiKeyAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                task_id:
+                  type: integer
+                id:
+                  description: ID комментария
+                  type: integer
+              required:
+                - task_id
+                - id
+      responses:
+        200:
+          $ref: '#/components/schemas/200ok'
+        403:
+          description: Запрещено
+        404:
+          description: Не найдено
+        500:
+          description: Все плохо
+  /tasks.comments.delete:
+    post:
+      tags:
+        - Комментарии
+      summary: 'Удаляет комментарий'
+      security:
+        - ApiKeyAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  description: ID комментария
+                  type: integer
+              required:
+                - id
+      responses:
+        200:
+          $ref: '#/components/schemas/200ok'
+        403:
+          description: Запрещено
+        404:
+          description: Не найдено
+        500:
+          description: Все плохо
+# milestones
+  /tasks.milestones.getList:
+    get:
+      tags:
+        - Работы
+      summary: 'Список всех работ'
+      security:
+        - ApiKeyAuth: [ ]
+      responses:
+        200:
+          description: Список всех работ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getMilestonesListResponse'
+        403:
+          description: Запрещено
+        500:
+          description: Все плохо
+  /tasks.milestones.add:
+    post:
+      tags:
+        - Работы
+      summary: 'Добавляет новую работу'
+      security:
+        - ApiKeyAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  minLength: 1
+                description:
+                  type: string
+                  minLength: 0
+                project_id:
+                  type: integer
+                  minimum: 1
+                due_date:
+                  type: string
+                  format: date
+              required:
+                - name
+                - project_id
+      responses:
+        200:
+          description: Информация о добавленной работе
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/milestoneInfo'
+        403:
+          description: Запрещено
+        404:
+          description: Не найдено
+        500:
+          description: Все плохо
+  /tasks.milestones.update:
+    post:
+      tags:
+        - Работы
+      summary: 'Обновляет работу'
+      security:
+        - ApiKeyAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+                  minLength: 1
+                description:
+                  type: string
+                  minLength: 0
+                project_id:
+                  type: integer
+                  minimum: 1
+                due_date:
+                  type: string
+                  format: date
+              required:
+                - id
+                - name
+                - project_id
+      responses:
+        200:
+          description: Информация об обновленной работе
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/milestoneInfo'
+        403:
+          description: Запрещено
+        404:
+          description: Не найдено
+        500:
+          description: Все плохо
+  /tasks.milestones.archive:
+    post:
+      tags:
+        - Работы
+      summary: 'Архивирует/разархивирует работу'
+      security:
+        - ApiKeyAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                archive:
+                  type: boolean
+              required:
+                - id
+                - archive
+      responses:
+        200:
+          $ref: '#/components/schemas/200ok'
+        403:
+          description: Запрещено
+        404:
+          description: Не найдено
+        500:
+          description: Все плохо
+  /tasks.milestones.delete:
+    post:
+      tags:
+        - Работы
+      summary: 'Удаляет работу'
+      security:
+        - ApiKeyAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+              required:
+                - id
+      responses:
+        200:
+          $ref: '#/components/schemas/200ok'
+        403:
+          description: Запрещено
+        404:
+          description: Не найдено
+        500:
+          description: Все плохо
+# projects
+  /tasks.projects.getList:
+    get:
+      tags:
+        - Проекты
+      summary: 'Список всех проектов'
+      security:
+        - ApiKeyAuth: [ ]
+      responses:
+        200:
+          description: Список всех проектов
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getProjectsListResponse'
+        403:
+          description: Запрещено
+        500:
+          description: Все плохо
+  /tasks.projects.add:
+    post:
+      tags:
+        - Проекты
+      summary: 'Добавляет новый проект'
+      security:
+        - ApiKeyAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                workflow:
+                  description: Упорядоченный массив с переходами из статуса в статус
+                  type: array
+                  items:
+                    type: integer
+                  minLength: 1
+                name:
+                  type: string
+                  minLength: 1
+                icon:
+                  type: string
+                  nullable: true
+                color:
+                  type: string
+                  nullable: true
+                icon_url:
+                  type: string
+                  nullable: true
+                icon_hash:
+                  description: хеш загруженного файла с логотипом
+                  type: string
+                  nullable: true
+                sort:
+                  type: integer
+                  default: 0
+              required:
+                - name
+                - workflow
+      responses:
+        200:
+          description: Информация о добавленном проекте
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/projectInfo'
+        403:
+          description: Запрещено
+        404:
+          description: Не найдено
+        500:
+          description: Все плохо
+  /tasks.projects.update:
+    post:
+      tags:
+        - Проекты
+      summary: 'Обновляет проект'
+      security:
+        - ApiKeyAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                workflow:
+                  description: Упорядоченный массив с переходами из статуса в статус
+                  type: array
+                  items:
+                    type: integer
+                  minLength: 1
+                name:
+                  type: string
+                  minLength: 1
+                icon:
+                  type: string
+                  nullable: true
+                color:
+                  type: string
+                  nullable: true
+                icon_url:
+                  type: string
+                  nullable: true
+                icon_hash:
+                  description: хеш загруженного файла с логотипом
+                  type: string
+                  nullable: true
+                sort:
+                  type: integer
+                  default: 0
+              required:
+                - id
+                - name
+                - workflow
+                - icon
+                - color
+                - icon_url
+                - sort
+      responses:
+        200:
+          description: Информация об обновленном проекте
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/projectInfo'
+        403:
+          description: Запрещено
+        404:
+          description: Не найдено
+        500:
+          description: Все плохо
+  /tasks.projects.archive:
+    post:
+      tags:
+        - Проекты
+      summary: 'Архивирует/разархивирует проект'
+      security:
+        - ApiKeyAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                archive:
+                  type: boolean
+              required:
+                - id
+                - archive
+      responses:
+        200:
+          $ref: '#/components/schemas/200ok'
+        403:
+          description: Запрещено
+        404:
+          description: Не найдено
+        500:
+          description: Все плохо
+  /tasks.projects.delete:
+    post:
+      tags:
+        - Проекты
+      summary: 'Удаляет проект'
+      security:
+        - ApiKeyAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+              required:
+                - id
+      responses:
+        200:
+          $ref: '#/components/schemas/200ok'
+        403:
+          description: Запрещено
+        404:
+          description: Не найдено
+        500:
+          description: Все плохо
+  /tasks.push.enable:
+    post:
+      tags:
+        - Пуши
+      summary: 'Включает пуши для клиента'
+      security:
+        - ApiKeyAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                client_id:
+                  type: string
+                  description: Onesignal client id
+              required:
+                - client_id
+      responses:
+        200:
+          $ref: '#/components/schemas/200ok'
+        400:
+          $ref: '#/components/schemas/400fail'
+        403:
+          description: Запрещено
+        500:
+          description: Все плохо
+  /tasks.push.disable:
+    post:
+      tags:
+        - Пуши
+      summary: 'Отключает пуши для клиента'
+      security:
+        - ApiKeyAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                client_id:
+                  type: string
+                  description: Onesignal client id
+              required:
+                - client_id
+      responses:
+        200:
+          $ref: '#/components/schemas/200ok'
+        400:
+          $ref: '#/components/schemas/400fail'
+        403:
+          description: Запрещено
+        500:
+          description: Все плохо
+  /tasks.tags.getList:
+    get:
+      tags:
+        - Теги
+      summary: 'Отдает облако тегов'
+      security:
+        - ApiKeyAuth: [ ]
+      responses:
+        200:
+          description: Все теги
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getTagsListResponse'
+        400:
+          $ref: '#/components/schemas/400fail'
+        403:
+          description: Запрещено
+        500:
+          description: Все плохо
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: query
+      name: access_token
+
+  schemas:
+    getTasksListResponse:
+      type: object
+      properties:
+        total_count:
+          type: number
+          description: сколько всего тасков найдено
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/taskInfo'
+
+    getStatusesListResponse:
+      type: object
+      properties:
+        total_count:
+          type: number
+          description: сколько всего статусов
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/statusInfo'
+
+    getMilestonesListResponse:
+      type: object
+      properties:
+        total_count:
+          type: number
+          description: сколько всего работ
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/milestoneInfo'
+
+    getTagsListResponse:
+      type: object
+      properties:
+        total_count:
+          type: number
+          description: сколько всего тегов
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/tagInfo'
+
+    getProjectsListResponse:
+      type: object
+      properties:
+        total_count:
+          type: number
+          description: сколько всего проектов
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/projectInfo'
+
+    getKeyFilterCountsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/countHashInfo'
+
+    getLogsListResponse:
+      type: object
+      properties:
+        total_count:
+          type: integer
+          minimum: 0
+        count:
+          type: integer
+          minimum: 0
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/logInfo'
+
+    getTeamGetTopAssigneesResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              contact:
+                $ref: '#/components/schemas/contactInfo'
+              status:
+                nullable: true
+                allOf:
+                  - $ref: '#/components/schemas/teammateStatusInfo'
+
+    teamGetMySettingsResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: number
+              description: Идентификатор пользователя
+              minimum: 1
+            timezone:
+              type: string
+              nullable: true
+            rights:
+              $ref: '#/components/schemas/rightInfo'
+            ts:
+              type: number
+              description: UNIX время сервера
+
+    getTeamGetListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              contact:
+                $ref: '#/components/schemas/contactInfo'
+              contact_info:
+                $ref: '#/components/schemas/teammateContactInfo'
+              status:
+                nullable: true
+                allOf:
+                  - $ref: '#/components/schemas/teammateStatusInfo'
+              last_log:
+                nullable: true
+                allOf:
+                  - $ref: '#/components/schemas/logInfo'
+              groups:
+                type: array
+                items:
+                  type: string
+
+    taskInfo:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Идентификатор таски
+        name:
+          type: string
+        text:
+          type: string
+        text_stripped:
+          description: Текст таски без тегов, обрезанный до 256 символов
+          type: string
+        create_contact:
+          $ref: '#/components/schemas/contactInfo'
+        visavis_contact:
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/contactInfo'
+        assigned_contact:
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/contactInfo'
+        assignment_creator_contact:
+          description: Тот, кто добавил назначение, либо создатель
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/contactInfo'
+        create_datetime:
+          $ref: '#/components/schemas/datetime'
+        update_datetime:
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/datetime'
+        project_id:
+          type: integer
+          description: Идентификатор проекта
+        milestone_id:
+          nullable: true
+          type: integer
+          description: Идентификатор работы
+        number:
+          type: integer
+          description: Порядковый номер в проекте
+        status_id:
+          type: integer
+          description: Идентификатор статуса
+        next_status_id:
+          type: integer
+          description: Идентификатор следующего по workflow статуса
+        return_status_id:
+          type: integer
+          description: Идентификатор статуса по workflow, на который вожно вернуть таску
+        parent_id:
+          nullable: false
+          type: integer
+        priority:
+          type: integer
+        assign_log_id:
+          nullable: true
+          type: integer
+          description: ??
+        comment_log_id:
+          nullable: true
+          type: integer
+          description: Идентификатор лога с закрепленным комментарием
+        contact_id:
+          nullable: true
+          type: integer
+          description: ???
+        hidden_timestamp:
+          nullable: true
+          type: integer
+          description: ???
+        due_date:
+          nullable: true
+          type: string
+          format: date
+          description: Дедлайн
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/attachmentInfo'
+        log:
+          type: array
+          items:
+            $ref: '#/components/schemas/logInfo'
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/tagInfo'
+        project:
+          $ref: '#/components/schemas/projectInfo'
+        favorite:
+          type: boolean
+    projectInfo:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        contact:
+          $ref: '#/components/schemas/contactInfo'
+        create_datetime:
+          $ref: '#/components/schemas/datetime'
+        icon:
+          type: string
+        color:
+          type: string
+        archive_datetime:
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/datetime'
+        sort:
+          type: integer
+          minimum: 0
+        counts:
+          $ref: '#/components/schemas/taskCountInfo'
+    teammateStatusInfo:
+      type: object
+      properties:
+        name:
+          type: string
+          description: название статуса
+          example: Отпуск
+        bg_color:
+          type: string
+          description: hex цвет фона
+          example: '#000000'
+        font_color:
+          type: string
+          description: hex цвет текста
+          example: '#ffffff'
+    teammateContactInfo:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Имя пользователя
+        title:
+          type: string
+          nullable: true
+          description: Обращение
+        firstname:
+          type: string
+          nullable: true
+          description: Имя
+        middlename:
+          type: string
+          nullable: true
+          description: Отчество
+        lastname:
+          type: string
+          nullable: true
+          description: Фамилия
+        jobtitle:
+          type: string
+          nullable: true
+          description: Должность
+        company:
+          type: string
+          nullable: true
+          description: Компания
+        email:
+          type: array
+          description: Список email
+          items:
+            type: object
+            properties:
+              ext:
+                type: string
+                description: Тип, один из перечисления или кастомный
+                enum:
+                  - "work"
+                  - "personal"
+                  - ""
+              value:
+                type: string
+        phone:
+          type: array
+          description: Список телефонов
+          items:
+            type: object
+            properties:
+              ext:
+                type: string
+                description: Тип, один из перечисления или кастомный
+                enum:
+                  - "work"
+                  - "mobile"
+                  - "home"
+                  - ""
+              value:
+                type: string
+        gender:
+          description: Пол
+          nullable: true
+          type: string
+          enum:
+            - "m"
+            - "f"
+            - ""
+        im:
+          type: array
+          description: Список мессенджеров
+          items:
+            type: object
+            properties:
+              ext:
+                type: string
+                description: Тип, один из перечисления или кастомный
+                enum:
+                  - "whatsapp"
+                  - "telegram"
+                  - "signal"
+                  - "viber"
+                  - "facebook"
+                  - "skype"
+                  - "wechat"
+                  - "imessage"
+                  - "line"
+                  - "qq"
+                  - "icq"
+                  - ""
+              value:
+                type: string
+        address:
+          type: array
+          description: Список адресов
+          items:
+            type: object
+            properties:
+              ext:
+                type: string
+                description: Тип, один из перечисления или кастомный
+                enum:
+                  - "work"
+                  - "shipping"
+                  - "billing"
+                  - "home"
+                  - ""
+              value:
+                type: string
+        url:
+          type: array
+          description: Список веб-сайтов
+          items:
+            type: object
+            properties:
+              ext:
+                type: string
+                description: Тип, один из перечисления или кастомный
+                enum:
+                  - "work"
+                  - "personal"
+                  - ""
+              value:
+                type: string
+        birthday:
+          nullable: true
+          type: string
+          format: date
+        locale:
+          nullable: true
+          type: string
+        timezone:
+          nullable: true
+          type: string
+        socialnetwork:
+          type: array
+          description: Список соц сетей
+          items:
+            type: object
+            properties:
+              ext:
+                type: string
+                description: Тип, один из перечисления или кастомный
+                enum:
+                  - "facebook"
+                  - "instagram"
+                  - "tiktok"
+                  - "twitter"
+                  - "linkedin"
+                  - "vkontakte"
+                  - ""
+              value:
+                type: string
+        about:
+          nullable: true
+          description: Описание себя любимого
+          type: string
+    contactInfo:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        photo_url:
+          type: string
+          nullable: true
+          description: Абсолютная ссылка на аватар
+        is_me:
+          type: boolean
+          description: Флаг, является ли пользователь текущим
+    statusInfo:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Идентификатор статуса
+        name:
+          type: string
+          description: Название статуса
+        button:
+          type: string
+          description: Текст на кнопке, которая переводит задачу в этот статус. Иногда может совпадать с названием статуса, но чаще всего все-таки является глаголом и поэтому отличается
+        special:
+          type: boolean
+        sort:
+          type: integer
+        params:
+          $ref: '#/components/schemas/statusParams'
+        counts:
+          $ref: '#/components/schemas/taskCountInfo'
+    statusParams:
+      type: object
+      properties:
+        assign_user:
+          nullable: true
+          type: integer
+          description: Новый назначенный пользователь
+        button_color:
+          nullable: true
+          type: string
+          description: Цвет фона
+        title_color:
+          nullable: true
+          type: string
+          description: Цвет текста
+        allow_comment:
+          type: boolean
+          description: Разрешить комментировать
+        allow_clear_assign:
+          nullable: true
+          type: boolean
+          description: Разрешить оставить задачу без назначения
+        assign:
+          nullable: true
+          type: string
+          enum:
+            - "author"
+            - "user"
+            - "select"
+            - ""
+          description: |
+            Кому назначить таску:
+            + "author" - Назначить задачу ее постановщику
+            + "user" - Назначить выбранному пользователю
+            + "select" - Предлагать выбрать исполнителя
+            + "" - Оставить исполнителя без изменения
+    taskCountInfo:
+      type: object
+      description: Содержит информацию о количестве тасков для текущего контекста (статус, проект)
+      properties:
+        total:
+          type: integer
+          minimum: 0
+          description: Всего тасков (null - нет информации)
+          nullable: true
+        closed:
+          type: integer
+          minimum: 0
+          description: Всего закрытых тасков (null - нет информации)
+          nullable: true
+        active:
+          type: integer
+          minimum: 0
+          description: Всего открытых тасков (null - нет информации)
+          nullable: true
+        active_priority:
+          type: integer
+          minimum: 0
+          description: Всего открытых тасков с высоким приоритетом (null - нет информации)
+          nullable: true
+    logInfo:
+      type: object
+      description: Данные об одной записи из логов для таска
+      properties:
+        id:
+          type: integer
+          minimum: 0
+        project_id:
+          type: integer
+          nullable: true
+        task_id:
+          type: integer
+        contact:
+          $ref: '#/components/schemas/contactInfo'
+        text:
+          type: string
+        text_stripped:
+          description: Текст лога без тегов, обрезанный до 256 символов
+          type: string
+        create_datetime:
+          $ref: '#/components/schemas/datetime'
+        before_status_id:
+          type: integer
+          nullable: true
+        after_status_id:
+          type: integer
+          nullable: true
+        action:
+          type: string
+          enum:
+            - 'add'
+            - 'create'
+            - 'comment'
+            - 'forward'
+            - 'return'
+            - 'edit'
+            - ''
+        assigned_contact:
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/contactInfo'
+        status_changed:
+          type: boolean
+          nullable: true
+        assignment_changed:
+          type: boolean
+          nullable: true
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/attachmentInfo'
+        params:
+          type: array
+        task_number:
+          type: integer
+          nullable: true
+        task_name:
+          type: string
+          nullable: true
+    groupedByDateLogInfo:
+      type: object
+      description: Сгруппированные по дате логи
+      properties:
+        group:
+          type: string
+          description: Название группы
+        date:
+          type: string
+          description: Дата группы
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/logInfo'
+    attachmentInfo:
+      type: object
+      description: Объект аттачмента, может относится как к задаче, так и к логу задачи
+      properties:
+        id:
+          type: integer
+          minimum: 0
+        log_id:
+          type: integer
+          nullable: true
+        create_datetime:
+          $ref: '#/components/schemas/datetime'
+        contact:
+          $ref: '#/components/schemas/contactInfo'
+        name:
+          type: string
+        size:
+          type: integer
+        ext:
+          type: string
+        code:
+          type: string
+        download_url:
+          type: string
+          description: Абсолютный урл для загрузки
+        is_image:
+          type: boolean
+          description: Признак изображения
+        preview_url:
+          type: string
+          nullable: true
+          description: Абсолютный урл до превью изображения
+    countHashInfo:
+      type: object
+      description: Содержит информацию о количестве тасков для различных критериев
+      properties:
+        hash:
+          type: string
+          enum:
+            - inbox
+            - outbox
+            - favorites
+            - urgent
+          description: Хеш критерия
+        counts:
+          $ref: '#/components/schemas/taskCountInfo'
+    milestoneInfo:
+      type: object
+      description: Описание работы
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        project_id:
+          type: integer
+        description:
+          type: string
+        due_date:
+          nullable: true
+          type: string
+          format: date
+        due_info:
+          type: object
+          properties:
+            days_left:
+              nullable: true
+              type: integer
+            text:
+              nullable: true
+              type: string
+            color:
+              nullable: true
+              type: string
+        closed:
+          type: boolean
+        counts:
+          $ref: '#/components/schemas/taskCountInfo'
+    tagInfo:
+      type: object
+      description: Описание тега
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+    rightInfo:
+      type: object
+      properties:
+        is_admin:
+          type: boolean
+          description: Пользователь админ или имеет полный доступ к приложению
+        projects_assigned:
+          type: array
+          description: Массив ID проектов, в которых пользователь может видеть только назначенные на себя таски
+          items:
+            type: integer
+            minimum: 1
+        projects_assigned_all:
+          type: boolean
+          description: Флаг, что пользователь может видеть только назначенные на себя таски во всех проектах
+        projects_full:
+          type: array
+          description: Массив ID проектов, в которых пользователь имеет полный доступ
+          items:
+            type: integer
+            minimum: 1
+        projects_full_all:
+          type: boolean
+          description: Флаг, что пользователь имеет полный доступ ко всем проектам
+    200ok:
+      type: string
+      example: 'ok'
+    200fail:
+      type: string
+      example: 'fail'
+    400fail:
+      type: string
+      example: 'fail'
+    datetime:
+      type: string
+      format: date-time
+      example: "2020-01-28T16:22:37-00:00"
+      description: UTC
+  parameters:
+    offset:
+      in: query
+      name: offset
+      required: true
+      schema:
+        type: integer
+        default: 0
+        minimum: 0
+    limit:
+      in: query
+      name: limit
+      description: максимальное в ответе. не может быть более 500.
+      schema:
+        type: integer
+        nullable: true
+        minimum: 0
+        default: 30

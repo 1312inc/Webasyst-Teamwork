@@ -31,12 +31,20 @@ class tasksAttachmentsImageUploadController extends waJsonController
 
         try {
             $image = $file->waImage();
-            $image = $image->resize(wa(tasksConfig::APP_ID)->getConfig()->getOption('redactor_image_size'));
+            $image = $image->resize(tsks()->getOption('redactor_image_size'));
 
             $image->save($path . $imageName);
 
             return tasksHelper::getRedactorImagesUrl($uuid, true) . $imageName;
         } catch (waException $exception) {
+            waLog::log(
+                sprintf(
+                    'Tasks save image redactor attachment error: %s. %s',
+                    $exception->getMessage(),
+                    $exception->getTraceAsString()
+                ),
+                'tasks/error.log'
+            );
         }
 
         return false;

@@ -43,21 +43,21 @@ assigned_contact_id = i:1',
 
     public function getOutboxCount(): int
     {
-        $c = new tasksCollection('outbox');
+        $c = new tasksCollection(tasksCollection::HASH_OUTBOX);
 
         return $c->count();
     }
 
     public function getUrgentCount(): int
     {
-        $c = new tasksCollection('urgent');
+        $c = new tasksCollection(tasksCollection::HASH_URGENT);
 
         return $c->count();
     }
 
     public function getSuperUrgentCount(): int
     {
-        $c = new tasksCollection('urgent');
+        $c = new tasksCollection(tasksCollection::HASH_URGENT);
         $c->filter('priority>1');
 
         return $c->count();

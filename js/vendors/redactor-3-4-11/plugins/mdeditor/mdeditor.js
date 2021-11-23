@@ -24,6 +24,12 @@ turndownService.addRule("code", {
     return "`" + content + "`";
   },
 });
+turndownService.addRule('strikethrough', {
+  filter: ['del', 's', 'strike'],
+  replacement: function (content) {
+    return '~~' + content + '~~';
+  }
+});
 
 // define markdown-it
 var md = markdownit();
@@ -61,16 +67,16 @@ md.set({
       this.toolbar.addButton("quote", buttonQuote);
     },
     onstarted: function () {
-        var startedContent = this.app.source.getStartedContent(),
-          mdRender = md.render(startedContent);
+      var startedContent = this.app.source.getStartedContent(),
+        mdRender = md.render(startedContent);
 
-        // set initial HTML in visual layer
-        this.app.source.setCode(mdRender);
+      // set initial HTML in visual layer
+      this.app.source.setCode(mdRender);
 
-        // set initial md in textarea
-        // this.app.source.getElement().val(startedContent);
-        
-        this.app.broadcast('mdRendered', mdRender);
+      // set initial md in textarea
+      this.app.source.getElement().val(startedContent);
+
+      this.app.broadcast('mdRendered', mdRender);
     },
     toggleCode: function () {
       switch (this.app.selection.getElement().nodeName) {

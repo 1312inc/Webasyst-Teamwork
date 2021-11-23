@@ -17,7 +17,8 @@
         accountName: {$wa->accountName(false)|json_encode},
         priorities: {$priorities|json_encode},
         app_icons: {$app_icons|json_encode},
-        contact_id: {$wa->user('id')}
+        contact_id: {$wa->user('id')},
+        text_editor: {$text_editor|json_encode}
     });</script>
 
     {$wa->css()}
@@ -26,9 +27,6 @@
     <link rel="stylesheet" href="{$wa_url}wa-content/js/farbtastic/farbtastic.css" type="text/css" />
     <link rel="stylesheet" href="{$wa_app_static_url}js/waGallery/waGallery.css" type="text/css" />
     <link rel="stylesheet" href="{$wa_url}wa-content/js/prettify/prettify.css" type="text/css" />
-    <link rel="stylesheet" href="{$wa_app_static_url}js/vendors/redactor-3-4-11/redactor.min.css">
-    <link rel="stylesheet" href="{$wa_app_static_url}js/vendors/redactor-3-4-11/plugins/mdeditor/mdeditor.css">
-    <link rel="stylesheet" href="{$wa_app_static_url}js/vendors/redactor-3-4-11/plugins/watags/watags.css">
 
     <script src="{$wa_url}wa-content/js/jquery/jquery-1.11.1.min.js"></script>
     <script src="{$wa_url}wa-content/js/jquery/jquery-migrate-1.2.1.min.js" async></script>
@@ -36,6 +34,11 @@
 
     <script src="{$wa_url}wa-content/js/jquery-wa/wa.js?v={$wa->version(true)}"></script>
     <script src="{$wa_app_static_url}js/tasks.min.js?v=wa2{$wa->version()}"></script>
+
+    {if $text_editor === "wysiwyg"}
+    <link rel="stylesheet" href="{$wa_app_static_url}js/vendors/redactor-3-4-11/redactor.min.css">
+    <link rel="stylesheet" href="{$wa_app_static_url}js/vendors/redactor-3-4-11/plugins/mdeditor/mdeditor.css">
+    <link rel="stylesheet" href="{$wa_app_static_url}js/vendors/redactor-3-4-11/plugins/watags/watags.css">
 
     <script src="{$wa_app_static_url}js/vendors/redactor-3-4-11/redactor.min.js"></script>
     <script src="{$wa_app_static_url}js/vendors/redactor-3-4-11/langs/{$loc[0]}.js"></script>
@@ -48,7 +51,7 @@
     <script>
         $R.options = {
             lang: '{$loc[0]}',
-            buttons: ['format', 'bold', 'italic', 'ol', 'ul', 'link', 'image'],
+            buttons: ['format', 'bold', 'italic', 'deleted', 'ol', 'ul', 'link', 'image'],
             formatting: ['p', 'h3', 'h4', 'h5'],
             source: false,
             minHeight: '200px',
@@ -56,8 +59,14 @@
             tagsHandle: '?action=tagsatcmpl',
             tagsHandleTrigger: '#',
             linkSize: 120,
+            shortcutsAdd: {
+                'shift+tab': {
+                    api: 'module.list.outdent'
+                },
+            }
         };
     </script>
+    {/if}
 
     {$wa->js()}
     {if $wa->locale() != 'en_US'}
@@ -76,7 +85,7 @@
         <div id="wa-app">
             <div class="flexbox wrap-mobile">
                 {* SIDEBAR *}
-                <aside class="t-sidebar-wrapper sidebar mobile-friendly width-adaptive flexbox" id="sidebar">
+                <aside class="t-sidebar-wrapper sidebar mobile-friendly width-adaptive flexbox wa-gradient-overlay-light" id="sidebar">
                     <nav class="sidebar-mobile-toggle">
                         <div class="box align-center">
                             <a href="#" href="javascript:void(0);">
@@ -101,6 +110,10 @@
             <div class="f-message-wrapper">[`Drop anywhere to upload`]</div>
         </div>
     </div>
+
+    <a class="add-task-link circle button largest mobile-only" href="#/add/">
+        <i class="fas fa-plus"></i>
+    </a>
 
     <div id="taskSkeleton" style="display: none;">
         {include file="../tasks/includes/TasksSkeleton.inc.html" inline}
@@ -136,16 +149,25 @@
         'status': "[`Status`]",
         'hidden': "[`Hidden`]",
         'unassigned': "[`Unassigned`]",
+        'mins': "[`%d min`]",
+        'hr': "[`%d hr`]",
+        'me': "[`me`]",
     });</script>
     <script>window.TasksController.init();</script>
 
+    {if $wa->isMobile()}
     <script>
-        ( function($) {
-            var $sidebar = $('#sidebar');
-            $sidebar.waShowSidebar({
-                direction: "down"
-            });
-        })(jQuery);
+        (function ($) {
+                var $sidebar = $('#sidebar').waShowSidebar(),
+                    sidebarInst = $sidebar.data('sidebar');
+
+                window.onhashchange = function () {
+                    window.scrollTo(0, 0);
+                    sidebarInst.$sidebar_content.hide();
+                };
+            })(jQuery);
     </script>
+    {/if}
+
 </body>
 </html>

@@ -13,9 +13,6 @@
 ]}
 {$_priority_icon = ""}
 {if !empty($task.priority)}
-    {if $task.priority == '-1'}
-        {$_priority_icon = "<i class=\"fas fa-hourglass-half\" style=\"color: var(--light-gray);\"></i>"}
-    {/if}
     {if $task.priority == '1'}
         {$_priority_icon = "<i class=\"fas fa-exclamation-triangle\" style=\"color: orange;\"></i>"}
     {/if}
@@ -31,20 +28,21 @@
                 {$_priority_icon}
                 {$task.project_id}.{$task.number}
             </span>
-            <a href="#/task/{$task.id}/" target="_blank" class="{if !empty($task.priority) && ($task.priority == '1' || $task.priority == '2' || $task.priority == '3')}bold{else}semibold{/if}{if !empty($task.priority) && $task.priority == '-1'} text-gray{/if}" title="{strip_tags($task.text)|truncate:128}">{$task.name|escape}</a>
+            <a href="#/task/{$task.id}/" target="_blank" class="{if !empty($task.priority) && ($task.priority == '1' || $task.priority == '2' || $task.priority == '3')}bold{else}semibold{/if}{if !empty($task.priority) && $task.priority == '-1'} text-gray{/if}" title="{strip_tags($task.text)|truncate:128}">{$task.name|escape|default:"(no name)"}</a>
 
         </div>
         <div class="flexbox space-8 middle t-kanban-item-body">
 
             <div class="flexbox space-8 middle wide t-kanban-item-project">
-                <div>
-                    {* PROJECT ICON *}
-                    {if !empty($task.project.icon_html)}
+
+                {* PROJECT ICON *}
+                {if !empty($task.project.icon_html)}
+                    <div>
                         {strip}<span class="t-project-icon">
                             {$task.project.icon_html}
                         </span>{/strip}
-                    {/if}
-                </div>
+                    </div>
+                {/if}
                 <div>
                     <p class="small gray">
                         {if !empty($task.milestone.name)}

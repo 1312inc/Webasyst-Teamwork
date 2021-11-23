@@ -5,17 +5,18 @@ final class tasksApiTasksAddHandler
     /**
      * @param tasksApiTasksAddRequest $addRequest
      *
-     * @return tasksProject
+     * @return tasksTask2
      * @throws tasksAccessException
      * @throws tasksException
+     * @throws tasksResourceNotFoundException
      * @throws waException
      */
-    public function add(tasksApiTasksAddRequest $addRequest): tasksProject
+    public function add(tasksApiTasksAddRequest $addRequest): tasksTask2
     {
         $project = tsks()->getEntityRepository(tasksProject::class)->findById($addRequest->getProjectId());
 
         if (!$project) {
-            throw new tasksException('Project not found', 404);
+            throw new tasksResourceNotFoundException('Project not found');
         }
 
         if (!tsks()->getRightResolver()->contactCanAddProject(wa()->getUser())) {
@@ -26,7 +27,7 @@ final class tasksApiTasksAddHandler
             $milestone = tsks()->getEntityRepository(tasksMilestone::class)->findById($addRequest->getMilestoneId());
 
             if (!$milestone) {
-                throw new tasksException('Milestone not found', 404);
+                throw new tasksResourceNotFoundException('Milestone not found');
             }
         }
 
@@ -48,7 +49,7 @@ final class tasksApiTasksAddHandler
 
         (new tasksTagSaveHandler())->handle($task2);
         (new tasksRelationsSaveHandler())->handle($task2);
-        (new tasksLogItemHandler())->log($task2, null, tasksLogItemHandler::ACTION_ADD);
+        (new tasksLogItemHandler())->log($task2, null, tasksTaskLogModel::ACTION_TYPE_ADD);
 
         (new tasksWaLogManager())->lodAdd($task2);
 

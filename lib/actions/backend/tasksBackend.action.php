@@ -15,6 +15,8 @@ class tasksBackendAction extends waViewAction
         $tag_model = new tasksTaskTagsModel();
         $cloud = $tag_model->getCloud();
 
+        $users = tasksHelper::getTeam(null, true, false, true);
+
         $countService = new tasksUserTasksCounterService();
         $viewData = [
             'team_counts' => $countService->getTeamCounts(wa()->getUser()),
@@ -30,6 +32,8 @@ class tasksBackendAction extends waViewAction
             'cloud' => $cloud,
             'scopes' => $this->getScopes(),
             'team_app_name' => $this->getTeamAppName(),
+            'users' => $users,
+            'text_editor' => wa()->getUser()->getSettings('tasks', 'text_editor', 'wysiwyg'),
         ];
 
         $this->view->assign($viewData);
@@ -66,7 +70,7 @@ class tasksBackendAction extends waViewAction
         $tasks_milestone_model = new tasksMilestoneModel();
         $tasks_task_model = new tasksTaskModel();
 
-        $scopes = $tasks_milestone_model->getStatusesWithOrder(false);
+        $scopes = $tasks_milestone_model->getMilestonesWithOrder(false);
         $projects = tasksHelper::getProjects();
 
         foreach ($scopes as $id => $scope) {
@@ -135,7 +139,8 @@ class tasksBackendAction extends waViewAction
 
         // Prepare counts for projects user has full access to
         if ($managed_project_ids) {
-            $project_counts = self::getModel()->getProjectCounts();
+            $project_counts = (new tasksTasksCounterService())->getProjectCountsWithPriority();
+//            $project_counts = self::getModel()->getProjectCounts();
             foreach ($project_counts as $id => $c) {
                 if (!empty($managed_project_ids[$id]) && !empty($projects[$id])) {
                     $projects[$id]['count'] = $c['count'];

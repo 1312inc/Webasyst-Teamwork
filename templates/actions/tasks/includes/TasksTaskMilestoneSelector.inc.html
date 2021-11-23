@@ -20,7 +20,7 @@
                             <a class="set-custom-select js-milestones-select-item t-milestones-custom-select {if $task.milestone_id == $m.id}selected{/if}"
                                href="javascript:void(0);" data-value="{$m.id}">
                                 <span>
-                                    {$m.name|escape}
+                                    {$m.name|escape|truncate:32}
                                     <span class="hint nowrap t-milestone-due-date">
                                         {if $m.due_date}{wa_date('humandate', $m.due_date, waDateTime::getDefaultTimezone())|escape}{/if}
                                     </span>
@@ -36,10 +36,12 @@
                 <script>
                     ( function($) {
                         $("#milestoneSelect").waDropdown({
-                            hover: false,
+                            hover: true,
                             items: ".menu > li > a",
                             change: function(event, target, dropdown) {
                                 $("[name=\"data[milestone_id]\"]").val( $(target).data("value") );
+                                var due = $(target).find('.t-milestone-due-date').text().trim();
+                                $('.t-dialog-content .t-datepicker-due-date').attr("placeholder", due);
                             },
                             ready: function (dropdown) {
                                 $("#milestoneSelect").find('.menu > li a.selected').trigger('click');

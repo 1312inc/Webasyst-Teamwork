@@ -26,7 +26,7 @@ class tasksTasksAddMethod extends tasksApiAbstractMethod
             $this->post('hidden_timestamp', false, self::CAST_INT) ?? 0,
             $this->post('due_date', false, self::CAST_DATETIME, 'Y-m-d'),
             $this->post('files_hash', false, self::CAST_STRING_TRIM),
-            $this->post('uuid', false, self::CAST_STRING_TRIM)
+            $this->post('uuid', true, self::CAST_STRING_TRIM)
         );
 
         $task = (new tasksApiTasksAddHandler())->add($request);
@@ -34,6 +34,6 @@ class tasksTasksAddMethod extends tasksApiAbstractMethod
         $collection = new tasksCollection([$task->getId()]);
         $tasks = $collection->getTasks(tasksCollection::FIELDS_TO_GET);
 
-        return new tasksApiTaskResponse(reset($tasks));
+        return new tasksApiTaskResponse(new tasksTask(reset($tasks)));
     }
 }

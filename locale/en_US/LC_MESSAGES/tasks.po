@@ -455,13 +455,13 @@ msgid "Your favorites list is empty"
 msgstr ""
 
 msgid "To add a task to your personal favorite list, click on a tiny star icon next to task name."
-msgstr ""
+msgstr "To start watching on a task progress, click on a tiny little star button next to a task name."
 
 msgid "Task list is empty"
 msgstr ""
 
 msgid "No tasks matching your search criteria."
-msgstr ""
+msgstr "No tasks matching this search criteria."
 
 msgid "Task not found"
 msgstr ""
@@ -499,7 +499,7 @@ msgid "New"
 msgstr ""
 
 msgid "done"
-msgstr ""
+msgstr "closed the task"
 
 msgid "Just now"
 msgstr ""
@@ -543,19 +543,19 @@ msgid "Create task from this"
 msgstr ""
 
 msgid "created"
-msgstr ""
+msgstr "sent the new task to"
 
 msgid "added comment"
-msgstr ""
+msgstr "commented"
 
 msgid "forwarded"
-msgstr ""
+msgstr "assigned the task to"
 
 msgid "returned"
-msgstr ""
+msgstr "returned the task to"
 
 msgid "edited"
-msgstr ""
+msgstr "edited the task"
 
 msgid "Drop anywhere to upload"
 msgstr ""
@@ -624,7 +624,7 @@ msgid "Change priority"
 msgstr ""
 
 msgid "User %s sent you a new task"
-msgstr ""
+msgstr "%s sent you the new task"
 
 msgid "via Tasks app"
 msgstr ""
@@ -635,27 +635,30 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "User %s edited a task you are assigned to:"
-msgstr ""
+msgstr "%s edited the task you are assigned to:"
 
 msgid "%s editoed a task you created:"
 msgstr ""
 
 msgid "User %s has just completed a task"
-msgstr ""
+msgstr "%s has completed the task"
 
 msgid "Inbox automatically collects all tasks assigned to you. No tasks are assigned to you right now :-)"
-msgstr "Inbox automatically collects all tasks assigned to you. No tasks are assigned to you right now."
+msgstr "No tasks are assigned to you at the moment. Ask your teammates to send you a task or simply do this on your own."
 
 msgid "Your outbox is empty"
 msgstr ""
 
 msgid "Outbox automatically collects all tasks you’ve created."
-msgstr ""
+msgstr "Outbox automatically collects all tasks you’ve been participating."
 
 msgid "Your favorite task list is empty"
+msgstr "Your watch list is empty"
+
+msgid "Use projects to organize tasks and manage access rights for your teammates."
 msgstr ""
 
-msgid "There are no tasks in this project."
+msgid "There are no tasks in this project that require your attention at the moment. If you think its by mistake, ask the account admin to check your access rights."
 msgstr ""
 
 msgid "No tasks match your search criteria."
@@ -675,10 +678,10 @@ msgid "ASSIGNED: %s %s"
 msgstr ""
 
 msgid "DONE: %s was completed"
-msgstr ""
+msgstr "DONE: %s"
 
 msgid "EDIT: %s was edited"
-msgstr ""
+msgstr "UPDATE: %s"
 
 msgid "created a task"
 msgstr ""
@@ -747,37 +750,37 @@ msgid "<a href=\"%s\">%s</a> from %s"
 msgstr ""
 
 msgid "User %s sent you your task."
-msgstr ""
+msgstr "%s sent you the task you created."
 
 msgid "User %s sent you a task."
-msgstr ""
+msgstr "%s sent you the task."
 
 msgid "User %s sent a task to %s."
-msgstr ""
+msgstr "%s forwarded the task to %s."
 
 msgid "User %s edited a task you created:"
-msgstr ""
+msgstr "%s edited the task you created:"
 
 msgid "User %s edited a task:"
-msgstr ""
+msgstr "%s edited the task:"
 
 msgid "User %s wrote a comment to a task you are assigned to:"
-msgstr ""
+msgstr "%s commented on the task you are assigned to:"
 
 msgid "User %s wrote a comment to a task you created:"
-msgstr ""
+msgstr "%s commented on the task you created:"
 
 msgid "User %s wrote a comment:"
-msgstr ""
+msgstr "%s commented:"
 
 msgid "Files"
 msgstr ""
 
 msgid "User %s sent you your task"
-msgstr ""
+msgstr "%s sent you the task you created"
 
 msgid "User %s sent a new task to user %s"
-msgstr ""
+msgstr "%s sent the new task to %s"
 
 msgid "Scopes"
 msgstr ""
@@ -889,6 +892,9 @@ msgstr ""
 
 msgid "Add comment"
 msgstr ""
+
+msgid "Involve %s to the teamwork just by sending a new task."
+msgstr "Create a new task and involve %s to the teamwork."
 
 msgid "You are about to leave the page without saving the task. Are you sure?"
 msgstr ""
@@ -1137,7 +1143,10 @@ msgstr ""
 msgid "No due date"
 msgstr ""
 
-msgid "Enter new tag..."
+msgid "Create new tag"
+msgstr ""
+
+msgid "Popular tags:"
 msgstr ""
 
 msgid "Unlink"
@@ -1279,4 +1288,57 @@ msgid "This screen will collect and present everything you and your team are doi
 msgstr ""
 
 msgid "DANGER: Task will be deleted without the ability to restore. Delete?"
+msgstr ""
+
+msgid "Join the %s team on Webasyst to start working on the task:"
+msgstr ""
+
+msgid "Accept invitation"
+msgstr ""
+
+msgid "Text editor"
+msgstr ""
+
+msgid "WYSIWYG"
+msgstr "Full-featured editor (WYSIWYG)"
+
+msgid "Markdown"
+msgstr "Markdown (plain text)"
+
+msgid "Status not found"
+msgstr ""
+
+msgid "No access to project"
+msgstr ""
+
+msgid "Contact not found"
+msgstr ""
+
+msgid "You cannot edit task"
+msgstr ""
+
+msgid "Contact cannot view task"
+msgstr ""
+
+msgid "%d hour"
+msgid_plural "%d hours"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Email not send"
+msgstr "Email not sent"
+
+msgid "This contact was banned"
+msgstr ""
+
+msgid "Already in our team!"
+msgstr "The user is in your team already!"
+
+msgid "Invitation token can't created"
+msgstr "Invitation token can't be created"
+
+msgid "This is a required field."
+msgstr "Required field"
+
+msgid "This does not look like a valid email"
 msgstr ""

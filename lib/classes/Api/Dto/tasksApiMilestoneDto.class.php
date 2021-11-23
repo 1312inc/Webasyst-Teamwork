@@ -44,46 +44,34 @@ final class tasksApiMilestoneDto implements JsonSerializable
     private $closed;
 
     /**
-     * tasksApiMilestoneVo constructor.
-     *
-     * @param int         $id
-     * @param string      $name
-     * @param int         $project_id
-     * @param string      $description
-     * @param string|null $due_date
-     * @param bool        $closed
+     * @var tasksApiCountsDto
      */
+    private $counts;
+
     public function __construct(
         int $id,
         string $name,
-        int $project_id,
+        int $projectId,
         string $description,
-        ?string $due_date,
-        bool $closed
+        ?string $dueDate,
+        bool $closed,
+        ?int $daysLeft,
+        ?string $text,
+        ?string $color,
+        tasksApiCountsDto $counts
     ) {
         $this->id = $id;
         $this->name = $name;
-        $this->project_id = $project_id;
+        $this->project_id = $projectId;
         $this->description = $description;
-        $this->due_date = $due_date;
+        $this->due_date = $dueDate;
         $this->closed = $closed;
 
         if ($this->due_date) {
-            $this->due_info['days_left'] = tasksHelper::calcDatesDiffInDays($this->due_date, 'today');
-            $this->due_info['text'] = tasksHelper::formatDueText($this->due_info['days_left']);
-            $this->due_info['color'] = tasksHelper::formatDueColor($this->due_info['days_left']);
+            $this->due_info['days_left'] = $daysLeft;
+            $this->due_info['text'] = $text;
+            $this->due_info['color'] = $color;
         }
-    }
-
-    public static function fromEntity(tasksMilestone $milestone): self
-    {
-        return new self(
-            $milestone->getId(),
-            $milestone->getName(),
-            $milestone->getProjectId(),
-            $milestone->getDescription(),
-            $milestone->getDueDate() ? $milestone->getDueDate()->format('Y-m-d') : null,
-            $milestone->isClosed()
-        );
+        $this->counts = $counts;
     }
 }

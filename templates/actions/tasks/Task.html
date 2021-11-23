@@ -32,9 +32,6 @@
 
 {$_priority_icon = ""}
 {if !empty($task.priority)}
-    {if $task.priority == '-1'}
-        {$_priority_icon = "<i class=\"fas fa-hourglass-half\" style=\"color: var(--light-gray);\"></i>"}
-    {/if}
     {if $task.priority == '0'}
         {$_priority_icon = "<i class=\"fas fa-hashtag\" style=\"color: var(--light-gray);\"></i>"}
     {/if}
@@ -49,7 +46,7 @@
 {$_task_hooks = $task.hooks|default:[]}
 {$_backend_task_hook = $_task_hooks.backend_task|default:[]}
 
-<div class="article {$classes|join:' '}" id="task-{$task.id}" data-task-id="{$task.id}">
+<div class="article {$classes|join:' '}" id="task-{$task.id}" data-task-id="{$task.id}" data-task-uuid="{$task.uuid}">
     <div class="article-body t-task-wrapper">
 
         <div class="t-content-column">
@@ -60,7 +57,7 @@
 
             {* TASK HEADER *}
             <header class="t-task-header">
-                <div class="flexbox wrap-mobile full-width custom-mb-20">
+                <div class="flexbox wrap-mobile full-width middle custom-mb-8">
 
                     <div class="t-task-header-content wide flexbox">
 
@@ -72,9 +69,25 @@
                             <span class="semibold">{$task.project.name|escape|truncate:42}</span>
                         </a>
 
+
+
                     </div>
 
-                    <div class="t-controls-wrapper flexbox middle wrap-mobile space-16">
+                    <div class="t-controls-wrapper flexbox middle wrap-mobile space-12">
+
+                        {if count($task.tags) === 0}
+                            <a class="tags-toggle button circle light-gray" href="#">
+                                <i class="fas fa-hashtag"></i>
+                            </a>
+                            <script>
+                                (function($) {
+                                    $('.tags-toggle').on('click', function (e) {
+                                        e.preventDefault();
+                                        $('.t-task-header .t-tags-wrapper').slideToggle(200);
+                                    });
+                                })(jQuery);
+                            </script>
+                        {/if}
 
                         {* HIDE FROM INBOX OPTIONS *}
                         {$_hash_type = $hash_type|default:''}
@@ -106,7 +119,7 @@
                                         <ul class="menu">
                                             {if $task.hidden_timestamp && $task.hidden_timestamp > time()}
                                                 <li class="t-nav-item">
-                                                    <a class="set-custom-select" href="javascript:void(0);" data-value="">[`Unhide`]</a>
+                                                    <a class="set-custom-select" href="javascript:void(0);" data-value="" title="[`Unhide`]">[`Unhide`]</a>
                                                 </li>
                                             {/if}
                                             {foreach $intervals as $value => $name}
@@ -134,18 +147,18 @@
                         {/if}
 
                         {* WATCH *}
-                        <a class="t-favorite-link button light-gray rounded t-set-favorite nowrap" href="javascript:void(0);">
+                        <a class="t-favorite-link button light-gray rounded t-set-favorite nowrap" href="javascript:void(0);" title="[`Watch`]">
                             <i class="fas fa-star {if empty($task.favorite)}text-light-gray{else}text-yellow{/if}"></i>
-                            <span class="custom-ml-4"{if !empty($task.favorite)} style="display: none;"{/if}>[`Watch`]</span>
-                            <span class="custom-ml-4"{if empty($task.favorite)} style="display: none;"{/if}>[`Watching`]</span>
+                            <span class="custom-ml-4 desktop-only"{if !empty($task.favorite)} style="display: none;"{/if}>[`Watch`]</span>
+                            <span class="custom-ml-4 desktop-only"{if empty($task.favorite)} style="display: none;"{/if}>[`Watching`]</span>
                         </a>
 
                         {* EDIT & DELETE *}
                         {if $task.rights_info.can_edit|default:false}
                             <span>
-                                <a href="#/task/{$task.project_id}.{$task.number}/edit/" class="t-edit-task-link nowrap button light-gray rounded">
+                                <a href="#/task/{$task.project_id}.{$task.number}/edit/" class="t-edit-task-link nowrap button light-gray rounded" title="[`Edit`]">
                                     <i class="fas fa-edit text-blue"></i>
-                                    <span class="custom-ml-4">[`Edit`]</span>
+                                    <span class="custom-ml-4 desktop-only">[`Edit`]</span>
                                 </a>
                             </span>
                         {/if}
@@ -161,10 +174,103 @@
 
                 </div>
 
-                {* USERS & DEADLINES *}
-                <div class="flexbox space-16 custom-mb-16 wrap-mobile">
+                {* TAGS *}
+                <div class="t-tags-wrapper" style="{if count($task.tags) === 0}display: none;{/if}">
+                    <li class="tag is-template">
+                        <a class="t-tag-item" href="javascript:void(0);" data-tag-id="">
+                            <i class="fas fa-hashtag"></i>
+                            <span></span>
+                            <!-- <i class="fas fa-minus-circle t-remove-tag"></i> -->
+                        </a>
+                    </li>
 
-                    <div class="wide" style="position: relative;">
+                    <ul class="chips smaller custom-my-0">
+                        {foreach $task.tags as $tag_id => $tag_name}
+                            <li class="tag">
+                                <a class="t-tag-item" href="#/tasks/tag/{$tag_name|escape}/" data-tag-id="{$tag_id|escape}">
+                                    <i class="fas fa-hashtag"></i>
+                                    <span>{$tag_name|escape}</span>
+                                    <i class="fas fa-times-circle t-remove-tag"></i>
+                                </a>
+                            </li>
+                        {/foreach}
+                        <li class="t-tag-cloud-widget transparent dropdown" id="t-task-dropdown-add-tag">
+                            <a href="javascript:void(0);" class="text-gray dropdown-toggle">
+                                [`Add tag`]
+                            </a>
+                            <div class="dropdown-body custom-p-8" style="min-width: 320px;">
+
+                                {* top tags 'copy-paste #3' *}
+
+                                {$_tag_usage_counts = []}
+                                {foreach $tags_cloud as $tag}
+                                    {$_tag_usage_counts[ $tag.id ] = $tag.count}
+                                {/foreach}
+
+                                {capture}{arsort($_tag_usage_counts)}{/capture}
+
+                                {$_top_tags_ids = []}
+                                {$_max_tag_visible = 25}
+                                {$_i = 0}
+                                {foreach $_tag_usage_counts as $_tid => $_tcount}
+                                    {$_top_tags_ids[ $_tid ] = $_tcount}
+                                    {if $_i >= $_max_tag_visible}
+                                        {break}
+                                    {/if}
+                                    {$_i = $_i + 1}
+                                {/foreach}
+
+                                {$_hidden_tags_counter = 0}
+                                <ul class="chips tags small">
+                                    {if count($tags_cloud)}<li class="transparent"><span>[`Popular tags:`]</span></li>{/if}
+                                    {foreach $tags_cloud as $tag}
+                                        {$_visible = $tag.id|array_key_exists:$_top_tags_ids}
+
+                                        <li{if !$_visible} class="t-tags-hidden-tag js-tags-hidden-tag"{/if}>
+                                            <a class="js-set-tag t-cloud-link"
+                                                data-id="{$tag.id}" href="#/tasks/tag/{$tag.name|escape}/"><i class="fas fa-hashtag"></i> {$tag.name|escape}</a>
+                                        </li>
+                                        {if !$_visible}
+                                            {$_hidden_tags_counter = $_hidden_tags_counter + 1}
+                                        {/if}
+                                    {/foreach}
+
+                                    {if $_hidden_tags_counter > 0}
+                                        <li class="transparent">
+                                            <a href="#" style="background: transparent !important; color: rgba(127,127,127,0.5) !important;" class="js-tags-show-all-link">[`Show all tags`]</a>
+                                        </li>
+                                    {/if}
+                                </ul>
+
+                                <div class="t-input-wrapper">
+                                    <input value="" class="t-input js-t-task-tags-autocomplete small" type="text" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true"
+                                        placeholder="[`Create new tag`]">
+                                </div>
+                            </div>
+
+                            <script>
+                                ( function($) {
+                                    $("#t-task-dropdown-add-tag").waDropdown({
+                                        hover: true,
+                                    });
+
+                                    $('.js-tags-show-all-link').on('click', function (e) {
+                                        e.preventDefault();
+                                        $(this).closest('.tags').find('.js-tags-hidden-tag').show();
+                                        $(this).hide();
+                                    });
+
+                                })(jQuery);
+                            </script>
+
+                        </li>
+                    </ul>
+                </div>
+
+                {* USERS & DEADLINES *}
+                <div class="flexbox space-16 custom-mb-8 custom-mt-16 wrap-mobile">
+
+                    <div class="wide t-task-users-box" style="position: relative;">
 
                         {* AUTHOR OF THE LAST ASSIGNMENT *}
                         {$_assignment_creator = $task.assignment_creator}
@@ -190,11 +296,11 @@
                                         <i class="fas fa-check-circle text-light-gray"></i>
                                     </span>
                                     <div class="wide">
-                                        <p class="small custom-mb-0 semibold text-gray">
+                                        <p class="small custom-mb-4 semibold text-gray">
                                             [`Closed`]
                                         </p>
 
-                                        <p class="t-date-wrapper hint nowrap custom-mt-0">{$task.update_datetime|wa_datetime:'humandatetime'}</p>
+                                        <p class="hint nowrap custom-mt-0">{$task.update_datetime|wa_datetime:'humandatetime'}</p>
 
                                     </div>
                                 {else}
@@ -202,15 +308,18 @@
                                         <img class="userpic userpic48" src="{waContact::getPhotoUrl($_assigned_contact.id, $_assigned_contact.photo, 96)}" alt="{$_assigned_contact.name|escape}">
                                     </a>
                                     <div class="wide">
-                                        <p class="small custom-mb-0">
+                                        <p class="small custom-mb-4">
                                             {if empty($_assigned_contact.delete) && $_assigned_contact.id}
                                                 <a href="#/tasks/assigned/{$_assigned_contact.id}/" class="black bold">{$_assigned_contact.name|escape}</a>
+                                                {if $taskAssignedContactStatus}
+                                                    <span class="badge small nowrap custom-ml-4" style="background-color: {$taskAssignedContactStatus->getBgColor()};color: {$taskAssignedContactStatus->getFontColor()};" title="{$taskAssignedContactStatus->getName()|escape}">{$taskAssignedContactStatus->getName()|escape|truncate:23}</span>
+                                                {/if}
                                             {else}
                                                 <strong class="gray">[`Unassigned`]</strong>
                                             {/if}
                                         </p>
 
-                                        <p class="t-date-wrapper hint nowrap custom-mt-0">{$task.update_datetime|wa_datetime:'humandatetime'}</p>
+                                        <p class="hint nowrap custom-mt-0">{$task.update_datetime|wa_datetime:'humandatetime'}</p>
 
                                     </div>
                                 {/if}
@@ -242,36 +351,112 @@
                                 {$_due_hint = $task.view.due_text}
                                 {$_due_class = $task.view.due_color_class}
                             {/if}
-                            <a href="#" class="custom-m-8 custom-mr-16{if !$task.milestone && !$task.due_date} text-light-gray{else} text-black{/if}">
+                            <a href="#" class="custom-mr-16{if !$task.milestone && !$task.due_date} text-light-gray{else} text-black{/if}">
                                 <span class="icon size-32">
                                     <i class="fas fa-flag-checkered"></i>
                                 </span>
                             </a>
-                            <div class="wide">
-                                <p class="small custom-mb-0">
-                                    {if $_milestone}
-                                        <strong>{$_milestone}</strong>
-                                    {elseif $_due_date}
-                                        <span class="badge nowrap squared {$_due_class} custom-mr-4">{$_due_date}</span>
-                                        {if $_due_hint}
-                                            <span class="small nowrap">{$_due_hint}</span>
+                            <div class="wide middle">
+                                {if count($milestones)}
+
+                                    {* inline milestone selector (dropdown) *}
+
+                                    <div class="dropdown" id="milestoneSelector">
+                                        <div class="dropdown-toggle">
+                                            <p class="small custom-mb-0">
+                                                {if $_milestone}
+                                                    <strong>{$_milestone|truncate:32}</strong>
+                                                {elseif $_due_date}
+                                                    <span class="badge nowrap squared {$_due_class} custom-mr-4">{$_due_date}</span>
+                                                {else}
+                                                    <span class="gray nowrap">[`No milestone`]</span>
+                                                {/if}
+                                            </p>
+                                        </div>
+                                        <div class="dropdown-body right">
+                                            <ul class="menu">
+                                                <li class="bordered-bottom">
+                                                    <a href="javascript:void(0);" data-id="">
+                                                        <span>
+                                                            [`No milestone`]
+                                                        </span>
+                                                    </a>
+                                                </li>
+                                                {foreach $milestones as $milestone}
+                                                <li>
+                                                    <a href="javascript:void(0);" data-id="{$milestone.id}">
+                                                        <span>
+                                                            <span class="milestoneName">{$milestone.name}</span><br>
+                                                            <span class="hint">{wa_date('humandate', $milestone.due_date, waDateTime::getDefaultTimezone())|escape}</span>
+                                                        </span>
+                                                    </a>
+                                                </li>
+                                                {/foreach}
+                                            </ul>
+                                        </div>
+                                        <script>
+                                            (function ($) {
+                                                    $("#milestoneSelector").waDropdown({
+                                                        hover: false,
+                                                        items: ".menu > li > a",
+                                                        update_title: false,
+                                                        change: function (event, target, dropdown) {
+                                                            var formData = new FormData();
+                                                            formData.append("data[milestone_id]", $(target).data("id"));
+
+                                                            var waLoading = $.waLoading();
+
+                                                            waLoading.animate(6000, 99, true);
+
+                                                            $.ajax({
+                                                                url: "?module=tasks&action=save&id={$task.id}",
+                                                                data: formData,
+                                                                cache: false,
+                                                                contentType: false,
+                                                                processData: false,
+                                                                type: 'POST',
+                                                                success: function () {
+                                                                    $.tasks.redispatch(function () {
+                                                                        waLoading.hide();
+                                                                    });
+                                                                }
+                                                            });
+                                                        }
+                                                    });
+                                                })(jQuery);
+                                        </script>
+                                    </div>
+
+                                {else}
+
+                                    {* no milstones in the project => no dropdown*}
+
+                                    <p class="small custom-mb-4">
+                                        {if $_milestone}
+                                            <strong>{$_milestone|truncate:32}</strong>
+                                        {elseif $_due_date}
+                                            <span class="badge nowrap squared {$_due_class} custom-mr-4">{$_due_date}</span>
+                                        {else}
+                                            <span class="gray nowrap">[`No due date`]</span>
                                         {/if}
-                                    {else}
-                                        <span class="gray nowrap">[`No milestone`]</span>
-                                    {/if}
-                                </p>
-                                <p class="hint custom-mt-0">
-                                    {if $_due_date && $_milestone}
-                                        <span class="t-due-date-bl badge nowrap squared {$_due_class} custom-mr-4">{$_due_date}</span>
-                                        {if $_due_hint}
-                                            <span class="small">{$_due_hint}</span>
+                                    </p>
+
+                                {/if}
+
+                                {if $_due_date}
+                                    <p class="hint custom-mt-0">
+                                        {if $_milestone}
+                                            <span class="t-due-date-bl badge nowrap squared {$_due_class} custom-mr-4">{$_due_date}</span>
                                         {/if}
-                                    {elseif !$_due_date || $_milestone}
-                                        [`No due date`]
-                                    {else}
-                                        [`No milestone`]
-                                    {/if}
-                                </p>
+                                        <strong class="small nowrap">{$_due_hint}</strong>
+                                    </p>
+                                {/if}
+                                {if $_milestone && !$_due_date}
+                                    <p class="hint custom-mt-0">
+                                        <span class="gray nowrap">[`No due date`]</span>
+                                    </p>
+                                {/if}
+
                             </div>
                         </div>
 
@@ -288,7 +473,7 @@
             {* @event backend_task.%plugin_id%.after_header *}
             {foreach $_backend_task_hook as $_}{$_.after_header|default:''}{/foreach}
 
-            <hr>
+            <hr class="desktop-and-tablet-only t-task-buttons-divider" />
 
             {* TASK BODY *}
             <div class="flexbox space-12 full-width t-task-body" style="position: relative;">
@@ -306,7 +491,6 @@
 
                     {* TITLE *}
                     <span class="t-task-name-wrapper{if $task.status_id == -1} gray{/if}" href="#/task/{$task.project_id}.{$task.number}/">{$task.name|escape|default:"(no name)"}</span>
-
 
                     {* STATUS *}
                     {if !empty($task.status.name)}
@@ -330,108 +514,9 @@
                     </div>
                 </div>
 
-
-
-
                 <span class="t-visible-block"></span>
 
             </div>
-
-
-
-            {* TAGS *}
-            <div class="t-tags-wrapper custom-mt-16">
-                <li class="tag is-template">
-                    <a class="t-tag-item" href="javascript:void(0);" data-tag-id="">
-                        <i class="fas fa-hashtag"></i>
-                        <span></span>
-                        <!-- <i class="fas fa-minus-circle t-remove-tag"></i> -->
-                    </a>
-                </li>
-
-                <ul class="chips small custom-my-0">
-                    {foreach $task.tags as $tag_id => $tag_name}
-                        <li class="tag">
-                            <a class="t-tag-item" href="#/tasks/tag/{$tag_name|escape}/" data-tag-id="{$tag_id|escape}">
-                                <i class="fas fa-hashtag"></i>
-                                <span>{$tag_name|escape}</span>
-                                <i class="fas fa-times-circle t-remove-tag"></i>
-                            </a>
-                        </li>
-                    {/foreach}
-                    <li class="t-tag-cloud-widget transparent dropdown" id="t-task-dropdown-add-tag">
-                        <a href="javascript:void(0);" class="text-gray dropdown-toggle">
-                            [`Add tag`]
-                        </a>
-                        <div class="dropdown-body custom-p-8" style="min-width: 320px;">
-
-                            {* top tags 'copy-paste #3' *}
-
-                            {$_tag_usage_counts = []}
-                            {foreach $tags_cloud as $tag}
-                                {$_tag_usage_counts[ $tag.id ] = $tag.count}
-                            {/foreach}
-
-                            {capture}{arsort($_tag_usage_counts)}{/capture}
-
-                            {$_top_tags_ids = []}
-                            {$_max_tag_visible = 25}
-                            {$_i = 0}
-                            {foreach $_tag_usage_counts as $_tid => $_tcount}
-                                {$_top_tags_ids[ $_tid ] = $_tcount}
-                                {if $_i >= $_max_tag_visible}
-                                    {break}
-                                {/if}
-                                {$_i = $_i + 1}
-                            {/foreach}
-
-                            {$_hidden_tags_counter = 0}
-                            <ul class="chips tags small">
-                                {foreach $tags_cloud as $tag}
-                                    {$_visible = $tag.id|array_key_exists:$_top_tags_ids}
-
-                                    <li{if !$_visible} class="t-tags-hidden-tag js-tags-hidden-tag"{/if}>
-                                        <a class="js-set-tag t-cloud-link"
-                                            data-id="{$tag.id}" href="#/tasks/tag/{$tag.name|escape}/"><i class="fas fa-hashtag"></i> {$tag.name|escape}</a>
-                                    </li>
-                                    {if !$_visible}
-                                        {$_hidden_tags_counter = $_hidden_tags_counter + 1}
-                                    {/if}
-                                {/foreach}
-
-                                {if $_hidden_tags_counter > 0}
-                                    <li class="transparent">
-                                        <a href="#" style="background: transparent !important; color: rgba(127,127,127,0.5) !important;" class="js-tags-show-all-link">[`Show all tags`]</a>
-                                    </li>
-                                {/if}
-                            </ul>
-
-                            <div class="t-input-wrapper">
-                                <input value="" class="t-input js-t-task-tags-autocomplete small" type="text" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true"
-                                    placeholder="[`Enter new tag...`]">
-                            </div>
-                        </div>
-
-                        <script>
-                            ( function($) {
-                                $("#t-task-dropdown-add-tag").waDropdown({
-                                    hover: false,
-                                });
-
-                                $('.js-tags-show-all-link').on('click', function (e) {
-                                    e.preventDefault();
-                                    $(this).closest('.tags').find('.js-tags-hidden-tag').show();
-                                    $(this).hide();
-                                });
-
-                            })(jQuery);
-                        </script>
-
-                    </li>
-                </ul>
-            </div>
-
-
 
             <!-- plugin hook: 'backend_task.%plugin_id%.before_buttons' -->
             {* @event backend_task.%plugin_id%.before_buttons *}
@@ -442,17 +527,25 @@
 
                 {* PRIMARY ACTION BUTTONS *}
                 <div class="t-task-controls flexbox wrap space-12 full-width">
-                    <div>
-                        <a href="javascript:void(0);" class="t-control-link button light-gray large rounded t-return-link" title="[`Return`]"> <i class="fas fa-arrow-left"></i> [`Return`]</a>
+                    <div class="t-task-button t-task-return">
+                        <a href="javascript:void(0);" class="t-control-link button light-gray t-return-link" title="[`Return`]"> <span class="icon"><i class="fas fa-arrow-left"></i></span> <span class="t-button-label">[`Return`]</span></a>
                     </div>
-                    <div class="wide">
-                        {$task->buttonHtml()}
-                        {if $task.next_status && $task.next_status.id != -1 && (($task.contact_id == $wa->user('id') && $task.assigned_contact_id == $task.contact_id) || $task->hasFullAccess())}
+                    {if $task.next_status && $task.next_status.id != -1 && (($task.contact_id == $wa->user('id') && $task.assigned_contact_id == $task.contact_id) || $task->hasFullAccess())}
+                        {* action & close buttons *}
+                        <div class="t-task-button t-task-action">
+                            {$task->buttonHtml()}
+                        </div>
+                        <div class="t-task-button t-task-close wide">
                             {$task->buttonHtml(-1)}
-                        {/if}
-                    </div>
-                    <div>
-                        <a href="javascript:void(0);" class="t-control-link button light-gray large rounded t-forward-link" title="[`Forward`]"> <i class="fas fa-arrow-right"></i> [`Forward`]</a>
+                        </div>
+                    {else}
+                        {* close button only *}
+                        <div class="t-task-button t-task-close wide">
+                            {$task->buttonHtml()}
+                        </div>
+                    {/if}
+                    <div class="t-task-button t-task-forward">
+                        <a href="javascript:void(0);" class="t-control-link button light-gray t-forward-link" title="[`Forward`]"> <span class="icon"><i class="fas fa-arrow-right"></i></span> <span class="t-button-label">[`Forward`]</span></a>
                     </div>
                 </div>
 
@@ -461,6 +554,7 @@
                 {foreach $_backend_task_hook as $_}{$_.buttons|default:''}{/foreach}
 
             </div>
+            <hr class="t-task-buttons-divider" />
 
             <!-- plugin hook: 'backend_task.%plugin_id%.after_buttons' -->
             {* @event backend_task.%plugin_id%.after_buttons *}
@@ -468,7 +562,7 @@
 
             {* change_status_form HTML *}
             {if !empty($is_single)}
-                <div class="t-status-data-container custom-mb-40"></div>
+                <div class="t-status-data-container custom-mb-8"></div>
             {/if}
 
             <!-- plugin hook: 'backend_task.%plugin_id%.before_description' -->
@@ -476,42 +570,47 @@
             {foreach $_backend_task_hook as $_}{$_.before_description|default:''}{/foreach}
 
             {* TASK CONTENT *}
-            <div class="t-description-wrapper js-description-wrapper custom-mb-20">
+            <div class="t-description-wrapper js-description-wrapper">
 
-                <div class="t-relations-wrapper">
-                    {function insertRelations data=null relation_name=null relation_type=null}
-                        <ul class="bordered t-relations-hover-block custom-my-0">
-                            {foreach $data as $id => $item}
-                                <li data-relation-type="{$relation_type}" data-relation-task="{$id}">
-                                    <div class="flexbox full-width middle space-12 small">
-                                        <!-- <span class="gray">{$relation_name}:</span> -->
-                                        <span class="wide flexbox middle space-8" style="min-width: 0; width: 1px;">
-                                            <span title="{$relation_name}" class="small custom-mt-4"><i class="fas fa-link text-light-gray"></i></span>
-                                            <a title="{$item['name']|escape}" href="#/task/{$item['project']|escape}.{$item['number']|escape}/" class="t-task-link{if $item['status_id'] < 0} gray{/if}"><strong>{$item['project']|escape}.{$item['number']|escape}</strong> {$item['name']|escape}</a>
-                                        </span>
-                                        {if !empty($statuses[$item['status_id']])}
-                                            <span>{tasksHelper::statusNameHTML($item['status_id'])}</span>
-                                        {/if}
-                                        {*
-                                            legacy
-                                            <a class="js-t-invert-relations t-relations-btn js-no-app-icon small" href="javascript:void(0);"><i class="icon10 larr"></i><span>[`invert`]</span></a>&nbsp;
-                                        *}
-                                        <a class="js-t-delete-relations t-relations-btn js-no-app-icon large" href="javascript:void(0);" title="[`Unlink`]"><i class="fas fa-times-circle text-light-gray"></i></a>
-                                    </div>
-                                </li>
-                            {/foreach}
-                        </ul>
-                    {/function}
-                    {if !empty($task.relations.parents)}
-                        {* legacy: 'Parent task' *}
-                        {insertRelations data=$task.relations.parents relation_type="parent" relation_name="[`Linked task`]" }
-                    {/if}
+                {function insertRelations data=null relation_name=null relation_type=null}
+                    <ul class="t-relations-hover-block custom-my-0">
+                        {foreach $data as $id => $item}
+                            <li data-relation-type="{$relation_type}" data-relation-task="{$id}" style="border: none;">
+                                <div class="flexbox full-width middle space-12 small">
+                                    <!-- <span class="gray">{$relation_name}:</span> -->
+                                    <span class="wide flexbox middle space-8" style="min-width: 0; width: 1px;">
+                                        <span title="{$relation_name}" class="small custom-mt-4"><i class="fas fa-link text-light-gray"></i></span>
+                                        <a title="{$item['name']|escape}" href="#/task/{$item['project']|escape}.{$item['number']|escape}/" class="t-task-link{if $item['status_id'] < 0} gray{/if}">
+                                            {if !empty($statuses[$item['status_id']])}
+                                                <span class="custom-mx-4">{tasksHelper::statusNameHTML($item['status_id'])}</span>
+                                            {/if}
+                                            <strong class="custom-mr-4">{$item['project']|escape}.{$item['number']|escape}</strong>
+                                            <span>{$item['name']|escape}</span>
+                                        </a>
+                                    </span>
+                                    {*
+                                        legacy
+                                        <a class="js-t-invert-relations t-relations-btn js-no-app-icon small" href="javascript:void(0);"><i class="icon10 larr"></i><span>[`invert`]</span></a>&nbsp;
+                                    *}
+                                    <a class="js-t-delete-relations t-relations-btn js-no-app-icon large" href="javascript:void(0);" title="[`Unlink`]"><i class="fas fa-times-circle text-light-gray"></i></a>
+                                </div>
+                            </li>
+                        {/foreach}
+                    </ul>
+                {/function}
+                {if !empty($task.relations.parents) || !empty($task.relations.childs)}
+                    <div class="t-relations-wrapper">
+                        {if !empty($task.relations.parents)}
+                            {* legacy: 'Parent task' *}
+                            {insertRelations data=$task.relations.parents relation_type="parent" relation_name="[`Linked task`]" }
+                        {/if}
 
-                    {if !empty($task.relations.childs)}
-                        {* legacy: 'Child task' *}
-                        {insertRelations data=$task.relations.childs  relation_type="child" relation_name="[`Linked task`]"}
-                    {/if}
-                </div>
+                        {if !empty($task.relations.childs)}
+                            {* legacy: 'Child task' *}
+                            {insertRelations data=$task.relations.childs  relation_type="child" relation_name="[`Linked task`]"}
+                        {/if}
+                    </div>
+                {/if}
 
                 {tasksTask::formatText($task.text)}
 
@@ -591,7 +690,7 @@
 
             {/if}
 
-            <h3 class="custom-mt-32">[`History &amp; Comments`] <span class="hint">{count($task.log)}</span></h3>
+            <h3 class="t-comments-h3 custom-mt-32">[`History &amp; Comments`] <span class="hint">{count($task.log)}</span></h3>
 
             <!-- plugin hook: 'backend_task.%plugin_id%.before_hidden_block' -->
             {* @event backend_task.%plugin_id%.before_hidden_block *}
@@ -602,7 +701,7 @@
 
                 <div class="t-comments-list-wrapper js-comments-list-wrapper">
                     {foreach $task.log as $l}
-                        <div class="t-comment-item-wrapper custom-mb-20 {if $l.contact_id == $wa->user()->getId()}t-comment-item-wrapper--right{/if}" data-id="{$l.id}">
+                        <div class="t-comment-item-wrapper {if $l.contact_id == $wa->user()->getId()}t-comment-item-wrapper--right{/if}" data-id="{$l.id}">
 
                             {$_rights_info = $l.rights_info|default:[]}
                             {$_can_edit = $_rights_info.can_edit|default:false}
@@ -620,41 +719,65 @@
                                 {$_can_edit = $_can_edit && !$_empty_log_item}
                             {/if}
 
-                            <div class="t-comment-item flexbox space-8 {if !empty($l.text)}t-comment-with-custom-text {/if}{if $task.comment_log_id == $l.id}t-pinned-comment{/if}" data-id="{$l.id}">
+                            <div class="t-comment-item flexbox {if !empty($l.text)}t-comment-with-custom-text {/if}{if $task.comment_log_id == $l.id}t-pinned-comment{/if}" data-id="{$l.id}">
                                 <div class="image">
                                     <a href="{if !empty($l.contact.id)}#/tasks/assigned/{$l.contact.id}/{* tasksHelper::getProfileURL($l.contact.id) *}{else}javascript:void(0);{/if}" title="{$l.contact.name|escape}">
                                         {if !empty({$l.contact.photo_url})}
-                                            <img class="userpic userpic-32" src="{$l.contact.photo_url}" alt="{$l.contact.name|escape}">
+                                            <img class="userpic userpic-32 custom-mt-4" src="{$l.contact.photo_url}" alt="{$l.contact.name|escape}">
                                             {else}
-                                            <img class="userpic userpic-32" src="/wa-content/img/userpic96@2x.jpg">
+                                            <img class="userpic userpic-32 custom-mt-4" src="/wa-content/img/userpic96@2x.jpg">
                                         {/if}
                                     </a>
                                 </div>
                                 <div class="details">
-                                    <header class="t-comment-header flexbox full-width middle space-8">
+                                    <header class="t-comment-header wrap-mobile flexbox full-width middle space-8">
                                         <div class="wide flexbox wrap space-4">
+
+                                            {if $l.status_changed}
+                                                <div class="t-comment-status-change small gray">
+                                                    {if isset($l.before_status_id) && $l.before_status_id != $l.after_status_id}
+                                                        {tasksHelper::statusNameHTML($l.before_status_id)}
+                                                        &nbsp;→&nbsp;
+                                                    {/if}
+                                                    {tasksHelper::statusNameHTML($l.after_status_id)}
+                                                </div>
+                                            {/if}
+
                                             <span class="t-comment-author small">
-                                                <a href="{if !empty($l.contact.id)}#/tasks/assigned/{$l.contact.id}/{* tasksHelper::getProfileURL($l.contact.id) *}{else}javascript:void(0);{/if}" class="bold">{$l.contact.name|escape}</a>
+                                                <a href="{if !empty($l.contact.id)}#/tasks/assigned/{$l.contact.id}/{* tasksHelper::getProfileURL($l.contact.id) *}{else}javascript:void(0);{/if}" class="bold">{$l.contact.name|escape|default:_w('(no name)')}</a>
                                             </span>
-                                            {if $l.action == 'edit' || $l.action == 'comment' || $l.action == 'forward'}
+                                            {if $l.action == 'edit' || $l.action == 'comment' || $l.action == 'forward'|| $l.action == 'return'}
                                                 <span class="t-comment-action small">{$l.action_name}</span>
                                             {/if}
+
+                                            {if $l.assignment_changed}
+                                                <div class="t-comment-assignment-change small">
+                                                    {if $l.assigned_contact_id}
+                                                        {if !empty($l.assigned_contact.name)}<span class="gray custom-mx-4">→</span>{/if}
+                                                        <a href="#/tasks/assigned/{$l.assigned_contact.id}/" class="bold">{$l.assigned_contact.name|escape}</a>
+                                                    {else}
+                                                        <span class="gray">→</span>
+                                                        <span class="gray">[`Assignment removed`]</span>
+                                                    {/if}
+                                                </div>
+                                            {/if}
+
                                             <span class="t-comment-date nowrap hint middle">{$l.create_datetime|wa_datetime:"humandatetime"}</span>
                                         </div>
 
                                         {* MARK LAST NOT EMPTY FORWARD LOG ITEM *}
-                                        {if $_is_forward && !$_empty_log_item && $task.assign_log_id && $task.assign_log_id == $l.id}
+                                        {*** [wtf is that?] if $_is_forward && !$_empty_log_item && $task.assign_log_id && $task.assign_log_id == $l.id}
                                             <span><i class="fas fa-bolt"></i></span>
-                                        {/if}
+                                        {/if ***}
 
-                                        {if $_is_comment}
+                                        {if $_is_comment && !empty($l.text)}
                                             {if !($task.comment_log_id == $l.id)}
-                                                <a href="javascript:void(0);" class="t-assign-comment-link button rounded white small nowrap" data-id="{$l.id}">
-                                                    <i class="fas fa-thumbtack"></i> <span class="small">[`Pin`]</span>
+                                                <a href="javascript:void(0);" class="t-assign-comment-link button rounded light-gray small nowrap" data-id="{$l.id}">
+                                                    <i class="fas fa-thumbtack fa-xs text-blue"></i> <span class="small">[`Pin`]</span>
                                                     <!-- <i class="icon16 loading t-loading"></i> -->
                                                 </a>
                                             {else}
-                                                <span class="small gray nowrap"><i class="fas fa-thumbtack"></i> [`Pinned`]</span>
+                                                <span class="small gray nowrap"><i class="fas fa-thumbtack text-blue"></i> [`Pinned`]</span>
                                             {/if}
                                         {/if}
 
@@ -672,26 +795,8 @@
 
                                     </header>
 
-                                    {if $l.status_changed}
-                                        <div class="t-comment-status-change small gray">
-                                            {if $l.before_status_id}{tasksHelper::statusNameHTML($l.before_status_id)} → {/if}{tasksHelper::statusNameHTML($l.after_status_id)}
-                                        </div>
-                                    {/if}
-
                                     {if !empty($l.text)}
                                         <div class="t-comment-content">{tasksTask::formatText($l.text)}</div>
-                                    {/if}
-
-                                    {if $l.assignment_changed}
-                                        {if $l.assigned_contact_id}
-                                            <div class="t-comment-assignment-change small gray">
-                                                [`Assigned:`] <strong>{$l.assigned_contact.name|escape}</strong>
-                                            </div>
-                                        {else}
-                                            <div class="t-comment-assignment-change small gray">
-                                                [`Assignment removed`]
-                                            </div>
-                                        {/if}
                                     {/if}
 
                                     {if $log_attachments.files || $log_attachments.images}

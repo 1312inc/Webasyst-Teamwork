@@ -25,11 +25,6 @@ final class tasksApiProjectDto implements JsonSerializable
     private $create_datetime;
 
     /**
-     * @var int|null
-     */
-    private $tasks_number;
-
-    /**
      * @var string
      */
     private $icon;
@@ -49,26 +44,33 @@ final class tasksApiProjectDto implements JsonSerializable
      */
     private $sort;
 
+    /**
+     * @var tasksApiCountsDto
+     */
+    private $counts;
+
     public function __construct(
         int $id,
         string $name,
-        int $contact_id,
-        DateTimeImmutable $create_datetime,
-        ?int $tasks_number,
+        int $contactId,
+        DateTimeImmutable $createDatetime,
         string $icon,
         string $color,
-        ?DateTimeImmutable $archive_datetime,
-        int $sort
+        ?DateTimeImmutable $archiveDatetime,
+        int $sort,
+        tasksApiCountsDto $counts
     ) {
         $this->id = $id;
         $this->name = $name;
-        $this->contact = tasksApiContactDtoFactory::fromContactId($contact_id);
-        $this->create_datetime = $create_datetime->format('Y-m-d H:i:s');
-        $this->tasks_number = $tasks_number;
+        $this->contact = tasksApiContactDtoFactory::fromContactId($contactId);
+        $this->create_datetime = $createDatetime->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d\TH:i:sP');
         $this->icon = $icon;
         $this->color = $color;
-        $this->archive_datetime = $archive_datetime ? $archive_datetime->format('Y-m-d H:i:s') : null;
+        $this->archive_datetime = $archiveDatetime
+            ? $archiveDatetime->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d\TH:i:sP')
+            : null;
         $this->sort = $sort;
+        $this->counts = $counts;
     }
 
     public function getId(): int
@@ -91,11 +93,6 @@ final class tasksApiProjectDto implements JsonSerializable
         return $this->create_datetime;
     }
 
-    public function getTasksNumber(): ?int
-    {
-        return $this->tasks_number;
-    }
-
     public function getIcon(): string
     {
         return $this->icon;
@@ -114,5 +111,10 @@ final class tasksApiProjectDto implements JsonSerializable
     public function getSort(): int
     {
         return $this->sort;
+    }
+
+    public function getCounts(): tasksApiCountsDto
+    {
+        return $this->counts;
     }
 }

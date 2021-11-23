@@ -12,7 +12,7 @@ final class tasksApiResponse implements tasksApiResponseInterface
      */
     private $status;
 
-    public function __construct(int $status = self::HTTP_OK, $response = 'ok')
+    public function __construct(int $status = self::HTTP_OK, $response = tasksApiResponseInterface::RESPONSE_OK)
     {
         $this->status = $status;
         $this->response = $response;

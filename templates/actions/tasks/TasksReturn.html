@@ -1,13 +1,11 @@
 {strip}
 
-{$ident = rand(0, 1024)}
-
-<div class="t-return-form-block" id="return-wrapper-{$ident}">
+<div class="t-return-form-block" id="return-wrapper-{$task.id}">
     <form method="post" action="?module=tasksLog&action=return&id={$task.id}">
     <div class="fields">
         <div class="field">
             <div class="name for-checkbox">[`Return to status`]</div>
-            <div class="value large">{tasksHelper::statusNameHTML($task.return_status.id)}</div>
+            <div class="value">{tasksHelper::statusNameHTML($task.return_status.id)}</div>
         </div>
         <div class="field">
             <div class="name for-checkbox">[`Assign to`]</div>
@@ -40,12 +38,15 @@
 
 <script>
     (function ($) {
-        $R('#return-wrapper-{$ident} .t-redactor-comments', {
-            'focus': true,
-            imageData: {
-                task_uuid: '{$task.uuid}'
-            }
-        });
+        if ($.tasks.options.text_editor === 'wysiwyg') {
+            $R('#return-wrapper-{$task.id} .t-redactor-comments', {
+                'focus': true,
+                minHeight: '150px',
+                imageData: {
+                    task_uuid: '{$task.uuid}'
+                }
+            });
+        }
     })(jQuery);
 </script>
 

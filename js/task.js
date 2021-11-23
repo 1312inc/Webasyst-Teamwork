@@ -68,6 +68,8 @@ var Task = ( function($) {
             that.$statusWrapper = that.$task.find(".t-status-data-container");
         }
 
+        that.initCommentBackground();
+
         // INIT
         that.initTask();
     };
@@ -135,6 +137,24 @@ var Task = ( function($) {
         };
     };
 
+    Task.prototype.initCommentBackground = function () {
+        var $bg = document.querySelector('.t-single-task-wrapper'),
+            $contentBlockTitle = document.querySelector('.t-comments-h3');
+
+        function recalculateBackground () {
+            var commentsFromTop = $contentBlockTitle.getBoundingClientRect().top - $bg.getBoundingClientRect().top - 20;
+            if (commentsFromTop > 0) {
+                setTimeout(function () {
+                    $bg.style.background = 'linear-gradient(180deg, var(--background-color-blank), var(--background-color-blank) ' + commentsFromTop + 'px, var(--background-color-history) ' + commentsFromTop + 'px)';
+                }, 0);
+            }
+        }
+
+        if ($bg && $contentBlockTitle) {
+            new ResizeObserver(recalculateBackground).observe($bg);
+        }
+    }
+
     Task.prototype.initTask = function() {
         var that = this;
 
@@ -146,7 +166,7 @@ var Task = ( function($) {
 
         that.initGallery();
 
-        that.maybeUpdateTimeCounter(); // initial call to set last update time
+        // that.maybeUpdateTimeCounter(); // initial call to set last update time
 
         that.initPriorityChanger();
 
@@ -414,6 +434,7 @@ var Task = ( function($) {
                     if (response["status"] == "ok") {
                         that.reloadTask();
                         hidePriorityChanger();
+                        $.tasks.reloadSidebar();
                     }
                 });
             }, timer_time);
@@ -466,11 +487,21 @@ var Task = ( function($) {
 
             $task.on("click", ".t-forward-link", function() {
                 showForwardForm();
+                var $link = $(this);
+                $link.addClass('disabled');
+                setTimeout(function () {
+                    $link.removeClass('disabled');
+                }, 1000);
                 return false;
             });
 
             $task.on("click", ".t-return-link", function() {
                 showReturnForm();
+                var $link = $(this);
+                $link.addClass('disabled');
+                setTimeout(function () {
+                    $link.removeClass('disabled');
+                }, 1000);
                 return false;
             });
 
@@ -479,10 +510,16 @@ var Task = ( function($) {
                     assigned_contact_id = that.task.assigned_contact_id,
                     status_id = $link.data('statusId'),
                     current_user_id = that.user_id,
-                    skip_form = !!e.shiftKey;
+                    skip_form = !!e.shiftKey,
+                    isCloseButton = +$link.data('status-id') === -1;
+
+                $link.addClass('disabled');
+                setTimeout(function () {
+                    $link.removeClass('disabled');
+                }, 1000);
 
                 // Show spinner if Status has no form
-                if ($link.data('has-form') === 0) {
+                if ($link.data('has-form') === 0 && !isCloseButton ) {
                     $.tasks.showLoadingButton($link);
                 }
 
@@ -491,6 +528,9 @@ var Task = ( function($) {
                         assigned_contact_id !== current_user_id;
 
                 if (!need_show_confirm_dialog) {
+                    if (isCloseButton) {
+                        $.tasks.showLoadingButton($link);
+                    }
                     onChangeStatus($link, skip_form);
                     return false;
                 }
@@ -938,6 +978,8 @@ var Task = ( function($) {
                 $.waDrawer({
                     html: wrappedHtml,
                     direction: direction,
+                    esc: false,
+                    lock_body_scroll: false,
                     onOpen: function ($drawer, drawer_instance) {
                         // Focus
                         $drawer.find("textarea").focus();
@@ -992,11 +1034,14 @@ var Task = ( function($) {
 
         var bindEvents = function() {
 
-            $R('.t-redactor-comments', {
-                imageData: {
-                    task_uuid: that.task_uuid
-                }
-            });
+            if ($.tasks.options.text_editor === 'wysiwyg') {
+                $R('.t-redactor-comments', {
+                    minHeight: '150px',
+                    imageData: {
+                        task_uuid: that.task_uuid
+                    }
+                });
+            }
 
             $commentForm.on("submit", function() {
                 var $submitButton = $(this).find('[type="submit"]');
@@ -1410,7 +1455,7 @@ var Task = ( function($) {
     Task.prototype.deleteRelations = function ($this) {
         if (confirm( $_('Unlink these tasks?') )) {
             var that = this,
-                $parent = $this.parent(),
+                $parent = $this.closest('li'),
                 type = $parent.data('relation-type'),
                 relation_task_id = $parent.data('relation-task'),
                 delete_href = "?module=tasks&action=deleteRelations",
@@ -1546,7 +1591,8 @@ var Task = ( function($) {
         var that = this,
             is_selected = (typeof tasksHeader !== 'undefined') ? tasksHeader.selectedTasks.hasOwnProperty(that.task_id) : undefined,
             update_href,
-            params = {};
+            params = {},
+            waLoading = $.waLoading();
 
         callbacks = callbacks || {};
         var afterReplace = typeof callbacks.afterReplace === 'function' ? callbacks.afterReplace : null;
@@ -1573,7 +1619,12 @@ var Task = ( function($) {
             that.selectTask(false);
         }
 
+        // Show progress bar
+        waLoading.animate(6000, 99, true);
+
         $.get(update_href, params, function(response) {
+
+            waLoading.hide();
 
             var $updatedTask = $(response).find(".t-task-outer-container");
 

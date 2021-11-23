@@ -5,7 +5,7 @@ final class tasksApiProjectsResponse implements tasksApiResponseInterface
     /**
      * @var array<tasksApiProjectDto>
      */
-    private $projects = [];
+    private $projects;
 
     /**
      * tasksApiProjectsResponse constructor.
@@ -14,8 +14,13 @@ final class tasksApiProjectsResponse implements tasksApiResponseInterface
      */
     public function __construct(array $projects)
     {
+        $counts = tasksApiCountsDtoFactory::createForProjects();
+
         foreach ($projects as $project) {
-            $this->projects[] = tasksApiProjectDtoFactory::fromEntity($project);
+            $this->projects[] = tasksApiProjectDtoFactory::fromEntity(
+                $project,
+                $counts[$project->getId()] ?? tasksApiCountsDtoFactory::createEmpty()
+            );
         }
     }
 
@@ -26,6 +31,9 @@ final class tasksApiProjectsResponse implements tasksApiResponseInterface
 
     public function getResponseBody(): array
     {
-        return $this->projects;
+        return [
+            'total_count' => count($this->projects),
+            'data' => $this->projects,
+        ];
     }
 }

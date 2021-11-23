@@ -18,6 +18,9 @@
 
             .t-task-item-title
                 font-size 0.9375rem
+                line-height 1.375
+                margin-bottom 0.25rem
+                display block
 
                 .t-status-wrapper
                     font-size 0.875rem
@@ -41,6 +44,19 @@
                 position relative
                 box-shadow 0 0.5rem 1rem -0.5rem var(--dialog-shadow-color)
                 z-index 1
+
+.t-single-task-wrapper
+    .article
+        min-height calc(100vh - 4rem)
+        
+        .article-body
+            padding 2rem 4rem
+
+            @media forMedium
+              padding 1rem 2.5rem
+
+            @media forMobile
+              padding 0.75rem 1rem
 
 .t-status-wrapper
     white-space nowrap
@@ -170,8 +186,12 @@
                 display inline
 
 .t-task-header
+    margin-bottom 0.5rem
+
     .t-menu-name
         margin-top 0.5rem
+        line-height 1
+        font-size 0.9375rem
 
         .icon
             margin-right 0.75rem
@@ -179,27 +199,105 @@
             .size-20
                 width 1.25rem
                 height 1.25rem
-                margin-top 0.125rem
+                margin-top -0.125rem
+
+    .t-controls-wrapper
+        font-size 0.9375rem
+
+        @media forMobile
+            margin-top: 0.75rem
+
+        svg
+            font-size 1rem
+            height 1rem
+
+.t-task-body
+    margin-top 1rem
+    margin-bottom 0.25rem
+
+    h2
+        line-height 1.3em
+
+        @media forMedium
+            font-size 1.5rem
+
+    @media forMedium
+        margin-top 0.75rem
+
+    @media forMobile
+        margin-top 1rem
+
+.t-task-buttons-divider
+    margin-bottom 0
+    margin-top 0
 
 .t-quote-wrapper
     border-radius 1rem
 
 .t-task-buttons
-    background-color var(--dialog-background-color)
+    background-color var(--buttons-sticky-mode-background-color)
     backdrop-filter blur(0.25rem)
     position sticky
     z-index 13
     top 4rem
-    margin-top 1rem
-    margin-bottom 1rem
-    padding 1rem 0
+    margin-top 0rem
+    margin-bottom 0rem
+    padding 0.5rem 0
     line-height 3rem
+
+    @media forMedium
+        padding 0.25rem 0
 
     @media forMobile
         position static
 
+    .t-task-button
+        .button
+            font-size 112.5%
+
+            @media forMedium
+                font-size 100%
+
+            @media forMobile
+                font-size 125%
+                margin-bottom 0.75rem
+
+        .icon
+            vertical-align 0.0625em
+            font-size 1rem
+
+            @media forMedium
+                font-size 0.875rem
+
+            @media forMobile
+                display block
+                font-size 1.5rem
+                text-align center
+                margin 0.125rem auto 0
+
+        .t-button-label
+            @media forMobile
+                font-size 0.8125rem
+
+        @media forMobile
+            order 2
+
+    .t-task-button.t-task-action
+        @media forMobile
+            flex 1 0 100%
+            order 1
+
+            .button
+                width 100%
+
+    .t-task-button.t-task-close
+        @media forMobile
+            .button
+                width 100%
+
+
 .t-relations-wrapper
-    margin-bottom 2.5rem
+    margin-bottom 1.5rem
 
     .app-icon
         width 1.25rem
@@ -211,6 +309,3 @@
         padding-top 0.25em
         padding-bottom 0.25em
         margin-top 0.1875rem
-
-.t-add-comment-button
-    margin-left 60px !important

@@ -20,9 +20,24 @@ final class tasksApiTaskDto implements JsonSerializable
     private $text;
 
     /**
+     * @var string
+     */
+    private $text_stripped;
+
+    /**
      * @var tasksApiContactDto
      */
     private $create_contact;
+
+    /**
+     * @var tasksApiContactDto|null
+     */
+    private $visavis_contact;
+
+    /**
+     * @var tasksApiContactDto|null
+     */
+    private $assignment_creator_contact;
 
     /**
      * @var string
@@ -62,6 +77,16 @@ final class tasksApiTaskDto implements JsonSerializable
     /**
      * @var int|null
      */
+    private $next_status_id;
+
+    /**
+     * @var int|null
+     */
+    private $return_status_id;
+
+    /**
+     * @var int|null
+     */
     private $parent_id;
 
     /**
@@ -97,7 +122,7 @@ final class tasksApiTaskDto implements JsonSerializable
     /**
      * @var tasksApiAttachmentDto[]
      */
-    private $all_attachments;
+    private $attachments;
 
     /**
      * @var tasksApiLogDto[]
@@ -115,76 +140,207 @@ final class tasksApiTaskDto implements JsonSerializable
     private $project;
 
     /**
-     * tasksApiTaskDto constructor.
-     *
-     * @param int                     $id
-     * @param string                  $name
-     * @param string                  $text
-     * @param tasksApiContactDto      $create_contact
-     * @param string                  $create_datetime
-     * @param string|null             $update_datetime
-     * @param tasksApiContactDto      $assigned_contact
-     * @param int                     $project_id
-     * @param int|null                $milestone_id
-     * @param int                     $number
-     * @param int                     $status_id
-     * @param int|null                $parent_id
-     * @param int                     $priority
-     * @param int|null                $assign_log_id
-     * @param int|null                $comment_log_id
-     * @param int|null                $contact_id
-     * @param int                     $hidden_timestamp
-     * @param string|null             $due_date
-     * @param tasksApiAttachmentDto[] $all_attachments
-     * @param tasksApiLogDto[]        $log
-     * @param tasksApiTagDto[]        $tags
-     * @param tasksApiProjectDto|null $project
+     * @var bool
      */
+    private $favorite;
+
     public function __construct(
         int $id,
         string $name,
         string $text,
-        tasksApiContactDto $create_contact,
-        string $create_datetime,
-        ?string $update_datetime,
-        ?tasksApiContactDto $assigned_contact,
-        int $project_id,
-        ?int $milestone_id,
+        tasksApiContactDto $createContact,
+        ?tasksApiContactDto $visavisContact,
+        ?tasksApiContactDto $assignmentCreatorContact,
+        string $createDatetime,
+        ?string $updateDatetime,
+        ?tasksApiContactDto $assignedContact,
+        int $projectId,
+        ?int $milestoneId,
         int $number,
-        int $status_id,
-        ?int $parent_id,
+        int $statusId,
+        ?int $nextStatusId,
+        ?int $returnStatusId,
+        ?int $parentId,
         int $priority,
-        ?int $assign_log_id,
-        ?int $comment_log_id,
-        ?int $contact_id,
-        int $hidden_timestamp,
-        ?string $due_date,
-        array $all_attachments,
+        ?int $assignLogId,
+        ?int $commentLogId,
+        ?int $contactId,
+        int $hiddenTimestamp,
+        ?string $dueDate,
+        array $allAttachments,
         array $log,
         array $tags,
-        ?tasksApiProjectDto $project
+        ?tasksApiProjectDto $project,
+        bool $favorite,
+        string $text_stripped
     ) {
         $this->id = $id;
         $this->name = $name;
         $this->text = $text;
-        $this->create_contact = $create_contact;
-        $this->create_datetime = $create_datetime;
-        $this->update_datetime = $update_datetime;
-        $this->assigned_contact = $assigned_contact;
-        $this->project_id = $project_id;
-        $this->milestone_id = $milestone_id;
+        $this->create_contact = $createContact;
+        $this->create_datetime = $createDatetime;
+        $this->update_datetime = $updateDatetime;
+        $this->assigned_contact = $assignedContact;
+        $this->assignment_creator_contact = $assignmentCreatorContact;
+        $this->project_id = $projectId;
+        $this->milestone_id = $milestoneId;
         $this->number = $number;
-        $this->status_id = $status_id;
-        $this->parent_id = $parent_id;
+        $this->status_id = $statusId;
+        $this->parent_id = $parentId;
         $this->priority = $priority;
-        $this->assign_log_id = $assign_log_id;
-        $this->comment_log_id = $comment_log_id;
-        $this->contact_id = $contact_id;
-        $this->hidden_timestamp = $hidden_timestamp;
-        $this->due_date = $due_date;
-        $this->all_attachments = $all_attachments;
+        $this->assign_log_id = $assignLogId;
+        $this->comment_log_id = $commentLogId;
+        $this->contact_id = $contactId;
+        $this->hidden_timestamp = $hiddenTimestamp;
+        $this->due_date = $dueDate;
+        $this->attachments = $allAttachments;
         $this->log = $log;
         $this->tags = $tags;
         $this->project = $project;
+        $this->visavis_contact = $visavisContact;
+        $this->next_status_id = $nextStatusId;
+        $this->return_status_id = $returnStatusId;
+        $this->favorite = $favorite;
+        $this->text_stripped = $text_stripped;
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function getText(): string
+    {
+        return $this->text;
+    }
+
+    public function getCreateContact(): tasksApiContactDto
+    {
+        return $this->create_contact;
+    }
+
+    public function getVisavisContact(): ?tasksApiContactDto
+    {
+        return $this->visavis_contact;
+    }
+
+    public function getAssignmentCreatorContact(): ?tasksApiContactDto
+    {
+        return $this->assignment_creator_contact;
+    }
+
+    public function getCreateDatetime(): string
+    {
+        return $this->create_datetime;
+    }
+
+    public function getUpdateDatetime(): ?string
+    {
+        return $this->update_datetime;
+    }
+
+    public function getAssignedContact(): ?tasksApiContactDto
+    {
+        return $this->assigned_contact;
+    }
+
+    public function getProjectId(): int
+    {
+        return $this->project_id;
+    }
+
+    public function getMilestoneId(): ?int
+    {
+        return $this->milestone_id;
+    }
+
+    public function getNumber(): int
+    {
+        return $this->number;
+    }
+
+    public function getStatusId(): int
+    {
+        return $this->status_id;
+    }
+
+    public function getNextStatusId(): ?int
+    {
+        return $this->next_status_id;
+    }
+
+    public function getReturnStatusId(): ?int
+    {
+        return $this->return_status_id;
+    }
+
+    public function getParentId(): ?int
+    {
+        return $this->parent_id;
+    }
+
+    public function getPriority(): int
+    {
+        return $this->priority;
+    }
+
+    public function getAssignLogId(): ?int
+    {
+        return $this->assign_log_id;
+    }
+
+    public function getCommentLogId(): ?int
+    {
+        return $this->comment_log_id;
+    }
+
+    public function getContactId(): ?int
+    {
+        return $this->contact_id;
+    }
+
+    public function getHiddenTimestamp(): int
+    {
+        return $this->hidden_timestamp;
+    }
+
+    public function getDueDate(): ?string
+    {
+        return $this->due_date;
+    }
+
+    public function getAttachments(): array
+    {
+        return $this->attachments;
+    }
+
+    public function getLog(): array
+    {
+        return $this->log;
+    }
+
+    public function getTags(): array
+    {
+        return $this->tags;
+    }
+
+    public function getProject(): ?tasksApiProjectDto
+    {
+        return $this->project;
+    }
+
+    public function isFavorite(): bool
+    {
+        return $this->favorite;
+    }
+
+    public function getTextStripped(): string
+    {
+        return $this->text_stripped;
     }
 }

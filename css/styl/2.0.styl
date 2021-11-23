@@ -46,10 +46,10 @@ h2
     transform rotate(360deg)
 
 .sidebar.t-task-list-sidebar
-  width 26rem
+  width 25rem
 
   @media forMedium
-    width 24rem
+    width 22rem
 
   @media forMobile
     width 100%
@@ -60,13 +60,6 @@ h2
 .drawer-block
   h1
     margin-bottom 2rem
-
-.article .article-body
-  @media forMedium
-    padding 3rem
-
-  @media forMobile
-    padding 2rem 1rem
 
 #sidebar.sidebar.width-adaptive
   min-width 13rem
@@ -87,10 +80,8 @@ h2
   border-radius 0.25rem
   padding 0.4rem !important
 
-  code
-    width 0
-    display block
-    padding 0
+pre
+  white-space normal
 
 .t-project-icon
 
@@ -208,19 +199,22 @@ h2
     justify-content flex-end
 
   .t-comment-item
-    width 80%
-    border-radius 0.5rem
-    padding 0.75rem
-    background var(--background-color)
+    width 100%
+    padding 1.25rem 0
+    border-bottom 1px solid var(--border-color-soft)
 
     .details
       margin-top -0.25rem
       flex-grow 1
+      max-width 80%
 
     .t-comment-content
       font-size 0.9375rem
       margin 0.5rem 0 0.75rem
-      font-weight 500
+      word-break break-word
+      background var(--background-color)
+      border-radius 0.375rem
+      padding 0.5rem 1.25rem
 
       blockquote
         padding 0.75rem 1rem
@@ -233,21 +227,63 @@ h2
         background var(--highlighted-blue)
 
     &.t-comment-with-custom-text
-        //background var(--background-color-blank)
-        border 2px solid var(--border-color-soft)
-
-    @media forMobile
-        width 85%
+        //background var(--background-color)
+        //border-radius 0.5rem
+        //margin 1rem 0 0
+        //border none
 
 .t-pinned-comment
     background var(--highlighted-blue)
     border-radius 0.25rem
     color var(--text-color-strong) !important
-    padding 0.5rem 0.75rem
-    word-break break-word
+    padding 0.5rem 0.5rem
 
     .icon
         font-size 1rem
+
+.t-task-wrapper
+    .t-comment-item-wrapper
+
+      .t-comment-item
+         width calc(100% - 2.75rem)
+         border-bottom none
+         flex-direction row
+         padding 0.75rem 0
+
+         .image
+            margin-right 0.75rem
+
+         .details
+             background var(--background-color-input)
+             border-radius 0.375rem
+             padding 0.75rem 1rem
+
+         .t-comment-content
+             padding 0
+
+      @media forMobile
+         width 100%
+
+      .t-comment-item.t-pinned-comment
+         background transparent
+
+      .t-comment-item.t-comment-with-custom-text
+         .t-comment-content
+            background var(--background-color-blank)
+
+         .details
+            border 2px solid var(--border-color-soft)
+            background var(--background-color-blank)
+            box-shadow 0 0.5rem 1.5rem -1rem var(--dialog-shadow-color)
+
+      &--right
+         .t-comment-item
+             flex-direction row-reverse
+
+             .image
+                margin-right 0
+                margin-left 0.75rem
+
 
 .t-task-embedded-block
     padding 0 0 1rem
@@ -256,13 +292,26 @@ h2
 
 .redactor-box.redactor-styles-on
     border-width 2px !important
-    border-radius 0.25rem !important
+    border-radius 0.375rem 0.375rem 0 0 !important
+    border-color var(--border-color-soft) !important
     border-bottom-color transparent !important
 
-.redactor-styles
-    code
-        background-color var(--background-color-blockquote) !important
-        color var(--text-color-stronger) !important
+    .redactor-toolbar
+        padding 13px 13px 0 !important
+
+textarea.t-redactor-task-edit,
+textarea.t-redactor-comments
+    display block
+    width 100%
+    height 200px
+    resize vertical
+    box-sizing border-box
+    border-width 2px
+    border-radius 0.375rem 0.375rem 0 0
+    border-color var(--border-color-soft)
+    border-bottom-color transparent
+    background-color var(--background-color-blank)
+    padding 0.5em 0.75em
 
 .collapsible
   margin-bottom: 2rem
@@ -306,15 +355,26 @@ h2
         flex 1
 
     .t-task-flag-box-content
+        .dropdown-toggle
+            padding-right 1.75rem
+
+            &:hover
+                cursor pointer
+            &:after
+                color var(--light-gray)
+
         @media forMobile
             background var(--background-color)
             padding 0.5rem 1rem
             border-radius 0.25rem
-            margin-top 1rem
+            margin-top 0.25rem
 
-.t-task-header-content
-    @media forMobile
-        margin-bottom 0.75rem
+    p
+        line-height 1.25
+
+.t-task-users-box
+    p
+        line-height 1.25
 
 .ui-menu .ui-menu-item
   color var(--menu-link-color) !important
@@ -378,7 +438,91 @@ h2
   top auto
 
 .t-relations-hover-block
+  list-style none
+  padding 0
+
+  li
+    padding 0.25rem 0.5rem 0.5rem
+
+    &:hover
+      background var(--background-color-table-row-hover)
+
   .break-word
     white-space nowrap
     overflow hidden
     text-overflow ellipsis
+
+.t-description-wrapper
+  font-size 0.9375rem
+  margin-top 1rem
+  margin-bottom 3rem
+
+  @media forMobile
+    font-size 1rem
+
+.t-comment-edit-form-wrapper
+  flex 1
+
+.t-comment-form
+  margin-top 0.5rem
+  margin-bottom 1.25rem
+  padding-left 2.75rem
+
+.add-task-link.mobile-only
+  position fixed
+  bottom 1rem
+  right 1rem
+  margin-right 0
+
+  &:hover
+    top auto
+
+.t-assignee img,
+.t-toggle-all-assignee .userpic
+  border 3px solid var(--background-color-blank)
+  box-sizing content-box
+
+.t-assignee
+  cursor pointer
+  opacity 0.5
+  margin-bottom 0.75rem
+
+  .smaller
+    font-size 70%
+
+  div.smaller
+    position relative
+    display block
+    overflow hidden
+    text-overflow ellipsis
+
+  .badge
+    max-width 100%
+    display inline-block
+    white-space nowrap
+    text-overflow ellipsis
+    overflow hidden
+    box-sizing border-box
+
+  &.active
+    opacity 1
+
+    img
+      border 3px solid var(--blue)
+
+.sidebar .t-header-wrapper
+  @media forDesktop
+    position sticky
+    top 0
+    z-index 99
+    background var(--background-color-blank)
+
+.ui-autocomplete
+  li.ui-menu-item
+    padding 6px 12px !important
+
+.t-preview-description
+  line-height 1.3
+
+  .t-preview-description-content
+    margin 0.5rem 0

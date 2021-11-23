@@ -2,7 +2,7 @@
 
 class tasksTasksCommentsActions extends waJsonActions
 {
-    public function addAction()
+    public function addActionOld()
     {
         $task_id = waRequest::get('task_id');
 
@@ -30,7 +30,24 @@ class tasksTasksCommentsActions extends waJsonActions
         $this->response = $log;
     }
 
-    public function deleteAction()
+    public function addAction()
+    {
+        $data = waRequest::post('data', [], 'array');
+
+        try {
+            $this->response = (new tasksApiCommentAddHandler())->add(
+                new tasksApiCommentAddRequest(
+                    (int) waRequest::get('task_id'),
+                    (string) isset($data['text']) ? $data['text'] : '',
+                    (string) waRequest::post('files_hash')
+                )
+            );
+        } catch (Exception $exception) {
+            $this->errors = $exception->getMessage();
+        }
+    }
+
+    public function deleteActionOld()
     {
         $comment = $this->getComment();
         $this->checkCanDelete($comment);
@@ -38,7 +55,12 @@ class tasksTasksCommentsActions extends waJsonActions
         $task_log_model->delete($comment['id']);
     }
 
-    public function saveAction()
+    public function deleteAction()
+    {
+        (new tasksApiCommentDeleteHandler())->delete(new tasksApiCommentDeleteRequest((int) waRequest::post('id', 0)));
+    }
+
+    public function saveActionOld()
     {
         // possible actions with that comment can be added
         $possible_action_types = [
@@ -80,39 +102,38 @@ class tasksTasksCommentsActions extends waJsonActions
         }
     }
 
+    public function saveAction()
+    {
+        $data = (array) $this->getRequest()->post('data');
+
+        $this->response = (new tasksApiCommentUpdateHandler())->update(
+            new tasksApiCommentUpdateRequest(
+                (int) waRequest::get('id'),
+                (string) isset($data['text']) ? $data['text'] : '',
+                (string) waRequest::post('files_hash')
+            )
+        );
+    }
+
     /**
      * @param string|string[] $type - default is ACTION_TYPE_COMMENT
+     *
      * @return null
      * @throws waException
      */
     public function getComment($type = tasksTaskLogModel::ACTION_TYPE_COMMENT)
     {
-        $id = (int)$this->getRequest()->request('id');
+        $id = (int) $this->getRequest()->request('id');
         $lm = new tasksTaskLogModel();
         $log = $lm->getComment($id, $type);
         if (!$log) {
             $this->notFound();
         }
+
         return $log;
     }
 
-    public function checkCanDelete($log_item)
-    {
-        $rights = new tasksRights();
-        if (!$rights->canDeleteLogItem($log_item)) {
-            $this->accessDenied();
-        }
-    }
-
-    public function checkCanEdit($log_item)
-    {
-        $rights = new tasksRights();
-        if (!$rights->canEditLogItem($log_item)) {
-            $this->accessDenied();
-        }
-    }
-
-    public function assignAction()
+    public function assignActionOld()
     {
         $task_id = waRequest::post('task_id');
         $log_id = waRequest::post('log_id');
@@ -130,6 +151,19 @@ class tasksTasksCommentsActions extends waJsonActions
         $this->response = $result;
     }
 
+    public function assignAction()
+    {
+        try {
+            $this->response = (new tasksApiCommentPinHandler())->pin(
+                new tasksApiCommentPinRequest((int) waRequest::post('task_id'), (int) waRequest::post('log_id'))
+            );
+        } catch (Exception $exception) {
+            $this->errors = $exception->getMessage();
+
+            return;
+        }
+    }
+
     public function undoAction()
     {
         $task_id = waRequest::post('task_id');
@@ -141,22 +175,23 @@ class tasksTasksCommentsActions extends waJsonActions
         $task = $task_model->getById($task_id);
         if (!$task) {
             $this->errors = 'Task not found';
+
             return;
         }
 
         $log = $task_log_model->select('id')
-                       ->where("task_id=i:task_id AND action='comment'", array('task_id' => $task_id))
-                       ->order('id DESC')
-                       ->fetchAssoc();
+            ->where("task_id=i:task_id AND action='comment'", ['task_id' => $task_id])
+            ->order('id DESC')
+            ->fetchAssoc();
 
-        $new_log_id = ifset($log,'id', null);
+        $new_log_id = ifset($log, 'id', null);
 
         if ($new_log_id == $log_id) {
             $new_log_id = null;
         }
 
         $result = $task_model->update($task_id,
-            array('comment_log_id' => $new_log_id)
+            ['comment_log_id' => $new_log_id]
         );
 
         $this->response = $result;

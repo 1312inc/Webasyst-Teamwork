@@ -18,6 +18,8 @@ class tasksAttachmentsAddMethod extends tasksApiAbstractMethod
             iterator_to_array(waRequest::file('files'))
         );
 
-        return new tasksApiResponse(tasksApiResponse::HTTP_OK, (new tasksApiAttachmentAddHandler())->add($request));
+        $oks = (new tasksApiAttachmentAddHandler())->add($request);
+
+        return new tasksApiResponse(tasksApiResponseInterface::HTTP_OK, ['files' => $oks]);
     }
 }

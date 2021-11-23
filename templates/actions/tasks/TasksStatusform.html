@@ -1,5 +1,5 @@
 {strip}
-<div class="t-status-form-block">
+<div class="t-status-form-block" id="status-form-wrapper-{$task.id}">
     <form action="?module=tasksLog">
 
         <input type="hidden" name="id" value="{$task.id}">
@@ -43,4 +43,19 @@
 
     </form>
 </div>
+
+<script>
+    (function ($) {
+        if ($.tasks.options.text_editor === 'wysiwyg') {
+            $R('#status-form-wrapper-{$task.id} .t-redactor-comments', {
+                'focus': true,
+                minHeight: '150px',
+                imageData: {
+                    task_uuid: '{$task.uuid}'
+                }
+            });
+        }
+    })(jQuery);
+</script>
+
 {/strip}

@@ -1,0 +1,23 @@
+{include inline file='./includes/Header.inc.html'}
+
+{include file="./Helpers.inc.html" inline}
+
+{** $log.assigned_contact var is not yet available **}
+
+{sprintf('[`User %s sent you a task.`]', $from.name|escape)}
+
+<br>
+<br>
+
+{project_title}
+{task_title}
+{priority_title}
+
+<hr>
+{sprintf('[`Join the %s team on Webasyst to start working on the task:`]', $wa->accountName())}
+<br><br>
+<div style="text-align: center;">
+<a href="{$invite_link}" style="display: inline-block; background: #ffdc2f; padding: 15px 25px; color: #000000; font-weight: bold; border-radius: 6px;">[`Accept invitation`]</a>
+</div>
+
+{include inline file='./includes/Footer.inc.html'}

@@ -50,11 +50,22 @@ class tasksTasksInfoAction extends waViewAction
             }
         }
 
+        $milestones = (new tasksMilestoneModel())->getMilestonesWithOrder(false);
+
+        foreach ($milestones as $id => $milestone) {
+            if ($milestone['project_id'] != $task->project_id) {
+                unset($milestones[$id]);
+            }
+        }
+
         $this->view->assign('tags_cloud', $tasks_tags_model->getCloud($task->project_id));
         $this->view->assign('statuses', tasksHelper::getStatuses());
         $this->view->assign('task', $task);
-        
+        $this->view->assign('taskAssignedContactStatus', (new tasksTeammateStatusService())->getForContactId($task->assigned_contact_id, new DateTimeImmutable()));
+
         $this->view->assign('hash_type', waRequest::get('from_hash_type', '', waRequest::TYPE_STRING_TRIM));
+
+        $this->view->assign('milestones', $milestones);
     }
 
     public function workup(&$task)

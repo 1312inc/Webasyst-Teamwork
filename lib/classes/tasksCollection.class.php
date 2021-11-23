@@ -4,17 +4,31 @@ class tasksCollection
 {
     public const FIELDS_TO_GET = '*,log,create_contact,assigned_contact,attachments,tags,project,favorite,relations';
 
-    public const HASH_SEARCH = 'search';
+    public const HASH_SEARCH     = 'search';
     public const HASH_UNASSIGNED = 'unassigned';
-    public const HASH_TAG = 'tag';
-    public const HASH_INBOX = 'inbox';
-    public const HASH_FAVORITES = 'favorites';
-    public const HASH_OUTBOX = 'outbox';
-    public const HASH_STATUS = 'status';
-    public const HASH_ID = 'id';
-    public const HASH_UUID = 'uuid';
-    public const HASH_PROJECT = 'project';
-    public const HASH_SCOPE = 'scope';
+    public const HASH_ASSIGNED   = 'assigned';
+    public const HASH_TAG        = 'tag';
+    public const HASH_INBOX      = 'inbox';
+    public const HASH_FAVORITES  = 'favorites';
+    public const HASH_OUTBOX     = 'outbox';
+    public const HASH_STATUS     = 'status';
+    public const HASH_ID         = 'id';
+    public const HASH_UUID       = 'uuid';
+    public const HASH_PROJECT    = 'project';
+    public const HASH_SCOPE      = 'scope';
+    public const HASH_URGENT     = 'urgent';
+
+    public const ORDER_NEWEST   = 'newest';
+    public const ORDER_OLDEST   = 'oldest';
+    public const ORDER_DUE      = 'due';
+    public const ORDER_PRIORITY = 'priority';
+
+    public const ORDER_LIST = [
+        self::ORDER_NEWEST,
+        self::ORDER_OLDEST,
+        self::ORDER_DUE,
+        self::ORDER_PRIORITY,
+    ];
 
     protected $filtered = false;
     protected $prepared;
@@ -22,19 +36,19 @@ class tasksCollection
     protected $order_by;
     protected $default_order_by = 't.priority DESC, t.create_datetime';
 
-    protected $where = array();
-    protected $fields = array();
-    protected $other_fields = array();
-    protected $joins = array();
-    protected $join_index = array();
-    protected $options = array(
+    protected $where        = [];
+    protected $fields       = [];
+    protected $other_fields = [];
+    protected $joins        = [];
+    protected $join_index   = [];
+    protected $options      = [
         'check_rights' => true,
-    );
-    protected $info = array();
+    ];
+    protected $info         = [];
     protected $hash;
     protected $count;
 
-    public function __construct($hash = '', $options = array())
+    public function __construct($hash = '', $options = [])
     {
         foreach ($options as $k => $v) {
             $this->options[$k] = $v;
@@ -45,7 +59,7 @@ class tasksCollection
     protected function setHash($hash)
     {
         if (is_array($hash)) {
-            $hash = '/id/'.implode(',', $hash);
+            $hash = '/id/' . implode(',', $hash);
         }
         if (substr($hash, 0, 1) == '#') {
             $hash = substr($hash, 1);
@@ -62,6 +76,7 @@ class tasksCollection
         if (!$this->prepared) {
             $this->prepare();
         }
+
         return $this->info;
     }
 
@@ -70,36 +85,38 @@ class tasksCollection
         if (!$this->prepared && $this->options['check_rights'] && !wa()->getUser()->isAdmin('tasks')) {
             $is_available = wa()->getUser()->getRights('tasks', 'project.%');
             if (ifempty($is_available['all']) != 2) {
-                $full_access_projects = array();
-                $limited_access_projects = array();
+                $full_access_projects = [];
+                $limited_access_projects = [];
                 if (ifempty($is_available['all']) == 1) {
-                    foreach(array_keys(tasksHelper::getProjects('all')) as $id) {
+                    foreach (array_keys(tasksHelper::getProjects('all')) as $id) {
                         $limited_access_projects[$id] = $id;
                     }
                 } else {
-                    foreach($is_available as $project_id => $level) {
+                    foreach ($is_available as $project_id => $level) {
                         if ($level == 2) {
                             $full_access_projects[$project_id] = $project_id;
-                        } else if ($level == 1) {
-                            $limited_access_projects[$project_id] = $project_id;
+                        } else {
+                            if ($level == 1) {
+                                $limited_access_projects[$project_id] = $project_id;
+                            }
                         }
                     }
                 }
 
-                $condition = array();
+                $condition = [];
                 if ($full_access_projects) {
-                    $condition[] = 't.project_id IN ('.implode(',', $full_access_projects).')';
+                    $condition[] = 't.project_id IN (' . implode(',', $full_access_projects) . ')';
                 }
                 if ($limited_access_projects) {
                     $current_contact_id = wa()->getUser()->getId();
-                    $cond = "t.project_id IN (".implode(",", $limited_access_projects).") AND 
+                    $cond = "t.project_id IN (" . implode(",", $limited_access_projects) . ") AND 
                         (t.assigned_contact_id={$current_contact_id} OR t.create_contact_id={$current_contact_id})";
                     $condition[] = $cond;
                 }
                 if (!$condition) {
                     $condition[] = '0';
                 }
-                $this->addWhere('(('.implode(') OR (', $condition).'))');
+                $this->addWhere('((' . implode(') OR (', $condition) . '))');
             }
         }
 
@@ -107,25 +124,27 @@ class tasksCollection
             $type = $this->hash[0];
 
             if ($type) {
-                $method = strtolower($type).'Prepare';
+                $method = strtolower($type) . 'Prepare';
                 if (method_exists($this, $method)) {
                     $this->$method(isset($this->hash[1]) ? $this->hash[1] : '');
                 } else {
 
-                    $params = array(
+                    $params = [
                         'collection' => $this,
-                        'add'        => $add,
-                    );
+                        'add' => $add,
+                    ];
                     /**
                      * @event tasks_collection
+                     *
                      * @param array [string]mixed $params
                      * @param array [string]tasksCollection $params['collection']
                      * @param array [string]boolean $params['add']
+                     *
                      * @return bool null if ignored, true when something changed in the collection
                      */
                     $processed = wa()->event('tasks_collection', $params);
                     if (!$processed) {
-                        throw new waException('Unknown collection hash type: '.htmlspecialchars($type));
+                        throw new waException('Unknown collection hash type: ' . htmlspecialchars($type));
                     }
                 }
             }
@@ -139,7 +158,8 @@ class tasksCollection
     public function getJoinedAlias($table)
     {
         $alias = $this->getTableAlias($table);
-        return $alias.$this->join_index[$alias];
+
+        return $alias . $this->join_index[$alias];
     }
 
     protected function getTableAlias($table)
@@ -155,6 +175,7 @@ class tasksCollection
         if (!$alias) {
             $alias = $table;
         }
+
         return $alias;
     }
 
@@ -183,11 +204,11 @@ class tasksCollection
         }
         $alias .= $this->join_index[$alias];
 
-        $join = array(
+        $join = [
             'table' => $table,
             'alias' => $alias,
-            'type'  => $type
-        );
+            'type' => $type,
+        ];
         if ($on) {
             $join['on'] = str_replace(':table', $alias, $on);
         }
@@ -205,6 +226,7 @@ class tasksCollection
     {
         $this->where[] = $condition;
         $this->filtered = true;
+
         return $this;
     }
 
@@ -219,14 +241,14 @@ class tasksCollection
                 if (isset($join['on'])) {
                     $on = $join['on'];
                 } else {
-                    $on = "t.id = ".($alias ? $alias : $join['table']).".task_id";
+                    $on = "t.id = " . ($alias ? $alias : $join['table']) . ".task_id";
                 }
-                $sql .= (!empty($join['type']) ? " ".$join['type'] : '')." JOIN ".$join['table']." ".$alias." ON ".$on;
+                $sql .= (!empty($join['type']) ? " " . $join['type'] : '') . " JOIN " . $join['table'] . " " . $alias . " ON " . $on;
             }
         }
 
         if ($this->where) {
-            $sql .= " WHERE ".implode(" AND ", $this->where);
+            $sql .= " WHERE " . implode(" AND ", $this->where);
         }
 
         return $sql;
@@ -243,20 +265,22 @@ class tasksCollection
         }
         $fields = array_map('trim', $fields);
 
-        $model_fields = array();
-        $other_fields = array();
+        $model_fields = [];
+        $other_fields = [];
         $metadata = $this->getModel()->getMetadata();
         foreach ($fields as $f) {
             if ($f == '*') {
                 $model_fields += array_fill_keys(array_keys($metadata), 1);
-            } else if (isset($metadata[$f])) {
-                $model_fields[$f] = 1;
             } else {
-                $other_fields[$f] = 1;
+                if (isset($metadata[$f])) {
+                    $model_fields[$f] = 1;
+                } else {
+                    $other_fields[$f] = 1;
+                }
             }
         }
 
-        return array($model_fields, $other_fields);
+        return [$model_fields, $other_fields];
     }
 
     protected function getSqlFields($model_fields)
@@ -266,9 +290,10 @@ class tasksCollection
         }
         $metadata = $this->getModel()->getMetadata();
         if (!array_diff_key($metadata, $model_fields)) {
-            $model_fields = array('*' => 1) + array_diff_key($model_fields, $metadata);
+            $model_fields = ['*' => 1] + array_diff_key($model_fields, $metadata);
         }
-        return 't.'.implode(',t.', array_keys($model_fields));
+
+        return 't.' . implode(',t.', array_keys($model_fields));
     }
 
     public function getTasks($fields = "*", $offset = 0, $limit = null, &$total_count = null)
@@ -278,11 +303,11 @@ class tasksCollection
                 $limit = $offset;
                 $offset = 0;
             } else {
-                $limit = wa('tasks')->getConfig()->getOption('tasks_per_page');
+                $limit = tasksOptions::getTasksPerPage();
             }
         }
 
-        list($fields, $other_fields) = $this->getFields($fields);
+        [$fields, $other_fields] = $this->getFields($fields);
         $fields['id'] = 1;
 
         if (!empty($other_fields['create_contact'])) {
@@ -313,15 +338,16 @@ class tasksCollection
             $sql = "SELECT ";
         }
 
-        $sql = $sql . $this->getSqlFields($fields).' '.
-               $this->getSQL().' '.
-               $this->getOrderBy().' '.
-               "LIMIT ".($offset ? ((int)$offset).',' : '').(int)$limit;
+        $sql = $sql . $this->getSqlFields($fields) . ' ' .
+            $this->getSQL() . ' ' .
+            $this->getOrderBy() . ' ' .
+            "LIMIT " . ($offset ? ((int) $offset) . ',' : '') . (int) $limit;
 
         $data = $this->getModel()->query($sql)->fetchAll('id');
         if (!$data) {
             $total_count = 0;
-            return array();
+
+            return [];
         }
 
         if ($total_count) {
@@ -333,8 +359,8 @@ class tasksCollection
         // Preloading project statuses saves many SQL requests
         // when list contains tasks from different projects
         if (!empty($fields['project_id'])) {
-            $project_ids = array();
-            foreach($data as $t) {
+            $project_ids = [];
+            foreach ($data as $t) {
                 $project_ids[$t['project_id']] = $t['project_id'];
             }
             if (count($project_ids) > 1) {
@@ -345,7 +371,7 @@ class tasksCollection
             }
         }
 
-        $contact_ids = array();
+        $contact_ids = [];
         if (!empty($other_fields['create_contact'])) {
             foreach ($data as $t) {
                 $contact_ids[$t['create_contact_id']] = $t['create_contact_id'];
@@ -390,45 +416,48 @@ class tasksCollection
         }
 
         if (!empty($other_fields['attachments'])) {
-            $defaults['attachments'] = array();
-            $defaults['all_attachments'] = array();
+            $defaults['attachments'] = [];
+            $defaults['all_attachments'] = [];
             $attach_model = new tasksAttachmentModel();
             $rows = $attach_model->getByField('task_id', $ids, true);
             foreach ($rows as $row) {
                 $data[$row['task_id']]['all_attachments'][] = $row;
-                if(empty($row['log_id'])) {
+                if (empty($row['log_id'])) {
                     $data[$row['task_id']]['attachments'][] = $row;
                 }
             }
         }
 
         if (!empty($other_fields['log'])) {
-            $defaults['log'] = array();
+            $defaults['log'] = [];
             $log_model = new tasksTaskLogModel();
             foreach ($log_model->getByTasks($data) as $task_id => $logs) {
                 $data[$task_id]['log'] = $logs;
             }
         }
         if (!empty($other_fields['full_tags'])) {
-            $defaults['full_tags'] = array();
+            $defaults['full_tags'] = [];
             $task_tags_model = new tasksTaskTagsModel();
             foreach ($task_tags_model->getByTasks($data) as $task_id => $tags) {
                 $data[$task_id]['full_tags'] = $tags;
             }
         }
         if (!empty($other_fields['project'])) {
-            $defaults['project'] = array();
+            $defaults['project'] = [];
             $projects = tasksHelper::getProjects('all');
         }
         if (!empty($other_fields['status'])) {
-            $defaults['status'] = array();
+            $defaults['status'] = [];
             $statuses = tasksHelper::getStatuses(null, false);
         }
         if (!empty($other_fields['favorite'])) {
             $defaults['favorite'] = false;
             $favorite_model = new tasksFavoriteModel();
-            $favorites = $favorite_model->getByField(array('contact_id' => wa()->getUser()->getId(), 'task_id' => $ids), 'task_id');
-            foreach($favorites as $task_id => $_) {
+            $favorites = $favorite_model->getByField(
+                ['contact_id' => wa()->getUser()->getId(), 'task_id' => $ids],
+                'task_id'
+            );
+            foreach ($favorites as $task_id => $_) {
                 $data[$task_id]['favorite'] = 1;
             }
         }
@@ -442,15 +471,15 @@ class tasksCollection
                 $t['status'] = $statuses[$t['status_id']];
             }
             if (!empty($other_fields['tags'])) {
-                $t['tags'] = array();
-                foreach($t['full_tags'] as $tag) {
+                $t['tags'] = [];
+                foreach ($t['full_tags'] as $tag) {
                     $t['tags'][$tag['id']] = $tag['name'];
 
                 }
             }
             if (!empty($other_fields['favorite_tags'])) {
-                $t['favorite_tags'] = array();
-                foreach($t['full_tags'] as $tag) {
+                $t['favorite_tags'] = [];
+                foreach ($t['full_tags'] as $tag) {
                     if (!empty($tag['favorite'])) {
                         $t['favorite_tags'][$tag['id']] = $tag['name'];
                     }
@@ -489,8 +518,8 @@ class tasksCollection
             return $this->count;
         }
         $sql = $this->getSQL();
-        $sql = "SELECT COUNT(".($this->joins ? 'DISTINCT ' : '')."t.id) ".$sql;
-        $count = $this->count = (int)$this->getModel()->query($sql)->fetchField();
+        $sql = "SELECT COUNT(" . ($this->joins ? 'DISTINCT ' : '') . "t.id) " . $sql;
+        $count = $this->count = (int) $this->getModel()->query($sql)->fetchField();
 
         return $count;
     }
@@ -498,11 +527,12 @@ class tasksCollection
     public function getLastUpdateTime()
     {
         $sql = $this->getSQL();
-        $sql = "SELECT MAX(update_datetime) ".$sql;
+        $sql = "SELECT MAX(update_datetime) " . $sql;
         $datetime = $this->getModel()->query($sql)->fetchField();
         if (!$datetime) {
             return 0;
         }
+
         return strtotime($datetime);
     }
 
@@ -526,12 +556,12 @@ class tasksCollection
         }
         $query = str_replace('\\&', $escapedAmp, str_replace('\\\\', $escapedBS, $query));
         $query = explode('&', $query);
-        $result = array();
+        $result = [];
         foreach ($query as $part) {
             if (!($part = trim($part))) {
                 continue;
             }
-            $part = str_replace(array($escapedBS, $escapedAmp), array('\\\\', '\\&'), $part);
+            $part = str_replace([$escapedBS, $escapedAmp], ['\\\\', '\\&'], $part);
             if ($temp = preg_split("/(\\\$=|\^=|\*=|==|!=|>=|<=|=|>|<)/uis", $part, 2, PREG_SPLIT_DELIM_CAPTURE)) {
                 $name = array_shift($temp);
                 if ($name == 'tag') {
@@ -546,14 +576,16 @@ class tasksCollection
                 }
             }
         }
+
         return $result;
     }
 
     /**
      * Returns expression for SQL
      *
-     * @param string $op - operand ==, >=, etc
+     * @param string $op    - operand ==, >=, etc
      * @param string $value - value
+     *
      * @return string
      */
     protected function getExpression($op, $value)
@@ -565,37 +597,37 @@ class tasksCollection
             case '<':
             case '<=':
             case '!=':
-                return " ".$op." '".$model->escape($value)."'";
+                return " " . $op . " '" . $model->escape($value) . "'";
             case "^=":
-                return " LIKE '".$model->escape($value, 'like')."%'";
+                return " LIKE '" . $model->escape($value, 'like') . "%'";
             case "$=":
-                return " LIKE '%".$model->escape($value, 'like')."'";
+                return " LIKE '%" . $model->escape($value, 'like') . "'";
             case "*=":
-                return " LIKE '%".$model->escape($value, 'like')."%'";
+                return " LIKE '%" . $model->escape($value, 'like') . "%'";
             case "==":
                 if (strtolower($value) == 'null') {
                     return " IS NULL";
                 }
-                // otherwise breakthrough
+            // otherwise breakthrough
             case "=";
             default:
-                return " = '".$model->escape($value)."'";
+                return " = '" . $model->escape($value) . "'";
         }
     }
 
     protected function idPrepare($ids)
     {
-        $ids = explode(',', (string)$ids);
+        $ids = explode(',', (string) $ids);
         foreach ($ids as $i => $id) {
-            $ids[$i] = (int)trim($id);
+            $ids[$i] = (int) trim($id);
             if (!$ids[$i]) {
                 unset($ids[$i]);
             }
         }
 
         if ($ids) {
-            $this->where[] = "t.id IN (".implode(',', $ids).")";
-            $this->default_order_by = 'FIELD(t.id, '.implode(',', $ids).')';
+            $this->where[] = "t.id IN (" . implode(',', $ids) . ")";
+            $this->default_order_by = 'FIELD(t.id, ' . implode(',', $ids) . ')';
         } else {
             $this->where[] = '0';
         }
@@ -603,7 +635,7 @@ class tasksCollection
 
     protected function uuidPrepare($ids)
     {
-        $ids = explode(',', (string)$ids);
+        $ids = explode(',', (string) $ids);
         foreach ($ids as $i => $id) {
             $ids[$i] = trim($id);
             if (!$ids[$i]) {
@@ -621,19 +653,19 @@ class tasksCollection
 
     protected function favoritesPrepare()
     {
-        $this->addJoin('tasks_favorite', null, ':table.contact_id = '.(int)wa()->getUser()->getId());
+        $this->addJoin('tasks_favorite', null, ':table.contact_id = ' . (int) wa()->getUser()->getId());
     }
 
     protected function inboxPrepare()
     {
         $this->assignedPrepare(wa()->getUser()->getId());
-        $this->addWhere('t.hidden_timestamp < '.time());
+        $this->addWhere('t.hidden_timestamp < ' . time());
     }
 
     protected function hiddenPrepare()
     {
         $this->assignedPrepare(wa()->getUser()->getId());
-        $this->addWhere('t.hidden_timestamp >= '.time());
+        $this->addWhere('t.hidden_timestamp >= ' . time());
     }
 
     protected function outboxPrepare()
@@ -655,7 +687,7 @@ class tasksCollection
     {
         $query = urldecode($query);
         $i = $offset = 0;
-        $query_parts = array();
+        $query_parts = [];
         while (($j = strpos($query, '&', $offset)) !== false) {
             // escaped &
             if ($query[$j - 1] != '\\') {
@@ -666,7 +698,7 @@ class tasksCollection
         }
         $query_parts[] = substr($query, $i);
 
-        $unknown_conditions = array();
+        $unknown_conditions = [];
 
         $model = $this->getModel();
         foreach ($query_parts as $part) {
@@ -676,8 +708,10 @@ class tasksCollection
             $parts = preg_split("/(\\\$=|\^=|\*=|==|!=|>=|<=|=|>|<)/uis", $part, 2, PREG_SPLIT_DELIM_CAPTURE);
             if (!$parts) {
                 continue;
-            } else if (count($parts) == 1) {
-                $parts = array('query', '=', $part);
+            } else {
+                if (count($parts) == 1) {
+                    $parts = ['query', '=', $part];
+                }
             }
             if ($parts[0] == 'query') {
                 if (empty($this->info)) {
@@ -686,42 +720,46 @@ class tasksCollection
                 // поиск по номеру таски X.N
                 if (preg_match("/^\d+\.\d+$/", $parts[2])) {
                     @list($project_id, $number) = explode('.', $parts[2], 2);
-                    $task = $this->getModel()->getByField(array(
+                    $task = $this->getModel()->getByField([
                         'project_id' => (int) $project_id,
                         'number' => (int) $number,
-                    ));
+                    ]);
                     if ($task) {
-                        $this->where[] = 't.id = '.$task['id'];
+                        $this->where[] = 't.id = ' . $task['id'];
+
                         return;
                     }
                 }
                 if (mb_strlen($parts[2]) <= 3) {
                     // для поиска коротких слов
-                    $this->where[] = "CONCAT(t.name, ' ', t.text) LIKE '%".$model->escape($parts[2], 'like')."%'";
+                    $this->where[] = "CONCAT(t.name, ' ', t.text) LIKE '%" . $model->escape($parts[2], 'like') . "%'";
                 } else {
                     $q = $parts[2];
                     if (!preg_match('![*+~()<>\-"]!', $q)) {
-                        $q = '+'.preg_replace('~\s+~', '* +', trim($q)).'*';
+                        $q = '+' . preg_replace('~\s+~', '* +', trim($q)) . '*';
                     }
-                    $this->where[] = "MATCH(t.name, t.text) AGAINST ('".$model->escape($q)."' IN BOOLEAN MODE)";
+                    $this->where[] = "MATCH(t.name, t.text) AGAINST ('" . $model->escape($q) . "' IN BOOLEAN MODE)";
                 }
             } elseif ($parts[0] == 'from_contact_id') {
-                $this->where[] = 'IFNULL(t.contact_id, t.create_contact_id)'.$this->getExpression($parts[1], $parts[2]);
+                $this->where[] = 'IFNULL(t.contact_id, t.create_contact_id)' . $this->getExpression(
+                        $parts[1],
+                        $parts[2]
+                    );
             } elseif ($parts[0] == 'tag') {
                 $this->tagPrepare($parts[2]);
             } elseif ($model->fieldExists($parts[0])) {
 
                 //Show all tasks if status_id == all
-                if ( !($parts[0] == 'status_id' && $parts[2] == 'all')) {
-                    $this->where[] = 't.'.$parts[0].$this->getExpression($parts[1], $parts[2]);
+                if (!($parts[0] == 'status_id' && $parts[2] == 'all')) {
+                    $this->where[] = 't.' . $parts[0] . $this->getExpression($parts[1], $parts[2]);
                 }
 
             } else {
-                $condition = array(
+                $condition = [
                     'field' => $parts[0],
                     'op' => isset($parts[1]) ? $parts[1] : null,
                     'value' => isset($parts[2]) ? $parts[2] : null,
-                );
+                ];
                 $condition['expression'] = $this->getExpression($condition['op'], $condition['value']);
                 $unknown_conditions[] = $condition;
             }
@@ -731,16 +769,17 @@ class tasksCollection
             $this->addJoin('tasks_project', ':table.id = t.project_id', ':table.archive_datetime IS NULL');
         }
 
-        $params = array(
+        $params = [
             'collection' => $this,
-            'conditions' => $unknown_conditions
-        );
+            'conditions' => $unknown_conditions,
+        ];
 
         /**
          * Extend search preparation process by implementing unknown conditions
          * Triggered when condition not processed by core logic
          *
          * @event tasks_collection_search
+         *
          * @param array [string]mixed $params
          * @param array [string]tasksCollection $params['collection'] current instance of collection
          * @param array [string]boolean $params['conditions'] condition structures
@@ -789,9 +828,10 @@ class tasksCollection
             $contact = $contact_model->getById($contact_id);
             if ($contact) {
                 $this->info = $contact;
-                $contact_id = (int)$contact_id;
+                $contact_id = (int) $contact_id;
                 $this->where[] = "t.{$field} = {$contact_id}";
                 $this->addJoin('tasks_project', ':table.id = t.project_id', ':table.archive_datetime IS NULL');
+
                 return;
             }
         }
@@ -813,7 +853,7 @@ class tasksCollection
         } else {
             $scope = $model->getById($id);
             if ($scope) {
-                $where = 't.milestone_id = ' . (int)$id;
+                $where = 't.milestone_id = ' . (int) $id;
                 $info = $scope;
             }
         }
@@ -828,7 +868,7 @@ class tasksCollection
         $project = $project_model->getById($id);
 
         if ($project) {
-            $this->where[] = 't.project_id = '.(int)$id;
+            $this->where[] = 't.project_id = ' . (int) $id;
             $this->info = $project;
         } else {
             $this->where[] = 0;
@@ -853,7 +893,7 @@ class tasksCollection
                     $this->where[] = '0';
             }
         } else {
-            $this->where[] = 't.status_id = '.(int)$status;
+            $this->where[] = 't.status_id = ' . (int) $status;
         }
         $this->addJoin('tasks_project', ':table.id = t.project_id', ':table.archive_datetime IS NULL');
 
@@ -881,7 +921,7 @@ class tasksCollection
             $condition = 'any';
         }
 
-        $tags = array();
+        $tags = [];
         $tag_model = new tasksTagModel();
         foreach ($tag_model->getByField('name', $tag_names, 'id') as $tag_id => $tag) {
             $tags[$tag_id] = $tag['name'];
@@ -889,17 +929,22 @@ class tasksCollection
 
         if (!$tags) {
             $this->where[] = '0';
+
             return;
         }
 
         if ($condition == 'any') {
-            $this->addJoin('tasks_task_tags', ':table.task_id=t.id', ':table.tag_id IN ('.implode(',', array_keys($tags)).')');
+            $this->addJoin(
+                'tasks_task_tags',
+                ':table.task_id=t.id',
+                ':table.tag_id IN (' . implode(',', array_keys($tags)) . ')'
+            );
         } else {
             if (count(array_flip($tag_names)) > count($tags)) {
                 $this->where[] = '0';
             } else {
-                foreach($tags as $tag_id => $tag_name) {
-                    $this->addJoin('tasks_task_tags', ':table.task_id=t.id', ':table.tag_id='.$tag_id);
+                foreach ($tags as $tag_id => $tag_name) {
+                    $this->addJoin('tasks_task_tags', ':table.task_id=t.id', ':table.tag_id=' . $tag_id);
                 }
             }
         }
@@ -915,6 +960,7 @@ class tasksCollection
 
     /**
      * Returns type of the collection
+     *
      * @return string
      */
     public function getType()
@@ -924,6 +970,7 @@ class tasksCollection
 
     /**
      * Returns ORDER BY clause
+     *
      * @return string
      */
     protected function getOrderBy()
@@ -934,6 +981,7 @@ class tasksCollection
         } elseif ($this->order_by) {
             $order_by = $this->order_by;
         }
+
         return $order_by ? " ORDER BY " . $order_by : '';
     }
 
@@ -942,9 +990,11 @@ class tasksCollection
         $m = $this->getModel();
         $metadata = $m->getMetadata();
         if (!empty($metadata[$field])) {
-            $field = 't.'.$field;
-        } else if ($validate) {
-            throw new waException('Unacceptable collection ordering.');
+            $field = 't.' . $field;
+        } else {
+            if ($validate) {
+                throw new waException('Unacceptable collection ordering.');
+            }
         }
         if (strtolower($order) != 'desc') {
             $order = '';
@@ -965,22 +1015,22 @@ class tasksCollection
         }
 
         if (!$alias) {
-            $this->addJoin(array(
-                'type'  => 'left',
+            $this->addJoin([
+                'type' => 'left',
                 'table' => $table,
-                'on'    => 't.milestone_id = :table.id',
-            ));
+                'on' => 't.milestone_id = :table.id',
+            ]);
             $alias = $this->getJoinedAlias($table);
         }
 
         $stub = '9999-12-31';
 
-        $order = array(
+        $order = [
             "IFNULL(t.due_date, IFNULL({$alias}.due_date, '{$stub}'))",
             "t.priority DESC",
             "t.create_datetime",
-            "t.id"
-        );
+            "t.id",
+        ];
         $this->orderBy(implode(',', $order), '', false);
     }
 }

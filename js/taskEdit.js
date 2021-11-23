@@ -27,6 +27,7 @@ var TaskEdit = ( function($) { "use strict";
         // Vars
         that.show_class = "is-shown";
         that.task_id = ( options['task_id'] || false );
+        that.task_uuid = options['task_uuid'];
         that.is_page = options['is_page'];
         that.priority = options.priority;
         that.project_color = ( options['project_color'] || false );
@@ -130,7 +131,9 @@ var TaskEdit = ( function($) { "use strict";
             that.setTaskDraft();
         }
 
-        that.initTextareaAutocomplete();
+        if ($.tasks.options.text_editor === 'markdown') {
+            that.initTextareaAutocomplete();
+        }
 
         // Make sure everything that depend on current selected project
         // is rendered correctly
@@ -149,46 +152,47 @@ var TaskEdit = ( function($) { "use strict";
 
         $.event.trigger("onTaskEditInit", that);
 
-
-        $R('.t-redactor-task-edit', {
-            // 'focus': true,
-            tabindex: 1,
-            toolbarFixedTarget: (function() {
-                return $('#t-dialog-wrapper').length ? '#t-dialog-wrapper' : document
-            })(),
-            toolbarFixedTopOffset: 64,
-            toolbarContext: false,
-            imageData: {
-                task_uuid: '{$task_uuid}'
-            },
-            callbacks: {
-                started () {
-                    var that = this,
-                        $el = this.element.getElement().get(0);
-                    // Textarea value changed
-                    $el.onchange = function () {
-                        that.source.setCode($($el).val());
-                        // Broadcast synchronization event between textarea and visual layer
-                        that.broadcast('syncingInverse', $($el).val());
-                    }
+        if ($.tasks.options.text_editor === 'wysiwyg') {
+            $R('.t-redactor-task-edit', {
+                // 'focus': true,
+                tabindex: 1,
+                toolbarFixedTarget: (function () {
+                    return $('#t-dialog-wrapper').length ? '#t-dialog-wrapper' : document;
+                })(),
+                toolbarFixedTopOffset: 64,
+                toolbarContext: false,
+                imageData: {
+                    task_uuid: that.task_uuid
                 },
-                synced (html) {
-                    if (that.is_new) {
-                        //Save task draft text
-                        var data = new Date(),
-                        result = data.toLocaleDateString("ru-RU", {
-                            year: "numeric",
-                            month: "2-digit",
-                            day: "2-digit",
-                            hour:"2-digit",
-                            minute: "2-digit"
-                        });
-                        localStorage.setItem('task_text', html);
-                        localStorage.setItem('draft_time', result);
+                callbacks: {
+                    started () {
+                        var that = this,
+                            $el = this.element.getElement().get(0);
+                        // Textarea value changed
+                        $el.onchange = function () {
+                            that.source.setCode($($el).val());
+                            // Broadcast synchronization event between textarea and visual layer
+                            that.broadcast('syncingInverse', $($el).val());
+                        };
+                    },
+                    synced (html) {
+                        if (that.is_new) {
+                            //Save task draft text
+                            var data = new Date(),
+                                result = data.toLocaleDateString("ru-RU", {
+                                    year: "numeric",
+                                    month: "2-digit",
+                                    day: "2-digit",
+                                    hour: "2-digit",
+                                    minute: "2-digit"
+                                });
+                            localStorage.setItem('task_text', html);
+                            localStorage.setItem('draft_time', result);
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
 
     };
 
@@ -453,7 +457,7 @@ var TaskEdit = ( function($) { "use strict";
     TaskEdit.prototype.initTextareaAutocomplete = function() {
         this.$form.find('textarea').textareaAutocomplete({
             url: '?action=tagsatcmpl',
-            appendTo: '#content',
+            // appendTo: '#content',
             autoFocus: false,
             delay: 300
         });
@@ -670,43 +674,29 @@ var TaskEdit = ( function($) { "use strict";
 
                 if (saved_response) {
                     $.get('?module=tasks&hash='+encodeURIComponent('id/'+saved_response.id), {}, function(r) {
-                        var $new_elements = $('<div>').html(r).find('#t-tasks-wrapper').children(':not(#end-of-tasks)').hide().addClass('new-task highlighted');
-                        $new_elements.prependTo('#t-tasks-wrapper').slideDown();
+                        var $new_elements = $('<div>').html(r).find('#t-tasks-wrapper').children(':not(#end-of-tasks)');
+                        var $new_elements_li = $new_elements.find('.item[data-task-number="' + saved_response.url + '"]');
+
+                        // Select created item
+                        $('#t-tasks-wrapper .list .item').removeClass('selected');
+                        $new_elements_li.addClass('selected');
+
                         $dialog.find(".t-close-dialog-link").trigger("click");
+
+                        if ($('.t-notice-list').length) {
+                            // $('.t-notice-list').replaceWith($('<div class="t-tasks-wrapper is-detailed" id="t-tasks-wrapper">').html($new_elements));
+                            $.waLoading().animate(1000, 99, true);
+                            window.location.hash = '#/task/' + $new_elements_li.data('task-number') + '/';
+                        } else {
+                            $new_elements.prependTo('#t-tasks-wrapper');
+                            $new_elements_li.find('a').first().trigger('click');
+                        }
 
                         // return to adding form
                         if (return_to_new) {
                             $.tasks.showNewTaskForm(true);
                             return;
                         }
-
-                        // stay in current context
-                        // wait for a while, than try remove task or leave it here
-                        (function (task_id, timeout) {
-                            setTimeout(function () {
-                                var task = Tasks[task_id];
-                                if (!task) {
-                                   return;
-                                }
-                                task.reloadTask({
-                                    beforeReplace: function ($new_task, def) {
-
-                                        task.$task.removeClass('new-task highlighted');
-
-                                        // task belongs to current context - just leave
-                                        if ($new_task.length) {
-                                            def.resolve();
-                                            return;
-                                        }
-
-                                        // task doesn't belong to current context - remove task
-                                        task.moveTask("right", function () {
-                                            def.resolve();
-                                        });
-                                    }
-                                });
-                            }, timeout);
-                        })(saved_response.id, 15000);
 
                     });
                 } else {
@@ -907,19 +897,19 @@ var TaskEdit = ( function($) { "use strict";
             localStorage.setItem('task_title', $task_title.val());
             localStorage.setItem('draft_time', result);
         });
-        // $task_text.on('keyup',function(){
-        //     //Save task draft text
-        //     var data = new Date(),
-        //         result = data.toLocaleDateString("ru-RU", {
-        //             year: "numeric",
-        //             month: "2-digit",
-        //             day: "2-digit",
-        //             hour:"2-digit",
-        //             minute: "2-digit"
-        //         });
-        //     localStorage.setItem('task_text', $task_text.val());
-        //     localStorage.setItem('draft_time', result);
-        // });
+        $task_text.on('keyup',function(){
+            //Save task draft text
+            var data = new Date(),
+                result = data.toLocaleDateString("ru-RU", {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                    hour:"2-digit",
+                    minute: "2-digit"
+                });
+            localStorage.setItem('task_text', $task_text.val());
+            localStorage.setItem('draft_time', result);
+        });
     };
 
     //Show alert task draft

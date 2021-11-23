@@ -13,13 +13,13 @@ class tasksProjectsArchiveMethod extends tasksApiAbstractMethod
     public function run(): tasksApiResponseInterface
     {
         $request = new tasksApiProjectArchiveRequest(
-            (int) $this->post('id', true),
-            (bool) $this->post('archive', true),
+            $this->post('id', true, self::CAST_INT),
+            $this->post('archive', true, self::CAST_BOOLEAN),
             new DateTimeImmutable()
         );
 
         (new tasksApiProjectArchiveHandler())->archive($request);
 
-        return new tasksApiResponse();
+        return new tasksApiResponse(tasksApiResponseInterface::HTTP_OK, tasksApiResponseInterface::RESPONSE_OK);
     }
 }

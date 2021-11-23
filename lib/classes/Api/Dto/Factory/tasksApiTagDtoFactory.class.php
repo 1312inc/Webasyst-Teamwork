@@ -14,7 +14,7 @@ final class tasksApiTagDtoFactory
             self::$tags[$id] = new tasksApiTagDto(
                 $id,
                 $data['name'],
-                (bool) $data['favorite']
+                isset($data['favorite']) ? (bool) $data['favorite'] : null
             );
         }
 

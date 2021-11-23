@@ -336,6 +336,15 @@ var TasksTagCloudFilterSelector;
             return '';
         };
 
+        TasksFilterSelector.prototype.getDescriptionPartForHeader = function () {
+            var that = this;
+            var info = that.menu.getSelected();
+            if (info.description) {
+                return $.trim(info.description || '');
+            }
+            return '';
+        };
+
         return TasksFilterSelector;
 
     })(jQuery);

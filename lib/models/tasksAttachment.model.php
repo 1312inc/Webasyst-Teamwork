@@ -8,6 +8,11 @@ class tasksAttachmentModel extends waModel
         return $this->getByField('task_id', $task['id'], 'id');
     }
 
+    public function getByLogId($logId): ?array
+    {
+        return $this->getByField('log_id', $logId, true);
+    }
+
     public function generateCode()
     {
         $result = '';

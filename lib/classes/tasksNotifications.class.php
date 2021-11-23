@@ -12,7 +12,7 @@ class tasksNotifications
             return;
         }
 
-        $template_path = wa()->getAppPath('templates/mail/Bulk'.ucfirst($event).'.html', 'tasks');
+        $template_path = wa()->getAppPath('templates/mail/Bulk' . ucfirst($event) . '.html', 'tasks');
         if (!file_exists($template_path)) {
             return;
         }
@@ -21,17 +21,21 @@ class tasksNotifications
             $comment = tasksTask::formatText($comment);
         }
 
-        $body = self::renderTemplate($template_path, array(
+        $body = self::renderTemplate($template_path, [
             'count' => $count,
             'comment' => $comment,
-            'inbox_url' => wa()->getRootUrl(true).wa()->getConfig()->getBackendUrl()."/tasks/#/tasks/inbox/",
+            'inbox_url' => wa()->getRootUrl(true) . wa()->getConfig()->getBackendUrl() . "/tasks/#/tasks/inbox/",
             'from' => wa()->getUser(),
             'to' => $to,
-        ));
+        ]);
 
         switch ($event) {
             case 'assign':
-                $subject = _w('ASSIGNED: %d task was assigned to you', 'ASSIGNED: %d tasks were assigned to you', $count);
+                $subject = _w(
+                    'ASSIGNED: %d task was assigned to you',
+                    'ASSIGNED: %d tasks were assigned to you',
+                    $count
+                );
                 break;
             case 'done':
                 $subject = _w('DONE: %d task was completed', 'DONE: %d tasks were completed', $count);
@@ -43,7 +47,7 @@ class tasksNotifications
             $m->setTo($email);
             $m->send();
         } catch (Exception $e) {
-            waLog::log('Unable to send Tasks bulk notification: '.$e->getMessage());
+            waLog::log('Unable to send Tasks bulk notification: ' . $e->getMessage());
         }
     }
 
@@ -52,28 +56,25 @@ class tasksNotifications
         $root_url = wa()->getRootUrl(true);
         $backend_url = wa()->getConfig()->getBackendUrl();
         $app_url = "{$root_url}{$backend_url}/tasks";
-        return tasksTask::formatText($text, array(
-            'wrap_tags_in_links' => array(
-                'url_pattern' => $app_url.'/#/tasks/tag/{$tag}/'
-            ),
-            'wrap_task_numbers_in_links' => array(
-                'url_pattern' => $app_url.'/#/task/{$number}/'
-            )
-        ));
+
+        return tasksTask::formatText($text, [
+            'wrap_tags_in_links' => [
+                'url_pattern' => $app_url . '/#/tasks/tag/{$tag}/',
+            ],
+            'wrap_task_numbers_in_links' => [
+                'url_pattern' => $app_url . '/#/task/{$number}/',
+            ],
+        ]);
     }
 
-    public static function send($event, $task, $log, waContact $to)
+    public static function send($event, $task, $log, waContact $to, array $templateData = []): void
     {
         $email = $to->get('email', 'default');
         if (!$email) {
             return;
         }
 
-        if ($to->getId() == wa()->getUser()->getId()) {
-            return;
-        }
-
-        $template_path = wa()->getAppPath('templates/mail/'.ucfirst($event).'.html', 'tasks');
+        $template_path = wa()->getAppPath('templates/mail/' . ucfirst($event) . '.html', 'tasks');
         if (!file_exists($template_path)) {
             return;
         }
@@ -97,35 +98,49 @@ class tasksNotifications
         $all_tags = $task->getTags();
         $inline_tags = tasksTask::extractTags($task['text']);
         $inline_tags = array_fill_keys($inline_tags, true);
-        $side_tags = array();
+        $side_tags = [];
         foreach ($all_tags as $tag_id => $tag_name) {
             if (!isset($inline_tags[$tag_name])) {
                 $side_tags[$tag_id] = $tag_name;
             }
         }
 
-        $body = self::renderTemplate($template_path, array(
-            'app_backend_url' => wa()->getRootUrl(true).wa()->getConfig()->getBackendUrl(false).'/tasks/',
-            'log' => $log,
-            'task' => $task,
-            'from' => wa()->getUser(),
-            'to' => $to
-        ));
+        $body = self::renderTemplate(
+            $template_path,
+            array_merge(
+                $templateData,
+                [
+                    'app_backend_url' => sprintf(
+                        '%s%s/tasks/',
+                        wa()->getRootUrl(true),
+                        wa()->getConfig()->getBackendUrl(false)
+                    ),
+                    'log' => $log,
+                    'task' => $task,
+                    'from' => wa()->getUser(),
+                    'to' => $to,
+                ]
+            )
+        );
 
         switch ($event) {
-            case 'new':
-                $subject = sprintf( _w('NEW: %s %s'), $task['project_id'].'.'.$task['number'], $task['name']);
+            case tasksNotificationsSender::EVENT_NEW:
+                $subject = sprintf(_w('NEW: %s %s'), $task['project_id'] . '.' . $task['number'], $task['name']);
                 break;
-            case 'assign':
-                $subject = sprintf( '➡️ ' . _w('ASSIGNED: %s %s'), $task['project_id'].'.'.$task['number'], $task['name']);
+            case tasksNotificationsSender::EVENT_ASSIGN:
+                $subject = sprintf(
+                    '➡️ ' . _w('ASSIGNED: %s %s'),
+                    $task['project_id'] . '.' . $task['number'],
+                    $task['name']
+                );
                 break;
-            case 'done':
-                $subject = sprintf( '☑️ ' . _w('DONE: %s was completed'), $task['project_id'].'.'.$task['number']);
+            case tasksNotificationsSender::EVENT_DONE:
+                $subject = sprintf('☑️ ' . _w('DONE: %s was completed'), $task['project_id'] . '.' . $task['number']);
                 break;
-            case 'comment':
-            case 'edit':
+            case tasksNotificationsSender::EVENT_COMMENT:
+            case tasksNotificationsSender::EVENT_EDIT:
             default:
-                $subject = sprintf( '⚡ ' . _w('EDIT: %s was edited'), $task['project_id'].'.'.$task['number']);
+                $subject = sprintf('⚡ ' . _w('EDIT: %s was edited'), $task['project_id'] . '.' . $task['number']);
                 break;
         }
 
@@ -134,19 +149,19 @@ class tasksNotifications
             $m->setTo($email);
             $m->send();
         } catch (Exception $e) {
-            waLog::log('Unable to send Tasks notification: '.$e->getMessage());
+            waLog::log('Unable to send Tasks notification: ' . $e->getMessage());
         }
     }
 
     /**
      * Get task for this contact
      *
-     * @param $task
+     * @param     $task
      * @param int $contact_id For what contact get TASK
      *
      * @return null|tasksTask
      */
-    protected static function getTask($task, $contact_id)
+    protected static function getTask($task, $contact_id): ?tasksTask
     {
         $task_id = self::toTaskId($task);
         if ($task_id <= 0) {
@@ -165,30 +180,41 @@ class tasksNotifications
             return null;
         }
         $task = new tasksTask($task);
+
         return $task;
     }
 
-    protected static function toTaskId($task)
+    protected static function toTaskId($task): ?int
     {
         if (is_array($task) && isset($task['id'])) {
-            return (int)$task['id'];
-        } elseif (is_scalar($task)) {
-            return (int)$task;
+            return (int) $task['id'];
         }
+
+        if (is_scalar($task)) {
+            return (int) $task;
+        }
+
+        if ($task instanceof tasksTask) {
+            return (int) $task->id;
+        }
+
+        return null;
     }
 
     /**
      * Obtain task for this contact from DB with extra fields
      * Check rights
-     * @param $task_id
+     *
+     * @param     $task_id
      * @param int $contact_id
+     *
      * @return array|null
      */
-    protected static function obtainTask($task_id, $contact_id)
+    protected static function obtainTask($task_id, $contact_id): ?array
     {
-        $collection = new tasksCollection('id/' . $task_id, array(
-            'check_rights' => false
-        ));
+        $collection = new tasksCollection('id/' . $task_id, [
+            'check_rights' => false,
+        ]);
 
         $tasks = $collection->getTasks('*,project,tags,attachments');
         $task = $tasks && isset($tasks[$task_id]) ? $tasks[$task_id] : null;
@@ -204,7 +230,7 @@ class tasksNotifications
 
     }
 
-    protected static function renderTemplate($template, $assign = array())
+    protected static function renderTemplate($template, $assign = []): string
     {
         $view = wa()->getView();
         $old_vars = $view->getVars();
@@ -213,6 +239,7 @@ class tasksNotifications
         $html = $view->fetch($template);
         $view->clearAllAssign();
         $view->assign($old_vars);
+
         return $html;
     }
 }

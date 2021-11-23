@@ -2,30 +2,33 @@
 
 class tasksWidgetQueryBuilder
 {
-    protected $select = array();
-    protected $from = array();
-    protected $joins = array();
+    protected $select   = [];
+    protected $from     = [];
+    protected $joins    = [];
     protected $where;
     protected $bind_params;
-    protected $limit = array();
-    protected $order_by = array();
-    protected $group_by = array();
+    protected $limit    = [];
+    protected $order_by = [];
+    protected $group_by = [];
 
     public function select($field)
     {
         $this->select = func_get_args();
+
         return $this;
     }
 
     public function from($table, $alias = null)
     {
-        $this->from = array($table, $alias);
+        $this->from = [$table, $alias];
+
         return $this;
     }
 
     public function addJoin($join, $left = false)
     {
-        $this->joins[] = array($join, $left);
+        $this->joins[] = [$join, $left];
+
         return $this;
     }
 
@@ -35,30 +38,34 @@ class tasksWidgetQueryBuilder
         if ($param_name !== null) {
             $this->bind_params[$param_name] = $param_value;
         }
+
         return $this;
     }
 
     public function limit($offset, $limit)
     {
-        $this->limit = array($offset, $limit);
+        $this->limit = [$offset, $limit];
+
         return $this;
     }
 
     public function orderBy($order_by)
     {
         $this->order_by = func_get_args();
+
         return $this;
     }
 
     public function groupBy($group_by)
     {
         $this->group_by = func_get_args();
+
         return $this;
     }
 
     public function getQuery()
     {
-        $query = array();
+        $query = [];
         $this->applySelect($query);
         $this->applyFrom($query);
         $this->applyJoins($query);
@@ -66,7 +73,8 @@ class tasksWidgetQueryBuilder
         $this->applyGroupBy($query);
         $this->applyOrderBy($query);
         $this->applyLimit($query);
-        return join(" ", $query);
+
+        return implode(" ", $query);
     }
 
     public function getParams()
@@ -76,13 +84,13 @@ class tasksWidgetQueryBuilder
 
     protected function applySelect(&$query)
     {
-        $select = join(',', $this->select);
+        $select = implode(',', $this->select);
         $query[] = "SELECT {$select}";
     }
 
     protected function applyFrom(&$query)
     {
-        list($from, $alias) = $this->from;
+        [$from, $alias] = $this->from;
         $from = "FROM {$from}";
         if ($alias !== null) {
             $from .= " AS {$alias}";
@@ -93,7 +101,7 @@ class tasksWidgetQueryBuilder
     protected function applyJoins(&$query)
     {
         foreach ($this->joins as $pack) {
-            list($join, $left) = $pack;
+            [$join, $left] = $pack;
             $query[] = ($left ? "LEFT " : "") . "JOIN {$join}";
         }
     }
@@ -102,10 +110,10 @@ class tasksWidgetQueryBuilder
     {
         $where = $this->where;
         if (is_array($where)) {
-            $where = join(' AND ', $where);
+            $where = implode(' AND ', $where);
         }
-        $where = is_scalar($where) ? trim((string)$where) : '';
-        if (strlen($where) > 0) {
+        $where = is_scalar($where) ? trim((string) $where) : '';
+        if ($where !== '') {
             $query[] = "WHERE {$where}";
         }
     }
@@ -115,23 +123,24 @@ class tasksWidgetQueryBuilder
         $offset = ifset($this->limit[0]);
         $limit = ifset($this->limit[1]);
 
-        $expr = array();
+        $expr = [];
 
         if ($offset !== null) {
-            $offset = (int)$offset;
+            $offset = (int) $offset;
             if ($offset >= 0) {
                 $expr[] = $offset;
             }
         }
 
         if ($limit !== null) {
-            $limit = (int)$limit;
+            $limit = (int) $limit;
             if ($limit >= 0) {
                 $expr[] = $limit;
             }
         }
+
         if ($expr) {
-            $expr = join(',', $expr);
+            $expr = implode(',', $expr);
             $query[] = "LIMIT {$expr}";
         }
     }
@@ -139,7 +148,7 @@ class tasksWidgetQueryBuilder
     protected function applyOrderBy(&$query)
     {
         if ($this->order_by) {
-            $order_by = join(',', $this->order_by);
+            $order_by = implode(',', $this->order_by);
             $query[] = "ORDER BY {$order_by}";
         }
     }
@@ -147,7 +156,7 @@ class tasksWidgetQueryBuilder
     protected function applyGroupBy(&$query)
     {
         if ($this->group_by) {
-            $this->group_by = join(',', $this->group_by);
+            $this->group_by = implode(',', $this->group_by);
             $query[] = "GROUP BY {$this->group_by}";
         }
     }

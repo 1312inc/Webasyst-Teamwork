@@ -1,6 +1,6 @@
 <?php
 
-final class tasksApiLogDto implements JsonSerializable
+class tasksApiLogDto implements JsonSerializable
 {
     use tasksApiJsonSerializableTrait;
 
@@ -10,7 +10,7 @@ final class tasksApiLogDto implements JsonSerializable
     private $id;
 
     /**
-     * @var ?int
+     * @var int|null
      */
     private $project_id;
 
@@ -28,6 +28,11 @@ final class tasksApiLogDto implements JsonSerializable
      * @var string
      */
     private $text;
+
+    /**
+     * @var string
+     */
+    private $text_stripped;
 
     /**
      * @var string
@@ -55,56 +60,155 @@ final class tasksApiLogDto implements JsonSerializable
     private $assigned_contact;
 
     /**
-     * @var bool
+     * @var bool|null
      */
     private $status_changed;
 
     /**
-     * @var bool
+     * @var bool|null
      */
     private $assignment_changed;
 
     /**
-     * tasksApiLogDto constructor.
-     *
-     * @param int                     $id
-     * @param int                     $project_id
-     * @param int                     $task_id
-     * @param tasksApiContactDto      $contact
-     * @param string                  $text
-     * @param string                  $create_datetime
-     * @param int|null                $before_status_id
-     * @param int|null                $after_status_id
-     * @param string                  $action
-     * @param tasksApiContactDto|null $assigned_contact
-     * @param bool                    $status_changed
-     * @param bool                    $assignment_changed
+     * @var array<tasksApiAttachmentDto>
      */
+    private $attachments;
+
+    /**
+     * @var array
+     */
+    private $params;
+
+    /**
+     * @var null|string
+     */
+    private $task_number = null;
+
+    /**
+     * @var null|string
+     */
+    private $task_name = null;
+
     public function __construct(
         int $id,
-        ?int $project_id,
-        int $task_id,
+        ?int $projectId,
+        int $taskId,
         tasksApiContactDto $contact,
         string $text,
-        string $create_datetime,
-        ?int $before_status_id,
-        ?int $after_status_id,
+        string $createDatetime,
+        ?int $beforeStatusId,
+        ?int $afterStatusId,
         string $action,
-        ?tasksApiContactDto $assigned_contact,
-        bool $status_changed,
-        bool $assignment_changed
+        ?tasksApiContactDto $assignedContact,
+        ?bool $statusChanged,
+        ?bool $assignmentChanged,
+        array $attachments,
+        array $params,
+        ?string $task_name,
+        ?int $task_number,
+        string $text_stripped
     ) {
         $this->id = $id;
-        $this->project_id = $project_id;
-        $this->task_id = $task_id;
+        $this->project_id = $projectId;
+        $this->task_id = $taskId;
         $this->contact = $contact;
         $this->text = $text;
-        $this->create_datetime = $create_datetime;
-        $this->before_status_id = $before_status_id;
-        $this->after_status_id = $after_status_id;
+        $this->create_datetime = $createDatetime;
+        $this->before_status_id = $beforeStatusId;
+        $this->after_status_id = $afterStatusId;
         $this->action = $action;
-        $this->assigned_contact = $assigned_contact;
-        $this->status_changed = $status_changed;
-        $this->assignment_changed = $assignment_changed;
+        $this->assigned_contact = $assignedContact;
+        $this->status_changed = $statusChanged;
+        $this->assignment_changed = $assignmentChanged;
+        $this->attachments = $attachments;
+        $this->params = $params;
+        $this->task_name = $task_name;
+        $this->task_number = $task_number;
+        $this->text_stripped = $text_stripped;
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function getProjectId(): ?int
+    {
+        return $this->project_id;
+    }
+
+    public function getTaskId(): int
+    {
+        return $this->task_id;
+    }
+
+    public function getContact(): tasksApiContactDto
+    {
+        return $this->contact;
+    }
+
+    public function getText(): string
+    {
+        return $this->text;
+    }
+
+    public function getCreateDatetime(): string
+    {
+        return $this->create_datetime;
+    }
+
+    public function getBeforeStatusId(): ?int
+    {
+        return $this->before_status_id;
+    }
+
+    public function getAfterStatusId(): ?int
+    {
+        return $this->after_status_id;
+    }
+
+    public function getAction(): string
+    {
+        return $this->action;
+    }
+
+    public function getAssignedContact(): ?tasksApiContactDto
+    {
+        return $this->assigned_contact;
+    }
+
+    public function getStatusChanged(): ?bool
+    {
+        return $this->status_changed;
+    }
+
+    public function getAssignmentChanged(): ?bool
+    {
+        return $this->assignment_changed;
+    }
+
+    public function getAttachments(): array
+    {
+        return $this->attachments;
+    }
+
+    public function getParams(): array
+    {
+        return $this->params;
+    }
+
+    public function getTextStripped(): string
+    {
+        return $this->text_stripped;
+    }
+
+    public function getTaskNumber(): ?string
+    {
+        return $this->task_number;
+    }
+
+    public function getTaskName(): ?string
+    {
+        return $this->task_name;
     }
 }

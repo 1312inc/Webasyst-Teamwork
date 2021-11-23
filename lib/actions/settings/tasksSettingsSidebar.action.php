@@ -46,7 +46,7 @@ class tasksSettingsSidebarAction extends waViewAction
     protected function fetchMilestones()
     {
         $model = new tasksMilestoneModel();
-        $milestones = $model->getStatusesWithOrder();
+        $milestones = $model->getMilestonesWithOrder();
         tasksMilestoneModel::workup($milestones, array(
             'extra' => 'project'
         ));

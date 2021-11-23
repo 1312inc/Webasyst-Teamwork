@@ -221,9 +221,15 @@ class tasksTask implements ArrayAccess
      *
      * @return string
      */
-    public static function formatText($text, $options = array())
+    public static function formatText($text, $options = [])
     {
-        $options = is_array($options) ? $options : array();
+        $options = is_array($options) ? $options : [];
+
+        $key = md5(sprintf('%s||%s', $text, json_encode($options)));
+        $cachedText = tsks()->getCache()->get($key);
+        if ($cachedText !== null) {
+            return $cachedText;
+        }
 
         $options['wrap_tags_in_links'] = isset($options['wrap_tags_in_links']) ? $options['wrap_tags_in_links'] : true;
         $options['wrap_task_numbers_in_links'] = isset($options['wrap_task_numbers_in_links']) ? $options['wrap_task_numbers_in_links'] : true;
@@ -231,7 +237,7 @@ class tasksTask implements ArrayAccess
 
         $wrap_tags_in_links = false;
         if ($options['wrap_tags_in_links'] === true || is_array($options['wrap_tags_in_links'])) {
-            $wrap_tags_in_links = is_array($options['wrap_tags_in_links']) ? $options['wrap_tags_in_links'] : array();
+            $wrap_tags_in_links = is_array($options['wrap_tags_in_links']) ? $options['wrap_tags_in_links'] : [];
             if (!isset($wrap_tags_in_links['tags']) || !is_array($wrap_tags_in_links['tags'])) {
                 $wrap_tags_in_links['tags'] = self::extractTags($text);
             }
@@ -239,8 +245,12 @@ class tasksTask implements ArrayAccess
 
         $wrap_task_numbers_in_links = false;
         if ($options['wrap_task_numbers_in_links'] === true || is_array($options['wrap_task_numbers_in_links'])) {
-            $wrap_task_numbers_in_links = is_array($options['wrap_task_numbers_in_links']) ? $options['wrap_task_numbers_in_links'] : array();
-            if (!isset($wrap_task_numbers_in_links['task_numbers']) || !is_array($wrap_task_numbers_in_links['task_numbers'])) {
+            $wrap_task_numbers_in_links = is_array(
+                $options['wrap_task_numbers_in_links']
+            ) ? $options['wrap_task_numbers_in_links'] : [];
+            if (!isset($wrap_task_numbers_in_links['task_numbers']) || !is_array(
+                    $wrap_task_numbers_in_links['task_numbers']
+                )) {
                 $wrap_task_numbers_in_links['task_numbers'] = self::extractTaskNumbers($text);
             }
         }
@@ -263,6 +273,8 @@ class tasksTask implements ArrayAccess
         if ($wrap_task_numbers_in_links) {
             $text = self::wrapTaskNumbersInLinks($text, $wrap_task_numbers_in_links);
         }
+
+        tsks()->getCache()->set($key, $text, 3600);
 
         return $text;
     }
@@ -384,12 +396,18 @@ class tasksTask implements ArrayAccess
         $link_pattern = str_replace('{$url}', $url_pattern, $link_pattern);
 
         $replace_map = array();
+        $replace_map2 = array();
         foreach ($tags as $tag) {
             $link = str_replace('{$tag}', $tag, $link_pattern);
-            $replace_map['#'.$tag] = $link;
+            $replace_map[sprintf('/#%s\b/',preg_quote($tag,'/'))] = $link;
+            $replace_map2['#'.$tag] = $link;
         }
 
-        $text = tasksHelper::strReplace($text, $replace_map);
+        $res = preg_replace(array_keys($replace_map), array_values($replace_map), $text);
+        if (!$res) {
+            $res = tasksHelper::strReplace($text, $replace_map2);
+        }
+        $text = $res;
 
         return $text;
     }
@@ -547,7 +565,7 @@ class tasksTask implements ArrayAccess
             'after_status_id' => $this['status_id'],
             'create_datetime' => $this['create_datetime'],
             'contact_id' => $this['contact_id'],
-            'action' => 'create',
+            'action' => tasksTaskLogModel::ACTION_TYPE_ADD,
         ) + $log_model->getEmptyRow();
     }
 

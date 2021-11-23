@@ -193,8 +193,22 @@
         // Keep last update datetime of tasks up to date ('14 mins' => '15 mins')
         initTaskDateUpdater: function() {
             setInterval(function() {
-                $.each(window.Tasks || {}, function() {
-                    this.maybeUpdateTimeCounter && this.maybeUpdateTimeCounter();
+                $.each($('.list .item .t-date-wrapper'), function() {
+                    var since = $(this).data('since'),
+                        date1 = new Date(),
+                        date2 = new Date(since),
+                        diffTime = Math.abs(date2 - date1),
+                        diffMins = diffTime / (1000 * 60);
+
+                    // if minutes range
+                    if(diffMins > 1 && diffMins < 60) {
+                        $(this).html($.wa.locale['mins'].replace('%d', Math.round(diffMins)));
+                    }
+
+                    // if hours range
+                    if(diffMins > 60 && diffMins < 60 * 24) {
+                        $(this).html($.wa.locale['hr'].replace('%d', Math.round(diffMins / 60)));
+                    }
                 });
             }, 10000);
         },
@@ -827,8 +841,11 @@
             this.load('?module=from&action=hub&id='+topic_id);
         },
 
-        kanbanAction: function(params) {
+        kanbanAction: function (params) {
+            var kanbanLoader = $ ? $.waLoading() : undefined;
+            if (kanbanLoader) kanbanLoader.animate(3000, 99, true);
             this.load('?module=kanban&' + (params || ''), function () {
+                if (kanbanLoader) kanbanLoader.done();
                 Kanban.init();
             });
         },
@@ -978,7 +995,7 @@
         initSidebar: function() {
             self.initCollapsibleSidebar();
 
-            $("#add-task-link").on("click", function(event) {
+            $(".add-task-link").on("click", function(event) {
                 if (event.which != 1) { return; } // not a left-mouse-button click
                 $(this).addClass('rotated');
                 setTimeout(() => {
@@ -1505,13 +1522,99 @@
             if (!$icon.length) {
                 $button.addClass('custom-pl-40');
             }
-            $button.prop("disabled", true).addClass('button--loading');
+            $button.prop("disabled", true).addClass('button--loading disabled');
         },
 
         hideLoadingButton: function ($button) {
             setTimeout(function () {
-                $button.removeAttr('disabled').removeClass('button--loading');
+                $button.removeAttr('disabled').removeClass('button--loading disabled');
             }, 1000);
+        },
+
+        teamList: function (options) {
+
+            var $container = options.container,
+                $targetField = options.targetField,
+                projectId = options.projectId,
+                assignedContactId = options.assignedContactId,
+                unassignedLabel = $.wa.locale.unassigned,
+                meLabel = $.wa.locale.me,
+                updateMode = options.updateMode;
+
+            $container.css('pointer-events', 'none').fadeTo("fast", 0.33);
+
+            $.get('?module=tasks&action=getUsersForProject&project_id=' + projectId, function (data) {
+                var assignees = data.data,
+                    maxVisible = 5,
+                    wa_url = window.wa_url || '/';
+
+                if (assignees.length) {
+                    var $assigneesContainer = $('<div>', {
+                        class: 'flexbox wrap'
+                    });
+
+                    assignees.forEach(function (a, i) {
+                        var $assignee = `
+                            <div class="t-assignee align-center ${(assignees.length - maxVisible >= 2) ? (i > (maxVisible - 1) ? 'hidden' : '') : ''}" data-user-id="${a.id}" style="width: 70px;">
+                                <div class="custom-mb-4">
+                                    <img src="${a.photo_url}" class="userpic userpic-48" />
+                                </div>
+                                <div class="smaller">
+                                    ${a.name} ${$.tasks.options.contact_id === +a.id ? `<br>(${meLabel})` : ''}
+                                </div>
+                                ${a.calendar_status !== null ? `
+                                    <div class="custom-mt-4">
+                                        <span class="badge smaller" style="background:${a.calendar_status.bg_color};color:${a.calendar_status.font_color};">
+                                            ${a.calendar_status.name}
+                                        </span>
+                                    </div>` : ''}
+                            </div>
+                        `;
+                        $assigneesContainer.append($assignee);
+                    });
+                    $assigneesContainer.append(`
+                        <div class="t-assignee align-center" data-user-id="" style="width: 72px;">
+                            <div class="custom-mb-4">
+                                <img src="${wa_url}wa-content/img/userpic.svg" class="userpic userpic-48" />
+                            </div>
+                            <div class="smaller">
+                                ${unassignedLabel}
+                            </div>
+                        </div>
+                    `);
+                    $container.html($assigneesContainer);
+                    if (assignees.length >= maxVisible + 2) {
+                        $assigneesContainer.append(`
+                            <div class="t-toggle-all-assignee align-center" style="width: 72px;">
+                                <span class="icon userpic size-48 text-gray" style="background: var(--background-color);">
+                                    <i class="fas fa-chevron-down" style="width: 0.875rem;"></i>
+                                </span>
+                            </div>
+                        `);
+                    }
+
+                    $container.find('.t-assignee').on('click', function () {
+                        $container.find('.t-assignee').removeClass('active');
+                        $(this).addClass('active');
+                        $targetField.val($(this).data('user-id'));
+                    });
+
+                    $container.find('.t-toggle-all-assignee').on('click', function () {
+                        $container.find('.t-assignee').removeClass('hidden');
+                        $(this).hide();
+                    });
+
+                    // initial selection
+                    if(updateMode) {
+                        $container.find('.t-assignee[data-user-id=\"' + assignedContactId + '\"]').addClass('active');
+                    } else {
+                        $container.find('.t-assignee').first().trigger('click');
+                    }
+
+                }
+            }).always(function () {
+                $container.css('pointer-events', 'auto').fadeTo("fast", 1);
+            });
         }
     };
 })();

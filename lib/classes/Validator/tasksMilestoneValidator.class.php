@@ -18,9 +18,9 @@ final class tasksMilestoneValidator implements tasksEntityValidatorInterface
             throw new tasksValidationException('Empty name');
         }
 
-        if ($milestone->getDueDate() < new DateTimeImmutable()) {
-            throw new tasksValidationException('Due date must be in future');
-        }
+//        if ($milestone->getDueDate() < new DateTimeImmutable()) {
+//            throw new tasksValidationException('Due date must be in future');
+//        }
 
         return true;
     }

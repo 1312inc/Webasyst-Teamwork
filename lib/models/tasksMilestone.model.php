@@ -151,7 +151,7 @@ class tasksMilestoneModel extends waModel
      *
      * @return array
      */
-    public function getStatusesWithOrder($withClosed = true)
+    public function getMilestonesWithOrder($withClosed = true)
     {
         $result = $this->select('*')
             ->order('closed DESC, IFNULL(due_date, \'9999-12-31 23:59:59\') ASC');

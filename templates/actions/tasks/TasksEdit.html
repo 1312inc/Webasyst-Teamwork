@@ -17,6 +17,7 @@
     window.taskEdit = new TaskEdit({
         $task: $(".t-task-page-wrapper"),
         task_id: {$task.id|default:'null'},
+        task_uuid: '{$task_uuid}',
         is_page: {if $is_page}true{else}false{/if},
         priority: "{$task.priority}",
         project_color: "{$project.color}",
@@ -57,7 +58,7 @@
             {* HEADER *}
             <header class="t-header-wrapper">
                 <div class="t-general-menu is-shown">
-                    <div class="t-menu-wrapper flexbox space-20">
+                    <div class="t-menu-wrapper flexbox space-20 wrap-mobile">
 
                         {* PROJECT SELECTOR *}
                         <div class="t-menu-item">
@@ -92,11 +93,20 @@
                                     }
 
                                     $dropdown.waDropdown({
-                                        hover: false,
+                                        hover: true,
                                         items: ".menu > li > a",
                                         change: function(event, target, dropdown) {
                                             $("[name=\"data[project_id]\"]").val( $(target).data("value") );
                                             taskEdit.onProjectChange();
+
+                                            $.tasks.teamList({
+                                                container: $('#t-edit-task-form .t-team-list-wrapper'),
+                                                targetField: $('#t-edit-task-form [name="data[assigned_contact_id]"]'),
+                                                projectId: $(target).data("value"),
+                                                assignedContactId: {if !empty($task.id)}{$task.assigned_contact_id|default:"\"\""}{else}""{/if},
+                                                updateMode: {if !empty($task.id)}true{else}false{/if}
+                                            });
+
                                         }
                                     });
                                 })(jQuery);
@@ -245,57 +255,29 @@
                 {* @event backend_task_edit.%plugin_id%.before_fields *}
                 {foreach $backend_task_edit as $_}{ifset($_.before_fields)}{/foreach}
 
-                <div class="fields custom-mt-20">
+                <div class="fields custom-mt-16">
                     <div class="fields-group">
 
                 {* ASSIGN *}
-                <div class="t-form-line field t-team-list-wrapper">
-                    <div class="name custom-pt-4">[`Assign to`]</div>
+                <div class="t-form-line field">
+                    <div class="name custom-pt-20">[`Assign to`]</div>
                     <div class="value">
-                        <ul class="js-task-users-list">
-                            {$_count = 0}
-                            {$_is_something_checked = false}
-                            {foreach $users as $user}
-                                {$_is_checked = !$task.assigned_contact_id && $user@iteration == 1 && !$task.id}
-                                {$_is_checked = $_is_checked || $user.id == $task.assigned_contact_id}
-                                {$_is_something_checked = $_is_something_checked || $_is_checked}
-
-                                <li class="t-user-item is-shown" data-user-id="{$user.id}">
-                                    <label class="t-user-label set-task-user flexbox middle space-8">
-                                        <span class="wa-radio">
-                                            <input type="radio" name="data[assigned_contact_id]" value="{$user.id}" {if $_is_checked}checked{/if}>
-                                            <span></span>
-                                        </span>
-                                        <i class="userpic userpic-32" style="background-image: url({$user.photo_url})"></i>
-                                        <span>
-                                            {$user.name|escape}
-                                            {if ($user.id == $wa->user('id'))}
-                                                &nbsp;<span class="gray">([`me`])</span>
-                                            {/if}
-                                        </span>
-                                    </label>
-                                </li>
-                            {/foreach}
-
-                            <li class="t-user-item is-unassigned is-shown" data-user-id="">
-                                <label class="t-user-label set-task-user flexbox middle space-8">
-                                    <span class="wa-radio">
-                                        <input type="radio" name="data[assigned_contact_id]" value="0"{if !$_is_something_checked} checked{/if}>
-                                        <span></span>
-                                    </span>
-                                    <i class="userpic userpic-32" style="background-image: url('{$wa_url}wa-content/img/userpic.svg')"></i>
-                                    <span class="gray">[`Unassigned`]</span>
-                                </label>
-                            </li>
-
-                            <li class="t-link-item">
-                                <a class="show-team-users small" href="javascript:void(0);">[`Show everyone`]</a>
-                            </li>
-                        </ul>
+                        <input type="hidden" name="data[assigned_contact_id]" value="{$task.assigned_contact_id}">
+                        <div class="t-team-list-wrapper"></div>
+                        <script>
+                            (function ($) {
+                                var initialProjectID = $("#projectSelect").find("li:first a").data('value');
+                                $.tasks.teamList({
+                                    container: $('#t-edit-task-form .t-team-list-wrapper'),
+                                    targetField: $('#t-edit-task-form [name="data[assigned_contact_id]"]'),
+                                    projectId: {if !empty($task.id)}{$task.project_id}{else}initialProjectID{/if},
+                                    assignedContactId: {if !empty($task.id)}{$task.assigned_contact_id|default:"\"\""}{else}""{/if},
+                                    updateMode: {if !empty($task.id)}true{else}false{/if}
+                                });
+                            })(jQuery);
+                        </script>
                     </div>
-
                 </div>
-
 
 
                 <div class="t-form-line field t-due-date-wrapper">
@@ -326,7 +308,7 @@
 
                 {* BUTTONS *}
                 <div class="t-errors-block js-errors-block"></div>
-                <div class="t-form-line t-buttons-block flexbox middle space-20">
+                <div class="t-form-line t-buttons-block flexbox middle space-16">
                     <button class="button green large t-save-task-link" type="submit">{if !empty($task.id)}[`Save task`]{else}[`Create task`]{/if}</button>
                     <a class="t-close-link button large light-gray" href="javascript:void(0);">[`Cancel`]</a>
 

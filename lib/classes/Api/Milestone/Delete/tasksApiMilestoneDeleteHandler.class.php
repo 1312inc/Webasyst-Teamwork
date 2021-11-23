@@ -20,7 +20,7 @@ final class tasksApiMilestoneDeleteHandler
         /** @var tasksMilestone $milestone */
         $milestone = $repository->findById($deleteRequest->getId());
         if (!$milestone) {
-            throw new tasksException('Milestone not found', 404);
+            throw new tasksResourceNotFoundException('Milestone not found');
         }
 
         if (!$repository->delete($milestone)) {

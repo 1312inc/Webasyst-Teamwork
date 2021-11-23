@@ -99,11 +99,9 @@ class tasksConfig extends waAppConfig
     }
 
     /**
-     * @param string|null $entity
-     *
      * @return mixed|tasksModel
      */
-    public function getModel(?string $entity)
+    public function getModel(?string $entity = null)
     {
         if ($entity === null) {
             return $this->models[''];
@@ -201,13 +199,14 @@ class tasksConfig extends waAppConfig
         if (!$is_admin && !$rights) {
             //clear data If user not have rights. See wa-system/webasyst/lib/actions/dashboard/webasystDashboardActivity.action.php:105
             return array_fill_keys(array_keys($logs), null);
-        } elseif (!$is_admin && $rights) {
+        }
 
+        if (!$is_admin && $rights) {
             $rights_collect = [];
             foreach ($rights as $project_id => $right) {
-                if ((int) $right == tasksRightConfig::RIGHT_ASSIGNED) {
+                if ((int) $right == tasksRights::PROJECT_ACCESS_VIEW_ASSIGNED_TASKS) {
                     $rights_collect['assign'][] = $project_id;
-                } elseif ((int) $right >= tasksRightConfig::RIGHT_FULL) {
+                } elseif ((int) $right >= tasksRights::PROJECT_ACCESS_FULL) {
                     $rights_collect['admin'][] = $project_id;
                 }
             }
@@ -218,91 +217,8 @@ class tasksConfig extends waAppConfig
         }
 
         $logs = parent::explainLogs($logs);
-        $app_url = wa()->getConfig()->getBackendUrl(true) . $this->getApplication() . '/';
 
-        $tasks_type = ['task_add', 'task_edit', 'task_forward', 'task_return', 'task_action', 'task_comment'];
-        $task_ids = [];
-
-        foreach ($logs as $l_id => $l) {
-            if (in_array($l['action'], $tasks_type) && $l['params']) {
-                $t = explode(':', $l['params']);
-                $task_ids[$t[0]] = $t[0];
-            }
-        }
-
-        $tasks = [];
-        if ($task_ids) {
-            $task_model = new tasksTaskModel();
-            $admin_tasks = [];
-            $assign_tasks = [];
-
-            if ($is_admin) {
-                $admin_tasks = $task_model->getById(array_keys($task_ids));
-            } elseif (!empty($rights_collect['admin'])) {
-                $admin_tasks = $task_model->getByField(
-                    [
-                        'id' => array_keys($task_ids),
-                        'project_id' => $rights_collect['admin'],
-                    ],
-                    'id'
-                );
-            }
-
-            if (!empty($rights_collect['assign'])) {
-                //Return tasks assigned for active user
-                $assign_tasks = $task_model->getByField(
-                    [
-                        'id' => array_keys($task_ids),
-                        'assigned_contact_id' => wa()->getUser()->getId(),
-                        'project_id' => $rights_collect['assign'],
-                    ],
-                    'id'
-                );
-            }
-
-            $tasks = $assign_tasks + $admin_tasks;
-
-            //Clear not assigned task from log
-            foreach ($logs as $l_id => $l) {
-                if ($l['params']) {
-                    $t = explode(':', $l['params']);
-                    if (empty($tasks[$t[0]])) {
-                        $logs[$l_id] = [];
-                    }
-                }
-            }
-        }
-
-        foreach ($logs as $l_id => $l) {
-            //If log cleared, not need replace values
-            if (!empty($l)) {
-                $t = null;
-                $logs[$l_id]['params_html'] = '';
-                if (in_array($l['action'], $tasks_type) && $l['params']) {
-                    $t_id = explode(':', $l['params']);
-                    $t = ifset($tasks, $t_id[0], null);
-                } else {
-                    if ($l['action'] == 'task_delete') {
-                        if ($l['params'] > 1) {
-                            $logs[$l_id]['params_html'] = '(' . _w('%d task', '%d tasks', $l['params']) . ')';
-                        }
-                        continue;
-                    }
-                }
-                if ($t) {
-                    //If name not found, need set dummy
-                    if (empty($t['name'])) {
-                        $t['name'] = _wd('tasks', "(no name)");
-                    }
-                    $url = $app_url . '#/task/' . $t['project_id'] . '.' . $t['number'] . '/';
-                    $logs[$l_id]['params_html'] .= '<div class="activity-target"><a href="' . $url . '">' . htmlspecialchars(
-                            $t['name']
-                        ) . '</a></div>';
-                }
-            }
-        }
-
-        return $logs;
+        return (new tasksWaLogManager())->explainLogs($logs, $is_admin, $rights_collect);
     }
 
     /**
@@ -313,7 +229,7 @@ class tasksConfig extends waAppConfig
      *
      * @return array|mixed
      */
-    public function getPersonalSettings($contact_id = null)
+    public function getPersonalNotificationSettings($contact_id = null)
     {
         if ($contact_id === null) {
             $contact_id = wa()->getUser()->getId();
@@ -409,7 +325,7 @@ class tasksConfig extends waAppConfig
         }
     }
 
-    public function setPersonalSettings($settings, $contact_id = null)
+    public function setPersonalNotificationSettings($settings, $contact_id = null)
     {
         if ($contact_id === null) {
             $contact_id = wa()->getUser()->getId();
@@ -430,7 +346,7 @@ class tasksConfig extends waAppConfig
         if ($notification) {
             $csm->set($contact_id, 'tasks', 'settings/notification', $notification);
 
-            $settings = $this->getPersonalSettings($contact_id);
+            $settings = $this->getPersonalNotificationSettings($contact_id);
             $notification = $settings['notification'];
 
             $looks_like_default = false;
@@ -459,6 +375,7 @@ class tasksConfig extends waAppConfig
     /**
      * The method returns a counter to show in backend header near applications' icons.
      * Three types of response are allowed.
+     *
      * @return string|int|array - A prime number in the form of a int or string
      * @return array - Array with keys 'count' - the value of the counter and 'url' - icon url
      * @return array - An associative array in which the key is the object key from app.php, from the header_items.
@@ -497,11 +414,24 @@ class tasksConfig extends waAppConfig
         return null;
     }
 
+    public function getCache($type = 'default'): waCache
+    {
+        if ($this->cache === null) {
+            $this->cache = parent::getCache($type)
+                ?: new waCache(
+                    new tasksCacheAdapter(['type' => 'file']),
+                    self::APP_ID
+                );
+        }
+
+        return $this->cache;
+    }
+
     private function registerGlobal(): void
     {
         if (!function_exists('tsks')) {
             /**
-             * @return tasksConfig|SystemConfig|waAppConfig
+             * @return tasksConfig
              */
             function tsks()
             {

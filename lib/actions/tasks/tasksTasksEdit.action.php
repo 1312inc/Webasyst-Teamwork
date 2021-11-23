@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Shows form to create new or edit existing task.
  */
@@ -16,7 +17,10 @@ class tasksTasksEditAction extends waViewAction
     {
         $this->projects = $projects = tasksHelper::getProjects();
         if (!$projects) {
-            $this->setTemplate(wa('tasks')->getAppPath(tsks()->getUI2TemplatePath('templates/actions%s/tasks/NoProjectsError.html')));
+            $this->setTemplate(
+                wa('tasks')->getAppPath(tsks()->getUI2TemplatePath('templates/actions%s/tasks/NoProjectsError.html'))
+            );
+
             return;
         }
 
@@ -30,34 +34,27 @@ class tasksTasksEditAction extends waViewAction
         }
 
         $milestone_model = new tasksMilestoneModel();
-        $this->milestones = $milestone_model->getStatusesWithOrder(false);
+        $this->milestones = $milestone_model->getMilestonesWithOrder(false);
 
-        $this->users = $this->getUsers();
+        $this->users = (new tasksApiTeamGetTopAssigneesHandler())
+            ->getUsers(
+                new tasksApiTeamGetTopAssigneesRequest(!empty($this->project['id']) ? (int) $this->project['id'] : null)
+            );
         $this->projects_users = $this->getProjectsUsers($projects, $this->users);
 
         $backend_task_edit = $this->triggerEvent($task);
 
-        $this->view->assign(array(
+        $this->view->assign([
             'task' => $task,
             'projects' => $projects,
             'project' => $this->project,
             'projects_users' => $this->projects_users,
-            'projects_priority_users' => array(), // !!!
+            'projects_priority_users' => [], // !!!
             'milestones' => $this->milestones,
             'users' => $this->users,
-            'backend_task_edit' => ifempty($backend_task_edit, array()),
-        ));
+            'backend_task_edit' => ifempty($backend_task_edit, []),
+        ]);
 
-    }
-
-    protected function getUsers()
-    {
-        $users = tasksHelper::getTeam();
-        foreach ($users as $user_id => $user) {
-            $users[$user_id]['photo_url'] = waContact::getPhotoUrl($user['id'], $user['photo'], 40, 40, 'person', 0);
-        }
-
-        return $users;
     }
 
     protected function getProjectsUsers($projects, $users)
@@ -70,20 +67,21 @@ class tasksTasksEditAction extends waViewAction
                 LEFT JOIN wa_user_groups g ON r.group_id = g.group_id
                 WHERE (r.app_id = 'tasks' AND r.name LIKE 'project.%' AND r.value > 0)";
         $rows = $user_rights_model->query($sql)->fetchAll();
-        $project_users = array();
+        $project_users = [];
         foreach ($rows as $row) {
             $project_users[$row['project_id']][$row['user_id']] = $row['user_id'];
         }
 
-        $result = array();
+        $result = [];
         foreach ($projects as $p_id => $p) {
-            $result[$p_id] = array();
+            $result[$p_id] = [];
             foreach ($users as $user_id => $u) {
                 if (in_array($user_id, $admins) || isset($project_users[$p_id][$user_id])) {
                     $result[$p_id][] = $user_id;
                 }
             }
         }
+
         return $result;
     }
 
@@ -122,7 +120,9 @@ class tasksTasksEditAction extends waViewAction
     {
         /**
          * @event backend_task_edit
+         *
          * @param int|array|tasksTask $task
+         *
          * @return array[string]array $return[%plugin_id%] array of html output
          *
          * @return string $return[%plugin_id%]['before_header'] html
@@ -151,10 +151,11 @@ class tasksTasksEditAction extends waViewAction
          * @return string $return[%plugin_id%]['more'] html
          *
          */
-        $params = array(
+        $params = [
             'task' => $task,
             'action' => $this,
-        );
+        ];
+
         return wa()->event('backend_task_edit', $params);
     }
 

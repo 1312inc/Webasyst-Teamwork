@@ -4,14 +4,11 @@
     <form {if $post_action_url|default:''}action="{$post_action_url}"{/if} method="post">
 
         <div class="flexbox space-12">
-            <div class="image">
-                <img src="{$wa->user()->getPhoto(64)}" alt="" class="userpic userpic-48">
-            </div>
             <div class="wide">
                 {* TEXTAREA *}
                 <div class="line t-textarea-wrapper">
                     {$_text = $comment.text|default:''}
-                    <textarea name="data[text]" cols="" rows="" class="t-redactor-comments width-100" placeholder="[`Enter your comment`]">{$_text|escape}</textarea>
+                    <textarea name="data[text]" cols="" rows="" class="t-redactor-comments width-100" placeholder="[`Add comment`]">{$_text|escape}</textarea>
                 </div>
 
                 {* ATTACH *}
@@ -77,6 +74,9 @@
                     </div>
 
                 </div>
+            </div>
+            <div class="image">
+                <img src="{$wa->user()->getPhoto(64)}" alt="" class="userpic userpic-32 custom-mt-8">
             </div>
         </div>
 

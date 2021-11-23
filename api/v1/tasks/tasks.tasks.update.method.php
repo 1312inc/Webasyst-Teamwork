@@ -25,7 +25,8 @@ class tasksTasksUpdateMethod extends tasksApiAbstractMethod
             $this->post('status_id', true, self::CAST_INT) ?? 0,
             $this->post('hidden_timestamp', true, self::CAST_INT) ?? 0,
             $this->post('due_date', true, self::CAST_DATETIME, 'Y-m-d'),
-            $this->post('files_hash', true, self::CAST_STRING_TRIM)
+            $this->post('files_hash', true, self::CAST_STRING_TRIM),
+            $this->post('attachments_to_delete', false, self::CAST_ARRAY)
         );
 
         $task = (new tasksApiTasksUpdateHandler())->update($request);
@@ -33,6 +34,6 @@ class tasksTasksUpdateMethod extends tasksApiAbstractMethod
         $collection = new tasksCollection([$task->getId()]);
         $tasks = $collection->getTasks(tasksCollection::FIELDS_TO_GET);
 
-        return new tasksApiTaskResponse(reset($tasks));
+        return new tasksApiTaskResponse(new tasksTask(reset($tasks)));
     }
 }

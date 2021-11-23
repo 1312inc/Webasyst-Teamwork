@@ -53,9 +53,6 @@
                 ]}
                 {$_priority_icon = ""}
                 {if !empty($task.priority)}
-                    {if $task.priority == '-1'}
-                        {$_priority_icon = "<i class=\"fas fa-hourglass-half\" style=\"color: var(--light-gray);\"></i>"}
-                    {/if}
                     {if $task.priority == '1'}
                         {$_priority_icon = "<i class=\"fas fa-exclamation-triangle\" style=\"color: orange;\"></i>"}
                     {/if}
@@ -69,9 +66,6 @@
                     {$task.project_id}.{$task.number}
                 </span>
 
-                {* TITLE *}
-                <span class="{if !empty($task.priority) && ($task.priority == '1' || $task.priority == '2' || $task.priority == '3')}bold{else}semibold{/if}{if !empty($task.priority) && $task.priority == '-1'} text-gray{/if}">{$task.name|escape|default:"(no name)"|truncate:64}</span>
-
                 {* STATUS *}
                 {if !empty($task.status.name)}
 
@@ -83,6 +77,27 @@
 
                 {/if}
 
+                {* HISTORY COUNTERS *}
+                {strip}
+                    {$_count_comment = 0}
+                    {$_count_action = 0}
+                    {foreach $task.log as $_k => $_v}
+                        {if $_v.action == 'comment'}
+                            {$_count_comment = $_count_comment + 1}
+                        {elseif $_v.action != 'add' && $_v.action != 'create'}
+                            {$_count_action = $_count_action + 1}
+                        {/if}
+                    {/foreach}
+                {/strip}
+                <span class="nowrap bold hint" title="[`History &amp; Comments`]">
+                    {if $_count_action}
+                        <i class="fas fa-exchange-alt custom-ml-4"></i> {$_count_action}
+                    {/if}
+                    {if $_count_comment}
+                        <i class="fas fa-comment custom-ml-4"></i> {$_count_comment}
+                    {/if}
+                </span>
+
             </span>
 
             <span class="count align-right">
@@ -91,44 +106,27 @@
                 {$time_since_update_template = null}
                 {$time_since_update_str = tasksHelper::getDatetime($task.update_datetime, $time_since_update_period, $time_since_update_template)}
 
-                <span class="small gray nowrap semibold">{$time_since_update_str}</span>
+                {* js updateTimeCounter fix *}
+                {$time_since_update_str = str_replace('mins', 'min', $time_since_update_str)}
+
+                <span class="t-date-wrapper small gray nowrap semibold" data-since='{$task.update_datetime|wa_datetime:"Y-m-d H:i:s"}'>{$time_since_update_str}</span>
 
             </span>
 
         </div>
 
-        <p class="hint custom-mb-8">
+        {* TITLE *}
+        <span class="t-task-item-title {if !empty($task.priority) && ($task.priority == '1' || $task.priority == '2' || $task.priority == '3')}bold{else}semibold{/if}{if !empty($task.priority) && $task.priority == '-1'} text-gray{/if}">{$task.name|escape|default:"(no name)"|truncate:42}</span>
 
-            {* PREVIEW *}
-            <span class="break-word">{strip_tags($task.text)|truncate:128}</span>
-
-            {* HISTORY COUNTERS *}
-            {strip}
-                {$_count_comment = 0}
-                {$_count_action = 0}
-                {foreach $task.log as $_k => $_v}
-                    {if $_v.action == 'comment'}
-                        {$_count_comment = $_count_comment + 1}
-                    {elseif $_v.action != 'add' && $_v.action != 'create'}
-                        {$_count_action = $_count_action + 1}
-                    {/if}
-                {/foreach}
-            {/strip}
-            <span class="nowrap bold" title="[`History &amp; Comments`]">
-                {if $_count_action}
-                    <i class="fas fa-exchange-alt custom-ml-4"></i> {$_count_action}
-                {/if}
-                {if $_count_comment}
-                    <i class="fas fa-comment custom-ml-4"></i> {$_count_comment}
-                {/if}
-            </span>
-
+        {* SUMMARY PREVIEW *}
+        <p class="hint custom-mb-0">
+            <span class="break-word">{strip_tags(tasksTask::formatText($task.text))|truncate:83}</span>
         </p>
 
         {* DUE *}
         {if !empty($task.due_date)}
             {* manually set due date overrides milestone general due date *}
-            <p class="small custom-mt-0 custom-mb-4">
+            <p class="small custom-mt-4 custom-mb-0">
                 <span class="small nowrap t-due-date-hint-{$task.view.due_color_class|default:'green
 >'} custom-mr-4">
                     <i class="fas fa-flag-checkered"></i>
@@ -139,7 +137,7 @@
                 {/if}
             </p>
         {else if !empty($task.milestone.due_date)}
-            <p class="small custom-mt-0 custom-mb-4">
+            <p class="small custom-mt-4 custom-mb-0">
                 <span class="small nowrap t-due-date-hint-{$task.milestone.view.due_color_class|default:'green'} custom-mr-4">
                     <i class="fas fa-flag-checkered"></i>
                     {wa_date('humandate', $task.milestone.due_date, waDateTime::getDefaultTimezone())|escape}
@@ -155,7 +153,7 @@
             {if !empty($task['log'][$log_id])}
                 {$_l = $task.log[$log_id]}
                 {if $_l.text}
-                    <div class="box custom-mb-8 t-pinned-comment blue smaller"><i class="icon userpic middle" style="background-image: url('{$_l.contact.photo_url}');"></i> {$_l.text|escape|truncate:255} <span class="hint nowrap">{$_l.create_datetime|wa_datetime:'humandatetime'}</span></div>
+                    <div class="box custom-mt-8 t-pinned-comment blue smaller break-word"><i class="icon userpic middle" style="background-image: url('{$_l.contact.photo_url}');"></i> {strip_tags(tasksTask::formatText($_l.text))|truncate:128} <span class="hint nowrap">{$_l.create_datetime|wa_datetime:'humandatetime'}</span></div>
                 {/if}
             {/if}
         {/foreach}
