@@ -167,9 +167,10 @@ class tasksWaLogManager
                             $actionParams = json_decode($paramsExploded[2], true);
                         }
 
-                        $logs[$l_id]['params_html'] .= !empty($actionParams['action_text'])
-                            ? '<br>' . $actionParams['action_text']
-                            : '';
+                        if (!empty($actionParams['action_text'])) {
+                            $comment = tasksHelper::convertToMarkdownAndStripTags($actionParams['action_text'], 512);
+                            $logs[$l_id]['params_html'] .= '<br>' . $comment;
+                        }
                         break;
 
                     case self::LOG_COMMENT:
@@ -180,7 +181,7 @@ class tasksWaLogManager
 
                         if (!empty($commentParams['comment_text'])) {
                             $comment = tasksHelper::convertToMarkdownAndStripTags($commentParams['comment_text'], 512);
-                            $logs[$l_id]['params_html'] = '<br>' . $comment;
+                            $logs[$l_id]['params_html'] .= '<br>' . $comment;
                         }
                         break;
                 }
