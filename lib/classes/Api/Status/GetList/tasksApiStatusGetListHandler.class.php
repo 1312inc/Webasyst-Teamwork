@@ -18,6 +18,8 @@ final class tasksApiStatusGetListHandler
             'title_color' => 'ffffff',
         ];
 
+        $statusesData[tasksStatusModel::STATUS_CLOSED_ID]['sort'] = count($statusesData) + 1;
+
         return $statusesData;
     }
 }
