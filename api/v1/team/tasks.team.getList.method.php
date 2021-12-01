@@ -26,6 +26,8 @@ class tasksTeamGetListMethod extends tasksApiAbstractMethod
             $logs[$i]['task'] = new tasksTask($tasks[$log['task_id']]);
         }
 
+        $counts = tasksApiCountsDtoFactory::createForTeam();
+
         foreach ($users as $user) {
             if ($user['id'] == wa()->getUser()->getId()) {
                 continue;
@@ -43,7 +45,8 @@ class tasksTeamGetListMethod extends tasksApiAbstractMethod
                     $user['calendar_status']->getFontColor()
                 ) : null,
                 isset($logs[$user['id']]) ? tasksApiLogDtoFactory::createFromArray($logs[$user['id']]) : null,
-                (new waUserGroupsModel())->getGroups($contact->getId()) ?? []
+                (new waUserGroupsModel())->getGroups($contact->getId()) ?? [],
+                $counts[$user['id']] ?? tasksApiCountsDtoFactory::createEmpty()
             );
         }
 

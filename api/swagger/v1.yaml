@@ -1556,6 +1556,8 @@ components:
                 type: array
                 items:
                   type: string
+              counts:
+                $ref: '#/components/schemas/taskCountInfo'
 
     taskInfo:
       type: object

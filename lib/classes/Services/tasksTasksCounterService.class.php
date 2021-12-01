@@ -126,6 +126,21 @@ final class tasksTasksCounterService
         return $this->collectCount($sql);
     }
 
+    public function getTeamCounts(): array
+    {
+        $sql = sprintf(
+            "SELECT t.assigned_contact_id relevant_id, t.status_id, %s AS priority, count(*) AS `count`
+                    FROM %s t
+                    WHERE t.assigned_contact_id IS NOT NULL
+                    GROUP BY relevant_id, t.status_id, %s",
+            $this->priorityField,
+            $this->taskModel->getTableName(),
+            $this->priorityField
+        );
+
+        return $this->collectCount($sql);
+    }
+
     public function getStatusCounts(int $statusId): array
     {
         $sql = sprintf(
