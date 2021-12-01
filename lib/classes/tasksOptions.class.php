@@ -36,4 +36,9 @@ final class tasksOptions
     {
         return (int) tsks()->getOption('api_text_stripped_truncate_length');
     }
+
+    public static function getApiLargePhotoSize(): int
+    {
+        return (int) tsks()->getOption('api_large_photo_size');
+    }
 }
