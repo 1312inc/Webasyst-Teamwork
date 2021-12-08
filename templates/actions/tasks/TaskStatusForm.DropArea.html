@@ -1,19 +1,30 @@
 <div class="t-status-comment-wrapper">
 
-    {* TEXTAREA *}
-    <div class="t-textarea-wrapper">
-        <textarea name="text" cols="" rows="" class="t-redactor-comments width-100" placeholder="[`Add comment`]"></textarea>
+    <div class="t-big-editor-wrapper">
+
+        {* TEXTAREA *}
+        <div class="t-textarea-wrapper">
+            <textarea name="text" cols="" rows="" class="t-redactor-comments width-100" placeholder="[`Add comment`]"></textarea>
+        </div>
+
+        {if empty($is_bulk)}
+            {* ATTACH *}
+            <div class="t-attach-wrapper">
+
+                {* Droparea *}
+                <div class="t-attach-droparea">
+                    <div class="t-droparea-hint">[`Attach files`]</div>
+                    <input type="file" name="files[]" multiple="true" />
+                </div>
+
+            </div>
+        {/if}
+
     </div>
 
     {if empty($is_bulk)}
         {* ATTACH *}
         <div class="t-attach-wrapper">
-
-            {* Droparea *}
-            <div class="t-attach-droparea">
-                <div class="t-droparea-hint">[`Attach files`]</div>
-                <input type="file" name="files[]" multiple="true" />
-            </div>
 
             {* Container For Attached Files*}
             <div class="t-attached-files-wrapper">

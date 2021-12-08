@@ -5,20 +5,29 @@
 
         <div class="flexbox space-12">
             <div class="wide">
-                {* TEXTAREA *}
-                <div class="line t-textarea-wrapper">
-                    {$_text = $comment.text|default:''}
-                    <textarea name="data[text]" cols="" rows="" class="t-redactor-comments width-100" placeholder="[`Add comment`]">{$_text|escape}</textarea>
+
+                <div class="t-big-editor-wrapper">
+
+                    {* TEXTAREA *}
+                    <div class="line t-textarea-wrapper">
+                        {$_text = $comment.text|default:''}
+                        <textarea name="data[text]" cols="" rows="" class="t-redactor-comments width-100" placeholder="[`Add comment`]">{$_text|escape}</textarea>
+                    </div>
+
+                    <div class="line t-attach-wrapper">
+
+                        {* ATTACH DROPAREA *}
+                        <div class="t-attach-droparea">
+                            <div class="t-droparea-hint"><i class="fas fa-paperclip"></i> [`Attach files`]</div>
+                            <input type="file" name="files[]" multiple="true" />
+                        </div>
+
+                    </div>
+
                 </div>
 
-                {* ATTACH *}
+                {* ATTACHMENTS *}
                 <div class="line t-attach-wrapper">
-
-                    {* Droparea *}
-                    <div class="t-attach-droparea">
-                        <div class="t-droparea-hint">[`Please click or drop image file here`]</div>
-                        <input type="file" name="files[]" multiple="true" />
-                    </div>
 
                     {* Container For Attached Files *}
                     {$_images = $comment.images|default:[]}
