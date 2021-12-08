@@ -386,8 +386,10 @@
                                                 <li>
                                                     <a href="javascript:void(0);" data-id="{$milestone.id}">
                                                         <span>
-                                                            <span class="milestoneName">{$milestone.name}</span><br>
-                                                            <span class="hint">{wa_date('humandate', $milestone.due_date, waDateTime::getDefaultTimezone())|escape}</span>
+                                                            <span class="milestoneName">{$milestone.name}</span>
+                                                            {if !empty($milestone.due_date)}
+                                                                <br><span class="hint">{wa_date('humandate', $milestone.due_date, waDateTime::getDefaultTimezone())|escape}</span>
+                                                            {/if}
                                                         </span>
                                                     </a>
                                                 </li>
