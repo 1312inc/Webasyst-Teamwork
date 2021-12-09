@@ -63,27 +63,21 @@
             <span class="count">{$outbox_count}</span>
             [`Outbox`]
         </a>
-    </div>
 
-    {if $is_admin}
-        <ul class="menu custom-my-0 mobile-friendly">
-            <li>
-                <a href="#/log/">
-                    <i class="fas fa-bolt"></i>
-                    <span>[`Updates`]</span>
-                </a>
-            </li>
-            <li>
-                <a href="#/kanban/">
-                    <i class="fas fa-table"></i>
-                    <span>[`Kanban`]</span>
-                </a>
-            </li>
-        </ul>
-        <div class="box custom-my-0 desktop-and-tablet-only">
-            <hr>
-        </div>
-    {/if}
+        {if $is_admin}
+            <a href="#/log/" class="brick">
+                <span class="icon text-yellow"><i class="fas fa-bolt"></i></span>
+                <span class="count"></span>
+                [`Updates`]
+            </a>
+            <a href="#/kanban/" class="brick">
+                <span class="icon text-green"><i class="fas fa-table"></i></span>
+                <span class="count"></span>
+                [`Kanban`]
+            </a>
+        {/if}
+
+    </div>
 
     <ul class="menu custom-mt-0 mobile-friendly">
 
@@ -246,6 +240,13 @@
                         </a>
                     </li>
                 {/foreach}
+                <li class="gray">
+                    <a href="#/tasks/unassigned/">
+                        <span class="icon"><img src="{$wa_url}wa-content/img/userpic.svg" alt="[`Unassigned`]" class="userpic"></span>
+                        <span class="text-gray">[`Unassigned`]</span>
+                        <span class="count">{user_count user_id=''}</span>
+                    </a>
+                </li>
             </ul>
         </div>
     </div>
@@ -274,13 +275,6 @@
                             </a>
                         </li>
                     {/foreach}
-                    <li class="gray">
-                        <a href="#/tasks/unassigned/">
-                            <span class="icon"><img src="{$wa_url}wa-content/img/userpic.svg" alt="[`Unassigned`]" class="userpic"></span>
-                            <span>[`Unassigned`]</span>
-                            <span class="count">{user_count user_id=''}</span>
-                        </a>
-                    </li>
                 </ul>
             {else}
                 <div class="box align-center custom-my-12 hide-when-collapsed">

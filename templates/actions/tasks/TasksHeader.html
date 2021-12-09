@@ -11,11 +11,11 @@
 
     <div class="flexbox space-12">
         <div class="wide">
-            <h4 class="t-preview-name custom-mb-0">
+            <h5 class="t-preview-name custom-mb-0">
                 {if $is_in_my_list}
                     {$list.name|escape}
                 {/if}
-            </h4>
+            </h5>
             <div class="dropdown t-order-selector js-dropdown-menu" data-id="order" id="t-menu-dropdown-order">
 
                 {$sort_options = [
@@ -25,7 +25,7 @@
                     'oldest' => "[`Oldest`]"
                 ]}
 
-                <a class="dropdown-toggle t-selected-item js-dropdown-menu-title small gray bold" href="javascript:void(0);"></a>
+                <a class="dropdown-toggle t-selected-item js-dropdown-menu-title hint bold" href="javascript:void(0);" style="text-decoration: none !important;"></a>
                 <div class="dropdown-body">
                     <ul class="menu">
                         {foreach $sort_options as $o_id => $o_name}
@@ -62,7 +62,7 @@
 
             </div>
 
-            <a class="gray small bold" href="javascript:void(0);" title="[`Filter tasks`]" id="t-filters-toggle">[`Filter`] <i class="fas fa-caret-down custom-mx-4"></i></a>
+            <a class="hint bold" href="javascript:void(0);" title="[`Filter tasks`]" id="t-filters-toggle" style="text-decoration: none !important;">[`Filter`] <i class="fas fa-caret-down custom-mx-4"></i></a>
 
         </div>
         <div class="flexbox">

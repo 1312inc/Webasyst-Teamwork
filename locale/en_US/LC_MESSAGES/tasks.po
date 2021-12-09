@@ -52,6 +52,9 @@ msgstr ""
 msgid "Unassigned"
 msgstr ""
 
+msgid "Nobody"
+msgstr ""
+
 msgid "Team"
 msgstr ""
 

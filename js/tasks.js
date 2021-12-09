@@ -1560,7 +1560,7 @@
                                     <img src="${a.photo_url}" class="userpic userpic-48" />
                                 </div>
                                 <div class="smaller">
-                                    ${a.name} ${$.tasks.options.contact_id === +a.id ? `<br>(${meLabel})` : ''}
+                                    ${a.name} ${$.tasks.options.contact_id === +a.id ? `<br><span class="opacity-30">(${meLabel})</span>` : ''}
                                 </div>
                                 ${a.calendar_status !== null ? `
                                     <div class="custom-mt-4">
