@@ -325,7 +325,7 @@ class tasksHelper
             $contact_ids = $rights_model->getUsers('tasks', $project_id ? 'project.' . $project_id : 'backend');
 
             if ($contact_ids) {
-                $data = $contact_model->getById($contact_ids);
+                $data = $contact_model->getById(    $contact_ids);
 
                 foreach ($data as $contact_id => $c) {
                     $data[$contact_id]['name'] = self::formatName($c);
@@ -396,6 +396,10 @@ class tasksHelper
                             $data[$userId] = $sorted[$userId];
                             unset($sorted[$userId]);
                         }
+                    }
+
+                    if ($i < 4) {
+                        $data[$userId] = $sorted[$userId];
                     }
                 }
             }

@@ -73,9 +73,17 @@ class tasksTaskLogModel extends waModel
      */
     public function getContactIds()
     {
-        $sql = 'SELECT DISTINCT contact_id FROM ' . $this->table . '
-                UNION
-                SELECT DISTINCT assigned_contact_id FROM ' . $this->table . ' WHERE assigned_contact_id IS NOT NULL';
+        $sql = <<<SQL
+SELECT contact_id FROM (
+   SELECT contact_id
+   FROM tasks_task_log
+   UNION ALL
+   SELECT assigned_contact_id contact_id
+   FROM tasks_task_log
+   WHERE assigned_contact_id IS NOT NULL
+) t
+GROUP BY contact_id
+SQL;
 
         return $this->query($sql)->fetchAll(null, true);
     }
@@ -530,36 +538,22 @@ class tasksTaskLogModel extends waModel
 
     public function getLastByContactIdsAndAssignedContactIds(array $contactIds, int $projectId): array
     {
-        $sqlBase = 'select id, %s as contact_id from %s where id in (
-        select max(id) id
-        from %s
-        where %s in (i:contact_ids)
-        and project_id = i:project_id
-        group by %s)';
-
-        $sqlByContactIds = sprintf(
-            $sqlBase,
-            'contact_id',
-            $this->table,
-            $this->table,
-            'contact_id',
-            'contact_id'
-        );
-
-        $sqlByAssignContactIds = sprintf(
-            $sqlBase,
-            'assigned_contact_id',
-            $this->table,
-            $this->table,
-            'assigned_contact_id',
-            'assigned_contact_id'
-        );
+        $getsql = function (string $fieldName) {
+            return <<<SQL
+select id, {$fieldName} as contact_id from {$this->table} where id in (
+    select max(id) id
+    from {$this->table}
+    where {$fieldName} in (i:contact_ids) and project_id = i:project_id
+    group by {$fieldName}
+)
+SQL;
+        };
 
         return $this->query(
             sprintf(
-                'select max(id) id, contact_id from (%s union %s) laslogs group by contact_id',
-                $sqlByContactIds,
-                $sqlByAssignContactIds
+                'select max(id) id, contact_id from (%s union all %s) laslogs group by contact_id',
+                $getsql('contact_id'),
+                $getsql('assigned_contact_id')
             ),
             ['contact_ids' => $contactIds, 'project_id' => $projectId]
         )->fetchAll('contact_id');
