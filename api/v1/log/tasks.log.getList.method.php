@@ -17,7 +17,7 @@ class tasksLogGetListMethod extends tasksApiAbstractMethod
             $this->get('offset', true, self::CAST_INT),
             $this->get('limit')
                 ? $this->get('limit', false, self::CAST_INT)
-                : (int) tsks()->getOption('logs_per_page')
+                : tasksOptions::getLogsPerPage()
         );
 
         return new tasksApiLogGetListResponse((new tasksApiLogGetListHandler())->getLogs($request));

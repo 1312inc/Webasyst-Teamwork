@@ -11,13 +11,16 @@ final class tasksApiLogGetListHandler
     {
         $logs = tsks()->getModel('tasksTaskLog')
             ->getList(
-                array_merge(
-                    [
-                        'start' => $request->getOffset(),
-                        'limit' => $request->getLimit(),
-                        'tasks' => true,
-                    ],
-                    $request->getFilters()
+                tasksTaskLogModelGetListOptionsDto::fromArray(
+                    array_merge(
+                        [
+                            'start' => $request->getOffset(),
+                            'limit' => $request->getLimit(),
+                            'with_tasks' => true,
+                            'for_contact' => wa()->getUser()
+                        ],
+                        $request->getFilters()
+                    )
                 ),
                 $totalCount
             );

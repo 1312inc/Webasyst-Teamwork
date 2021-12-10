@@ -512,6 +512,39 @@ class tasksRights
         return $contact->getRights('tasks', 'project.' . $projectId) > 0;
     }
 
+    public function getAvailableProjectForContact(waContact $contact)
+    {
+        $allRights = $contact->getRights('tasks', null, false);
+
+        if ($allRights[tasksRightConfig::RIGHT_NAME_BACKEND] >= tasksRightConfig::RIGHT_BACKEND_FULL) {
+            return true;
+        }
+
+        return array_reduce(
+            array_keys($allRights),
+            static function ($projectIds, $rightKey) use ($allRights) {
+                $rightExploded = explode('.', $rightKey);
+
+                if (count($rightExploded) !== 2) {
+                    return $projectIds;
+                }
+
+                if ($rightExploded[0] !== tasksRightConfig::RIGHT_NAME_PROJECT) {
+                    return $projectIds;
+                }
+
+                if ($rightExploded[1] === 'all') {
+                    return $projectIds;
+                }
+
+                $projectIds[$allRights[$rightKey]][] = (int) $rightExploded[1];
+
+                return $projectIds;
+            },
+            [self::PROJECT_ACCESS_VIEW_ASSIGNED_TASKS => [], self::PROJECT_ACCESS_FULL => []]
+        );
+    }
+
     protected function getCountersOfNotOwnLogItems($contact_id, $task_ids)
     {
         $task_ids = tasksHelper::toIntArray($task_ids);

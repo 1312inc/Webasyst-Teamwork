@@ -281,7 +281,7 @@ SQL;
         return $result;
     }
 
-    public static function workupLogs(&$logs, $options = [])
+    public static function workupLogs(&$logs, tasksTaskLogModelGetListOptionsDto $options = null)
     {
         if (!$logs) {
             return;
@@ -299,7 +299,7 @@ SQL;
         $contacts = self::getLogContacts($logs);
 
         $tasks = [];
-        if (isset($options['tasks']) && $options['tasks'] === true) {
+        if ($options && $options->isWithTasks()) {
             $tasks = self::getLogTasks($logs);
         }
 
@@ -402,10 +402,10 @@ SQL;
     }
 
     // helper for $this->getList() and $this->getPeriodByDate()
-    protected static function getFromSQL($options)
+    protected static function getFromSQL(tasksTaskLogModelGetListOptionsDto $options)
     {
         $milestone_join = '';
-        if (isset($options['milestone_id'])) {
+        if ($options->getMilestoneId()) {
             $milestone_join = "JOIN tasks_task AS t ON t.id=tl.task_id";
         }
 
@@ -413,49 +413,84 @@ SQL;
     }
 
     // helper for $this->getList() and $this->getPeriodByDate()
-    protected static function getWhereSQL($options)
+    protected static function getWhereSQL(tasksTaskLogModelGetListOptionsDto $options)
     {
-        $contact_sql = '';
-        if (!empty($options['contact_id'])) {
-            $contact_sql = "AND tl.contact_id=" . ((int) $options['contact_id']);
+        $sql = [];
+        if ($options->getContactId()) {
+            $sql[] = "tl.contact_id=" . $options->getContactId();
         }
 
-        $milestone_sql = '';
-        if (isset($options['milestone_id'])) {
-            if ($options['milestone_id']) {
-                $milestone_sql = "AND t.milestone_id=" . ((int) $options['milestone_id']);
+        if ($options->getMilestoneId() !== 0) {
+            if ($options->getMilestoneId()) {
+                $sql[] = "t.milestone_id=" . $options->getMilestoneId();
             } else {
-                $milestone_sql = "AND t.milestone_id IS NULL";
+                $sql[] = "t.milestone_id IS NULL";
             }
         }
 
-        $project_sql = '';
-        if (!empty($options['project_id'])) {
-            $project_sql = "AND tl.project_id=" . ((int) $options['project_id']);
+        if ($options->getProjectId()) {
+            $sql[] = "tl.project_id=" . $options->getProjectId();
         }
 
-        return "WHERE 1=1 {$contact_sql} {$milestone_sql} {$project_sql}";
+        return 'WHERE 1=1' . ($sql ? ' AND ' . implode(' AND ', $sql) : '');
     }
 
-    public function getList($options, &$total_count = null)
+    public function getList(tasksTaskLogModelGetListOptionsDto $options, &$total_count = null): array
     {
-        $limit = null;
         $limit_sql = '';
-        if (array_key_exists('limit', $options)) {
-            $limit = (int) $options['limit'];
-        } else {
-            $limit = tsks()->getOption('tasks_per_page');
-        }
-        if ($limit) {
-            $start = ifset($options['start'], 0);
-            $limit_sql = "LIMIT {$start}, {$limit}";
+        if ($options->getLimit()) {
+            $limit_sql = "LIMIT {$options->getStart()}, {$options->getLimit()}";
         }
 
-        $sql = "SELECT SQL_CALC_FOUND_ROWS tl.*
-                " . self::getFromSQL($options) . "
-                " . self::getWhereSQL($options) . "
-                ORDER BY id DESC
-                {$limit_sql}";
+        $whereSql = self::getWhereSQL($options);
+        $rightJoinSql = '';
+        if ($options->getForContact()) {
+            $availableProjectIds = (new tasksRights())
+                ->getAvailableProjectForContact($options->getForContact());
+
+            // нет доступа к проектам
+            if (empty($availableProjectIds)) {
+                $whereSql = sprintf('%s AND 1=0', $whereSql);
+            } elseif (is_array($availableProjectIds)) {
+                $accessSql = [];
+                if ($availableProjectIds[tasksRights::PROJECT_ACCESS_FULL]) {
+                    $accessSql[] = sprintf(
+                        '(tl.project_id in (%s))',
+                        implode(
+                            ',',
+                            $availableProjectIds[tasksRights::PROJECT_ACCESS_FULL]
+                        )
+                    );
+                }
+
+                if ($availableProjectIds[tasksRights::PROJECT_ACCESS_VIEW_ASSIGNED_TASKS]) {
+                    $accessSql[] = sprintf(
+                        '(tl.project_id in (%s) AND tl.assigned_contact_id = %d)',
+                        implode(
+                            ',',
+                            $availableProjectIds[tasksRights::PROJECT_ACCESS_VIEW_ASSIGNED_TASKS]
+                        ),
+                        $options->getForContact()->getId()
+                    );
+                }
+
+                if ($accessSql) {
+                    $whereSql = sprintf(
+                        '%s AND (%s)',
+                        $whereSql,
+                        implode(' OR ', $accessSql)
+                    );
+                }
+            }
+        }
+
+        $sql = sprintf(
+            'SELECT SQL_CALC_FOUND_ROWS tl.* %s %s %s ORDER BY id DESC %s',
+            self::getFromSQL($options),
+            $rightJoinSql,
+            $whereSql,
+            $limit_sql
+        );
         $logs = $this->query($sql)->fetchAll('id');
         if (!$logs) {
             $total_count = 0;
@@ -468,14 +503,14 @@ SQL;
         return $logs;
     }
 
-    public function getPeriodByDate($options)
+    public function getPeriodByDate(tasksTaskLogModelGetListOptionsDto $options): array
     {
-        if (empty($options['start_date']) || empty($options['end_date'])) {
+        if (!$options->getStartDate() || !$options->getEndDate()) {
             throw new waException('Time period is required.');
         }
 
         $date_sql = "DATE(tl.create_datetime)";
-        if ($options['group_by'] == 'months') {
+        if ($options->getGroupBy() === 'months') {
             $date_sql = "DATE_FORMAT(tl.create_datetime, '%Y-%m-01')";
         }
 
@@ -486,8 +521,8 @@ SQL;
                     AND tl.create_datetime <= ?
                 GROUP BY `date`, status_id";
         $rows = $this->query($sql, [
-            $options['start_date'],
-            $options['end_date'],
+            $options->getStartDate(),
+            $options->getEndDate(),
         ]);
 
         $result = [];

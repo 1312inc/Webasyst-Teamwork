@@ -19,11 +19,15 @@ class tasksLogChartAction extends tasksLogAction
     {
         // Fetch stats for the chart
         $task_log_model = new tasksTaskLogModel();
-        $period_data = $task_log_model->getPeriodByDate(array(
-                'group_by' => $group_by,
-                'start_date' => $start_date,
-                'end_date' => $end_date,
-            ) + self::getFilters());
+        $period_data = $task_log_model->getPeriodByDate(
+            tasksTaskLogModelGetListOptionsDto::fromArray(
+                [
+                    'group_by' => $group_by,
+                    'start_date' => $start_date,
+                    'end_date' => $end_date,
+                ] + self::getFilters()
+            )
+        );
 
         // Get statuses info: names and colors
         $status_ids = array();

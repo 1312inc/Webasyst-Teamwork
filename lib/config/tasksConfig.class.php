@@ -171,7 +171,7 @@ class tasksConfig extends waAppConfig
         }
 
         // Some modules are only allowed for admins
-        if (in_array($module, ['settings', 'projects', 'log', 'milestones', 'plugins'])) {
+        if (in_array($module, ['settings', 'projects', 'milestones', 'plugins'])) {
             return false;
         }
 
