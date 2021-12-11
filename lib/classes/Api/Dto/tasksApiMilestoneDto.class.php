@@ -48,6 +48,11 @@ final class tasksApiMilestoneDto implements JsonSerializable
      */
     private $counts;
 
+    /**
+     * @var null|int
+     */
+    private $sort;
+
     public function __construct(
         int $id,
         string $name,
@@ -58,7 +63,8 @@ final class tasksApiMilestoneDto implements JsonSerializable
         ?int $daysLeft,
         ?string $text,
         ?string $color,
-        tasksApiCountsDto $counts
+        tasksApiCountsDto $counts,
+        ?int $sort
     ) {
         $this->id = $id;
         $this->name = $name;
@@ -73,5 +79,6 @@ final class tasksApiMilestoneDto implements JsonSerializable
             $this->due_info['color'] = $color;
         }
         $this->counts = $counts;
+        $this->sort = $sort;
     }
 }

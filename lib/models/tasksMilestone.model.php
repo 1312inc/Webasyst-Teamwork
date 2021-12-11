@@ -102,7 +102,6 @@ class tasksMilestoneModel extends waModel
         }
 
         foreach ($milestones as &$milestone) {
-
             // view supplies (styles, properties, etc.)
             $milestone['view'] = array(
                 'due_color_class' => '',
@@ -126,7 +125,7 @@ class tasksMilestoneModel extends waModel
 
         if (!empty($extra['project'])) {
 
-            $projects = tasksHelper::getProjects();
+            $projects = tsks()->getEntityRepository(tasksProject::class)->getProjectsAsArray();
             $project_model = new tasksProjectModel();
 
             foreach ($milestones as &$milestone) {

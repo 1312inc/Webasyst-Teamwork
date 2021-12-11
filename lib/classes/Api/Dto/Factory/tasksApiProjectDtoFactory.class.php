@@ -7,7 +7,7 @@ final class tasksApiProjectDtoFactory
      */
     private static $projects;
 
-    public static function createFromArray(array $data): tasksApiProjectDto
+    public static function createFromArray(array $data, tasksApiCountsDto $countsDto): tasksApiProjectDto
     {
         $id = (int) $data['id'];
         if (!isset(self::$projects[$id])) {
@@ -22,7 +22,7 @@ final class tasksApiProjectDtoFactory
                     ? DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $data['archive_datetime'])
                     : null,
                 (int) $data['sort'],
-                tasksApiCountsDtoFactory::createFromArray($data)
+                $countsDto
             );
         }
 

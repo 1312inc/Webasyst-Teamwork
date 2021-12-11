@@ -343,7 +343,7 @@ class tasksTasksAction extends waViewAction
         $all_projects = tasksHelper::extendIcon($project_model->getEmptyRow());
         $all_projects['name'] = _w('All projects');
 
-        $project_items = tasksHelper::getProjects();
+        $project_items = tsks()->getEntityRepository(tasksProject::class)->getProjectsAsArray();
 
         // mark each project item by flag 'is_empty',
         // that means are there tasks in project assigned to current user

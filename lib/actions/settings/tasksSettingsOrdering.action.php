@@ -30,8 +30,10 @@ class tasksSettingsOrderingAction extends waViewAction
 
         $this->view->assign(array(
             'saved' => $saved,
-            'projects' => tasksHelper::getProjects('active'),
-            'archive_projects' => tasksHelper::getProjects('archive'),
+            'projects' => tsks()->getEntityRepository(tasksProject::class)
+                ->getProjectsAsArray(tasksProjectRepository::GET_PROJECT_ACTIVE),
+            'archive_projects' => tsks()->getEntityRepository(tasksProject::class)
+                ->getProjectsAsArray(tasksProjectRepository::GET_PROJECT_ARCHIVE),
         ));
     }
 }

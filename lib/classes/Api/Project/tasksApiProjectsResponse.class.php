@@ -16,10 +16,12 @@ final class tasksApiProjectsResponse implements tasksApiResponseInterface
     {
         $counts = tasksApiCountsDtoFactory::createForProjects();
 
+        $sort = 0;
         foreach ($projects as $project) {
-            $this->projects[] = tasksApiProjectDtoFactory::fromEntity(
+            $project['sort'] = $sort++;
+            $this->projects[] = tasksApiProjectDtoFactory::createFromArray(
                 $project,
-                $counts[$project->getId()] ?? tasksApiCountsDtoFactory::createEmpty()
+                $counts[$project['id']] ?? tasksApiCountsDtoFactory::createEmpty()
             );
         }
     }

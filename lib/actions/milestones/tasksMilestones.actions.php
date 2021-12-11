@@ -14,7 +14,7 @@ class tasksMilestonesActions extends waViewActions
         $milestone_model = new tasksMilestoneModel();
         $milestones = $milestone_model->getMilestonesWithOrder(false);
 
-        $projects = tasksHelper::getProjects();
+        $projects = tsks()->getEntityRepository(tasksProject::class)->getProjectsAsArray();
         $project_model = new tasksProjectModel();
 
         tasksMilestoneModel::workup($milestones);
@@ -71,7 +71,7 @@ class tasksMilestonesActions extends waViewActions
 
         $this->view->assign(array(
             'milestone' => $milestone,
-            'projects' => tasksHelper::getProjects(),
+            'projects' => tsks()->getEntityRepository(tasksProject::class)->getProjectsAsArray(),
             'errors' => $errors,
             'saved' => $saved,
             'sidebar_html' => $this->getSidebarHtml()
@@ -128,7 +128,7 @@ class tasksMilestonesActions extends waViewActions
             $errors['milestone[name]'] = _w('This field is required.');
         }
 
-        $projects = tasksHelper::getProjects();
+        $projects = tsks()->getEntityRepository(tasksProject::class)->getProjectsAsArray();
         if (empty($data['project_id']) || empty($projects[$data['project_id']])) {
             $errors['milestone[project_id]'] = _w('This field is required.');
         }

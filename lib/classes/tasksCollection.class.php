@@ -88,7 +88,9 @@ class tasksCollection
                 $full_access_projects = [];
                 $limited_access_projects = [];
                 if (ifempty($is_available['all']) == 1) {
-                    foreach (array_keys(tasksHelper::getProjects('all')) as $id) {
+                    $projectsAll = tsks()->getEntityRepository(tasksProject::class)
+                        ->getProjectsAsArray(tasksProjectRepository::GET_PROJECT_ALL);
+                    foreach ($projectsAll as $id) {
                         $limited_access_projects[$id] = $id;
                     }
                 } else {
@@ -444,7 +446,8 @@ class tasksCollection
         }
         if (!empty($other_fields['project'])) {
             $defaults['project'] = [];
-            $projects = tasksHelper::getProjects('all');
+            $projects = tsks()->getEntityRepository(tasksProject::class)
+                ->getProjectsAsArray(tasksProjectRepository::GET_PROJECT_ALL);
         }
         if (!empty($other_fields['status'])) {
             $defaults['status'] = [];

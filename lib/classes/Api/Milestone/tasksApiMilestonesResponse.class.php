@@ -16,7 +16,9 @@ final class tasksApiMilestonesResponse implements tasksApiResponseInterface
     {
         $counts = tasksApiCountsDtoFactory::createForMilestones();
 
+        $sort = 0;
         foreach ($milestones as $milestone) {
+            $milestone['sort'] = $sort++;
             $this->milestones[] = tasksApiMilestoneDtoFactory::fromArray(
                 $milestone,
                 $counts[$milestone['id']] ?? tasksApiCountsDtoFactory::createEmpty()

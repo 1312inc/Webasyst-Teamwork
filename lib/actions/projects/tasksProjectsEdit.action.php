@@ -7,7 +7,8 @@ class tasksProjectsEditAction extends waViewAction
     public function execute()
     {
         $project_model = new tasksProjectModel();
-        $projects = tasksHelper::getProjects('all');
+        $projects = tsks()->getEntityRepository(tasksProject::class)
+            ->getProjectsAsArray(tasksProjectRepository::GET_PROJECT_ALL);
         $statuses = tasksHelper::getStatuses(null, false);
 
         $project = null;

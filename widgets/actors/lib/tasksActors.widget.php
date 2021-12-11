@@ -24,7 +24,7 @@ class tasksActorsWidget extends waWidget
             'name' => $name,
             'params' => $params,
             'widget' => $widget_info,
-            'projects' => tasksHelper::getProjects(),
+            'projects' => tsks()->getEntityRepository(tasksProject::class)->getProjectsAsArray(),
             'scopes' => $milestones,
             'js_url' => $js_url,
         ]);
@@ -194,7 +194,8 @@ class tasksActorsWidget extends waWidget
 
     protected function getProjectIds()
     {
-        $projects = tasksHelper::getProjects('active');
+        $projects = tsks()->getEntityRepository(tasksProject::class)
+            ->getProjectsAsArray(tasksProjectRepository::GET_PROJECT_ACTIVE);
 
         return waUtils::getFieldValues($projects, 'id');
     }

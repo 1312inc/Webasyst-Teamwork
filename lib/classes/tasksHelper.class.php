@@ -28,69 +28,8 @@ class tasksHelper
      */
     public static function getProjects($type = 'active_available')
     {
-        $all_projects = ifset(self::$static_cache['all_projects']);
-        $related_projects = ifset(self::$static_cache['related_projects']);
-
-        if ($all_projects === null) {
-            $project_model = new tasksProjectModel();
-            $all_projects = $project_model->select('*')->order('archive_datetime DESC, sort DESC, name')->fetchAll(
-                'id'
-            );
-            foreach ($all_projects as &$p) {
-                $p = self::extendIcon($p, $p['color'], 'tasks');
-            }
-            unset($p);
-            self::$static_cache['all_projects'] = $all_projects;
-        }
-
-        $projects = $all_projects;
-        if ($type != 'all') {
-            $is_admin = wa()->getUser()->isAdmin('tasks');
-            if ($is_admin) {
-                $is_available = array_fill_keys(array_keys($all_projects), 2);
-            } else {
-                $is_available = wa()->getUser()->getRights('tasks', 'project.%');
-                if (!empty($is_available['all'])) {
-                    $is_available = array_fill_keys(array_keys($all_projects), $is_available['all']);
-                }
-            }
-            foreach ($projects as $id => $p) {
-                $skip = empty($is_available[$id]);
-                $skip = $skip || (($type == 'active' || $type == 'active_available') && $p['archive_datetime']);
-                $skip = $skip || ($type == 'archive' && !$p['archive_datetime']);
-                $skip = $skip || ($type == 'managed' && ifset($is_available[$id], 0) < 2);
-                $skip = $skip || (($type == 'available' || $type == 'active_available') && ifset(
-                            $is_available[$id],
-                            0
-                        ) < 1);
-                if ($skip) {
-                    unset($projects[$id]);
-                }
-            }
-        }
-        if ($type != 'archive') {
-            // related project to top
-            if ($related_projects === null) {
-                $log_model = new tasksTaskLogModel();
-                $related_projects = $log_model->getRelatedProjects(wa()->getUser()->getId());
-                self::$static_cache['related_projects'] = $related_projects;
-            }
-            $result = [];
-            foreach ($related_projects as $id) {
-                if (isset($projects[$id])) {
-                    $result[$id] = $projects[$id];
-                }
-            }
-            foreach ($projects as $id => $p) {
-                if (!isset($result[$id])) {
-                    $result[$id] = $p;
-                }
-            }
-
-            return $result;
-        }
-
-        return $projects;
+        return tsks()->getEntityRepository(tasksProject::class)
+            ->getProjectsAsArray($type);
     }
 
     public static function extendIcon($item, $custom_css_class = '', $force_replace_fa_icon = '')

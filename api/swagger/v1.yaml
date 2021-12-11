@@ -2099,6 +2099,9 @@ components:
           type: boolean
         counts:
           $ref: '#/components/schemas/taskCountInfo'
+        sort:
+          type: int
+          nullable: true
     tagInfo:
       type: object
       description: Описание тега
