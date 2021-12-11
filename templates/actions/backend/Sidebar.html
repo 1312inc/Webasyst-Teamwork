@@ -356,7 +356,7 @@
                                 <a data-id="{$tag.id}" data-value="{$tag.name|escape}" href="#/tasks/tag/{$tag.name|escape}/">
                                     <i class="fas fa-hashtag"></i>
                                     <span>{$tag.name|escape}</span>
-                                    <span class="count">{$tag.count}</span>
+                                    {if $is_admin}<span class="count">{$tag.count}</span>{/if}
                                 </a>
                             </li>
                             {if !$_visible}
