@@ -13,7 +13,7 @@ final class tasksApiMilestoneGetListHandler
         $projects = tsks()->getEntityRepository(tasksProject::class)->getProjectsAsArray();
         foreach ($milestones as $id => $milestone) {
             if (!isset($projects[$milestone['project_id']])) {
-                unset($milestone[$id]);
+                unset($milestones[$id]);
             }
         }
 
