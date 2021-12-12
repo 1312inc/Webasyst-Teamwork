@@ -10,8 +10,14 @@ final class tasksApiMilestoneGetListHandler
         $milestones = tsks()->getModel(tasksMilestone::class)
             ->getMilestonesWithOrder(false);
 
-        tasksMilestoneModel::workup($milestones);
+        $projects = tsks()->getEntityRepository(tasksProject::class)->getProjectsAsArray();
+        foreach ($milestones as $id => $milestone) {
+            if (!isset($projects[$milestone['project_id']])) {
+                unset($milestone[$id]);
+            }
+        }
 
+        tasksMilestoneModel::workup($milestones);
         foreach(tsks()->getModel(tasksMilestone::class)->getMilestoneStatuses() as $mid => $statuses) {
             if (!empty($milestones[$mid])) {
                 $milestones[$mid]['statuses'] = array_keys($statuses);
