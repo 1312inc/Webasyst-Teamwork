@@ -1564,7 +1564,8 @@
                                 </div>
                                 ${a.calendar_status !== null ? `
                                     <div class="custom-mt-4">
-                                        <span class="badge smaller" style="background:${a.calendar_status.bg_color};color:${a.calendar_status.font_color};">
+                                        <span class="badge smaller" style="background:${a.calendar_status.bg_color};color:${a.calendar_status.font_color};"
+                                        title="${a.calendar_status.name}">
                                             ${a.calendar_status.name}
                                         </span>
                                     </div>` : ''}
