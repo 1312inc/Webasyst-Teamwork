@@ -73,11 +73,6 @@ $attach = $attachment_model->getById($attach_id);
 
 $full_preview_url = tasksHelper::getAttachPreviewUrl($attach);
 $request_file_data_url = wa()->getDataUrl($request_file, true, 'tasks', false);
-if (waSystemConfig::isDebug()) {
-    waLog::dump($request_file, 'tasks/tasks.log');
-    waLog::dump($full_preview_url, 'tasks/tasks.log');
-    waLog::dump($request_file_data_url, 'tasks/tasks.log');
-}
 if ($full_preview_url !== $request_file_data_url) {
     exit_with_tasks_image_not_found();
 }
