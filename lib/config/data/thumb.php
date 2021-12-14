@@ -36,7 +36,7 @@ waSystem::getInstance(null, $config);
 
 $app_config = wa('tasks', 1)->getConfig();
 $protected_path = wa()->getDataPath('tasks/', false, 'tasks');
-$public_url = str_replace(wa()->getRootUrl(true),'',wa()->getDataUrl('tasks/', true, 'tasks'));
+$public_url = str_replace(wa()->getRootUrl(true),'',wa()->getDataUrl('tasks/', true, 'tasks', true));
 wa()->getStorage()->close();
 if (waSystemConfig::isDebug()) {
     waLog::dump(wa()->getRootUrl(true), 'tasks/tasks.log');
