@@ -81,9 +81,11 @@ final class tasksTasksCounterService
         $sql = sprintf(
             "SELECT t.milestone_id relevant_id, t.status_id, %s AS priority, count(*) AS `count`
                     FROM %s t 
-                    JOIN tasks_milestone p ON t.milestone_id = p.id
+                    JOIN tasks_milestone m ON t.milestone_id = m.id
+                    JOIN tasks_project p ON t.project_id = p.id
                     WHERE t.status_id >= -1 
-                      AND p.closed = 0 
+                      AND m.closed = 0 
+                      AND p.archive_datetime IS NULL 
                     GROUP BY relevant_id, t.status_id, %s",
             $this->priorityField,
             $this->taskModel->getTableName(),
@@ -98,10 +100,12 @@ final class tasksTasksCounterService
         $sql = sprintf(
             "SELECT t.milestone_id relevant_id, t.status_id, %s AS priority, count(*) AS `count`
                     FROM %s t 
-                    JOIN tasks_milestone p ON t.milestone_id = p.id
+                    JOIN tasks_milestone m ON t.milestone_id = m.id
+                    JOIN tasks_project p ON t.project_id = p.id
                     WHERE t.status_id >= -1 
-                      AND p.closed = 0 
                       AND t.milestone_id = %d
+                      AND m.closed = 0 
+                      AND p.archive_datetime IS NULL 
                     GROUP BY relevant_id, t.status_id, %s",
             $this->priorityField,
             $this->taskModel->getTableName(),
@@ -117,6 +121,8 @@ final class tasksTasksCounterService
         $sql = sprintf(
             "SELECT t.status_id relevant_id, t.status_id, %s AS priority, count(*) AS `count`
                     FROM %s t 
+                    JOIN tasks_project p ON t.project_id = p.id
+                    WHERE p.archive_datetime IS NULL
                     GROUP BY relevant_id, t.status_id, %s",
             $this->priorityField,
             $this->taskModel->getTableName(),
@@ -131,7 +137,9 @@ final class tasksTasksCounterService
         $sql = sprintf(
             "SELECT t.assigned_contact_id relevant_id, t.status_id, %s AS priority, count(*) AS `count`
                     FROM %s t
+                    JOIN tasks_project p ON t.project_id = p.id
                     WHERE t.assigned_contact_id IS NOT NULL
+                        AND p.archive_datetime IS NULL
                     GROUP BY relevant_id, t.status_id, %s",
             $this->priorityField,
             $this->taskModel->getTableName(),
@@ -146,7 +154,9 @@ final class tasksTasksCounterService
         $sql = sprintf(
             "SELECT t.status_id relevant_id, t.status_id, %s AS priority, count(*) AS `count`
                     FROM %s t 
+                    JOIN tasks_project p ON t.project_id = p.id
                     WHERE t.status_id = %d
+                        AND p.archive_datetime IS NULL
                     GROUP BY relevant_id, t.status_id, %s",
             $this->priorityField,
             $this->taskModel->getTableName(),
