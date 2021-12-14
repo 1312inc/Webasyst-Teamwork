@@ -36,11 +36,13 @@ waSystem::getInstance(null, $config);
 
 $app_config = wa('tasks', 1)->getConfig();
 $protected_path = wa()->getDataPath('tasks/', false, 'tasks');
-$public_url = str_replace(wa()->getRootUrl(true),'',wa()->getDataUrl('tasks/', true, 'tasks'));
+$public_url = str_replace(wa()->getRootUrl(true),'',wa()->getDataUrl('tasks/', true, 'tasks', true));
 wa()->getStorage()->close();
 if (waSystemConfig::isDebug()) {
+    waLog::dump(wa()->getRootUrl(), 'tasks/tasks.log');
     waLog::dump(wa()->getRootUrl(true), 'tasks/tasks.log');
-    waLog::dump(wa()->getDataUrl('tasks/', true, 'tasks'), 'tasks/tasks.log');
+    waLog::dump(waSystemConfig::systemOption('default_root_url'), 'tasks/tasks.log');
+    waLog::dump(wa()->getDataUrl('tasks/', true, 'tasks', true), 'tasks/tasks.log');
     waLog::dump($public_url, 'tasks/tasks.log');
 }
 
