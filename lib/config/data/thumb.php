@@ -38,11 +38,23 @@ $app_config = wa('tasks', 1)->getConfig();
 $protected_path = wa()->getDataPath('tasks/', false, 'tasks');
 $public_url = str_replace(wa()->getRootUrl(true),'',wa()->getDataUrl('tasks/', true, 'tasks'));
 wa()->getStorage()->close();
+if (waSystemConfig::isDebug()) {
+    waLog::dump($public_url, 'tasks/tasks.log');
+}
 
 /** @var tasksConfig $app_config */
 $request_file = $app_config->getRequestUrl(true, true);
+if (waSystemConfig::isDebug()) {
+    waLog::dump($request_file, 'tasks/tasks.log');
+}
 $request_file = preg_replace("~^thumb.php(/tasks)?/?~", '', $request_file);
+if (waSystemConfig::isDebug()) {
+    waLog::dump($request_file, 'tasks/tasks.log');
+}
 $request_file = 'tasks/' . trim(str_replace(trim($public_url, '/'), '', trim($request_file, '/')), '/');
+if (waSystemConfig::isDebug()) {
+    waLog::dump($request_file, 'tasks/tasks.log');
+}
 
 $is_url_ok = preg_match('~^
     # Two levels of dirs based on task id
@@ -64,9 +76,6 @@ $is_url_ok = preg_match('~^
     [a-z0-9]{3,4}
 $~ix', $request_file, $matches);
 if (!$is_url_ok) {
-    if (waSystemConfig::isDebug()) {
-        waLog::log($is_url_ok, 'tasks.log');
-    }
     exit_with_tasks_image_not_found();
 }
 
