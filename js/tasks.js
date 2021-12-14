@@ -1006,7 +1006,7 @@
             });
 
             // Click on current tasks list link in sidebar reloads the list
-            $('#wa-app > .flexbox > .sidebar a[href^="#/tasks/"]').on("click", function(e) {
+            $('#wa-app > .flexbox > .sidebar a[href^="#/tasks/"], #wa-app > .flexbox .brick').on("click", function(e) {
 
                 if (e.which != 1) {
                     return; // not a left-mouse-button click
@@ -1021,11 +1021,6 @@
                     self.redispatch();
                     return false;
                 }
-            });
-
-            // Clicks on bricks
-            $('#wa-app > .flexbox .brick').on("click", function(e) {
-                $(this).addClass('selected');
             });
 
             // 'New task' button opens a slide-down dialog in list views
