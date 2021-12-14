@@ -64,6 +64,9 @@ $is_url_ok = preg_match('~^
     [a-z0-9]{3,4}
 $~ix', $request_file, $matches);
 if (!$is_url_ok) {
+    if (waSystemConfig::isDebug()) {
+        waLog::log($is_url_ok, 'tasks.log');
+    }
     exit_with_tasks_image_not_found();
 }
 
