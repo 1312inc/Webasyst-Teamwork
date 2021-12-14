@@ -32,6 +32,9 @@ $yellow_color = #ffffe3;
     .t-task-page-block
         padding: 0.25rem 0.75rem 0
 
+        @media forMobile
+            padding-bottom 5rem
+
         .t-form-line
             margin: 0.6125rem 0 0
 
@@ -108,6 +111,9 @@ $yellow_color = #ffffe3;
             bottom 0
             background var(--background-color-history)
             box-shadow 0 -0.5rem 1rem -0.5rem var(--background-color-history)
+
+            @media forMobile
+                position fixed
 
             .icon16
                 position relative
