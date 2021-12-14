@@ -61,7 +61,7 @@
 
                         {else if !empty($task.milestone.due_date)}
 
-                            <span class="small t-due-date-hint-{$task.milestone.view.due_color_class|default:'green'} custom-ml-4">
+                            <span class="small nowrap t-due-date-hint-{$task.milestone.view.due_color_class|default:'green'} custom-ml-4">
                                 <i class="fas fa-flag-checkered"></i>
                                 {wa_date('humandate', $task.milestone.due_date, waDateTime::getDefaultTimezone())|escape}
                             </span>
