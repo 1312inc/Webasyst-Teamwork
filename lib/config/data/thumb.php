@@ -38,27 +38,11 @@ $app_config = wa('tasks', 1)->getConfig();
 $protected_path = wa()->getDataPath('tasks/', false, 'tasks');
 $public_url = str_replace(wa()->getRootUrl(true),'',wa()->getDataUrl('tasks/', true, 'tasks', true));
 wa()->getStorage()->close();
-if (waSystemConfig::isDebug()) {
-    waLog::dump(wa()->getRootUrl(), 'tasks/tasks.log');
-    waLog::dump(wa()->getRootUrl(true), 'tasks/tasks.log');
-    waLog::dump(waSystemConfig::systemOption('default_root_url'), 'tasks/tasks.log');
-    waLog::dump(wa()->getDataUrl('tasks/', true, 'tasks', true), 'tasks/tasks.log');
-    waLog::dump($public_url, 'tasks/tasks.log');
-}
 
 /** @var tasksConfig $app_config */
 $request_file = $app_config->getRequestUrl(true, true);
-if (waSystemConfig::isDebug()) {
-    waLog::dump($request_file, 'tasks/tasks.log');
-}
 $request_file = preg_replace("~^thumb.php(/tasks)?/?~", '', $request_file);
-if (waSystemConfig::isDebug()) {
-    waLog::dump($request_file, 'tasks/tasks.log');
-}
 $request_file = 'tasks/' . trim(str_replace(trim($public_url, '/'), '', trim($request_file, '/')), '/');
-if (waSystemConfig::isDebug()) {
-    waLog::dump($request_file, 'tasks/tasks.log');
-}
 
 $is_url_ok = preg_match('~^
     # Two levels of dirs based on task id
@@ -88,7 +72,13 @@ $attachment_model = new tasksAttachmentModel();
 $attach = $attachment_model->getById($attach_id);
 
 $full_preview_url = tasksHelper::getAttachPreviewUrl($attach);
-if ($full_preview_url !== wa()->getDataUrl($request_file, true, 'tasks', false)) {
+$request_file_data_url = wa()->getDataUrl($request_file, true, 'tasks', false);
+if (waSystemConfig::isDebug()) {
+    waLog::dump($request_file, 'tasks/tasks.log');
+    waLog::dump($full_preview_url, 'tasks/tasks.log');
+    waLog::dump($request_file_data_url, 'tasks/tasks.log');
+}
+if ($full_preview_url !== $request_file_data_url) {
     exit_with_tasks_image_not_found();
 }
 
