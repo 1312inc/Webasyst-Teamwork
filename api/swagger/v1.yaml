@@ -798,16 +798,13 @@ paths:
       summary: 'Скачивает аттачмент'
       security:
         - ApiKeyAuth: [ ]
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                id:
-                  type: integer
-                  required: true
-                  minimum: 0
+      parameters:
+        - in: query
+          name: id
+          required: true
+          schema:
+            type: integer
+            example: 1
       responses:
         200:
           description: Содержимое файла или fail
