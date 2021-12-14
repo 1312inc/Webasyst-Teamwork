@@ -1545,7 +1545,7 @@
 
             $.get('?module=tasks&action=getUsersForProject&project_id=' + projectId, function (data) {
                 var assignees = data.data,
-                    maxVisible = 5,
+                    maxVisible = 8,
                     wa_url = window.wa_url || '/';
 
                 if (assignees.length) {
@@ -1588,7 +1588,7 @@
                         $assigneesContainer.append(`
                             <div class="t-toggle-all-assignee align-center" style="width: 72px;">
                                 <span class="icon userpic size-48 text-gray" style="background: var(--background-color);">
-                                    <i class="fas fa-chevron-down" style="width: 0.875rem;"></i>
+                                    <i class="fas fa-sort-alpha-down" style="width: 0.875rem;"></i>
                                 </span>
                             </div>
                         `);
@@ -1601,7 +1601,9 @@
                     });
 
                     $container.find('.t-toggle-all-assignee').on('click', function () {
-                        $container.find('.t-assignee').removeClass('hidden');
+                        $assigneesContainer.find('.t-assignee[data-user-id!=""]').removeClass('hidden').sort(function (a, b) {
+                            return $(a).text().trim().toUpperCase().localeCompare($(b).text().trim().toUpperCase());
+                        }).prependTo($assigneesContainer);
                         $(this).hide();
                     });
 
