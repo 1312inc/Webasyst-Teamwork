@@ -1555,6 +1555,9 @@ components:
                   type: string
               counts:
                 $ref: '#/components/schemas/taskCountInfo'
+              sort:
+                type: integer
+                minimum: 0
 
     taskInfo:
       type: object

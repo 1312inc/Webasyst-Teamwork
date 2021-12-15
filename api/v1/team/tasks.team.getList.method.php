@@ -28,6 +28,7 @@ class tasksTeamGetListMethod extends tasksApiAbstractMethod
 
         $counts = tasksApiCountsDtoFactory::createForTeam();
 
+        $sort = 0;
         foreach ($users as $user) {
             if ($user['id'] == wa()->getUser()->getId()) {
                 continue;
@@ -46,7 +47,8 @@ class tasksTeamGetListMethod extends tasksApiAbstractMethod
                 ) : null,
                 isset($logs[$user['id']]) ? tasksApiLogDtoFactory::createFromArray($logs[$user['id']]) : null,
                 (new waUserGroupsModel())->getGroups($contact->getId()) ?? [],
-                $counts[$user['id']] ?? tasksApiCountsDtoFactory::createEmpty()
+                $counts[$user['id']] ?? tasksApiCountsDtoFactory::createEmpty(),
+                $sort++
             );
         }
 

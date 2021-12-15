@@ -34,13 +34,19 @@ final class tasksApiTeammateDetailsDto implements JsonSerializable
      */
     private $counts;
 
+    /**
+     * @var int
+     */
+    private $sort;
+
     public function __construct(
         tasksApiContactDto $contactDto,
         tasksApiTeammateContactInfoDto $contactInfoDto,
         ?tasksApiContactStatusDto $contactStatusDto,
         ?tasksApiLogDto $logDto,
         array $groups,
-        tasksApiCountsDto $counts
+        tasksApiCountsDto $counts,
+        int $sort
     ) {
         $this->contact = $contactDto;
         $this->contact_info = $contactInfoDto;
@@ -48,6 +54,7 @@ final class tasksApiTeammateDetailsDto implements JsonSerializable
         $this->last_log = $logDto;
         $this->groups = $groups;
         $this->counts = $counts;
+        $this->sort = $sort;
     }
 
     public function getLastLog(): ?tasksApiLogDto
