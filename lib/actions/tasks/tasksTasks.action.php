@@ -15,6 +15,8 @@ class tasksTasksAction extends waViewAction
         $order = wa()->getRequest()->get('order', '', waRequest::TYPE_STRING_TRIM);
         $listId = wa()->getRequest()->get('list_id', 0, waRequest::TYPE_INT);
 
+        $hash = urldecode($hash);
+
         $c = new tasksCollection($hash);
         $collection_info = $c->getInfo();
         $this->applyFilters($c, $filters);
