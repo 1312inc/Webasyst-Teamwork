@@ -6,6 +6,7 @@ class tasksTeamGetListMethod extends tasksApiAbstractMethod
     {
         $users = (new tasksApiTeamGetTopAssigneesHandler())->getUsers(new tasksApiTeamGetTopAssigneesRequest(null));
 
+        /** @var tasksApiTeammateDetailsDto[] $list */
         $list = [];
         $logs = tsks()->getModel('tasksTaskLog')
             ->getLastByContactIds(array_column($users, 'id'));
@@ -63,6 +64,11 @@ class tasksTeamGetListMethod extends tasksApiAbstractMethod
 
             return -($item1->getLastLog()->getId() <=> $item2->getLastLog()->getId());
         });
+
+        $sort = 0;
+        foreach ($list as $item) {
+            $item->setSort($sort++);
+        }
 
         return new tasksApiResponse(tasksApiResponseInterface::HTTP_OK, ['data' => $list]);
     }

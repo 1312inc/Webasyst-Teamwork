@@ -46,7 +46,7 @@ final class tasksApiTeammateDetailsDto implements JsonSerializable
         ?tasksApiLogDto $logDto,
         array $groups,
         tasksApiCountsDto $counts,
-        int $sort
+        int $sort = 0
     ) {
         $this->contact = $contactDto;
         $this->contact_info = $contactInfoDto;
@@ -60,5 +60,12 @@ final class tasksApiTeammateDetailsDto implements JsonSerializable
     public function getLastLog(): ?tasksApiLogDto
     {
         return $this->last_log;
+    }
+
+    public function setSort(int $sort): tasksApiTeammateDetailsDto
+    {
+        $this->sort = $sort;
+
+        return $this;
     }
 }
