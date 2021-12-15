@@ -14,8 +14,58 @@ final class tasksApiTeamGetTopAssigneesHandler
 //        }
 
         $users = tasksHelper::getTeam($request->getProjectId(), false, false, true);
+
+        if ($request->getProjectId()) {
+            $logs = tsks()->getModel('tasksTaskLog')
+                ->getLastAssignedContactIdsForContactId(
+                    array_keys($users),
+                    $request->getProjectId(),
+                    wa()->getUser()->getId()
+                );
+
+            $dataWithLogs = [];
+            foreach ($logs as $log) {
+                if (isset($users[$log['contact_id']])) {
+                    $dataWithLogs[$log['contact_id']] = $users[$log['contact_id']];
+                    $dataWithLogs[$log['contact_id']]['last_log_id'] = $log['id'];
+                }
+            }
+
+            uasort(
+                $dataWithLogs,
+                static function ($a, $b) {
+                    return -($a['last_log_id'] <=> $b['last_log_id']);
+                }
+            );
+
+            // sort with logs in beginning
+            $sorted = $dataWithLogs + $users;
+
+            // move current user to 4 position
+            $userId = wa()->getUser()->getId();
+
+            $i = 0;
+            $users = [];
+            foreach ($sorted as $contactId => $datum) {
+                $i++;
+                if ($i < 4 && $userId == $contactId) {
+                    continue;
+                }
+                $users[$contactId] = $datum;
+
+                if ($i === 4) {
+                    $users[$userId] = $sorted[$userId];
+                    unset($sorted[$userId]);
+                }
+            }
+
+            if ($i < 4) {
+                $users[$userId] = $sorted[$userId];
+            }
+        }
+
         foreach ($users as $user_id => $user) {
-            $users[$user_id]['photo_url'] = waContact::getPhotoUrl($user['id'], $user['photo'], 40, 40, 'person', 1);
+            $users[$user_id]['photo_url'] = waContact::getPhotoUrl($user['id'], $user['photo'], 96, 96, 'person', 1);
         }
 
         return array_values($users);

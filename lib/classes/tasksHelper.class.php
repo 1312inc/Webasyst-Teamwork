@@ -296,51 +296,6 @@ class tasksHelper
                         return strcmp($a['name'], $b['name']);
                     }
                 );
-
-                if ($project_id) {
-                    $logs = tsks()->getModel('tasksTaskLog')
-                        ->getLastByContactIdsAndAssignedContactIds(array_keys($data), $project_id);
-
-                    $dataWithLogs = [];
-                    foreach ($logs as $log) {
-                        if (isset($data[$log['contact_id']])) {
-                            $dataWithLogs[$log['contact_id']] = $data[$log['contact_id']];
-                            $dataWithLogs[$log['contact_id']]['last_log_id'] = $log['id'];
-                        }
-                    }
-
-                    uasort(
-                        $dataWithLogs,
-                        static function ($a, $b) {
-                            return -($a['last_log_id'] <=> $b['last_log_id']);
-                        }
-                    );
-
-                    // sort with logs in beginning
-                    $sorted = $dataWithLogs + $data;
-
-                    // move current user to 4 position
-                    $userId = wa()->getUser()->getId();
-
-                    $i = 0;
-                    $data = [];
-                    foreach ($sorted as $contactId => $datum) {
-                        $i++;
-                        if ($i < 4 && $userId == $contactId) {
-                            continue;
-                        }
-                        $data[$contactId] = $datum;
-
-                        if ($i === 4) {
-                            $data[$userId] = $sorted[$userId];
-                            unset($sorted[$userId]);
-                        }
-                    }
-
-                    if ($i < 4) {
-                        $data[$userId] = $sorted[$userId];
-                    }
-                }
             }
             if (!$project_id) {
                 $contacts = $data;
