@@ -1,3 +1,5 @@
+{if $task}
+
 {include file="./includes/TasksTaskHelpers.inc.html" inline}
 
 {$_task_number = $task.project_id|cat:'.'|cat:$task.number}
@@ -160,3 +162,4 @@
 
     </a>
 </li>
+{/if}
