@@ -15,9 +15,6 @@ final class tasksApiTeamGetTopAssigneesHandler
 
         $users = tasksHelper::getTeam($request->getProjectId(), false, false, true);
 
-        waLog::log('tasksHelper::getTeam', 'tasks/debuglog.log');
-        waLog::dump(array_keys($users), 'tasks/debuglog.log');
-
         if ($request->getProjectId()) {
             $logs = tsks()->getModel('tasksTaskLog')
                 ->getLastAssignedContactIdsForContactId(
@@ -26,33 +23,17 @@ final class tasksApiTeamGetTopAssigneesHandler
                     wa()->getUser()->getId()
                 );
 
-            waLog::log('$logs', 'tasks/debuglog.log');
-            waLog::dump($logs, 'tasks/debuglog.log');
-
             $dataWithLogs = [];
             foreach ($logs as $log) {
                 if (isset($users[$log['contact_id']])) {
                     $dataWithLogs[$log['contact_id']] = $users[$log['contact_id']];
-                    $dataWithLogs[$log['contact_id']]['last_log_id'] = $log['id'];
                 }
             }
-
-            uasort(
-                $dataWithLogs,
-                static function ($a, $b) {
-                    return -($a['last_log_id'] <=> $b['last_log_id']);
-                }
-            );
-
-            waLog::dump('uasort $dataWithLogs', 'tasks/debuglog.log');
-            waLog::dump(array_keys($dataWithLogs), 'tasks/debuglog.log');
 
             // sort with logs in beginning
             $sorted = $dataWithLogs + $users;
 
-            waLog::dump('uasort $sorted', 'tasks/debuglog.log');
-            waLog::dump(array_keys($sorted), 'tasks/debuglog.log');
-
+            // move current user to 4 position
             // move current user to 4 position
             $userId = wa()->getUser()->getId();
 
