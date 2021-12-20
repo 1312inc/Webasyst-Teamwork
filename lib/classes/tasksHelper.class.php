@@ -264,13 +264,20 @@ class tasksHelper
             $contact_ids = $rights_model->getUsers('tasks', $project_id ? 'project.' . $project_id : 'backend');
 
             if ($contact_ids) {
-                $data = $contact_model->getById(    $contact_ids);
+                $data = $contact_model->getById($contact_ids);
 
                 foreach ($data as $contact_id => $c) {
                     $data[$contact_id]['name'] = self::formatName($c);
                     $data[$contact_id]['is_active'] = false;
                     $data[$contact_id]['calendar_status'] = null;
                 }
+
+                uasort(
+                    $data,
+                    static function ($a, $b) {
+                        return strcmp($a["name"], $b["name"]);
+                    }
+                );
 
                 $contact_ids = $log_model->getRelatedContactIds(wa()->getUser()->getId(), $project_id);
                 if ($contact_ids) {
@@ -282,6 +289,13 @@ class tasksHelper
                         }
                     }
 
+                    uasort(
+                        $tmp,
+                        static function ($a, $b) {
+                            return strcmp($a["name"], $b["name"]);
+                        }
+                    );
+
                     foreach ($data as $contact_id => $contact) {
                         if (!isset($tmp[$contact_id])) {
                             $tmp[$contact_id] = $contact;
@@ -289,13 +303,6 @@ class tasksHelper
                     }
                     $data = $tmp;
                 }
-
-                uasort(
-                    $data,
-                    static function ($a, $b) {
-                        return strcmp($a['name'], $b['name']);
-                    }
-                );
             }
             if (!$project_id) {
                 $contacts = $data;
