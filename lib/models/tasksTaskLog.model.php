@@ -597,22 +597,16 @@ SQL;
     public function getLastAssignedContactIdsForContactId(array $contactIds, int $projectId, int $contactId): array
     {
         $getsql = <<<SQL
-SELECT min(assigned_contact_id) contact_id, tasks_task_log id
-FROM (
-         SELECT assigned_contact_id,
-                IF(project_id = i:project_id, 1, 0) this_project,
-                MAX(id)   tasks_task_log
-         FROM tasks_task_log
-         WHERE contact_id = i:contact_id
-           AND assigned_contact_id > 0
-           AND assigned_contact_id != i:contact_id
-         GROUP BY this_project, assigned_contact_id
-         ORDER BY this_project DESC,
-                  tasks_task_log DESC
-     ) t
-WHERE assigned_contact_id IN (i:contact_ids)
-GROUP BY assigned_contact_id
-ORDER BY tasks_task_log DESC
+ SELECT MIN(assigned_contact_id) contact_id,
+        IF(project_id = i:project_id, 1, 0) this_project,
+        MAX(id) log_id
+ FROM tasks_task_log
+ WHERE contact_id = i:contact_id
+   AND assigned_contact_id IN (i:contact_ids)
+   AND assigned_contact_id != i:contact_id
+ GROUP BY assigned_contact_id
+ ORDER BY this_project DESC,
+          log_id DESC
 SQL;
 
         return $this->query(

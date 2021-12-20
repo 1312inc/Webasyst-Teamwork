@@ -27,20 +27,13 @@ final class tasksApiTeamGetTopAssigneesHandler
             foreach ($logs as $log) {
                 if (isset($users[$log['contact_id']])) {
                     $dataWithLogs[$log['contact_id']] = $users[$log['contact_id']];
-                    $dataWithLogs[$log['contact_id']]['last_log_id'] = $log['id'];
                 }
             }
-
-            uasort(
-                $dataWithLogs,
-                static function ($a, $b) {
-                    return -($a['last_log_id'] <=> $b['last_log_id']);
-                }
-            );
 
             // sort with logs in beginning
             $sorted = $dataWithLogs + $users;
 
+            // move current user to 4 position
             // move current user to 4 position
             $userId = wa()->getUser()->getId();
 
@@ -62,6 +55,9 @@ final class tasksApiTeamGetTopAssigneesHandler
             if ($i < 4) {
                 $users[$userId] = $sorted[$userId];
             }
+
+            waLog::dump('uasort $users', 'tasks/debuglog.log');
+            waLog::dump(array_keys($users), 'tasks/debuglog.log');
         }
 
         foreach ($users as $user_id => $user) {
