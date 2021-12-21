@@ -337,6 +337,7 @@ class tasksTasksAction extends waViewAction
                 'id' => 'from_contact_id',
                 'options' => self::getUsersFilterType($project_id),
             ];
+            $filter_types['from_contact_id']['options']['']['name'] = _w('From all');
         }
 
         $filter_types['status_id'] = [
