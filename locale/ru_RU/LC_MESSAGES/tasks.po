@@ -1407,3 +1407,6 @@ msgstr "Обязательное поле"
 
 msgid "This does not look like a valid email"
 msgstr "Не похоже это на адрес email"
+
+msgid "All senders"
+msgstr "Все отправители"
