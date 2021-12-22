@@ -1613,6 +1613,13 @@
             }).always(function () {
                 $container.css('pointer-events', 'auto').fadeTo("fast", 1);
             });
+        },
+
+        addToPreviewNameTotal: function (increment) {
+            var $target = $('.sidebar .t-preview-name');
+            $target.text($target.text().replace(/\d+/g, function (match) {
+                return +match + increment;
+            }));
         }
     };
 })();

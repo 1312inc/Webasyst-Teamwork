@@ -690,10 +690,8 @@ var TaskEdit = ( function($) { "use strict";
                         } else {
                             $new_elements.prependTo('#t-tasks-wrapper');
                             $new_elements_li.find('a').first().trigger('click');
+                            $.tasks.addToPreviewNameTotal(1);
                         }
-                        
-                        // remove task counter in the top of the sidebar
-                        $('.sidebar .t-preview-name').hide();
 
                         // return to adding form
                         if (return_to_new) {
