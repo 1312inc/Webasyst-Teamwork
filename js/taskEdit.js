@@ -691,6 +691,9 @@ var TaskEdit = ( function($) { "use strict";
                             $new_elements.prependTo('#t-tasks-wrapper');
                             $new_elements_li.find('a').first().trigger('click');
                         }
+                        
+                        // remove task counter in the top of the sidebar
+                        $('.sidebar .t-preview-name').hide();
 
                         // return to adding form
                         if (return_to_new) {
