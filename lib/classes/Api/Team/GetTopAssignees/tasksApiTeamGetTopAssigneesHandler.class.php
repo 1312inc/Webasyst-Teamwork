@@ -25,7 +25,7 @@ final class tasksApiTeamGetTopAssigneesHandler
 
             $dataWithLogs = [];
             foreach ($logs as $log) {
-                if (isset($users[$log['contact_id']])) {
+                if (isset($users[$log['contact_id']]) && !isset($dataWithLogs[$log['contact_id']])) {
                     $dataWithLogs[$log['contact_id']] = $users[$log['contact_id']];
                 }
             }
@@ -33,7 +33,6 @@ final class tasksApiTeamGetTopAssigneesHandler
             // sort with logs in beginning
             $sorted = $dataWithLogs + $users;
 
-            // move current user to 4 position
             // move current user to 4 position
             $userId = wa()->getUser()->getId();
 

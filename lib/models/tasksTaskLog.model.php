@@ -604,7 +604,7 @@ SQL;
  WHERE contact_id = i:contact_id
    AND assigned_contact_id IN (i:contact_ids)
    AND assigned_contact_id != i:contact_id
- GROUP BY assigned_contact_id
+ GROUP BY this_project, assigned_contact_id
  ORDER BY this_project DESC,
           log_id DESC
 SQL;
@@ -612,6 +612,6 @@ SQL;
         return $this->query(
             $getsql,
             ['contact_ids' => $contactIds, 'contact_id' => $contactId, 'project_id' => $projectId]
-        )->fetchAll('contact_id');
+        )->fetchAll();
     }
 }
