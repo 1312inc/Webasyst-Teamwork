@@ -1615,11 +1615,9 @@
             });
         },
 
-        addToPreviewNameTotal: function (increment) {
+        removeTotalFromPreviewName: function (increment) {
             var $target = $('.sidebar .t-preview-name');
-            $target.text($target.text().replace(/\d+/g, function (match) {
-                return +match + increment;
-            }));
+            $target.text($target.text().substring(0, $target.text().indexOf('—')));
         }
     };
 })();

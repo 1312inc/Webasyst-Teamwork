@@ -1661,7 +1661,7 @@ var Task = ( function($) {
                         (taskHidden === 'hidden') ||
                         (+status === -1)
                     ) {
-                        $.tasks.addToPreviewNameTotal(-1);
+                        $.tasks.removeTotalFromPreviewName();
                         $(selector).fadeOut();
                     }
                 }
