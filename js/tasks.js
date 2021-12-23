@@ -1615,9 +1615,11 @@
             });
         },
 
-        removeTotalFromPreviewName: function (increment) {
+        removeTotalFromPreviewName: function () {
             var $target = $('.sidebar .t-preview-name');
-            $target.text($target.text().substring(0, $target.text().indexOf('—')));
+            if ($target.text().indexOf('—') > -1) {
+                $target.text($target.text().substring(0, $target.text().indexOf('—')));
+            }
         }
     };
 })();
