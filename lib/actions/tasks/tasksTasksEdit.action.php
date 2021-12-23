@@ -15,7 +15,7 @@ class tasksTasksEditAction extends waViewAction
 
     public function execute()
     {
-        $this->projects = $projects = tasksHelper::getProjects();
+        $this->projects = $projects = tsks()->getEntityRepository(tasksProject::class)->getProjectsAsArray();
         if (!$projects) {
             $this->setTemplate(
                 wa('tasks')->getAppPath(tsks()->getUI2TemplatePath('templates/actions%s/tasks/NoProjectsError.html'))

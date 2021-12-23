@@ -27,7 +27,8 @@ class tasksApiMilestoneDtoFactory
             $daysLeft,
             $text,
             $color,
-            $countsDto
+            $countsDto,
+            null
         );
     }
 
@@ -45,7 +46,8 @@ class tasksApiMilestoneDtoFactory
             (int) $data['days_left'],
             $data['view']['due_text'] ?? null,
             $data['due_color_class'] ?? null,
-            $countsDto
+            $countsDto,
+            $data['sort'] ?? null
         );
     }
 }

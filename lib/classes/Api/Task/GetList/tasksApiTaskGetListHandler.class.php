@@ -41,6 +41,7 @@ final class tasksApiTaskGetListHandler
                 tasksCollection::HASH_OUTBOX,
                 tasksCollection::HASH_STATUS,
                 tasksCollection::HASH_ID,
+                tasksCollection::HASH_TAG,
             ], true)
             && (strpos($filters, 'status_id') === false)
         ) {
@@ -77,12 +78,12 @@ final class tasksApiTaskGetListHandler
     {
         $type = $collection->getType();
         $info = $collection->getInfo();
-        if ($type === 'outbox') {
-            $order = 'oldest';
-        } elseif ($type === 'status' && $info['id'] == -1) {
-            $order = 'newest';
+        if ($type === tasksCollection::HASH_OUTBOX) {
+            $order = tasksCollection::ORDER_OLDEST;
+        } elseif ($type === tasksCollection::HASH_STATUS && $info['id'] == -1) {
+            $order = tasksCollection::ORDER_NEWEST;
         } else {
-            $order = 'priority';
+            $order = tasksCollection::ORDER_PRIORITY;
         }
 
         return $order;

@@ -1006,7 +1006,7 @@
             });
 
             // Click on current tasks list link in sidebar reloads the list
-            $('#wa-app > .flexbox > .sidebar a[href^="#/tasks/"]').on("click", function(e) {
+            $('#wa-app > .flexbox > .sidebar a[href^="#/tasks/"], #wa-app > .flexbox .brick').on("click", function(e) {
 
                 if (e.which != 1) {
                     return; // not a left-mouse-button click
@@ -1021,11 +1021,6 @@
                     self.redispatch();
                     return false;
                 }
-            });
-
-            // Clicks on bricks
-            $('#wa-app > .flexbox .brick').on("click", function(e) {
-                $(this).addClass('selected');
             });
 
             // 'New task' button opens a slide-down dialog in list views
@@ -1545,7 +1540,7 @@
 
             $.get('?module=tasks&action=getUsersForProject&project_id=' + projectId, function (data) {
                 var assignees = data.data,
-                    maxVisible = 5,
+                    maxVisible = 8,
                     wa_url = window.wa_url || '/';
 
                 if (assignees.length) {
@@ -1560,11 +1555,12 @@
                                     <img src="${a.photo_url}" class="userpic userpic-48" />
                                 </div>
                                 <div class="smaller">
-                                    ${a.name} ${$.tasks.options.contact_id === +a.id ? `<br>(${meLabel})` : ''}
+                                    ${a.name} ${$.tasks.options.contact_id === +a.id ? `<br><span class="opacity-30">(${meLabel})</span>` : ''}
                                 </div>
                                 ${a.calendar_status !== null ? `
                                     <div class="custom-mt-4">
-                                        <span class="badge smaller" style="background:${a.calendar_status.bg_color};color:${a.calendar_status.font_color};">
+                                        <span class="badge smaller" style="background:${a.calendar_status.bg_color};color:${a.calendar_status.font_color};"
+                                        title="${a.calendar_status.name}">
                                             ${a.calendar_status.name}
                                         </span>
                                     </div>` : ''}
@@ -1586,8 +1582,8 @@
                     if (assignees.length >= maxVisible + 2) {
                         $assigneesContainer.append(`
                             <div class="t-toggle-all-assignee align-center" style="width: 72px;">
-                                <span class="icon userpic size-48 text-gray" style="background: var(--background-color);">
-                                    <i class="fas fa-chevron-down" style="width: 0.875rem;"></i>
+                                <span class="icon userpic size-48 text-light-gray" style="background: var(--background-color); cursor: pointer;">
+                                    <i class="fas fa-sort-alpha-down" style="width: 1.25rem;"></i>
                                 </span>
                             </div>
                         `);
@@ -1600,7 +1596,9 @@
                     });
 
                     $container.find('.t-toggle-all-assignee').on('click', function () {
-                        $container.find('.t-assignee').removeClass('hidden');
+                        $assigneesContainer.find('.t-assignee[data-user-id!=""]').removeClass('hidden').sort(function (a, b) {
+                            return $(a).text().trim().toUpperCase().localeCompare($(b).text().trim().toUpperCase());
+                        }).prependTo($assigneesContainer);
                         $(this).hide();
                     });
 
@@ -1615,6 +1613,13 @@
             }).always(function () {
                 $container.css('pointer-events', 'auto').fadeTo("fast", 1);
             });
+        },
+
+        removeTotalFromPreviewName: function () {
+            var $target = $('.sidebar .t-preview-name');
+            if ($target.text().indexOf('—') > -1) {
+                $target.text($target.text().substring(0, $target.text().indexOf('—')));
+            }
         }
     };
 })();

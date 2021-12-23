@@ -798,16 +798,13 @@ paths:
       summary: 'Скачивает аттачмент'
       security:
         - ApiKeyAuth: [ ]
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                id:
-                  type: integer
-                  required: true
-                  minimum: 0
+      parameters:
+        - in: query
+          name: id
+          required: true
+          schema:
+            type: integer
+            example: 1
       responses:
         200:
           description: Содержимое файла или fail
@@ -1556,6 +1553,11 @@ components:
                 type: array
                 items:
                   type: string
+              counts:
+                $ref: '#/components/schemas/taskCountInfo'
+              sort:
+                type: integer
+                minimum: 0
 
     taskInfo:
       type: object
@@ -1849,6 +1851,9 @@ components:
           nullable: true
           description: Описание себя любимого
           type: string
+        large_photo_url:
+          type: string
+          description: Абсолютная ссылка на большой аватар
     contactInfo:
       type: object
       properties:
@@ -2094,6 +2099,9 @@ components:
           type: boolean
         counts:
           $ref: '#/components/schemas/taskCountInfo'
+        sort:
+          type: int
+          nullable: true
     tagInfo:
       type: object
       description: Описание тега

@@ -11,6 +11,7 @@ abstract class tasksApiAbstractMethod extends waAPIMethod
     public const METHOD_PUT    = 'PUT';
 
     public const CAST_INT         = 'int';
+    public const CAST_CALLBACK    = 'callback';
     public const CAST_FLOAT       = 'float';
     public const CAST_ARRAY       = 'array';
     public const CAST_STRING      = 'string';
@@ -42,13 +43,13 @@ abstract class tasksApiAbstractMethod extends waAPIMethod
      * @param string   $name
      * @param bool     $required
      * @param int|null $type
-     * @param string   $format
+     * @param mixed    $format
      *
      * @return array|int|mixed|null
      * @throws tasksApiMissingParamException
      * @throws tasksApiWrongParamException
      */
-    public function get($name, $required = false, ?string $type = null, string $format = '')
+    public function get($name, $required = false, ?string $type = null, $format = null)
     {
         if ($this->jsonParams && array_key_exists($name, $this->jsonParams)) {
             $value = $this->jsonParams[$name];
@@ -223,6 +224,9 @@ abstract class tasksApiAbstractMethod extends waAPIMethod
 
             case self::CAST_STRING:
                 return (string) $var;
+
+            case self::CAST_CALLBACK && is_callable($format):
+                return $format($var);
 
             default:
                 return $var;

@@ -94,6 +94,11 @@ class tasksApiTeammateContactInfoDto implements JsonSerializable
      */
     private $about;
 
+    /**
+     * @var string
+     */
+    private $large_photo_url;
+
     public function __construct(
         string $name,
         ?string $title,
@@ -112,7 +117,8 @@ class tasksApiTeammateContactInfoDto implements JsonSerializable
         ?string $locale,
         ?string $timezone,
         array $socialnetwork,
-        ?string $about
+        ?string $about,
+        string $largePhotoUrl
     ) {
         $this->name = $name;
         $this->title = $title;
@@ -132,5 +138,6 @@ class tasksApiTeammateContactInfoDto implements JsonSerializable
         $this->timezone = $timezone;
         $this->socialnetwork = $socialnetwork;
         $this->about = $about;
+        $this->large_photo_url = $largePhotoUrl;
     }
 }

@@ -10,8 +10,10 @@ class tasksSettingsSidebarAction extends waViewAction
         $this->view->assign(array(
             'scopes' => $this->getScopes(),
             'archive_scopes' => $this->getScopes(true),
-            'projects' => tasksHelper::getProjects('active'),
-            'archive_projects' => tasksHelper::getProjects('archive'),
+            'projects' => tsks()->getEntityRepository(tasksProject::class)
+                ->getProjectsAsArray(tasksProjectRepository::GET_PROJECT_ACTIVE),
+            'archive_projects' => tsks()->getEntityRepository(tasksProject::class)
+                ->getProjectsAsArray(tasksProjectRepository::GET_PROJECT_ARCHIVE),
             'backend_settings_sidebar' => $this->triggerEvent()
         ));
     }

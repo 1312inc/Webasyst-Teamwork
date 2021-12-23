@@ -52,6 +52,9 @@ msgstr ""
 msgid "Unassigned"
 msgstr ""
 
+msgid "Nobody"
+msgstr ""
+
 msgid "Team"
 msgstr ""
 
@@ -659,7 +662,7 @@ msgid "Use projects to organize tasks and manage access rights for your teammate
 msgstr ""
 
 msgid "There are no tasks in this project that require your attention at the moment. If you think its by mistake, ask the account admin to check your access rights."
-msgstr ""
+msgstr "There are no tasks in this project that require your attention at the moment. If you think something’s missing here, ask the account admin to check your access rights."
 
 msgid "No tasks match your search criteria."
 msgstr ""

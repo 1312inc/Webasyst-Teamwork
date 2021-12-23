@@ -61,6 +61,9 @@ msgstr "Статус"
 msgid "Unassigned"
 msgstr "Без назначения"
 
+msgid "Nobody"
+msgstr "Никто"
+
 msgid "Team"
 msgstr "Команда"
 
@@ -326,10 +329,10 @@ msgid "Click to select files or drag them here"
 msgstr "Прикрепить файл к задаче"
 
 msgid "Assign to"
-msgstr "Назначить"
+msgstr "Ответственный"
 
 msgid "me"
-msgstr "себе"
+msgstr "я"
 
 msgid "Show all"
 msgstr "Показать всех"
@@ -1259,7 +1262,7 @@ msgid "Menu"
 msgstr "Меню"
 
 msgid "Updates"
-msgstr "События"
+msgstr "Новости"
 
 msgid "Kanban"
 msgstr "Канбан"
@@ -1404,3 +1407,6 @@ msgstr "Обязательное поле"
 
 msgid "This does not look like a valid email"
 msgstr "Не похоже это на адрес email"
+
+msgid "All senders"
+msgstr "Все отправители"

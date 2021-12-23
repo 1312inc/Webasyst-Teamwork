@@ -12,7 +12,7 @@
             this.selection = app.selection;
             this.insertion = app.insertion;
 
-            this.tagRegExp = new RegExp("#[a-zA-Z0-9._-]+", "g");
+            this.tagRegExp = new RegExp("#[\\p{L}]+", "gu");
 
             // local
             this.ajax = null

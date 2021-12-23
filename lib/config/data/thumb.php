@@ -36,7 +36,7 @@ waSystem::getInstance(null, $config);
 
 $app_config = wa('tasks', 1)->getConfig();
 $protected_path = wa()->getDataPath('tasks/', false, 'tasks');
-$public_url = str_replace(wa()->getRootUrl(true),'',wa()->getDataUrl('tasks/', true, 'tasks'));
+$public_url = str_replace(wa()->getRootUrl(true),'',wa()->getDataUrl('tasks/', true, 'tasks', true));
 wa()->getStorage()->close();
 
 /** @var tasksConfig $app_config */
@@ -72,7 +72,8 @@ $attachment_model = new tasksAttachmentModel();
 $attach = $attachment_model->getById($attach_id);
 
 $full_preview_url = tasksHelper::getAttachPreviewUrl($attach);
-if ($full_preview_url !== wa()->getDataUrl($request_file, true, 'tasks', false)) {
+$request_file_data_url = wa()->getDataUrl($request_file, true, 'tasks', false);
+if ($full_preview_url !== $request_file_data_url) {
     exit_with_tasks_image_not_found();
 }
 

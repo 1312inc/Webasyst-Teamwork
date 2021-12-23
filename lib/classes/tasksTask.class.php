@@ -289,9 +289,12 @@ class tasksTask implements ArrayAccess
         $pattern = self::getTagsInTextRegExpPattern();
         $has_tags = preg_match_all($pattern, $text, $m);
         if ($has_tags) {
-            return $m[1];
+            return array_map(static function ($tag) {
+                return trim(str_replace("\xc2\xa0", ' ', $tag));
+            }, $m[1]);
         }
-        return array();
+
+        return [];
     }
 
     protected static function getTagsInTextRegExpPattern()
@@ -315,7 +318,7 @@ class tasksTask implements ArrayAccess
             
             # This matches the tag name
             ([^\s/!?()[\],\.#<>'\"\\\\]+)
-        ~x";
+        ~xu";
     }
 
     /**

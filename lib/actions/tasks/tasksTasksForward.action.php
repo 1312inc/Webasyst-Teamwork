@@ -25,7 +25,7 @@ class tasksTasksForwardAction extends waViewAction
             ));
         } else {
             $this->view->assign(array(
-                'projects' => tasksHelper::getProjects(),
+                'projects' => tsks()->getEntityRepository(tasksProject::class)->getProjectsAsArray(),
                 'users' => tasksHelper::getTeam(null, false, false, true),
                 'statuses' => tasksHelper::getStatuses(),
                 'form_url' => '?module=tasksBulk&action=forward',

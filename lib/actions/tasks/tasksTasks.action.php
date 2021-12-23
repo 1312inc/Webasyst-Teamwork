@@ -15,6 +15,8 @@ class tasksTasksAction extends waViewAction
         $order = wa()->getRequest()->get('order', '', waRequest::TYPE_STRING_TRIM);
         $listId = wa()->getRequest()->get('list_id', 0, waRequest::TYPE_INT);
 
+        $hash = urldecode($hash);
+
         $c = new tasksCollection($hash);
         $collection_info = $c->getInfo();
         $this->applyFilters($c, $filters);
@@ -128,7 +130,17 @@ class tasksTasksAction extends waViewAction
     {
         $filters && $c->filter($filters);
         $type = $c->getType();
-        if (!in_array($type, ['search', 'outbox', 'status', 'id']) && (strpos($filters, 'status_id') === false)) {
+        if (!in_array($type,
+                [
+                    tasksCollection::HASH_SEARCH,
+                    tasksCollection::HASH_OUTBOX,
+                    tasksCollection::HASH_STATUS,
+                    tasksCollection::HASH_ID,
+                    tasksCollection::HASH_TAG
+                ],
+                true
+            ) && (strpos($filters, 'status_id') === false)
+        ) {
             $c->addWhere('t.status_id >= 0');
         }
     }
@@ -325,6 +337,7 @@ class tasksTasksAction extends waViewAction
                 'id' => 'from_contact_id',
                 'options' => self::getUsersFilterType($project_id),
             ];
+            $filter_types['from_contact_id']['options']['']['name'] = _w('All senders');
         }
 
         $filter_types['status_id'] = [
@@ -343,7 +356,7 @@ class tasksTasksAction extends waViewAction
         $all_projects = tasksHelper::extendIcon($project_model->getEmptyRow());
         $all_projects['name'] = _w('All projects');
 
-        $project_items = tasksHelper::getProjects();
+        $project_items = tsks()->getEntityRepository(tasksProject::class)->getProjectsAsArray();
 
         // mark each project item by flag 'is_empty',
         // that means are there tasks in project assigned to current user

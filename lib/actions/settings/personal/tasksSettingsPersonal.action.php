@@ -9,7 +9,7 @@ class tasksSettingsPersonalAction extends waViewAction
         $settings['text_editor'] = wa()->getUser()->getSettings('tasks', 'text_editor', 'wysiwyg');
 
         $this->view->assign([
-            'projects' => tasksHelper::getProjects(),
+            'projects' => tsks()->getEntityRepository(tasksProject::class)->getProjectsAsArray(),
             'settings' => $settings,
             'sidebar_html' => $this->getUser()->isAdmin('tasks') ? (new tasksSettingsSidebarAction())->display() : '',
         ]);

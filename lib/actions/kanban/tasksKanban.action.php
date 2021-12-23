@@ -103,9 +103,28 @@ class tasksKanbanAction extends tasksTasksAction
     {
         $project_id = waRequest::request('project_id', null, 'int');
 
+        $milestones = self::getMilestoneFilterType();
+        $project_ids = [];
+        if ($project_id) {
+            $project_ids = [$project_id];
+        } else {
+            $projects = (new tasksRights())->getAvailableProjectForContact(wa()->getUser());
+            if ($projects !== true) {
+                $project_ids = $projects[tasksRights::PROJECT_ACCESS_VIEW_ASSIGNED_TASKS] + $projects[tasksRights::PROJECT_ACCESS_FULL];
+            }
+        }
+
+        if ($project_ids) { // тут что-то будет только если по конкретному проекту или для ограниченных
+            foreach ($milestones as $i => $milestone) {
+                if (!empty($milestone['project_id']) && !in_array($milestone['project_id'], $project_ids)) {
+                    unset($milestones[$i]);
+                }
+            }
+        }
+
         return [
             'project_id' => self::getProjectFilterType(),
-            'milestone_id' => self::getMilestoneFilterType(),
+            'milestone_id' => $milestones,
             'contact_id' => self::getUsersFilterType($project_id),
         ];
     }

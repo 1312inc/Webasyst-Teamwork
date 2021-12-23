@@ -31,14 +31,7 @@ final class tasksApiCountsDtoFactory
      */
     public static function createForProjects(): array
     {
-        $projectCounts = self::getCountService()->getProjectCounts();
-
-        $counts = [];
-        foreach ($projectCounts as $id => $projectCount) {
-            $counts[$id] = self::createFromArray($projectCount);
-        }
-
-        return $counts;
+        return self::createDtos(self::getCountService()->getProjectCounts());
     }
 
     public static function createForMilestoneId(int $milestoneId): tasksApiCountsDto
@@ -53,14 +46,7 @@ final class tasksApiCountsDtoFactory
      */
     public static function createForMilestones(): array
     {
-        $milestonesCounts = self::getCountService()->getMilestonesCounts();
-
-        $counts = [];
-        foreach ($milestonesCounts as $id => $milestoneCounts) {
-            $counts[$id] = self::createFromArray($milestoneCounts);
-        }
-
-        return $counts;
+        return self::createDtos(self::getCountService()->getMilestonesCounts());
     }
 
     public static function createForStatusId(int $statusId): tasksApiCountsDto
@@ -75,14 +61,25 @@ final class tasksApiCountsDtoFactory
      */
     public static function createForStatuses(): array
     {
-        $statusesCounts = self::getCountService()->getStatusesCounts();
+        return self::createDtos(self::getCountService()->getStatusesCounts());
+    }
 
-        $counts = [];
-        foreach ($statusesCounts as $id => $statusCounts) {
-            $counts[$id] = self::createFromArray($statusCounts);
+    /**
+     * @return array<tasksApiCountsDto>
+     */
+    public static function createForTeam(): array
+    {
+        return self::createDtos(self::getCountService()->getTeamCounts());
+    }
+
+    private static function createDtos(array $counts): array
+    {
+        $dtos = [];
+        foreach ($counts as $id => $count) {
+            $dtos[$id] = self::createFromArray($count);
         }
 
-        return $counts;
+        return $dtos;
     }
 
     private static function getCountService(): tasksTasksCounterService

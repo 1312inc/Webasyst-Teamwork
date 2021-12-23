@@ -71,7 +71,7 @@ class tasksBackendAction extends waViewAction
         $tasks_task_model = new tasksTaskModel();
 
         $scopes = $tasks_milestone_model->getMilestonesWithOrder(false);
-        $projects = tasksHelper::getProjects();
+        $projects = tsks()->getEntityRepository(tasksProject::class)->getProjectsAsArray();
 
         foreach ($scopes as $id => $scope) {
             if (!isset($projects[$scope['project_id']])) {
@@ -100,7 +100,7 @@ class tasksBackendAction extends waViewAction
 
     protected static function getProjectsWithCounts()
     {
-        $projects = tasksHelper::getProjects();
+        $projects = tsks()->getEntityRepository(tasksProject::class)->getProjectsAsArray();
 
         // Get list of projects user has full access to
         if (wa()->getUser()->isAdmin('tasks')) {

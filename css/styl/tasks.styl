@@ -86,7 +86,8 @@ label
         text-align center
         font-weight bold
         padding-left 1rem
-        font-size 0.91375rem
+        font-size 0.9375rem
+        padding-right 0.25rem
         white-space nowrap
 
         &.color-1
@@ -105,7 +106,7 @@ label
     .t-slider-wrapper
         .t-priority-slider
             $height = 16px
-            $color = var(--light-gray)
+            $color = var(--border-color-soft)
 
             position relative
             width auto
@@ -116,7 +117,7 @@ label
             border-radius ($height/2)
 
             &:before
-                $size = 4px
+                $size = 3px
                 content ""
                 position absolute
                 top 50%
@@ -152,10 +153,10 @@ label
                     margin ($width/-2) 0 0 ($width/-2)
 
                 &.color-1
-                    background #81bbf5
+                    background var(--light-gray)
 
                 &.color-2
-                    background var(--gray)
+                    background var(--text-color)
 
                 &.color-3
                     background var(--orange)

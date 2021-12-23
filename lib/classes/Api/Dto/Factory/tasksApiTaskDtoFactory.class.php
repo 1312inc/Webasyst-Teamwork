@@ -54,7 +54,9 @@ final class tasksApiTaskDtoFactory
                 array_values(self::createAttachments($task)),
                 array_values(self::createLogs($task)),
                 array_values(self::createTags($task)),
-                !empty($task['project']) ? tasksApiProjectDtoFactory::createFromArray($task['project']) : null,
+                !empty($task['project'])
+                    ? tasksApiProjectDtoFactory::createFromArray($task['project'], tasksApiCountsDtoFactory::createEmpty())
+                    : null,
                 !empty($task->getFavorite()),
                 tasksHelper::convertToMarkdownAndStripTags($task->text, tasksOptions::getApiTextStrippedTruncateLength())
             );

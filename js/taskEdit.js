@@ -690,6 +690,7 @@ var TaskEdit = ( function($) { "use strict";
                         } else {
                             $new_elements.prependTo('#t-tasks-wrapper');
                             $new_elements_li.find('a').first().trigger('click');
+                            $.tasks.removeTotalFromPreviewName();
                         }
 
                         // return to adding form

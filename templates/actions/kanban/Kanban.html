@@ -88,15 +88,15 @@
             <div class="flexbox fixed space-12 width-100">
             {foreach $kanban as $data}
                 <div class="t-kanban__list">
-                    <div class="flexbox middle custom-p-16">
-                        <div class="wide large">
+                    <div class="flexbox middle custom-p-12">
+                        <div class="wide">
                             {tasksHelper::statusNameHTML($data.status.id)}
                         </div>
                         <div>
                             <span class="t-kanban__list__count gray bold">{$data.count}</span>
                         </div>
                     </div>
-                    <div data-kanban-list-status-id="{$data.status.id}" data-kanban-list-total="{$data.count}" class="t-kanban__list__body hide-scrollbar custom-px-16">
+                    <div data-kanban-list-status-id="{$data.status.id}" data-kanban-list-total="{$data.count}" class="t-kanban__list__body hide-scrollbar custom-px-12">
                         {include file='./KanbanStatusTasks.html' data=$data}
                         <div class="t-kanban__list__body__footer">
                             <span style="display: none;">[`Loading...`]</span>
@@ -131,10 +131,10 @@
         });
 
         if (list_params.indexOf('with_backlog=1') !== -1) {
-            $main_menu.find(':checkbox').prop('checked', true);
+            $main_menu.find(':checkbox[name="with_backlog"]').prop('checked', true);
         }
 
-        $main_menu.on('click', ':checkbox', function (e) {
+        $main_menu.on('click', ':checkbox[name="with_backlog"]', function (e) {
             var $this = $(this);
 
             if ($this.is(':checked')) {

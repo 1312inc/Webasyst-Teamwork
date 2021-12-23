@@ -6,6 +6,7 @@ class tasksTeamGetListMethod extends tasksApiAbstractMethod
     {
         $users = (new tasksApiTeamGetTopAssigneesHandler())->getUsers(new tasksApiTeamGetTopAssigneesRequest(null));
 
+        /** @var tasksApiTeammateDetailsDto[] $list */
         $list = [];
         $logs = tsks()->getModel('tasksTaskLog')
             ->getLastByContactIds(array_column($users, 'id'));
@@ -26,6 +27,9 @@ class tasksTeamGetListMethod extends tasksApiAbstractMethod
             $logs[$i]['task'] = new tasksTask($tasks[$log['task_id']]);
         }
 
+        $counts = tasksApiCountsDtoFactory::createForTeam();
+
+        $sort = 0;
         foreach ($users as $user) {
             if ($user['id'] == wa()->getUser()->getId()) {
                 continue;
@@ -43,7 +47,9 @@ class tasksTeamGetListMethod extends tasksApiAbstractMethod
                     $user['calendar_status']->getFontColor()
                 ) : null,
                 isset($logs[$user['id']]) ? tasksApiLogDtoFactory::createFromArray($logs[$user['id']]) : null,
-                (new waUserGroupsModel())->getGroups($contact->getId()) ?? []
+                (new waUserGroupsModel())->getGroups($contact->getId()) ?? [],
+                $counts[$user['id']] ?? tasksApiCountsDtoFactory::createEmpty(),
+                $sort++
             );
         }
 
@@ -58,6 +64,11 @@ class tasksTeamGetListMethod extends tasksApiAbstractMethod
 
             return -($item1->getLastLog()->getId() <=> $item2->getLastLog()->getId());
         });
+
+        $sort = 0;
+        foreach ($list as $item) {
+            $item->setSort($sort++);
+        }
 
         return new tasksApiResponse(tasksApiResponseInterface::HTTP_OK, ['data' => $list]);
     }

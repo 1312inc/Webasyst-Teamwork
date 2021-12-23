@@ -133,65 +133,77 @@
                 {* @event backend_task_edit.%plugin_id%.before_name *}
                 {foreach $backend_task_edit as $_}{ifset($_.before_name)}{/foreach}
 
-                {* NAME && PRIORITY *}
-                <div class="t-form-line t-table-layout">
-                    <div class="t-column">
-                        <div class="t-task-name-wrapper">
-                            <input type="text" name="data[name]" class="t-task-name-input bold" value="{$task.name|escape}" placeholder="[`Task title`]" tabindex="1">
+                <div class="t-big-editor-wrapper">
 
-                            <!-- plugin hook: 'backend_task_edit.%plugin_id.name' -->
-                            {* @event backend_task_edit.%plugin_id%.name *}
-                            {foreach $backend_task_edit as $_}{ifset($_.name)}{/foreach}
+                    {* NAME && PRIORITY *}
+                    <div class="t-form-line t-table-layout">
+                        <div class="t-column">
+                            <div class="t-task-name-wrapper">
+                                <input type="text" name="data[name]" class="t-task-name-input bold" value="{$task.name|escape}" placeholder="[`Task title`]" tabindex="1">
 
-                        </div>
-                    </div>
-                    <div class="t-column t-column-3">
+                                <!-- plugin hook: 'backend_task_edit.%plugin_id.name' -->
+                                {* @event backend_task_edit.%plugin_id%.name *}
+                                {foreach $backend_task_edit as $_}{ifset($_.name)}{/foreach}
 
-                        <div class="t-priority-changer">
-                            <div class="t-slider-wrapper">
-                                <div class="t-priority-slider"></div>
-                                <input class="t-input" type="hidden" name="data[priority]" value="{$task.priority}">
                             </div>
-                            <div class="t-priority-text"></div>
                         </div>
+                        <div class="t-column t-column-3">
+
+                            <div class="t-priority-changer">
+                                <div class="t-slider-wrapper">
+                                    <div class="t-priority-slider"></div>
+                                    <input class="t-input" type="hidden" name="data[priority]" value="{$task.priority}">
+                                </div>
+                                <div class="t-priority-text"></div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- plugin hook: 'backend_task_edit.%plugin_id.after_name' -->
+                    {* @event backend_task_edit.%plugin_id%.after_name *}
+                    {foreach $backend_task_edit as $_}{ifset($_.after_name)}{/foreach}
+
+                    <!-- plugin hook: 'backend_task_edit.%plugin_id.before_description' -->
+                    {* @event backend_task_edit.%plugin_id%.before_description *}
+                    {foreach $backend_task_edit as $_}{ifset($_.before_description)}{/foreach}
+
+                    {* CONTENT *}
+                    <div class="t-form-line t-description-wrapper">
+                        <hr>
+
+                        <textarea name="data[text]" cols="1" rows="1" class="t-redactor-task-edit" placeholder="[`Task summary`]">{$task.text|escape}</textarea>
+
+                        <!-- plugin hook: 'backend_task_edit.%plugin_id.description' -->
+                        {* @event backend_task_edit.%plugin_id%.description *}
+                        {foreach $backend_task_edit as $_}{ifset($_.description)}{/foreach}
 
                     </div>
-                </div>
 
-                <!-- plugin hook: 'backend_task_edit.%plugin_id.after_name' -->
-                {* @event backend_task_edit.%plugin_id%.after_name *}
-                {foreach $backend_task_edit as $_}{ifset($_.after_name)}{/foreach}
+                    <!-- plugin hook: 'backend_task_edit.%plugin_id.after_description' -->
+                    {* @event backend_task_edit.%plugin_id%.after_description *}
+                    {foreach $backend_task_edit as $_}{ifset($_.after_description)}{/foreach}
 
-                <!-- plugin hook: 'backend_task_edit.%plugin_id.before_description' -->
-                {* @event backend_task_edit.%plugin_id%.before_description *}
-                {foreach $backend_task_edit as $_}{ifset($_.before_description)}{/foreach}
+                    {* ATTACH DROPAREA *}
 
-                {* CONTENT *}
-                <div class="t-form-line t-description-wrapper">
-                    <textarea name="data[text]" cols="1" rows="1" class="t-redactor-task-edit" placeholder="[`Task summary`]">{$task.text|escape}</textarea>
-
-                    <!-- plugin hook: 'backend_task_edit.%plugin_id.description' -->
-                    {* @event backend_task_edit.%plugin_id%.description *}
-                    {foreach $backend_task_edit as $_}{ifset($_.description)}{/foreach}
+                    <div class="t-form-line t-attach-wrapper">
+                        {* Droparea *}
+                        <div class="t-attach-droparea" id="t-attach-droparea">
+                            <div class="t-droparea-hint"><i class="fas fa-paperclip"></i> [`Attach files`]</div>
+                            <input type="file" name="files[]" multiple="true" />
+                        </div>
+                    </div>
 
                 </div>
 
-                <!-- plugin hook: 'backend_task_edit.%plugin_id.after_description' -->
-                {* @event backend_task_edit.%plugin_id%.after_description *}
-                {foreach $backend_task_edit as $_}{ifset($_.after_description)}{/foreach}
-
-                {* ATTACH *}
+                {* ATTACHMENTS *}
 
                 <!-- plugin hook: 'backend_task_edit.%plugin_id.before_attachments' -->
                 {* @event backend_task_edit.%plugin_id%.before_attachments *}
                 {foreach $backend_task_edit as $_}{ifset($_.before_attachments)}{/foreach}
 
                 <div class="t-form-line t-attach-wrapper">
-                    {* Droparea *}
-                    <div class="t-attach-droparea" id="t-attach-droparea">
-                        <div class="t-droparea-hint">[`Attach files`]</div>
-                        <input type="file" name="files[]" multiple="true" />
-                    </div>
+
                     {* Container For Attached Files*}
                     <div class="t-attached-files-wrapper {if !empty($task.attachments)}is-shown{/if}" id="t-attached-files-wrapper">
                         <div class="t-images-list">
@@ -283,7 +295,7 @@
                 <div class="t-form-line field t-due-date-wrapper">
                     <div class="name for-input">[`Due date`]</div>
                     <div class="value">
-                        <input type="text" class="t-datepicker-due-date">
+                        <input type="text" class="t-datepicker-due-date solid">
                         <input type="hidden" name="data[due_date]" value="{$task.due_date|escape}"><i class="fas fa-flag-checkered custom-ml-4"></i>
                     </div>
                 </div>

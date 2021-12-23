@@ -13,7 +13,7 @@ class tasksAttachmentsDownloadMethod extends tasksApiAbstractMethod
      */
     public function run(): tasksApiResponseInterface
     {
-        $request = new tasksApiAttachmentDownloadRequest($this->post('id', true, self::CAST_INT));
+        $request = new tasksApiAttachmentDownloadRequest($this->get('id', true, self::CAST_INT));
 
         (new tasksApiAttachmentDownloadHandler())->download($request);
 

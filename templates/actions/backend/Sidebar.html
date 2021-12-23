@@ -63,6 +63,16 @@
             <span class="count">{$outbox_count}</span>
             [`Outbox`]
         </a>
+        <a href="#/log/" class="brick t-mini-brick">
+            <span class="icon text-yellow"><i class="fas fa-bolt"></i></span>
+            <span class="count"></span>
+            [`Updates`]
+        </a>
+        <a href="#/kanban/" class="brick t-mini-brick">
+            <span class="icon text-green"><i class="fas fa-table"></i></span>
+            <span class="count"></span>
+            [`Kanban`]
+        </a>
     </div>
 
     <ul class="menu custom-mt-0 mobile-friendly">
@@ -94,26 +104,6 @@
         {if !empty($backend_sidebar)}{foreach $backend_sidebar as $_}{ifset($_.top_li)}{/foreach}{/if}
 
     </ul>
-
-    {if $is_admin}
-        <div class="box custom-py-0 desktop-and-tablet-only">
-            <hr>
-        </div>
-        <ul class="menu mobile-friendly">
-            <li>
-                <a href="#/log/">
-                    <i class="fas fa-bolt"></i>
-                    <span>[`Updates`]</span>
-                </a>
-            </li>
-            <li>
-                <a href="#/kanban/">
-                    <i class="fas fa-table"></i>
-                    <span>[`Kanban`]</span>
-                </a>
-            </li>
-        </ul>
-    {/if}
 
     {if $lists}
         <div class="t-view-list-wrapper collapsible" data-type="lists" id="t-view-list-wrapper">
@@ -246,6 +236,13 @@
                         </a>
                     </li>
                 {/foreach}
+                <li class="gray">
+                    <a href="#/tasks/unassigned/">
+                        <span class="icon"><img src="{$wa_url}wa-content/img/userpic.svg" alt="[`Unassigned`]" class="userpic"></span>
+                        <span class="text-gray">[`Unassigned`]</span>
+                        <span class="count">{user_count user_id=''}</span>
+                    </a>
+                </li>
             </ul>
         </div>
     </div>
@@ -266,21 +263,16 @@
                                 <span class="icon">
                                     <i class="userpic" style="background-image: url({waContact::getPhotoUrl($user.id, $user.photo, 40, 40, 'person', 0)})"></i>
                                 </span>
-                                <span>{$user.name|escape}</span>
+                                <span>
+                                    {$user.name|escape}
+                                    {if $user.calendar_status}<div class="custom-mt-4 width-100"><span class="badge small nowrap" style="display: inline-block; text-overflow: ellipsis; overflow: hidden; max-width: 99px; background-color: {$user.calendar_status->getBgColor()};color: {$user.calendar_status->getFontColor()};" title="{$user.calendar_status->getName()|escape}">{$user.calendar_status->getName()|escape|truncate:32}</span></div>{/if}
+                                </span>
                                 <span class="count">
                                     {user_count user_id=$user.id}
-                                    {if $user.calendar_status}<span class="badge small nowrap" style="background-color: {$user.calendar_status->getBgColor()};color: {$user.calendar_status->getFontColor()};" title="{$user.calendar_status->getName()|escape}">{$user.calendar_status->getName()|escape|truncate:13}</span>{/if}
                                 </span>
                             </a>
                         </li>
                     {/foreach}
-                    <li class="gray">
-                        <a href="#/tasks/unassigned/">
-                            <span class="icon"><img src="{$wa_url}wa-content/img/userpic.svg" alt="[`Unassigned`]" class="userpic"></span>
-                            <span>[`Unassigned`]</span>
-                            <span class="count">{user_count user_id=''}</span>
-                        </a>
-                    </li>
                 </ul>
             {else}
                 <div class="box align-center custom-my-12 hide-when-collapsed">
@@ -366,7 +358,7 @@
                                 <a data-id="{$tag.id}" data-value="{$tag.name|escape}" href="#/tasks/tag/{$tag.name|escape}/">
                                     <i class="fas fa-hashtag"></i>
                                     <span>{$tag.name|escape}</span>
-                                    <span class="count">{$tag.count}</span>
+                                    {if $is_admin}<span class="count">{$tag.count}</span>{/if}
                                 </a>
                             </li>
                             {if !$_visible}
