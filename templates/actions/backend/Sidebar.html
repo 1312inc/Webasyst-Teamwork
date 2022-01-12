@@ -1,20 +1,9 @@
 {strip}
 
-    {function counts_pair total=0 count=0 bg_color=null text_color=null}
-        {if !$count}
-            {$total}
-        {elseif $count == $total}
-            <span class="badge" style="background:{ifempty($bg_color, 'transparent')};color:{ifempty($text_color, '#999')}">{$count}</span>
-        {else}
-            <span class="badge custom-mr-4" style="background:{ifempty($bg_color, 'transparent')};color:{ifempty($text_color, '#999')}">{$count}</span>
-            {$total}
-        {/if}
-    {/function}
-
     {function user_count user_id=null}{strip}
         {if $is_admin}
             {$user_count = ifset($team_counts[$user_id], $empty_user_count)}
-            {counts_pair total=$user_count.total count=$user_count.count bg_color=$user_count.bg_color text_color=$user_count.text_color}
+            {tasksUserTasksCounterService::getPairs($user_count.total, $user_count.count, $user_count.bg_color, $user_count.text_color)}
         {/if}
     {/strip}{/function}
 
@@ -54,7 +43,7 @@
                 {else}
                     {$inbox_urgent_count = $user_count.count}
                 {/if}
-                {counts_pair total=$user_count.total-$hidden_count count=$inbox_urgent_count bg_color=$user_count.bg_color text_color=$user_count.text_color}
+                {tasksUserTasksCounterService::getPairs($user_count.total-$hidden_count, $inbox_urgent_count, $user_count.bg_color, $user_count.text_color)}
             </span>
             [`Inbox`]
         </a>
@@ -81,12 +70,12 @@
             <a href="#/tasks/favorites/">
                 <i class="fas fa-star{if $favorites_counts.total} text-yellow{/if}"></i>
                 <span>[`Watching`]</span>
-                <span class="count">{counts_pair total=$favorites_counts.total count=$favorites_counts.count bg_color=$favorites_counts.bg_color text_color=$favorites_counts.text_color}</span>
+                <span class="count">{tasksUserTasksCounterService::getPairs($favorites_counts.total, $favorites_counts.count, $favorites_counts.bg_color, $favorites_counts.text_color)}</span>
             </a>
         </li>
         <li>
             <a href="#/tasks/urgent/">
-                <span class="count">{counts_pair total=$urgent_count count=$super_urgent_count bg_color='#ff0000' text_color='white'}</span>
+                <span class="count">{tasksUserTasksCounterService::getPairs($urgent_count, $super_urgent_count, '#ff0000', 'white')}</span>
                 <i class="fas fa-exclamation-triangle{if $urgent_count} text-red{/if}"></i>
                 <span>[`Urgent`]</span>
             </a>
@@ -302,7 +291,7 @@
                                     {$project.icon_html}
                                     <span>{$project.name|escape|truncate:42}</span>
                                     {if $project.count !== null}
-                                        <span class="count">{counts_pair total=$project.total count=$project.count bg_color=$project.priority_count.bg_color text_color=$project.priority_count.text_color}</span>
+                                        <span class="count">{tasksUserTasksCounterService::getPairs($project.total, $project.count, $project.priority_count.bg_color, $project.priority_count.text_color)}</span>
                                     {/if}
                                 </a>
                             </li>
