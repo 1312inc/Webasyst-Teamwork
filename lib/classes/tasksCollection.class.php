@@ -87,10 +87,10 @@ class tasksCollection
             if (ifempty($is_available['all']) != 2) {
                 $full_access_projects = [];
                 $limited_access_projects = [];
-                if (ifempty($is_available['all']) == 1) {
+                if (ifempty($is_available[tasksProjectRepository::GET_PROJECT_ALL]) == 1) {
                     $projectsAll = tsks()->getEntityRepository(tasksProject::class)
                         ->getProjectsAsArray(tasksProjectRepository::GET_PROJECT_ALL);
-                    foreach ($projectsAll as $id) {
+                    foreach ($projectsAll as $id => $projectData) {
                         $limited_access_projects[$id] = $id;
                     }
                 } else {
