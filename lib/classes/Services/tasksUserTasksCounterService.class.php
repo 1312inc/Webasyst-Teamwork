@@ -26,7 +26,26 @@ assigned_contact_id = i:1',
 
     public function getTeamCounts(waContact $contact): array
     {
-        $result = $this->taskModel->getTeamCounts();
+        $priorities = tasksOptions::getTasksPriorities();
+        $result = [];
+        $availableProjects = (new tasksRights())->getAvailableProjectForContact($contact);
+        $teamsCount = $this->taskModel->getTeamCounts();
+        foreach ($teamsCount as $row) {
+            if ($availableProjects !== true
+                && !in_array($row['project_id'], $availableProjects[tasksRights::PROJECT_ANY_ACCESS])) {
+                continue;
+            }
+
+            if (empty($result[$row['assigned_contact_id']])) {
+                $result[$row['assigned_contact_id']] = $priorities[$row['priority']] + $row + ['total' => 0];
+            } elseif ($result[$row['assigned_contact_id']]['value'] < $row['priority']) {
+                $result[$row['assigned_contact_id']] = $priorities[$row['priority']] + $row + $result[$row['assigned_contact_id']];
+            } else {
+                $result[$row['assigned_contact_id']]['count'] += $row['count'];
+            }
+
+            $result[$row['assigned_contact_id']]['total'] += $row['count'];
+        }
 
         if (!$contact->isAdmin(tasksConfig::APP_ID)) {
             // Non-admin can only see own counter
@@ -77,5 +96,29 @@ assigned_contact_id = i:1',
         }
 
         return null;
+    }
+
+    public static function getPairs($total = 0, $count = 0, $bgColor = null, $textColor = null)
+    {
+        if (!$count) {
+            return $total;
+        }
+
+        if ($count == $total) {
+            return sprintf(
+                '<span class="badge" style="background:%s;color:%s">%s</span>',
+                ifempty($bgColor, 'transparent'),
+                ifempty($textColor, '#999'),
+                $count
+            );
+        }
+
+        return sprintf(
+            '<span class="badge custom-mr-4" style="background:%s;color:%s">%s</span>%s',
+            ifempty($bgColor, 'transparent'),
+            ifempty($textColor, '#999'),
+            $count,
+            $total
+        );
     }
 }

@@ -6,7 +6,7 @@ final class tasksApiTeamInviteToTaskHandler
      * @throws tasksAccessException
      * @throws tasksResourceNotFoundException
      */
-    public function invite(tasksApiTeamInviteToTaskRequest $request): ?tasksInviteResultDto
+    public function invite(tasksApiTeamInviteToTaskRequest $request): tasksInviteResultDto
     {
         $repository = tsks()->getEntityRepository(tasksTask2::class);
         /** @var tasksTask2 $task2 */
@@ -27,10 +27,8 @@ final class tasksApiTeamInviteToTaskHandler
         if ($inviteResult->getContactId()) {
             $task2->setAssignedContactId($inviteResult->getContactId());
             $repository->save($task2);
-
-            return $inviteResult;
         }
 
-        return null;
+        return $inviteResult;
     }
 }

@@ -195,32 +195,17 @@ class tasksTaskModel extends waModel
     /** Count assigned tasks for all users: total and highest priority. */
     public function getTeamCounts()
     {
-        $result = [];
-        $priorities = tasksOptions::getTasksPriorities();
-
         // For the purpose of sidebar counts we only differentiate
         // between urgent=2 and onfire=3 and everything else being normal=0.
         $priority_field = "IF(t.priority>=2, 2, 0)";
 
-        $sql = "SELECT t.assigned_contact_id, {$priority_field} AS priority, count(*) AS `count`
+        $sql = "SELECT t.assigned_contact_id, {$priority_field} AS priority, count(*) AS `count`, t.project_id
                 FROM {$this->table} t JOIN tasks_project p ON t.project_id = p.id
                 WHERE t.status_id > -1 AND p.archive_datetime IS NULL
-                GROUP BY t.assigned_contact_id, {$priority_field}";
-        foreach ($this->query($sql) as $row) {
-            if (empty($result[$row['assigned_contact_id']])) {
-                $result[$row['assigned_contact_id']] = $priorities[$row['priority']] + $row + [
-                        'total' => 0,
-                    ];
-            } else {
-                if ($result[$row['assigned_contact_id']]['value'] < $row['priority']) {
-                    $result[$row['assigned_contact_id']] = $priorities[$row['priority']] + $row + $result[$row['assigned_contact_id']];
-                }
-            }
+                GROUP BY t.assigned_contact_id, {$priority_field}, t.project_id
+                ORDER BY t.assigned_contact_id, {$priority_field}";
 
-            $result[$row['assigned_contact_id']]['total'] += $row['count'];
-        }
-
-        return $result;
+        return $this->query($sql)->fetchAll();
     }
 
     /**

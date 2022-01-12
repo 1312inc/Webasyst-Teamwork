@@ -5,6 +5,7 @@ class tasksRights
     public const PROJECT_ACCESS_NONE                = 0;
     public const PROJECT_ACCESS_VIEW_ASSIGNED_TASKS = 1;
     public const PROJECT_ACCESS_FULL                = 2;
+    public const PROJECT_ANY_ACCESS                 = -1;
 
     /**
      * @param tasksTask[]|array[] $tasks
@@ -520,7 +521,7 @@ class tasksRights
             return true;
         }
 
-        return array_reduce(
+        $access = array_reduce(
             array_keys($allRights),
             static function ($projectIds, $rightKey) use ($allRights) {
                 $rightExploded = explode('.', $rightKey);
@@ -541,8 +542,19 @@ class tasksRights
 
                 return $projectIds;
             },
-            [self::PROJECT_ACCESS_VIEW_ASSIGNED_TASKS => [], self::PROJECT_ACCESS_FULL => []]
+            [
+                self::PROJECT_ACCESS_VIEW_ASSIGNED_TASKS => [],
+                self::PROJECT_ACCESS_FULL => [],
+                self::PROJECT_ANY_ACCESS => [],
+            ]
         );
+
+        $access[self::PROJECT_ANY_ACCESS] = array_merge(
+            $access[self::PROJECT_ACCESS_VIEW_ASSIGNED_TASKS],
+            $access[self::PROJECT_ACCESS_FULL]
+        );
+
+        return $access;
     }
 
     protected function getCountersOfNotOwnLogItems($contact_id, $task_ids)
