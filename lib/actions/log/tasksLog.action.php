@@ -34,7 +34,7 @@ class tasksLogAction extends tasksTasksAction
         $logs = $response->getLogs();
         // Chart is rendered using a separate action
         $chartHtml = '';
-        if (!$isLazy && $logs) {
+        if (!$isLazy && $logs && wa()->getUser()->isAdmin(tasksConfig::APP_ID)) {
             $chart_action = new tasksLogChartAction();
             $chartHtml = $chart_action->display();
         }
