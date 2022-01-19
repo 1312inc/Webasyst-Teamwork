@@ -40,7 +40,7 @@
             <div class="value">
                 <input type="hidden" name="assigned_contact_id" value="">
                 <div class="t-team-list-wrapper"></div>
-
+                <input type="text" class="t-team-invite" value="" placeholder="E-mail" style="display: none;" />
                 <script>
                     (function ($) {
                         var $wrapper = $("#forward-wrapper-{$ident}"),
@@ -94,6 +94,7 @@
                             $.tasks.teamList({
                                 container: $wrapper.find('.t-team-list-wrapper'),
                                 targetField: $wrapper.find('[name="assigned_contact_id"]'),
+                                inviteField: $wrapper.find('.t-team-invite'),
                                 projectId: project_id,
                                 assignedContactId: {$task.assigned_contact_id|default:"\"\""}
                             });

@@ -102,6 +102,7 @@
                                             $.tasks.teamList({
                                                 container: $('#t-edit-task-form .t-team-list-wrapper'),
                                                 targetField: $('#t-edit-task-form [name="data[assigned_contact_id]"]'),
+                                                inviteField: $('#t-edit-task-form .t-team-invite'),
                                                 projectId: $(target).data("value"),
                                                 assignedContactId: {if !empty($task.id)}{$task.assigned_contact_id|default:"\"\""}{else}""{/if},
                                                 updateMode: {if !empty($task.id)}true{else}false{/if}
@@ -276,12 +277,14 @@
                     <div class="value">
                         <input type="hidden" name="data[assigned_contact_id]" value="{$task.assigned_contact_id}">
                         <div class="t-team-list-wrapper"></div>
+                        <input type="text" class="t-team-invite" value="" placeholder="E-mail" style="display: none;" />
                         <script>
                             (function ($) {
                                 var initialProjectID = $("#projectSelect").find("li:first a").data('value');
                                 $.tasks.teamList({
                                     container: $('#t-edit-task-form .t-team-list-wrapper'),
                                     targetField: $('#t-edit-task-form [name="data[assigned_contact_id]"]'),
+                                    inviteField: $('#t-edit-task-form .t-team-invite'),
                                     projectId: {if !empty($task.id)}{$task.project_id}{else}initialProjectID{/if},
                                     assignedContactId: {if !empty($task.id)}{$task.assigned_contact_id|default:"\"\""}{else}""{/if},
                                     updateMode: {if !empty($task.id)}true{else}false{/if}

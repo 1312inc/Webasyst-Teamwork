@@ -1526,6 +1526,13 @@
             }, 1000);
         },
 
+        inviteUser: function (email, taskId) {
+            $.post('?module=team&action=invite', {
+                email: email,
+                task_id: taskId
+            });
+        },
+
         teamList: function (options) {
 
             var $container = options.container,
@@ -1533,8 +1540,10 @@
                 projectId = options.projectId,
                 assignedContactId = options.assignedContactId,
                 unassignedLabel = $.wa.locale.unassigned,
+                inviteLabel = $.wa.locale.invite,
                 meLabel = $.wa.locale.me,
-                updateMode = options.updateMode;
+                updateMode = options.updateMode,
+                $inviteField = options.inviteField;
 
             $container.css('pointer-events', 'none').fadeTo("fast", 0.33);
 
@@ -1578,6 +1587,16 @@
                             </div>
                         </div>
                     `);
+                    $assigneesContainer.append(`
+                        <div class="t-assignee t-assignee-invite align-center" data-user-id="" style="width: 72px;">
+                            <div class="custom-mb-4">
+                                <img src="${wa_url}wa-content/img/userpic.svg" class="userpic userpic-48" />
+                            </div>
+                            <div class="smaller">
+                                ${inviteLabel}
+                            </div>
+                        </div>
+                    `);
                     $container.html($assigneesContainer);
                     if (assignees.length >= maxVisible + 2) {
                         $assigneesContainer.append(`
@@ -1588,11 +1607,15 @@
                             </div>
                         `);
                     }
-
+ 
                     $container.find('.t-assignee').on('click', function () {
                         $container.find('.t-assignee').removeClass('active');
                         $(this).addClass('active');
                         $targetField.val($(this).data('user-id'));
+                        $inviteField.hide();
+                        if ($(this).hasClass('t-assignee-invite')) {
+                            $inviteField.show();
+                        }
                     });
 
                     $container.find('.t-toggle-all-assignee').on('click', function () {
@@ -1604,7 +1627,7 @@
 
                     // initial selection
                     if(updateMode) {
-                        $container.find('.t-assignee[data-user-id=\"' + assignedContactId + '\"]').addClass('active');
+                        $container.find('.t-assignee[data-user-id=\"' + assignedContactId + '\"]').first().addClass('active');
                     } else {
                         $container.find('.t-assignee').first().trigger('click');
                     }

@@ -55,6 +55,9 @@ msgstr ""
 msgid "Nobody"
 msgstr ""
 
+msgid "Invite"
+msgstr ""
+
 msgid "Team"
 msgstr ""
 

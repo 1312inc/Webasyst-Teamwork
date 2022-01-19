@@ -981,11 +981,16 @@ var TaskEdit = ( function($) { "use strict";
                                 that.task_id = that.task_id ? that.task_id : response.data.id;
                                 that.closePage(response.data, return_to_new);
 
+                                // Invite User
+                                var inviteAddress = $form.find('.t-team-invite:visible').val();
+                                if (inviteAddress) {
+                                    $.tasks.inviteUser(inviteAddress, that.task_id);
+                                }
+
                                 if (that.is_new) {
                                     // Clear localStorage Task draft
                                     localStorage.removeItem('task_title');
                                     localStorage.removeItem('task_text');
-
                                 }
                             }
                         }

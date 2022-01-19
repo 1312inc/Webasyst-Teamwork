@@ -64,6 +64,9 @@ msgstr "Без назначения"
 msgid "Nobody"
 msgstr "Никто"
 
+msgid "Invite"
+msgstr "Пригласить"
+
 msgid "Team"
 msgstr "Команда"
 
