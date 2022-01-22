@@ -480,6 +480,9 @@ window.initLogsTimeframeSelector = function($wrapper) {
     function reloadChart() {
         var timeframe = getTimeframeData();
         var params = window.location.hash.substr(6).split('/')[0] || '';
+        if ($custom_wrapper.find('[name="groupby"]').is(":visible")) {
+            timeframe.groupby = $custom_wrapper.find('[name="groupby"]').val();
+        }
         'to from groupby timeframe'.split(' ').forEach(function(name) {
             params = $.tasks.replaceParam(params, name, timeframe[name] || '');
         });
@@ -530,7 +533,13 @@ window.initLogsTimeframeSelector = function($wrapper) {
         result = {
             $li: $li,
             timeframe: ($li && $li.data('timeframe')) || 30,
-            groupby: ($li && $li.data('groupby')) || 'days'
+            groupby: (function () {
+                if ($li.data('timeframe') === 'custom') {
+                    var params = window.location.hash.substr(6).split('/')[0] || '';
+                    return $.tasks.deparam(params)['groupby'];
+                }
+                return ($li && $li.data('groupby')) || 'days';
+            })()
         };
 
         if (result.timeframe == 'custom') {
