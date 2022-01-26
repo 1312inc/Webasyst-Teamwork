@@ -7,7 +7,7 @@ turndownService.addRule("a", {
     return node.nodeName === "A" && node.getAttribute('href') === node.innerText;
   },
   replacement: function (content) {
-    return content;
+    return content.replace(/\\/g, '');
   },
 });
 turndownService.addRule("pre", {
