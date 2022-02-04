@@ -1301,7 +1301,7 @@ msgid "Restore this milestone"
 msgstr "Восстановить из завершенных"
 
 msgid "Mark as complete"
-msgstr "Работа завершена"
+msgstr "Отметить как завершенная"
 
 msgid "Date"
 msgstr "Дата"
@@ -1413,3 +1413,6 @@ msgstr "Не похоже это на адрес email"
 
 msgid "All senders"
 msgstr "Все отправители"
+
+msgid "Unarchive"
+msgstr "Восстановить"

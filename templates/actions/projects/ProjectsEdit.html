@@ -17,13 +17,13 @@
                     </h1>
 
                     {if $project.id}
-                        <div class="flexbox space-12 custom-mt-4">
+                        <div class="flexbox space-12 custom-mt-4 small">
                             <div>
                                 {if $project.archive_datetime}
                                     <div class="custom-p-4 text-brown">
                                         {if $project.archive_datetime}<i class="fas fa-archive" title="[`Archived`]"></i>{/if}
                                         [`Archived`]: <strong>{$project.archive_datetime|wa_datetime}</strong>
-                                        <a href="javascript:void(0)" class="button nowrap outlined brown" id="project-unarchive-link"><i class="fas fa-archive"></i> [`Unarchive`]</a>
+                                        <a href="javascript:void(0)" class="button nowrap outlined brown custom-ml-4" id="project-unarchive-link">[`Unarchive`]</a>
                                     </div>
                                 {else}
                                     <a href="javascript:void(0)" class="button nowrap outlined brown" id="project-archive-link"><i class="fas fa-archive"></i> [`Archive this project`]</a>

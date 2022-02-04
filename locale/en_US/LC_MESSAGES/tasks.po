@@ -1348,3 +1348,6 @@ msgstr "Required field"
 
 msgid "This does not look like a valid email"
 msgstr ""
+
+msgid "Unarchive"
+msgstr ""
