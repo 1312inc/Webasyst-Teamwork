@@ -1351,3 +1351,6 @@ msgstr ""
 
 msgid "Unarchive"
 msgstr ""
+
+msgid "The user will get an invitation to join your team on Webasyst and to start working on this task."
+msgstr ""

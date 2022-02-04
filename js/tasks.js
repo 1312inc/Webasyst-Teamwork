@@ -1590,7 +1590,9 @@
                     $assigneesContainer.append(`
                         <div class="t-assignee t-assignee-invite align-center" data-user-id="" style="width: 72px;">
                             <div class="custom-mb-4">
-                                <img src="${wa_url}wa-content/img/userpic.svg" class="userpic userpic-48" />
+                                <span class="t-assignee-invite-box">
+                                    <i class="fas fa-user-plus"></i>
+                                </span>
                             </div>
                             <div class="smaller">
                                 ${inviteLabel}
@@ -1607,7 +1609,7 @@
                             </div>
                         `);
                     }
- 
+
                     $container.find('.t-assignee').on('click', function () {
                         $container.find('.t-assignee').removeClass('active');
                         $(this).addClass('active');

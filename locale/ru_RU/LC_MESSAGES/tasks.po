@@ -1416,3 +1416,6 @@ msgstr "Все отправители"
 
 msgid "Unarchive"
 msgstr "Восстановить"
+
+msgid "The user will get an invitation to join your team on Webasyst and to start working on this task."
+msgstr "Пользователь получит приглашение в вашу команду Webasyst и увидит эту задачу у себя во входящих."
