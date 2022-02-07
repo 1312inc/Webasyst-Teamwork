@@ -18,6 +18,7 @@
         priorities: {$priorities|json_encode},
         app_icons: {$app_icons|json_encode},
         contact_id: {$wa->user('id')},
+        is_admin: {$is_admin},
         text_editor: {$text_editor|json_encode}
     });</script>
 

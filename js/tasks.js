@@ -1587,18 +1587,22 @@
                             </div>
                         </div>
                     `);
-                    $assigneesContainer.append(`
-                        <div class="t-assignee t-assignee-invite align-center" data-user-id="" style="width: 72px;">
-                            <div class="custom-mb-4">
-                                <span class="t-assignee-invite-box">
-                                    <i class="fas fa-user-plus"></i>
-                                </span>
+
+                    if ($.tasks.options.is_admin) {
+                        $assigneesContainer.append(`
+                            <div class="t-assignee t-assignee-invite align-center" data-user-id="" style="width: 72px;">
+                                <div class="custom-mb-4">
+                                    <span class="t-assignee-invite-box">
+                                        <i class="fas fa-user-plus"></i>
+                                    </span>
+                                </div>
+                                <div class="smaller">
+                                    ${inviteLabel}
+                                </div>
                             </div>
-                            <div class="smaller">
-                                ${inviteLabel}
-                            </div>
-                        </div>
-                    `);
+                        `);
+                    }
+                    
                     $container.html($assigneesContainer);
                     if (assignees.length >= maxVisible + 2) {
                         $assigneesContainer.append(`
