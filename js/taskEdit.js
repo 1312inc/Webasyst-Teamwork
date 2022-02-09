@@ -152,6 +152,11 @@ var TaskEdit = ( function($) { "use strict";
 
         $.event.trigger("onTaskEditInit", that);
 
+        // Remove pulsar
+        if ($('.pulsar.cloned').length) {
+            $('.pulsar.cloned').removeClass('pulsar');
+        }
+
         if ($.tasks.options.text_editor === 'wysiwyg') {
             $R('.t-redactor-task-edit', {
                 // 'focus': true,
@@ -665,6 +670,11 @@ var TaskEdit = ( function($) { "use strict";
         // Reload Sidebar
         if (window.hasOwnProperty('TasksController')) {
             window['TasksController'].reloadSidebar();
+        }
+
+        // Return pulsar
+        if ($('.cloned').length) {
+            $('.cloned').addClass('pulsar');
         }
 
         if (is_dialog) {

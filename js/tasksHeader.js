@@ -1069,30 +1069,40 @@ var TasksHeader = ( function($) {
     Header.togglePulsarButton = function () {
         var that = this,
             pulsarButtonSelector = '.pulsar.cloned',
-            $button = $('#sidebar .add-task-link');
-
-        if (that.total_count) {
+            buttonSelector = '#sidebar .add-task-link';
+        
+        var removePulsar = function () {
             $(".sidebar-body").off('.pulsar');
             $(window).off('.pulsar');
             $(pulsarButtonSelector).remove();
+        }
+
+        if (that.total_count) {
+            removePulsar();
         } else {
-            if ($button.length) {
-                var $pulsar = $button.clone().appendTo("body");
-                $pulsar.addClass('pulsar cloned').css({
-                    position: 'absolute',
-                    'pointer-events': 'none',
-                    ...$button.offset()
-                });
+            if ($(buttonSelector).length && !$(pulsarButtonSelector).length) {
+                var $pulsar = $(buttonSelector).clone().appendTo("body");
+                $pulsar.addClass('pulsar cloned');
 
                 var setOffset = function () {
-                    $pulsar.css($button.offset());
+                    $pulsar.css({
+                        position: 'absolute',
+                        'pointer-events': 'none',
+                        ...$(buttonSelector).offset()
+                    });
                 };
+
+                setOffset();
 
                 $(".sidebar-body").on('scroll.pulsar', setOffset);
                 $(window).on('resize.pulsar', setOffset);
             }
 
         }
+
+        $(window).on('wa_before_dispatched.pulsar', function () {
+            removePulsar();
+        });
 
     };
 
