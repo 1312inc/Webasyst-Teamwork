@@ -70,6 +70,8 @@ var TasksHeader = ( function($) {
 
         that.fixOutboxFilter();
 
+        that.togglePulsarButton();
+
         if (!that.is_single_page) {
             //
             that.initMyListToggle();
@@ -1062,6 +1064,36 @@ var TasksHeader = ( function($) {
             $list.find('li:first').remove();
             $list.find('li:last').detach().prependTo($list);
         }
+    };
+
+    Header.togglePulsarButton = function () {
+        var that = this,
+            pulsarButtonSelector = '.pulsar.cloned',
+            $button = $('#sidebar .add-task-link');
+
+        if (that.total_count) {
+            $(".sidebar-body").off('.pulsar');
+            $(window).off('.pulsar');
+            $(pulsarButtonSelector).remove();
+        } else {
+            if ($button.length) {
+                var $pulsar = $button.clone().appendTo("body");
+                $pulsar.addClass('pulsar cloned').css({
+                    position: 'absolute',
+                    'pointer-events': 'none',
+                    ...$button.offset()
+                });
+
+                var setOffset = function () {
+                    $pulsar.css($button.offset());
+                };
+
+                $(".sidebar-body").on('scroll.pulsar', setOffset);
+                $(window).on('resize.pulsar', setOffset);
+            }
+
+        }
+
     };
 
     return TasksHeader;
