@@ -4,20 +4,19 @@ final class tasksApiTeamInviteToTaskHandler
 {
     /**
      * @throws tasksAccessException
-     * @throws tasksResourceNotFoundException
+     * @throws tasksResourceNotFoundException|waException
      */
     public function invite(tasksApiTeamInviteToTaskRequest $request): tasksInviteResultDto
     {
+        if (!wa()->getUser()->isAdmin(tasksConfig::APP_ID)) {
+            throw new tasksAccessException(_w('Access denied'));
+        }
+
         $repository = tsks()->getEntityRepository(tasksTask2::class);
         /** @var tasksTask2 $task2 */
         $task2 = $repository->findById($request->getTaskId());
         if (!$task2) {
             throw new tasksResourceNotFoundException('Task not found');
-        }
-
-        $rights = new tasksRights();
-        if (!$rights->canEditTask($task2->getLegacyTask())) {
-            throw new tasksAccessException(_w('Access denied'));
         }
 
         $inviteService = new tasksInviteService();
