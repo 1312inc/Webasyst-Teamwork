@@ -591,7 +591,7 @@ class tasksCollection
      *
      * @return string
      */
-    protected function getExpression($op, $value)
+    protected function getExpression($op, $value, $type = null)
     {
         $model = $this->getModel();
         switch ($op) {
@@ -600,7 +600,7 @@ class tasksCollection
             case '<':
             case '<=':
             case '!=':
-                return " " . $op . " '" . $model->escape($value) . "'";
+                return " " . $op . " '" . $model->escape($value, $type) . "'";
             case "^=":
                 return " LIKE '" . $model->escape($value, 'like') . "%'";
             case "$=":
@@ -614,8 +614,15 @@ class tasksCollection
             // otherwise breakthrough
             case "=";
             default:
-                return " = '" . $model->escape($value) . "'";
+                return " = '" . $model->escape($value, $type) . "'";
         }
+    }
+
+    protected function getFieldType($field)
+    {
+        $meta= $this->getModel()->getMetadata();
+
+        return $meta[$field]['type'] ?? null;
     }
 
     protected function idPrepare($ids)
@@ -754,7 +761,7 @@ class tasksCollection
 
                 //Show all tasks if status_id == all
                 if (!($parts[0] == 'status_id' && $parts[2] == 'all')) {
-                    $this->where[] = 't.' . $parts[0] . $this->getExpression($parts[1], $parts[2]);
+                    $this->where[] = 't.' . $parts[0] . $this->getExpression($parts[1], $parts[2], $this->getFieldType($parts[0]));
                 }
 
             } else {
