@@ -1,6 +1,6 @@
 <?php
 
-class tasksRights
+final class tasksRights
 {
     public const PROJECT_ACCESS_NONE                = 0;
     public const PROJECT_ACCESS_VIEW_ASSIGNED_TASKS = 1;

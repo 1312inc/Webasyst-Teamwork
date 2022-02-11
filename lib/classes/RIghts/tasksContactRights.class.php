@@ -1,6 +1,6 @@
 <?php
 
-class tasksContactRights
+final class tasksContactRights
 {
     /**
      * @var bool
