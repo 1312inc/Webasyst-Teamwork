@@ -21,7 +21,11 @@ final class tasksApiTeamInviteToTaskHandler
 
         $inviteService = new tasksInviteService();
 
-        $inviteResult = $inviteService->inviteToTask($request->getEmail(), $request->getAccessRight(),$task2->getLegacyTask());
+        $inviteResult = $inviteService->inviteToTask(
+            $request->getEmail(),
+            $request->getAccessRight(),
+            $task2->getLegacyTask()
+        );
 
         if ($inviteResult->getContactId()) {
             $task2->setAssignedContactId($inviteResult->getContactId());

@@ -40,7 +40,7 @@ final class tasksInviteService
 
         $link = waAppTokensModel::getLink($token);
 
-        $this->updateRights($newContactAccessRights, (int) $token['contact_id']);
+        $this->updateRights($task, $newContactAccessRights, (int) $token['contact_id']);
 
         $sender = new tasksNotificationsSender($task, 'inviteAssign', ['templateData' => ['invite_link' => $link]]);
         try {
@@ -131,6 +131,7 @@ final class tasksInviteService
         $c = new waContact();
         $c->save([
             'email' => [$email],
+            'login' => $email,
             'create_method' => $createMethod,
             'locale' => wa()->getLocale(),
         ]);
@@ -160,7 +161,7 @@ final class tasksInviteService
         ]);
     }
 
-    private function updateRights(int $newContactAccessRights, int $contactId): void
+    private function updateRights(tasksTask $task, int $newContactAccessRights, int $contactId): void
     {
         $contactRightModel = new waContactRightsModel();
         $existingRights = $contactRightModel->get($contactId, tasksConfig::APP_ID);
@@ -200,6 +201,12 @@ final class tasksInviteService
                         tasksConfig::APP_ID,
                         tasksRightConfig::RIGHT_NAME_BACKEND,
                         tasksRightConfig::RIGHT_BACKEND_RESTRICTED
+                    );
+                    $contactRightModel->save(
+                        $contactId,
+                        tasksConfig::APP_ID,
+                        tasksRightConfig::RIGHT_NAME_PROJECT . '.' . $task->project_id,
+                        tasksRights::PROJECT_ACCESS_VIEW_ASSIGNED_TASKS
                     );
                 }
                 break;
