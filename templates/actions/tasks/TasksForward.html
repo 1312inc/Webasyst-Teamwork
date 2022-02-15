@@ -40,8 +40,9 @@
             <div class="value">
                 <input type="hidden" name="assigned_contact_id" value="">
                 <div class="t-team-list-wrapper"></div>
-                <input type="text" class="t-team-invite long custom-mb-4" value="" placeholder="[`Email`]" style="display: none;" />
-                <p class="hint t-team-invite">[`The user will get an invitation to join your team on Webasyst and to start working on this task.`]</p>
+                
+                {include file="./includes/TasksEditInviteForm.inc.html" inline}
+                
                 <script>
                     (function ($) {
                         var $wrapper = $("#forward-wrapper-{$ident}"),

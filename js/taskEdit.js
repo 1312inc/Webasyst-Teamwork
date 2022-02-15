@@ -992,9 +992,14 @@ var TaskEdit = ( function($) { "use strict";
                                 that.closePage(response.data, return_to_new);
 
                                 // Invite User
-                                var inviteAddress = $form.find('.t-team-invite:visible').val();
+                                var inviteAddress = $form.find('.t-team-invite__email:visible').val(),
+                                    inviteAccess = $form.find('.t-team-invite__access:visible').val();
                                 if (inviteAddress) {
-                                    $.tasks.inviteUser(inviteAddress, that.task_id);
+                                    $.tasks.inviteUser({
+                                        email: inviteAddress, 
+                                        taskId: that.task_id,
+                                        accessId: inviteAccess
+                                    });
                                 }
 
                                 if (that.is_new) {

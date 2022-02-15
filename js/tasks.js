@@ -1526,11 +1526,27 @@
             }, 1000);
         },
 
-        inviteUser: function (email, taskId) {
-            $.post('?module=team&action=invite', {
-                email: email,
-                task_id: taskId
-            });
+        /**
+         * Invite User
+         * @param {Object} options 
+         * @param {string} options.email – User's email
+         * @param {number} options.taskId – Task ID
+         * @param {number} options.accessId – Access right ID 
+         */
+
+        inviteUser: function (options) {
+            var email = options.email,
+                taskId = options.taskId,
+                accessId = options.accessId || 0;
+            if (email && taskId) {
+                $.post('?module=team&action=invite', {
+                    email: email,
+                    task_id: taskId,
+                    access_right: accessId
+                });
+            } else {
+
+            }
         },
 
         teamList: function (options) {
