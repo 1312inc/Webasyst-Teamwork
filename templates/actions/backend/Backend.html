@@ -112,9 +112,11 @@
         </div>
     </div>
 
+    {if $user_has_minimum_access}
     <a class="add-task-link circle button largest mobile-only" href="#/add/">
         <i class="fas fa-plus"></i>
     </a>
+    {/if}
 
     <div id="taskSkeleton" style="display: none;">
         {include file="../tasks/includes/TasksSkeleton.inc.html" inline}
