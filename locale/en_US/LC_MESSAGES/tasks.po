@@ -1354,3 +1354,42 @@ msgstr ""
 
 msgid "The user will get an invitation to join your team on Webasyst and to start working on this task."
 msgstr ""
+
+msgid "Minimal access"
+msgstr ""
+
+msgid "Access to all projects"
+msgstr ""
+
+msgid "Full access to all projects &amp; settings"
+msgstr ""
+
+msgid "%s %s"
+msgstr ""
+
+msgid "User %s sent you a task"
+msgstr ""
+
+msgid "User %s sent a task to %s"
+msgstr ""
+
+msgid "User %s wrote a comment to a task you are assigned to"
+msgstr ""
+
+msgid "User %s wrote a comment to a task you created"
+msgstr ""
+
+msgid "User %s wrote a comment."
+msgstr ""
+
+msgid "User %s edited a task you are assigned to"
+msgstr ""
+
+msgid "User %s edited a task you created"
+msgstr ""
+
+msgid "User %s edited a task"
+msgstr ""
+
+msgid "All senders"
+msgstr ""
