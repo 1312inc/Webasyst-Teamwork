@@ -331,12 +331,15 @@ textarea.t-redactor-comments
     height 200px
     resize vertical
     box-sizing border-box
-    border-width 2px
+    border-width 0
     border-radius 0.375rem 0.375rem 0 0
     border-color var(--border-color-soft)
     border-bottom-color transparent
     background-color var(--background-color-blank)
-    padding 0.5em 0.75em
+    padding 0.75em 1em
+
+textarea.t-redactor-comments
+    height 120px
 
 .collapsible
   margin-bottom: 2rem
@@ -509,6 +512,19 @@ textarea.t-redactor-comments
 .t-toggle-all-assignee .userpic
   border 3px solid var(--background-color-blank)
   box-sizing content-box
+
+.t-assignee .t-assignee-invite-box
+  border-radius 50%
+  border 3px solid var(--background-color-blank)
+  box-sizing content-box
+  width 3rem
+  height 3rem
+  font-size 1.25rem
+  color var(--gray)
+  line-height 3rem
+  display inline-block
+  background var(--background-color)
+  margin-bottom 3px
 
 .t-assignee
   cursor pointer

@@ -9,7 +9,6 @@ const {
 
 const uglify = require('gulp-uglify');
 const rename = require('gulp-rename');
-const sourcemaps = require('gulp-sourcemaps');
 const stylus = require('gulp-stylus');
 const autoprefixer = require('gulp-autoprefixer');
 const concat = require('gulp-concat');
@@ -53,7 +52,6 @@ function js () {
     ];
 
     return src(source, { allowEmpty: true })
-        .pipe(sourcemaps.init())
         .pipe(babel({
             test: "./js/tasksKanban.js",
             presets: ['@babel/preset-env']
@@ -65,7 +63,6 @@ function js () {
         .pipe(rename({
             extname: '.min.js'
         }))
-        .pipe(sourcemaps.write('./'))
         .pipe(dest('./js/'));
 }
 
@@ -75,7 +72,6 @@ function css () {
     const source = 'css/styl/tasks.styl';
 
     return src(source)
-        .pipe(sourcemaps.init())
         .pipe(stylus({
             use: nib(),
             compress: true
@@ -87,7 +83,6 @@ function css () {
         .pipe(rename({
             extname: '.min.css'
         }))
-        .pipe(sourcemaps.write('./'))
         .pipe(dest('./css/'));
 }
 

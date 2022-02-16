@@ -28,9 +28,11 @@
 <div class="t-sidebar-block" id="t-sidebar">
     <div class="block">
         <ul class="menu-v with-icons">
+            {if $user_has_minimum_access}
             <li class="add-task-wrapper">
                 <a id="add-task-link" class="add-task-link bold" href="#/add/"><i class="icon16 add"></i>[`New task`]</a>
             </li>
+            {/if}
             <li>
                 {$user_count = ifset($team_counts[$wa->user('id')], $empty_user_count)}
                 {if $user_count.total == $user_count.count}

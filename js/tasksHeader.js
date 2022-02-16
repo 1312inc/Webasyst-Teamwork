@@ -70,6 +70,8 @@ var TasksHeader = ( function($) {
 
         that.fixOutboxFilter();
 
+        that.togglePulsarButton();
+
         if (!that.is_single_page) {
             //
             that.initMyListToggle();
@@ -1062,6 +1064,46 @@ var TasksHeader = ( function($) {
             $list.find('li:first').remove();
             $list.find('li:last').detach().prependTo($list);
         }
+    };
+
+    Header.togglePulsarButton = function () {
+        var that = this,
+            pulsarButtonSelector = '.pulsar.cloned',
+            buttonSelector = '#sidebar .add-task-link';
+        
+        var removePulsar = function () {
+            $(".sidebar-body").off('.pulsar');
+            $(window).off('.pulsar');
+            $(pulsarButtonSelector).remove();
+        }
+
+        if (that.total_count) {
+            removePulsar();
+        } else {
+            if ($(buttonSelector).length && !$(pulsarButtonSelector).length) {
+                var $pulsar = $(buttonSelector).clone().appendTo("body");
+                $pulsar.addClass('pulsar cloned');
+
+                var setOffset = function () {
+                    $pulsar.css({
+                        position: 'absolute',
+                        'pointer-events': 'none',
+                        ...$(buttonSelector).offset()
+                    });
+                };
+
+                setOffset();
+
+                $(".sidebar-body").on('scroll.pulsar', setOffset);
+                $(window).on('resize.pulsar', setOffset);
+            }
+
+        }
+
+        $(window).on('wa_before_dispatched.pulsar', function () {
+            removePulsar();
+        });
+
     };
 
     return TasksHeader;

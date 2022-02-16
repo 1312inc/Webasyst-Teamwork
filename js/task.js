@@ -748,6 +748,16 @@ var Task = ( function($) {
                     $form.showLoading();
                     $.post(href, data, "json")
                         .done(function () {
+                            // Invite User
+                            var inviteAddress = $form.find('.t-team-invite__email:visible').val(),
+                                inviteAccess = $form.find('.t-team-invite__access:visible').val();
+                            if (inviteAddress) {
+                                $.tasks.inviteUser({
+                                    email: inviteAddress, 
+                                    taskId: that.task_id,
+                                    accessId: inviteAccess
+                                });
+                            }
                             $.tasks.reloadSidebar();
                             that.moveTask(direction, function() {
                                 that.reloadTask();

@@ -152,6 +152,11 @@ var TaskEdit = ( function($) { "use strict";
 
         $.event.trigger("onTaskEditInit", that);
 
+        // Remove pulsar
+        if ($('.pulsar.cloned').length) {
+            $('.pulsar.cloned').removeClass('pulsar');
+        }
+
         if ($.tasks.options.text_editor === 'wysiwyg') {
             $R('.t-redactor-task-edit', {
                 // 'focus': true,
@@ -667,6 +672,11 @@ var TaskEdit = ( function($) { "use strict";
             window['TasksController'].reloadSidebar();
         }
 
+        // Return pulsar
+        if ($('.cloned').length) {
+            $('.cloned').addClass('pulsar');
+        }
+
         if (is_dialog) {
 
             // NEW
@@ -981,11 +991,21 @@ var TaskEdit = ( function($) { "use strict";
                                 that.task_id = that.task_id ? that.task_id : response.data.id;
                                 that.closePage(response.data, return_to_new);
 
+                                // Invite User
+                                var inviteAddress = $form.find('.t-team-invite__email:visible').val(),
+                                    inviteAccess = $form.find('.t-team-invite__access:visible').val();
+                                if (inviteAddress) {
+                                    $.tasks.inviteUser({
+                                        email: inviteAddress, 
+                                        taskId: that.task_id,
+                                        accessId: inviteAccess
+                                    });
+                                }
+
                                 if (that.is_new) {
                                     // Clear localStorage Task draft
                                     localStorage.removeItem('task_title');
                                     localStorage.removeItem('task_text');
-
                                 }
                             }
                         }

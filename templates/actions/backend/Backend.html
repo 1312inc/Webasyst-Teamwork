@@ -18,6 +18,7 @@
         priorities: {$priorities|json_encode},
         app_icons: {$app_icons|json_encode},
         contact_id: {$wa->user('id')},
+        is_admin: {if !empty($is_admin)}{$is_admin}{else}0{/if},
         text_editor: {$text_editor|json_encode}
     });</script>
 
@@ -111,9 +112,11 @@
         </div>
     </div>
 
+    {if $user_has_minimum_access}
     <a class="add-task-link circle button largest mobile-only" href="#/add/">
         <i class="fas fa-plus"></i>
     </a>
+    {/if}
 
     <div id="taskSkeleton" style="display: none;">
         {include file="../tasks/includes/TasksSkeleton.inc.html" inline}
@@ -145,6 +148,7 @@
         'status': "[`Status`]",
         'hidden': "[`Hidden`]",
         'unassigned': "[`Nobody`]",
+        'invite': "[`Invite`]",
         'mins': "[`%d min`]",
         'hr': "[`%d hr`]",
         'me': "[`me`]",

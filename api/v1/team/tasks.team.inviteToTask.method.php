@@ -20,10 +20,6 @@ class tasksTeamInviteToTaskMethod extends tasksApiAbstractMethod
 
         $result = (new tasksApiTeamInviteToTaskHandler())->invite($request);
 
-        if (!$result) {
-            return new tasksApiErrorResponse('Error on invite');
-        }
-
         if (!$result->getContactId()) {
             return new tasksApiErrorResponse($result->getErrorDescription());
         }

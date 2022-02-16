@@ -72,6 +72,22 @@ class tasksLogAction extends tasksTasksAction
         $result = parent::getMilestoneFilterType();
         $result['0']['id'] = '0';
 
+        $project_id = waRequest::request('project_id', null, 'int');
+        $projects = (new tasksRights())->getAvailableProjectForContact(wa()->getUser());
+
+        foreach ($result as $i => $milestone) {
+            if ($project_id && !empty($milestone['project_id']) && $project_id != $milestone['project_id']) {
+                unset($result[$i]);
+            }
+
+            if ($projects !== true
+                && !empty($milestone['project_id'])
+                && !in_array($milestone['project_id'], $projects[tasksRights::PROJECT_ANY_ACCESS])
+            ) {
+                unset($result[$i]);
+            }
+        }
+
         return $result;
     }
 }

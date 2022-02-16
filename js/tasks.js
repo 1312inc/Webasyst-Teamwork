@@ -1526,6 +1526,29 @@
             }, 1000);
         },
 
+        /**
+         * Invite User
+         * @param {Object} options 
+         * @param {string} options.email – User's email
+         * @param {number} options.taskId – Task ID
+         * @param {number} options.accessId – Access right ID 
+         */
+
+        inviteUser: function (options) {
+            var email = options.email,
+                taskId = options.taskId,
+                accessId = options.accessId || 0;
+            if (email && taskId) {
+                $.post('?module=team&action=invite', {
+                    email: email,
+                    task_id: taskId,
+                    access_right: accessId
+                });
+            } else {
+
+            }
+        },
+
         teamList: function (options) {
 
             var $container = options.container,
@@ -1533,8 +1556,10 @@
                 projectId = options.projectId,
                 assignedContactId = options.assignedContactId,
                 unassignedLabel = $.wa.locale.unassigned,
+                inviteLabel = $.wa.locale.invite,
                 meLabel = $.wa.locale.me,
-                updateMode = options.updateMode;
+                updateMode = options.updateMode,
+                $inviteField = options.inviteField;
 
             $container.css('pointer-events', 'none').fadeTo("fast", 0.33);
 
@@ -1578,6 +1603,22 @@
                             </div>
                         </div>
                     `);
+
+                    if ($.tasks.options.is_admin) {
+                        $assigneesContainer.append(`
+                            <div class="t-assignee t-assignee-invite align-center" data-user-id="" style="width: 72px;">
+                                <div class="custom-mb-4">
+                                    <span class="t-assignee-invite-box">
+                                        <i class="fas fa-user-plus"></i>
+                                    </span>
+                                </div>
+                                <div class="smaller">
+                                    ${inviteLabel}
+                                </div>
+                            </div>
+                        `);
+                    }
+                    
                     $container.html($assigneesContainer);
                     if (assignees.length >= maxVisible + 2) {
                         $assigneesContainer.append(`
@@ -1593,6 +1634,10 @@
                         $container.find('.t-assignee').removeClass('active');
                         $(this).addClass('active');
                         $targetField.val($(this).data('user-id'));
+                        $inviteField.hide();
+                        if ($(this).hasClass('t-assignee-invite')) {
+                            $inviteField.show();
+                        }
                     });
 
                     $container.find('.t-toggle-all-assignee').on('click', function () {
@@ -1604,7 +1649,7 @@
 
                     // initial selection
                     if(updateMode) {
-                        $container.find('.t-assignee[data-user-id=\"' + assignedContactId + '\"]').addClass('active');
+                        $container.find('.t-assignee[data-user-id=\"' + assignedContactId + '\"]').first().addClass('active');
                     } else {
                         $container.find('.t-assignee').first().trigger('click');
                     }

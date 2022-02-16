@@ -64,6 +64,9 @@ msgstr "Без назначения"
 msgid "Nobody"
 msgstr "Никто"
 
+msgid "Invite"
+msgstr "Пригласить"
+
 msgid "Team"
 msgstr "Команда"
 
@@ -1298,7 +1301,7 @@ msgid "Restore this milestone"
 msgstr "Восстановить из завершенных"
 
 msgid "Mark as complete"
-msgstr "Работа завершена"
+msgstr "Отметить как завершенная"
 
 msgid "Date"
 msgstr "Дата"
@@ -1410,3 +1413,45 @@ msgstr "Не похоже это на адрес email"
 
 msgid "All senders"
 msgstr "Все отправители"
+
+msgid "Unarchive"
+msgstr "Восстановить"
+
+msgid "The user will get an invitation to join your team on Webasyst and to start working on this task."
+msgstr "Пользователь получит приглашение в вашу команду Webasyst и увидит эту задачу у себя во входящих."
+
+msgid "Minimal access"
+msgstr "Минимальный доступ"
+
+msgid "Access to all projects"
+msgstr "Доступ ко всем проектам"
+
+msgid "Full access to all projects &amp; settings"
+msgstr "Полный доступ ко всем проектам и настройкам"
+
+msgid "%s %s"
+msgstr "%s %s"
+
+msgid "User %s sent you a task"
+msgstr "%s поставил вам задачу"
+
+msgid "User %s sent a task to %s"
+msgstr "%s назначил %s ответственным за задачу"
+
+msgid "User %s wrote a comment to a task you are assigned to"
+msgstr "%s добавил комментарий к назначенной на вас задаче"
+
+msgid "User %s wrote a comment to a task you created"
+msgstr "%s добавил комментарий к созданной вами задаче"
+
+msgid "User %s wrote a comment."
+msgstr "%s добавил комментарий"
+
+msgid "User %s edited a task you are assigned to"
+msgstr "%s отредактировал назначенную на вас задачу"
+
+msgid "User %s edited a task you created"
+msgstr "%s отредактировал созданную вами задачу"
+
+msgid "User %s edited a task"
+msgstr "%s отредактировал задачу"

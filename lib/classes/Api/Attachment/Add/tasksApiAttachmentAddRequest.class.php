@@ -21,6 +21,10 @@ final class tasksApiAttachmentAddRequest
     {
         $this->hash = $hash;
         $this->task_id = $task_id;
+        if (empty($files)) {
+            throw new tasksValidationException('No files');
+        }
+
         $this->files = $files;
     }
 
