@@ -1648,10 +1648,14 @@
                     });
 
                     // initial selection
-                    if(updateMode) {
-                        $container.find('.t-assignee[data-user-id=\"' + assignedContactId + '\"]').first().addClass('active');
+                    if ($targetField.val() && assignees.findIndex(function (a) { return a.id === $targetField.val(); }) > -1) {
+                        $container.find('.t-assignee[data-user-id=\"' + $targetField.val() + '\"]').addClass('active');
                     } else {
-                        $container.find('.t-assignee').first().trigger('click');
+                        if (updateMode) {
+                            $container.find('.t-assignee[data-user-id=\"' + assignedContactId + '\"]').addClass('active');
+                        } else {
+                            $container.find('.t-assignee').first().trigger('click');
+                        }
                     }
 
                 }
