@@ -82,7 +82,7 @@ class tasksTasksBulkActions extends waJsonActions
             if ($assigned_contact_id || isset($status_id) || !empty($text)) {
                 $log = tasksHelper::addLog($task_data, array(
                     'action' => 'forward',
-                    'status_id' => $status_id,
+                    'status_id' => $status_id ?? $task_ids['status_id'],
                     'assigned_contact_id' => $assigned_contact_id,
                     'do_not_update_datetime' => empty($text),
                     'text' => $text,

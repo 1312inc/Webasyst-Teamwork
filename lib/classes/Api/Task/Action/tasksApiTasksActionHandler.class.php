@@ -36,9 +36,9 @@ final class tasksApiTasksActionHandler
      * @throws waException
      * @throws tasksValidationException
      */
-    private function forward(tasksApiTasksActionRequest $actionRequest, array $task): array
+    private function forward(tasksApiTasksActionRequest $actionRequest, array $taskData): array
     {
-        $log = tasksHelper::addLog($task, [
+        $log = tasksHelper::addLog($taskData, [
             'action' => $actionRequest->getAction(),
             'status_id' => $actionRequest->getStatusId(),
             'assigned_contact_id' => $actionRequest->getAssignedContactId(),
