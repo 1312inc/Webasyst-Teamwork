@@ -40,7 +40,7 @@ final class tasksApiTasksActionHandler
     {
         $log = tasksHelper::addLog($taskData, [
             'action' => $actionRequest->getAction(),
-            'status_id' => $actionRequest->getStatusId(),
+            'status_id' => $actionRequest->getStatusId() ?: $taskData['status_id'],
             'assigned_contact_id' => $actionRequest->getAssignedContactId(),
             'text' => (string) $actionRequest->getText(),
             'attachments_hash' => (string) $actionRequest->getFilesHash(),
