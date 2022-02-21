@@ -87,7 +87,7 @@
                                 'focus': true,
                                 minHeight: '150px',
                                 imageData: {
-                                    task_uuid: '{$task_uuid}'
+                                    task_uuid: '{$task_uuid|default:""}'
                                 }
                             });
                         }
