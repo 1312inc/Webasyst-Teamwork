@@ -23,6 +23,25 @@ const compressOptions = {
     }, false)
 };
 
+// JS amcharts 
+
+function amcharts () {
+    const source = [
+        'js/amcharts/assets/core.js',
+        'js/amcharts/assets/xy.js',
+        'js/amcharts/assets/Animated.js',
+        'js/amcharts/assets/locales/ru_RU.js',
+        'js/amcharts/assets/index.js',
+    ];
+
+    return src(source, { allowEmpty: true })
+        .pipe(concat('amcharts.js'))
+        .pipe(uglify({
+            compress: compressOptions
+        }))
+        .pipe(dest('./js/amcharts'));
+}
+
 // JS function 
 
 function js () {
@@ -42,7 +61,6 @@ function js () {
         'js/tasksPageFilters.js',
         'js/dropDownMenu.js',
         'js/tasksHeader.js',
-        'js/d3chart-logs.js',
         'js/dialog.js',
         'js/taskListEdit.js',
         'js/settings/personal.js',
@@ -108,9 +126,10 @@ function cssRedactor () {
 
 function watchFiles () {
     watch('css/**/*.styl', css);
-    watch(['js/*.js', 'js/**/*.js', '!js/tasks.min.js'], js);
+    // watch(['js/*.js', 'js/**/*.js', '!js/tasks.min.js'], js);
     watch(['js/vendors/redactor-3-4-11/redactor.css'], cssRedactor);
+    watch('js/amcharts/assets/*.js', amcharts);
 }
 
 exports.watch = watchFiles;
-exports.default = parallel(js, css, cssRedactor);
+exports.default = parallel(js, css, cssRedactor, amcharts);
