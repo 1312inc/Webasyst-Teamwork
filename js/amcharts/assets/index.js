@@ -1,5 +1,7 @@
 function amchart (element, data, locale) {
 
+    am5.addLicense('CH269543621');
+
     var root = am5.Root.new(element);
 
     root.locale = 'am5locales_' + locale;
@@ -14,7 +16,8 @@ function amchart (element, data, locale) {
         panX: false,
         panY: false,
         wheelX: "panX",
-        wheelY: "zoomX"
+        wheelY: "zoomX",
+        layout: root.verticalLayout
     }));
 
     // Add cursor
@@ -34,25 +37,42 @@ function amchart (element, data, locale) {
         startLocation: 0.5,
         endLocation: 0.5,
         renderer: am5xy.AxisRendererX.new(root, {
-            strokeOpacity: 0.2,
+            stroke: am5.color("#888888"),
+            strokeOpacity: 0.1,
             strokeWidth: 1
         }),
         tooltip: am5.Tooltip.new(root, {})
     }));
     var xRenderer = xAxis.get("renderer");
     xRenderer.grid.template.setAll({
-        strokeOpacity: 0.05
+        stroke: am5.color("#888888"),
+        strokeOpacity: 0.1
+    });
+    xRenderer.labels.template.setAll({
+        fill: '#888888'
     });
 
     var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
-        renderer: am5xy.AxisRendererY.new(root, {
-            strokeOpacity: 0.2,
-            strokeWidth: 1
-        })
+        renderer: am5xy.AxisRendererY.new(root, {})
     }));
+
     var yRenderer = yAxis.get("renderer");
+    yRenderer.labels.template.setAll({
+        visible: false
+    });
     yRenderer.grid.template.setAll({
-        strokeOpacity: 0.05
+        visible: false
+    });
+
+    // Add legend
+    // https://www.amcharts.com/docs/v5/charts/xy-chart/legend-xy-series/
+    var legend = chart.children.push(am5.Legend.new(root, {
+        centerX: am5.percent(50),
+        x: am5.percent(50)
+    }));
+
+    legend.labels.template.setAll({
+        fill: '#888888'
     });
 
     for (var d of data) {
@@ -78,13 +98,9 @@ function amchart (element, data, locale) {
             };
         });
         series.data.setAll(data);
-    }
 
-    // Add scrollbar
-    // https://www.amcharts.com/docs/v5/charts/xy-chart/scrollbars/
-    chart.set("scrollbarX", am5.Scrollbar.new(root, {
-        orientation: "horizontal"
-    }));
+        legend.data.push(series);
+    }
 
     // Make stuff animate on load
     // https://www.amcharts.com/docs/v5/concepts/animations/
