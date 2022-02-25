@@ -1077,7 +1077,7 @@ var TasksHeader = ( function($) {
             $(pulsarButtonSelector).remove();
         }
 
-        if (that.total_count) {
+        if (that.total_count || location.hash.includes('#/tasks/search/')) {
             removePulsar();
         } else {
             if ($(buttonSelector).length && !$(pulsarButtonSelector).length) {
