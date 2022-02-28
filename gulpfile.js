@@ -28,9 +28,9 @@ const compressOptions = {
 function amcharts () {
     const source = [
         'js/amcharts/assets/core.js',
-        'js/amcharts/assets/xy.js',
-        'js/amcharts/assets/Animated.js',
-        'js/amcharts/assets/locales/ru_RU.js',
+        'js/amcharts/assets/charts.js',
+        'js/amcharts/assets/themes/animated.js',
+        'js/amcharts/assets/lang/ru_RU.js',
         'js/amcharts/assets/index.js',
     ];
 

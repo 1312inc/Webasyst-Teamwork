@@ -5,12 +5,10 @@
             amchart('logs-chart-wrapper', {json_encode($chart_data)}, '{$wa->locale()}');
         }
 
-        if (typeof am5 === 'undefined') {
+        if (typeof am4core === 'undefined') {
             var script = document.createElement('script');
             script.onload = function () {
-                am5.ready(function () {
-                    runChart();
-                });
+                runChart();
             };
             script.src = "{$wa_url}wa-apps/tasks/js/amcharts/amcharts.js";
             document.head.appendChild(script);

@@ -1,109 +1,68 @@
 function amchart (element, data, locale) {
 
-    am5.addLicense('CH269543621');
+    // TODO: make chart data dynamically
 
-    var root = am5.Root.new(element);
+    if (window.logChart) {
+        window.logChart.dispose();
+    }
 
-    root.locale = 'am5locales_' + locale;
+    am4core.addLicense('CH269543621');
+    am4core.useTheme(am4themes_animated);
 
-    root.setThemes([
-        am5themes_Animated.new(root)
-    ]);
+    const chartColors = {
+        gray: am4core.color('#888888'),
+    };
 
-    // Create chart
-    // https://www.amcharts.com/docs/v5/charts/xy-chart/
-    var chart = root.container.children.push(am5xy.XYChart.new(root, {
-        panX: false,
-        panY: false,
-        wheelX: "panX",
-        wheelY: "zoomX",
-        layout: root.verticalLayout
-    }));
+    const chart = am4core.create(element, am4charts.XYChart);
 
-    // Add cursor
-    // https://www.amcharts.com/docs/v5/charts/xy-chart/cursor/
-    var cursor = chart.set("cursor", am5xy.XYCursor.new(root, {
-        behavior: "zoomX"
-    }));
-    cursor.lineY.set("visible", false);
+    chart.language.locale = window[`am4lang_${locale}`];
 
-    // Create axes
-    // https://www.amcharts.com/docs/v5/charts/xy-chart/axes/
-    var xAxis = chart.xAxes.push(am5xy.DateAxis.new(root, {
-        baseInterval: {
-            timeUnit: "day",
-            count: 1
-        },
-        startLocation: 0.5,
-        endLocation: 0.5,
-        renderer: am5xy.AxisRendererX.new(root, {
-            stroke: am5.color("#888888"),
-            strokeOpacity: 0.1,
-            strokeWidth: 1
-        }),
-        tooltip: am5.Tooltip.new(root, {})
-    }));
-    var xRenderer = xAxis.get("renderer");
-    xRenderer.grid.template.setAll({
-        stroke: am5.color("#888888"),
-        strokeOpacity: 0.1
-    });
-    xRenderer.labels.template.setAll({
-        fill: '#888888'
-    });
+    const xAxis = chart.xAxes.push(new am4charts.DateAxis());
+    xAxis.renderer.grid.template.location = 1;
+    xAxis.renderer.grid.template.stroke = chartColors.gray;
+    xAxis.renderer.line.strokeOpacity = 0.2;
+    xAxis.renderer.line.strokeWidth = 1;
+    xAxis.renderer.line.stroke = chartColors.gray;
+    xAxis.renderer.labels.template.fill = chartColors.gray;
+    xAxis.renderer.labels.template.location = 0.5;
+    xAxis.renderer.cellStartLocation = 0.15;
+    xAxis.renderer.cellEndLocation = 0.85;
 
-    var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
-        renderer: am5xy.AxisRendererY.new(root, {})
-    }));
+    const yAxis = chart.yAxes.push(new am4charts.ValueAxis());
+    yAxis.cursorTooltipEnabled = false;
+    yAxis.renderer.grid.template.disabled = true;
+    yAxis.renderer.labels.template.disabled = true;
 
-    var yRenderer = yAxis.get("renderer");
-    yRenderer.labels.template.setAll({
-        visible: false
-    });
-    yRenderer.grid.template.setAll({
-        visible: false
-    });
+    chart.cursor = new am4charts.XYCursor();
 
-    // Add legend
-    // https://www.amcharts.com/docs/v5/charts/xy-chart/legend-xy-series/
-    var legend = chart.children.push(am5.Legend.new(root, {
-        centerX: am5.percent(50),
-        x: am5.percent(50)
-    }));
+    for (let d of data) {
+        let series = chart.series.push(new am4charts.ColumnSeries());
+        series.name = d.label;
+        series.dataFields.valueY = "y";
+        series.dataFields.dateX = "time";
+        series.tooltipText = "{name}: [bold]{valueY}[/]";
+        series.stacked = true;
 
-    legend.labels.template.setAll({
-        fill: '#888888'
-    });
+        series.tooltip.background.filters.clear();
+        series.tooltip.background.strokeWidth = 0;
+        series.tooltip.getFillFromObject = false;
+        series.tooltip.background.fill = d.color;
 
-    for (var d of data) {
-        // Add series
-        // https://www.amcharts.com/docs/v5/charts/xy-chart/series/
-        var series = chart.series.push(am5xy.ColumnSeries.new(root, {
-            name: d.label,
-            stacked: true,
-            xAxis: xAxis,
-            yAxis: yAxis,
-            valueYField: "y",
-            valueXField: "time",
-            fill: am5.color(d.color),
-            tooltip: am5.Tooltip.new(root, {
-                labelText: "{name}: {valueY}"
-            })
-        }));
+        series.yAxis = yAxis;
+        series.xAxis = xAxis;
 
-        var data = d.data.map(function (e) {
+        series.stroke = d.color;
+        series.columns.template.strokeWidth = 0;
+        series.columns.template.fill = d.color;
+
+        series.data = d.data.map(function (e) {
             return {
                 time: e.time * 1000,
                 y: e.y
             };
         });
-        series.data.setAll(data);
-
-        legend.data.push(series);
     }
 
-    // Make stuff animate on load
-    // https://www.amcharts.com/docs/v5/concepts/animations/
-    chart.appear(1000, 100);
+    window.logChart = chart;
 
 }
