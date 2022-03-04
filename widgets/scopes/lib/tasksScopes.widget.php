@@ -80,7 +80,7 @@ class tasksScopesWidget extends waWidget
 
     protected function getLimit()
     {
-        return 5;
+        return 25; // set to 5 or similar for rotation
     }
 
     protected function getOffset()

@@ -4,7 +4,7 @@
 {if $ui == '2.0'}
 {function name="_renderItem" _item=[]}
     <li class="custom-mb-16">
-        <div class="flexbox middle space-8">
+        <div class="flexbox space-12" style="align-items: flex-start;">
             <div class="t-scopes-date{if $time > strtotime($_item.due_date)} c-date-fail{elseif (strtotime($_item.due_date) - $time) < 691200 } c-date-red{/if}">
                 <div class="small" style="line-height: normal;">{waDateTime::date('j', $_item.due_date)}</div>
                 <div class="small" style="line-height: normal;">{waDateTime::date('f', $_item.due_date)}</div>
@@ -12,12 +12,15 @@
             <div class="wide">
                 {if !empty($_item.name)}
                     <div class="custom-mb-8">
-                        {$_item.name|escape}
+                        <div class="flexbox">
+                            <span class="wide">{$_item.name|escape|truncate:42}</span>
+                            <span class="count nowrap hint">{$_item.progress}%</span>
+                        </div>
                     </div>
-                    <div class="progressbar">
+                    <div class="progressbar" title="{$_item.progress}%">
                         <div class="progressbar-line-wrapper text-inside">
                             <div class="progressbar-outer">
-                                <div class="progressbar-inner" style="width: {$_item.progress}%;">
+                                <div class="progressbar-inner{if $_item.progress >= 100} bg-green{/if}" style="width: {$_item.progress}%;">
                                 </div>
                             </div>
                         </div>
@@ -41,57 +44,57 @@
     }
 }
 .t-scopes-date {
-    padding: 0.4em 0;
+    padding: 0.25rem 0;
     flex: 0 0 60px;
-    background: var(--background-color-blank);
-    border-radius: 6px;
-    -webkit-border-radius: 6px;
+    background: var(--background-color);
+    font-weight: 500;
+    border-radius: 0.5rem;
     text-align: center;
-    border: 1px solid var(--light-gray);
 }
 .t-scopes-date.c-date-red {
     background: var(--alert-danger-background-color);
     color: var(--white);
-    border: 1px solid var(--alert-danger-background-color);
+    font-weight: bold;
 }
 
 .t-scopes-date.c-date-fail {
     -webkit-animation: release-fail 2s linear infinite;
     animation: release-fail 2s linear infinite;
     color: var(--white);
-    border: 1px solid var(--alert-danger-background-color);
 }
-.t-content-wrapper {
+.t-scopes-content-wrapper {
     position: absolute;
     overflow-y: auto;
-    top: 3.4rem;
+    top: 1rem;
     right: 1rem;
     bottom: 1rem;
     left: 1rem;
 }
 </style>
 
-<div class="flexbox middle space-8 custom-p-16">
-    <img src="/wa-apps/tasks/img/tasks24.png" width="24" height="24" alt="" /> 
-    <div class="nowrap"><strong>{$title}</strong></div>
-</div>
+{if !empty($scopes)}
 
-<div class="t-content-wrapper hide-scrollbar">
-    {if !empty($scopes)}
+    <div class="t-scopes-content-wrapper hide-scrollbar">
         <ul class="menu custom-m-0">
             {foreach $scopes as $item}
                 {_renderItem _item=$item}
             {/foreach}
         </ul>
-    {else}
+    </div>
+
+{else}
+
+    <div class="t-scopes-content-wrapper hide-scrollbar">
         <div class="align-center custom-mt-40">
-            <i class="fas fa-lock fa-xs" style="font-size: 4rem;color: #EEE;"></i>
-            <div class="gray custom-mt-12">
-                No scopes
+            <i class="fas fa-flag-checkered" style="font-size: 4rem; color: var(--light-gray);"></i>
+            <div class="gray custom-mt-20">
+                <h5 class="custom-mb-12 gray">[`Milestones`]</h5>
+                <p class="custom-mt-12 custom-px-12">[`In Tasks, create a milestone to group tasks with the same deadline and to track the working progress.`]</p>
             </div>
         </div>
-    {/if}
-</div>
+    </div>
+
+{/if}
 
 <script>
     (function () {
