@@ -89,7 +89,7 @@ class tasksActorsWidget extends waWidget
 
     protected function getLimit()
     {
-        return 7;
+        return 30; // set to ≈7 or similar for rotation
     }
 
     protected function getOffset()

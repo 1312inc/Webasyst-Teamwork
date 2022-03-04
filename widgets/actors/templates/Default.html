@@ -2,7 +2,7 @@
 
 {if $ui == '2.0'}
 <style>
-.t-content-wrapper {
+.t-actors-content-wrapper {
     position: absolute;
     overflow-y: auto;
     top: 3.4rem;
@@ -12,48 +12,57 @@
 }
 </style>
 
+{if !empty($stats)}
+
 <div class="flexbox middle space-8 custom-p-16">
-    <img src="/wa-apps/tasks/img/tasks24.png" width="24" height="24" alt="" /> 
-    <div class="nowrap"><strong>{$title}</strong></div>
+    <img src="/wa-apps/tasks/img/tasks.png" width="20" height="20" alt="" />
+    <div class="nowrap"><strong class="gray uppercase">{$title}</strong></div>
 </div>
 
-<div class="t-content-wrapper hide-scrollbar">
-    {if !empty($stats)}
-        <ul class="menu custom-m-0">
-            {foreach $stats as $item}
-                <li class="custom-mb-16">
-                    <div class="flexbox middle space-8">
-                        <i class="userpic userpic-32" style="background-image: url('{$item.contact.photo_url}')"></i>
-                        <div class="wide">
-                            <div class="flexbox custom-mb-8">
-                                <span class="wide">{$item.contact.name|escape}</span>
-                                <span class="flexbox space-8">
-                                    {if $item.overdue_count}<div class="flexbox middle space-4"><i class="text-red fas fa-flag fa-xs"></i><span>{waLocale::format($item.overdue_count, 0)}</span></div>{/if}
-                                    <span>{waLocale::format($item.total_count, 0)}</span>
-                                </span>
-                            </div>
-                            <div class="progressbar">
-                                <div class="progressbar-line-wrapper text-inside">
-                                    <div class="progressbar-outer">
-                                        <div class="progressbar-inner" style="width: {$item.total_loading}%;">
-                                        </div>
+<div class="t-actors-content-wrapper hide-scrollbar">
+
+    <ul class="menu custom-m-0">
+        {foreach $stats as $item}
+            <li class="custom-mb-16">
+                <div class="flexbox middle space-8">
+                    <i class="userpic userpic-32" style="background-image: url('{$item.contact.photo_url}')"></i>
+                    <div class="wide">
+                        <div class="flexbox custom-mb-8">
+                            <span class="wide">{$item.contact.name|escape}</span>
+                            <span class="flexbox space-8">
+                                {if $item.overdue_count}<div class="flexbox middle space-4"><i class="text-red fas fa-flag fa-xs"></i><span>{waLocale::format($item.overdue_count, 0)}</span></div>{/if}
+                                <span>{waLocale::format($item.total_count, 0)}</span>
+                            </span>
+                        </div>
+                        <div class="progressbar">
+                            <div class="progressbar-line-wrapper text-inside">
+                                <div class="progressbar-outer">
+                                    <div class="progressbar-inner" style="width: {$item.total_loading}%;">
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </li>
-            {/foreach}
-        </ul>
-    {else}
+                </div>
+            </li>
+        {/foreach}
+    </ul>
+
+</div>
+
+{else}
+
+    <div class="t-actors-content-wrapper hide-scrollbar">
         <div class="align-center custom-mt-40">
-            <i class="fas fa-lock fa-xs" style="font-size: 4rem;color: #EEE;"></i>
-            <div class="gray custom-mt-12">
-                No actors
+            <i class="fas fa-users" style="font-size: 5rem; color: var(--light-gray);"></i>
+            <div class="gray custom-mt-20">
+                <h5 class="custom-mb-12 gray">[`Teammates`]</h5>
+                <p class="custom-mt-12 custom-px-12">[`Invite your teammates and collaborate together. See who is busy and who is awaiting for more tasks.`]</p>
             </div>
         </div>
-    {/if}
-</div>
+    </div>
+
+{/if}
 
 <script>
     (function () {
