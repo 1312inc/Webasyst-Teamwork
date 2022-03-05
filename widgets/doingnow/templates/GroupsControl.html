@@ -1,0 +1,7 @@
+UI: {$ui}
+{foreach $groups as $group}
+    <label for="">
+        <input type="radio" name="{$name}" value="{$group.id}" {if $group.id == $current_group}checked{/if}>
+        {$group.name|escape}
+    </label>
+{/foreach}

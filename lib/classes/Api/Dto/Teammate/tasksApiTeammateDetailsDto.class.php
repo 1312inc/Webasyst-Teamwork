@@ -68,4 +68,9 @@ final class tasksApiTeammateDetailsDto implements JsonSerializable
 
         return $this;
     }
+
+    public function getGroups(): array
+    {
+        return $this->groups;
+    }
 }
