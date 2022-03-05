@@ -1,19 +1,107 @@
-<div class="block">
-    <h6>{$title|escape}</h6>
-    users
-    <pre>
-        {$users|print_r}
-    </pre>
-    <hr>
-    UI: {$ui}
-    <hr>
-    widget info: {$info|print_r}
-    <hr>
-    current group: {$current_group|print_r}
-    <hr>
-    root: {$url_root} | {$url_root_absolute}
-    <hr>
-    locale: {$locale}
-    <hr>
-    settings: {$settings|print_r}
+
+{strip}
+
+{if $ui == '2.0'}
+<style>
+.t-actors-content-wrapper {
+    position: absolute;
+    overflow-y: auto;
+    top: 3.4rem;
+    right: 1rem;
+    bottom: 1rem;
+    left: 1rem;
+}
+</style>
+
+{if !empty($users)}
+
+<div class="flexbox middle space-8 custom-p-16">
+    <img src="/wa-apps/tasks/img/tasks.png" width="20" height="20" alt="" />
+    <div class="nowrap"><strong class="gray uppercase">{$title|escape}</strong></div>
 </div>
+
+<div class="t-actors-content-wrapper hide-scrollbar">
+    <ul class="menu custom-m-0">
+        {foreach $users as $user}
+            {if $user.last_log}
+                <li class="custom-mb-16">
+                    <div class="flexbox space-8">
+                        <i class="userpic userpic-32" style="background-image: url('{$user.contact.photo_url}')"></i>
+                        <div class="wide">
+                            <div class="flexbox middle custom-mb-8">
+                                <span class="wide">{$user.contact.name|escape}</span>
+                                <span class="smaller">
+                                    {wa_date('humandate', $user.last_log.create_datetime, waDateTime::getDefaultTimezone())|escape}
+                                </span>
+                            </div>
+                            <div class="smaller"><a href="{rtrim($url_root_absolute, '/')}{$wa_backend_url}tasks/#/task/{$user.last_log.project_id}.{$user.last_log.task_number}/" target="_blank">{rtrim($url_root_absolute, '/')}{$wa_backend_url}tasks/#/task/{$user.last_log.project_id}.{$user.last_log.task_number}/</a></div>
+                        </div>
+                    </div>
+                </li>
+            {/if}
+        {/foreach}
+    </ul>
+</div>
+
+{else}
+
+    <div class="t-actors-content-wrapper hide-scrollbar" style="top: 1rem;">
+        <div class="align-center custom-mt-40">
+            <i class="fas fa-users" style="font-size: 5rem; color: var(--light-gray);"></i>
+            <div class="gray custom-mt-20">
+                <h5 class="custom-mb-12 gray">[`Teammates`]</h5>
+                <p class="custom-mt-12 custom-px-12">[`Invite your teammates and collaborate together. See who is busy and who is awaiting for more tasks.`]</p>
+            </div>
+        </div>
+    </div>
+
+{/if}
+
+<script>
+    (function () {
+        setTimeout(function() {
+            try {
+                DashboardWidgets[{$widget_id}].renderWidget();
+            } catch (e) { }
+        }, 60 * 1000);
+    })();
+</script>
+
+{else}
+<style>{include file='../css/actors.css' inline}</style>
+
+<div class="t-actors-widget-wrapper">
+    <div class="text-wrapper">
+        <h6 class="heading nowrap">{$title}</h6>
+        <ul class="t-actors-list">
+            {foreach $users as $user}
+                {if $user.last_log}
+                    <li class="h-author-wrapper">
+                        <div class="h-author">
+                            <span class="h-icon" style="background-image: url('{$user.contact.photo_url}')"></span>
+                            <span class="h-name">{$user.contact.name|escape}</span>
+                            <span class="h-count">
+                                {wa_date('humandate', $user.last_log.create_datetime, waDateTime::getDefaultTimezone())|escape}
+                            </span>
+                        </div>
+                        <div style="font-size: 0.8rem;margin-top: .2rem;"><a href="{rtrim($url_root_absolute, '/')}{$wa_backend_url}tasks/#/task/{$user.last_log.project_id}.{$user.last_log.task_number}/" target="_blank">{rtrim($url_root_absolute, '/')}{$wa_backend_url}tasks/#/task/{$user.last_log.project_id}.{$user.last_log.task_number}/</a></div>
+                    </li>
+                {/if}
+            {/foreach}
+        </ul>
+    </div>
+
+    <script>
+        (function () {
+            setTimeout(function() {
+                try {
+                    DashboardWidgets[{$widget_id}].renderWidget();
+                } catch (e) { }
+            }, 60 * 1000);
+        })();
+    </script>
+
+</div>
+{/if}
+
+{/strip}
