@@ -13,7 +13,7 @@
 }
 </style>
 
-{if !empty($users)}
+{if 0 && !empty($users)}
 
 <div class="flexbox middle space-8 custom-p-16">
     <img src="/wa-apps/tasks/img/tasks.png" width="20" height="20" alt="" />
@@ -31,10 +31,26 @@
                             <div class="flexbox middle custom-mb-8">
                                 <span class="wide">{$user.contact.name|escape}</span>
                                 <span class="smaller">
-                                    {wa_date('humandate', $user.last_log.create_datetime, waDateTime::getDefaultTimezone())|escape}
+
+                                    <span class="count align-right gray semibold">
+
+                                        {* This vars will be mutated by tasksHelper::getDatetime, must be inited first because of Smary & PHP 7.4 cause the warnings otherwise *}
+                                        {$time_since_update_period = null}
+                                        {$time_since_update_template = null}
+                                        {$time_since_update_str = tasksHelper::getDatetime($user.last_log.create_datetime, $time_since_update_period, $time_since_update_template)}
+
+                                        {* js updateTimeCounter fix *}
+                                        {$time_since_update_str = str_replace('mins', 'min', $time_since_update_str)}
+
+                                        <span data-since='{$user.last_log.create_datetime|wa_datetime:"Y-m-d H:i:s"}'>{$time_since_update_str}</span>
+
+                                    </span>
+
                                 </span>
                             </div>
-                            <div class="smaller"><a href="{rtrim($url_root_absolute, '/')}{$wa_backend_url}tasks/#/task/{$user.last_log.project_id}.{$user.last_log.task_number}/" target="_blank">{rtrim($url_root_absolute, '/')}{$wa_backend_url}tasks/#/task/{$user.last_log.project_id}.{$user.last_log.task_number}/</a></div>
+                            <div class="small">
+                                <a href="{rtrim($url_root_absolute, '/')}{$wa_backend_url}tasks/#/task/{$user.last_log.project_id}.{$user.last_log.task_number}/" target="_blank"><span class="semibold">{$user.last_log.project_id}.{$user.last_log.task_number} {$user.last_log.task_name|truncate:128}</span></a>
+                            </div>
                         </div>
                     </div>
                 </li>
@@ -47,10 +63,10 @@
 
     <div class="t-actors-content-wrapper hide-scrollbar" style="top: 1rem;">
         <div class="align-center custom-mt-40">
-            <i class="fas fa-users" style="font-size: 5rem; color: var(--light-gray);"></i>
+            <i class="fas fa-history" style="font-size: 5rem; color: var(--light-gray);"></i>
             <div class="gray custom-mt-20">
-                <h5 class="custom-mb-12 gray">[`Teammates`]</h5>
-                <p class="custom-mt-12 custom-px-12">[`Invite your teammates and collaborate together. See who is busy and who is awaiting for more tasks.`]</p>
+                <h5 class="custom-mb-12 gray">[`Doing now`]</h5>
+                <p class="custom-mt-12 custom-px-12">[`See the latest task each user ever touched.`]</p>
             </div>
         </div>
     </div>
