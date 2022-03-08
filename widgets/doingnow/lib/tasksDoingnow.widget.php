@@ -15,12 +15,20 @@ class tasksDoingnowWidget extends waWidget
     public function defaultAction()
     {
         $currentGroup = self::getSettingsGroup($this->id);
+        $statuses = (new tasksApiStatusGetListHandler())->getStatuses();
         $allUsers = (new tasksTeamGetListMethod())->run();
         $users = array_filter(
             array_map(
-                static function (tasksApiTeammateDetailsDto $user) use ($currentGroup) {
+                static function (tasksApiTeammateDetailsDto $user) use ($currentGroup, $statuses) {
                     if ($currentGroup['id'] === 0 || isset($user->getGroups()[$currentGroup['id']])) {
-                        return json_decode(json_encode($user, JSON_UNESCAPED_SLASHES || JSON_UNESCAPED_UNICODE), true);
+                        $arrayData = json_decode(
+                            json_encode($user, JSON_UNESCAPED_SLASHES || JSON_UNESCAPED_UNICODE),
+                            true
+                        );
+                        $arrayData['last_log']['after_status'] = $statuses[$arrayData['last_log']['after_status_id']] ?? [];
+                        $arrayData['last_log']['before_status'] = $statuses[$arrayData['last_log']['before_status_id']] ?? [];
+
+                        return $arrayData;
                     }
 
                     return false;
