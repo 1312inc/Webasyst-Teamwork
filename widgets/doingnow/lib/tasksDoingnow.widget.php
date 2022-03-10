@@ -25,8 +25,10 @@ class tasksDoingnowWidget extends waWidget
                             json_encode($user, JSON_UNESCAPED_SLASHES || JSON_UNESCAPED_UNICODE),
                             true
                         );
-                        $arrayData['last_log']['after_status'] = $statuses[$arrayData['last_log']['after_status_id']] ?? [];
-                        $arrayData['last_log']['before_status'] = $statuses[$arrayData['last_log']['before_status_id']] ?? [];
+                        if (isset($arrayData['last_log'])) {
+                            $arrayData['last_log']['after_status'] = $statuses[$arrayData['last_log']['after_status_id']] ?? [];
+                            $arrayData['last_log']['before_status'] = $statuses[$arrayData['last_log']['before_status_id']] ?? [];
+                        }
 
                         return $arrayData;
                     }
