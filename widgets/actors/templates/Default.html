@@ -1,118 +1,43 @@
 {strip}
 
 {if $ui == '2.0'}
-<style>
-.t-actors-content-wrapper {
-    position: absolute;
-    overflow-y: auto;
-    top: 3.4rem;
-    right: 1rem;
-    bottom: 1rem;
-    left: 1rem;
-}
-</style>
+    <link rel="stylesheet" href="../../../css/tasks.min.css" type="text/css" />
 
-{if !empty($stats)}
-
-<div class="flexbox middle space-8 custom-p-16">
-    <img src="/wa-apps/tasks/img/tasks.png" width="20" height="20" alt="" />
-    <div class="nowrap"><strong class="gray uppercase">{$title}</strong></div>
-</div>
-
-<div class="t-actors-content-wrapper hide-scrollbar">
-
-    <ul class="menu custom-m-0">
-        {foreach $stats as $item}
-            <li class="custom-mb-16">
-                <div class="flexbox middle space-8">
-                    <i class="userpic userpic-32" style="background-image: url('{$item.contact.photo_url}')"></i>
-                    <div class="wide">
-                        <div class="flexbox custom-mb-8">
-                            <span class="wide">{$item.contact.name|escape}</span>
-                            <span class="flexbox space-8">
-                                {if $item.overdue_count}<div class="flexbox middle space-4"><i class="text-red fas fa-flag fa-xs"></i><span>{waLocale::format($item.overdue_count, 0)}</span></div>{/if}
-                                <span>{waLocale::format($item.total_count, 0)}</span>
-                            </span>
-                        </div>
-                        <div class="progressbar">
-                            <div class="progressbar-line-wrapper text-inside">
-                                <div class="progressbar-outer">
-                                    <div class="progressbar-inner" style="width: {$item.total_loading}%;">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+    <div class="team-list-wrapper collapsible" id="team-list-wrapper" data-type="team">
+        <h5 class="heading">
+            <span>
+                <span class="caret"><i class="fas fa-caret-down"></i></span>
+                [`Team`]
+            </span>
+        </h5>
+        <div class="collapsible__content">
+            {if !empty($users)}
+                <ul class="menu mobile-friendly hide-when-collapsed">
+                    {foreach $users as $user}
+                        <li>
+                            <a href="#/tasks/assigned/{$user.id}/">
+                                <span class="icon">
+                                    <i class="userpic" style="background-image: url({waContact::getPhotoUrl($user.id, $user.photo, 40, 40, 'person', 0)})"></i>
+                                </span>
+                                <span>
+                                    {$user.name|escape}
+                                    {if $user.calendar_status}<div class="custom-mt-4 width-100"><span class="badge small nowrap" style="display: inline-block; text-overflow: ellipsis; overflow: hidden; max-width: 99px; background-color: {$user.calendar_status->getBgColor()};color: {$user.calendar_status->getFontColor()};" title="{$user.calendar_status->getName()|escape}">{$user.calendar_status->getName()|escape|truncate:32}</span></div>{/if}
+                                </span>
+                                <span class="count">
+                                    {tasksActorsWidget::userCount($user.id)}
+                                </span>
+                            </a>
+                        </li>
+                    {/foreach}
+                </ul>
+            {else}
+                <div class="box align-center custom-my-12 hide-when-collapsed">
+                    <p class="hint">{sprintf(_w('Use <strong>app "%s"</strong> to provide access to Tasks app for your teammates.'), $team_app_name)}</p>
                 </div>
-            </li>
-        {/foreach}
-    </ul>
-
-</div>
-
-{else}
-
-    <div class="t-actors-content-wrapper hide-scrollbar" style="top: 1rem;">
-        <div class="align-center custom-mt-40">
-            <i class="fas fa-users" style="font-size: 5rem; color: var(--light-gray);"></i>
-            <div class="gray custom-mt-20">
-                <h5 class="custom-mb-12 gray">[`Teammates`]</h5>
-                <p class="custom-mt-12 custom-px-12">[`Invite your teammates and collaborate together. See who is busy and who is awaiting for more tasks.`]</p>
-            </div>
+            {/if}
         </div>
     </div>
 
-{/if}
-
-<script>
-    (function () {
-        setTimeout(function() {
-            try {
-                DashboardWidgets[{$widget_id}].renderWidget();
-            } catch (e) { }
-        }, 60 * 1000);
-    })();
-</script>
-
-{else}
-<style>{include file='../css/actors.css' inline}</style>
-
-<div class="t-actors-widget-wrapper">
-    <div class="text-wrapper">
-        <h6 class="heading nowrap">{$title}</h6>
-
-        <ul class="t-actors-list">
-            {foreach $stats as $item}
-                <li class="h-author-wrapper">
-                    <div class="h-outer-chart" style="width: {$item.total_loading}%">
-                        <div class="h-inner-chart" style="width: {$item.relative_overdue_loading}%"></div>
-                    </div>
-                    <div class="h-author">
-                        <span class="h-icon" style="background-image: url('{$item.contact.photo_url}')"></span>
-                        <span class="h-name">{$item.contact.name|escape}</span>
-                        <span class="h-count">
-                            {waLocale::format($item.total_count, 0)}{if $item.overdue_count}&nbsp;/&nbsp;<strong class="red">{waLocale::format($item.overdue_count, 0)}</strong>{/if}
-                        </span>
-                    </div>
-                </li>
-            {/foreach}
-        </ul>
-
-    </div>
-
-    <script>
-        (function ($) {
-            $(function () {
-                setTimeout(function() {
-                    try {
-                        DashboardWidgets[{$widget_id}].renderWidget();
-                    } catch (e) { }
-                }, 60 * 1000);
-            });
-        })(jQuery)
-    </script>
-
-</div>
 {/if}
 
 {/strip}
