@@ -16,23 +16,11 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPath-1: .\n"
 
-msgid "Title"
-msgstr "Заголовок"
+msgid "Invite your teammates and collaborate together! See whom on your team has most assigned tasks."
+msgstr "Пригласите коллег и работайте совместно! Следите, кто перегружен работой, а кому нужны новые задачи."
+
+msgid "Top assignees"
+msgstr "Загруженность команды"
 
 msgid "Teammates"
 msgstr "Команда"
-
-msgid "Invite your teammates and collaborate together. See who is busy and who is awaiting for more tasks."
-msgstr "Пригласите коллег и работайте совместно! Следите, кто перегружен работой, а кому нужны новые задачи."
-
-msgid "Filter"
-msgstr "Фильтр"
-
-msgid "All tasks"
-msgstr "Все задачи"
-
-msgid "Selected projects"
-msgstr "Выбрать проекты"
-
-msgid "Selected milestones"
-msgstr "Выбрать работы"
