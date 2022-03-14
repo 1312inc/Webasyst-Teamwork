@@ -26,7 +26,7 @@
         <div class="t-doingnow-content-wrapper hide-scrollbar">
             <ul class="menu custom-m-0">
                 {foreach $users as $user}
-                    {if $user.last_log}
+                    {if $user.last_log && !empty($user.last_log.task_number)}
                         <li class="custom-mb-16">
                             <div class="flexbox space-8">
                                 <i class="userpic userpic-32" style="background-image: url('{$user.contact.photo_url}')"></i>
