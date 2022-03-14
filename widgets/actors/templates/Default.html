@@ -27,6 +27,7 @@
                 <ul class="menu custom-mt-0">
                     {foreach $users as $user}
                         {$_count = tasksActorsWidget::userCount($user.id)}
+                        {if !empty($_count)}
                         <li{if $_count == '0'} class="highlighted green" style="border-radius: 0;"{/if}>
                             <a href="{$wa_backend_url}tasks/#/tasks/assigned/{$user.id}/">
                                 <span class="icon">
@@ -41,6 +42,7 @@
                                 </span>
                             </a>
                         </li>
+                        {/if}
                     {/foreach}
                 </ul>
 
