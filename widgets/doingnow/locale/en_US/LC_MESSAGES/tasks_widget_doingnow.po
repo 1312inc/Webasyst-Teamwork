@@ -1,0 +1,32 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: tasks/widgets/doingnow\n"
+"POT-Creation-Date: 2022-03-14 10:18+0100\n"
+"PO-Revision-Date: \n"
+"Last-Translator: tasks/widgets/doingnow\n"
+"Language-Team: tasks/widgets/doingnow\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-Basepath: utf-8\n"
+"Language: en_US\n"
+"X-Generator: Poedit 3.0\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPath-1: .\n"
+
+msgid "Latest on tasks"
+msgstr "Work in progress"
+
+msgid "See which tasks your teammates had been working on lately."
+msgstr ""
+
+msgid "Title"
+msgstr ""
+
+msgid "Team"
+msgstr ""
+
+msgid "All users"
+msgstr ""

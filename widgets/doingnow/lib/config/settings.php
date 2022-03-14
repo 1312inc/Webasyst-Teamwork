@@ -5,7 +5,7 @@ return [
         'control_type' => waHtmlControl::INPUT,
     ],
     'group' => [
-        'title' => /*_wp*/('User group'),
+        'title' => /*_wp*/('Team'),
         'control_type' => waHtmlControl::CUSTOM . ' ' . 'tasksDoingnowWidget::getGroupFilterControl',
     ],
 ];

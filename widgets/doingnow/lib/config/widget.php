@@ -1,6 +1,6 @@
 <?php
 return array (
-    'name' => /*_wp*/('Latest acitivity'),
+    'name' => /*_wp*/('Latest on tasks'),
     'size' => array('2x2'),
     'img' => 'img/doingnow.png',
     'version'=>'1.0.0',

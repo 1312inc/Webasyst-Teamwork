@@ -43,7 +43,7 @@ class tasksDoingnowWidget extends waWidget
             'info' => $this->getInfo(),
             'current_group' => $currentGroup,
             'settings' => $this->getSettings(),
-            'title' => $this->getSettings('title') ?: $currentGroup['name'],
+            'title' => empty($this->getSettings('title')) ? ( $currentGroup['id'] ? $currentGroup['name'] : _w('Latest on tasks') ) : $this->getSettings('title'),
             'locale' => wa()->getUser()->getLocale(),
             'url_root_absolute' => wa()->getRootUrl(true),
             'url_root' => wa()->getRootUrl(),
