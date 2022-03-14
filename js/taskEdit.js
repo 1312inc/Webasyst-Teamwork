@@ -1010,6 +1010,11 @@ var TaskEdit = ( function($) { "use strict";
                             }
                         }
                     )
+                    .fail(function (error) {
+                        if (error.status === 500) {
+                            alert('Something went wrong on the server side (500). Please try again later or validate server error logs for details.');
+                        }
+                    })
                     .always(function () {
                         $form.hideLoading();
                         $.tasks.hideLoadingButton($submitButton);

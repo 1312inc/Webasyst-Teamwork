@@ -1513,8 +1513,7 @@
         },
 
         showLoadingButton: function ($button) {
-            var $icon = $button.find('svg');
-            if (!$icon.length) {
+            if (!$button.find('svg').length) {
                 $button.addClass('custom-pl-40');
             }
             $button.prop("disabled", true).addClass('button--loading disabled');
@@ -1522,6 +1521,9 @@
 
         hideLoadingButton: function ($button) {
             setTimeout(function () {
+                if (!$button.find('svg').length) {
+                    $button.removeClass('custom-pl-40');
+                }
                 $button.removeAttr('disabled').removeClass('button--loading disabled');
             }, 1000);
         },
