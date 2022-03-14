@@ -17,7 +17,7 @@ msgstr ""
 "X-Poedit-SearchPath-1: .\n"
 
 msgid "Latest on tasks"
-msgstr "Work in progress"
+msgstr "Tasks in progress"
 
 msgid "See which tasks your teammates had been working on lately."
 msgstr ""
