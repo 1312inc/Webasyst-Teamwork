@@ -192,6 +192,41 @@
     {* @event backend_sidebar.%plugin_id%.section *}
     {if !empty($backend_sidebar)}{foreach $backend_sidebar as $_}{ifset($_.section)}{/foreach}{/if}
 
+    <div class="team-list-wrapper collapsible" id="team-list-wrapper" data-type="team">
+        <h5 class="heading">
+            <span>
+                <span class="caret"><i class="fas fa-caret-down"></i></span>
+                [`Team`]
+            </span>
+        </h5>
+        <div class="collapsible__content">
+            {if !empty($users)}
+                <ul class="menu mobile-friendly hide-when-collapsed">
+                    {foreach $users as $user}
+                        <li>
+                            <a href="#/tasks/assigned/{$user.id}/">
+                                <span class="icon">
+                                    <i class="userpic" style="background-image: url({waContact::getPhotoUrl($user.id, $user.photo, 40, 40, 'person', 0)})"></i>
+                                </span>
+                                <span>
+                                    {$user.name|escape}
+                                    {if $user.calendar_status}<div class="custom-mt-4 width-100"><span class="badge small nowrap" style="display: inline-block; text-overflow: ellipsis; overflow: hidden; max-width: 99px; background-color: {$user.calendar_status->getBgColor()};color: {$user.calendar_status->getFontColor()};" title="{$user.calendar_status->getName()|escape}">{$user.calendar_status->getName()|escape|truncate:32}</span></div>{/if}
+                                </span>
+                                <span class="count">
+                                    {user_count user_id=$user.id}
+                                </span>
+                            </a>
+                        </li>
+                    {/foreach}
+                </ul>
+            {else}
+                <div class="box align-center custom-my-12 hide-when-collapsed">
+                    <p class="hint">{sprintf(_w('Use <strong>app "%s"</strong> to provide access to Tasks app for your teammates.'), $team_app_name)}</p>
+                </div>
+            {/if}
+        </div>
+    </div>
+
     <div id="status-list-wrapper" class="collapsible" data-type="status">
         <h5 class="heading">
             <span>
@@ -235,41 +270,6 @@
                     </a>
                 </li>
             </ul>
-        </div>
-    </div>
-
-    <div class="team-list-wrapper collapsible" id="team-list-wrapper" data-type="team">
-        <h5 class="heading">
-            <span>
-                <span class="caret"><i class="fas fa-caret-down"></i></span>
-                [`Team`]
-            </span>
-        </h5>
-        <div class="collapsible__content">
-            {if !empty($users)}
-                <ul class="menu mobile-friendly hide-when-collapsed">
-                    {foreach $users as $user}
-                        <li>
-                            <a href="#/tasks/assigned/{$user.id}/">
-                                <span class="icon">
-                                    <i class="userpic" style="background-image: url({waContact::getPhotoUrl($user.id, $user.photo, 40, 40, 'person', 0)})"></i>
-                                </span>
-                                <span>
-                                    {$user.name|escape}
-                                    {if $user.calendar_status}<div class="custom-mt-4 width-100"><span class="badge small nowrap" style="display: inline-block; text-overflow: ellipsis; overflow: hidden; max-width: 99px; background-color: {$user.calendar_status->getBgColor()};color: {$user.calendar_status->getFontColor()};" title="{$user.calendar_status->getName()|escape}">{$user.calendar_status->getName()|escape|truncate:32}</span></div>{/if}
-                                </span>
-                                <span class="count">
-                                    {user_count user_id=$user.id}
-                                </span>
-                            </a>
-                        </li>
-                    {/foreach}
-                </ul>
-            {else}
-                <div class="box align-center custom-my-12 hide-when-collapsed">
-                    <p class="hint">{sprintf(_w('Use <strong>app "%s"</strong> to provide access to Tasks app for your teammates.'), $team_app_name)}</p>
-                </div>
-            {/if}
         </div>
     </div>
 
