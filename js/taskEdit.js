@@ -158,7 +158,9 @@ var TaskEdit = ( function($) { "use strict";
         }
 
         if ($.tasks.options.text_editor === 'wysiwyg') {
-            $R('.t-redactor-task-edit', {
+            const taSelector = '.t-redactor-task-edit';
+            $(taSelector).val(document.createTextNode($(taSelector).html()).nodeValue);
+            $R(taSelector, {
                 // 'focus': true,
                 tabindex: 1,
                 toolbarFixedTarget: (function () {

@@ -1045,12 +1045,16 @@ var Task = ( function($) {
         var bindEvents = function() {
 
             if ($.tasks.options.text_editor === 'wysiwyg') {
-                $R('.t-redactor-comments', {
-                    minHeight: '150px',
-                    imageData: {
-                        task_uuid: that.task_uuid
-                    }
-                });
+                const taSelector = $(this).find('.t-redactor-comments')[0];
+                if (taSelector) {
+                    $(taSelector).val(document.createTextNode($(taSelector).html()).nodeValue);
+                    $R(taSelector, {
+                        minHeight: '150px',
+                        imageData: {
+                            task_uuid: that.task_uuid
+                        }
+                    });
+                }
             }
 
             $commentForm.on("submit", function() {

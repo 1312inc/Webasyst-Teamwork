@@ -83,7 +83,9 @@
                         }
 
                         if ($.tasks.options.text_editor === 'wysiwyg') {
-                            $R('#forward-wrapper-{$ident} .t-redactor-comments', {
+                            const taSelector = '#forward-wrapper-{$ident} .t-redactor-comments';
+                            $(taSelector).val(document.createTextNode($(taSelector).html()).nodeValue);
+                            $R(taSelector, {
                                 'focus': true,
                                 minHeight: '150px',
                                 imageData: {

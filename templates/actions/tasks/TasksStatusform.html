@@ -47,7 +47,9 @@
 <script>
     (function ($) {
         if ($.tasks.options.text_editor === 'wysiwyg') {
-            $R('#status-form-wrapper-{$task.id} .t-redactor-comments', {
+            var taSelector = '#status-form-wrapper-{$task.id} .t-redactor-comments';
+            $(taSelector).val(document.createTextNode($(taSelector).html()).nodeValue);
+            $R(taSelector, {
                 'focus': true,
                 minHeight: '150px',
                 imageData: {

@@ -126,9 +126,9 @@ function cssRedactor () {
 
 function watchFiles () {
     watch('css/**/*.styl', css);
-    // watch(['js/*.js', 'js/**/*.js', '!js/tasks.min.js'], js);
+    watch(['js/*.js', 'js/**/*.js', '!js/tasks.min.js'], js);
     watch(['js/vendors/redactor-3-4-11/redactor.css'], cssRedactor);
-    watch('js/amcharts/assets/*.js', amcharts);
+    // watch('js/amcharts/assets/*.js', amcharts);
 }
 
 exports.watch = watchFiles;
