@@ -38,7 +38,7 @@ class tasksHubBackendHandler extends waEventHandler
                     });
                 })();</script>
                 <!-- end output from tasksHubBackendHandler -->
-            EOF;
+EOF;
         } else {
             return <<<EOF
 
@@ -67,8 +67,7 @@ class tasksHubBackendHandler extends waEventHandler
                     });
                 })();</script>
                 <!-- end output from tasksHubBackendHandler -->
-            EOF;
+EOF;
         }
     }
 }
-
