@@ -158,10 +158,7 @@ var TaskEdit = ( function($) { "use strict";
         }
 
         if ($.tasks.options.text_editor === 'wysiwyg') {
-            const taSelector = '.t-redactor-task-edit';
-            $(taSelector).val(document.createTextNode($(taSelector).html()).nodeValue);
-            $R(taSelector, {
-                // 'focus': true,
+            $R('.t-redactor-task-edit', {
                 tabindex: 1,
                 toolbarFixedTarget: (function () {
                     return $('#t-dialog-wrapper').length ? '#t-dialog-wrapper' : document;
@@ -173,8 +170,11 @@ var TaskEdit = ( function($) { "use strict";
                 },
                 callbacks: {
                     started () {
-                        var that = this,
-                            $el = this.element.getElement().get(0);
+                        var that = this;
+                        var $el = this.element.getElement().get(0);
+
+                        $R.options.callbacks.started.call(that);
+                        
                         // Textarea value changed
                         $el.onchange = function () {
                             that.source.setCode($($el).val());

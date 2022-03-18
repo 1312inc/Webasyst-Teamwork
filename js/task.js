@@ -1045,10 +1045,9 @@ var Task = ( function($) {
         var bindEvents = function() {
 
             if ($.tasks.options.text_editor === 'wysiwyg') {
-                const taSelector = $(this).find('.t-redactor-comments')[0];
-                if (taSelector) {
-                    $(taSelector).val(document.createTextNode($(taSelector).html()).nodeValue);
-                    $R(taSelector, {
+                const taElement = $commentForm.find('.t-redactor-comments');
+                if (taElement.length) {
+                    taElement.redactor({
                         minHeight: '150px',
                         imageData: {
                             task_uuid: that.task_uuid
