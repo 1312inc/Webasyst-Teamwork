@@ -21,6 +21,8 @@ class tasksTeamGetListMethod extends tasksApiAbstractMethod
 
         foreach ($logs as $i => $log) {
             if (!isset($tasks[$log['task_id']])) {
+                unset($logs[$i]);
+
                 continue;
             }
 

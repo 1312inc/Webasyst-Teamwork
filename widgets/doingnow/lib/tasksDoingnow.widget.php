@@ -17,6 +17,7 @@ class tasksDoingnowWidget extends waWidget
         $currentGroup = self::getSettingsGroup($this->id);
         $statuses = (new tasksApiStatusGetListHandler())->getStatuses();
         $allUsers = (new tasksTeamGetListMethod())->run();
+        // фильтр по группам
         $users = array_filter(
             array_map(
                 static function (tasksApiTeammateDetailsDto $user) use ($currentGroup, $statuses) {
@@ -28,6 +29,8 @@ class tasksDoingnowWidget extends waWidget
                         if (isset($arrayData['last_log'])) {
                             $arrayData['last_log']['after_status'] = $statuses[$arrayData['last_log']['after_status_id']] ?? [];
                             $arrayData['last_log']['before_status'] = $statuses[$arrayData['last_log']['before_status_id']] ?? [];
+                        } else {
+                            return false;
                         }
 
                         return $arrayData;

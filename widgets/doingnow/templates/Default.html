@@ -26,38 +26,36 @@
         <div class="t-doingnow-content-wrapper hide-scrollbar">
             <ul class="menu custom-m-0">
                 {foreach $users as $user}
-                    {if $user.last_log && !empty($user.last_log.task_number)}
-                        <li class="custom-mb-16">
-                            <div class="flexbox space-8">
-                                <i class="userpic userpic-32" style="background-image: url('{$user.contact.photo_url}')"></i>
-                                <div class="wide">
-                                    <div class="flexbox middle custom-mb-8">
-                                        <span class="wide">{$user.contact.name|escape}</span>
-                                        <span class="small">
+                    <li class="custom-mb-16">
+                        <div class="flexbox space-8">
+                            <i class="userpic userpic-32" style="background-image: url('{$user.contact.photo_url}')"></i>
+                            <div class="wide">
+                                <div class="flexbox middle custom-mb-8">
+                                    <span class="wide">{$user.contact.name|escape}</span>
+                                    <span class="small">
 
-                                            <span class="count align-right gray semibold">
+                                        <span class="count align-right gray semibold">
 
-                                                {* This vars will be mutated by tasksHelper::getDatetime, must be inited first because of Smary & PHP 7.4 cause the warnings otherwise *}
-                                                {$time_since_update_period = null}
-                                                {$time_since_update_template = null}
-                                                {$time_since_update_str = tasksHelper::getDatetime($user.last_log.create_datetime, $time_since_update_period, $time_since_update_template)}
+                                            {* This vars will be mutated by tasksHelper::getDatetime, must be inited first because of Smary & PHP 7.4 cause the warnings otherwise *}
+                                            {$time_since_update_period = null}
+                                            {$time_since_update_template = null}
+                                            {$time_since_update_str = tasksHelper::getDatetime($user.last_log.create_datetime, $time_since_update_period, $time_since_update_template)}
 
-                                                {* js updateTimeCounter fix *}
-                                                {$time_since_update_str = str_replace('mins', 'min', $time_since_update_str)}
+                                            {* js updateTimeCounter fix *}
+                                            {$time_since_update_str = str_replace('mins', 'min', $time_since_update_str)}
 
-                                                <span data-since='{$user.last_log.create_datetime|wa_datetime:"Y-m-d H:i:s"}'>{$time_since_update_str}</span>
-
-                                            </span>
+                                            <span data-since='{$user.last_log.create_datetime|wa_datetime:"Y-m-d H:i:s"}'>{$time_since_update_str}</span>
 
                                         </span>
-                                    </div>
-                                    <div class="small">
-                                        <a href="{rtrim($url_root_absolute, '/')}{$wa_backend_url}tasks/#/task/{$user.last_log.project_id}.{$user.last_log.task_number}/" target="_blank"><span class="semibold">{tasksHelper::statusNameHTML($user.last_log.after_status_id)} {$user.last_log.project_id}.{$user.last_log.task_number} {$user.last_log.task_name|truncate:128}</span></a>
-                                    </div>
+
+                                    </span>
+                                </div>
+                                <div class="small">
+                                    <a href="{rtrim($url_root_absolute, '/')}{$wa_backend_url}tasks/#/task/{$user.last_log.project_id}.{$user.last_log.task_number}/" target="_blank"><span class="semibold">{tasksHelper::statusNameHTML($user.last_log.after_status_id)} {$user.last_log.project_id}.{$user.last_log.task_number} {$user.last_log.task_name|truncate:128}</span></a>
                                 </div>
                             </div>
-                        </li>
-                    {/if}
+                        </div>
+                    </li>
                 {/foreach}
             </ul>
         </div>
@@ -87,18 +85,16 @@
             <h6 class="heading nowrap">{_wp($title)}</h6>
             <ul class="t-doingnow-list">
                 {foreach $users as $user}
-                    {if $user.last_log}
-                        <li class="h-author-wrapper">
-                            <div class="h-author">
-                                <span class="h-icon" style="background-image: url('{$user.contact.photo_url}')"></span>
-                                <span class="h-name">{$user.contact.name|escape}</span>
-                                <span class="h-count hint">
-                                    {wa_date('humandate', $user.last_log.create_datetime, waDateTime::getDefaultTimezone())|escape}
-                                </span>
-                            </div>
-                            <div style="font-size: 0.8em;margin-top: .2rem;"><a href="{rtrim($url_root_absolute, '/')}{$wa_backend_url}tasks/#/task/{$user.last_log.project_id}.{$user.last_log.task_number}/" target="_blank" class="no-underline">{$user.last_log.project_id}.{$user.last_log.task_number} {$user.last_log.task_name|truncate:128}</a></div>
-                        </li>
-                    {/if}
+                    <li class="h-author-wrapper">
+                        <div class="h-author">
+                            <span class="h-icon" style="background-image: url('{$user.contact.photo_url}')"></span>
+                            <span class="h-name">{$user.contact.name|escape}</span>
+                            <span class="h-count hint">
+                                {wa_date('humandate', $user.last_log.create_datetime, waDateTime::getDefaultTimezone())|escape}
+                            </span>
+                        </div>
+                        <div style="font-size: 0.8em;margin-top: .2rem;"><a href="{rtrim($url_root_absolute, '/')}{$wa_backend_url}tasks/#/task/{$user.last_log.project_id}.{$user.last_log.task_number}/" target="_blank" class="no-underline">{$user.last_log.project_id}.{$user.last_log.task_number} {$user.last_log.task_name|truncate:128}</a></div>
+                    </li>
                 {/foreach}
             </ul>
         </div>
