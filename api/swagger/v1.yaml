@@ -36,6 +36,7 @@ paths:
             + status/{inprogress|done|ID}
             + unassigned - без исполнителя
             + tag/TAG - поиск по тегу
+            + number/INT.INT - поиск по номеру (проект.номер)
           schema:
             type: string
             nullable: true

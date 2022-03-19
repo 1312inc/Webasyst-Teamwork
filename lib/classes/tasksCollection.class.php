@@ -17,6 +17,7 @@ class tasksCollection
     public const HASH_PROJECT    = 'project';
     public const HASH_SCOPE      = 'scope';
     public const HASH_URGENT     = 'urgent';
+    public const HASH_NUMBER     = 'number';
 
     public const ORDER_NEWEST   = 'newest';
     public const ORDER_OLDEST   = 'oldest';
@@ -883,6 +884,16 @@ class tasksCollection
         } else {
             $this->where[] = 0;
         }
+    }
+
+    protected function numberPrepare($number)
+    {
+        $projectAndNumber = explode('.', $number);
+        if (count($projectAndNumber) !== 2) {
+            return;
+        }
+
+        $this->where[] = sprintf('t.project_id = %d AND t.number = %d', $projectAndNumber[0], $projectAndNumber[1]);
     }
 
     protected function statusPrepare($status)
