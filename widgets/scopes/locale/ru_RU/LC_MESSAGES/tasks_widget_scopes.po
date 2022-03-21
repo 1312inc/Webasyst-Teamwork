@@ -16,5 +16,14 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPath-1: .\n"
 
-msgid "Scopes"
-msgstr "Сроки"
+msgid "Title"
+msgstr "Заголовок"
+
+msgid "Milestones"
+msgstr "Дедлайны"
+
+msgid "In Tasks, create a milestone to group tasks with the same deadline and to track the working progress."
+msgstr "Создайте работу в «Задачах», чтобы объединить задачи с общим дедлайном и следить за сроками."
+
+msgid "No scopes"
+msgstr "Нет дедлайнов"

@@ -1,0 +1,108 @@
+.t-doingnow-widget-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  overflow: hidden;
+}
+.t-doingnow-widget-wrapper .text-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  padding: 0.75em;
+}
+.t-doingnow-widget-wrapper .text-wrapper .t-doingnow-list {
+  margin: 0.75em 0 0;
+  padding: 0;
+  list-style: none;
+}
+.t-doingnow-widget-wrapper .text-wrapper .t-doingnow-list .h-author-wrapper {
+  position: relative;
+  margin: 2px 0 0;
+  padding: 4px;
+  list-style: none;
+}
+.t-doingnow-widget-wrapper .text-wrapper .t-doingnow-list .h-author-wrapper:first-child {
+  margin-top: 0;
+}
+.t-doingnow-widget-wrapper .text-wrapper .t-doingnow-list .h-author-wrapper .h-outer-chart {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: #e9f5e7;
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
+}
+.t-doingnow-widget-wrapper .text-wrapper .t-doingnow-list .h-author-wrapper .h-outer-chart .h-inner-chart {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  background: #eee7f5;
+  -webkit-border-radius: 0 2px 2px 0;
+  border-radius: 0 2px 2px 0;
+}
+.t-doingnow-widget-wrapper .text-wrapper .t-doingnow-list .h-author-wrapper .h-author {
+  position: relative;
+  height: 28px;
+}
+.t-doingnow-widget-wrapper .text-wrapper .t-doingnow-list .h-author-wrapper .h-author .h-icon {
+  display: inline-block;
+  vertical-align: middle;
+  width: 28px;
+  height: 28px;
+  background: #fff 50% no-repeat;
+  borde: 1px solid rgba(0,0,0,0.1);
+  -webkit-background-size: 28px;
+  -moz-background-size: 28px;
+  background-size: 28px;
+  margin: 0 4px 0 0;
+  -webkit-border-radius: 50%;
+  border-radius: 50%;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.t-doingnow-widget-wrapper .text-wrapper .t-doingnow-list .h-author-wrapper .h-author .h-name {
+  display: inline-block;
+  vertical-align: top;
+  line-height: 28px;
+  width: 65%;
+  white-space: nowrap;
+  -o-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.t-doingnow-widget-wrapper .text-wrapper .t-doingnow-list .h-author-wrapper .h-author .h-count {
+  position: absolute;
+  top: 0;
+  right: 4px;
+  height: 28px;
+  line-height: 28px;
+}
+.tv .t-doingnow-widget-wrapper {
+  background: transparent;
+}
+.tv .t-doingnow-widget-wrapper .text-wrapper .t-doingnow-list .h-author-wrapper .h-outer-chart {
+  background: #44803c;
+}
+.tv .t-doingnow-widget-wrapper .text-wrapper .t-doingnow-list .h-author-wrapper .h-outer-chart .h-inner-chart {
+  background: #9f2eb3;
+}
+.t-widget-doingnow-filter-control .t-indent {
+  margin-left: 10px;
+}
+.t-widget-doingnow-filter-control .t-line {
+  margin-top: 8px;
+  margin-bottom: 8px;
+}

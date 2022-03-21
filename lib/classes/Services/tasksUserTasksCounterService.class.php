@@ -104,6 +104,10 @@ assigned_contact_id = i:1',
             return $total;
         }
 
+        if ($count == $total && $bgColor == 'transparent' && $textColor == '#999') {
+            return $count;
+        }
+
         if ($count == $total) {
             return sprintf(
                 '<span class="badge" style="background:%s;color:%s">%s</span>',

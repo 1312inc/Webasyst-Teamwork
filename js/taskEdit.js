@@ -159,7 +159,6 @@ var TaskEdit = ( function($) { "use strict";
 
         if ($.tasks.options.text_editor === 'wysiwyg') {
             $R('.t-redactor-task-edit', {
-                // 'focus': true,
                 tabindex: 1,
                 toolbarFixedTarget: (function () {
                     return $('#t-dialog-wrapper').length ? '#t-dialog-wrapper' : document;
@@ -171,8 +170,11 @@ var TaskEdit = ( function($) { "use strict";
                 },
                 callbacks: {
                     started () {
-                        var that = this,
-                            $el = this.element.getElement().get(0);
+                        var that = this;
+                        var $el = this.element.getElement().get(0);
+
+                        $R.options.callbacks.started.call(that);
+                        
                         // Textarea value changed
                         $el.onchange = function () {
                             that.source.setCode($($el).val());
@@ -1010,6 +1012,11 @@ var TaskEdit = ( function($) { "use strict";
                             }
                         }
                     )
+                    .fail(function (error) {
+                        if (error.status === 500) {
+                            alert('Something went wrong on the server side (500). Please try again later or validate server error logs for details.');
+                        }
+                    })
                     .always(function () {
                         $form.hideLoading();
                         $.tasks.hideLoadingButton($submitButton);

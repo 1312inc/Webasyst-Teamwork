@@ -1301,7 +1301,7 @@ msgid "Restore this milestone"
 msgstr "Восстановить из завершенных"
 
 msgid "Mark as complete"
-msgstr "Отметить как завершенная"
+msgstr "Отметить как завершенную"
 
 msgid "Date"
 msgstr "Дата"

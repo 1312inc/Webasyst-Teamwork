@@ -39,7 +39,19 @@ class tasksTaskModel extends waModel
             $data['milestone_id'] = null;
         }
 
-        $task_id = $this->insert($data);
+        $task_id = 0;
+        try {
+            $task_id = $this->insert($data);
+        } catch (waException $exception) {
+            // "Query Error 1062: Duplicate entry '(.*)' for key 'project_number'"
+            if ($exception->getCode() === 1062) {
+                $project_model->recountTasksNumber($project['id']);
+                $project = $project_model->getById($data['project_id']);
+                $data['number'] = $project['tasks_number'] + 1;
+                $task_id = $this->insert($data);
+            }
+        }
+
         if (!$task_id) {
             return null;
         }

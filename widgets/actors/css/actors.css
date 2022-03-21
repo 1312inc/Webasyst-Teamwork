@@ -106,3 +106,5 @@
   margin-top: 8px;
   margin-bottom: 8px;
 }
+.collapsible__content { overflow-y: auto; }
+.badge { border-radius: 8px; padding: 2px 4px; margin-right: 4px; font-weight: bold; }

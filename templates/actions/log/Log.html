@@ -102,6 +102,7 @@
 
     {if $chart_html}
         <div id="t-logs-chart-wrapper">
+            <div id="logs-chart-wrapper" style="height: 300px;font-size: .8rem;"></div>
             {$chart_html}
         </div>
     {/if}
@@ -282,7 +283,7 @@
     var list_hash = $.tasks.cleanHash(window.location.hash) || '#/log/';
     var list_params = list_hash.substr(6).split('/')[0];
 
-    initLogsTimeframeSelector($('#timeframe')); // see d3chart-logs.js
+    $.tasks.initLogsTimeframeSelector($('#timeframe'));
 
     // Set <a href=...> on filters
     $main_menu.find(".t-nav-item[data-value]").each(function() {

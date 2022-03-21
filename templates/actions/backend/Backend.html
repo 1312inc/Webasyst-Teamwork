@@ -64,6 +64,12 @@
                 'shift+tab': {
                     api: 'module.list.outdent'
                 },
+            },
+            callbacks: {
+                started () {
+                    var $el = this.element.getElement().get(0);
+                    this.source.setCode(document.createTextNode($($el).html()).nodeValue);
+                },
             }
         };
     </script>

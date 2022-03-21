@@ -3,21 +3,24 @@
 
 {if $ui == '2.0'}
 {function name="_renderItem" _item=[]}
-    <li class="custom-mt-8">
-        <div class="flexbox middle space-8">
+    <li class="custom-mb-16">
+        <div class="flexbox space-12" style="align-items: flex-start;">
             <div class="t-scopes-date{if $time > strtotime($_item.due_date)} c-date-fail{elseif (strtotime($_item.due_date) - $time) < 691200 } c-date-red{/if}">
                 <div class="small" style="line-height: normal;">{waDateTime::date('j', $_item.due_date)}</div>
                 <div class="small" style="line-height: normal;">{waDateTime::date('f', $_item.due_date)}</div>
             </div>
             <div class="wide">
                 {if !empty($_item.name)}
-                    <div class="custom-mb-4">
-                        {$_item.name|escape}
+                    <div class="custom-mb-8">
+                        <div class="flexbox">
+                            <span class="wide">{$_item.name|escape|truncate:42}</span>
+                            <span class="count nowrap hint">{$_item.progress}%</span>
+                        </div>
                     </div>
-                    <div class="progressbar">
+                    <div class="progressbar" title="{$_item.progress}%">
                         <div class="progressbar-line-wrapper text-inside">
                             <div class="progressbar-outer">
-                                <div class="progressbar-inner" style="width: {$_item.progress}%;">
+                                <div class="progressbar-inner{if $_item.progress >= 100} bg-green{/if}" style="width: {$_item.progress}%;">
                                 </div>
                             </div>
                         </div>
@@ -41,57 +44,66 @@
     }
 }
 .t-scopes-date {
-    padding: 0.4em 0;
+    padding: 0.25rem 0;
     flex: 0 0 60px;
-    background: var(--gray);
-    border-radius: 3px;
-    -webkit-border-radius: 3px;
+    background: var(--background-color);
+    font-weight: 500;
+    border-radius: 0.5rem;
     text-align: center;
-    color: var(--white);
 }
 .t-scopes-date.c-date-red {
     background: var(--alert-danger-background-color);
+    color: var(--white);
+    font-weight: bold;
 }
 
 .t-scopes-date.c-date-fail {
     -webkit-animation: release-fail 2s linear infinite;
     animation: release-fail 2s linear infinite;
+    color: var(--white);
 }
-.t-content-wrapper {
+.t-scopes-content-wrapper {
     position: absolute;
     overflow-y: auto;
-    top: 2.2rem;
+    top: 1rem;
     right: 1rem;
     bottom: 1rem;
     left: 1rem;
 }
 </style>
 
-<div class="custom-p-16 nowrap uppercase"><strong>{$title}</strong></div>
-<div class="t-content-wrapper hide-scrollbar">
-    <ul class="menu custom-m-0">
-        {if !empty($scopes)}
+{if !empty($scopes)}
+
+    <div class="t-scopes-content-wrapper hide-scrollbar">
+        <ul class="menu custom-m-0">
             {foreach $scopes as $item}
                 {_renderItem _item=$item}
             {/foreach}
-        {else}
-            <li class="gray">
-                No scopes
-            </li>
-        {/if}
-    </ul>
-</div>
+        </ul>
+    </div>
+
+{else}
+
+    <div class="t-scopes-content-wrapper hide-scrollbar">
+        <div class="align-center custom-mt-40">
+            <i class="fas fa-flag-checkered" style="font-size: 5rem; color: var(--light-gray);"></i>
+            <div class="gray custom-mt-20">
+                <h5 class="custom-mb-12 gray">[`Milestones`]</h5>
+                <p class="custom-mt-12 custom-px-12">[`In Tasks, create a milestone to group tasks with the same deadline and to track the working progress.`]</p>
+            </div>
+        </div>
+    </div>
+
+{/if}
 
 <script>
-    (function ($) {
-        $(function () {
-            setTimeout(function() {
-                try {
-                    DashboardWidgets[{$widget_id}].renderWidget();
-                } catch (e) { }
-            }, 60 * 1000);
-        });
-    })(jQuery)
+    (function () {
+        setTimeout(function() {
+            try {
+                DashboardWidgets[{$widget_id}].renderWidget();
+            } catch (e) { }
+        }, 60 * 1000);
+    })();
 </script>
 
 {else}
@@ -121,7 +133,6 @@
 <style>{include file='../css/scopes.css' inline}</style>
 
 <div class="t-scopes-wrapper">
-    <h6 class="heading t-scopes-heading">{$title}</h6>
 
     <div class="t-scopes-list">
         {if !empty($scopes)}
@@ -130,7 +141,7 @@
             {/foreach}
         {else}
             <div class="t-no-scopes">
-                No scopes
+                [`No scopes`]
             </div>
         {/if}
     </div>
