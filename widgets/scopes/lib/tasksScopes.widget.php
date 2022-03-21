@@ -39,7 +39,7 @@ class tasksScopesWidget extends waWidget
         $mm = new tasksMilestoneModel();
 
         $projects =tsks()->getEntityRepository(tasksProject::class)
-            ->getProjectsAsArray(tasksProjectRepository::GET_PROJECT_ALL);
+            ->getProjectsAsArray();
         $project_ids = array_keys($projects);
         if (!$project_ids) {
             return array();
