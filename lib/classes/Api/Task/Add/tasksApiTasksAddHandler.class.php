@@ -33,13 +33,13 @@ final class tasksApiTasksAddHandler
 
         $task2 = tsks()->getEntityFactory(tasksTask2::class)->createFromApiVo($addRequest);
         $task2->setProject($project)
-            ->setNumber($task2->getProject()->getTasksNumber() + 1);
+            ->setNumber($project->getTasksNumber() + 1);
 
         if (!tsks()->getEntityRepository(tasksTask2::class)->save($task2)) {
             throw new tasksException('Error on task add');
         }
 
-        tsks()->getModel(tasksProject::class)->recountTasksNumber($task2->getId());
+        tsks()->getModel(tasksProject::class)->recountTasksNumber($project->getId());
 
         $task2->setLegacyTask(new tasksTask(tsks()->getModel(tasksTask2::class)->getById($task2->getId())));
 
