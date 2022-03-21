@@ -15,7 +15,9 @@ function amchart (element, data, locale) {
 
     const chart = am4core.create(element, am4charts.XYChart);
 
-    chart.language.locale = window[`am4lang_${locale}`];
+    if (locale !== 'en_US') {
+        chart.language.locale = window[`am4lang_${locale}`];
+    }
 
     const xAxis = chart.xAxes.push(new am4charts.DateAxis());
     xAxis.renderer.grid.template.location = 1;
