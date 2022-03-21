@@ -34,7 +34,6 @@ turndownService.addRule('strikethrough', {
 // define markdown-it
 var md = markdownit();
 md.set({
-  html: true,
   linkify: true,
 });
 
