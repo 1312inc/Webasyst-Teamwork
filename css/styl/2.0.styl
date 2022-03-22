@@ -279,8 +279,8 @@ pre
          .t-comment-content
              padding 0
 
-      @media forMobile
-         width 100%
+          @media forMobile
+             width 100%
 
       .t-comment-item.t-pinned-comment
          background transparent
@@ -312,6 +312,7 @@ pre
     background var(--background-color-blank)
     box-shadow 0 0.25rem 1.5rem -0.75rem var(--big-editor-shadow-color)
     overflow hidden
+    word-break break-word
 
 .redactor-box.redactor-styles-on
     border-width 0 !important
@@ -487,6 +488,7 @@ textarea.t-redactor-comments
   font-size 0.9375rem
   margin-top 1rem
   margin-bottom 3rem
+  word-break break-word
 
   @media forMobile
     font-size 1rem
@@ -498,6 +500,9 @@ textarea.t-redactor-comments
   margin-top 0.5rem
   margin-bottom 1.25rem
   padding-left 2.75rem
+
+  @media forMobile
+    padding-left 0
 
 .add-task-link.mobile-only
   position fixed

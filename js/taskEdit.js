@@ -172,8 +172,6 @@ var TaskEdit = ( function($) { "use strict";
                     started () {
                         var that = this;
                         var $el = this.element.getElement().get(0);
-
-                        $R.options.callbacks.started.call(that);
                         
                         // Textarea value changed
                         $el.onchange = function () {
