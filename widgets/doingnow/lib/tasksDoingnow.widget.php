@@ -1,19 +1,16 @@
 <?php
 
-class tasksDoingnowWidget extends waWidget
+class tasksDoingnowWidget extends tasksAbstractWidget
 {
     /**
      * @var array
      */
     private static $groups;
 
-    /**
-     * @var waWidgetSettingsModel
-     */
-    private static $settingsModel;
-
-    public function defaultAction()
+    public function defaultAction(): void
     {
+        $this->incognitoUser();
+
         $currentGroup = self::getSettingsGroup($this->id);
         $statuses = (new tasksApiStatusGetListHandler())->getStatuses();
         $allUsers = (new tasksTeamGetListMethod())->run();
@@ -52,9 +49,11 @@ class tasksDoingnowWidget extends waWidget
             'url_root' => wa()->getRootUrl(),
             'users' => $users,
         ]);
+
+        $this->incognitoLogout();
     }
 
-    public static function getGroupFilterControl($name, $params)
+    public static function getGroupFilterControl($name, $params): string
     {
         $templatePath = sprintf('%s/templates/GroupsControl.html', dirname(__FILE__, 2));
 
@@ -67,24 +66,6 @@ class tasksDoingnowWidget extends waWidget
             'groups' => self::getGroups(),
             'current_group' => $params['value'] ?: self::getSettingsGroup($widgetId)['id'],
         ]);
-    }
-
-    private static function renderTemplate($template, $assign = []): string
-    {
-        if (!file_exists($template)) {
-            return '';
-        }
-        $assign['ui'] = wa()->whichUI(wa()->getConfig()->getApplication());
-
-        $view = wa()->getView();
-        $old_vars = $view->getVars();
-        $view->clearAllAssign();
-        $view->assign($assign);
-        $html = $view->fetch($template);
-        $view->clearAllAssign();
-        $view->assign($old_vars);
-
-        return $html;
     }
 
     private static function getGroups(): array
@@ -114,14 +95,5 @@ class tasksDoingnowWidget extends waWidget
         $savedGroup = $settings['group'] ?? 0;
 
         return $groups[$savedGroup];
-    }
-
-    private static function getSettingModel(): waWidgetSettingsModel
-    {
-        if (self::$settingsModel === null) {
-            self::$settingsModel = new waWidgetSettingsModel();
-        }
-
-        return self::$settingsModel;
     }
 }

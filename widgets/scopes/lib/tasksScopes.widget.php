@@ -1,15 +1,19 @@
 <?php
 
-class tasksScopesWidget extends waWidget
+class tasksScopesWidget extends tasksAbstractWidget
 {
     public function defaultAction()
     {
+        $this->incognitoUser();
+
         $this->display(array(
             'widget_id' => $this->id,
             'scopes' => $this->getScopes(),
             'widget_url' => $this->getStaticUrl(),
             'title' => $this->getSettings('title')
         ));
+
+        $this->incognitoLogout();
     }
 
     protected function getScopes()

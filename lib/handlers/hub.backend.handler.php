@@ -44,7 +44,7 @@ EOF;
 
                 <!-- begin output from tasksHubBackendHandler -->
                 <div id="{$uniqid}" class="custom-mt-16 custom-mr-16">
-                    <a href="{$tasks_url}#/from/hub/%TASK_ID%/" class="semibold small">
+                    <a href="{$tasks_url}#/from/hub/%TASK_ID%/" class="semibold small nowrap">
                         <i class="icon" style="background-image:url('{$wa_url}wa-apps/tasks/img/tasks24.png'); background-size:16px 16px; vertical-align: -2px;"></i>
                         <span class="custom-ml-4">{$menuname}</span>
                     </a>
