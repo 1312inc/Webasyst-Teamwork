@@ -107,7 +107,8 @@ class tasksReleasesPluginTaskExtModel extends waModel
                 `timecosts_plan` IS NULL AND
                 `timecosts_fact` IS NULL AND
                 `affected_version` IS NULL AND
-                `resolution` IS NULL
+                `resolution` IS NULL AND 
+                `kanban_color` IS NULL
               ";
         $this->exec($sql);
     }
@@ -120,7 +121,8 @@ class tasksReleasesPluginTaskExtModel extends waModel
             'timecosts_plan' => 'Трудозатраты плановые',
             'timecosts_fact' => 'Трудозатраты фактические',
             'affected_version' => 'Где найдено',
-            'resolution' => 'Результат'
+            'resolution' => 'Результат',
+            'kanban_color' => 'Цвет'
         );
     }
 

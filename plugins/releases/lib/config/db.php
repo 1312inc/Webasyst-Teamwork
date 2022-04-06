@@ -9,11 +9,20 @@ return array(
         'timecosts_fact' => array('int', 11),
         'affected_version' => array('varchar', 32),
         'resolution' => array('varchar', 32),
+        'kanban_color' => array('varchar', 50),
         ':keys' => array(
             'PRIMARY' => 'task_id',
             'type' => 'type',
             'gravity' => 'gravity',
             'resolution' => 'resolution'
+        ),
+    ),
+    'tasks_releases_milestone_ext' => array(
+        'status_id' => array('int', 11, 'null' => 0),
+        'milestone_id' => array('int', 11, 'null' => 0),
+        'limit' => array('int', 11),
+        ':keys' => array(
+            'PRIMARY' => array('status_id', 'milestone_id')
         ),
     ),
     'tasks_releases_milestone_projects' => array(
