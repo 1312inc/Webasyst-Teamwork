@@ -1,5 +1,9 @@
 {include file="./../tasks/includes/TasksHeaderFiltersHelpers.inc.html" inline}
 
+{if method_exists($wa->installer, 'reviewWidget')}
+    {$wa->installer->reviewWidget('app/tasks')}
+{/if}
+
 {strip}
     <div class="t-main-wrapper t-log-page">
         <header class="t-header-wrapper">
