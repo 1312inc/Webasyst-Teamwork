@@ -1,5 +1,9 @@
 {strip}
 
+{if method_exists($wa->installer, 'reviewWidget')}
+    {$wa->installer->reviewWidget('app/tasks')}
+{/if}
+
 <div class="t-main-wrapper t-log-page">
     <header class="t-header-wrapper">
         <div class="t-general-menu is-shown">
