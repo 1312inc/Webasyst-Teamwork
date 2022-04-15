@@ -29,7 +29,7 @@ final class tasksApiTasksUpdateHandler
         $task2
             ->setMilestoneId($updateRequest->getMilestoneId())
             ->setStatusId($updateRequest->getStatusId())
-            ->setAssignLogId($updateRequest->getAssignedContactId())
+            ->setAssignedContactId($updateRequest->getAssignedContactId())
             ->setHiddenTimestamp($updateRequest->getHiddenTimestamp())
             ->setPriority($updateRequest->getPriority())
             ->setText($updateRequest->getText())
@@ -56,12 +56,12 @@ final class tasksApiTasksUpdateHandler
 
         $attachmentDeleteHandler = new tasksApiAttachmentDeleteHandler();
         if ($updateRequest->getAttachmentsToDelete()) {
-            foreach ($updateRequest->getAttachmentsToDelete() as $attachmentId) {
-                try {
-                    $attachmentDeleteHandler->delete(new tasksApiAttachmentDeleteRequest((int) $attachmentId));
-                } catch (tasksResourceNotFoundException $exception) {
-                    // silence
-                }
+            try {
+                $attachmentDeleteHandler->delete(
+                    new tasksApiAttachmentDeleteRequest($updateRequest->getAttachmentsToDelete())
+                );
+            } catch (tasksResourceNotFoundException $exception) {
+                // silence
             }
         }
 
