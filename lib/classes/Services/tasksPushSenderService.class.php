@@ -60,6 +60,8 @@ final class tasksPushSenderService
                 'task_id' => $task['id'],
                 'type' => $type,
                 'webasyst_installation_id' => $this->waInstallationId,
+                'group_name' => sprintf(_w('%d.%d %s'), $task['project_id'] , $task['number'], $task['name']),
+                'group_id' => sprintf('%s-%s', $this->waInstallationId, $task['id'])
             ],
             null
         );
@@ -86,11 +88,11 @@ final class tasksPushSenderService
             case tasksNotificationsSender::EVENT_NEW:
                 if ($to->getId() == $log['assigned_contact_id']) {
                     if ($to->getId() == $task['create_contact_id']) {
-                        /* MUST NEVER HAPPENED, BUT JUST IN CASE  */
+                        /* MUST NEVER HAPPEN, BUT JUST IN CASE  */
                         return sprintf('User %s sent you your task', wa()->getUser()->getName());
-                    } else {
-                        return sprintf('User %s sent you a new task', wa()->getUser()->getName());
                     }
+
+                    return sprintf('User %s sent you a new task', wa()->getUser()->getName());
                 }
 
                 $_assigned_contact = $log['assigned_contact']?:null;
