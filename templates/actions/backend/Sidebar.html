@@ -15,7 +15,7 @@
     bg_color => 'transparent'
 ]}
 
-<div class="sidebar-body hide-scrollbar t-sidebar-block" id="t-sidebar">
+<div class="sidebar-body t-sidebar-block" id="t-sidebar">
     <div class="box custom-mt-4">
         <div class="flexbox space-8">
             <div class="wide">
@@ -429,18 +429,5 @@
             $(this).closest('.tags').find('.js-tags-hidden-tag').show();
             $(this).hide();
         });
-
-        /* hide/show scrollbar */
-        $('.sidebar, .sidebar-body').on('hover', function () {
-            var $element = $(this),
-                element_class = 'hide-scrollbar';
-
-            if ($element.hasClass(element_class)) {
-                $element.removeClass(element_class);
-            } else {
-                $element.addClass(element_class);
-            }
-        });
-
     })(jQuery);
 </script>
