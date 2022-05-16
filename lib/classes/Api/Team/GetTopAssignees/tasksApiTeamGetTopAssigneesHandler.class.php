@@ -13,7 +13,9 @@ final class tasksApiTeamGetTopAssigneesHandler
 //            throw new tasksAccessException(_w('No access to project'));
 //        }
 
-        $users = tasksHelper::getTeam($request->getProjectId(), false, false, true);
+        $users = (new tasksTeamGetter())
+            ->getTeam(new taskTeamGetterParamsDto($request->getProjectId(), false, false,
+            true, true));
 
         if ($request->getProjectId()) {
             $logs = tsks()->getModel('tasksTaskLog')

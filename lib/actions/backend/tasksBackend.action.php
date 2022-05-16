@@ -15,7 +15,7 @@ class tasksBackendAction extends waViewAction
         $tag_model = new tasksTaskTagsModel();
         $cloud = $tag_model->getCloud();
 
-        $users = tasksHelper::getTeam(null, true, false, true);
+        $users = (new tasksTeamGetter())->getTeam(new taskTeamGetterParamsDto(null, true, false, true, true));
 
         $accessedProjects = (new tasksRights())
             ->getAvailableProjectForContact(wa()->getUser());

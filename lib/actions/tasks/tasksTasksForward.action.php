@@ -7,6 +7,7 @@ class tasksTasksForwardAction extends waViewAction
     public function execute()
     {
         $id = waRequest::request('id', 0, 'int');
+        $teamGetter = new tasksTeamGetter();
         if ($id) {
             $task = new tasksTask($id);
             if (!$task->exists()) {
@@ -14,7 +15,7 @@ class tasksTasksForwardAction extends waViewAction
             }
 
             $this->view->assign(array(
-                'users' => tasksHelper::getTeam($task['project_id'], false, false, true),
+                'users' => $teamGetter->getTeam(new taskTeamGetterParamsDto($task['project_id'], false, false, true)),
                 'statuses' => tasksHelper::getStatuses($task['project_id']),
                 'form_url' => '?module=tasksLog&action=forward&id='.$task['id'],
                 'selected_user' => $task['assigned_contact_id'],
@@ -26,7 +27,7 @@ class tasksTasksForwardAction extends waViewAction
         } else {
             $this->view->assign(array(
                 'projects' => tsks()->getEntityRepository(tasksProject::class)->getProjectsAsArray(),
-                'users' => tasksHelper::getTeam(null, false, false, true),
+                'users' => $teamGetter->getTeam(new taskTeamGetterParamsDto(null, false, false, true)),
                 'statuses' => tasksHelper::getStatuses(),
                 'form_url' => '?module=tasksBulk&action=forward',
                 'selected_status_id' => null,

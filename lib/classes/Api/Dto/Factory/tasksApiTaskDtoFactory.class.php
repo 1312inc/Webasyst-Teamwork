@@ -58,7 +58,8 @@ final class tasksApiTaskDtoFactory
                     ? tasksApiProjectDtoFactory::createFromArray($task['project'], tasksApiCountsDtoFactory::createEmpty())
                     : null,
                 !empty($task->getFavorite()),
-                tasksHelper::convertToMarkdownAndStripTags($task->text, tasksOptions::getApiTextStrippedTruncateLength())
+                tasksHelper::convertToMarkdownAndStripTags($task->text, tasksOptions::getApiTextStrippedTruncateLength()),
+                $task['uuid'] ?? null
             );
         }
 

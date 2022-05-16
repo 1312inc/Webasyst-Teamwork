@@ -60,7 +60,7 @@ class tasksHelper
     }
 
     /**
-     * @param int $project_id
+     * @param int  $project_id
      * @param bool $only_active
      *
      * @return array
@@ -252,97 +252,8 @@ class tasksHelper
         $withDisabled = false,
         $withCalendarStatus = false
     ) {
-        static $contacts = null;
-
-        //Model
-        $rights_model = new waContactRightsModel();
-        $contact_model = new waContactModel();
-        $log_model = new tasksTaskLogModel();
-
-        if ($project_id || ($contacts === null)) {
-            $data = [];
-            $contact_ids = $rights_model->getUsers('tasks', $project_id ? 'project.' . $project_id : 'backend');
-
-            if ($contact_ids) {
-                $data = $contact_model->getById($contact_ids);
-
-                foreach ($data as $contact_id => $c) {
-                    $data[$contact_id]['name'] = self::formatName($c);
-                    $data[$contact_id]['is_active'] = false;
-                    $data[$contact_id]['calendar_status'] = null;
-                }
-
-                uasort(
-                    $data,
-                    static function ($a, $b) {
-                        return strcmp($a["name"], $b["name"]);
-                    }
-                );
-
-                $contact_ids = $log_model->getRelatedContactIds(wa()->getUser()->getId(), $project_id);
-                if ($contact_ids) {
-                    $tmp = [];
-                    foreach ($contact_ids as $contact_id) {
-                        if (isset($data[$contact_id])) {
-                            $tmp[$contact_id] = $data[$contact_id];
-                            $tmp[$contact_id]['is_active'] = true;
-                        }
-                    }
-
-                    uasort(
-                        $tmp,
-                        static function ($a, $b) {
-                            return strcmp($a["name"], $b["name"]);
-                        }
-                    );
-
-                    foreach ($data as $contact_id => $contact) {
-                        if (!isset($tmp[$contact_id])) {
-                            $tmp[$contact_id] = $contact;
-                        }
-                    }
-                    $data = $tmp;
-                }
-            }
-            if (!$project_id) {
-                $contacts = $data;
-            }
-        } else {
-            $data = $contacts;
-        }
-
-        if (!$withDisabled) {
-            foreach ($data as $contact_id => $c) {
-                if ($c['is_user'] == -1) {
-                    unset($data[$contact_id]);
-                }
-            }
-        }
-
-        if ($withCalendarStatus) {
-            $statusService = new tasksTeammateStatusService();
-            foreach ($data as $contact_id => $c) {
-                $data[$contact_id]['calendar_status'] = $statusService->getForContactId(
-                    $contact_id,
-                    new DateTimeImmutable()
-                );
-            }
-        }
-
-        if ($only_active) {
-            $contact_ids = $log_model->getContactIds();
-            $result = [];
-            $user_id = wa()->getUser()->getId();
-            foreach ($data as $contact_id => $c) {
-                if (in_array($contact_id, $contact_ids) && $contact_id != $user_id) {
-                    $result[$contact_id] = $c;
-                }
-            }
-
-            return $result;
-        }
-
-        return $data;
+        return (new tasksTeamGetter())
+            ->getTeam(new taskTeamGetterParamsDto($project_id, $only_active, $withDisabled, $withCalendarStatus));
     }
 
     public static function getNameFormat()

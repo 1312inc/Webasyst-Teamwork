@@ -208,7 +208,7 @@
                                 <span class="icon">
                                     <i class="userpic" style="background-image: url({waContact::getPhotoUrl($user.id, $user.photo, 40, 40, 'person', 0)})"></i>
                                 </span>
-                                <span>
+                                <span class=" {if $user.invited}gray{/if}">
                                     {$user.name|escape}
                                     {if $user.calendar_status}<div class="custom-mt-4 width-100"><span class="badge small nowrap" style="display: inline-block; text-overflow: ellipsis; overflow: hidden; max-width: 99px; background-color: {$user.calendar_status->getBgColor()};color: {$user.calendar_status->getFontColor()};" title="{$user.calendar_status->getName()|escape}">{$user.calendar_status->getName()|escape|truncate:32}</span></div>{/if}
                                 </span>

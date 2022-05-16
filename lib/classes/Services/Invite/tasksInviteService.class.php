@@ -2,9 +2,9 @@
 
 final class tasksInviteService
 {
-    public const ACCESS_MINIMAL      = 0;
+    public const ACCESS_MINIMAL = 0;
     public const ACCESS_ALL_PROJECTS = 1;
-    public const ACCESS_FULL         = 2;
+    public const ACCESS_FULL = 2;
 
     public function __construct()
     {
@@ -42,7 +42,8 @@ final class tasksInviteService
 
         $this->updateRights($task, $newContactAccessRights, (int) $token['contact_id']);
 
-        $sender = new tasksNotificationsSender($task, 'inviteAssign', ['templateData' => ['invite_link' => $link]]);
+        $sender = new tasksNotificationsSender($task, tasksNotificationsSender::EVENT_INVITE_ASSIGN,
+            ['templateData' => ['invite_link' => $link]]);
         try {
             $sender->sendOne(tasksNotificationsSender::EVENT_INVITE_ASSIGN, $token['contact_id']);
         } catch (waException $e) {

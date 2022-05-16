@@ -144,6 +144,11 @@ final class tasksApiTaskDto implements JsonSerializable
      */
     private $favorite;
 
+    /**
+     * @var string|null
+     */
+    private $uuid;
+
     public function __construct(
         int $id,
         string $name,
@@ -172,7 +177,8 @@ final class tasksApiTaskDto implements JsonSerializable
         array $tags,
         ?tasksApiProjectDto $project,
         bool $favorite,
-        string $text_stripped
+        string $text_stripped,
+        ?string $uuid
     ) {
         $this->id = $id;
         $this->name = $name;
@@ -202,6 +208,7 @@ final class tasksApiTaskDto implements JsonSerializable
         $this->return_status_id = $returnStatusId;
         $this->favorite = $favorite;
         $this->text_stripped = $text_stripped;
+        $this->uuid = $uuid;
     }
 
     public function getId(): int

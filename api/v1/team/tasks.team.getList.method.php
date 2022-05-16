@@ -51,7 +51,8 @@ class tasksTeamGetListMethod extends tasksApiAbstractMethod
                 isset($logs[$user['id']]) ? tasksApiLogDtoFactory::createFromArray($logs[$user['id']]) : null,
                 (new waUserGroupsModel())->getGroups($contact->getId()) ?? [],
                 $counts[$user['id']] ?? tasksApiCountsDtoFactory::createEmpty(),
-                $sort++
+                $sort++,
+                $user['invited'] ?? null
             );
         }
 

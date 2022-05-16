@@ -1559,6 +1559,9 @@ components:
               sort:
                 type: integer
                 minimum: 0
+              inviteLink:
+                type: string
+                nullable: false
 
     taskInfo:
       type: object
