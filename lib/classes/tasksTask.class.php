@@ -488,7 +488,15 @@ class tasksTask implements ArrayAccess
      */
     public function getAssignedContact()
     {
-        return $this->getWaContactById($this->assigned_contact_id);
+        $contact = $this->getWaContactById($this->assigned_contact_id);
+        $contact['invited'] = null;
+        $invited = tsks()->getModel('waAppTokens')
+            ->getByField(['app_id' => 'team', 'contact_id' => $this->assigned_contact_id]);
+        if ($invited) {
+            $contact['invited'] = waAppTokensModel::getLink($invited['token']);
+        }
+
+        return $contact;
     }
 
     /**
