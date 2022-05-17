@@ -1393,3 +1393,6 @@ msgstr ""
 
 msgid "All senders"
 msgstr ""
+
+msgid "invited"
+msgstr ""

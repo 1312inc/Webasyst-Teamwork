@@ -211,6 +211,9 @@
                                 <span class=" {if $user.invited}gray{/if}">
                                     {$user.name|escape}
                                     {if $user.calendar_status}<div class="custom-mt-4 width-100"><span class="badge small nowrap" style="display: inline-block; text-overflow: ellipsis; overflow: hidden; max-width: 99px; background-color: {$user.calendar_status->getBgColor()};color: {$user.calendar_status->getFontColor()};" title="{$user.calendar_status->getName()|escape}">{$user.calendar_status->getName()|escape|truncate:32}</span></div>{/if}
+                                    {if $user.invited}
+                                        <span class="badge small squared light-gray custom-ml-4">[`invited`]</span>
+                                    {/if}
                                 </span>
                                 <span class="count">
                                     {user_count user_id=$user.id}
