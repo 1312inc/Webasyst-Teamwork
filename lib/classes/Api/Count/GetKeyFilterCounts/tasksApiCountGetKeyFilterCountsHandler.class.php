@@ -25,10 +25,15 @@ final class tasksApiCountGetKeyFilterCountsHandler
         ];
     }
 
-    private function getPair($total = 0, $count = 0): tasksUserTasksCountPairDto
+    private function getPair($total = 0, $count = 0, $red = 0): tasksUserTasksCountPairDto
     {
         if (!$count) {
             return new tasksUserTasksCountPairDto(0, (int) $total);
+        }
+
+        // todo: suka takoi podgon pod resultat =/
+        if ($red) {
+            return new tasksUserTasksCountPairDto($red, (int) $total);
         }
 
         if ($count == $total) {
@@ -54,7 +59,7 @@ final class tasksApiCountGetKeyFilterCountsHandler
             $inboxUrgentCount = $userCounts['count'];
         }
 
-        return $this->getPair((int) ($userCounts['total'] - $hiddenCount), (int) $inboxUrgentCount);
+        return $this->getPair((int) ($userCounts['total'] - $hiddenCount), (int) $inboxUrgentCount, (int) $inboxUrgentCount);
     }
 
     private function getFavoritesCountsPair(): tasksUserTasksCountPairDto
