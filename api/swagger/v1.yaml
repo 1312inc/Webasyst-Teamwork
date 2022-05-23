@@ -696,6 +696,10 @@ paths:
                 email:
                   type: string
                   format: email
+                  required: false
+                phone:
+                  type: string
+                  required: false
                 task_id:
                   type: integer
                 access_right:
