@@ -14,8 +14,13 @@ final class tasksApiTeamGetTopAssigneesHandler
 //        }
 
         $users = (new tasksTeamGetter())
-            ->getTeam(new taskTeamGetterParamsDto($request->getProjectId(), false, false,
-            true, true));
+            ->getTeam(new taskTeamGetterParamsDto(
+                    $request->getProjectId(),
+                    false,
+                    false,
+                    true,
+                    true)
+            );
 
         if ($request->getProjectId()) {
             $logs = tsks()->getModel('tasksTaskLog')
@@ -57,12 +62,12 @@ final class tasksApiTeamGetTopAssigneesHandler
                 $users[$userId] = $sorted[$userId];
             }
 
-            waLog::dump('uasort $users', 'tasks/debuglog.log');
-            waLog::dump(array_keys($users), 'tasks/debuglog.log');
+//            waLog::dump('uasort $users', 'tasks/debuglog.log');
+//            waLog::dump(array_keys($users), 'tasks/debuglog.log');
         }
 
         foreach ($users as $user_id => $user) {
-            $users[$user_id]['photo_url'] = waContact::getPhotoUrl($user['id'], $user['photo'], 96, 96, 'person', 1);
+            $users[$user_id]['photo_url'] = waContact::getPhotoUrl($user['id'], $user['photo'], 96, 96, 'person', 2);
         }
 
         return array_values($users);
