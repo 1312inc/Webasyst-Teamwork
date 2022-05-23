@@ -96,6 +96,26 @@ class tasksReleasesPlugin extends waPlugin
         $component->save();
     }
 
+    public function projectDelete($params)
+    {
+        $model = new tasksReleasesPluginMilestoneProjectsModel();
+
+        foreach ($params['ids'] as $id) {
+            $model->deleteByField('project_id', $id);
+        }
+    }
+
+    public function milestoneDelete($params)
+    {
+        $model = new tasksReleasesPluginMilestoneProjectsModel();
+        $model2 = new tasksReleasesPluginMilestoneExtModel();
+
+        foreach ($params['ids'] as $id) {
+            $model->deleteByField('milestone_id', $id);
+            $model2->deleteByField('milestone_id', $id);
+        }
+    }
+
     public function milestoneSave($params)
     {
         $component = new tasksReleasesPluginMilestoneComponent($params['milestone']);

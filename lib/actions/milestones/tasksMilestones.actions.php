@@ -194,35 +194,19 @@ class tasksMilestonesActions extends waViewActions
 
     protected function deleteAction()
     {
-        if (!$this->getUser()->isAdmin('tasks')) {
+        $id = (int)$this->getRequest()->post('id');
+        try {
+            (new tasksApiMilestoneDeleteHandler())->delete(new tasksApiMilestoneDeleteRequest($id));
+
+            echo json_encode(array(
+                'status' => 'ok',
+                'data' => $id,
+            ));
+        } catch (tasksAccessException $accessException) {
             $this->accessDenied();
         }
 
-        $milestone_model = new tasksMilestoneModel();
-        $id = (int)$this->getRequest()->post('id');
-
-        if ($id > 0) {
-            $milestone_model->deleteById($id);
-            $this->triggerDeleteEvent($id);
-        }
-
-        echo json_encode(array(
-            'status' => 'ok',
-            'data' => $id,
-        ));
         exit;
-    }
-
-    protected function triggerDeleteEvent($id)
-    {
-        /**
-         * @event milestone_delete
-         * @param array [string]mixed $params
-         * @param array [string]array $params['ids'] Array of IDs of deleting milestone entries
-         * @return void
-         */
-        $params = array('ids' => array($id));
-        wa()->event('milestone_delete', $params);
     }
 }
 

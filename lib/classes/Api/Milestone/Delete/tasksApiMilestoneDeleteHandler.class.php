@@ -27,6 +27,17 @@ final class tasksApiMilestoneDeleteHandler
             throw new tasksException('Error on milestone delete');
         }
 
+        /**
+         * @event milestone_delete
+         *
+         * @param array [string]mixed $params
+         * @param array [string]array $params['ids'] Array of IDs of deleting milestone entries
+         *
+         * @return void
+         */
+        $params = ['ids' => [$milestone->getId()]];
+        wa()->event('milestone_delete', $params);
+
         return true;
     }
 }
