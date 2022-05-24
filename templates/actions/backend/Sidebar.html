@@ -16,6 +16,45 @@
 ]}
 
 <div class="sidebar-body hide-scrollbar t-sidebar-block" id="t-sidebar">
+
+    {if !empty($tiny_ad)}
+    <div class="t-tiny-ad">
+        <div class="t-tiny-ad-box">
+
+            <a href="#" class="t-tiny-ad-close" title="[`Close`]">&times;</a>
+            <h5 class="heading">{$tiny_ad.heading}</h5>
+
+            <div class="align-center">
+
+                <a href="{$tiny_ad.appurl}" target="_blank">
+                    <img src="{$tiny_ad.image}" class="t-app-icon{if $tiny_ad.adtype == 'plugin'} t-plugin-icon{/if}" />
+                </a>
+
+                <h3>
+                    <a href="{$tiny_ad.appurl}" target="_blank">{$tiny_ad.title}</a>
+                </h3>
+
+                <p>
+                    {$tiny_ad.subtitle}
+                    {$tiny_ad.teaser}
+                </p>
+
+                <p class="align-center semibold gray">
+                    [`Promocode`]
+                    <span class="badge indicator onfire bold t-app-discount-badge">&minus;{$tiny_ad.discount}%</span>
+                </p>
+                <input type="text" class="bold align-center" value="{$tiny_ad.promocode}" style="border-style: dashed; font-size: 1rem;">
+
+                <div class="block">
+                    <a href="{$tiny_ad.buyurl}" target="_blank" class="button green t-tiny-ad-action-button">[`Buy now`]</a>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+    {/if}
+
     <div class="box custom-mt-4">
         <div class="flexbox space-8">
             <div class="wide">
@@ -443,6 +482,13 @@
             } else {
                 $element.addClass(element_class);
             }
+        });
+
+        $('#t-sidebar').on('click.tasks', '.t-tiny-ad-close', function (e) {
+            e.preventDefault();
+
+            $(this).closest('.t-tiny-ad').hide();
+            $.post('?module=backend&action=hideTinyAd');
         });
 
     })(jQuery);
