@@ -76,12 +76,12 @@ final class tasksUtf8mb4Converter
 
             foreach ($columns as $column) {
                 $isMb4 = (bool) preg_match('~^(utf8mb4_)~ui', $column['Collation']);
+//                if ($isMb4) {
+//                    continue;
+//                }
                 $isIndex = isset($indexes[$column['Field']]);
-                $isConvertable = !empty($column['Collation']) && !$isIndex;
-                if ($column['Collation'] === self::COLLATION) {
-                    continue;
-                }
-                if (!$isConvertable && !$isMb4) {
+                $isConvertable = !empty($column['Collation']);
+                if (!$isConvertable) {
                     continue;
                 }
 
