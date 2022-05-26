@@ -67,7 +67,14 @@ final class tasksApiTeamGetTopAssigneesHandler
         }
 
         foreach ($users as $user_id => $user) {
-            $users[$user_id]['photo_url'] = waContact::getPhotoUrl($user['id'], $user['photo'], 96, 96, 'person', 2);
+            $users[$user_id]['photo_url'] = waContact::getPhotoUrl(
+                $user['id'] ?? 0,
+                $user['photo'] ?: null,
+                96,
+                96,
+                'person',
+                true
+            );
         }
 
         return array_values($users);
