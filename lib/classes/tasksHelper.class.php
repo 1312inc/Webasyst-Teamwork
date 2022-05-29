@@ -607,7 +607,6 @@ class tasksHelper
             }
         }
         unset($task);
-
     }
 
     /**

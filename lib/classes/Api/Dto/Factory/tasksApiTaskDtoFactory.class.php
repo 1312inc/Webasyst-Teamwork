@@ -55,11 +55,16 @@ final class tasksApiTaskDtoFactory
                 array_values(self::createLogs($task)),
                 array_values(self::createTags($task)),
                 !empty($task['project'])
-                    ? tasksApiProjectDtoFactory::createFromArray($task['project'], tasksApiCountsDtoFactory::createEmpty())
+                    ? tasksApiProjectDtoFactory::createFromArray($task['project'],
+                    tasksApiCountsDtoFactory::createEmpty())
                     : null,
                 !empty($task->getFavorite()),
-                tasksHelper::convertToMarkdownAndStripTags($task->text, tasksOptions::getApiTextStrippedTruncateLength()),
-                $task['uuid'] ?? null
+                tasksHelper::convertToMarkdownAndStripTags($task->text,
+                    tasksOptions::getApiTextStrippedTruncateLength()),
+                $task['uuid'] ?? null,
+                isset($task['milestone']) && is_array($task['milestone'])
+                    ? tasksApiMilestoneDtoFactory::fromArray($task['milestone'], tasksApiCountsDtoFactory::createEmpty())
+                    : null
             );
         }
 

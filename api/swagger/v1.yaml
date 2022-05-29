@@ -1660,6 +1660,10 @@ components:
             $ref: '#/components/schemas/tagInfo'
         project:
           $ref: '#/components/schemas/projectInfo'
+        milestone:
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/milestoneInfo'
         favorite:
           type: boolean
     projectInfo:
@@ -2108,7 +2112,7 @@ components:
         counts:
           $ref: '#/components/schemas/taskCountInfo'
         sort:
-          type: int
+          type: integer
           nullable: true
     tagInfo:
       type: object
