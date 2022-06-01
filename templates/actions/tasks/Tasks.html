@@ -1,7 +1,7 @@
 {$is_in_my_list = $list && $list.is_own && $list.found_by_id}
 
 <div class="flexbox">
-    <div class="sidebar blank t-task-list-sidebar bordered-right hide-scrollbar{if $total_count < 1} overflow-visible{/if}">
+    <div class="sidebar blank t-task-list-sidebar bordered-right{if $total_count < 1} overflow-visible{/if}">
 
         <div class="t-main-wrapper">
 
@@ -148,18 +148,6 @@
                 window.TasksController.skipDispatch = 1;
                 window.TasksController.setHash('/task/' + number + '/');
             });
-        });
-
-        /* hide/show scrollbar */
-        $('.sidebar').on('hover', function () {
-            var $element = $(this),
-                element_class = 'hide-scrollbar';
-
-            if ($element.hasClass(element_class)) {
-                $element.removeClass(element_class);
-            } else {
-                $element.addClass(element_class);
-            }
         });
     }());
 </script>
