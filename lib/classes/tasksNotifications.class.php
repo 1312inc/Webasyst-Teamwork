@@ -127,6 +127,7 @@ class tasksNotifications
             case tasksNotificationsSender::EVENT_NEW:
                 $subject = sprintf(_w('NEW: %s %s'), $task['project_id'] . '.' . $task['number'], $task['name']);
                 break;
+            case tasksNotificationsSender::EVENT_INVITE_ASSIGN:
             case tasksNotificationsSender::EVENT_ASSIGN:
                 $subject = sprintf(
                     '➡️ ' . _w('ASSIGNED: %s %s'),

@@ -16,7 +16,7 @@ final class tasksValuePhone
         $this->phone = $phone;
     }
 
-    public function getPhone(): string
+    public function getValue(): string
     {
         return $this->phone;
     }

@@ -19,7 +19,7 @@ class tasksTeamInviteToTaskMethod extends tasksApiAbstractMethod
 
         $phone = $this->post('phone', false, self::CAST_STRING_TRIM);
         if ($phone) {
-            $phone = new tasksValueEmail($phone);
+            $phone = new tasksValuePhone($phone);
         }
 
          $request = new tasksApiTeamInviteToTaskRequest(
