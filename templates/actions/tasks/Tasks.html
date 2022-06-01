@@ -3,7 +3,7 @@
 <div class="flexbox">
     <div class="sidebar blank t-task-list-sidebar bordered-right{if $total_count < 1} overflow-visible{/if}">
 
-        <div class="t-main-wrapper">
+        <div class="sidebar-body t-main-wrapper">
 
             {$_backend_tasks_hooks = $backend_tasks_hooks|default:[]}
             {$_backend_body_hooks = $backend_tasks_hooks.body|default:[]}
