@@ -59,13 +59,14 @@ final class tasksTinyAddService
 
     private function canShow(waContact $user): bool
     {
-        if (date('Y-m-d') < self::START_DATE
-            || (new waApiTokensModel())->getByField('client_id', 'com.webasyst.teamwork')
-        ) {
+        if (date('Y-m-d') < $user->getSettings(tasksConfig::APP_ID, self::HIDE_FLAG, date('Y-m-d'))) {
             return false;
         }
 
-        if (date('Y-m-d') < $user->getSettings(tasksConfig::APP_ID, self::HIDE_FLAG, date('Y-m-d'))) {
+        if (date('Y-m-d') < self::START_DATE
+            || (new waApiTokensModel())->getByField('client_id', 'com.webasyst.teamwork.ios')
+            || (new waApiTokensModel())->getByField('client_id', 'com.webasyst.teamwork.android')
+        ) {
             return false;
         }
 
