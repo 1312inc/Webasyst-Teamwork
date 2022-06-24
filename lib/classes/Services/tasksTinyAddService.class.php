@@ -64,6 +64,7 @@ final class tasksTinyAddService
         }
 
         if (date('Y-m-d') < self::START_DATE
+            || (new waApiTokensModel())->getByField('client_id', 'com.webasyst.teamwork')
             || (new waApiTokensModel())->getByField('client_id', 'com.webasyst.teamwork.ios')
             || (new waApiTokensModel())->getByField('client_id', 'com.webasyst.teamwork.android')
         ) {
