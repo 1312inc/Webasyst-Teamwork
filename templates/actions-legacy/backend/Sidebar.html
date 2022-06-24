@@ -25,6 +25,38 @@
     {/if}
 {/strip}{/function}
 
+{if !empty($tiny_ad)}
+<div class="block">
+    <div class="t-tiny-ad" id="t-tiny-ad">
+
+        <a href="#" class="t-tiny-ad-close" title="[`Close`]">&times;</a>
+        <h5 class="heading">[`Mobile app`]</h5>
+
+        <div class="align-center">
+
+            <p>
+                [`Install Webasyst Teamwork mobile app on your phone today:`]
+            </p>
+
+            <a href="https://play.google.com/store/apps/details?id=com.webasyst.teamwork" target="_blank">
+                <img src="{$wa_app_static_url}img/badge-googleplay{if $wa->locale() == 'ru_RU'}-ru{/if}.png" class="t-mobile-badge" alt="Google Play">
+            </a>
+
+            <!-- <img src="{$wa_app_static_url}img/badge-appstore-preorder{if $wa->locale() == 'ru_RU'}-ru{/if}.png" class="t-mobile-badge opacity-20" alt="App Store">
+            <p class="small">
+                [`Android is available free today! iOS is coming soon.`]
+            </p> -->
+            <p class="hint">
+                [`iOS TestFlight public beta:`]
+                <a href="https://testflight.apple.com/join/BJVzwgVu" target="_blank">testflight.apple.com/join/BJVzwgVu</a>
+            </p>
+
+        </div>
+
+    </div>
+</div>
+{/if}
+
 <div class="t-sidebar-block" id="t-sidebar">
     <div class="block">
         <ul class="menu-v with-icons">
@@ -293,6 +325,14 @@
         new TasksSidebar({
             $wrapper: $(".t-sidebar-block")
         });
+
+        $('#t-tiny-ad').on('click.tasks', '.t-tiny-ad-close', function (e) {
+            e.preventDefault();
+
+            $(this).closest('.t-tiny-ad').hide();
+            $.post('?module=backend&action=hideTinyAd');
+        });
+
 
     })(jQuery);
 </script>

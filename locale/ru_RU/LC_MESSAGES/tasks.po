@@ -12,7 +12,7 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=((((n%10)==1)&&((n%100)!=11))?(0):(((((n%10)>=2)&&((n%10)<=4))&&(((n%100)<10)||((n%100)>=20)))?(1):2));\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Basepath: .\n"
-"X-Generator: Poedit 3.0.1\n"
+"X-Generator: Poedit 3.1\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPath-1: .\n"
 
@@ -1458,3 +1458,15 @@ msgstr "%s отредактировал задачу"
 
 msgid "invited"
 msgstr "приглашен"
+
+msgid "Mobile app"
+msgstr "Приложение"
+
+msgid "Install Webasyst Teamwork mobile app on your phone today:"
+msgstr "Установите Webasyst Задачи на свой телефон сегодня:"
+
+msgid "Android is available free today! iOS is coming soon."
+msgstr "Бесплатно для Андроид уже сегодня. iOS — скоро!"
+
+msgid "iOS TestFlight public beta:"
+msgstr "iOS TestFlight бета-версия:"

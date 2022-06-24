@@ -18,36 +18,30 @@
 <div class="sidebar-body t-sidebar-block" id="t-sidebar">
 
     {if !empty($tiny_ad)}
-    <div class="t-tiny-ad">
+    <div class="t-tiny-ad box">
         <div class="t-tiny-ad-box">
 
             <a href="#" class="t-tiny-ad-close" title="[`Close`]">&times;</a>
-            <h5 class="heading">{$tiny_ad.heading}</h5>
+            <h5 class="heading">[`Mobile app`]</h5>
 
             <div class="align-center">
 
-                <a href="{$tiny_ad.appurl}" target="_blank">
-                    <img src="{$tiny_ad.image}" class="t-app-icon{if $tiny_ad.adtype == 'plugin'} t-plugin-icon{/if}" />
+                <p>
+                    [`Install Webasyst Teamwork mobile app on your phone today:`]
+                </p>
+
+                <a href="https://play.google.com/store/apps/details?id=com.webasyst.teamwork" target="_blank">
+                    <img src="{$wa_app_static_url}img/badge-googleplay{if $wa->locale() == 'ru_RU'}-ru{/if}.png" class="t-mobile-badge" alt="Google Play">
                 </a>
 
-                <h3>
-                    <a href="{$tiny_ad.appurl}" target="_blank">{$tiny_ad.title}</a>
-                </h3>
-
-                <p>
-                    {$tiny_ad.subtitle}
-                    {$tiny_ad.teaser}
+                <!-- <img src="{$wa_app_static_url}img/badge-appstore-preorder{if $wa->locale() == 'ru_RU'}-ru{/if}.png" class="t-mobile-badge opacity-20" alt="App Store">
+                <p class="small">
+                    [`Android is available free today! iOS is coming soon.`]
+                </p> -->
+                <p class="hint">
+                    [`iOS TestFlight public beta:`]
+                    <a href="https://testflight.apple.com/join/BJVzwgVu" target="_blank">testflight.apple.com/join/BJVzwgVu</a>
                 </p>
-
-                <p class="align-center semibold gray">
-                    [`Promocode`]
-                    <span class="badge indicator onfire bold t-app-discount-badge">&minus;{$tiny_ad.discount}%</span>
-                </p>
-                <input type="text" class="bold align-center" value="{$tiny_ad.promocode}" style="border-style: dashed; font-size: 1rem;">
-
-                <div class="block">
-                    <a href="{$tiny_ad.buyurl}" target="_blank" class="button green t-tiny-ad-action-button">[`Buy now`]</a>
-                </div>
 
             </div>
 
