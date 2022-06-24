@@ -82,7 +82,7 @@
 
     <div class="t-doingnow-widget-wrapper">
         <div class="text-wrapper">
-            <h6 class="heading nowrap">{_wp($title)}</h6>
+            <h6 class="heading nowrap">{_wp($title)|escape}</h6>
             <ul class="t-doingnow-list">
                 {foreach $users as $user}
                     <li class="h-author-wrapper">

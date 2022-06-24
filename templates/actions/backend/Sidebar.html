@@ -15,7 +15,40 @@
     bg_color => 'transparent'
 ]}
 
-<div class="sidebar-body hide-scrollbar t-sidebar-block" id="t-sidebar">
+<div class="sidebar-body t-sidebar-block" id="t-sidebar">
+
+    {if !empty($tiny_ad)}
+    <div class="t-tiny-ad box">
+        <div class="t-tiny-ad-box">
+
+            <a href="#" class="t-tiny-ad-close" title="[`Close`]">&times;</a>
+            <h5 class="heading">[`Mobile app`]</h5>
+
+            <div class="align-center">
+
+                <p>
+                    [`Install Webasyst Teamwork mobile app on your phone today:`]
+                </p>
+
+                <a href="https://play.google.com/store/apps/details?id=com.webasyst.teamwork" target="_blank">
+                    <img src="{$wa_app_static_url}img/badge-googleplay{if $wa->locale() == 'ru_RU'}-ru{/if}.png" class="t-mobile-badge" alt="Google Play">
+                </a>
+
+                <!-- <img src="{$wa_app_static_url}img/badge-appstore-preorder{if $wa->locale() == 'ru_RU'}-ru{/if}.png" class="t-mobile-badge opacity-20" alt="App Store">
+                <p class="small">
+                    [`Android is available free today! iOS is coming soon.`]
+                </p> -->
+                <p class="hint">
+                    [`iOS TestFlight public beta:`]
+                    <a href="https://testflight.apple.com/join/BJVzwgVu" target="_blank">testflight.apple.com/join/BJVzwgVu</a>
+                </p>
+
+            </div>
+
+        </div>
+    </div>
+    {/if}
+
     <div class="box custom-mt-4">
         <div class="flexbox space-8">
             <div class="wide">
@@ -208,9 +241,12 @@
                                 <span class="icon">
                                     <i class="userpic" style="background-image: url({waContact::getPhotoUrl($user.id, $user.photo, 40, 40, 'person', 0)})"></i>
                                 </span>
-                                <span>
+                                <span class=" {if $user.invited}gray{/if}">
                                     {$user.name|escape}
                                     {if $user.calendar_status}<div class="custom-mt-4 width-100"><span class="badge small nowrap" style="display: inline-block; text-overflow: ellipsis; overflow: hidden; max-width: 99px; background-color: {$user.calendar_status->getBgColor()};color: {$user.calendar_status->getFontColor()};" title="{$user.calendar_status->getName()|escape}">{$user.calendar_status->getName()|escape|truncate:32}</span></div>{/if}
+                                    {if $user.invited}
+                                        <span class="badge small squared light-gray custom-ml-4">[`invited`]</span>
+                                    {/if}
                                 </span>
                                 <span class="count">
                                     {user_count user_id=$user.id}
@@ -430,16 +466,11 @@
             $(this).hide();
         });
 
-        /* hide/show scrollbar */
-        $('.sidebar, .sidebar-body').on('hover', function () {
-            var $element = $(this),
-                element_class = 'hide-scrollbar';
+        $('#t-sidebar').on('click.tasks', '.t-tiny-ad-close', function (e) {
+            e.preventDefault();
 
-            if ($element.hasClass(element_class)) {
-                $element.removeClass(element_class);
-            } else {
-                $element.addClass(element_class);
-            }
+            $(this).closest('.t-tiny-ad').hide();
+            $.post('?module=backend&action=hideTinyAd');
         });
 
     })(jQuery);

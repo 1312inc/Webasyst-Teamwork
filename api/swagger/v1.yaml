@@ -696,6 +696,10 @@ paths:
                 email:
                   type: string
                   format: email
+                  required: false
+                phone:
+                  type: string
+                  required: false
                 task_id:
                   type: integer
                 access_right:
@@ -1559,6 +1563,9 @@ components:
               sort:
                 type: integer
                 minimum: 0
+              inviteLink:
+                type: string
+                nullable: false
 
     taskInfo:
       type: object
@@ -1653,6 +1660,10 @@ components:
             $ref: '#/components/schemas/tagInfo'
         project:
           $ref: '#/components/schemas/projectInfo'
+        milestone:
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/milestoneInfo'
         favorite:
           type: boolean
     projectInfo:
@@ -2101,7 +2112,7 @@ components:
         counts:
           $ref: '#/components/schemas/taskCountInfo'
         sort:
-          type: int
+          type: integer
           nullable: true
     tagInfo:
       type: object

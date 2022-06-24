@@ -12,8 +12,19 @@ class tasksTeamInviteToTaskMethod extends tasksApiAbstractMethod
      */
     public function run(): tasksApiResponseInterface
     {
+        $email = $this->post('email', false, self::CAST_STRING_TRIM);
+        if ($email) {
+            $email = new tasksValueEmail($email);
+        }
+
+        $phone = $this->post('phone', false, self::CAST_STRING_TRIM);
+        if ($phone) {
+            $phone = new tasksValuePhone($phone);
+        }
+
          $request = new tasksApiTeamInviteToTaskRequest(
-            new tasksValueEmail($this->post('email', true, self::CAST_STRING_TRIM)),
+            $email,
+            $phone,
             $this->post('task_id', true, self::CAST_INT),
             $this->post('access_right', false, self::CAST_INT) ?? 0
         );

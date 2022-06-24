@@ -6,15 +6,22 @@ class tasksInviteResultDto
      * @var int|null
      */
     private $contactId;
+
     /**
      * @var string|null
      */
     private $errorDescription;
 
-    public function __construct(?int $contactId, ?string $errorDescription)
+    /**
+     * @var array|null
+     */
+    private $token;
+
+    public function __construct(?int $contactId, ?string $errorDescription, ?array $token)
     {
         $this->contactId = $contactId;
         $this->errorDescription = $errorDescription;
+        $this->token = $token;
     }
 
     public function getContactId(): ?int
@@ -25,5 +32,10 @@ class tasksInviteResultDto
     public function getErrorDescription(): ?string
     {
         return $this->errorDescription;
+    }
+
+    public function getToken(): ?array
+    {
+        return $this->token;
     }
 }

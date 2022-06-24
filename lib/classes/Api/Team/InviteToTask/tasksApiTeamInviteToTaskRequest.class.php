@@ -3,7 +3,7 @@
 final class tasksApiTeamInviteToTaskRequest
 {
     /**
-     * @var tasksValueEmail
+     * @var tasksValueEmail|null
      */
     private $email;
 
@@ -17,16 +17,31 @@ final class tasksApiTeamInviteToTaskRequest
      */
     private $accessRight;
 
-    public function __construct(tasksValueEmail $email, int $taskId, int $accessRight)
+    /**
+     * @var tasksValuePhone|null
+     */
+    private $phone;
+
+    public function __construct(?tasksValueEmail $email,?tasksValuePhone $phone, int $taskId, int $accessRight)
     {
+        if ($email === null && $phone === null) {
+            throw new tasksApiWrongParamException('phone, email', 'Phone or email are required');
+        }
+
         $this->email = $email;
         $this->taskId = $taskId;
         $this->accessRight = $accessRight;
+        $this->phone = $phone;
     }
 
-    public function getEmail(): tasksValueEmail
+    public function getEmail(): ?tasksValueEmail
     {
         return $this->email;
+    }
+
+    public function getPhone(): ?tasksValuePhone
+    {
+        return $this->phone;
     }
 
     public function getTaskId(): int

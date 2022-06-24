@@ -9,7 +9,7 @@ class tasksActorsWidget extends tasksAbstractWidget
         $this->display([
             'widget_id' => $this->id,
             'widget_url' => $this->getStaticUrl(),
-            'users' => tasksHelper::getTeam(null, true, false, true),
+            'users' => (new tasksTeamGetter())->getTeam(new taskTeamGetterParamsDto(null, true, false, true)),
             'team_app_name' => $this->getTeamAppName(),
         ]);
 

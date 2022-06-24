@@ -25,6 +25,17 @@ final class tasksApiProjectDeleteHandler
             throw new tasksException('Error on project delete');
         }
 
+        /**
+         * @event project_delete
+         *
+         * @param array [string]mixed $params
+         * @param array [string]array $params['id'] ID of deleting project
+         *
+         * @return void
+         */
+        $params = ['ids' => [$project->getId()]];
+        wa()->event('project_delete', $params);
+
         waFiles::delete((new tasksProjectIconUploader())->getProjectIconsPath($project->getId()), true);
 
         return true;

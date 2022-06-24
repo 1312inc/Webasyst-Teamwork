@@ -62,7 +62,14 @@ final class tasksApiTeammateContactInfoDtoFactory
             $fieldValues['timezone'] ?: null,
             tasksApiSocialnetworkDto::createCollectionFromArray($fieldValues['socialnetwork'] ?? []),
             $fieldValues['about'] ?: null,
-            wa()->getConfig()->getHostUrl() . $contact->getPhoto(tasksOptions::getApiLargePhotoSize())
+            wa()->getConfig()->getHostUrl() . waContact::getPhotoUrl(
+                $contact->getId(),
+                $contact->exists() ? $contact->get('photo') : null,
+                tasksOptions::getApiLargePhotoSize(),
+                tasksOptions::getApiLargePhotoSize(),
+                'person',
+                true
+            )
         );
     }
 }

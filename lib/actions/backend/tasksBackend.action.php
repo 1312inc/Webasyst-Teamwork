@@ -15,7 +15,7 @@ class tasksBackendAction extends waViewAction
         $tag_model = new tasksTaskTagsModel();
         $cloud = $tag_model->getCloud();
 
-        $users = tasksHelper::getTeam(null, true, false, true);
+        $users = (new tasksTeamGetter())->getTeam(new taskTeamGetterParamsDto(null, true, false, true, true));
 
         $accessedProjects = (new tasksRights())
             ->getAvailableProjectForContact(wa()->getUser());
@@ -38,6 +38,7 @@ class tasksBackendAction extends waViewAction
             'users' => $users,
             'text_editor' => wa()->getUser()->getSettings('tasks', 'text_editor', 'wysiwyg'),
             'user_has_minimum_access' => $accessedProjects === true || !empty($accessedProjects[tasksRights::PROJECT_ANY_ACCESS]),
+            'tiny_ad' => (new tasksTinyAddService())->getAd(wa()->getUser())
         ];
 
         $this->view->assign($viewData);

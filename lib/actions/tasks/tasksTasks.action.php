@@ -158,7 +158,7 @@ class tasksTasksAction extends waViewAction
                 break;
 
             case tasksCollection::ORDER_OLDEST:
-                $c->orderBy('create_datetime');
+                $c->orderBy('update_datetime');
                 break;
 
             case tasksCollection::ORDER_DUE:

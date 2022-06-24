@@ -16,7 +16,7 @@ final class tasksValueEmail
         $this->email = $email;
     }
 
-    public function getEmail(): string
+    public function getValue(): string
     {
         return $this->email;
     }

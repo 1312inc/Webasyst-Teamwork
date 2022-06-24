@@ -104,7 +104,7 @@ assigned_contact_id = i:1',
             return $total;
         }
 
-        if ($count == $total && $bgColor == 'transparent' && $textColor == '#999') {
+        if ($count == $total && $bgColor === 'transparent' && $textColor === '#999') {
             return $count;
         }
 
