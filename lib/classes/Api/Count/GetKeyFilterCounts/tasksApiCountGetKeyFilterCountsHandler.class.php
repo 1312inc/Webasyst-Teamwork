@@ -59,7 +59,10 @@ final class tasksApiCountGetKeyFilterCountsHandler
             $inboxUrgentCount = $userCounts['count'];
         }
 
-        return $this->getPair((int) ($userCounts['total'] - $hiddenCount), (int) $inboxUrgentCount, (int) $inboxUrgentCount);
+        return $this->getPair((int) ($userCounts['total'] - $hiddenCount),
+            (int) $inboxUrgentCount,
+            !empty($userCounts['priority']) ? (int) $inboxUrgentCount : 0
+        );
     }
 
     private function getFavoritesCountsPair(): tasksUserTasksCountPairDto
