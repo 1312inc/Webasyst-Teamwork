@@ -17,38 +17,6 @@
 
 <div class="sidebar-body t-sidebar-block" id="t-sidebar">
 
-    {if !empty($tiny_ad)}
-    <div class="t-tiny-ad box">
-        <div class="t-tiny-ad-box">
-
-            <a href="#" class="t-tiny-ad-close" title="[`Close`]">&times;</a>
-            <h5 class="heading">[`Mobile app`]</h5>
-
-            <div class="align-center">
-
-                <p>
-                    [`Install Webasyst Teamwork mobile app on your phone today:`]
-                </p>
-
-                <a href="https://play.google.com/store/apps/details?id=com.webasyst.teamwork" target="_blank">
-                    <img src="{$wa_app_static_url}img/badge-googleplay{if $wa->locale() == 'ru_RU'}-ru{/if}.png" class="t-mobile-badge" alt="Google Play">
-                </a>
-
-                <!-- <img src="{$wa_app_static_url}img/badge-appstore-preorder{if $wa->locale() == 'ru_RU'}-ru{/if}.png" class="t-mobile-badge opacity-20" alt="App Store">
-                <p class="small">
-                    [`Android is available free today! iOS is coming soon.`]
-                </p> -->
-                <p class="hint">
-                    [`iOS TestFlight public beta:`]
-                    <a href="https://testflight.apple.com/join/BJVzwgVu" target="_blank">testflight.apple.com/join/BJVzwgVu</a>
-                </p>
-
-            </div>
-
-        </div>
-    </div>
-    {/if}
-
     <div class="box custom-mt-4">
         <div class="flexbox space-8">
             <div class="wide">
@@ -410,6 +378,38 @@
 </div>
 
 <div class="sidebar-footer shadowed">
+
+    {if !empty($tiny_ad)}
+    <div class="t-tiny-ad box custom-pb-0">
+        <div class="t-tiny-ad-box">
+
+            <a href="#" class="t-tiny-ad-close" title="[`Close`]">&times;</a>
+            <h5 class="heading">[`Mobile app`]</h5>
+
+            <div class="align-center">
+
+                <p>
+                    [`Install Webasyst Teamwork mobile app on your phone today:`]
+                </p>
+
+                <a href="https://play.google.com/store/apps/details?id=com.webasyst.teamwork" target="_blank">
+                    <img src="{$wa_app_static_url}img/badge-googleplay{if $wa->locale() == 'ru_RU'}-ru{/if}.png" class="t-mobile-badge" alt="Google Play">
+                </a>
+
+                <!-- <img src="{$wa_app_static_url}img/badge-appstore-preorder{if $wa->locale() == 'ru_RU'}-ru{/if}.png" class="t-mobile-badge opacity-20" alt="App Store">
+                <p class="small">
+                    [`Android is available free today! iOS is coming soon.`]
+                </p> -->
+                <p class="hint">
+                    [`iOS TestFlight public beta:`]
+                    <a href="https://testflight.apple.com/join/BJVzwgVu" target="_blank">testflight.apple.com/join/BJVzwgVu</a>
+                </p>
+
+            </div>
+
+        </div>
+    </div>
+    {/if}
 
     <ul class="menu">
         {if $is_admin}
