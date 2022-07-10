@@ -157,6 +157,7 @@ return array(
         ':keys' => array(
             'PRIMARY' => 'id',
             'task_id' => 'task_id',
+            'tasks_task_log_contact_id_assigned_contact_id_index' => array('contact_id', 'assigned_contact_id'),
         ),
     ),
     'tasks_task_log_params' => array(

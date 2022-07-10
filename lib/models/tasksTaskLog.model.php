@@ -614,4 +614,17 @@ SQL;
             ['contact_ids' => $contactIds, 'contact_id' => $contactId, 'project_id' => $projectId]
         )->fetchAll();
     }
+
+    public function findFirstLogForContactId(int $contactId): array
+    {
+        $sql = <<<SQL
+SELECT * 
+FROM tasks_task_log
+WHERE contact_id = i:contact_id OR assigned_contact_id = i:contact_id
+ORDER BY id ASC
+LIMIT 1
+SQL;
+
+        return $this->query($sql, ['contact_id' => $contactId])->fetchAssoc();
+    }
 }

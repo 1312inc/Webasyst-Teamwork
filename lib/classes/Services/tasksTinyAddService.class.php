@@ -59,15 +59,28 @@ final class tasksTinyAddService
 
     private function canShow(waContact $user): bool
     {
-        if (date('Y-m-d') < $user->getSettings(tasksConfig::APP_ID, self::HIDE_FLAG, date('Y-m-d'))) {
+        $now = new DateTimeImmutable();
+        if ($now->format('Y-m-d') < $user->getSettings(tasksConfig::APP_ID, self::HIDE_FLAG, $now->format('Y-m-d'))) {
             return false;
         }
 
-        if (date('Y-m-d') < self::START_DATE
-            || (new waApiTokensModel())->getByField('client_id', 'com.webasyst.teamwork')
-            || (new waApiTokensModel())->getByField('client_id', 'com.webasyst.teamwork.ios')
-            || (new waApiTokensModel())->getByField('client_id', 'com.webasyst.teamwork.android')
+        $apiTokensModel = new waApiTokensModel();
+        if ($now->format('Y-m-d') < self::START_DATE
+            || $apiTokensModel->getByField('client_id', 'com.webasyst.teamwork')
+            || $apiTokensModel->getByField('client_id', 'com.webasyst.teamwork.ios')
+            || $apiTokensModel->getByField('client_id', 'com.webasyst.teamwork.android')
         ) {
+            return false;
+        }
+
+        $tasksLogModel = new tasksTaskLogModel();
+        $taskLog = $tasksLogModel->findFirstLogForContactId($user->getId());
+        if (!$taskLog) {
+            return false;
+        }
+
+        $firstLogDate = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $taskLog['create_datetime']);
+        if ($firstLogDate->diff($now)->days <= 3) {
             return false;
         }
 

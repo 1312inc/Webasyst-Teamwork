@@ -34,6 +34,11 @@ class tasksConfig extends waAppConfig
      */
     private $rightResolver;
 
+    /**
+     * @var bool
+     */
+    private $inited = false;
+
     public function getHydrator(): tasksHydratorInterface
     {
         if ($this->hydrator === null) {
@@ -55,6 +60,9 @@ class tasksConfig extends waAppConfig
     public function init()
     {
         parent::init();
+
+        $this->inited = true;
+        register_shutdown_function([$this, 'registerShutdown']);
 
         $this->models[''] = new tasksModel();
         $this->repositories[''] = new tasksBaseRepository('');
@@ -438,5 +446,76 @@ class tasksConfig extends waAppConfig
                 return wa(tasksConfig::APP_ID)->getConfig();
             }
         }
+    }
+
+    public function registerShutdown(): void
+    {
+        $error = error_get_last();
+
+        if (!$error) {
+            return;
+        }
+
+        if ($error['type'] !== E_ERROR) {
+            return;
+        }
+
+        if (!$this->inited) {
+            return;
+        }
+        $this->inited = false;
+
+        switch ($error['type']) {
+            case E_ERROR: // 1 //
+                $typestr = 'E_ERROR';
+                break;
+            case E_WARNING: // 2 //
+                $typestr = 'E_WARNING';
+                break;
+            case E_PARSE: // 4 //
+                $typestr = 'E_PARSE';
+                break;
+            case E_NOTICE: // 8 //
+                $typestr = 'E_NOTICE';
+                break;
+            case E_CORE_ERROR: // 16 //
+                $typestr = 'E_CORE_ERROR';
+                break;
+            case E_CORE_WARNING: // 32 //
+                $typestr = 'E_CORE_WARNING';
+                break;
+            case E_COMPILE_ERROR: // 64 //
+                $typestr = 'E_COMPILE_ERROR';
+                break;
+            case E_CORE_WARNING: // 128 //
+                $typestr = 'E_COMPILE_WARNING';
+                break;
+            case E_USER_ERROR: // 256 //
+                $typestr = 'E_USER_ERROR';
+                break;
+            case E_USER_WARNING: // 512 //
+                $typestr = 'E_USER_WARNING';
+                break;
+            case E_USER_NOTICE: // 1024 //
+                $typestr = 'E_USER_NOTICE';
+                break;
+            case E_STRICT: // 2048 //
+                $typestr = 'E_STRICT';
+                break;
+            case E_RECOVERABLE_ERROR: // 4096 //
+                $typestr = 'E_RECOVERABLE_ERROR';
+                break;
+            case E_DEPRECATED: // 8192 //
+                $typestr = 'E_DEPRECATED';
+                break;
+            case E_USER_DEPRECATED: // 16384 //
+                $typestr = 'E_USER_DEPRECATED';
+                break;
+            default:
+                $typestr = $error['type'];
+        }
+        $message = sprintf('%s: %s in %s on line %s', $typestr, $error['message'], $error['file'],
+            $error['line']);
+        waLog::log($message, 'tasks/fatal.log');
     }
 }
