@@ -26,9 +26,8 @@
 
                 <ul class="menu custom-mt-0">
                     {foreach $users as $user}
-                        {$_count = tasksActorsWidget::userCount($user.id)}
-                        {if !empty($_count) || $_count == '0'}
-                        <li{if $_count == '0'} class="highlighted green" style="border-radius: 0;"{/if}>
+                        {if !empty($user['tasks.count_pairs']) || $user['tasks.count_pairs'] == '0'}
+                        <li{if $user['tasks.count_pairs'] == '0'} class="highlighted green" style="border-radius: 0;"{/if}>
                             <a href="{$wa_backend_url}tasks/#/tasks/assigned/{$user.id}/">
                                 <span class="icon">
                                     <i class="userpic" style="background-image: url({waContact::getPhotoUrl($user.id, $user.photo, 40, 40, 'person', 0)})"></i>
@@ -38,7 +37,7 @@
                                 </span>
                                 <span class="count">
                                     {if $user.calendar_status}<span class="badge custom-mr-4 nowrap" style="display: inline-block; text-overflow: ellipsis; position: relative; top: 2px; overflow: hidden; max-width: 99px; background-color: {$user.calendar_status->getBgColor()};color: {$user.calendar_status->getFontColor()};" title="{$user.calendar_status->getName()|escape}">{$user.calendar_status->getName()|escape|truncate:32}</span>{/if}
-                                    {$_count}
+                                    {$user['tasks.count_pairs']}
                                 </span>
                             </a>
                         </li>
@@ -87,7 +86,7 @@
                                 {$user.name|escape}
                             </span>
                             <span class="count">
-                                {tasksActorsWidget::userCount($user.id)}
+                                {$user['tasks.count_pairs']}
                             </span>
                         </a>
                     </li>

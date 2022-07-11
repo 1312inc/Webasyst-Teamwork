@@ -5,18 +5,28 @@ class tasksActorsWidget extends tasksAbstractWidget
     public function defaultAction()
     {
         $this->incognitoUser();
+        $users = (new tasksTeamGetter())->getTeam(new taskTeamGetterParamsDto(null, true, false, true));
+
+        array_walk($users,  function(array &$user) {
+            $user['tasks.total_tasks'] = 0;
+            $user['tasks.count_pairs'] = $this->userCount($user['id'], $user['tasks.total_tasks']);
+        });
+
+        usort($users, static function (array $u1, array $u2) {
+           return $u1['tasks.total_tasks'] <=> $u2['tasks.total_tasks'];
+        });
 
         $this->display([
             'widget_id' => $this->id,
             'widget_url' => $this->getStaticUrl(),
-            'users' => (new tasksTeamGetter())->getTeam(new taskTeamGetterParamsDto(null, true, false, true)),
+            'users' => $users,
             'team_app_name' => $this->getTeamAppName(),
         ]);
 
         $this->incognitoLogout();
     }
 
-    public static function userCount($userId = null)
+    private function userCount($userId = null, &$total = 0)
     {
         if (wa()->getUser()->isAdmin('tasks')) {
             $countService = new tasksUserTasksCounterService();
@@ -27,6 +37,8 @@ class tasksActorsWidget extends tasksAbstractWidget
                 'text_color' => '#999',
                 'bg_color' => 'transparent',
             ]);
+
+            $total = (int) $userCount['total'];
 
             return tasksUserTasksCounterService::getPairs(
                 $userCount['total'],
