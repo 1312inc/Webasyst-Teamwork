@@ -10,6 +10,9 @@ class tasksTasksGetUsersForProjectController extends waJsonController
             ->getUsers(new tasksApiTeamGetTopAssigneesRequest($projectId));
 
         foreach ($this->response as &$item) {
+            foreach (['name', 'firstname', 'middlename', 'title', 'company', 'jobtitle', 'about', 'login'] as $toEscape) {
+                $item[$toEscape] = htmlspecialchars($item[$toEscape]);
+            }
             if (!empty($item['calendar_status'])) {
                 $item['calendar_status'] = [
                     'name' => $item['calendar_status']->getName(),
