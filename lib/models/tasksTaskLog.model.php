@@ -625,6 +625,6 @@ ORDER BY id ASC
 LIMIT 1
 SQL;
 
-        return $this->query($sql, ['contact_id' => $contactId])->fetchAssoc();
+        return $this->query($sql, ['contact_id' => $contactId])->fetchAssoc() ?? [];
     }
 }
