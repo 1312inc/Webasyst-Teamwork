@@ -100,7 +100,11 @@ abstract class tasksApiAbstractMethod extends waAPIMethod
     public function execute()
     {
         try {
-            $handlerResult = $this->run();
+            if (waSystemConfig::isDebug() || (new tasksLicenseCheckerService())->hasLicense()) {
+                $handlerResult = $this->run();
+            } else {
+                $handlerResult = new tasksApiResponse(tasksApiResponseInterface::HTTP_UNAUTHORIZED, 'expired');
+            }
 
             $this->response = $handlerResult->getResponseBody();
 
