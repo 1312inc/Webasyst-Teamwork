@@ -1,13 +1,14 @@
 <?php
 return array(
-    'name'    => 'Tasks',
-    'icon'    => 'img/tasks-512.png',
+    'name' => 'Tasks',
+    'icon' => 'img/tasks-512.png',
     'version' => '2.6.2',
-    'vendor'  => '1021997',
-    'rights'  => true,
+    'vendor' => '1021997',
+    'rights' => true,
     'plugins' => true,
-    'csrf'    => false,
+    'csrf' => false,
     'license' => 'commercial',
     'sash_color' => '#ffdc2f',
-    'ui'      => '1.3,2.0'
+    'ui' => '1.3,2.0',
+    'frontend' => true,
 );

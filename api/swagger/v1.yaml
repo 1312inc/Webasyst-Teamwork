@@ -308,6 +308,43 @@ paths:
           description: Запрещено
         500:
           description: Все плохо
+  /tasks.tasks.publicLink:
+    post:
+      tags:
+        - Таски
+      summary: 'Получает или удаляет публичные ссылки для таска'
+      security:
+        - ApiKeyAuth: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  minimum: 1
+                  description: Идентификатор таска
+                publish:
+                  type: boolean
+              required:
+                - id
+                - publish
+      responses:
+        200:
+          description: Список адресов для разных доменов, пустой в случае отключения публичной ссылки
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        400:
+          description: Ошибка
+        403:
+          description: Запрещено
+        500:
+          description: Все плохо
   /tasks.tasks.delete:
     post:
       tags:

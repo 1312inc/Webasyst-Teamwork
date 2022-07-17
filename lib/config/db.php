@@ -135,9 +135,11 @@ return array(
         'due_date' => array('date'),
         'comment_log_id' => array('int', 11),
         'uuid' => array('varchar', 36),
+        'public_hash' => array('varchar', 36),
         ':keys' => array(
             'PRIMARY' => 'id',
             'project_number' => array('project_id', 'number', 'unique' => 1),
+            'tasks_task_public_hash_uindex' => array('public_hash', 'unique' => 1),
             'milestone_id' => 'milestone_id',
             'status_id' => 'status_id',
             'assigned_contact_id' => 'assigned_contact_id',
