@@ -1703,6 +1703,11 @@ components:
             - $ref: '#/components/schemas/milestoneInfo'
         favorite:
           type: boolean
+        publicLinks:
+          description: Список публичных ссылок
+          type: array
+          items:
+            type: string
     projectInfo:
       type: object
       properties:

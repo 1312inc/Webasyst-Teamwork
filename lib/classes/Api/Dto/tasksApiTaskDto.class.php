@@ -153,6 +153,10 @@ final class tasksApiTaskDto implements JsonSerializable
      * @var tasksApiMilestoneDto|null
      */
     private $milestone;
+    /**
+     * @var array|null
+     */
+    private $publicLinks;
 
     public function __construct(
         int $id,
@@ -184,7 +188,8 @@ final class tasksApiTaskDto implements JsonSerializable
         bool $favorite,
         string $text_stripped,
         ?string $uuid,
-        ?tasksApiMilestoneDto $milestone
+        ?tasksApiMilestoneDto $milestone,
+        ?array $publicLinks
     ) {
         $this->id = $id;
         $this->name = $name;
@@ -216,6 +221,7 @@ final class tasksApiTaskDto implements JsonSerializable
         $this->text_stripped = $text_stripped;
         $this->uuid = $uuid;
         $this->milestone = $milestone;
+        $this->publicLinks = $publicLinks;
     }
 
     public function getId(): int
