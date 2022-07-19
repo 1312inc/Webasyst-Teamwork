@@ -11,13 +11,9 @@ class tasksTasksPublicLinkMethod extends tasksApiAbstractMethod
             $this->post('publish', true, self::CAST_BOOLEAN)
         );
 
-        $hash = (new tasksApiTasksPublicLinkHandler())->publish($request);
-        $urls = [];
-        foreach (wa()->getRouting()->getDomains() as $domain) {
-            $urls[] = wa()->getRouting()->getUrl('/frontend', ['public_hash' => $hash], true, $domain);
-        }
-
-
-        return new tasksApiResponse(tasksApiResponseInterface::HTTP_OK, $urls);
+        return new tasksApiResponse(
+            tasksApiResponseInterface::HTTP_OK,
+            (new tasksApiTasksPublicLinkHandler())->publish($request)
+        );
     }
 }

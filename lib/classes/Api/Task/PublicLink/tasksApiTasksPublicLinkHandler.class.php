@@ -2,7 +2,7 @@
 
 final class tasksApiTasksPublicLinkHandler
 {
-    public function publish(tasksApiTasksPublicLinkRequest $request): string
+    public function publish(tasksApiTasksPublicLinkRequest $request): ?array
     {
         $repository = tsks()->getEntityRepository(tasksTask2::class);
         /** @var tasksTask2 $task2 */
@@ -22,7 +22,17 @@ final class tasksApiTasksPublicLinkHandler
                 tsks()->getPersister()->save($task2);
             }
 
-            return $task2->getPublicHash();
+            $urls = [];
+            foreach (wa()->getRouting()->getDomains() as $domain) {
+                $urls[] = wa()->getRouting()->getUrl('/frontend', ['public_hash' => $task2->getPublicHash()], true, $domain);
+            }
+
+            $urls = array_filter($urls);
+            if (empty($urls)) {
+                throw new tasksException('No routing', 400);
+            }
+
+            return array_values($urls);
         }
 
         if ($task2->getPublicHash()) {
@@ -30,6 +40,6 @@ final class tasksApiTasksPublicLinkHandler
             tsks()->getPersister()->save($task2);
         }
 
-        return '';
+        return null;
     }
 }

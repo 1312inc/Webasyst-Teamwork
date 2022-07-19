@@ -11,4 +11,7 @@ return array(
     'sash_color' => '#ffdc2f',
     'ui' => '1.3,2.0',
     'frontend' => true,
+    'routing_params' => array(
+        'private' => true,
+    ),
 );
