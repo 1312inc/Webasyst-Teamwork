@@ -4,24 +4,25 @@ class tasksCollection
 {
     public const FIELDS_TO_GET = '*,log,create_contact,assigned_contact,attachments,tags,project,favorite,relations';
 
-    public const HASH_SEARCH     = 'search';
+    public const HASH_SEARCH = 'search';
     public const HASH_UNASSIGNED = 'unassigned';
-    public const HASH_ASSIGNED   = 'assigned';
-    public const HASH_TAG        = 'tag';
-    public const HASH_INBOX      = 'inbox';
-    public const HASH_FAVORITES  = 'favorites';
-    public const HASH_OUTBOX     = 'outbox';
-    public const HASH_STATUS     = 'status';
-    public const HASH_ID         = 'id';
-    public const HASH_UUID       = 'uuid';
-    public const HASH_PROJECT    = 'project';
-    public const HASH_SCOPE      = 'scope';
-    public const HASH_URGENT     = 'urgent';
-    public const HASH_NUMBER     = 'number';
+    public const HASH_ASSIGNED = 'assigned';
+    public const HASH_TAG = 'tag';
+    public const HASH_INBOX = 'inbox';
+    public const HASH_FAVORITES = 'favorites';
+    public const HASH_OUTBOX = 'outbox';
+    public const HASH_STATUS = 'status';
+    public const HASH_ID = 'id';
+    public const HASH_UUID = 'uuid';
+    public const HASH_PUBLIC_HASH = 'public_hash';
+    public const HASH_PROJECT = 'project';
+    public const HASH_SCOPE = 'scope';
+    public const HASH_URGENT = 'urgent';
+    public const HASH_NUMBER = 'number';
 
-    public const ORDER_NEWEST   = 'newest';
-    public const ORDER_OLDEST   = 'oldest';
-    public const ORDER_DUE      = 'due';
+    public const ORDER_NEWEST = 'newest';
+    public const ORDER_OLDEST = 'oldest';
+    public const ORDER_DUE = 'due';
     public const ORDER_PRIORITY = 'priority';
 
     public const ORDER_LIST = [
@@ -37,15 +38,15 @@ class tasksCollection
     protected $order_by;
     protected $default_order_by = 't.priority DESC, t.create_datetime';
 
-    protected $where        = [];
-    protected $fields       = [];
+    protected $where = [];
+    protected $fields = [];
     protected $other_fields = [];
-    protected $joins        = [];
-    protected $join_index   = [];
-    protected $options      = [
+    protected $joins = [];
+    protected $join_index = [];
+    protected $options = [
         'check_rights' => true,
     ];
-    protected $info         = [];
+    protected $info = [];
     protected $hash;
     protected $count;
 
@@ -621,7 +622,7 @@ class tasksCollection
 
     protected function getFieldType($field)
     {
-        $meta= $this->getModel()->getMetadata();
+        $meta = $this->getModel()->getMetadata();
 
         return $meta[$field]['type'] ?? null;
     }
@@ -656,6 +657,24 @@ class tasksCollection
 
         if ($ids) {
             $this->where[] = sprintf("t.uuid IN ('%s')", implode("','", $ids));
+            $this->default_order_by = 't.id';
+        } else {
+            $this->where[] = '0';
+        }
+    }
+
+    protected function public_hashPrepare($ids): void
+    {
+        $ids = explode(',', (string) $ids);
+        foreach ($ids as $i => $id) {
+            $ids[$i] = trim($id);
+            if (!$ids[$i]) {
+                unset($ids[$i]);
+            }
+        }
+
+        if ($ids) {
+            $this->where[] = sprintf("t.public_hash IN ('%s')", implode("','", $ids));
             $this->default_order_by = 't.id';
         } else {
             $this->where[] = '0';
@@ -762,7 +781,8 @@ class tasksCollection
 
                 //Show all tasks if status_id == all
                 if (!($parts[0] == 'status_id' && $parts[2] == 'all')) {
-                    $this->where[] = 't.' . $parts[0] . $this->getExpression($parts[1], $parts[2], $this->getFieldType($parts[0]));
+                    $this->where[] = 't.' . $parts[0] . $this->getExpression($parts[1], $parts[2],
+                            $this->getFieldType($parts[0]));
                 }
 
             } else {

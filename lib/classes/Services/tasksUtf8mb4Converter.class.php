@@ -81,7 +81,7 @@ final class tasksUtf8mb4Converter
 //                }
                 $isIndex = isset($indexes[$column['Field']]);
                 $isConvertable = !empty($column['Collation']);
-                if (!$isConvertable) {
+                if (!$isConvertable || $isIndex) {
                     continue;
                 }
 

@@ -107,6 +107,11 @@ class tasksTask2 implements tasksPersistableInterface
      */
     private $uuid;
 
+    /**
+     * @var string|null
+     */
+    private $public_hash = null;
+
     public function __construct()
     {
         $this->create_datetime = new DateTimeImmutable();
@@ -419,6 +424,18 @@ class tasksTask2 implements tasksPersistableInterface
         return $this;
     }
 
+    public function getPublicHash(): ?string
+    {
+        return $this->public_hash;
+    }
+
+    public function setPublicHash(?string $public_hash): tasksTask2
+    {
+        $this->public_hash = $public_hash;
+
+        return $this;
+    }
+
     public function toArray(): array
     {
         return [
@@ -440,6 +457,8 @@ class tasksTask2 implements tasksPersistableInterface
             'hidden_timestamp' => $this->hidden_timestamp,
             'due_date' => $this->due_date ? $this->due_date->format('Y-m-d H:i:s') : '',
             'comment_log_id' => $this->comment_log_id,
+            'uuid' => $this->uuid,
+            '$this->public_hash' => $this->public_hash,
         ];
     }
 }

@@ -466,7 +466,7 @@
             $(this).hide();
         });
 
-        $('#t-sidebar').on('click.tasks', '.t-tiny-ad-close', function (e) {
+        $('.t-tiny-ad-close').click(function (e) {
             e.preventDefault();
 
             $(this).closest('.t-tiny-ad').hide();
