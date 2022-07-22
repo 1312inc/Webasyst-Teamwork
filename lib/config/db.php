@@ -165,7 +165,7 @@ return array(
     'tasks_task_log_params' => array(
         'task_id' => array('int', 11, 'null' => 0),
         'log_id' => array('int', 11, 'null' => 0),
-        'name' => array('varchar', 255, 'null' => 0),
+        'name' => array('varchar', 250, 'null' => 0),
         'value' => array('text', 'null' => 0),
         ':keys' => array(
             'PRIMARY' => array('log_id', 'name'),
