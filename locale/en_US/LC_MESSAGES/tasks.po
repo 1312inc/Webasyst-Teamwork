@@ -1408,3 +1408,6 @@ msgstr ""
 
 msgid "iOS TestFlight public beta:"
 msgstr ""
+
+msgid "publicLinksError400"
+msgstr "To get a public link to this task, add (settle) the Teamwork app into your site structure using the Site app."

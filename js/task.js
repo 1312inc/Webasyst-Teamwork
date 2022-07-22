@@ -1835,7 +1835,10 @@ var Task = ( function($) {
                         $dropdownButton.removeClass('text-blue');
                         that.initPublicLinks();
                     })
-                    .fail(() => {
+                    .fail((e) => {
+                        if (e.status === 400) {
+                            alert($.wa.locale.publicLinksError400)
+                        }
                         throw new Error('Something wrong with publicLink action');
                     });
             });
@@ -1853,7 +1856,10 @@ var Task = ( function($) {
                         $dropdown.find('.dropdown-body').css('display', '');
                         $dropdown.addClass('is-opened');
                     })
-                    .fail(() => {
+                    .fail((e) => {
+                        if (e.status === 400) {
+                            alert($.wa.locale.publicLinksError400)
+                        }
                         throw new Error('Something wrong with publicLink action');
                     })
                     .always(() => {
