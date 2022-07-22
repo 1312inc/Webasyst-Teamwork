@@ -1872,7 +1872,7 @@ var Task = ( function($) {
             $dropdownMenu.prepend(`
                     <li class="dropdown-item custom-mb-4">
                         <div class="flexbox">
-                            <input type="text" value="${link}">
+                            <input type="text" value="${link}" class="wide">
                             <button class="copy-to-clipboard button small white"><i class="fas fa-copy"></i></button>
                             <a href="${link}" target="_blank" class="button small white"><i class="fas fa-external-link-alt"></i></a>
                         </div>
