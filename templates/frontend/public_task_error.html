@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="robots" content="noindex" />
+    <title>{$task['name']|escape}</title>
+    <script src="/wa-content/js/jquery-wa/wa.switch-mode.js?v2.6.0"></script>
+    <script defer src="/wa-content/js/fontawesome/fontawesome-all.min.js?v=513"></script>
+    <link href="/wa-content/css/wa/wa-2.0.css?v={$wa->version()}" rel="stylesheet" type="text/css">
+    <link href="{$wa_app_static_url}css/tasks.min.css?v={$wa->version()}" rel="stylesheet" type="text/css" />
+    <style>
+        .container {
+            max-width: 1024px;
+            padding: 4rem;
+            margin: 4rem auto;
+            border-radius: 2rem;
+        }
+        @media screen and (max-width: 900px) {
+            .container {
+                padding: 2rem;
+                margin: 0;
+                border-radius: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="wa">
+        <div class="container blank">
+
+            danger
+
+        </div>
+    </div>
+</body>
+</html>
+
+
+
