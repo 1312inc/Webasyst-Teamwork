@@ -186,6 +186,8 @@ var Task = ( function($) {
 
         that.initTaskTagsAutocomplete();
 
+        that.initPublicLinks();
+
         if (that.is_single) {
             var $task = that.$task;
             //
@@ -1786,6 +1788,92 @@ var Task = ( function($) {
                 $input.attr("checked", "checked").click();
             }
         }
+    };
+
+    Task.prototype.initPublicLinks = function () {
+        const that = this,
+            $dropdown = $('#publicLinkDropdown'),
+            $dropdownButton = $dropdown.find('.t-public-link-button'),
+            $delLinkButton = $dropdown.find('.t-public-link-button-del'),
+            $dropdownMenu = $dropdown.find('.menu'),
+            isLinksExists = !!$dropdownMenu.find('.dropdown-item').length,
+            fetchPublicLink = (isPublished) => {
+                return $.ajax({
+                    url: '?module=tasks&action=publicLink',
+                    type: 'POST',
+                    data: { id: that.task_id, publish: isPublished }
+                });
+            };
+
+        if(!$dropdown.length) 
+            return;
+
+        if (isLinksExists) {
+
+            $dropdown.waDropdown();
+
+            $('.copy-to-clipboard').on('click', function () {
+                var $input = $(this).prev('input');
+                var val = $input.val();
+                navigator.clipboard.writeText(val).then(function () {
+                    $input.val('copied');
+                    setTimeout(function () {
+                        $input.val(val);
+                    }, 1000);
+                }, function (err) {
+
+                });
+            });
+
+
+            $delLinkButton.one('click', function (e) {
+                e.preventDefault();
+                fetchPublicLink(0)
+                    .done(() => {
+                        $('#publicLinkDropdown').find('.dropdown-item').remove();
+                        $dropdown.find('.dropdown-body').css('display', 'none');
+                        $dropdownButton.removeClass('text-blue');
+                        that.initPublicLinks();
+                    })
+                    .fail(() => {
+                        throw new Error('Something wrong with publicLink action');
+                    });
+            });
+
+        } else {
+
+            $dropdownButton.one('click', function (e) {
+                e.preventDefault();
+                fetchPublicLink(1)
+                    .done(({ data }) => {
+                        for (link of data) {
+                            addRow(link);
+                        }
+                        $dropdownButton.addClass('text-blue');
+                        $dropdown.find('.dropdown-body').css('display', '');
+                        $dropdown.addClass('is-opened');
+                    })
+                    .fail(() => {
+                        throw new Error('Something wrong with publicLink action');
+                    })
+                    .always(() => {
+                        that.initPublicLinks();
+                    });
+            });
+        }
+
+        function addRow (link) {
+            $dropdownMenu.prepend(`
+                    <li class="dropdown-item custom-mb-4">
+                        <div class="flexbox">
+                            <input type="text" value="${link}">
+                            <button class="copy-to-clipboard button small white"><i class="fas fa-copy"></i></button>
+                            <a href="${link}" target="_blank" class="button small white"><i class="fas fa-external-link-alt"></i></a>
+                        </div>
+                    </li>                
+                `);
+        }
+
     };
 
     Task.prototype.initTaskUpdateListener = function () {
