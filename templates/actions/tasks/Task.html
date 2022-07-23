@@ -169,9 +169,9 @@
                                 </a>
                             </span>
                         {/if}
-                        
+
                         <div class="dropdown" id="publicLinkDropdown">
-                            <button class="t-public-link-button dropdown-toggle without-arrow nowrap button light-gray circle text-blue">
+                            <button class="t-public-link-button dropdown-toggle without-arrow nowrap button nobutton circle text-blue">
                                 <i class="fas fa-external-link-alt"></i>
                             </button>
                             <div class="dropdown-body right custom-p-8" style="width: auto;min-width: 300px;">
@@ -180,20 +180,21 @@
                                     {if $link}
                                     <li class="dropdown-item custom-mb-4">
                                         <div class="flexbox">
-                                            <input type="text" value="{$link}" class="wide">
-                                            <button class="copy-to-clipboard button small white"><i class="fas fa-copy"></i></button>
-                                            <a href="{$link}" target="_blank" class="button small white"><i class="fas fa-external-link-alt"></i></a>
+                                            <a href="{$link}" class="small bold" target="_blank">{$link}</a>
+                                            <button class="copy-to-clipboard button small nobutton"><i class="fas fa-copy"></i></button>
                                         </div>
                                     </li>
                                     {/if}
                                     {/foreach}
-                                    <li class="text-right">
-                                        <button href="#" class="t-public-link-button-del small white">[`Delete`]</button>
+                                    <li>
+                                        <div class="align-center box">
+                                            <button href="#" class="t-public-link-button-del smaller light-gray text-red">[`Disable public link`]</button>
+                                        </div>
                                     </li>
                                 </ul>
                             </div>
                         </div>
-                        
+
                     </div>
 
                 </div>

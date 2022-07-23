@@ -1473,3 +1473,12 @@ msgstr "iOS TestFlight бета-версия:"
 
 msgid "publicLinksError400"
 msgstr "Чтобы получить публичную ссылку на задачу, добавьте (поселите) приложение «Задачи» в структуре сайта в приложении «Сайт»."
+
+msgid "Disable public link"
+msgstr "Удалить ссылку"
+
+msgid "Enable public link"
+msgstr "Создать ссылку"
+
+msgid "Get a public link for tracking task status and updates with no access to Webasyst backend."
+msgstr "Ссылка для просмотра текущего статуса и истории выполнения задачи без доступа к Webasyst."

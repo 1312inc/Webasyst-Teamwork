@@ -1411,3 +1411,12 @@ msgstr ""
 
 msgid "publicLinksError400"
 msgstr "To get a public link to this task, add (settle) the Teamwork app into your site structure using the Site app."
+
+msgid "Disable public link"
+msgstr ""
+
+msgid "Enable public link"
+msgstr ""
+
+msgid "Get a public link for tracking task status and updates with no access to Webasyst backend."
+msgstr ""
