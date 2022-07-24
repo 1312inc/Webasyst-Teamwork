@@ -1793,90 +1793,76 @@ var Task = ( function($) {
     Task.prototype.initPublicLinks = function () {
         const that = this,
             $dropdown = $('#publicLinkDropdown'),
-            $dropdownButton = $dropdown.find('.t-public-link-button'),
+            $dropdownToggler = $dropdown.find('.dropdown-toggle'),
+            $createLinkButton = $dropdown.find('.t-public-link-button-create'),
             $delLinkButton = $dropdown.find('.t-public-link-button-del'),
             $dropdownMenu = $dropdown.find('.menu'),
-            isLinksExists = !!$dropdownMenu.find('.dropdown-item').length,
-            fetchPublicLink = (isPublished) => {
-                return $.ajax({
-                    url: '?module=tasks&action=publicLink',
-                    type: 'POST',
-                    data: { id: that.task_id, publish: isPublished }
-                });
-            };
+            $existionBlock = $dropdown.find('.t-public-link-block');
 
-        if(!$dropdown.length) 
-            return;
+        $dropdown.waDropdown();
 
-        if (isLinksExists) {
+        $delLinkButton.on('click', (e) => {
+            e.preventDefault();
+            fetchPublicLink(0);
+        });
 
-            $dropdown.waDropdown();
+        $createLinkButton.on('click', (e) => {
+            e.preventDefault();
+            fetchPublicLink(1);
+        });
 
-            $('.copy-to-clipboard').on('click', function () {
-                var $input = $(this).prev('input');
-                var val = $input.val();
-                navigator.clipboard.writeText(val).then(function () {
-                    $input.val('copied');
-                    setTimeout(function () {
-                        $input.val(val);
-                    }, 1000);
-                }, function (err) {
+        initCopy2Clipboard();
 
-                });
-            });
-
-
-            $delLinkButton.one('click', function (e) {
-                e.preventDefault();
-                fetchPublicLink(0)
-                    .done(() => {
-                        $('#publicLinkDropdown').find('.dropdown-item').remove();
-                        $dropdown.find('.dropdown-body').css('display', 'none');
-                        $dropdownButton.removeClass('text-blue');
-                        that.initPublicLinks();
-                    })
-                    .fail((e) => {
-                        if (e.status === 400) {
-                            alert($.wa.locale.publicLinksError400)
-                        }
-                        throw new Error('Something wrong with publicLink action');
-                    });
-            });
-
-        } else {
-
-            $dropdownButton.one('click', function (e) {
-                e.preventDefault();
-                fetchPublicLink(1)
-                    .done(({ data }) => {
+        function fetchPublicLink (isPublished) {
+            return $.ajax({
+                url: '?module=tasks&action=publicLink',
+                type: 'POST',
+                data: { id: that.task_id, publish: isPublished }
+            })
+                .done(({ data }) => {
+                    if (isPublished === 1) {
+                        $dropdownMenu.find('li').remove();
                         for (link of data) {
                             addRow(link);
                         }
-                        $dropdownButton.addClass('text-blue');
-                        $dropdown.find('.dropdown-body').css('display', '');
-                        $dropdown.addClass('is-opened');
-                    })
-                    .fail((e) => {
-                        if (e.status === 400) {
-                            alert($.wa.locale.publicLinksError400)
-                        }
-                        throw new Error('Something wrong with publicLink action');
-                    })
-                    .always(() => {
-                        that.initPublicLinks();
-                    });
+                        initCopy2Clipboard();
+                    }
+                    $existionBlock.toggleClass('hidden');
+                    $dropdownToggler.toggleClass('text-light-gray');
+                })
+                .fail((e) => {
+                    if (e.status === 400) {
+                        alert($.wa.locale.publicLinksError400);
+                    }
+                    throw new Error('Something wrong with publicLink action');
+                });
+        };
+
+        function initCopy2Clipboard () {
+            $('.copy-to-clipboard').on('click', function () {
+                var $link = $(this).prev('div').find('a');
+                var val = $link.text();
+                navigator.clipboard.writeText(val).then(() => {
+                    $link.text($.wa.locale.copied);
+                    setTimeout(() => {
+                        $link.text(val);
+                    }, 1000);
+                }, (err) => {
+
+                });
             });
         }
 
         function addRow (link) {
             $dropdownMenu.prepend(`
-                    <li class="dropdown-item custom-mb-4">
-                        <div class="flexbox">
-                            <input type="text" value="${link}" class="wide">
-                            <button class="copy-to-clipboard button small white"><i class="fas fa-copy"></i></button>
-                            <a href="${link}" target="_blank" class="button small white"><i class="fas fa-external-link-alt"></i></a>
+                    <li class="custom-mb-4">
+                        <div class="flexbox middle space-4">
+                            <div class="wide">
+                                <a href="${link}" class="small bold" target="_blank">${link}</a>
+                            </div>
+                            <button class="copy-to-clipboard button small nobutton"><i class="fas fa-copy"></i></button>
                         </div>
-                    </li>                
+                    </li>               
                 `);
         }
 

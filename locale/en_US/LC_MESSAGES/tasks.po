@@ -1420,3 +1420,6 @@ msgstr ""
 
 msgid "Get a public link for tracking task status and updates with no access to Webasyst backend."
 msgstr ""
+
+msgid "copied"
+msgstr "Copied!"

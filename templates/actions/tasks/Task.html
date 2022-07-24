@@ -169,29 +169,38 @@
                                 </a>
                             </span>
                         {/if}
-
+                        
+                        {$is_public_link_exists = !!count($task.public_links)}
                         <div class="dropdown" id="publicLinkDropdown">
-                            <button class="t-public-link-button dropdown-toggle without-arrow nowrap button nobutton circle text-blue">
+                            <button class="dropdown-toggle without-arrow nowrap button nobutton circle {if !$is_public_link_exists}text-light-gray{/if}">
                                 <i class="fas fa-external-link-alt"></i>
                             </button>
                             <div class="dropdown-body right custom-p-8" style="width: auto;min-width: 300px;">
-                                <ul class="menu">
-                                    {foreach $task.public_links as $link}
-                                    {if $link}
-                                    <li class="dropdown-item custom-mb-4">
-                                        <div class="flexbox">
-                                            <a href="{$link}" class="small bold" target="_blank">{$link}</a>
-                                            <button class="copy-to-clipboard button small nobutton"><i class="fas fa-copy"></i></button>
-                                        </div>
-                                    </li>
-                                    {/if}
-                                    {/foreach}
-                                    <li>
-                                        <div class="align-center box">
-                                            <button href="#" class="t-public-link-button-del smaller light-gray text-red">[`Disable public link`]</button>
-                                        </div>
-                                    </li>
-                                </ul>
+                                <div class="t-public-link-block {if $is_public_link_exists}hidden{/if}">
+                                    <p class="hint align-center custom-mb-0">
+                                        [`Get a public link for tracking task status and updates with no access to Webasyst backend.`]
+                                    </p>
+                                    <div class="align-center box">
+                                        <button href="#" class="t-public-link-button-create smaller light-gray text-blue">[`Enable public link`]</button>
+                                    </div>
+                                </div>
+                                <div class="t-public-link-block {if !$is_public_link_exists}hidden{/if}">
+                                    <ul class="menu custom-m-0">
+                                        {foreach $task.public_links as $link}
+                                        <li class="custom-mb-4">
+                                            <div class="flexbox middle space-4">
+                                                <div class="wide">
+                                                    <a href="{$link}" class="small bold" target="_blank">{$link}</a>
+                                                </div>
+                                                <button class="copy-to-clipboard button small nobutton"><i class="fas fa-copy"></i></button>
+                                            </div>
+                                        </li>
+                                        {/foreach}
+                                    </ul>
+                                    <div class="align-center box">
+                                        <button href="#" class="t-public-link-button-del smaller light-gray text-red">[`Disable public link`]</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
