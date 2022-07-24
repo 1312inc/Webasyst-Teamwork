@@ -6,13 +6,14 @@
     <meta http-equiv="Cache-Control" content="no-cache">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <meta name="robots" content="noindex" />
-    <title>{$task['name']|escape}</title>
+    <title>404</title>
     <script src="/wa-content/js/jquery-wa/wa.switch-mode.js?v2.6.0"></script>
     <script defer src="/wa-content/js/fontawesome/fontawesome-all.min.js?v=513"></script>
     <link href="/wa-content/css/wa/wa-2.0.css?v={$wa->version()}" rel="stylesheet" type="text/css">
     <link href="{$wa_app_static_url}css/tasks.min.css?v={$wa->version()}" rel="stylesheet" type="text/css" />
     <style>
         .container {
+            word-break: break-word;
             max-width: 1024px;
             padding: 4rem;
             margin: 4rem auto;
@@ -30,9 +31,7 @@
 <body>
     <div id="wa">
         <div class="container blank">
-
-            danger
-
+            <h1 class="align-center">{[`404`]}</h1>
         </div>
     </div>
 </body>
