@@ -140,7 +140,19 @@
                 </div>
             </div>
 
-            <h1>{$task['name']|escape}</h1>
+            <div class="flexbox space-12 custom-mb-24">
+                <div class="custom-mt-12">
+                    {* STATUS *}
+                    {if !empty($task.status.name)}
+                        {if $task.project.archive_datetime}
+                            <span class="badge t-status-wrapper is-archived"><i class="fas fa-archive fa-xs"></i> [`Archived`]</span>
+                        {else}
+                            <span>{tasksHelper::statusNameHTML($task.status.id)}</span>
+                        {/if}
+                    {/if}
+                </div>
+                <h1 class="custom-m-0">{$task['name']|escape}</h1>
+            </div>
 
             <div>
                 {tasksTask::formatText($task.text)}
