@@ -15,14 +15,21 @@
         .container {
             word-break: break-word;
             max-width: 1024px;
+            padding: 0 2rem;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .rounded {
             padding: 4rem;
-            margin: 4rem auto;
             border-radius: 2rem;
+            margin-top: 3rem;
+            margin-bottom: 3rem;
         }
         @media screen and (max-width: 900px) {
-            .container {
+            .rounded {
                 padding: 2rem;
-                margin: 0;
+                margin-top: 2rem;
+                margin-bottom: 2rem;
                 border-radius: 0;
             }
         }
@@ -30,7 +37,18 @@
 </head>
 <body>
     <div id="wa">
-        <div class="container blank">
+        
+        <div class="container custom-mt-32">
+            <div class="flexbox full-width">
+                <div>
+                    <img src="{$wa->url(true)}wa-apps/tasks/img/tasks.png" width="28" height="28" style="vertical-align: middle;" />
+                    <strong>{$wa->appName()}</strong>
+                </div>
+                <div>{$wa->accountName()}</div>
+            </div>
+        </div>
+
+        <div class="container blank rounded">
 
             <div class="flexbox middle space-8">
                 {if !empty($task.project.icon_html)}
@@ -312,6 +330,11 @@
 
             </div>
         </div>
+
+        <div class="align-center custom-mb-24">
+            <img width="85" src="{$wa->url(true)}wa-content/img/webasyst-logo.svg" />
+        </div>
+
     </div>
 
     <script>
