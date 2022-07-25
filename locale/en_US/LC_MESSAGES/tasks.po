@@ -1423,3 +1423,6 @@ msgstr ""
 
 msgid "copied"
 msgstr "Copied!"
+
+msgid "https://www.webasyst.com/store/app/tasks/"
+msgstr ""

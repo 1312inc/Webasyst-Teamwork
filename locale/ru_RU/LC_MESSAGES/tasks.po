@@ -1485,3 +1485,6 @@ msgstr "Ссылка для просмотра текущего статуса �
 
 msgid "copied"
 msgstr "Скопировано!"
+
+msgid "https://www.webasyst.com/store/app/tasks/"
+msgstr "https://www.webasyst.ru/store/app/tasks/"
