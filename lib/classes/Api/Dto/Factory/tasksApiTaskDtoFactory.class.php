@@ -65,15 +65,7 @@ final class tasksApiTaskDtoFactory
                 isset($task['milestone']) && is_array($task['milestone'])
                     ? tasksApiMilestoneDtoFactory::fromArray($task['milestone'], tasksApiCountsDtoFactory::createEmpty())
                     : null,
-                !empty($task['public_hash'])
-                    ? array_reduce(wa()->getRouting()->getDomains(), static function ($carry, $domain) use ($task) {
-                        $carry[] = wa()
-                            ->getRouting()
-                            ->getUrl('/frontend', ['public_hash' => $task['public_hash']], true, $domain);
-
-                        return $carry;
-                    }, [])
-                    : []
+                $task->getPublicLinks()
             );
         }
 

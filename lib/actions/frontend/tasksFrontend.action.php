@@ -6,11 +6,21 @@ class tasksFrontendAction extends waViewAction
     {
         $publicHash = waRequest::param('public_hash', '', waRequest::TYPE_STRING_TRIM);
         if (!$publicHash) {
-            throw new waException('Not found', 404);
+            wa()->getResponse()->setStatus(404);
+            $this->setTemplate(wa()->getAppPath('templates/frontend/public_task_error.html'));
+
+            return;
         }
 
-        $collection = new tasksCollection(sprintf('%s/%s', tasksCollection::HASH_PUBLIC_HASH, $publicHash));
+        $collection = new tasksCollection(sprintf('%s/%s', tasksCollection::HASH_PUBLIC_HASH, $publicHash), ['check_rights' => false]);
         $taskRows = $collection->getTasks(tasksCollection::FIELDS_TO_GET, 0, 1);
+
+        if (empty($taskRows)) {
+            wa()->getResponse()->setStatus(404);
+            $this->setTemplate(wa()->getAppPath('templates/frontend/public_task_error.html'));
+
+            return;
+        }
 
         $tasks = [];
         $logsByTask = [];

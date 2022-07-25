@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="robots" content="noindex" />
+    <title>404 — {$wa->accountName()}</title>
+    <script src="{$wa_url}wa-content/js/jquery-wa/wa.switch-mode.js?v={$wa->version()}"></script>
+    <script defer src="{$wa_url}wa-content/js/fontawesome/fontawesome-all.min.js?v=513"></script>
+    <link href="{$wa_url}wa-content/css/wa/wa-2.0.css?v={$wa->version()}" rel="stylesheet" type="text/css">
+    <link href="{$wa_app_static_url}css/tasks.min.css?v={$wa->version()}" rel="stylesheet" type="text/css" />
+    <style>
+        .container {
+            word-break: break-word;
+            max-width: 1024px;
+            padding: 0 2rem;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .rounded {
+            padding: 3rem;
+            border-radius: 1.5rem;
+            margin-top: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        @media screen and (max-width: 900px) {
+            .container {
+                padding: 0 1rem;
+            }
+            .rounded {
+                padding: 1rem;
+                margin-top: 1rem;
+                margin-bottom: 1rem;
+                border-radius: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="wa">
+
+        <div class="container custom-mt-32">
+            <div class="flexbox full-width">
+                <div class="nowrap">
+                    <img src="{$wa->url(true)}wa-apps/tasks/img/tasks.png" width="28" height="28" style="vertical-align: middle;" class="custom-mr-4" />
+                    <strong>{$wa->appName()}</strong>
+                </div>
+                <div>{$wa->accountName()}</div>
+            </div>
+        </div>
+
+        <div class="container blank rounded">
+            <h1 class="align-center">{[`404`]}</h1>
+        </div>
+
+        <div class="align-center custom-mb-24">
+            <a href="[`https://www.webasyst.com/store/app/tasks/`]">
+                <img width="100" src="{$wa->url(true)}wa-content/img/webasyst-logo.svg" alt="Webasyst" />
+            </a>
+        </div>
+    </div>
+</body>
+</html>
