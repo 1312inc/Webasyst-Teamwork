@@ -1839,18 +1839,22 @@ var Task = ( function($) {
         };
 
         function initCopy2Clipboard () {
-            $('.copy-to-clipboard').on('click', function () {
-                var $link = $(this).prev('div').find('a');
-                var val = $link.text();
-                navigator.clipboard.writeText(val).then(() => {
-                    $link.text($.wa.locale.copied);
-                    setTimeout(() => {
-                        $link.text(val);
-                    }, 1000);
-                }, (err) => {
+            if (!navigator.clipboard) {
+                $('.copy-to-clipboard').hide();
+            } else {
+                $('.copy-to-clipboard').on('click', function () {
+                    var $link = $(this).prev('div').find('a');
+                    var val = $link.text();
+                    navigator.clipboard.writeText(val).then(() => {
+                        $link.text($.wa.locale.copied);
+                        setTimeout(() => {
+                            $link.text(val);
+                        }, 1000);
+                    }, (err) => {
 
+                    });
                 });
-            });
+            }
         }
 
         function addRow (link) {
