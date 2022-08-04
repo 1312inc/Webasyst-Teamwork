@@ -76,16 +76,6 @@ try {
 $utf8mb4 = new tasksUtf8mb4Converter();
 $m = new waModel();
 foreach ($utf8mb4->getTables() as $table => $columns) {
-    if ($table === 'tasks_task') {
-        foreach (['name', 'name_2', 'name_text'] as $index) {
-            try {
-                $m->query("drop index {$index} on tasks_task");
-            } catch (waException $e) {
-                waLog::log($e->getMessage(), 'tasks/install.log');
-            }
-        }
-    }
-
     foreach ($columns as $column) {
         try {
             $utf8mb4->convertColumn($table, $column);
@@ -93,12 +83,9 @@ foreach ($utf8mb4->getTables() as $table => $columns) {
             waLog::log($e->getMessage(), 'tasks/install.log');
         }
     }
-
-    if ($table === 'tasks_task') {
-        try {
-            $m->query('ALTER TABLE `tasks_task` ADD FULLTEXT `name_text` (`name`, `text`)');
-        } catch (Exception $e) {
-            waLog::log($e->getMessage(), 'tasks/install.log');
-        }
-    }
+}
+try {
+    $m->query('ALTER TABLE `tasks_task` ADD FULLTEXT `name_text` (`name`, `text`)');
+} catch (Exception $e) {
+    waLog::log($e->getMessage(), 'tasks/install.log');
 }
