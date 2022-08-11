@@ -1,5 +1,15 @@
 <?php
 
+$appSettings = new waAppSettingsModel();
+$installInProgress = $appSettings->get('tasks', 'install_started', 0);
+if ($installInProgress) {
+    waLog::log(sprintf('Install was started at %s', date('Y-m-d H:i:s', $installInProgress)), 'tasks/install.log');
+
+    return;
+}
+
+$appSettings->set('tasks', 'install_started', time());
+
 // Setup auto thumbnail generation for task image attachments
 $path = wa()->getDataPath('tasks', true, 'tasks');
 waFiles::write($path.'/thumb.php', '<?php
@@ -18,7 +28,6 @@ try {
     $status_model = new tasksStatusModel();
 
     if (!$project_model->countAll() && !$status_model->countAll()) {
-
         $statusDoingId = $status_model->insert(array(
             'name' => _w('Doing'),
             'button' => _w('Start doing'),
