@@ -2,7 +2,7 @@
 return array(
     'name' => 'Tasks',
     'icon' => 'img/tasks.svg',
-    'version' => '2.7.3',
+    'version' => '2.7.4',
     'vendor' => '1021997',
     'rights' => true,
     'plugins' => true,
