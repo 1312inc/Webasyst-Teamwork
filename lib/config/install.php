@@ -16,12 +16,6 @@ function initTasks()
 // Setup auto thumbnail generation for task image attachments
     $path = wa()->getDataPath('tasks', true, 'tasks');
     $thumbsPath = $path . '/thumb.php';
-    if (file_exists($thumbsPath)) {
-        waLog::log(sprintf('%s. Thumbs file exists at %s', microtime(true), $thumbsPath), 'tasks/install.log');
-
-        return;
-    }
-
     waFiles::write($thumbsPath, '<?php
 $file = realpath(dirname(__FILE__)."/../../../../")."/wa-apps/tasks/lib/config/data/thumb.php";
 
@@ -32,6 +26,15 @@ if (file_exists($file)) {
 }
 ');
     waFiles::copy(wa()->getAppPath('lib/config/data/.htaccess', 'tasks'), $path . '/.htaccess');
+
+    $waModel = new waModel();
+    try {
+        $waModel->exec('LOCK TABLES tasks_project WRITE, tasks_status WRITE, tasks_status_params WRITE, tasks_project_statuses WRITE');
+        waLog::log('Lock tables ok', 'tasks/install.log');
+    } catch (waDbException $e) {
+        waLog::log('Lock tables error', 'tasks/install.log');
+        waLog::log($e->getMessage(), 'tasks/install.log');
+    }
 
     try {
         $project_model = new tasksProjectModel();
@@ -92,10 +95,17 @@ if (file_exists($file)) {
         waLog::log($e->getMessage(), 'tasks/install.log');
     }
 
+    try {
+        $waModel->exec('UNLOCK TABLES');
+        waLog::log('Unlock tables ok', 'tasks/install.log');
+    } catch (waDbException $e) {
+        waLog::log('Unlock tables error', 'tasks/install.log');
+        waLog::log($e->getMessage(), 'tasks/install.log');
+    }
+
     waLog::log(sprintf('%s. Demo was finished at %s', microtime(true), date('Y-m-d H:i:s')), 'tasks/install.log');
 
     $utf8mb4 = new tasksUtf8mb4Converter();
-    $m = new waModel();
     foreach ($utf8mb4->getTables() as $table => $columns) {
         foreach ($columns as $column) {
             try {
@@ -104,11 +114,6 @@ if (file_exists($file)) {
                 waLog::log($e->getMessage(), 'tasks/install.log');
             }
         }
-    }
-    try {
-        $m->query('ALTER TABLE `tasks_task` ADD FULLTEXT `name_text` (`name`, `text`)');
-    } catch (Exception $e) {
-        waLog::log($e->getMessage(), 'tasks/install.log');
     }
 
     waLog::log(sprintf('%s. Utf8mb4 was finished at %s', microtime(true), date('Y-m-d H:i:s')), 'tasks/install.log');
@@ -128,7 +133,9 @@ function semaphoreWay()
 
 function lockfileWay()
 {
-    $lockFile = tmpfile();
+    $path = wa()->getCachePath('installfile.lock', 'tasks');
+    touch($path);
+    $lockFile = fopen($path, 'r+');
     if (!$lockFile) {
         waLog::log(sprintf('%s. Lock file is failed', microtime(true)), 'tasks/install.log');
 
@@ -147,6 +154,7 @@ function lockfileWay()
     } else {
         waLog::log(sprintf('%s. Lock file is locked', microtime(true)), 'tasks/install.log');
     }
+    @unlink($path);
 }
 
 if (function_exists('sem_get')) {
