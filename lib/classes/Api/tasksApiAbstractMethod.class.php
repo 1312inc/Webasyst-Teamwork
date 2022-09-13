@@ -229,8 +229,14 @@ abstract class tasksApiAbstractMethod extends waAPIMethod
             case self::CAST_STRING:
                 return (string) $var;
 
-            case self::CAST_CALLBACK && is_callable($format):
-                return $format($var);
+            case self::CAST_CALLBACK:
+                if (is_callable($format)) {
+                    return $format($var);
+                }
+
+                throw new tasksException(
+                    sprintf('Wrong value %s. No callable', $var)
+                );
 
             default:
                 return $var;
