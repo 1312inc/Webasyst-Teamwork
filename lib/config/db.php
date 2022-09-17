@@ -115,7 +115,7 @@ return array(
     ),
     'tasks_tag' => array(
         'id' => array('int', 11, 'null' => 0, 'autoincrement' => 1),
-        'name' => array('varchar', 255, 'null' => 0),
+        'name' => array('varchar', 249, 'null' => 0),
         'favorite' => array('tinyint', 4, 'null' => 0, 'default' => '0'),
         ':keys' => array(
             'PRIMARY' => 'id',
