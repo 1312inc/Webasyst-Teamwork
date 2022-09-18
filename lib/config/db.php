@@ -13,6 +13,7 @@ return array(
         ':keys' => array(
             'PRIMARY' => 'id',
         ),
+        ':options' => array('charset' => 'utf8mb4'),
     ),
     'tasks_favorite' => array(
         'contact_id' => array('int', 11, 'null' => 0),
@@ -35,6 +36,7 @@ return array(
             'PRIMARY' => 'id',
             'contact_id' => 'contact_id',
         ),
+        ':options' => array('charset' => 'utf8mb4'),
     ),
     'tasks_milestone' => array(
         'id' => array('int', 11, 'null' => 0, 'autoincrement' => 1),
@@ -46,6 +48,7 @@ return array(
         ':keys' => array(
             'PRIMARY' => 'id',
         ),
+        ':options' => array('charset' => 'utf8mb4'),
     ),
     'tasks_project' => array(
         'id' => array('int', 11, 'null' => 0, 'autoincrement' => 1),
@@ -60,15 +63,17 @@ return array(
         ':keys' => array(
             'PRIMARY' => 'id',
         ),
+        ':options' => array('charset' => 'utf8mb4'),
     ),
     'tasks_project_status_params' => array(
         'project_id' => array('int', 11, 'null' => 0),
         'status_id' => array('int', 11, 'null' => 0),
-        'name' => array('varchar', 255, 'null' => 0),
+        'name' => array('varchar', 248, 'null' => 0),
         'value' => array('text', 'null' => 0),
         ':keys' => array(
             'PRIMARY' => array('project_id', 'status_id', 'name'),
         ),
+        ':options' => array('charset' => 'utf8mb4'),
     ),
     'tasks_project_statuses' => array(
         'project_id' => array('int', 11, 'null' => 0),
@@ -97,27 +102,30 @@ return array(
         ':keys' => array(
             'PRIMARY' => 'id',
         ),
+        ':options' => array('charset' => 'utf8mb4'),
     ),
     'tasks_status_params' => array(
         'status_id' => array('int', 11, 'null' => 0),
-        'name' => array('varchar', 255, 'null' => 0),
+        'name' => array('varchar', 248, 'null' => 0),
         'value' => array('text', 'null' => 0),
         ':keys' => array(
             'PRIMARY' => array('status_id', 'name'),
         ),
+        ':options' => array('charset' => 'utf8mb4'),
     ),
     'tasks_tag' => array(
         'id' => array('int', 11, 'null' => 0, 'autoincrement' => 1),
-        'name' => array('varchar', 255, 'null' => 0),
+        'name' => array('varchar', 249, 'null' => 0),
         'favorite' => array('tinyint', 4, 'null' => 0, 'default' => '0'),
         ':keys' => array(
             'PRIMARY' => 'id',
             'name' => array('name', 'unique' => 1),
         ),
+        ':options' => array('charset' => 'utf8mb4'),
     ),
     'tasks_task' => array(
         'id' => array('int', 11, 'null' => 0, 'autoincrement' => 1),
-        'name' => array('varchar', 255, 'null' => 0),
+        'name' => array('varchar', 248, 'null' => 0),
         'text' => array('mediumtext', 'null' => 0),
         'create_contact_id' => array('int', 11, 'null' => 0),
         'create_datetime' => array('datetime', 'null' => 0),
@@ -143,7 +151,9 @@ return array(
             'milestone_id' => 'milestone_id',
             'status_id' => 'status_id',
             'assigned_contact_id' => 'assigned_contact_id',
+            'name_text' => array('name', 'text', 'fulltext' => 1),
         ),
+        ':options' => array('charset' => 'utf8mb4'),
     ),
     'tasks_task_log' => array(
         'id' => array('int', 11, 'null' => 0, 'autoincrement' => 1),
@@ -161,6 +171,7 @@ return array(
             'task_id' => 'task_id',
             'tasks_task_log_contact_id_assigned_contact_id_index' => array('contact_id', 'assigned_contact_id'),
         ),
+        ':options' => array('charset' => 'utf8mb4'),
     ),
     'tasks_task_log_params' => array(
         'task_id' => array('int', 11, 'null' => 0),
@@ -172,6 +183,7 @@ return array(
             'task_id' => 'task_id',
             'name' => 'name',
         ),
+        ':options' => array('charset' => 'utf8mb4'),
     ),
     'tasks_task_relations' => array(
         'parent_id' => array('int', 11, 'null' => 0),
