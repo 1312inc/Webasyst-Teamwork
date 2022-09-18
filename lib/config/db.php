@@ -125,7 +125,7 @@ return array(
     ),
     'tasks_task' => array(
         'id' => array('int', 11, 'null' => 0, 'autoincrement' => 1),
-        'name' => array('varchar', 255, 'null' => 0),
+        'name' => array('varchar', 248, 'null' => 0),
         'text' => array('mediumtext', 'null' => 0),
         'create_contact_id' => array('int', 11, 'null' => 0),
         'create_datetime' => array('datetime', 'null' => 0),
