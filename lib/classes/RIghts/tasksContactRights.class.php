@@ -27,6 +27,11 @@ final class tasksContactRights
      */
     private $projectsWithLimitedAccess = [];
 
+    /**
+     * @var array<int>
+     */
+    private $projectsWithAnyAccess = [];
+
     public function __construct(array $rights)
     {
         if (isset($rights['backend'])) {
@@ -65,6 +70,8 @@ final class tasksContactRights
                 }
             }
         }
+
+        $this->projectsWithAnyAccess = array_merge($this->projectsWithLimitedAccess, $this->projectsWithFullAccess);
     }
 
     /**
@@ -104,7 +111,7 @@ final class tasksContactRights
      */
     public function getProjectsWithAnyAccess(): array
     {
-        return $this->projectsWithLimitedAccess + $this->projectsWithFullAccess;
+        return $this->projectsWithAnyAccess;
     }
 
     /**
