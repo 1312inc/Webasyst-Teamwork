@@ -13,13 +13,14 @@ final class tasksApiTasksAddHandler
      */
     public function add(tasksApiTasksAddRequest $addRequest): tasksTask2
     {
+        /** @var tasksProject $project */
         $project = tsks()->getEntityRepository(tasksProject::class)->findById($addRequest->getProjectId());
 
         if (!$project) {
             throw new tasksResourceNotFoundException('Project not found');
         }
 
-        if (!tsks()->getRightResolver()->contactCanAddProject(wa()->getUser())) {
+        if (!tsks()->getRightResolver()->contactCanAccessToProject(wa()->getUser(), $project->getId())) {
             throw new tasksAccessException();
         }
 
