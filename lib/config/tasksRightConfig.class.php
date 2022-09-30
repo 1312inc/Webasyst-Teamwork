@@ -18,7 +18,7 @@ class tasksRightConfig extends waRightConfig
             'position' => 'right',
             'options' => [
                 tasksRights::PROJECT_ACCESS_NONE => _w('No access'),
-                tasksRights::PROJECT_ACCESS_VIEW_ASSIGNED_TASKS => _w('View assigned tasks only'),
+                tasksRights::PROJECT_ACCESS_VIEW_ASSIGNED_TASKS => _w('Self tasks only'),
                 tasksRights::PROJECT_ACCESS_FULL => _w('Full access'),
             ],
             'hint1' => 'all_select',
