@@ -539,7 +539,7 @@ msgstr ""
 msgid "No access"
 msgstr ""
 
-msgid "View assigned tasks only"
+msgid "Self tasks only"
 msgstr ""
 
 msgid "Full access"

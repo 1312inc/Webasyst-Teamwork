@@ -586,8 +586,8 @@ msgstr "Нет доступа"
 msgid "All <strong>%s</strong> in this project will be archived and won't be listed anymore. Are you sure?"
 msgstr "Все <strong>%s</strong>, принадлежащие проекту, попадут в архив и перестанут отображаться в списках. Вы уверены?"
 
-msgid "View assigned tasks only"
-msgstr "Просмотр только назначенных задач"
+msgid "Self tasks only"
+msgstr "Только свои задачи"
 
 msgid "Full access"
 msgstr "Полный доступ"
