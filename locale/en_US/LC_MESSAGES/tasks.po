@@ -643,9 +643,6 @@ msgstr[1] ""
 msgid "User %s edited a task you are assigned to:"
 msgstr "%s edited the task you are assigned to:"
 
-msgid "%s editoed a task you created:"
-msgstr ""
-
 msgid "User %s has just completed a task"
 msgstr "%s has completed the task"
 
@@ -1368,28 +1365,28 @@ msgid "%s %s"
 msgstr ""
 
 msgid "User %s sent you a task"
-msgstr ""
+msgstr "New task from %s"
 
 msgid "User %s sent a task to %s"
-msgstr ""
+msgstr "%s sent the task to %s"
 
 msgid "User %s wrote a comment to a task you are assigned to"
-msgstr ""
+msgstr "%s commented on the task you are assigned to"
 
 msgid "User %s wrote a comment to a task you created"
-msgstr ""
+msgstr "%s commented on the task you’ve created"
 
 msgid "User %s wrote a comment."
-msgstr ""
+msgstr "%s commented"
 
 msgid "User %s edited a task you are assigned to"
-msgstr ""
+msgstr "%s edited the task you are assigned to"
 
 msgid "User %s edited a task you created"
-msgstr ""
+msgstr "%s edited the task you’ve created"
 
 msgid "User %s edited a task"
-msgstr ""
+msgstr "%s edited"
 
 msgid "All senders"
 msgstr ""

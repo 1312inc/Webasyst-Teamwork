@@ -2,14 +2,14 @@
 return array(
     'name' => 'Tasks',
     'icon' => 'img/tasks.svg',
-    'version' => '2.7.7',
+    'version' => '2.8.0',
     'vendor' => '1021997',
     'rights' => true,
     'plugins' => true,
     'csrf' => false,
     'license' => 'commercial',
     'sash_color' => '#ffdc2f',
-    'ui' => '1.3,2.0',
+    'ui' => '2.0',
     'frontend' => true,
     'routing_params' => array(
         'private' => true,
