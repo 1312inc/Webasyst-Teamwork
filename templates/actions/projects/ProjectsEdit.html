@@ -2,7 +2,7 @@
 
     {$sidebar_html|default:''}
 
-    <div class="t-project-page content custom-p-20 blank" id="t-project-page">
+    <div class="t-project-page content custom-p-20 not-blank" id="t-project-page">
 
         <div class="article">
             <div class="article-body">
@@ -40,16 +40,13 @@
                     <div class="fields form">
                         <input type="hidden" name="id" value="{ifempty($project.id, 'add')}">
 
-                        <div class="field-group custom-mb-24">
+                        <div class="field-group blank custom-mb-24">
                             <div class="field">
                                 <div class="name for-input">[`Project name`]</div>
                                 <div class="value">
                                     <input type="text" name="project[name]" class="bold long large" value="{$project.name|escape}" placeholder="[`Project name`]">
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="field-group custom-mb-24">
                             <div class="field">
                                 <div class="name custom-pt-12">
                                     [`Color`]
@@ -68,9 +65,6 @@
                                     <p class="hint">[`Highlight color for the main task list and the kanban board.`]</p>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="field-group custom-mb-24">
                             <div class="field">
                                 <div class="name for-input">
                                     [`Logo`]
@@ -99,7 +93,7 @@
                             </div>
                         </div>
 
-                        <div class="field-group">
+                        <div class="field-group blank">
 
                             {foreach $workflows as $wf_id => $wf}
                                 <div class="field">
@@ -164,10 +158,8 @@
                             </div>
 
                         </div>
-                        <div class="field custom-mt-32">
-                            <div class="value submit">
-                                <input type="submit" class="button" value="[`Save`]">
-                            </div>
+                        <div class="custom-m-20">
+                            <input type="submit" class="button" value="[`Save`]">
                         </div>
                     </div>
                 </form>
