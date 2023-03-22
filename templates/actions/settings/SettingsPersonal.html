@@ -5,7 +5,7 @@
 <div class="flexbox" id="t-personal-settings-page-wrapper">
     {$sidebar_html}
 
-<div class="t-personal-settings-page content blank" id="t-personal-settings-page">
+<div class="t-personal-settings-page content not-blank" id="t-personal-settings-page">
 
 <div class="article" id="{$wrapper_id}">
     <div class="article-body">
@@ -18,7 +18,7 @@
         <form action="?module=settingsPersonal&action=save" class="t-setting-form">
             <input type="hidden" name="settings[notification][]" value="">
             <div class="t-settings-fields fields">
-                <div class="field-group">
+                <div class="field-group blank">
                     <div class="field">
                         <div class="name">
                             [`Text editor`]
@@ -49,8 +49,11 @@
                         </div>
                     </div>
                 </div>
-                <h5 class="heading custom-mb-12">[`My notification preferences`]</h5>
-                <div class="field-group">
+
+                <div class="field-group blank">
+
+                    <h5 class="heading custom-mb-12">[`My notification preferences`]</h5>
+                    
                     <div class="field">
                         <div class="name">
                             [`Notify me on`]
@@ -68,8 +71,7 @@
                             </ul>
                         </div>
                     </div>
-                </div>
-                <div class="field-group">
+
                     <div class="field">
                         <div class="name">
                             [`Which tasks`]
@@ -94,13 +96,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="field-group custom-mt-16">
-                    <div class="field">
-                        <div class="value submit t-settings-buttons">
-                            <input type="submit" class="button" value="[`Save settings`]">
-                            <i class="fas fa-spinner" style="margin-top: 6px; display: none;"></i>
-                        </div>
-                    </div>
+                <div class="custom-m-20 t-settings-buttons">
+                    <input type="submit" class="button" value="[`Save settings`]">
+                    <i class="fas fa-spinner" style="margin-top: 6px; display: none;"></i>
                 </div>
             </div>
         </form>

@@ -4,7 +4,7 @@
 <div class="flexbox" id="t-milestone-page-wrapper">
     {$sidebar_html|default:''}
 
-    <div class="t-milestone-page content blank" id="t-milestone-page">
+    <div class="t-milestone-page content not-blank" id="t-milestone-page">
 
         <div class="article">
             <div class="article-body">
@@ -45,11 +45,11 @@
 
                 <form action="?module=milestones&action=edit" id="milestone-editor-form">
                     <div class="fields form">
-                        <div class="field-group">
+                        <div class="field-group blank">
 
                             <input type="hidden" name="id" value="{ifempty($milestone.id, 'new')}">
 
-                            <div class="field">
+                            <div class="field custom-mt-0">
                                 <div class="name for-input">[`Name`]</div>
                                 <div class="value"><input type="text" name="milestone[name]" class="bold long large" value="{$milestone.name|escape}"></div>
                             </div>
@@ -88,11 +88,11 @@
                             </div>
 
                         </div>
-                        <div class="field custom-mt-32">
-                            <div class="value submit">
-                                <input type="submit" class="button" value="[`Save`]">
-                            </div>
+
+                        <div class="custom-m-20">
+                            <input type="submit" class="button" value="[`Save`]">
                         </div>
+
                     </div>
                 </form>
 
