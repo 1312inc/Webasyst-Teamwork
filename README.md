@@ -34,4 +34,4 @@ Install Webasyst Framework via https://github.com/webasyst/webasyst-framework/ o
 
 		'tasks' => true,
 
-3. Done! Run Webasyst backend in a web browser and click on the Teamwork app icon in the main app list. In the app icon is missing, make sure to clear Webasyst cache (flush `wa-cache/' folder contents).
+3. Done! Run Webasyst backend in a web browser and click on the Teamwork app icon in the main app list. In the app icon is missing, make sure to clear Webasyst cache (flush `wa-cache/` folder contents).
