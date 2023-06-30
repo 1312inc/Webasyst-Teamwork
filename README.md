@@ -24,14 +24,14 @@ Install Webasyst Framework via https://github.com/webasyst/webasyst-framework/ o
 
 ## Installing the Teamwork app (once Webasyst is installed) ##
 
-1. Once Webasyst is installed, get the Teamwork app code into your /PATH_TO_WEBASYST/**wa-apps/pocketlists/** folder:
+1. Once Webasyst is installed, get the Teamwork app code into your /PATH_TO_WEBASYST/**wa-apps/tasks/** folder:
 
 		cd /PATH_TO_WEBASYST/wa-apps/
 		mkdir tasks
 		git clone git://github.com/1312inc/Webasyst-Teamwork.git ./
 
-2. Add the following line into the /wa-config/apps.php file (this file lists all installed apps):
+2. Add the following line into the `wa-config/apps.php` file (this file lists all installed apps):
 
 		'tasks' => true,
 
-3. Done! Run Webasyst backend in a web browser and click on the Teamwork app icon in the main app list.
+3. Done! Run Webasyst backend in a web browser and click on the Teamwork app icon in the main app list. In the app icon is missing, make sure to clear Webasyst cache (flush `wa-cache/' folder contents).
