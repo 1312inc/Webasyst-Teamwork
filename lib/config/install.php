@@ -29,7 +29,7 @@ if (file_exists($file)) {
 
     $waModel = new waModel();
     try {
-        $waModel->exec('LOCK TABLES tasks_project WRITE, tasks_status WRITE, tasks_status_params WRITE, tasks_project_statuses WRITE');
+        $waModel->exec('LOCK TABLES tasks_project WRITE, tasks_status WRITE, tasks_status_params WRITE, tasks_project_statuses WRITE, wa_app_settings WRITE');
         waLog::log('Lock tables ok', 'tasks/install.log');
     } catch (waDbException $e) {
         waLog::log('Lock tables error', 'tasks/install.log');
