@@ -21,7 +21,7 @@
         <div class="flexbox space-8">
             <div class="wide">
                 <div class="state-with-inner-icon left width-100">
-                    <span class="icon"><i class="fas fa-search"></i></span>
+                    <span class="icon"><i class="fas fa-search text-gray"></i></span>
                     <input class="solid full-width" id="t-search-input" type="search" placeholder="[`Search`]"{if !empty($search_value)} value="{$search_value|escape}"{/if}>
                 </div>
                 <!-- <input class="t-sidebar-search-submit js-search-submit" type="button" value=""> -->
@@ -379,32 +379,6 @@
 
 <div class="sidebar-footer shadowed">
 
-    {if !empty($tiny_ad)}
-    <div class="t-tiny-ad box custom-pb-0">
-        <div class="t-tiny-ad-box">
-
-            <a href="#" class="t-tiny-ad-close" title="[`Close`]">&times;</a>
-            <h5 class="heading">[`Mobile app`]</h5>
-
-            <div class="align-center">
-
-                <p>
-                    [`Install Webasyst Teamwork mobile app on your phone today:`]
-                </p>
-
-                <a href="https://play.google.com/store/apps/details?id=com.webasyst.teamwork" target="_blank">
-                    <img src="{$wa_app_static_url}img/badge-googleplay{if $wa->locale() == 'ru_RU'}-ru{/if}.png" class="t-mobile-badge" alt="Google Play">
-                </a>
-                <a href="https://apps.apple.com/us/app/webasyst-teamwork/id1610735751" target="_blank">
-                    <img src="{$wa_app_static_url}img/badge-appstore{if $wa->locale() == 'ru_RU'}-ru{/if}.png" class="t-mobile-badge" alt="App Store">
-                </a>
-
-            </div>
-
-        </div>
-    </div>
-    {/if}
-
     <ul class="menu">
         {if $is_admin}
             <li>
@@ -458,13 +432,6 @@
             e.preventDefault();
             $(this).closest('.tags').find('.js-tags-hidden-tag').show();
             $(this).hide();
-        });
-
-        $('.t-tiny-ad-close').click(function (e) {
-            e.preventDefault();
-
-            $(this).closest('.t-tiny-ad').hide();
-            $.post('?module=backend&action=hideTinyAd');
         });
 
     })(jQuery);

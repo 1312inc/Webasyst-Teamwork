@@ -37,8 +37,7 @@ class tasksBackendAction extends waViewAction
             'team_app_name' => $this->getTeamAppName(),
             'users' => $users,
             'text_editor' => wa()->getUser()->getSettings('tasks', 'text_editor', 'wysiwyg'),
-            'user_has_minimum_access' => $accessedProjects === true || !empty($accessedProjects[tasksRights::PROJECT_ANY_ACCESS]),
-            'tiny_ad' => (new tasksTinyAddService())->getAd(wa()->getUser())
+            'user_has_minimum_access' => $accessedProjects === true || !empty($accessedProjects[tasksRights::PROJECT_ANY_ACCESS])
         ];
 
         $this->view->assign($viewData);

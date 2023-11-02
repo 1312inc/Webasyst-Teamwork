@@ -1397,9 +1397,6 @@ msgstr ""
 msgid "Mobile app"
 msgstr ""
 
-msgid "Install Webasyst Teamwork mobile app on your phone today:"
-msgstr ""
-
 msgid "Android is available free today! iOS is coming soon."
 msgstr ""
 

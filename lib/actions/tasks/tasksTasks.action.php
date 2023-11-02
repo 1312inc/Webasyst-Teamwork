@@ -111,6 +111,7 @@ class tasksTasksAction extends waViewAction
                 'backend_tasks_hooks' => $backend_tasks_hooks,
                 'tags_cloud' => self::getTagsCloud($project_id),
                 'statuses' => self::getStatusFilterType(),
+                'tiny_ad' => (new tasksTinyAddService())->getAd(wa()->getUser()),
 
                 'show_settings' => wa()->getUser()->isAdmin('tasks') && in_array(
                         $c->getType(),

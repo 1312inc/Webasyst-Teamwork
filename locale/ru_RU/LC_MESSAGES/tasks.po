@@ -1460,10 +1460,10 @@ msgid "invited"
 msgstr "приглашен"
 
 msgid "Mobile app"
-msgstr "Приложение"
+msgstr "Мобильное приложение"
 
-msgid "Install Webasyst Teamwork mobile app on your phone today:"
-msgstr "Установите Webasyst Задачи на свой телефон сегодня:"
+msgid "Install Webasyst Teamwork mobile app on your phone."
+msgstr "Установите Webasyst Задачи на свой телефон."
 
 msgid "Android is available free today! iOS is coming soon."
 msgstr "Бесплатно для Андроид уже сегодня. iOS — скоро!"
