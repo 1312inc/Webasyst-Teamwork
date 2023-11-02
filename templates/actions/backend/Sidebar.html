@@ -71,7 +71,7 @@
 
         <li>
             <a href="#/tasks/favorites/">
-                <i class="fas fa-star{if $favorites_counts.total} text-yellow{/if}"></i>
+                <i class="fas fa-at{if $favorites_counts.total} text-orange{/if}"></i>
                 <span>[`Watching`]</span>
                 <span class="count">{tasksUserTasksCounterService::getPairs($favorites_counts.total, $favorites_counts.count, $favorites_counts.bg_color, $favorites_counts.text_color)}</span>
             </a>

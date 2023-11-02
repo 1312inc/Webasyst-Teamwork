@@ -494,7 +494,7 @@ msgid "Your favorites list is empty"
 msgstr "Ваш список избранных задач пуст"
 
 msgid "To add a task to your personal favorite list, click on a tiny star icon next to task name."
-msgstr "Чтобы следить за работой над задачей, нажмите по звездочке рядом с ее названием."
+msgstr "Чтобы следить за задачей, нажмите кнопку «Наблюдать» рядом с ее заголовком."
 
 msgid "Task list is empty"
 msgstr "Задач нет"
@@ -710,7 +710,7 @@ msgid "Outbox automatically collects all tasks you’ve created."
 msgstr "Здесь будут собраны все задачи, в работе над которыми вы принимали участие."
 
 msgid "Your favorite task list is empty"
-msgstr "Избранных задач нет"
+msgstr "Здесь пока нет задач"
 
 msgid "Use projects to organize tasks and manage access rights for your teammates."
 msgstr "Используйте проекты для удобной организации задач и настройки прав доступа для сотрудников."
@@ -1073,7 +1073,7 @@ msgid "Actions"
 msgstr "Действия"
 
 msgid "Task title"
-msgstr "Заголовок"
+msgstr "Задача"
 
 msgid "No active work scopes are defined."
 msgstr "Текущие работы не заданы."

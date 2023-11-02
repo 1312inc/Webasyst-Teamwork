@@ -1070,7 +1070,7 @@ var TasksHeader = ( function($) {
         var that = this,
             pulsarButtonSelector = '.pulsar.cloned',
             buttonSelector = '#sidebar .add-task-link';
-        
+
         var removePulsar = function () {
             $(".sidebar-body").off('.pulsar');
             $(window).off('.pulsar');

@@ -755,7 +755,7 @@ var Task = ( function($) {
                                 inviteAccess = $form.find('.t-team-invite__access:visible').val();
                             if (inviteAddress) {
                                 $.tasks.inviteUser({
-                                    email: inviteAddress, 
+                                    email: inviteAddress,
                                     taskId: that.task_id,
                                     accessId: inviteAccess
                                 });
@@ -1723,7 +1723,7 @@ var Task = ( function($) {
 
     Task.prototype.onFavorite = function ($link) {
         var that = this,
-            $i = $link.find('.fa-star').get(0),
+            $i = $link.find('.fa-at').get(0),
             value = $i.classList.contains('text-light-gray') ? 1 : 0,
             $spans = $link.find('span');
 
@@ -1734,11 +1734,11 @@ var Task = ( function($) {
                 if (value) {
                     $spans.eq(1).show();
                     $i.classList.remove('text-light-gray');
-                    $i.classList.add('text-yellow');
+                    $i.classList.add('text-orange');
                 } else {
                     $spans.eq(0).show();
                     $i.classList.add('text-light-gray');
-                    $i.classList.remove('text-yellow');
+                    $i.classList.remove('text-orange');
                 }
             }
         });
@@ -1866,7 +1866,7 @@ var Task = ( function($) {
                             </div>
                             <button class="copy-to-clipboard button small nobutton"><i class="fas fa-copy"></i></button>
                         </div>
-                    </li>               
+                    </li>
                 `);
         }
 

@@ -461,7 +461,7 @@ msgid "Your favorites list is empty"
 msgstr ""
 
 msgid "To add a task to your personal favorite list, click on a tiny star icon next to task name."
-msgstr "To start watching on a task progress, click on a tiny little star button next to a task name."
+msgstr "To start watching on a task progress, press ‘Watch’ button next to a task title."
 
 msgid "Task list is empty"
 msgstr ""

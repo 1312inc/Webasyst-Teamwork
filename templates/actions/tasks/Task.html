@@ -148,7 +148,7 @@
 
                         {* WATCH *}
                         <a class="t-favorite-link button light-gray rounded t-set-favorite nowrap" href="javascript:void(0);" title="[`Watch`]">
-                            <i class="fas fa-star {if empty($task.favorite)}text-light-gray{else}text-yellow{/if}"></i>
+                            <i class="fas fa-at {if empty($task.favorite)}text-light-gray{else}text-orange{/if}"></i>
                             <span class="custom-ml-4 desktop-only"{if !empty($task.favorite)} style="display: none;"{/if}>[`Watch`]</span>
                             <span class="custom-ml-4 desktop-only"{if empty($task.favorite)} style="display: none;"{/if}>[`Watching`]</span>
                         </a>
@@ -169,7 +169,7 @@
                                 </a>
                             </span>
                         {/if}
-                        
+
                         {$is_public_link_exists = !!count($task.public_links)}
                         <div class="dropdown" id="publicLinkDropdown">
                             <button class="dropdown-toggle without-arrow nowrap button nobutton circle {if !$is_public_link_exists}text-light-gray{/if}">
