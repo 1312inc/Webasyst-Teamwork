@@ -12,7 +12,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Basepath: .\n"
-"X-Generator: Poedit 3.1\n"
+"X-Generator: Poedit 3.3.2\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPath-1: .\n"
 
@@ -683,8 +683,14 @@ msgstr ""
 msgid "DONE: %s was completed"
 msgstr "DONE: %s"
 
+msgid "DONE: %s %s"
+msgstr "CLOSED: %s %s"
+
 msgid "EDIT: %s was edited"
 msgstr "UPDATE: %s"
+
+msgid "EDIT: %s %s"
+msgstr "UPDATED: %s %s"
 
 msgid "created a task"
 msgstr ""
