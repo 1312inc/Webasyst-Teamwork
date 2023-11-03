@@ -357,7 +357,7 @@ class tasksHelper
                 $style[] = 'background: var(--light-gray)';
             }
         }
-        $style[] = 'color:' . htmlspecialchars($color);
+        $style[] = 'color:' . htmlspecialchars($color) . ' !important';
         if (wa()->whichUI() == '1.3' && !empty($status['params']['title_style_italic'])) {
             $style[] = 'font-style:italic';
         }
