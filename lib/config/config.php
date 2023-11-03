@@ -75,8 +75,8 @@ return array(
     'priorities' => array(
         -1 => array(
             'name' => _w('Low'),
-            'bg_color' => '#6179C7',
-            'text_color' => '#999',
+            'bg_color' => 'var(--highlighted-blue)',
+            'text_color' => 'var(--gray)',
             'value' => -1,
         ),
         0 => array(
