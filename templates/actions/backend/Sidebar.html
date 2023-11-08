@@ -152,14 +152,14 @@
                         {foreach $scopes as $scope}
                             {$_scope_is_100_complete = isset($scope.closed_percent) && $scope.closed_percent >= 100}
                             <li class="t-scope">
-                                <a href="#/tasks/scope/{$scope.id}/"{if isset($scope.closed_percent)}class="t-scope-title"{/if} title="{sprintf('[`%d open / %d closed`]', $scope.open_tasks|default:0, $scope.closed_tasks|default:0)}">
+                                <a href="#/tasks/scope/{$scope.id}/"{if isset($scope.closed_percent)}class="t-scope-title"{/if} title="{sprintf('[`%d%% completed: %d open / %d closed`]', $scope.closed_percent|default: 0, $scope.open_tasks|default:0, $scope.closed_tasks|default:0)}">
                                     {$scope.project.icon_html}
                                     <span>
                                         <span class="flexbox">
                                             <span class="wide">
                                                 {$scope.name|escape|truncate:42}
                                             </span>
-                                            <span class="count{if $_scope_is_100_complete} text-green bold{elseif !empty($scope.due_date) && $scope.due_date < date('Y-m-d')} text-red{/if}">{if $_scope_is_100_complete}<i class="fas fa-check-circle text-green"></i> {/if}{if isset($scope.closed_percent)}{$scope.closed_percent}%{/if}</span>
+                                            <span class="count{if $_scope_is_100_complete} text-green bold{elseif !empty($scope.due_date) && $scope.due_date < date('Y-m-d')} text-red bold{/if}">{if $_scope_is_100_complete}<i class="fas fa-check-circle fa-xs text-green"></i> {else}{$scope.open_tasks|default:0}{/if}</span>
                                         </span>
 
                                         <div class="progressbar">

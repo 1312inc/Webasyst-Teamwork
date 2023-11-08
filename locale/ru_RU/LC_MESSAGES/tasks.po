@@ -1282,6 +1282,9 @@ msgstr "Мои фильтры"
 msgid "%d open / %d closed"
 msgstr "%d открытых / %d закрытых"
 
+msgid "%d%% completed: %d open / %d closed"
+msgstr "Готовность %d%%: %d открытых задач / %d закрытых"
+
 msgid "Add a project to start creating tasks."
 msgstr "Создайте проект, чтобы начать ставить задачи."
 
