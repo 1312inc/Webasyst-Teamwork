@@ -188,7 +188,7 @@ class tasksTask implements ArrayAccess
         } else {
             $ext = '';
         }
-        return in_array(strtolower($ext), array('jpg', 'png', 'gif', 'jpeg'));
+        return in_array(strtolower($ext), array('jpg', 'png', 'gif', 'jpeg', 'webp'));
     }
 
     /**
