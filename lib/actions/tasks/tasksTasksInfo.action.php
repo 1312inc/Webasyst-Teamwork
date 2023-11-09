@@ -5,6 +5,10 @@
  */
 class tasksTasksInfoAction extends waViewAction
 {
+    public $milestones;
+    public $tags_cloud;
+    public $statuses;
+
     public function execute()
     {
         $n = waRequest::get('n');
@@ -50,22 +54,26 @@ class tasksTasksInfoAction extends waViewAction
             }
         }
 
-        $milestones = (new tasksMilestoneModel())->getMilestonesWithOrder(false);
-
-        foreach ($milestones as $id => $milestone) {
+        $this->milestones = (new tasksMilestoneModel())->getMilestonesWithOrder(false);
+        foreach ($this->milestones as $id => $milestone) {
             if ($milestone['project_id'] != $task->project_id) {
-                unset($milestones[$id]);
+                unset($this->milestones[$id]);
             }
         }
 
-        $this->view->assign('tags_cloud', $tasks_tags_model->getCloud($task->project_id));
-        $this->view->assign('statuses', tasksHelper::getStatuses());
+        $this->tags_cloud = $tasks_tags_model->getCloud($task->project_id);
+        $this->statuses = tasksHelper::getStatuses();
+
+        $this->triggerGlobalEvent($task);
+
+        $this->view->assign('tags_cloud', $this->tags_cloud);
+        $this->view->assign('statuses', $this->statuses);
         $this->view->assign('task', $task);
         $this->view->assign('taskAssignedContactStatus', (new tasksTeammateStatusService())->getForContactId($task->assigned_contact_id, new DateTimeImmutable()));
 
         $this->view->assign('hash_type', waRequest::get('from_hash_type', '', waRequest::TYPE_STRING_TRIM));
 
-        $this->view->assign('milestones', $milestones);
+        $this->view->assign('milestones', $this->milestones);
     }
 
     public function workup(&$task)
@@ -128,5 +136,16 @@ class tasksTasksInfoAction extends waViewAction
         $task['hooks'] = array(
             'backend_task' => wa()->event('backend_task', $params)
         );
+    }
+
+    protected function triggerGlobalEvent($task)
+    {
+        /**
+         * @event backend_task_info
+         */
+        return wa('tasks')->event('backend_task_info', ref([
+            'task' => $task,
+            'action' => $this,
+        ]));
     }
 }

@@ -12,6 +12,7 @@ return array(
         'backend_tasks'            => 'backendTasks',
         'backend_task'             => 'backendTask',
         'backend_task_edit'        => 'backendTaskEdit',
+        'backend_task_info'        => 'backendTaskInfo',
         'task_save'                => 'taskSave',
         'project_delete'           => 'projectDelete',
         'backend_list_edit'        => 'backendListEdit',

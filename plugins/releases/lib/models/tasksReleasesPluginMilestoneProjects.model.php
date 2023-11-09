@@ -4,6 +4,21 @@ class tasksReleasesPluginMilestoneProjectsModel extends waModel
 {
     protected $table = 'tasks_releases_milestone_projects';
 
+    public function getMilestonesByProjectId($project_id)
+    {
+        if (!$project_id) {
+            return [];
+        }
+        $sql = "SELECT m.*
+                FROM tasks_milestone AS m
+                    JOIN {$this->table} AS mp
+                        ON mp.milestone_id=m.id
+                WHERE mp.project_id IN (?)
+                    AND m.closed=0
+                ORDER BY IFNULL(due_date, '9999-12-31 23:59:59') ASC";
+        return $this->query($sql, [$project_id])->fetchAll('id');
+    }
+
     public function getRelatedProjectIds($id)
     {
         $ids = is_scalar($id) ? (array)$id : $id;
