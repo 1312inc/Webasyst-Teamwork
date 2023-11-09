@@ -148,20 +148,32 @@
             }
         },
         _load: function () {
+            var that = this;
             var csrf = document.cookie.match(new RegExp("(?:^|; )_csrf=([^;]*)"));
-            if (this.ajax) {
-                this.ajax.xhr.abort();
+            if (that.ajax) {
+                that.ajax.xhr.abort();
             }
-            this.ajax = $R.ajax.post({
-                url: this.opts.tagsHandle,
-                data: "term=" + this.handleStr + "&_csrf=" + csrf[1],
-                success: this._parse.bind(this),
-            });
+            if (that.timeout) {
+                clearTimeout(that.timeout);
+            }
+            that.timeout = setTimeout(function() {
+                that.timeout = null;
+                that.ajax = $R.ajax.post({
+                    url: that.opts.tagsHandle,
+                    data: "term=" + that.handleStr + "&_csrf=" + csrf[1],
+                    success: that._parse.bind(that),
+                });
+            }, that.opts.tagsHandleDelay || 500);
         },
         _parse: function (json) {
             if (json === "") return;
 
-            var data = typeof json === "object" ? json : JSON.parse(json);
+            var data;
+            try {
+                data = typeof json === "object" ? json : JSON.parse(json);
+            } catch (e) {
+                data = [];
+            }
 
             if (this.container.getElement().nodes[0]?.classList.contains('redactor-focus')) {
                 this._build();
@@ -189,8 +201,8 @@
 
             for (var term of this.data) {
                 var $item = $R.dom('<a href="#">');
-                $item.html(term);
-                $item.attr("data-key", term);
+                $item.html(term.entity_title);
+                $item.attr("data-key", term.entity_title); // !!!
                 $item.on("click", function (e) {
                     e.preventDefault();
                     that._replace(e.target);

@@ -57,8 +57,9 @@
             source: false,
             minHeight: '20vh',
             plugins: ['mdeditor', 'watags', 'imgupload'],
-            tagsHandle: '?action=tagsatcmpl',
+            tagsHandle: '?module=tasks&action=entityAutocomplete',
             tagsHandleTrigger: '#',
+            tagsHandleDelay: 500,
             linkSize: 120,
             shortcutsAdd: {
                 'shift+tab': {
