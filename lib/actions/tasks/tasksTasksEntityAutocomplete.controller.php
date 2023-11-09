@@ -192,7 +192,52 @@ class tasksTasksEntityAutocompleteController extends waJsonController
         if ($limit <= 0 || !wa()->appExists('shop') || !wa()->getUser()->getRights('shop', 'backend')) {
             return [];
         }
-        return [];
+
+        wa('shop');
+        $result = [];
+
+        $getRow = function($o) {
+            return [
+                'app_id' => 'shop',
+                'entity_type' => 'order',
+                'entity_image' => null,
+                'entity_title' => $o['id_encoded'],
+                'entity_url' => wa()->getAppUrl('shop')."#/orders/id={$o['id']}/",
+            ];
+        };
+
+        // order id?
+        if (wa_is_int($term)) {
+            $collection = new shopOrdersCollection('id/'.$term);
+            $orders = $collection->getOrders('id', 0, 1);
+            if ($orders) {
+                $result[] = $getRow(reset($orders));
+            }
+        }
+
+        // encoded order id?
+        $collection = new shopOrdersCollection('search/id='.$term);
+        $orders = $collection->getOrders('id', 0, 1);
+        if ($orders) {
+            $result[] = $getRow(reset($orders));
+        }
+
+        // product name?
+        if ($limit > count($result)) {
+            $collection = new shopProductsCollection('search/query='.$term);
+            $products = $collection->getProducts('id,name', 0, $limit - count($result));
+            foreach($products as $p) {
+                $result[] = [
+                    'app_id' => 'shop',
+                    'entity_type' => 'product',
+                    'entity_image' => null,
+                    'entity_title' => $p['name'],
+                    'entity_url' => wa()->getAppUrl('shop')."products/{$p['id']}/",
+                ];
+            }
+        }
+
+        return $result;
     }
 
     protected function addDefaultMarkdownCode(&$result)
