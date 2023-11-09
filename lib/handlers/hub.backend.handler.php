@@ -14,7 +14,7 @@ class tasksHubBackendHandler extends waEventHandler
 
     protected function getHtml() {
         $uniqid = str_replace('.', '-', uniqid('s', true));
-        $menuname = htmlspecialchars(_w('Create task'));
+        $menuname = htmlspecialchars(_wd('tasks', 'Create task'));
         $tasks_url = wa()->getAppUrl('tasks');
         $wa_url = wa()->getRootUrl();
         if (wa()->whichUI() == '1.3') {
