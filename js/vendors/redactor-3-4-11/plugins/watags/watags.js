@@ -16,22 +16,14 @@
 
             // local
             this.ajax = null
-            this.tagsHandleTrigger =
-                typeof this.opts.tagsHandleTrigger !== "undefined"
-                    ? this.opts.tagsHandleTrigger
-                    : "@";
-            this.handleStart =
-                typeof this.opts.handleStart !== "undefined"
-                    ? this.opts.handleStart
-                    : 0;
+            this.tagsHandleTrigger = '(#|@)';
             this.handleStr = "";
-            this.handleLen = this.handleStart;
-
+            this.lastTrigger = "";
             this.activeIndex = -1;
         },
         // public
         start: function () {
-            if (!this.opts.tagsHandle) return;
+            if (!this.opts.tagsHandle && !this.opts.mentionsHandle) return;
 
             var $editor = this.editor.getElement();
             $editor.on("keydown.redactor-plugin-handle", this._navigate.bind(this));
@@ -132,14 +124,15 @@
             }
 
             var re = new RegExp("^" + this.tagsHandleTrigger);
-            this.handleStr = this.selection.getTextBeforeCaret(20).split(/\s+/).pop();
+            var full_match = this.handleStr = this.selection.getTextBeforeCaret(20).split(/\s+/).pop();
 
             // detect
             if (
                 re.test(this.handleStr) &&
                 !this.selection.getTextAfterCaret(1).trim()
             ) {
-                this.handleStr = this.handleStr.replace(this.tagsHandleTrigger, "");
+                this.handleStr = this.handleStr.replace(re, "");
+                this.lastTrigger = full_match.substr(0, full_match.length - this.handleStr.length);
                 this._load();
             } else {
                 if (this._isShown()) {
@@ -158,11 +151,14 @@
             }
             that.timeout = setTimeout(function() {
                 that.timeout = null;
-                that.ajax = $R.ajax.post({
-                    url: that.opts.tagsHandle,
-                    data: "term=" + that.handleStr + "&_csrf=" + csrf[1],
-                    success: that._parse.bind(that),
-                });
+                var url = that.lastTrigger == '#' ? that.opts.tagsHandle : that.opts.mentionsHandle;
+                if (url) {
+                    that.ajax = $R.ajax.post({
+                        url: url,
+                        data: "term=" + that.handleStr + "&_csrf=" + csrf[1],
+                        success: that._parse.bind(that),
+                    });
+                }
             }, that.opts.tagsHandleDelay || 500);
         },
         _parse: function (json) {
@@ -253,19 +249,19 @@
         },
         _reset: function () {
             this.handleStr = "";
-            this.handleLen = this.handleStart;
             this.activeIndex = -1;
+            this.lastTrigger = '';
         },
         _replace: function (e) {
             var $item = $R.dom(e);
             var key = $item.attr("data-key");
-            var replacement = "<span class=\"redactor-tag\">" + this.tagsHandleTrigger + key + "</span> ";
+            var replacement = "<span class=\"redactor-tag\">" + this.lastTrigger + key + "</span> ";
 
             var marker = this.marker.insert("start");
             var $marker = $R.dom(marker);
             var current = marker.previousSibling;
             var currentText = current.textContent;
-            var re = new RegExp(this.tagsHandleTrigger + this.handleStr + "$");
+            var re = new RegExp(this.lastTrigger + this.handleStr + "$");
 
             currentText = currentText.replace(re, "");
             current.textContent = currentText;
