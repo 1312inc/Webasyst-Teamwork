@@ -130,11 +130,37 @@
             {* EDIT CONTENT *}
             <div class="t-task-page-block">
 
+              {* ASSIGN *}
+              <div class="t-form-line">
+                  <h5 class="heading custom-mb-12 custom-mt-4 custom-ml-8">[`Assign to`]</h5>
+                  <div>
+                      <input type="hidden" name="data[assigned_contact_id]" value="{$task.assigned_contact_id}">
+                      <div class="t-team-list-wrapper"></div>
+
+                      {include file="./includes/TasksEditInviteForm.inc.html" inline}
+
+                      <script>
+                          (function ($) {
+                              var initialProjectID = $("#projectSelect").find("li:first a").data('value');
+                              $.tasks.teamList({
+                                  container: $('#t-edit-task-form .t-team-list-wrapper'),
+                                  targetField: $('#t-edit-task-form [name="data[assigned_contact_id]"]'),
+                                  inviteField: $('#t-edit-task-form .t-team-invite'),
+                                  projectId: {if !empty($task.id)}{$task.project_id}{else}initialProjectID{/if},
+                                  assignedContactId: {if !empty($task.id)}{$task.assigned_contact_id|default:"\"\""}{else}""{/if},
+                                  updateMode: {if !empty($task.id)}true{else}false{/if}
+                              });
+                          })(jQuery);
+                      </script>
+                  </div>
+              </div>
+
                 <!-- plugin hook: 'backend_task_edit.%plugin_id.before_name' -->
                 {* @event backend_task_edit.%plugin_id%.before_name *}
                 {foreach $backend_task_edit as $_}{ifset($_.before_name)}{/foreach}
 
                 <div class="t-big-editor-wrapper">
+
 
                     {* NAME && PRIORITY *}
                     <div class="t-form-line t-table-layout">
@@ -165,11 +191,13 @@
                     {* @event backend_task_edit.%plugin_id%.after_name *}
                     {foreach $backend_task_edit as $_}{ifset($_.after_name)}{/foreach}
 
+
+                    {* EDITOR / DESCRIPTION *}
+
                     <!-- plugin hook: 'backend_task_edit.%plugin_id.before_description' -->
                     {* @event backend_task_edit.%plugin_id%.before_description *}
                     {foreach $backend_task_edit as $_}{ifset($_.before_description)}{/foreach}
 
-                    {* CONTENT *}
                     <div class="t-form-line t-description-wrapper">
                         <hr>
 
@@ -185,16 +213,67 @@
                     {* @event backend_task_edit.%plugin_id%.after_description *}
                     {foreach $backend_task_edit as $_}{ifset($_.after_description)}{/foreach}
 
-                    {* ATTACH DROPAREA *}
 
-                    <div class="t-form-line t-attach-wrapper">
-                        {* Droparea *}
-                        <div class="t-attach-droparea" id="t-attach-droparea">
-                            <div class="t-droparea-hint"><i class="fas fa-paperclip"></i> [`Attach files`]</div>
-                            <input type="file" name="files[]" multiple="true" />
+                    {* CUSTOM FIELDS *}
+
+                    <!-- plugin hook: 'backend_task_edit.%plugin_id.before_fields' -->
+                    {* @event backend_task_edit.%plugin_id%.before_fields *}
+                    {foreach $backend_task_edit as $_}{ifset($_.before_fields)}{/foreach}
+
+                    <div class="t-form-line">
+                        <div class="t-chips">
+
+                            <div class="t-chip t-due-date-wrapper">
+                                <i class="fas fa-flag-checkered custom-ml-4"></i>
+                                <span>
+                                  <input type="text" class="t-datepicker-due-date" value="{$task.due_date|escape|default:'[`Due date`]'}" placeholder="[`Due date`]" style="max-width: 120px;">
+                                  <input type="hidden" name="data[due_date]" value="{$task.due_date|escape}">
+                                </span>
+                            </div>
+
+                            <div class="t-chip">
+                                <a href="javascript:void(0);">
+                                    <i class="fas fa-at custom-ml-4"></i>
+                                    [`Watchers`]
+                                </a>
+                            </div>
+
+                            <div class="t-chip">
+                                <a href="javascript:void(0);">
+                                    <i class="fas fa-hashtag custom-ml-4"></i>
+                                    [`Tags`]
+                                </a>
+                            </div>
+
+                            <div class="t-chip">
+                                <a href="javascript:void(0);">
+                                    <i class="fas fa-list custom-ml-4"></i>
+                                    [`Checklist`]
+                                </a>
+                            </div>
+
+                            <!-- plugin hook: 'backend_task_edit.%plugin_id.more' -->
+                            {* @event backend_task_edit.%plugin_id%.more *}
+                            {foreach $backend_task_edit as $_}{ifset($_.more)}{/foreach}
+
                         </div>
+
                     </div>
 
+                    <!-- plugin hook: 'backend_task_edit.%plugin_id.after_fields' -->
+                    {* @event backend_task_edit.%plugin_id%.after_fields *}
+                    {foreach $backend_task_edit as $_}{ifset($_.after_fields)}{/foreach}
+
+                </div>
+
+                {* ATTACH DROPAREA *}
+
+                <div class="t-form-line t-attach-wrapper">
+                    {* Droparea *}
+                    <div class="t-attach-droparea" id="t-attach-droparea">
+                        <div class="t-droparea-hint"><i class="fas fa-paperclip"></i> [`Attach files`]</div>
+                        <input type="file" name="files[]" multiple="true" />
+                    </div>
                 </div>
 
                 {* ATTACHMENTS *}
@@ -264,68 +343,15 @@
                 {* @event backend_task_edit.%plugin_id%.after_attachments *}
                 {foreach $backend_task_edit as $_}{ifset($_.after_attachments)}{/foreach}
 
-                <!-- plugin hook: 'backend_task_edit.%plugin_id.before_fields' -->
-                {* @event backend_task_edit.%plugin_id%.before_fields *}
-                {foreach $backend_task_edit as $_}{ifset($_.before_fields)}{/foreach}
 
-                <div class="fields custom-mt-16">
-                    <div class="fields-group">
-
-                {* ASSIGN *}
-                <div class="t-form-line field">
-                    <div class="name custom-pt-20">[`Assign to`]</div>
-                    <div class="value">
-                        <input type="hidden" name="data[assigned_contact_id]" value="{$task.assigned_contact_id}">
-                        <div class="t-team-list-wrapper"></div>
-                        
-                        {include file="./includes/TasksEditInviteForm.inc.html" inline}
-
-                        <script>
-                            (function ($) {
-                                var initialProjectID = $("#projectSelect").find("li:first a").data('value');
-                                $.tasks.teamList({
-                                    container: $('#t-edit-task-form .t-team-list-wrapper'),
-                                    targetField: $('#t-edit-task-form [name="data[assigned_contact_id]"]'),
-                                    inviteField: $('#t-edit-task-form .t-team-invite'),
-                                    projectId: {if !empty($task.id)}{$task.project_id}{else}initialProjectID{/if},
-                                    assignedContactId: {if !empty($task.id)}{$task.assigned_contact_id|default:"\"\""}{else}""{/if},
-                                    updateMode: {if !empty($task.id)}true{else}false{/if}
-                                });
-                            })(jQuery);
-                        </script>
-                    </div>
-                </div>
-
-
-                <div class="t-form-line field t-due-date-wrapper">
-                    <div class="name for-input">[`Due date`]</div>
-                    <div class="value">
-                        <input type="text" class="t-datepicker-due-date solid">
-                        <input type="hidden" name="data[due_date]" value="{$task.due_date|escape}"><i class="fas fa-flag-checkered custom-ml-4"></i>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-                {* HIDDEN FIELDS *}
-                <div class="t-form-line t-more-fields-wrapper">
-                    <!-- plugin hook: 'backend_task_edit.%plugin_id.more' -->
-                    {* @event backend_task_edit.%plugin_id%.more *}
-                    {foreach $backend_task_edit as $_}{ifset($_.more)}{/foreach}
-                </div>
-
-                <!-- plugin hook: 'backend_task_edit.%plugin_id.after_fields' -->
-                {* @event backend_task_edit.%plugin_id%.after_fields *}
-                {foreach $backend_task_edit as $_}{ifset($_.after_fields)}{/foreach}
+                {* BUTTONS *}
 
                 <!-- plugin hook: 'backend_task_edit.%plugin_id.before_buttons' -->
                 {* @event backend_task_edit.%plugin_id%.before_buttons *}
                 {foreach $backend_task_edit as $_}{ifset($_.before_buttons)}{/foreach}
 
-                {* BUTTONS *}
                 <div class="t-errors-block js-errors-block"></div>
-                <div class="t-form-line t-buttons-block flexbox middle space-16">
+                <div class="t-form-line t-buttons-block flexbox middle space-8">
                     <button class="button green large t-save-task-link" type="submit">{if !empty($task.id)}[`Save task`]{else}[`Create task`]{/if}</button>
                     <a class="t-close-link button large light-gray" href="javascript:void(0);">[`Cancel`]</a>
 
