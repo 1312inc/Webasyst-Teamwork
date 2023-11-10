@@ -14,7 +14,9 @@
     padding: 0;
 }
 #redactor-handle-list a {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 2px;
     text-decoration: none;
     padding: 10px 8px;
     white-space: nowrap;
@@ -27,11 +29,17 @@
     background-color: #449aef !important;
 }
 
+.redactor-handle-list-img {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+}
+
 .redactor-box .redactor-tag {
+    display: inline;
     color: var(--chips-tags-link-color);
     background: var(--chips-tags-background-color);
     border-radius: .25em;
-    padding: .375em .5em;
+    padding: .2em .5em;
     font-weight: 500;
-    margin-right: .25em;
 }

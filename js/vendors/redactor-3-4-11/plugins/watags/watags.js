@@ -11,11 +11,12 @@
             this.container = app.container;
             this.selection = app.selection;
             this.insertion = app.insertion;
+            this.caret = app.caret;
 
             this.tagRegExp = new RegExp("#[\\p{L}]+", "gu");
 
             // local
-            this.ajax = null
+            this.ajax = null;
             this.tagsHandleTrigger = '(#|@)';
             this.handleStr = "";
             this.lastTrigger = "";
@@ -50,25 +51,29 @@
             var key = e.which;
             var arrows = [38, 40]; // up and down
 
+            if ((key === this.keycodes.ENTER || key === this.keycodes.SPACE) && this._isInsideEntity()) {
+                e.preventDefault();
+            }
+
             if (key === this.keycodes.SPACE || key === this.keycodes.BACKSPACE) {
                 if (this.ajax) {
                     this.ajax.xhr.abort();
                 }
             }
 
-            if (key === this.keycodes.SPACE) {
-                var $current = this.selection.getCurrent();
-                if ($current.parentElement.className !== 'redactor-tag') {
-                    var currentText = $current.textContent;
-                    if (this.tagRegExp.test(currentText)) {
-                        $current.textContent = '';
-                        insertionTag = currentText.replace(this.tagRegExp, function (match) {
-                            return "<span class=\"redactor-tag\">" + match + "</span><span></span>";
-                        });
-                        this.insertion.insertHtml(insertionTag);
-                    }
-                }
-            }
+            // if (key === this.keycodes.SPACE) {
+            //     var $current = this.selection.getCurrent();
+            //     if ($current.parentElement.className !== 'redactor-tag') {
+            //         var currentText = $current.textContent;
+            //         if (this.tagRegExp.test(currentText)) {
+            //             $current.textContent = '';
+            //             insertionTag = currentText.replace(this.tagRegExp, function (match) {
+            //                 return "<span class=\"redactor-tag\">" + match + "</span><span></span>";
+            //             });
+            //             this.insertion.insertHtml(insertionTag);
+            //         }
+            //     }
+            // }
 
             if (
                 (arrows.indexOf(key) !== -1 || key === this.keycodes.ENTER) &&
@@ -114,8 +119,32 @@
                 e.key === "Alt";
             var arrows = [38, 40];
 
+
+
+            if (this.caret.isEnd(this.selection.getParent()) && this._isInsideEntity()) {
+                if (this.selection.getTextAfterCaret() !== '\u{00A0}') {
+                    this.selection.getParent().after('\u{00A0}');
+                }
+            }
+
+            if (this.caret.isStart(this.selection.getParent()) && this._isInsideEntity()) {
+                if (this.selection.getTextBeforeCaret() !== '\u{00A0}') {
+                    this.selection.getParent().before('\u{00A0}');
+                }
+            }
+
+            if (this._isInsideEntity()) {
+                if (this.selection.getTextBeforeCaret() === '#' && !this.selection.getTextAfterCaret().trim()) {
+                    var $parent = $R.dom(this.selection.getParent());
+                    this.caret.setAfter($parent);
+                    $R.dom($parent).unwrap();
+
+                }
+            }
+
             if (
-                arrows.indexOf(key) !== -1 ||
+                this._isInsideEntity() ||
+                arrows.includes(key) ||
                 key === this.keycodes.DELETE ||
                 key === this.keycodes.ESC ||
                 ctrl
@@ -128,13 +157,16 @@
 
             // detect
             if (
-                re.test(this.handleStr) &&
+                new RegExp("^" + this.tagsHandleTrigger).test(this.handleStr) &&
                 !this.selection.getTextAfterCaret(1).trim()
             ) {
                 this.handleStr = this.handleStr.replace(re, "");
                 this.lastTrigger = full_match.substr(0, full_match.length - this.handleStr.length);
                 this._load();
             } else {
+                if (this.timeout) {
+                    clearTimeout(this.timeout);
+                }
                 if (this._isShown()) {
                     this._hide();
                 }
@@ -149,7 +181,7 @@
             if (that.timeout) {
                 clearTimeout(that.timeout);
             }
-            that.timeout = setTimeout(function() {
+            that.timeout = setTimeout(function () {
                 that.timeout = null;
                 var url = that.lastTrigger == '#' ? that.opts.tagsHandle : that.opts.mentionsHandle;
                 if (url) {
@@ -173,7 +205,7 @@
 
             if (this.container.getElement().nodes[0]?.classList.contains('redactor-focus')) {
                 this._build();
-                this._buildData(data.data.splice(0, 5));
+                this._buildData(data.data);
             }
         },
         _build: function () {
@@ -196,9 +228,15 @@
             this.$list.html("");
 
             for (var term of this.data) {
-                var $item = $R.dom('<a href="#">');
-                $item.html(term.entity_title);
-                $item.attr("data-key", term.entity_title); // !!!
+                var img = term.entity_image
+                    ? '<img src="' + term.entity_image + '" class="redactor-handle-list-img" />'
+                    : '';
+                var $item = $R.dom('<a>');
+                $item.html(img + term.entity_title);
+                $item.attr("data-title", term.entity_title);
+                $item.attr("data-type", term.entity_type);
+                $item.attr("data-url", term.entity_url);
+                $item.attr("data-image", term.entity_image);
                 $item.on("click", function (e) {
                     e.preventDefault();
                     that._replace(e.target);
@@ -252,30 +290,41 @@
             this.activeIndex = -1;
             this.lastTrigger = '';
         },
+        /**
+         * 
+         * @param {HTMLElement} e 
+         * @returns {void}
+         */
         _replace: function (e) {
-            var $item = $R.dom(e);
-            var key = $item.attr("data-key");
-            var replacement = "<span class=\"redactor-tag\">" + this.lastTrigger + key + "</span> ";
+
+            var itemData = {
+                title: e.dataset.title,
+                type: e.dataset.type,
+                url: e.dataset.url,
+                image: e.dataset.image
+            };
+
+            var img = itemData.type === 'tag'
+                ? '#'
+                : itemData.image
+                    ? '<img src="' + itemData.image + '" class="redactor-handle-list-img" />'
+                    : '';
 
             var marker = this.marker.insert("start");
             var $marker = $R.dom(marker);
-            var current = marker.previousSibling;
-            var currentText = current.textContent;
-            var re = new RegExp(this.lastTrigger + this.handleStr + "$");
 
-            currentText = currentText.replace(re, "");
-            current.textContent = currentText;
+            var textBefore = marker.previousSibling;
+            textBefore.textContent = textBefore.textContent.substring(0, textBefore.textContent.lastIndexOf('#'));
 
-            if (current.parentElement.className === 'redactor-tag') {
-                var $node = $R.dom(current.parentElement);
-                $node.unwrap();
-            }
+            $marker.before('<font class="redactor-entity redactor-' + itemData.type + '">' + img + itemData.title + '</font>');
+            $marker.before('\u{00A0}');
 
-            $marker.before(replacement);
-
-            this.selection.restoreMarkers();
-
-            return;
+            this.caret.setAfter($marker);
+            this.marker.remove();
         },
+
+        _isInsideEntity: function () {
+            return this.selection.getCurrent().parentElement.classList.contains('redactor-entity');
+        }
     });
 })(Redactor);
