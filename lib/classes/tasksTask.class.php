@@ -308,7 +308,7 @@ class tasksTask implements ArrayAccess
             # Start of a tag
             \#
 
-            # Make sure it's not a number 
+            # Make sure it's not a number
             (?![0-9]+)
 
             # Make sure it's not a link to task
@@ -316,7 +316,7 @@ class tasksTask implements ArrayAccess
 
             # Make sure it's not a CSS color
             (?![0-9A-Fa-f]{3}\b|[0-9A-Fa-f]{6}\b)
-            
+
             # This matches the tag name
             ([^\s/!?()[\],\.#<>'\"\\\\]+)
         ~xu";
@@ -343,13 +343,13 @@ class tasksTask implements ArrayAccess
             # Make sure the tag is preceded by newline or whitespace.
             # Multiple '#'s are used in markdown for headers, # can be inside a URL, etc...
             (?:\s|^)
-        
+
             # Start of a tag
             \#
-        
+
             # Task Number
-            ([0-9]+\.[0-9]+) 
-            
+            ([0-9]+\.[0-9]+)
+
         ~x";
     }
 
@@ -513,6 +513,22 @@ class tasksTask implements ArrayAccess
         }
 
         return $contact;
+    }
+
+    /** @return array */
+    public function getWatchingContacts()
+    {
+        $favorite_model = new tasksFavoriteModel();
+        $contact_ids = array_keys($favorite_model->getByField(['task_id' => $this['id']], 'contact_id'));
+
+        $result = [];
+        $contact_model = new waContactModel();
+        $contacts = $contact_model->getById($contact_ids);
+        foreach($contacts as $c) {
+            $c['name'] = waContactNameField::formatName($c);
+            $result[$c['id']] = $c;
+        }
+        return $result;
     }
 
     /**

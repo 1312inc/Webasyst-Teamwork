@@ -113,7 +113,7 @@ class tasksCollection
                 }
                 if ($limited_access_projects) {
                     $current_contact_id = wa()->getUser()->getId();
-                    $cond = "t.project_id IN (" . implode(",", $limited_access_projects) . ") AND 
+                    $cond = "t.project_id IN (" . implode(",", $limited_access_projects) . ") AND
                         (t.assigned_contact_id={$current_contact_id} OR t.create_contact_id={$current_contact_id})";
                     $condition[] = $cond;
                 }
@@ -395,25 +395,40 @@ class tasksCollection
                 }
             }
         }
+        if (!empty($other_fields['watching_contacts'])) {
+            $defaults['watching_contacts'] = [];
+            $favorite_model = new tasksFavoriteModel();
+            $rows = $favorite_model->getByField(['task_id' => $ids], true);
+            foreach ($rows as $row) {
+                $task_id = $row['task_id'];
+                $contact_id = $row['contact_id'];
+                $data[$task_id]['watching_contacts'][$contact_id] = false;
+                $contact_ids[$contact_id] = $contact_id;
+            }
+        }
 
         if ($contact_ids) {
             $contact_model = new waContactModel();
             $contacts = $contact_model->getById($contact_ids);
+            foreach($contacts as &$c) {
+                $c['name'] = waContactNameField::formatName($c);
+            }
+            unset($c);
+
             foreach ($data as &$t) {
                 if (!empty($other_fields['create_contact']) && isset($contacts[$t['create_contact_id']])) {
-                    $c = $contacts[$t['create_contact_id']];
-                    $c['name'] = waContactNameField::formatName($c);
-                    $t['create_contact'] = $c;
+                    $t['create_contact'] = $contacts[$t['create_contact_id']];
                 }
                 if (!empty($other_fields['assigned_contact']) && isset($contacts[$t['assigned_contact_id']])) {
-                    $c = $contacts[$t['assigned_contact_id']];
-                    $c['name'] = waContactNameField::formatName($c);
-                    $t['assigned_contact'] = $c;
+                    $t['assigned_contact'] = $contacts[$t['assigned_contact_id']];
                 }
                 if (!empty($other_fields['contact']) && isset($contacts[$t['contact_id']])) {
-                    $c = $contacts[$t['contact_id']];
-                    $c['name'] = waContactNameField::formatName($c);
-                    $t['contact'] = $c;
+                    $t['contact'] = $contacts[$t['contact_id']];
+                }
+                if (!empty($other_fields['watching_contacts']) && !empty($t['watching_contacts'])) {
+                    foreach($t['watching_contacts'] as $contact_id => $_) {
+                        $t['watching_contacts'][$contact_id] = $contacts[$contact_id];
+                    }
                 }
             }
             unset($t);
@@ -469,6 +484,9 @@ class tasksCollection
 
         foreach ($data as &$t) {
             $t += $defaults;
+            if (!empty($other_fields['watching_contacts'])) {
+                $t['watching_contacts'] = array_filter($t['watching_contacts']);
+            }
             if (!empty($other_fields['project']) && !empty($projects[$t['project_id']])) {
                 $t['project'] = $projects[$t['project_id']];
             }

@@ -711,6 +711,18 @@
                         </div>
                     {/if}
 
+                    {if false && !empty($task.watching_contacts)}
+                        <ul>
+                            {foreach $task.watching_contacts as $c}
+                                <li>
+                                    <a href="#/tasks/assigned/{$c.id|escape}/">
+                                        {$c.name|escape}
+                                    </a>
+                                </li>
+                            {/foreach}
+                        </ul>
+                    {/if}
+
                     <!-- plugin hook: 'backend_task.%plugin_id%.attachments' -->
                     {* @event backend_task.%plugin_id%.attachments *}
                     {foreach $_backend_task_hook as $_}{$_.attachments|default:''}{/foreach}
