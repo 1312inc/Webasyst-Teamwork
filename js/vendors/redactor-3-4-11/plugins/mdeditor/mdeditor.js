@@ -1,44 +1,48 @@
-// define turndown service
-var turndownService = new TurndownService();
 
-// add turndown custom rules
-turndownService.addRule("a", {
-  filter: function (node, options) {
-    return node.nodeName === "A" && node.getAttribute('href') === node.innerText;
-  },
-  replacement: function (content) {
-    return content.replace(/\\/g, '');
-  },
-});
-turndownService.addRule("pre", {
-  filter: ["pre"],
-  replacement: function (content) {
-    return "```\n" + content + "\n```";
-  },
-});
-turndownService.addRule("code", {
-  filter: function (node, options) {
-    return node.nodeName === "CODE" && node.parentNode.nodeName !== "PRE";
-  },
-  replacement: function (content) {
-    return "`" + content + "`";
-  },
-});
-turndownService.addRule('strikethrough', {
-  filter: ['del', 's', 'strike'],
-  replacement: function (content) {
-    return '~~' + content + '~~';
-  }
-});
-
-// define markdown-it
-var md = markdownit();
-md.set({
-  linkify: true,
-});
 
 // Redactor API
 (function ($R) {
+  // define turndown service
+  var turndownService = new TurndownService();
+
+  // add turndown custom rules
+  turndownService.addRule("a", {
+    filter: function (node, options) {
+      return node.nodeName === "A" && node.getAttribute('href') === node.innerText;
+    },
+    replacement: function (content) {
+      return content.replace(/\\/g, '');
+    },
+  });
+  turndownService.addRule("pre", {
+    filter: ["pre"],
+    replacement: function (content) {
+      return "```\n" + content + "\n```";
+    },
+  });
+  turndownService.addRule("code", {
+    filter: function (node, options) {
+      return node.nodeName === "CODE" && node.parentNode.nodeName !== "PRE";
+    },
+    replacement: function (content) {
+      return "`" + content + "`";
+    },
+  });
+  turndownService.addRule('strikethrough', {
+    filter: ['del', 's', 'strike'],
+    replacement: function (content) {
+      return '~~' + content + '~~';
+    }
+  });
+  turndownService.keep(['iframe']);
+
+  // define markdown-it
+  var md = markdownit();
+  md.set({
+    linkify: true,
+    html: true
+  });
+
   $R.add("plugin", "mdeditor", {
     init: function (app) {
       this.app = app;
