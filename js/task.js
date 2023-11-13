@@ -1663,14 +1663,15 @@ var Task = ( function($) {
             }
 
             // Update the task item in the second sidebar if exists
-            $.get('?module=tasks&action=sidebarItem&id=' + that.task_id).then(function (html) {
+            $.get('?module=tasks&action=sidebarItem&id=' + that.task_id).then(function (html) { 
                 var selector = '#t-tasks-wrapper [data-task-id="' + that.task_id + '"]',
                     el = $(selector),
                     assignedContactId = $(html).data('assignedContactId'),
                     taskHidden = $(html).data('taskHidden'),
                     status = $(html).data('statusId');
+                    
                 if (el.length) {
-                    el.replaceWith(html);
+                    el.replaceWith(html);                    
                     if (
                         ($.tasks.last_action_params[0] === 'inbox' && $.tasks.options.contact_id !== +assignedContactId) ||
                         (taskHidden === 'hidden') ||
@@ -1679,6 +1680,7 @@ var Task = ( function($) {
                         $.tasks.removeTotalFromPreviewName();
                         $(selector).fadeOut();
                     }
+                    $(el.selector).addClass('selected').siblings('.selected').removeClass('selected');
                 }
             });
 
