@@ -41,7 +41,7 @@
             }
 
             // Initial page dispatch
-            this.setHash(self.cleanHash(window.location.hash) /*|| storage.get('tasks/hash')*/ || '#/tasks/inbox/');
+            this.setHash(storage.get('tasks/hash') === '#/kanban/' ? '#/kanban/' : self.cleanHash(window.location.hash) /*|| storage.get('tasks/hash')*/ || '#/tasks/inbox/');
             self.dispatch();
         },
 
