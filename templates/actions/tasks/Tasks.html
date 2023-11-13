@@ -180,6 +180,8 @@
                 // Hide progress bar
                 waLoading.hide();
 
+                $link.addClass('selected').siblings('.selected').removeClass('selected');
+
                 $taskWrapper.html(html);
                 window.TasksController.skipDispatch = 1;
                 window.TasksController.setHash('/task/' + number + '/');

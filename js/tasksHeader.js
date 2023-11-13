@@ -193,15 +193,6 @@ var TasksHeader = ( function($) {
                 $.storage.del('tasks/inbox_filters');
             }
         });
-
-        // Select items in the second Sidebar
-        $('#wa-app > .flexbox > .content .sidebar a[href^="#/task/"]').on("click", function(e) {
-            if (e.which !== 1) {
-                return; // not a left-mouse-button click
-            }
-            $('#wa-app > .flexbox > .content .sidebar .selected').removeClass('selected');
-            $(this).closest('li').addClass('selected');
-        });
     };
 
     Header.buildTitle = function () {
