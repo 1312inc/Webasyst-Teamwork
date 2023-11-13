@@ -18,8 +18,10 @@ return array(
     'tasks_favorite' => array(
         'contact_id' => array('int', 11, 'null' => 0),
         'task_id' => array('int', 11, 'null' => 0),
+        'unread' => array('tinyint', 4, 'null' => 0, 'default' => '0'),
         ':keys' => array(
             'PRIMARY' => array('contact_id', 'task_id'),
+            'contact_unread' => array('contact_id', 'unread'),
         ),
     ),
     'tasks_list' => array(
