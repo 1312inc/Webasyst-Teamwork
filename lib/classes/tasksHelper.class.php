@@ -499,6 +499,9 @@ class tasksHelper
 
         $update = self::updateTaskByLogInfo($log, $task, $do_not_update_datetime);
 
+        // Parse @mentions
+        tasksHelper::updateUnreadForMentions($log['text'], $update + $task);
+
         if ($send_notification) {
             $log['text'] = (string) $log['text'];
             $log['attach_count'] = $log_model->countAttachments($log['id']);
