@@ -1630,8 +1630,8 @@
                     if (assignees.length >= maxVisible + 2) {
                         $assigneesContainer.append(`
                             <div class="t-toggle-all-assignee align-center" style="width: 72px;">
-                                <span class="icon userpic size-48 text-light-gray" style="background: var(--background-color); cursor: pointer;">
-                                    <i class="fas fa-sort-alpha-down" style="width: 1.25rem;"></i>
+                                <span class="icon userpic size-48 text-gray" style="background: var(--background-color); cursor: pointer;">
+                                    <span style="font-size: 1rem;">${ assignees.length - maxVisible }</span>
                                 </span>
                             </div>
                         `);
