@@ -1477,6 +1477,11 @@
                                 var $div = $('<div></div>').html(request.responseText);
                                 self.setTitle($div);
                                 $content.append($div[0].childNodes);
+
+                                // make all links with target="_blank"
+                                $content.find('.t-description-wrapper, .t-comment-content').find('a').each(function () {
+                                    $(this).attr('target', '_blank');
+                                });
                                 try {
                                     callback && callback.call(this);
                                 } catch (e) {
