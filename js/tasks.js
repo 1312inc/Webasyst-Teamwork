@@ -1665,6 +1665,9 @@
                         }
                     }
 
+                    // recenter dialog after Team List insertion
+                    $('.dialog-opened').data('dialog')?.resize();
+
                 }
             }).always(function () {
                 $container.css('pointer-events', 'auto').fadeTo("fast", 1);
