@@ -41,6 +41,8 @@ class tasksTasksInfoAction extends waViewAction
             throw new waRightsException(_w('You do not have sufficient access rights to view this task.'));
         }
 
+        (new tasksFavoriteModel())->markAsRead(wa()->getUser()->getId(), $task['id']);
+
         $this->workup($task);
 
         $log = $task['log'];

@@ -40,4 +40,23 @@ class tasksFavoriteModel extends waModel
             'unread' => 1,
         ], ['unread']);
     }
+
+    /**
+     * @param int|array       $contact_id  one or several contacts
+     * @param int|array|null  $task_id     one or several tasks or all tasks
+     */
+    public function markAsRead($contact_id, $task_id=null)
+    {
+        if (!$contact_id) {
+            return;
+        }
+        $search = [
+            'contact_id' => $contact_id,
+        ];
+        if ($task_id) {
+            $search['task_id'] = $task_id;
+        }
+
+        $this->updateByField($search, ['unread' => 0]);
+    }
 }
