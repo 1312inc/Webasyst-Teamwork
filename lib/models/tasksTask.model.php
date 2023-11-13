@@ -178,12 +178,14 @@ class tasksTaskModel extends waModel
         $result = [
             'count' => 0,
             'total' => 0,
+            'unread' => 0,
+            'unread_total' => 0,
             'text_color' => '#999',
             'bg_color' => 'transparent',
             'value' => -100500,
         ];
         $priorities = tasksOptions::getTasksPriorities();
-        $sql = "SELECT t.priority, count(*) AS `count`
+        $sql = "SELECT t.priority, count(*) AS `count`, SUM(IF(f.unread, 1, 0)) AS `unread`
                 FROM {$this->table} AS t
                     JOIN tasks_favorite AS f
                         ON t.id=f.task_id
@@ -199,6 +201,7 @@ class tasksTaskModel extends waModel
             }
 
             $result['total'] += $row['count'];
+            $result['unread_total'] += $row['unread'];
         }
 
         return $result;
@@ -254,7 +257,7 @@ class tasksTaskModel extends waModel
         }
 
         $sql = sprintf(
-            "SELECT t.* 
+            "SELECT t.*
                 FROM %s AS t
                 WHERE concat(t.project_id, '.', t.number, t.name)  LIKE '%s'
                 ORDER BY t.id ASC
