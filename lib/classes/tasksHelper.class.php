@@ -183,6 +183,29 @@ class tasksHelper
     }
 
     /**
+     * Parse @mentions in given text (comment or task body).
+     * Get all mentioned users who have access rights to given task.
+     * Add the task to favorites for those users and mark as unread.
+     */
+    public static function updateUnreadForMentions(string $text, $task)
+    {
+        $contacts_mentioned = tasksTask::extractMentions($text);
+        if (!$contacts_mentioned) {
+            return;
+        }
+
+        // Make sure users have access to project
+        $teamGetter = new tasksTeamGetter();
+        $contacts_have_access = $teamGetter->getTeam(new taskTeamGetterParamsDto($task['project_id']));
+        $contacts_mentioned = array_intersect_key($contacts_mentioned, $contacts_have_access);
+        if (!$contacts_mentioned) {
+            return;
+        }
+
+        (new tasksFavoriteModel())->markUnreadForContacts(array_keys($contacts_mentioned), (int)$task['id']);
+    }
+
+    /**
      * @return array|null
      * @deprecated
      * This method not-deprecated up to version 1.2.0

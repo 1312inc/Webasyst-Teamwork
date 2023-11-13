@@ -31,5 +31,8 @@ final class tasksTagSaveHandler
         $new_tags = array_merge($parseNewTags, $collectHeaderTags);
 
         $tasksTaskTagsModel->save($task->getId(), $new_tags);
+
+        // Parse @mentions
+        tasksHelper::updateUnreadForMentions($task->getText(), $task->toArray());
     }
 }

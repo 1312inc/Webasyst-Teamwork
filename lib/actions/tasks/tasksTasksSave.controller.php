@@ -84,6 +84,9 @@ class tasksTasksSaveController extends waJsonController
         $new_tags = array_merge($parse_new_tags, $collect_header_tags);
 
         $tasks_task_tags_model->save($task['id'], $new_tags);
+
+        // Parse @mentions
+        tasksHelper::updateUnreadForMentions($task['text'], $task);
     }
 
     /**

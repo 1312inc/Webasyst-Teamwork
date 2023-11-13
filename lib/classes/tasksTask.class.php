@@ -322,6 +322,34 @@ class tasksTask implements ArrayAccess
         ~xu";
     }
 
+    public static function extractMentions($text)
+    {
+        $pattern = "~
+            # Make sure the tag is preceded by newline or whitespace.
+            (?:\s|^)
+
+            # Start of a tag
+            \@
+
+            # This matches the tag name
+            ([^\s/!?()[\],\.#<>'\"\\\\]+)
+        ~xu";
+
+        $has_tags = preg_match_all($pattern, $text, $m);
+        if (!$has_tags) {
+            return [];
+        }
+
+        $possible_logins = $m[1];
+        $contact_model = new waContactModel();
+        $contacts = $contact_model->getByField([
+            'is_user' => 1,
+            'login' => $possible_logins,
+        ], 'id');
+
+        return $contacts;
+    }
+
     /**
      * Extract tasks number from text
      * @param string $text

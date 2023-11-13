@@ -30,4 +30,14 @@ class tasksFavoriteModel extends waModel
 
         return $this->deleteByField(['contact_id' => $contact_id, 'task_id' => $task_id]);
     }
+
+    public function markUnreadForContacts(array $contact_ids, int $task_id)
+    {
+        // INSERT ... ON DUPLICATE KEY UPDATE
+        $this->multipleInsert([
+            'contact_id' => $contact_ids,
+            'task_id' => $task_id,
+            'unread' => 1,
+        ], ['unread']);
+    }
 }
