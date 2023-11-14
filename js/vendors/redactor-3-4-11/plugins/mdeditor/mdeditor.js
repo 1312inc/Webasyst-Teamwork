@@ -7,7 +7,7 @@
 
   // add turndown custom rules
   turndownService.addRule("a", {
-    filter: function (node, options) {
+    filter: function (node) {
       return node.nodeName === "A" && node.getAttribute('href') === node.innerText;
     },
     replacement: function (content) {
@@ -21,7 +21,7 @@
     },
   });
   turndownService.addRule("code", {
-    filter: function (node, options) {
+    filter: function (node) {
       return node.nodeName === "CODE" && node.parentNode.nodeName !== "PRE";
     },
     replacement: function (content) {
@@ -34,13 +34,19 @@
       return '~~' + content + '~~';
     }
   });
-  turndownService.keep(['iframe']);
+  turndownService.addRule('iframe', {
+    filter: function (node) {
+      return node.nodeName === "IFRAME";
+    },
+    replacement: function (content, node) {
+      return node.src;
+    }
+  });
 
   // define markdown-it
   var md = markdownit();
   md.set({
-    linkify: true,
-    html: true
+    linkify: true
   });
 
   $R.add("plugin", "mdeditor", {
