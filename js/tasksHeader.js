@@ -1057,7 +1057,7 @@ var TasksHeader = ( function($) {
         }
     };
 
-    Header.togglePulsarButton = function () {
+    Header.togglePulsarButton = function (forceShow = false) {
         var that = this,
             pulsarButtonSelector = '.pulsar.cloned',
             buttonSelector = '#sidebar .add-task-link';
@@ -1068,7 +1068,7 @@ var TasksHeader = ( function($) {
             $(pulsarButtonSelector).remove();
         }
 
-        if (that.total_count || location.hash.includes('#/tasks/search/')) {
+        if ((that.total_count || location.hash.includes('#/tasks/search/')) && !forceShow) {
             removePulsar();
         } else {
             if ($(buttonSelector).length && !$(pulsarButtonSelector).length) {

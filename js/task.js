@@ -1680,7 +1680,10 @@ var Task = ( function($) {
                         $.tasks.removeTotalFromPreviewName();
                         $(selector).fadeOut();
                     }
-                    $(el.selector).addClass('selected').siblings('.selected').removeClass('selected');
+                    $(selector).addClass('selected').siblings('.selected').removeClass('selected');
+                    if (tasksHeader) {
+                        tasksHeader.togglePulsarButton(true);
+                    }
                 }
             });
 

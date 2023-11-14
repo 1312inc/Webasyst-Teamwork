@@ -181,6 +181,7 @@
                 waLoading.hide();
 
                 $link.addClass('selected').siblings('.selected').removeClass('selected');
+                $link.parent().siblings('ul').find('.selected').removeClass('selected');
 
                 $taskWrapper.html(html);
                 window.TasksController.skipDispatch = 1;
