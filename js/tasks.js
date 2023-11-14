@@ -1631,7 +1631,7 @@
                         $assigneesContainer.append(`
                             <div class="t-toggle-all-assignee align-center" style="width: 72px;">
                                 <span class="icon userpic size-48 text-gray" style="background: var(--background-color); cursor: pointer;">
-                                    <span style="font-size: 1rem;">+${ assignees.length - maxVisible }</span>
+                                    <span style="font-size: 1rem;width: 100%;">+${ assignees.length - maxVisible }</span>
                                 </span>
                             </div>
                         `);
