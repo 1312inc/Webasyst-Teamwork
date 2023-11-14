@@ -32,7 +32,7 @@
         },
         onmdRendered: function (html) {
             var content = html.replace(this.tagRegExp, function (match) {
-                return "<span class=\"redactor-tag\">" + match + "</span><span></span>";
+                return "<div class=\"redactor-entity redactor-tag\">" + match + "</div>";
             });
             this.app.source.setCode(content);
         },
@@ -118,8 +118,6 @@
                 e.key === "Meta" ||
                 e.key === "Alt";
             var arrows = [38, 40];
-
-
 
             if (this.caret.isEnd(this.selection.getParent()) && this._isInsideEntity()) {
                 if (this.selection.getTextAfterCaret() !== '\u{00A0}') {
@@ -290,6 +288,7 @@
             this.activeIndex = -1;
             this.lastTrigger = '';
         },
+
         /**
          * 
          * @param {HTMLElement} e 
@@ -316,7 +315,14 @@
             var textBefore = marker.previousSibling;
             textBefore.textContent = textBefore.textContent.substring(0, textBefore.textContent.lastIndexOf('#'));
 
-            $marker.before('<font class="redactor-entity redactor-' + itemData.type + '">' + img + itemData.title + '</font>');
+            var $container = $R.dom(itemData.type === 'order' ? '<a>' : '<div>');
+            $container.addClass('redactor-entity redactor-' + itemData.type);
+            if (itemData.type === 'order') {
+                $container.attr('href', itemData.url);
+            }
+            $container.html(img + itemData.title);
+
+            $marker.before($container);
             $marker.before('\u{00A0}');
 
             this.caret.setAfter($marker);
@@ -324,7 +330,7 @@
         },
 
         _isInsideEntity: function () {
-            return this.selection.getCurrent().parentElement.classList.contains('redactor-entity');
+            return this.selection.getCurrent().parentElement?.classList?.contains('redactor-entity');
         }
     });
 })(Redactor);

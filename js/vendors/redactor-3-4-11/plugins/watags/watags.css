@@ -16,7 +16,7 @@
 #redactor-handle-list a {
     display: flex;
     align-items: center;
-    gap: 2px;
+    gap: 4px;
     text-decoration: none;
     padding: 10px 8px;
     white-space: nowrap;
@@ -39,6 +39,15 @@
     display: inline;
     color: var(--chips-tags-link-color);
     background: var(--chips-tags-background-color);
+    border-radius: .25em;
+    padding: .2em .5em;
+    font-weight: 500;
+}
+
+.redactor-box .redactor-order {
+    display: inline;
+    color: var(--chips-tags-link-color);
+    background: blue;
     border-radius: .25em;
     padding: .2em .5em;
     font-weight: 500;
