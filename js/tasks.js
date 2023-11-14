@@ -1631,7 +1631,7 @@
                         $assigneesContainer.append(`
                             <div class="t-toggle-all-assignee align-center" style="width: 72px;">
                                 <span class="icon userpic size-48 text-gray" style="background: var(--background-color); cursor: pointer;">
-                                    <span style="font-size: 1rem;">${ assignees.length - maxVisible }</span>
+                                    <span style="font-size: 1rem;">+${ assignees.length - maxVisible }</span>
                                 </span>
                             </div>
                         `);
@@ -1652,6 +1652,9 @@
                             return $(a).text().trim().toUpperCase().localeCompare($(b).text().trim().toUpperCase());
                         }).prependTo($assigneesContainer);
                         $(this).hide();
+                        
+                        // recenter dialog after Team List insertion
+                        $('.dialog-opened').data('dialog')?.resize();
                     });
 
                     // initial selection
