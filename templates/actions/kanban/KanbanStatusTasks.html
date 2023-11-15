@@ -28,7 +28,7 @@
                 {$_priority_icon}
                 {$task.project_id}.{$task.number}
             </span>
-            <a href="#/task/{$task.id}/" class="{if !empty($task.priority) && ($task.priority == '1' || $task.priority == '2' || $task.priority == '3')}bold{else}semibold{/if}{if !empty($task.priority) && $task.priority == '-1'} text-gray{/if}" title="{strip_tags($task.text)|truncate:128}">{$task.name|escape|default:"(no name)"}</a>
+             <a href="#/task/{$task.project_id}.{$task.number}/" class="{if !empty($task.priority) && ($task.priority == '1' || $task.priority == '2' || $task.priority == '3')}bold{else}semibold{/if}{if !empty($task.priority) && $task.priority == '-1'} text-gray{/if}" title="{strip_tags($task.text)|truncate:128}">{$task.name|escape|default:"(no name)"}</a>
 
         </div>
         <div class="flexbox space-8 middle t-kanban-item-body">
