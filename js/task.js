@@ -1685,7 +1685,9 @@ var Task = ( function($) {
                         $.tasks.removeTotalFromPreviewName();
                         $(selector).fadeOut(500, function () {
                             if (!$(selector).parent().find('li:visible').length) {
-                                TasksController.setHash('#/tasks/inbox/');
+                                if (TasksController) {
+                                    TasksController.setHash('#/tasks/inbox/');
+                                }
                             }
                         });
                     }
