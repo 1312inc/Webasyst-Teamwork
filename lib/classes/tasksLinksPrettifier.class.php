@@ -13,22 +13,20 @@ class tasksLinksPrettifier
 
     protected static $team;
 
-    public static function factory($task_markdown_code)
+    public function addFromMarkdown($task_markdown_code)
     {
-        $result = new self();
-
         $users = tasksTask::getAllMentionedUsers($task_markdown_code);
         foreach($users as $user) {
-            $result->addMention($user);
+            $this->addMention($user);
         }
 
         if (preg_match_all('~\\[[^\\]]+\\]\\([^\\)]+\\)~', $task_markdown_code, $matches)) {
             foreach($matches[0] as $link_markdown_code) {
-                $result->addLink($link_markdown_code);
+                $this->addLink($link_markdown_code);
             }
         }
 
-        return $result;
+        return $this;
     }
 
     public function addLink($markdown_code)
@@ -47,37 +45,29 @@ class tasksLinksPrettifier
         return true;
     }
 
-    public function addMention($login_or_data)
+    public function addMention($user)
     {
         if ($this->processed) {
             throw new waException('Unable to add more mentions after ->getData()');
         }
 
-        if (is_array($login_or_data)) {
-            $data = $login_or_data;
-            $login = $data['login'];
-        } else {
-            $login = $login_or_data;
-            $data = null;
-        }
+        $login = $user['login'];
 
         $this->data['@'.$login] = [
             'app_id' => 'tasks',
             'entity_type' => 'user',
-            'entity_image' => null,
-            'entity_title' => null,
+            'entity_image' => waContact::getPhotoUrl($user['id'], $user['photo'], null, null, ($user['is_company'] ? 'company' : 'person')),
+            'entity_title' => '@'.$login,
             'entity_url' => wa()->getAppUrl('team')."u/{$login}/",
             'user_login' => $login,
-            'user_data' => $data,
         ];
+
+        return true;
     }
 
     public function getData()
     {
-        if (!$this->processed) {
-            $this->process();
-        }
-
+        $this->process();
         return $this->data;
     }
 
@@ -85,6 +75,7 @@ class tasksLinksPrettifier
     {
         $link = tasksLinksPrettifierParsedownHelper::parseLink($markdown_code);
         $url = ifset($link, 'element', 'attributes', 'href', null);
+        $link_text = ifset($link, 'element', 'text', null);
         if (!$url) {
             return null;
         }
@@ -111,20 +102,63 @@ class tasksLinksPrettifier
             $app_icon = $root_url.$app_icon;
         }
 
+        $in_app_url = explode($root_url.$backend_url.'/'.$app_id.'/', $url, 2)[1];
+
         return [
             'app_id' => $app_id,
             'entity_type' => null,
             'entity_image' => $app_icon,
-            'entity_title' => null,
+            'entity_title' => $link_text,
             'entity_url' => $url,
+            'entity_in_app_url' => $in_app_url,
         ];
     }
 
     protected function process()
     {
+        if ($this->processed) {
+            return;
+        }
+
         $this->processed = true;
 
-        // !!!!
+        $contact_ids = [];
+
+        foreach($this->data as $code => &$link) {
+            if (empty($link['entity_type']) && !empty($link['entity_in_app_url'])) {
+                $app_id = $link['app_id'];
+                if ($app_id == 'shop' && preg_match('~^products/(\d+)~', $link['entity_in_app_url'])) {
+                    $link['entity_type'] = 'product';
+                } else if ($app_id == 'shop' && preg_match('~^#/orders/([^/]+&)?id=(\d+)~', $link['entity_in_app_url'])) {
+                    $link['entity_type'] = 'order';
+                } else if ($app_id == 'crm' && preg_match('~^contact/(\d+)~', $link['entity_in_app_url'], $m)) {
+                    $link['entity_type'] = 'contact';
+                    $contact_ids[$code] = $m[1];
+                } else if ($app_id == 'crm' && preg_match('~^deal/(\d+)~', $link['entity_in_app_url'], $m)) {
+                    $link['entity_type'] = 'deal';
+                } else {
+                    unset($this->data[$code]);
+                }
+            }
+            unset($link['entity_in_app_url']);
+        }
+        unset($link);
+
+        if ($contact_ids) {
+            $default_contact = [
+                'id' => 0,
+                'photo' => 0,
+                'is_company' => false,
+            ];
+            $collection = new waContactsCollection('id/'.join(',', $contact_ids));
+            $contacts = $collection->getContacts('id,photo,is_company', 0, count($contact_ids));
+            foreach($contact_ids as $code => $contact_id) {
+                if (isset($this->data[$code])) {
+                    $c = ifset($contacts, $contact_id, $default_contact);
+                    $this->data[$code]['entity_image'] = waContact::getPhotoUrl($c['id'], $c['photo'], null, null, ($c['is_company'] ? 'company' : 'person'));
+                }
+            }
+        }
     }
 
 }

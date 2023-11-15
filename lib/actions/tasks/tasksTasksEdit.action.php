@@ -44,6 +44,8 @@ class tasksTasksEditAction extends waViewAction
 
         $backend_task_edit = $this->triggerEvent($task);
 
+        $links_data = (new tasksLinksPrettifier())->addFromMarkdown($this->task['text'])->getData();
+
         $this->view->assign([
             'task' => $task,
             'projects' => $projects,
@@ -53,6 +55,7 @@ class tasksTasksEditAction extends waViewAction
             'milestones' => $this->milestones,
             'users' => $this->users,
             'backend_task_edit' => ifempty($backend_task_edit, []),
+            'links_data' => $links_data,
         ]);
 
     }
