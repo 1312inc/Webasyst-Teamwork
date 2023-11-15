@@ -1448,11 +1448,14 @@
                         title = $h1.text();
                     }
                 } else {
-                    title = $('#wa-app > .flexbox > .sidebar .selected a').text();
+                    title = $(`
+                        #wa-app > .flexbox > .sidebar .selected a, 
+                        #wa-app > .flexbox > .sidebar .brick.selected
+                        `).text().trim();
                 }
             }
 
-            document.title = (title ? title+' — ' : '') + self.options.accountName;
+            document.title = (title ? `${title} — ` : '') + self.options.accountName;
         },
 
         load: function (url, callback) {
