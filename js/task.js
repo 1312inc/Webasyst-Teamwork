@@ -1683,12 +1683,13 @@ var Task = ( function($) {
                         (+status === -1)
                     ) {
                         $.tasks.removeTotalFromPreviewName();
-                        $(selector).fadeOut();
+                        $(selector).fadeOut(500, function () {
+                            if (!$(selector).parent().find('li:visible').length) {
+                                TasksController.setHash('#/tasks/inbox/');
+                            }
+                        });
                     }
                     $(selector).addClass('selected').siblings('.selected').removeClass('selected');
-                    if (tasksHeader) {
-                        tasksHeader.togglePulsarButton(true);
-                    }
                 }
             });
 
