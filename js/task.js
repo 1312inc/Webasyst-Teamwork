@@ -1612,7 +1612,7 @@ var Task = ( function($) {
         callbacks = callbacks || {};
         var afterReplace = typeof callbacks.afterReplace === 'function' ? callbacks.afterReplace : null;
         var beforeReplace = typeof callbacks.beforeReplace === 'function' ? callbacks.beforeReplace : null;
-
+        
         update_href = "?module=tasks&action=info&id=" + that.task_id;
 
         // load the task info in the same context (by current hash)
@@ -1660,7 +1660,12 @@ var Task = ( function($) {
                 beforeReplace($updatedTask, def);
             } else {
                 replace();
-            }
+            } 
+
+            // make all links with target="_blank"
+            $('.t-description-wrapper, .t-comment-content').find('a').each(function () {
+                $(this).attr('target', '_blank');
+            });
 
             // Update the task item in the second sidebar if exists
             $.get('?module=tasks&action=sidebarItem&id=' + that.task_id).then(function (html) { 
