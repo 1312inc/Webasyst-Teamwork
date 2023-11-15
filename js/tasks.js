@@ -42,7 +42,7 @@
 
             // Initial page dispatch
             var currentHash = storage.get('tasks/hash');
-            this.setHash(currentHash.includes('#/kanban/') ? currentHash : self.cleanHash(window.location.hash) /*|| storage.get('tasks/hash')*/ || '#/tasks/inbox/');
+            this.setHash((currentHash && currentHash.includes('#/kanban/')) ? currentHash : self.cleanHash(window.location.hash) /*|| storage.get('tasks/hash')*/ || '#/tasks/inbox/');
             self.dispatch();
         },
 
