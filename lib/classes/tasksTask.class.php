@@ -280,6 +280,44 @@ class tasksTask implements ArrayAccess
         return $text;
     }
 
+    public static function getAllMentionedUsers($text)
+    {
+        if (!preg_match_all('~(?:\s|^)@(\S+)~', $text, $matches) || empty($matches[1])) {
+            return [];
+        }
+
+        $candidate_logins = $matches[1];
+
+        // List of all backend users with access to Tasks app
+        static $team = null;
+        if ($team === null) {
+            $team = [];
+            $users = (new tasksTeamGetter())->getTeam(new taskTeamGetterParamsDto(null, false));
+            foreach($users as $u) {
+                $team[$u['login']] = $u;
+            }
+            unset($users);
+        }
+
+        return array_intersect_key($team, array_fill_keys($candidate_logins, 1));
+    }
+
+    public static function replaceMentionsWithLinks($text)
+    {
+        $replace_map = [];
+        $root_url = wa()->getConfig()->getRootUrl(true);
+        $backend_url = wa()->getConfig()->getBackendUrl(false);
+        $user_url_template = $root_url.$backend_url.'/team/u/%s/';
+        foreach(self::getAllMentionedUsers($text) as $login => $user) {
+            if (isset($team[$login])) {
+                $user_url = sprintf($user_url_template, $login);
+                $replace_map['~(\s|^)'.preg_quote('@'.$login).'(\s|$)~u'] = '$1[@'.$login.']('.$user_url.')$2';
+            }
+        }
+
+        return preg_replace(array_keys($replace_map), array_values($replace_map), $text);
+    }
+
     /**
      * Extract tags from text
      * @param string $text

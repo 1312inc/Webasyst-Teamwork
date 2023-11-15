@@ -20,7 +20,7 @@ class tasksTasksMentionAutocompleteController extends waJsonController
     protected function loadUsers($term, $limit)
     {
         $term = mb_strtolower($term);
-        $users = (new tasksTeamGetter())->getTeam(new taskTeamGetterParamsDto(null, true));
+        $users = (new tasksTeamGetter())->getTeam(new taskTeamGetterParamsDto(null, false));
 
         $result = [];
         foreach($users as $u) {
