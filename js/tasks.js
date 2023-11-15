@@ -1449,7 +1449,7 @@
                     }
                 } else {
                     title = $(`
-                        #wa-app > .flexbox > .sidebar .selected a, 
+                        #wa-app > .flexbox > .sidebar .selected a,
                         #wa-app > .flexbox > .sidebar .brick.selected
                         `).text().trim();
                 }
@@ -1539,10 +1539,10 @@
 
         /**
          * Invite User
-         * @param {Object} options 
+         * @param {Object} options
          * @param {string} options.email – User's email
          * @param {number} options.taskId – Task ID
-         * @param {number} options.accessId – Access right ID 
+         * @param {number} options.accessId – Access right ID
          */
 
         inviteUser: function (options) {
@@ -1629,13 +1629,13 @@
                             </div>
                         `);
                     }
-                    
+
                     $container.html($assigneesContainer);
                     if (assignees.length >= maxVisible + 2) {
                         $assigneesContainer.append(`
                             <div class="t-toggle-all-assignee align-center" style="width: 72px;">
                                 <span class="icon userpic size-48 text-gray" style="background: var(--background-color); cursor: pointer;">
-                                    <span style="font-size: 1rem;width: 100%;">+${ assignees.length - maxVisible }</span>
+                                    <span style="font-size: 1rem; width: 100%; font-weight: bold;">+${ assignees.length - maxVisible }</span>
                                 </span>
                             </div>
                         `);
@@ -1656,7 +1656,7 @@
                             return $(a).text().trim().toUpperCase().localeCompare($(b).text().trim().toUpperCase());
                         }).prependTo($assigneesContainer);
                         $(this).hide();
-                        
+
                         // recenter dialog after Team List insertion
                         $('.dialog-opened').data('dialog')?.resize();
                     });
@@ -1691,13 +1691,13 @@
         initLogsTimeframeSelector: function ($wrapper) {
             var $visible_option = $wrapper.children('#timeframe .dropdown-toggle');
             var $custom_wrapper = $('.t-custom-timeframe');
-        
+
             // Initial selection in dropdown menu
             var timeframe = getTimeframeData();
             setActiveLi(timeframe.$li);
             if (timeframe.timeframe == 'custom') {
                 $custom_wrapper.show();
-        
+
                 // Delay initialization to allow datepicker locale to set up properly.
                 // Looks kinda paranoid, but otherwise localization sometimes fails in FF.
                 $(function() {
@@ -1708,7 +1708,7 @@
             } else {
                 $custom_wrapper.hide();
             }
-        
+
             // Change selection when user clicks on dropdown list item
             $wrapper.children('#timeframe .dropdown-body').on('click', 'li:not(.selected)', function() {
                 var $li = $(this);
@@ -1722,7 +1722,7 @@
                     reloadChart();
                 }
             });
-        
+
             // Load chart based on current selected dates
             function reloadChart() {
                 var timeframe = getTimeframeData();
@@ -1733,10 +1733,10 @@
                 'to from groupby timeframe'.split(' ').forEach(function(name) {
                     params = $.tasks.replaceParam(params, name, timeframe[name] || '');
                 });
-        
+
                 $.wa.setHash($.tasks.cleanHash('#/log/' + params + '/'));
             }
-        
+
             // Helper to get timeframe data from <li> element,
             // or when $li is not specified, deduce it from current selected element and/or URL hash.
             function getTimeframeData($li) {
@@ -1776,7 +1776,7 @@
                         throw new Error("Something's badly wrong with the timeframe selector.");
                     }
                 }
-        
+
                 result = {
                     $li: $li,
                     timeframe: ($li && $li.data('timeframe')) || 30,
@@ -1788,7 +1788,7 @@
                         return ($li && $li.data('groupby')) || 'days';
                     })()
                 };
-        
+
                 if (result.timeframe == 'custom') {
                     result.from = $custom_wrapper.find('[name="from"]').datepicker('getDate');
                     if (result.from) {
@@ -1799,25 +1799,25 @@
                         result.to = result.to.getTime() / 1000;
                     }
                 }
-        
+
                 return result;
             }
-        
+
             // Helper to set active timeframe <li>
             function setActiveLi($li) {
                 $visible_option.text($li.text());
                 $li.addClass('selected').siblings('.selected').removeClass('selected');
             }
-        
+
             // Helper to set up custom period selector
             function initCustomSelector(timeframe) {
-        
+
                 var $groupby = $custom_wrapper.find('select');
                 var $inputs = $custom_wrapper.find('input');
                 var $from = $inputs.filter('[name="from"]');
                 var $to = $inputs.filter('[name="to"]');
                 var delay_timeout = null;
-        
+
                 // One-time initialization
                 (function() {
                     $inputs.datepicker().change(function() {
@@ -1832,7 +1832,7 @@
                     $inputs.datepicker('widget').hide();
                     $groupby.change(reloadChart);
                 })();
-        
+
                 // Code to run each time 'Custom' is selected
                 initCustomSelector = function(timeframe) {
                     // Set datepicker values depending on previously selected options
@@ -1848,7 +1848,7 @@
                     }
                     $groupby.val(timeframe.groupby);
                 };
-        
+
                 initCustomSelector(timeframe);
             }
         }
