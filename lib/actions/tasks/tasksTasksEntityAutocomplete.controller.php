@@ -20,8 +20,9 @@ class tasksTasksEntityAutocompleteController extends waJsonController
 
         if (strlen($term) && count($result) < $limit) {
             $result = array_merge($result, $this->loadAllEntities($term, $limit - count($result)));
-            //$this->addDefaultMarkdownCode($result);
         }
+
+        $this->addDefaults($result);
 
         $this->response = $result;
     }
@@ -240,12 +241,23 @@ class tasksTasksEntityAutocompleteController extends waJsonController
         return $result;
     }
 
-    protected function addDefaultMarkdownCode(&$result)
+    protected function addDefaults(&$result)
     {
+        $all_apps = wa()->getApps();
+        $root_url = wa()->getConfig()->getRootUrl(false);
         foreach ($result as &$row) {
-            if (!isset($row['markdown_code'])) {
-                $title = str_replace('#', '', $row['entity_title']);
-                $row['markdown_code'] = "[{$title}]({$row['entity_url']})";
+            //if (!isset($row['markdown_code'])) {
+            //    $title = str_replace('#', '', $row['entity_title']);
+            //    $row['markdown_code'] = "[{$title}]({$row['entity_url']})";
+            //}
+            if (!isset($row['entity_image']) && !empty($row['app_id'])) {
+                $app_id = $row['app_id'];
+                if (!empty($all_apps[$app_id])) {
+                    $app_icon = ifset($all_apps, $app_id, 'icon', 48, null);
+                    if ($app_icon) {
+                        $row['entity_image'] = $root_url.$app_icon;
+                    }
+                }
             }
         }
         unset($row);
