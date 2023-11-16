@@ -48,16 +48,16 @@
 .redactor-entity--tag {
     color: var(--chips-tags-link-color);
     background: var(--chips-tags-background-color);
-    padding: .2em .5em;
+    padding: .12em .5em;
 }
 
 .redactor-entity--user {
     background: var(--background-color);
-    padding: .2em .5em;
+    padding: .12em .5em;
 }
 
 .redactor-entity--link {
-    padding: .2em .5em .2em 1.6rem;
+    padding: .12em .5em .12em 1.6rem;
     background: var(--background-color);
     background-size: 16px;
     background-repeat: no-repeat;
