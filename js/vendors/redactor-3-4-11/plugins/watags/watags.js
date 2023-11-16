@@ -190,10 +190,8 @@
                 data = [];
             }
 
-            if (this.container.getElement().nodes[0]?.classList.contains('redactor-focus')) {
-                this._build();
-                this._buildData(data.data);
-            }
+            this._build();
+            this._buildData(data.data);
         },
         _build: function () {
             this.$list = $R.dom("#redactor-handle-list");
@@ -224,7 +222,7 @@
                 $item.attr("data-type", term.entity_type);
                 $item.attr("data-url", term.entity_url);
                 $item.attr("data-image", term.entity_image);
-                $item.on("click", function (e) {
+                $item.on("mousedown", function (e) {
                     e.preventDefault();
                     that._replace(e.target);
                 });
@@ -302,6 +300,7 @@
             $container.attr('contenteditable', false);
             if (!isSpan) {
                 $container.attr('style', `background-image: url(${itemData.image})`);
+                $container.attr('data-redactor-style-cache', `background-image: url(${itemData.image})`);
             }
             $container.html((itemData.type === 'tag' ? '#' : itemData.type === 'user' ? '@' : '') + itemData.title);
 
