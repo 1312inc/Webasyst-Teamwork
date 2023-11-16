@@ -7,6 +7,10 @@
 
 {$task_uuid = $task.uuid|default:tasksUuid4::generate()}
 
+<script>
+    window.taskLinks = {$links_data|json_encode};
+</script>
+
 <script>(function($) { "use strict";
     {if $task.id}
         $.tasks.setTitle({$task.name|json_encode});

@@ -35,20 +35,27 @@
     object-fit: contain;
 }
 
-.redactor-box .redactor-tag {
+.redactor-entity {
     display: inline;
-    color: var(--chips-tags-link-color);
-    background: var(--chips-tags-background-color);
     border-radius: .25em;
-    padding: .2em .5em;
-    font-weight: 500;
 }
 
-.redactor-box .redactor-order {
-    display: inline;
+.redactor-entity--tag {
     color: var(--chips-tags-link-color);
-    background: blue;
-    border-radius: .25em;
+    background: var(--chips-tags-background-color);
     padding: .2em .5em;
-    font-weight: 500;
+}
+
+.redactor-entity--user {
+    background: var(--background-color);
+    padding: .2em .5em;
+}
+
+.redactor-entity--link {
+    padding: .2em .5em .2em 1.6rem;
+    background: var(--background-color);
+    background-size: 16px;
+    background-repeat: no-repeat;
+    background-position-y: center;
+    background-position-x: 6px;
 }
