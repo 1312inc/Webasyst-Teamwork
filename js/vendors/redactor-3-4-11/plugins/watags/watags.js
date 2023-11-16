@@ -14,6 +14,9 @@
             this.caret = app.caret;
 
             this.tagRegExp = new RegExp("#[\\p{L}]+", "gu");
+            this.userRegExp = new RegExp("@[\\p{L}]+", "gu");
+
+            this.taskLinks = window.taskLinks;
 
             // local
             this.ajax = null;
@@ -31,8 +34,18 @@
             $editor.on("keyup.redactor-plugin-handle", this._handle.bind(this));
         },
         onmdRendered: function (html) {
-            var content = html.replace(this.tagRegExp, function (match) {
-                return "<div class=\"redactor-entity redactor-tag\">" + match + "</div>";
+            var content = html;
+            for (var link in this.taskLinks) {
+                var link = this.taskLinks[link];
+                var target = `<a href="${link.entity_url}">${link.entity_title}</a>`;
+                var replacement = `<a href="${link.entity_url}" class="redactor-entity redactor-entity--link" contenteditable=\"false\" target="_blank" style="background-image: url(${link.entity_image});">${link.entity_title}</a>`;
+                content = content.replaceAll(target, replacement);
+            }
+            content = content.replaceAll(this.tagRegExp, function (match) {
+                return "<span class=\"redactor-entity redactor-entity--tag\" contenteditable=\"false\">" + match + "</span>";
+            });
+            content = content.replaceAll(this.userRegExp, function (match) {
+                return "<span class=\"redactor-entity redactor-entity--user\" contenteditable=\"false\">" + match + "</span>";
             });
             this.app.source.setCode(content);
         },
@@ -50,10 +63,6 @@
         _navigate: function (e) {
             var key = e.which;
             var arrows = [38, 40]; // up and down
-
-            if ((key === this.keycodes.ENTER || key === this.keycodes.SPACE) && this._isInsideEntity()) {
-                e.preventDefault();
-            }
 
             if (key === this.keycodes.SPACE || key === this.keycodes.BACKSPACE) {
                 if (this.ajax) {
@@ -119,29 +128,7 @@
                 e.key === "Alt";
             var arrows = [38, 40];
 
-            if (this.caret.isEnd(this.selection.getParent()) && this._isInsideEntity()) {
-                if (this.selection.getTextAfterCaret() !== '\u{00A0}') {
-                    this.selection.getParent().after('\u{00A0}');
-                }
-            }
-
-            if (this.caret.isStart(this.selection.getParent()) && this._isInsideEntity()) {
-                if (this.selection.getTextBeforeCaret() !== '\u{00A0}') {
-                    this.selection.getParent().before('\u{00A0}');
-                }
-            }
-
-            if (this._isInsideEntity()) {
-                if (this.selection.getTextBeforeCaret() === '#' && !this.selection.getTextAfterCaret().trim()) {
-                    var $parent = $R.dom(this.selection.getParent());
-                    this.caret.setAfter($parent);
-                    $R.dom($parent).unwrap();
-
-                }
-            }
-
             if (
-                this._isInsideEntity() ||
                 arrows.includes(key) ||
                 key === this.keycodes.DELETE ||
                 key === this.keycodes.ESC ||
@@ -152,11 +139,13 @@
 
             var re = new RegExp("^" + this.tagsHandleTrigger);
             var full_match = this.handleStr = this.selection.getTextBeforeCaret(20).split(/\s+/).pop();
+            var range = document.getSelection().getRangeAt(0);
 
             // detect
             if (
-                new RegExp("^" + this.tagsHandleTrigger).test(this.handleStr) &&
-                !this.selection.getTextAfterCaret(1).trim()
+                re.test(this.handleStr) &&
+                !this.selection.getTextAfterCaret(1).trim() &&
+                (range.endOffset !== 0 && range.endContainer.nodeName === '#text')
             ) {
                 this.handleStr = this.handleStr.replace(re, "");
                 this.lastTrigger = full_match.substr(0, full_match.length - this.handleStr.length);
@@ -181,7 +170,7 @@
             }
             that.timeout = setTimeout(function () {
                 that.timeout = null;
-                var url = that.lastTrigger == '#' ? that.opts.tagsHandle : that.opts.mentionsHandle;
+                var url = that.lastTrigger === '#' ? that.opts.tagsHandle : that.opts.mentionsHandle;
                 if (url) {
                     that.ajax = $R.ajax.post({
                         url: url,
@@ -288,7 +277,6 @@
             this.activeIndex = -1;
             this.lastTrigger = '';
         },
-
         /**
          * 
          * @param {HTMLElement} e 
@@ -303,34 +291,24 @@
                 image: e.dataset.image
             };
 
-            var img = itemData.type === 'tag'
-                ? '#'
-                : itemData.image
-                    ? '<img src="' + itemData.image + '" class="redactor-handle-list-img" />'
-                    : '';
-
             var marker = this.marker.insert("start");
             var $marker = $R.dom(marker);
-
             var textBefore = marker.previousSibling;
-            textBefore.textContent = textBefore.textContent.substring(0, textBefore.textContent.lastIndexOf('#'));
+            textBefore.textContent = textBefore.textContent.substring(0, textBefore.textContent.lastIndexOf(this.lastTrigger));
 
-            var $container = $R.dom(itemData.type === 'order' ? '<a>' : '<div>');
-            $container.addClass('redactor-entity redactor-' + itemData.type);
-            if (itemData.type === 'order') {
-                $container.attr('href', itemData.url);
+            var isSpan = ['tag', 'user'].includes(itemData.type);
+            var $container = $R.dom(isSpan ? '<span>' : '<a href=' + itemData.url + ' target="_blank">');
+            $container.addClass('redactor-entity redactor-entity--' + (itemData.type === 'tag' ? 'tag' : itemData.type === 'user' ? 'user' : 'link'));
+            $container.attr('contenteditable', false);
+            if (!isSpan) {
+                $container.attr('style', `background-image: url(${itemData.image})`);
             }
-            $container.html(img + itemData.title);
+            $container.html((itemData.type === 'tag' ? '#' : itemData.type === 'user' ? '@' : '') + itemData.title);
 
             $marker.before($container);
-            $marker.before('\u{00A0}');
 
             this.caret.setAfter($marker);
             this.marker.remove();
-        },
-
-        _isInsideEntity: function () {
-            return this.selection.getCurrent().parentElement?.classList?.contains('redactor-entity');
         }
     });
 })(Redactor);

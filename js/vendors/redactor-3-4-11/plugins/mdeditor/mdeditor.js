@@ -42,14 +42,6 @@
       return node.src;
     }
   });
-  turndownService.addRule('watagsEntity', {
-    filter: function (node) {
-      return node.getAttribute('class')?.includes('redactor-handle-list-img');
-    },
-    replacement: function () {
-      return '';
-    }
-  });
 
   // define markdown-it
   var md = markdownit();
