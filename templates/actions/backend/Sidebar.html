@@ -39,6 +39,7 @@
     <div class="bricks custom-mt-4">
         <a href="#/tasks/inbox/" class="brick">
             <span class="icon" style="color: var(--accent-color);"><i class="fas fa-inbox"></i></span>
+            <span>[`Inbox`]</span>
             <span class="count">
                 {$user_count = ifset($team_counts[$wa->user('id')], $empty_user_count)}
                 {if $user_count.total == $user_count.count}
@@ -51,22 +52,21 @@
                     +{$favorites_counts.unread_total|escape} {* !!! TODO #1.2394 *}
                 {/if}
             </span>
-            [`Inbox`]
         </a>
         <a href="#/tasks/outbox/" class="brick">
             <span class="icon"><i class="fas fa-paper-plane"></i></span>
+            <span>[`Outbox`]</span>
             <span class="count">{$outbox_count}</span>
-            [`Outbox`]
         </a>
         <a href="#/log/" class="brick t-mini-brick">
             <span class="icon text-yellow"><i class="fas fa-bolt"></i></span>
+            <span>[`Updates`]</span>
             <span class="count"></span>
-            [`Updates`]
         </a>
         <a href="#/kanban/" class="brick t-mini-brick">
             <span class="icon text-green"><i class="fas fa-table"></i></span>
+            <span>[`Kanban`]</span>
             <span class="count"></span>
-            [`Kanban`]
         </a>
     </div>
 
