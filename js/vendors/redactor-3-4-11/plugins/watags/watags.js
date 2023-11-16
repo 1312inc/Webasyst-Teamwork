@@ -214,7 +214,7 @@
 
             for (var term of this.data) {
                 var img = term.entity_image
-                    ? '<img src="' + term.entity_image + '" class="redactor-handle-list-img" />'
+                    ? `<img src="${term.entity_image}" class="redactor-handle-list-img ${term.entity_type === 'user' ? 'redactor-handle-list-img--rounded' : ''}" />`
                     : '';
                 var $item = $R.dom('<a>');
                 $item.html(img + term.entity_title);

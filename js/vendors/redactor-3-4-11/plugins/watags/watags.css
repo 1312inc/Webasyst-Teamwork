@@ -35,6 +35,11 @@
     object-fit: contain;
 }
 
+.redactor-handle-list-img--rounded {
+    overflow: hidden;
+    border-radius: 100%;
+}
+
 .redactor-entity {
     display: inline;
     border-radius: .25em;
