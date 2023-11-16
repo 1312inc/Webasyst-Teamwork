@@ -1073,7 +1073,7 @@ msgid "Delete list “%s”"
 msgstr "Удалить список «%s»"
 
 msgid "My preferences"
-msgstr "Мои настройки"
+msgstr "Мои личные настройки"
 
 msgid "Actions"
 msgstr "Действия"
@@ -1503,3 +1503,36 @@ msgstr "Наблюдатели"
 
 msgid "Checklist"
 msgstr "Чек-лист"
+
+msgid "404"
+msgstr ""
+
+msgid "Install Webasyst Teamwork mobile app on your phone today:"
+msgstr "Установите Webasyst Задачи на свой телефон:"
+
+msgid "App icon badge"
+msgstr "Счетчик на иконке"
+
+msgid "Urgent open tasks assigned to me"
+msgstr "Срочные открытые задачи, назначенные на меня"
+
+msgid "Unread @mentions"
+msgstr "Непрочитанные @упоминания"
+
+msgid "Both settings are force-set to on for every user on your team."
+msgstr "Обе настройки всегда включены для всех сотрудников в вашей команде."
+
+msgid "Push & Email"
+msgstr "Push-уведомления и почта"
+
+msgid "To receive push notifications, make sure the <a href=\"https://www.webasyst.com/mobile/\" target=\"_blank\">%s Webasyst Teamwork mobile app</a> is installed on your device with push notifications enabled/allowed."
+msgstr "Чтобы принимать пуш-уведомления о задачах, установите <a href=\"https://www.webasyst.ru/mobile/\" target=\"_blank\">%s мобильное приложение «Webasyst Задачи»</a> на свой телефон и убедитесь, что отправка уведомлений для приложения включена/разрешена."
+
+msgid "Teamwork"
+msgstr "Задачи"
+
+msgid "%d.%d %s"
+msgstr ""
+
+msgid "Webasyst ID auth is required to be enabled to send an invitation"
+msgstr "Для отправки приглашения вход с Webasyst ID должен быть включен"

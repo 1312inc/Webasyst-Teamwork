@@ -5,7 +5,7 @@ final class taskTeamInviteByPhone extends teamUserInvitingByPhone
     public function invite(): tasksInviteResultDto
     {
         if (!(new waWebasystIDClientManager())->isConnected()) {
-            return new tasksInviteResultDto(null, _w('Установка не подключена к Webasyst ID'), null);
+            return new tasksInviteResultDto(null, _w('Webasyst ID auth is required to be enabled to send an invitation'), null);
         }
 
         $result = $this->createInvitationToken();

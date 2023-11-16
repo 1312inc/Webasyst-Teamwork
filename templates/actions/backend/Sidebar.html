@@ -385,25 +385,18 @@
     <ul class="menu">
         {if $is_admin}
             <li>
-                <a href="#/settings/">
-                    <i class="fas fa-cog"></i>
-                    <span>[`Settings`]</span>
-                </a>
-            </li>
-            <li>
                 <a href="#/plugins/">
                     <i class="fas fa-plug"></i>
                     <span>[s`Plugins`]</span>
                 </a>
             </li>
-        {else}
-            <li>
-                <a href="#/personal-settings/">
-                    <i class="fas fa-cog"></i>
-                    <span>[`Settings`]</span>
-                </a>
-            </li>
         {/if}
+        <li>
+            <a href="#/personal-settings/">
+                <i class="fas fa-cog"></i>
+                <span>[`Settings`]</span>
+            </a>
+        </li>
 
         <!-- plugin hook: 'backend_sidebar.bottom_li' -->
         {* @event backend_sidebar.%plugin_id%.bottom_li *}
