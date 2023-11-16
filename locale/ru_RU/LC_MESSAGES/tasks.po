@@ -818,7 +818,7 @@ msgid "No tasks in %s status"
 msgstr "В статусе «%s» нет задач"
 
 msgid "There are currently no tasks in %s status."
-msgstr "В статусе «%s» нет ни одной задачи."
+msgstr "В ваших проектах нет ни одной задачи в статусе «%s»."
 
 msgid "There are unsaved task draft."
 msgstr "Есть несохраненная задача."
