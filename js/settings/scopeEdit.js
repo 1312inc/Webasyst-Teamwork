@@ -49,7 +49,7 @@ var TasksScopeEdit = (function ($) {
             date = $form.find('.datepicker-due-date').datepicker('getDate');
 
         $submitButton.attr('disabled', true);
-        $submitButton.find('i').fadeIn();
+        $submitButton.find('.fa-spinner').fadeIn();
 
         if (!date) {
             $form.find('[name="milestone[due_date]"]').val('');
