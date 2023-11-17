@@ -121,6 +121,10 @@ class tasksLinksPrettifier
         }
 
         $this->processed = true;
+        if (empty($this->data)) {
+            $this->data = [];
+            return;
+        }
 
         $contact_ids = [];
 
