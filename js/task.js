@@ -1316,13 +1316,13 @@ var Task = ( function($) {
          * If tag not found and user tap "enter" need create new tag and bind to this task
          */
         $tags.on("keyup", ".js-t-task-tags-autocomplete", function (event) {
-            if (event.keyCode === 13) {
+            if (event.keyCode === 13 && $(this).val()) {
                     var data = {
                         task_id: that.task_id,
                         tag_name: $(this).val()
                     };
-                that.createTag(data);
                 $(this).val('');
+                that.createTag(data);
             }
         });
 
