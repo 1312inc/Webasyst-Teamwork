@@ -125,10 +125,9 @@ final class tasksTeamGetter
         if ($paramsDto->isOnlyActive()) {
             $contact_ids = $this->logModel->getContactIds();
             $result = [];
-            $user_id = wa()->getUser()->getId();
             foreach ($data as $contact_id => $c) {
                 $inInvited = $paramsDto->isWithInvited() && $c['invited'] !== null;
-                if ((in_array($contact_id, $contact_ids) && $contact_id != $user_id) || $inInvited) {
+                if (in_array($contact_id, $contact_ids) || $inInvited) {
                     $result[$contact_id] = $c;
                 }
             }

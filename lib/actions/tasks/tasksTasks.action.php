@@ -428,7 +428,7 @@ class tasksTasksAction extends waViewAction
                     'name' => _w('All assignees'),
                     'photo' => '',
                 ],
-            ] + tasksHelper::getTeam($project_id);
+            ] + tasksHelper::getTeam($project_id, true);
     }
 
     protected static function getListViewType()
