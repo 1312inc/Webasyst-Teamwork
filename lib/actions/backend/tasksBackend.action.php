@@ -33,7 +33,7 @@ class tasksBackendAction extends waViewAction
             'projects' => self::getProjectsWithCounts(),
             'lists' => $this->getLists(),
             'cloud' => $cloud,
-            'scopes' => $this->getScopes(),
+            'scopes' => $this->getScopes($accessedProjects),
             'team_app_name' => $this->getTeamAppName(),
             'users' => $users,
             'text_editor' => wa()->getUser()->getSettings('tasks', 'text_editor', 'wysiwyg'),
@@ -69,7 +69,7 @@ class tasksBackendAction extends waViewAction
         return $lm->getByField(['contact_id' => $this->getUserId()], 'id');
     }
 
-    protected function getScopes()
+    protected function getScopes($accessedProjects)
     {
         $tasks_milestone_model = new tasksMilestoneModel();
         $tasks_task_model = new tasksTaskModel();
@@ -82,19 +82,27 @@ class tasksBackendAction extends waViewAction
                 unset($scopes[$id]);
                 continue;
             }
+            $scopes[$id]['project_access_full'] = $accessedProjects === true || in_array($scope['project_id'], $accessedProjects[tasksRights::PROJECT_ACCESS_FULL]);
             $scopes[$id]['project'] = $projects[$scope['project_id']];
+        }
+        if (!$scopes) {
+            return $scopes;
         }
 
         $scope_counts = $tasks_task_model->getCountTasksInScope();
         if ($scope_counts) {
             //Calculate percent closed tasks
             foreach ($scope_counts as $count) {
-                if (isset($scopes[$count['milestone_id']])) {
-                    $percent = $count['closed'] / $count['total'] * 100;
-                    $percent = round($percent);
-                    $scopes[$count['milestone_id']]['closed_percent'] = $percent;
-                    $scopes[$count['milestone_id']]['closed_tasks'] = $count['closed'];
-                    $scopes[$count['milestone_id']]['open_tasks'] = $count['total'] - $count['closed'];
+                $scope_id = $count['milestone_id'];
+                if (isset($scopes[$scope_id])) {
+                    $scope = $scopes[$scope_id];
+                    if ($scope['project_access_full']) {
+                        $percent = $count['closed'] / $count['total'] * 100;
+                        $percent = round($percent);
+                        $scopes[$scope_id]['closed_percent'] = $percent;
+                        $scopes[$scope_id]['closed_tasks'] = $count['closed'];
+                        $scopes[$scope_id]['open_tasks'] = $count['total'] - $count['closed'];
+                    }
                 }
             }
         }
