@@ -1364,17 +1364,34 @@ var Task = ( function($) {
         });
         var regexp = new RegExp('\/('+escaped_names.join('|')+')\/');
         that.$content.find('.t-description-wrapper a,.t-comment-content a').each(function() {
+
+            // Links specifically set up via call to $.tasks.setAppLinksOptions()
+            var $a = $(this);
+            try {
+                var attr_href = $a.attr('href');
+                var link_data = $.tasks.options.links_data[attr_href];
+                if (link_data?.entity_image) {
+                    prependIcon(link_data.app_id, link_data.entity_image);
+                    return;
+                }
+            } catch (e) {
+            }
+
+            // If link's URL looks like it's from one of the known WA apps, show icon of that app
             var matches = this.pathname.match(regexp);
             if (matches) {
-                var $a = $(this);
                 if (!$a.parent().hasClass('break-word')) {
                     $a.wrap('<span class="break-word"></span>');
                 }
                 if (!$a.hasClass('js-no-app-icon') && !$a.hasClass('t-tag-link')) {
-                    $a.addClass('app-link app-'+matches[1]).prepend($.parseHTML(
-                        '<i class="icon app-icon custom-mr-4 app-'+matches[1]+'" style="background-image: url('+app_icons[matches[1]]+'); background-size: 100%; margin-top: 2px;"></i>'
-                    ));
+                    prependIcon(matches[1], app_icons[matches[1]]);
                 }
+            }
+
+            function prependIcon(app_id, icon_url) {
+                $a.addClass('app-link app-'+app_id).prepend($.parseHTML(
+                    '<i class="icon app-icon custom-mr-4 app-'+app_id+'" style="background-image: url('+icon_url+'); background-size: 100%; margin-top: 2px;"></i>'
+                ));
             }
         });
     };
@@ -1612,7 +1629,7 @@ var Task = ( function($) {
         callbacks = callbacks || {};
         var afterReplace = typeof callbacks.afterReplace === 'function' ? callbacks.afterReplace : null;
         var beforeReplace = typeof callbacks.beforeReplace === 'function' ? callbacks.beforeReplace : null;
-        
+
         update_href = "?module=tasks&action=info&id=" + that.task_id;
 
         // load the task info in the same context (by current hash)
@@ -1660,7 +1677,7 @@ var Task = ( function($) {
                 beforeReplace($updatedTask, def);
             } else {
                 replace();
-            } 
+            }
 
             // make all links with target="_blank"
             $('.t-description-wrapper, .t-comment-content').find('a').each(function () {
@@ -1668,15 +1685,15 @@ var Task = ( function($) {
             });
 
             // Update the task item in the second sidebar if exists
-            $.get('?module=tasks&action=sidebarItem&id=' + that.task_id).then(function (html) { 
+            $.get('?module=tasks&action=sidebarItem&id=' + that.task_id).then(function (html) {
                 var selector = '#t-tasks-wrapper [data-task-id="' + that.task_id + '"]',
                     el = $(selector),
                     assignedContactId = $(html).data('assignedContactId'),
                     taskHidden = $(html).data('taskHidden'),
                     status = $(html).data('statusId');
-                    
+
                 if (el.length) {
-                    el.replaceWith(html);                    
+                    el.replaceWith(html);
                     if (
                         ($.tasks.last_action_params[0] === 'inbox' && $.tasks.options.contact_id !== +assignedContactId) ||
                         (taskHidden === 'hidden') ||

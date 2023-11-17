@@ -260,6 +260,7 @@ class tasksTask implements ArrayAccess
             $parser = new tasksParsedown();
             $parser->setBreaksEnabled(true);
             $parser->setMarkupEscaped(true);
+            $text = self::replaceMentionsWithLinks($text);
             $text = $parser->text($text);
         }
 
@@ -305,14 +306,12 @@ class tasksTask implements ArrayAccess
     public static function replaceMentionsWithLinks($text)
     {
         $replace_map = [];
-        $root_url = wa()->getConfig()->getRootUrl(true);
+        $root_url = wa()->getConfig()->getRootUrl(false);
         $backend_url = wa()->getConfig()->getBackendUrl(false);
         $user_url_template = $root_url.$backend_url.'/team/u/%s/';
         foreach(self::getAllMentionedUsers($text) as $login => $user) {
-            if (isset($team[$login])) {
-                $user_url = sprintf($user_url_template, $login);
-                $replace_map['~(\s|^)'.preg_quote('@'.$login).'(\s|$)~u'] = '$1[@'.$login.']('.$user_url.')$2';
-            }
+            $user_url = sprintf($user_url_template, $login);
+            $replace_map['~(\s|^)'.preg_quote('@'.$login).'(\s|$)~u'] = '$1[@'.$login.']('.$user_url.')$2';
         }
 
         return preg_replace(array_keys($replace_map), array_values($replace_map), $text);

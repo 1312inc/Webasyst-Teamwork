@@ -1538,6 +1538,19 @@
         },
 
         /**
+         * Used to set up links prettifier
+         * see task.js initAppLinks()
+         */
+        setAppLinksOptions: function(links_data) {
+            this.options.links_data = {};
+            for (var k in links_data) {
+                if (links_data[k] && links_data[k].entity_url) {
+                    this.options.links_data[links_data[k].entity_url] = links_data[k];
+                }
+            }
+        },
+
+        /**
          * Invite User
          * @param {Object} options
          * @param {string} options.email – User's email

@@ -45,6 +45,9 @@ class tasksTasksInfoAction extends waViewAction
 
         $this->workup($task);
 
+        $links_prettifier = new tasksLinksPrettifier();
+        $links_prettifier->addFromMarkdown($task['text']);
+
         $log = $task['log'];
         if ($log) {
             $task['log'] = $log;
@@ -54,6 +57,13 @@ class tasksTasksInfoAction extends waViewAction
                     $this->view->assign('last_log', $last_log);
                 }
             }
+
+            foreach($log as $l) {
+                if ($l['text']) {
+                    $links_prettifier->addFromMarkdown($l['text']);
+                }
+            }
+
         }
 
         $this->milestones = (new tasksMilestoneModel())->getMilestonesWithOrder(false);
@@ -76,6 +86,7 @@ class tasksTasksInfoAction extends waViewAction
         $this->view->assign('hash_type', waRequest::get('from_hash_type', '', waRequest::TYPE_STRING_TRIM));
 
         $this->view->assign('milestones', $this->milestones);
+        $this->view->assign('links_data', $links_prettifier->getData());
     }
 
     public function workup(&$task)
