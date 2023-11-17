@@ -213,8 +213,8 @@
             this.$list.html("");
 
             for (var term of this.data) {
-                var img = term.entity_image
-                    ? `<img src="${term.entity_image}" class="redactor-handle-list-img ${term.entity_type === 'user' ? 'redactor-handle-list-img--rounded' : ''}" />`
+                var img = term.entity_type === 'tag' ? "#" : term.entity_image
+                    ? `<img src="${term.entity_image}" class="redactor-handle-list-img ${['user', 'contact'].includes(term.entity_type) ? 'redactor-handle-list-img--rounded' : ''}" />`
                     : '';
                 var $item = $R.dom('<a>');
                 $item.html(img + term.entity_title);
