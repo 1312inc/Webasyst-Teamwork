@@ -45,7 +45,11 @@ var TasksScopeEdit = (function ($) {
     TasksScopeEdit.prototype.submit = function (data) {
         var that = this,
             $form = that.$form,
+            $submitButton = $form.find('button[type="submit"]'),
             date = $form.find('.datepicker-due-date').datepicker('getDate');
+
+        $submitButton.attr('disabled', true);
+        $submitButton.find('i').fadeIn();
 
         if (!date) {
             $form.find('[name="milestone[due_date]"]').val('');
@@ -55,9 +59,11 @@ var TasksScopeEdit = (function ($) {
         if ($.isArray(data) && data.length) {
             form_data = form_data.concat(data);
         }
-        // $form.find(':submit:first').parent().append('<i class="icon16 loading"></i>');
-        $.post($form.attr('action'), form_data, function(r) {
-            $('#content').html(r);
+
+        $.post($form.attr('action'), form_data, function (r) {
+            setTimeout(() => {
+                $('#content').html(r);
+            }, 1000);
         });
     };
 
