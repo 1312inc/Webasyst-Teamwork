@@ -16,13 +16,19 @@ final class tasksApiMilestonesResponse implements tasksApiResponseInterface
     {
         $counts = tasksApiCountsDtoFactory::createForMilestones();
 
+        $accessedProjects = (new tasksRights())->getAvailableProjectForContact(wa()->getUser());
+        $projects_counts_allowed = array_fill_keys($accessedProjects[tasksRights::PROJECT_ACCESS_FULL], true);
+
         $sort = 0;
         foreach ($milestones as $milestone) {
             $milestone['sort'] = $sort++;
-            $this->milestones[] = tasksApiMilestoneDtoFactory::fromArray(
-                $milestone,
-                $counts[$milestone['id']] ?? tasksApiCountsDtoFactory::createEmpty()
-            );
+            $project_id = $milestone['project_id'];
+            if (empty($projects_counts_allowed[$project_id])) {
+                $counts_dto = tasksApiCountsDtoFactory::createUnavailable();
+            } else {
+                $counts_dto = $counts[$milestone['id']] ?? tasksApiCountsDtoFactory::createEmpty();
+            }
+            $this->milestones[] = tasksApiMilestoneDtoFactory::fromArray($milestone, $counts_dto);
         }
     }
 
