@@ -7,7 +7,7 @@ const {
 
 // Load plugins
 
-const uglify = require('gulp-uglify');
+const uglify = require('gulp-uglify-es').default;
 const rename = require('gulp-rename');
 const stylus = require('gulp-stylus');
 const autoprefixer = require('gulp-autoprefixer');
