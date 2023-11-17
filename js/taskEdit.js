@@ -460,8 +460,8 @@ var TaskEdit = ( function($) { "use strict";
 
     TaskEdit.prototype.initTextareaAutocomplete = function() {
         this.$form.find('textarea').textareaAutocomplete({
-            url: '?module=tasks&action=entityAutocomplete',
-            // appendTo: '#content',
+            urlEntity: '?module=tasks&action=entityAutocomplete',
+            urlMention: '?module=tasks&action=mentionAutocomplete',
             autoFocus: false,
             delay: 300
         });

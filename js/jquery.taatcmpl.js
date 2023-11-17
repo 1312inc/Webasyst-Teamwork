@@ -9,6 +9,7 @@
         var $textarea = this;
         var timeout = null;
         var local_cache = {};
+        var lastTrigger = '';
 
         $textarea.autocomplete($.extend({}, options, {
             delay: 0, // we implement our own delay
@@ -26,7 +27,7 @@
 
                 var content = $textarea.val();
                 var cursor_position = $textarea[0].selectionEnd;
-                var before_cursor = content.substring(0, cursor_position).replace(/#(\S*)$/, replacement + ' ');
+                var before_cursor = content.substring(0, cursor_position).replace(/(#|@)(\S*)$/, replacement + ' ');
                 var after_cursor = content.substring(cursor_position).replace(/^\S+/, '');
                 $textarea.val(before_cursor + after_cursor);
                 $textarea[0].selectionStart = $textarea[0].selectionEnd = before_cursor.length;
@@ -62,7 +63,7 @@
 
                 // No cached data, make an XHR after a dalay
                 timeout = setTimeout(function () {
-                    $.post(options.url, { term: term, extended: 1 }, function (r) {
+                    $.post(lastTrigger === '@' ? options.urlMention : options.urlEntity, { term: term, extended: 1 }, function (r) {
                         local_cache[term] = r.data || [];
                         response(local_cache[term]);
                     }, 'json');
@@ -133,10 +134,11 @@
         // Helper to get tag name in textarea at cursor
         function getTag ($textarea) {
             var content = $textarea.val().substring(0, $textarea[0].selectionEnd);
-            var tag = content.match(/#\S*$/);
+            var tag = content.match(/(#|@)\S*$/);
             if (!tag) {
                 return '';
             }
+            lastTrigger = tag[1];
             return tag[0];
         }
     };
