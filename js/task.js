@@ -1445,11 +1445,7 @@ var Task = ( function($) {
         $tags.find('.js-t-task-tags-autocomplete').autocomplete({
             source: '?module=tags&action=autocomplete',
             minLength: 1,
-            delay: 300,
-            select: function (event, ui) {
-                that.setTag(ui.item.id, ui.item.label);
-                return false;
-            }
+            delay: 300
         });
     };
 
