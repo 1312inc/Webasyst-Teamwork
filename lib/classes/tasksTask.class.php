@@ -287,15 +287,16 @@ class tasksTask implements ArrayAccess
             return [];
         }
 
-        $candidate_logins = $matches[1];
+        $candidate_logins = array_map('strtolower', $matches[1]);
 
         // List of all backend users with access to Tasks app
         static $team = null;
         if ($team === null) {
             $team = [];
-            $users = (new tasksTeamGetter())->getTeam(new taskTeamGetterParamsDto(null, false));
+            $collection = new waContactsCollection('users');
+            $users = $collection->getContacts('id,name,login,firstname,middlename,lastname,photo,is_company', 0, 500);
             foreach($users as $u) {
-                $team[$u['login']] = $u;
+                $team[strtolower($u['login'])] = $u;
             }
             unset($users);
         }
@@ -311,7 +312,7 @@ class tasksTask implements ArrayAccess
         $user_url_template = $root_url.$backend_url.'/team/u/%s/';
         foreach(self::getAllMentionedUsers($text) as $login => $user) {
             $user_url = sprintf($user_url_template, $login);
-            $replace_map['~(\s|^)'.preg_quote('@'.$login).'(\s|$)~u'] = '$1[@'.$login.']('.$user_url.')$2';
+            $replace_map['~(\s|^)('.preg_quote('@'.$login).')(\s|$)~ui'] = '$1[$2]('.$user_url.')$3';
         }
 
         return preg_replace(array_keys($replace_map), array_values($replace_map), $text);
