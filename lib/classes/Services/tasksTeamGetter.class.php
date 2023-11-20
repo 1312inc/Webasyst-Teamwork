@@ -34,10 +34,12 @@ final class tasksTeamGetter
 
     public function getTeam(taskTeamGetterParamsDto $paramsDto): array
     {
-        if ($paramsDto->getProjectId() || ($this->contacts === null)) {
+        if ($paramsDto->getProjectId() || ($this->contacts === null) || $paramsDto->getMinAccessRightsLevel() !== 1) {
             $data = [];
             $contact_ids = $this->rightsModel->getUsers('tasks',
-                $paramsDto->getProjectId() ? 'project.' . $paramsDto->getProjectId() : 'backend');
+                $paramsDto->getProjectId() ? 'project.' . $paramsDto->getProjectId() : 'backend',
+                $paramsDto->getMinAccessRightsLevel()
+            );
 
             if ($contact_ids) {
                 $data = $this->contactModel->getById($contact_ids);
@@ -82,7 +84,7 @@ final class tasksTeamGetter
                     $data = $tmp;
                 }
             }
-            if (!$paramsDto->getProjectId()) {
+            if (!$paramsDto->getProjectId() && $paramsDto->getMinAccessRightsLevel() === 1) {
                 $this->contacts = $data;
             }
         } else {

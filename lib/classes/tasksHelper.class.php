@@ -196,7 +196,7 @@ class tasksHelper
 
         // Make sure users have access to project
         $teamGetter = new tasksTeamGetter();
-        $contacts_have_access = $teamGetter->getTeam(new taskTeamGetterParamsDto($task['project_id']));
+        $contacts_have_access = $teamGetter->getTeam(new taskTeamGetterParamsDto($task['project_id'], false, false, false, false, 2));
         $contacts_mentioned = array_intersect_key($contacts_mentioned, $contacts_have_access);
         if (!$contacts_mentioned) {
             return;
