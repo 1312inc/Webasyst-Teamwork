@@ -7,8 +7,6 @@ class tasksProjectsEditAction extends waViewAction
     public function execute()
     {
         $project_model = new tasksProjectModel();
-        $projects = tsks()->getEntityRepository(tasksProject::class)
-            ->getProjectsAsArray(tasksProjectRepository::GET_PROJECT_ALL);
         $statuses = tasksHelper::getStatuses(null, false);
 
         $project = null;
@@ -18,8 +16,11 @@ class tasksProjectsEditAction extends waViewAction
                 'color' => 't-white',
                 'icon' => 'blog',
             ) + $project_model->getEmptyRow());
-        } else if (!empty($projects[$id])) {
-            $project = $projects[$id];
+        } else if ($id) {
+            $project = $project_model->getById($id);
+            if ($project) {
+                $project = tasksHelper::extendIcon($project);
+            }
         }
         if (!$project) {
             throw new waException('Project not found', 404);
@@ -71,11 +72,14 @@ class tasksProjectsEditAction extends waViewAction
 
                 $project_statuses_model = new tasksProjectStatusesModel();
                 $project_statuses_model->setStatuses($project['id'], $new_statuses);
-                $projects[$project['id']] = $project = tasksHelper::extendIcon($project);
+                $project = tasksHelper::extendIcon($project);
             } else {
                 $project = $data + $project;
             }
         }
+
+        $projects = tsks()->getEntityRepository(tasksProject::class)
+            ->getProjectsAsArray(tasksProjectRepository::GET_PROJECT_ALL);
 
         $active_projects = $archive_projects = array();
         foreach ($projects as $row) {
