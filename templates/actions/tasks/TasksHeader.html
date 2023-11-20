@@ -95,7 +95,7 @@
         {/if}
     </div>
 
-    <div class="box align-center t-my-lists-wrapper" id="t-my-lists-box">
+    <div class="align-center t-my-lists-wrapper" id="t-my-lists-box">
         {function star_link id='' title=''}
             <a href="javascript:void(0);" class="t-my-list-toggle button {if $id > 0}light-gray{/if} smaller outlined"
                title="{$title|default:''|escape}"
@@ -130,11 +130,13 @@
                 $('#t-filters-menu').slideDown(100);
                 $('#t-selection-menu').slideDown(100);
                 $('#t-my-lists-box').slideDown(100);
+                $('.t-preview-description-content').slideUp(100);
             }
             else {
                 $('#t-filters-menu').slideUp(100);
                 $('#t-selection-menu').slideUp(100);
                 $('#t-my-lists-box').slideUp(100);
+                $('.t-preview-description-content').slideDown(100);
             }
             $('#t-tasks-wrapper').toggleClass('t-selection-checkboxes-visible');
             $(this).toggleClass('upsidedown');
