@@ -1536,3 +1536,10 @@ msgstr ""
 
 msgid "Webasyst ID auth is required to be enabled to send an invitation"
 msgstr "Для отправки приглашения вход с Webasyst ID должен быть включен"
+
+msgid "Hello, World!"
+msgstr ""
+
+msgid "This is a demo task. Go ahead and click “Doing” or just close it. #webasyst #demo"
+msgstr "Тестовая задача. Нажмите «Взять в работу» или «Закрыть». #webasyst #демо"
+
