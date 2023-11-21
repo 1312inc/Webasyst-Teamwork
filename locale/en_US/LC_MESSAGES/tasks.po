@@ -540,7 +540,7 @@ msgid "No access"
 msgstr ""
 
 msgid "Self tasks only"
-msgstr ""
+msgstr "Assigned tasks only"
 
 msgid "Full access"
 msgstr ""

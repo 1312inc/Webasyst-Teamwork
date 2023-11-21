@@ -587,7 +587,7 @@ msgid "All <strong>%s</strong> in this project will be archived and won't be lis
 msgstr "Все <strong>%s</strong>, принадлежащие проекту, попадут в архив и перестанут отображаться в списках. Вы уверены?"
 
 msgid "Self tasks only"
-msgstr "Только свои задачи"
+msgstr "Только назначенные задачи"
 
 msgid "Full access"
 msgstr "Полный доступ"
@@ -1542,4 +1542,3 @@ msgstr ""
 
 msgid "This is a demo task. Go ahead and click “Doing” or just close it. #webasyst #demo"
 msgstr "Тестовая задача. Нажмите «Взять в работу» или «Закрыть». #webasyst #демо"
-
