@@ -87,7 +87,7 @@ return array(
     'tasks_push_client' => array(
         'client_id' => array('varchar', 255, 'null' => 0),
         'contact_id' => array('int', 11, 'null' => 0),
-        'api_token' => array('int', 11),
+        'api_token' => array('varchar', 32),
         'create_datetime' => array('datetime', 'null' => 0),
         ':keys' => array(
             'PRIMARY' => 'client_id',
