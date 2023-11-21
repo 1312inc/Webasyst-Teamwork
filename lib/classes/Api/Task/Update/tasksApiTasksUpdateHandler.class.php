@@ -89,7 +89,7 @@ final class tasksApiTasksUpdateHandler
 
         (new tasksEventTriggerHandler())->triggerEdit($prevTask2);
 
-        $sender = new tasksNotificationsSender($task2->toArray(), 'edit');
+        $sender = new tasksNotificationsSender($task2->toArray(), ['edit', 'mention']);
         $sender->send();
 
         return $task2;

@@ -751,6 +751,10 @@ msgstr "ОБНОВЛЕНО: %s"
 msgid "EDIT: %s %s"
 msgstr "ОБНОВЛЕНО: %s %s"
 
+# @-mentions
+msgid "@ %s %s"
+msgstr "@ %s %s"
+
 msgid "created a task"
 msgstr "создал задачу"
 
@@ -1464,6 +1468,9 @@ msgstr "%s отредактировал созданную вами задачу
 
 msgid "User %s edited a task"
 msgstr "%s отредактировал задачу"
+
+msgid "User %s mentioned you in a task."
+msgstr "%s упомянул вас в задаче."
 
 msgid "invited"
 msgstr "приглашен"
