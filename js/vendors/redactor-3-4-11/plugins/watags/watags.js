@@ -32,6 +32,32 @@
             var $editor = this.editor.getElement();
             $editor.on("keydown.redactor-plugin-handle", this._navigate.bind(this));
             $editor.on("keyup.redactor-plugin-handle", this._handle.bind(this));
+            
+            /**
+             * Trigger Autocomplete Demo
+             */
+            $R.dom(".t-form-line-autocomplete-chip").on('mousedown', (e) => {
+                // only left mouse button
+                if (e.buttons === 1) {
+                    
+                    if (this.caret.isStart()) {
+                        this.caret.setEnd($editor);
+                    }
+
+                    var char = $R.dom(e.currentTarget).data('type') === 'at' ? '@' : '#';
+                    var marker = this.marker.insert("start");
+                    var $marker = $R.dom(marker);
+                    var oldOffset = this.app.offset.get();
+
+                    setTimeout(() => {
+                        this.editor.focus();
+                        $marker.after(' ' + char + ' ');
+                        this.app.offset.set({ start: oldOffset.start + 2, end: oldOffset.end + 2 });
+                        this.marker.remove();
+                        $editor.trigger('keyup');
+                    }, 100);
+                }
+            });
         },
         onmdRendered: function (html) {
             var content = html;
