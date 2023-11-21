@@ -92,7 +92,7 @@ class tasksTasksEntityAutocompleteController extends waJsonController
             'app_id' => 'tasks',
             'entity_type' => 'task',
             'entity_image' => null,
-            'entity_title' => $task['name'],
+            'entity_title' => "{$project_id}.{$task_number} {$task['name']}",
             'entity_url' => wa()->getAppUrl('tasks')."#/task/{$project_id}.{$task_number}/",
             //'markdown_code' => "#{$project_id}.{$task_number}",
         ]];
