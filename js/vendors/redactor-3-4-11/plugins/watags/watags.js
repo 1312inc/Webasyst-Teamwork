@@ -65,12 +65,7 @@
             for (var link in this.taskLinks) {
                 var link = this.taskLinks[link];
                 var target = `<a href="${link.entity_url}">${link.entity_title}</a>`;
-                var replacement = `
-                    <a href="${link.entity_url}" class="redactor-entity redactor-entity--link" contenteditable=\"false\" target="_blank">
-                        <i class="icon size-16 userpic custom-mr-2" style="background-image: url(${link.entity_image});"></i>
-                        ${link.entity_title}
-                    </a>
-                `;
+                var replacement = `<a href="${link.entity_url}" class="redactor-entity redactor-entity--link" contenteditable=\"false\" target="_blank"><i class="icon size-16 userpic custom-mr-4" style="background-image: url(${link.entity_image});${!['user', 'contact'].includes(link.entity_type) ? 'border-radius:0;' : ''}"></i>${link.entity_title}</a>`;
                 content = content.replaceAll(target, replacement);
             }
             content = content.replaceAll(this.tagRegExp, function (match) {
@@ -330,9 +325,7 @@
             var $container = $R.dom(isSpan ? '<span>' : '<a href=' + itemData.url + ' target="_blank">');
             $container.addClass('redactor-entity redactor-entity--' + (itemData.type === 'tag' ? 'tag' : itemData.type === 'user' ? 'user' : 'link'));
             $container.attr('contenteditable', false);
-            var $icon = !isSpan ? `
-                    <i class="icon size-16 userpic custom-mr-2" data-redactor-style-cache="background-image: url(${itemData.image})" style="background-image: url(${itemData.image});"></i>
-                ` : '';
+            var $icon = !isSpan ? `<i class="icon size-16 userpic custom-mr-4" data-redactor-style-cache="background-image: url(${itemData.image})" style="background-image: url(${itemData.image});${!['user', 'contact'].includes(itemData.entity_type) ? 'border-radius:0;' : ''}"></i>` : '';
             $container.html($icon + (itemData.type === 'tag' ? '#' : itemData.type === 'user' ? '@' : '') + itemData.title);
 
             $marker.before($container);

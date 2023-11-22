@@ -1371,7 +1371,7 @@ var Task = ( function($) {
                 var attr_href = $a.attr('href');
                 var link_data = $.tasks.options.links_data[attr_href];
                 if (link_data?.entity_image) {
-                    prependIcon(link_data.app_id, link_data.entity_image);
+                    prependIcon(link_data.app_id, link_data.entity_image, link_data.entity_type);
                     return;
                 }
             } catch (e) {
@@ -1388,9 +1388,9 @@ var Task = ( function($) {
                 }
             }
 
-            function prependIcon(app_id, icon_url) {
+            function prependIcon(app_id, icon_url, entity_type) {
                 $a.addClass('app-link app-'+app_id).prepend($.parseHTML(
-                    '<i class="icon app-icon userpic size-16 custom-mr-4 app-'+app_id+'" style="background-image: url('+icon_url+');"></i>'
+                    '<i class="icon app-icon userpic size-16 custom-mr-4 app-'+app_id+'" style="background-image: url('+icon_url+');'+(!['user', 'contact'].includes(entity_type) ? 'border-radius:0;' : '')+'"></i>'
                 ));
             }
         });
