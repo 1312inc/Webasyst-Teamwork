@@ -15,18 +15,54 @@ class tasksLinksPrettifier
 
     public function addFromMarkdown($task_markdown_code)
     {
+        // @-mentioned users
         $users = tasksTask::getAllMentionedUsers($task_markdown_code);
         foreach($users as $user) {
             $this->addMention($user);
         }
 
+        // Links to orders, deals, contacts, etc.
         if (preg_match_all('~\\[[^\\]]+\\]\\([^\\)]+\\)~', $task_markdown_code, $matches)) {
             foreach($matches[0] as $link_markdown_code) {
                 $this->addLink($link_markdown_code);
             }
         }
 
+        // #tags
+        $tags = tasksTask::extractTags($task_markdown_code);
+        foreach($tags as $tag) {
+            $this->addTag($tag);
+        }
+
+        // task numbers #11.2222
+        $task_numbers = tasksTask::extractTaskNumbers($task_markdown_code);
+        $tasks = $this->getTasks($task_numbers);
+        foreach($tasks as $task) {
+            $this->addTask($task);
+        }
+
         return $this;
+    }
+
+    protected function getTasks($task_numbers)
+    {
+        if (!$task_numbers) {
+            return [];
+        }
+
+        $task_model = new tasksTaskModel();
+
+        $params_where = $where = [];
+        foreach ($task_numbers as $number) {
+            $number_parse = explode('.', $number);
+            $where[] = '(project_id = ? AND number = ?)';
+            $params_where = array_merge($params_where, $number_parse);
+        }
+
+        return $task_model
+            ->select('id, project_id, number, name')
+            ->where(implode(' OR ', $where), $params_where)
+            ->fetchAll('id');
     }
 
     public function addLink($markdown_code)
@@ -63,6 +99,31 @@ class tasksLinksPrettifier
         ];
 
         return true;
+    }
+
+    public function addTag($tag)
+    {
+        $this->data['#'.$tag] = [
+            'app_id' => 'tasks',
+            'entity_type' => 'tag',
+            'entity_image' => null,
+            'entity_title' => $tag,
+            'entity_url' => null,
+        ];
+    }
+
+    public function addTask($task)
+    {
+        $project_id = $task['project_id'];
+        $task_number = $task['number'];
+
+        $this->data["#{$project_id}.{$task_number}"] = [
+            'app_id' => 'tasks',
+            'entity_type' => 'task',
+            'entity_image' => null,
+            'entity_title' => "{$project_id}.{$task_number} {$task['name']}",
+            'entity_url' => wa()->getAppUrl('tasks')."#/task/{$project_id}.{$task_number}/",
+        ];
     }
 
     public function getData()
