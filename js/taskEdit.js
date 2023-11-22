@@ -441,6 +441,11 @@ var TaskEdit = ( function($) { "use strict";
             }
         });
 
+        $form.on("click", ".t-form-line-checklist-chip", (e) => {
+            e.preventDefault();
+            alert($.wa.locale['attach_pl_checklist']);
+        });
+
         var $selectPriority = $task.find(".t-priority-wrapper .t-custom-select");
         $selectPriority.on("onChange", function(event, $link, value) {
             var $selectedItem = $selectPriority.find(".selected-custom-item"),
