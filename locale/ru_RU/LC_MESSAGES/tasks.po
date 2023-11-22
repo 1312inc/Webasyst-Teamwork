@@ -1382,7 +1382,7 @@ msgid "Text editor"
 msgstr "Редактор"
 
 msgid "WYSIWYG"
-msgstr "Полноценный визуальный редактор (WYSIWYG)"
+msgstr "Визуальный редактор (WYSIWYG)"
 
 msgid "Markdown"
 msgstr "Markdown (просто текст)"
