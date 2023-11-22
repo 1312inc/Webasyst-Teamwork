@@ -42,6 +42,14 @@
       return node.src;
     }
   });
+  turndownService.addRule('rawLink', {
+    filter: function (node) {
+      return node.nodeName === "A" && node.classList.contains('redactor-entity--raw');
+    },
+    replacement: function (content) {
+      return content;
+    }
+  });
 
   // define markdown-it
   var md = markdownit();

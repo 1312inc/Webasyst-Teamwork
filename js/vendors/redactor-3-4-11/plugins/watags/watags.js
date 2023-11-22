@@ -72,18 +72,19 @@
         },
         onmdRendered: function (html) {
             var content = html;
-            for (var link in this.taskLinks) {
-                var link = this.taskLinks[link];
+            for (var k in this.taskLinks) {
+                var link = this.taskLinks[k];
+
+                var isSpan = ['tag', 'user', 'task'].includes(link.entity_type);
+                var $icon = link.entity_type === 'tag' ? '#' : `<i class="icon size-16 userpic custom-mr-4" data-redactor-style-cache="background-image: url(${link.entity_image})" style="background-image: url(${link.entity_image});${!['user', 'contact'].includes(link.entity_type) ? 'border-radius:0;' : ''}"></i>`;
+                var title = link.entity_type === 'task' ? '#'+link.entity_title.split(' ')[0] : link.entity_title;
+
+                var replacement = `<a href="${link.entity_url}" class="redactor-entity redactor-entity--${link.entity_type === 'tag' ? 'tag' : 'link'} ${isSpan ? 'redactor-entity--raw' : ''}" contenteditable=\"false\" target="_blank">${$icon}${title}</a>`;
+
                 var target = `<a href="${link.entity_url}">${link.entity_title}</a>`;
-                var replacement = `<a href="${link.entity_url}" class="redactor-entity redactor-entity--link" contenteditable=\"false\" target="_blank"><i class="icon size-16 userpic custom-mr-4" style="background-image: url(${link.entity_image});${!['user', 'contact'].includes(link.entity_type) ? 'border-radius:0;' : ''}"></i>${link.entity_title}</a>`;
-                content = content.replaceAll(target, replacement);
+                var re = new RegExp([target, k].join("|"),"gi");
+                content = content.replaceAll(re, replacement);
             }
-            content = content.replaceAll(this.tagRegExp, function (match) {
-                return "<span class=\"redactor-entity redactor-entity--tag\" contenteditable=\"false\">" + match + "</span>";
-            });
-            content = content.replaceAll(this.userRegExp, function (match) {
-                return "<span class=\"redactor-entity redactor-entity--user\" contenteditable=\"false\">" + match + "</span>";
-            });
             this.app.source.setCode(content);
         },
         stop: function () {
@@ -106,20 +107,6 @@
                     this.ajax.xhr.abort();
                 }
             }
-
-            // if (key === this.keycodes.SPACE) {
-            //     var $current = this.selection.getCurrent();
-            //     if ($current.parentElement.className !== 'redactor-tag') {
-            //         var currentText = $current.textContent;
-            //         if (this.tagRegExp.test(currentText)) {
-            //             $current.textContent = '';
-            //             insertionTag = currentText.replace(this.tagRegExp, function (match) {
-            //                 return "<span class=\"redactor-tag\">" + match + "</span><span></span>";
-            //             });
-            //             this.insertion.insertHtml(insertionTag);
-            //         }
-            //     }
-            // }
 
             if (
                 (arrows.indexOf(key) !== -1 || key === this.keycodes.ENTER) &&
@@ -331,15 +318,17 @@
             var textBefore = marker.previousSibling;
             textBefore.textContent = textBefore.textContent.substring(0, textBefore.textContent.lastIndexOf(this.lastTrigger));
 
-            var isSpan = ['tag', 'user'].includes(itemData.type);
-            var $container = $R.dom(isSpan ? '<span>' : '<a href=' + itemData.url + ' target="_blank">');
-            $container.addClass('redactor-entity redactor-entity--' + (itemData.type === 'tag' ? 'tag' : itemData.type === 'user' ? 'user' : 'link'));
+            var isSpan = ['tag', 'user', 'task'].includes(itemData.type);
+            var $container = $R.dom('<a href=' + itemData.url + ' target="_blank">');
+            $container.addClass('redactor-entity redactor-entity--' + (itemData.type === 'tag' ? 'tag' : 'link'));
+            $container.addClass(isSpan ? 'redactor-entity--raw' : '');
             $container.attr('contenteditable', false);
-            var $icon = !isSpan ? `<i class="icon size-16 userpic custom-mr-4" data-redactor-style-cache="background-image: url(${itemData.image})" style="background-image: url(${itemData.image});${!['user', 'contact'].includes(itemData.entity_type) ? 'border-radius:0;' : ''}"></i>` : '';
-            $container.html($icon + (itemData.type === 'tag' ? '#' : itemData.type === 'user' ? '@' : '') + itemData.title);
+            var $icon = itemData.type === 'tag' ? '#' : `<i class="icon size-16 userpic custom-mr-4" data-redactor-style-cache="background-image: url(${itemData.image})" style="background-image: url(${itemData.image});${!['user', 'contact'].includes(itemData.type) ? 'border-radius:0;' : ''}"></i>`;
+            var title = itemData.type === 'task' ? '#'+itemData.title.split(' ')[0] : itemData.title;
+            $container.html($icon + title);
 
             $marker.before($container);
-            $marker.before('&nbsp;');
+            $marker.before(' ');
 
             this.caret.setAfter($marker);
             this.marker.remove();

@@ -19,8 +19,10 @@
             select: function (event, ui) {
                 // Replace tag at cursor with the one user just selected in dropdown
                 var replacement = ui.item.entity_title;
-                if (ui.item.entity_type === 'tag') {
-                    replacement = '#' + replacement;
+                if (['tag', 'task'].includes(ui.item.entity_type)) {
+                    replacement = '#' + replacement.split(' ')[0];
+                } else if (ui.item.entity_type === 'user') {
+                    
                 } else {
                     replacement = `[${replacement}](${ui.item.entity_url})`;
                 }

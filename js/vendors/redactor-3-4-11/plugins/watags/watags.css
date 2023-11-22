@@ -47,12 +47,8 @@
 }
 
 .redactor-entity--tag {
-    color: var(--chips-tags-link-color);
+    color: var(--chips-tags-link-color) !important;
     background: var(--chips-tags-background-color);
-}
-
-.redactor-entity--user {
-    background: var(--background-color);
 }
 
 .redactor-entity--link {
