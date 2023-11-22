@@ -32,14 +32,14 @@
             var $editor = this.editor.getElement();
             $editor.on("keydown.redactor-plugin-handle", this._navigate.bind(this));
             $editor.on("keyup.redactor-plugin-handle", this._handle.bind(this));
-            
+
             /**
              * Trigger Autocomplete Demo
              */
             $R.dom(".t-form-line-autocomplete-chip").on('mousedown', (e) => {
                 // only left mouse button
                 if (e.buttons === 1) {
-                    
+
                     if (this.caret.isStart()) {
                         this.caret.setEnd($editor);
                     }
@@ -48,12 +48,13 @@
                     var marker = this.marker.insert("start");
                     var $marker = $R.dom(marker);
                     var oldOffset = this.app.offset.get();
+                    console.log(oldOffset.start);
 
                     setTimeout(() => {
                         this.editor.focus();
                         $marker.after(' ' + char + ' ');
-                        this.app.offset.set({ start: oldOffset.start + 2, end: oldOffset.end + 2 });
                         this.marker.remove();
+                        this.app.offset.set({ start: oldOffset.start + 2, end: oldOffset.end + 2 });
                         $editor.trigger('keyup');
                     }, 100);
                 }
@@ -64,7 +65,12 @@
             for (var link in this.taskLinks) {
                 var link = this.taskLinks[link];
                 var target = `<a href="${link.entity_url}">${link.entity_title}</a>`;
-                var replacement = `<a href="${link.entity_url}" class="redactor-entity redactor-entity--link" contenteditable=\"false\" target="_blank" style="background-image: url(${link.entity_image});">${link.entity_title}</a>`;
+                var replacement = `
+                    <a href="${link.entity_url}" class="redactor-entity redactor-entity--link" contenteditable=\"false\" target="_blank">
+                        <i class="icon size-16 userpic custom-mr-2" style="background-image: url(${link.entity_image});"></i>
+                        ${link.entity_title}
+                    </a>
+                `;
                 content = content.replaceAll(target, replacement);
             }
             content = content.replaceAll(this.tagRegExp, function (match) {
@@ -324,13 +330,13 @@
             var $container = $R.dom(isSpan ? '<span>' : '<a href=' + itemData.url + ' target="_blank">');
             $container.addClass('redactor-entity redactor-entity--' + (itemData.type === 'tag' ? 'tag' : itemData.type === 'user' ? 'user' : 'link'));
             $container.attr('contenteditable', false);
-            if (!isSpan) {
-                $container.attr('style', `background-image: url(${itemData.image})`);
-                $container.attr('data-redactor-style-cache', `background-image: url(${itemData.image})`);
-            }
-            $container.html((itemData.type === 'tag' ? '#' : itemData.type === 'user' ? '@' : '') + itemData.title);
+            var $icon = !isSpan ? `
+                    <i class="icon size-16 userpic custom-mr-2" data-redactor-style-cache="background-image: url(${itemData.image})" style="background-image: url(${itemData.image});"></i>
+                ` : '';
+            $container.html($icon + (itemData.type === 'tag' ? '#' : itemData.type === 'user' ? '@' : '') + itemData.title);
 
             $marker.before($container);
+            $marker.before('&nbsp;');
 
             this.caret.setAfter($marker);
             this.marker.remove();

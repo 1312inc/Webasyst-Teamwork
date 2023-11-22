@@ -1390,7 +1390,7 @@ var Task = ( function($) {
 
             function prependIcon(app_id, icon_url) {
                 $a.addClass('app-link app-'+app_id).prepend($.parseHTML(
-                    '<i class="icon app-icon custom-mr-4 app-'+app_id+'" style="background-image: url('+icon_url+'); background-size: 100%; margin-top: 2px;"></i>'
+                    '<i class="icon app-icon userpic size-16 custom-mr-4 app-'+app_id+'" style="background-image: url('+icon_url+');"></i>'
                 ));
             }
         });
