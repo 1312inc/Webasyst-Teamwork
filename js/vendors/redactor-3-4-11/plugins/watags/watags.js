@@ -40,21 +40,31 @@
                 // only left mouse button
                 if (e.buttons === 1) {
 
-                    if (this.caret.isStart()) {
-                        this.caret.setEnd($editor);
+                    var isStart = this.caret.isStart();
+                    var isFocus = this.editor.isFocus();
+                    var isEmpty = this.editor.isEmpty();
+
+                    if (isStart) {
+                        if (isEmpty) {
+                            this.caret.setStart($editor.find('p'));
+                        } else if (!isFocus) {
+                            this.caret.setEnd($editor);
+                        }
                     }
 
                     var char = $R.dom(e.currentTarget).data('type') === 'at' ? '@' : '#';
                     var marker = this.marker.insert("start");
                     var $marker = $R.dom(marker);
                     var oldOffset = this.app.offset.get();
-                    console.log(oldOffset.start);
 
                     setTimeout(() => {
                         this.editor.focus();
                         $marker.after(' ' + char + ' ');
-                        this.marker.remove();
+                        if (isStart && isEmpty) {
+                            this.marker.remove();
+                        }
                         this.app.offset.set({ start: oldOffset.start + 2, end: oldOffset.end + 2 });
+                        this.marker.remove();
                         $editor.trigger('keyup');
                     }, 100);
                 }
