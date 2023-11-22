@@ -106,7 +106,7 @@ class tasksLinksPrettifier
         $this->data['#'.$tag] = [
             'app_id' => 'tasks',
             'entity_type' => 'tag',
-            'entity_image' => null,
+            'entity_image' => $this->getAppIcon('tasks'),
             'entity_title' => $tag,
             'entity_url' => wa()->getAppUrl('tasks')."#/tasks/tag/{$tag}/",
         ];
@@ -120,10 +120,20 @@ class tasksLinksPrettifier
         $this->data["#{$project_id}.{$task_number}"] = [
             'app_id' => 'tasks',
             'entity_type' => 'task',
-            'entity_image' => null,
+            'entity_image' => $this->getAppIcon('tasks'),
             'entity_title' => "{$project_id}.{$task_number} {$task['name']}",
             'entity_url' => wa()->getAppUrl('tasks')."#/task/{$project_id}.{$task_number}/",
         ];
+    }
+
+    protected function getAppIcon($app_id)
+    {
+        $app_info = wa()->getAppInfo();
+        $icon_path = ifset($app_info, 'icon', 48, null);
+        if (!$icon_path) {
+            return null;
+        }
+        return wa()->getConfig()->getRootUrl(false).$icon_path;
     }
 
     public function getData()
