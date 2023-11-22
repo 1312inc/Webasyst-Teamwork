@@ -283,7 +283,7 @@ class tasksTask implements ArrayAccess
 
     public static function getAllMentionedUsers($text)
     {
-        if (!preg_match_all('~(?:\s|^)@(\S+)~', $text, $matches) || empty($matches[1])) {
+        if (!preg_match_all('~(?:\s|^)@(\S+)~u', $text, $matches) || empty($matches[1])) {
             return [];
         }
 

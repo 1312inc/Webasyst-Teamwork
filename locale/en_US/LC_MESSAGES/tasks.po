@@ -1426,3 +1426,6 @@ msgstr "Copied!"
 
 msgid "https://www.webasyst.com/store/app/tasks/"
 msgstr ""
+
+msgid "To attach a Pocket Lists checklist, save the task first."
+msgstr ""

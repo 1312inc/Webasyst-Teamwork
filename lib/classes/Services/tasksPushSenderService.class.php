@@ -142,6 +142,12 @@ final class tasksPushSenderService
 
                 return sprintf_wp('User %s wrote a comment.', wa()->getUser()->getName());
 
+            case tasksNotificationsSender::EVENT_MENTION:
+                return sprintf_wp(
+                    'User %s mentioned you in a task.',
+                    wa()->getUser()->getName()
+                );
+
             case tasksNotificationsSender::EVENT_EDIT:
                 if ($to->getId() == $log['assigned_contact_id']) {
                     return sprintf_wp('User %s edited a task you are assigned to', wa()->getUser()->getName());
@@ -174,6 +180,9 @@ final class tasksPushSenderService
 
             case tasksNotificationsSender::EVENT_DONE:
                 return sprintf('☑️️ ' . _w('%s %s'), $task['project_id'] . '.' . $task['number'], $task['name']);
+
+            case tasksNotificationsSender::EVENT_MENTION:
+                return sprintf(_w('@ %s %s'), $task['project_id'] . '.' . $task['number'], $task['name']);
 
             case tasksNotificationsSender::EVENT_COMMENT:
             case tasksNotificationsSender::EVENT_EDIT:

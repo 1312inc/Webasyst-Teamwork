@@ -40,7 +40,7 @@ class tasksTasksMentionAutocompleteController extends waJsonController
                 'app_id' => 'tasks',
                 'entity_type' => 'user',
                 'entity_image' => waContact::getPhotoUrl($u['id'], $u['photo'], null, null, ($u['is_company'] ? 'company' : 'person')),
-                'entity_title' => $u['name'],
+                'entity_title' => '@'.$u['login'],
                 'entity_url' => wa()->getAppUrl('team')."u/{$u['login']}/",
                 'user_login' => $u['login'],
             ];

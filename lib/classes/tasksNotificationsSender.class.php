@@ -8,10 +8,12 @@ class tasksNotificationsSender
     public const EVENT_INVITE_ASSIGN  = 'inviteAssign';
     public const EVENT_EDIT    = 'edit';
     public const EVENT_COMMENT = 'comment';
+    public const EVENT_MENTION = 'mention';
 
     protected $task;
     protected $log_item;
     protected $actions;
+    protected $contacts_mentioned;
 
     protected $options = [
         'check_rights' => true,
@@ -25,6 +27,7 @@ class tasksNotificationsSender
         self::EVENT_INVITE_ASSIGN,
         self::EVENT_EDIT,
         self::EVENT_COMMENT,
+        self::EVENT_MENTION,
     ];
 
     /**
@@ -50,6 +53,19 @@ class tasksNotificationsSender
         $this->log_item = $log_model->getLast($this->task['id']);
 
         $this->options = array_merge($this->options, $options);
+
+        $this->contacts_mentioned = [];
+        if (in_array(self::EVENT_MENTION, $this->actions)) {
+            if (in_array(self::EVENT_NEW, $this->actions) || in_array(self::EVENT_EDIT, $this->actions)) {
+                if (false !== strpos($this->task['text'], '@')) {
+                    $this->contacts_mentioned += tasksTask::extractMentions($this->task['text']);
+                }
+            } else {
+                if ($this->log_item['text'] && false !== strpos($this->log_item['text'], '@')) {
+                    $this->contacts_mentioned += tasksTask::extractMentions($this->log_item['text']);
+                }
+            }
+        }
 
         $this->pushSender = new tasksPushSenderService();
     }
@@ -137,8 +153,22 @@ class tasksNotificationsSender
         ]);
 
         $send_map = [];
+        $send_to_mentioned = $this->contacts_mentioned;
         foreach ($this->actions as $action) {
+            if ($action === self::EVENT_MENTION) {
+                continue;
+            }
             $send_map[$action] = $this->getContactIdsNeedSentTo($action, $settings);
+            foreach($send_map[$action] as $contact_id) {
+                unset($send_to_mentioned[$contact_id]);
+            }
+        }
+
+        // @-mentioned users are separate: they only receive 'mention' notification and not others,
+        // and only if not eligible for another notification type
+        if ($send_to_mentioned) {
+            $mentioned_settings = $this->getContactsNotificationSettings(array_keys($send_to_mentioned));
+            $send_map[self::EVENT_MENTION] = $this->getContactIdsNeedSentTo(self::EVENT_MENTION, $mentioned_settings);
         }
 
         return $send_map;
@@ -175,9 +205,15 @@ class tasksNotificationsSender
         $contact_ids = array_keys($settings);
         $send_to = [];
         foreach ($contact_ids as $contact_id) {
-            if (isset($settings[$contact_id]) &&
-                $this->needSent($contact_id, $action, $settings[$contact_id])) {
+            if ($action == self::EVENT_MENTION) {
+                // There's no setting for @-mentioning notifications (for now).
+                // Send to everyone eligible.
                 $send_to[] = $contact_id;
+            } else {
+                if (isset($settings[$contact_id]) &&
+                    $this->needSent($contact_id, $action, $settings[$contact_id])) {
+                    $send_to[] = $contact_id;
+                }
             }
         }
 

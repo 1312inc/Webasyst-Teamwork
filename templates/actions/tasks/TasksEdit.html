@@ -38,7 +38,8 @@
         "unsaved_data": "[`You are about to abandon task editor without saving the task. All unsaved data will be lost. Are you sure?`]",
         "saved_data_draft": "[`You are about to leave the page without saving the task. Are you sure?`]",
         "unsaved_task": "[`There are unsaved task draft.`]",
-        "continue_editing": "[`Do you want to continue editing?`]"
+        "continue_editing": "[`Do you want to continue editing?`]",
+        "attach_pl_checklist": "[`To attach a Pocket Lists checklist, save the task first.`]",
     });
 })(jQuery);</script>
 
@@ -236,25 +237,28 @@
                             </div>
 
                             <div class="t-chip">
-                                <a href="javascript:void(0);">
+                                <a class="t-form-line-autocomplete-chip" data-type="at"> 
                                     <i class="fas fa-at"></i>
                                     [`Watchers`]
                                 </a>
                             </div>
 
                             <div class="t-chip">
-                                <a href="javascript:void(0);">
+                                <a class="t-form-line-autocomplete-chip" data-type="hashtag">
                                     <i class="fas fa-hashtag"></i>
                                     [`Tags`]
                                 </a>
                             </div>
 
+                            {if $wa->pocketlists}
                             <div class="t-chip">
-                                <a href="javascript:void(0);">
+                                <a class="t-form-line-checklist-chip">
                                     <i class="fas fa-list"></i>
                                     [`Checklist`]
                                 </a>
                             </div>
+                            {/if}
+                            
 
                             <!-- plugin hook: 'backend_task_edit.%plugin_id.more' -->
                             {* @event backend_task_edit.%plugin_id%.more *}

@@ -42,22 +42,16 @@
 
 .redactor-entity {
     display: inline;
-    border-radius: .25em;
+    border-radius: .25rem;
+    padding: .12rem .5rem;
 }
 
 .redactor-entity--tag {
-    color: var(--chips-tags-link-color);
+    color: var(--chips-tags-link-color) !important;
     background: var(--chips-tags-background-color);
-    padding: .12em .5em;
-}
-
-.redactor-entity--user {
-    background: var(--background-color);
-    padding: .12em .5em;
 }
 
 .redactor-entity--link {
-    padding: .12em .5em .12em 1.6rem;
     background: var(--background-color);
     background-size: 16px;
     background-repeat: no-repeat;

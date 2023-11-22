@@ -405,6 +405,7 @@ var TaskEdit = ( function($) { "use strict";
             that.onSubmit($form, !!e.shiftKey);
             return false;
         });
+        
         $form.on("submit", function(e) {
             e.preventDefault();
             that.onSubmit($form);
@@ -418,6 +419,31 @@ var TaskEdit = ( function($) { "use strict";
                     that.is_changed = true;
                 }
             }
+        });
+
+        /**
+         * Trigger Autocomplete Demo
+         */
+        $form.on("mousedown", ".t-form-line-autocomplete-chip", ({ currentTarget }) => {
+
+            if ($.tasks.options.text_editor !== 'wysiwyg') {
+                const $textarea = this.$form.find('textarea');
+                const position = $textarea.is(":focus") ? $textarea.prop("selectionStart") : $textarea.val().length;
+                const text = $textarea.val();
+                const char = $(currentTarget).data('type') === 'at' ? '@' : '#';
+                setTimeout(() => {
+                    $textarea
+                        .val(text.slice(0, position) + ' ' + char + ' ' + text.slice(position))
+                        .prop('selectionEnd', position + 2)
+                        .focus()
+                        .trigger(jQuery.Event('keydown', { which: $.ui.keyCode.shiftKey }));
+                }, 100);
+            }
+        });
+
+        $form.on("click", ".t-form-line-checklist-chip", (e) => {
+            e.preventDefault();
+            alert($.wa.locale['attach_pl_checklist']);
         });
 
         var $selectPriority = $task.find(".t-priority-wrapper .t-custom-select");

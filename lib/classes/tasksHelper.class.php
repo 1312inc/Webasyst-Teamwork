@@ -508,8 +508,7 @@ class tasksHelper
 
             $not_empty_log_item = strlen($log['text']) > 0 || $log['attach_count'] > 0;
 
-            $actions = [];
-
+            $actions = ['mention'];
             if (!empty($update['assigned_contact_id'])) {
                 $actions[] = 'assign';
             } elseif ($not_empty_log_item) {
