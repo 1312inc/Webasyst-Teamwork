@@ -17,7 +17,11 @@ final class tasksApiProjectsResponse implements tasksApiResponseInterface
         $counts = tasksApiCountsDtoFactory::createForProjects();
 
         $accessedProjects = (new tasksRights())->getAvailableProjectForContact(wa()->getUser());
-        $projects_counts_allowed = array_fill_keys($accessedProjects[tasksRights::PROJECT_ACCESS_FULL], true);
+        if ($accessedProjects === true) {
+            $projects_counts_allowed = array_fill_keys(array_column($projects, 'id'), true);
+        } else {
+            $projects_counts_allowed = array_fill_keys(ifset($accessedProjects, tasksRights::PROJECT_ACCESS_FULL, []), true);
+        }
 
         $sort = 0;
         foreach ($projects as $project) {
