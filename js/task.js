@@ -729,7 +729,7 @@ var Task = ( function($) {
             });
         };
 
-        var onStatusSubmit = function($form, direction) {
+        var onStatusSubmit = function($form, direction, successCallback) {
             var href = $form.attr("action"),
                 data = $form.serializeArray(),
                 files_hash = that.getUpdatedFilesHash();
@@ -761,9 +761,19 @@ var Task = ( function($) {
                                 });
                             }
                             $.tasks.reloadSidebar();
-                            that.moveTask(direction, function() {
+                            that.moveTask(direction, function () {
                                 that.reloadTask();
                             });
+
+                            // Remove textarea draft from ls (see initStatusFormTextarea)
+                            localStorage.removeItem(`tasks/textarea/${$form.data('task-action')}/${$form.data('task-id')}`);
+
+                            if (typeof successCallback === 'function') {
+                                successCallback();
+                            }
+                        })
+                        .fail(function () {
+
                         })
                         .always(function () {
                             $form.hideLoading();
@@ -771,6 +781,12 @@ var Task = ( function($) {
                 },
                 onAllAlways: function () {
                     $form.hideLoading();
+                },
+                onError: function (errors, index) {
+                    if (!arguments.length) {
+                        alert('Something went wrong on the server side. Please try again later or validate server error logs for details.');
+                        return;
+                    }
                 }
             });
         };
@@ -993,17 +1009,25 @@ var Task = ( function($) {
                     esc: false,
                     lock_body_scroll: false,
                     onOpen: function ($drawer, drawer_instance) {
+
+                        var $form = $drawer.find("form");
+
                         // Focus
-                        $drawer.find("textarea").focus();
+                        $form.find("textarea").focus();
+
                         // Handle close
                         $drawer.find(".t-hiddenform-cancel-link").on('click', function() {
                             drawer_instance.close();
                         })
+
+                        initStatusFormTextarea($form);
+
                         // Handle submit
-                        $drawer.find("form").on("submit", function(e) {
-                            e.preventDefault()
-                            onStatusSubmit($(this), direction);
-                            drawer_instance.close();
+                        $form.on("submit", function(e) {
+                            e.preventDefault();
+                            onStatusSubmit($(this), direction, function () {
+                                drawer_instance.close();
+                            });
                         });
 
                         commentFileEvents($drawer);
@@ -1016,6 +1040,35 @@ var Task = ( function($) {
             });
 
             that.is_status_opened = true;
+        };
+
+        var initStatusFormTextarea = function ($form) {
+
+            const $textarea = $form.find('textarea');
+            const taskId = $form.data('task-id');
+            const taskAction = $form.data('task-action');
+            const taskUuid = $form.data('task-uuid');
+            const lsItem = `tasks/textarea/${taskAction}/${taskId}`;
+            
+            $textarea.val(localStorage.getItem(lsItem));
+            $textarea.on('input', saveDraft);
+
+            if ($.tasks.options.text_editor === 'wysiwyg' && window.$R) {
+                $textarea.redactor({
+                    'focus': true,
+                    minHeight: '150px',
+                    imageData: {
+                        task_uuid: taskUuid
+                    },
+                    callbacks: {
+                        changed: saveDraft
+                    }
+                });
+            }
+
+            function saveDraft () {
+                localStorage.setItem(lsItem, $textarea.val());
+            }
         };
 
         // var hideHiddenContainer = function() {
