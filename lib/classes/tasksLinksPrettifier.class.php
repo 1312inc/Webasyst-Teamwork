@@ -77,6 +77,7 @@ class tasksLinksPrettifier
             return false;
         }
 
+        $link['markdown_code'] = "[{$link['entity_title']}]({$link['entity_url']})";
         $this->data[$markdown_code] = $link;
         return true;
     }
@@ -106,7 +107,7 @@ class tasksLinksPrettifier
         $this->data['#'.$tag] = [
             'app_id' => 'tasks',
             'entity_type' => 'tag',
-            'entity_image' => $this->getAppIcon('tasks'),
+            'entity_image' => null,
             'entity_title' => $tag,
             'entity_url' => wa()->getAppUrl('tasks')."#/tasks/tag/{$tag}/",
         ];
@@ -120,26 +121,32 @@ class tasksLinksPrettifier
         $this->data["#{$project_id}.{$task_number}"] = [
             'app_id' => 'tasks',
             'entity_type' => 'task',
-            'entity_image' => $this->getAppIcon('tasks'),
+            'entity_image' => null,
             'entity_title' => "{$project_id}.{$task_number} {$task['name']}",
             'entity_url' => wa()->getAppUrl('tasks')."#/task/{$project_id}.{$task_number}/",
         ];
     }
 
-    protected function getAppIcon($app_id)
+    // used by autocomplete controllers
+    public function addEntity($entity)
     {
-        $app_info = wa()->getAppInfo();
-        $icon_path = ifset($app_info, 'icon', 48, null);
-        if (!$icon_path) {
-            return null;
+        if (empty($entity['app_id']) || empty($entity['entity_type']) || empty($entity['entity_url']) || !isset($entity['entity_title'])) {
+            throw new waException('entity not supported '.wa_dump_helper($entity));
         }
-        return wa()->getConfig()->getRootUrl(false).$icon_path;
+
+        $code = "[{$entity['entity_title']}]({$entity['entity_url']})";
+        $this->data[$code] = $entity;
     }
 
     public function getData()
     {
         $this->process();
         return $this->data;
+    }
+
+    public function count()
+    {
+        return count($this->data);
     }
 
     protected function parseMarkdownLink($markdown_code)
@@ -197,11 +204,18 @@ class tasksLinksPrettifier
             return;
         }
 
+        $apps_info = wa()->getApps();
+        $root_url = wa()->getConfig()->getRootUrl(false);
+
         $contact_ids = [];
 
         foreach($this->data as $code => &$link) {
+            if (empty($link['app_id']) || !isset($link['entity_title'])) {
+                unset($this->data[$code]);
+                continue;
+            }
+            $app_id = $link['app_id'];
             if (empty($link['entity_type']) && !empty($link['entity_in_app_url'])) {
-                $app_id = $link['app_id'];
                 if ($app_id == 'shop' && preg_match('~^products/(\d+)~', $link['entity_in_app_url'])) {
                     $link['entity_type'] = 'product';
                 } else if ($app_id == 'shop' && preg_match('~^#/orders/([^/]+&)?id=(\d+)~', $link['entity_in_app_url'])) {
@@ -211,11 +225,21 @@ class tasksLinksPrettifier
                     $contact_ids[$code] = $m[1];
                 } else if ($app_id == 'crm' && preg_match('~^deal/(\d+)~', $link['entity_in_app_url'], $m)) {
                     $link['entity_type'] = 'deal';
-                } else {
-                    unset($this->data[$code]);
                 }
             }
             unset($link['entity_in_app_url']);
+            if (empty($link['entity_type'])) {
+                unset($this->data[$code]);
+                continue;
+            }
+
+            if (!isset($link['entity_image']) && $app_id) {
+                $link['entity_image'] = $root_url.ifset($apps_info, $app_id, 'icon', 48, null);
+            }
+
+            if (!isset($link['markdown_code'])) {
+                $link['markdown_code'] = $code;
+            }
         }
         unset($link);
 

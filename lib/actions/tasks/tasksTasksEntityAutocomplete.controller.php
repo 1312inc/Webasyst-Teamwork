@@ -15,67 +15,57 @@ class tasksTasksEntityAutocompleteController extends waJsonController
         $limit = min($limit, 50);
         $term = waRequest::request('term', '', 'string');
 
-        // Tags are loaded separately because allow for an empty $term
-        $result = $this->loadTags($term, $limit);
+        $prettifier = new tasksLinksPrettifier();
 
-        if (strlen($term) && count($result) < $limit) {
-            $result = array_merge($result, $this->loadAllEntities($term, $limit - count($result)));
+        // Tags are loaded separately because allow for an empty $term
+        $this->loadTags($prettifier, $term, $limit);
+
+        if (strlen($term) && $prettifier->count() < $limit) {
+            $this->loadAllEntities($prettifier, $term, $limit - $prettifier->count());
         }
 
-        $this->addDefaults($result);
-
-        $this->response = $result;
+        $this->response = array_values($prettifier->getData());
     }
 
-    protected function loadTags($term, $limit)
+    protected function loadTags($prettifier, $term, $limit)
     {
         $tag_model = new tasksTagModel();
         $tags = $tag_model->getAutocomplete($term, $limit);
-        $result = [];
         foreach($tags as $t) {
-            $result[] = [
-                'app_id' => 'tasks',
-                'entity_type' => 'tag',
-                'entity_image' => null,
-                'entity_title' => $t,
-                'entity_url' => wa()->getAppUrl('tasks')."#/tasks/tag/{$t}/",
-                //'markdown_code' => '#'.$t,
-            ];
+            $prettifier->addTag($t);
         }
-        return $result;
     }
 
-    protected function loadAllEntities($term, $limit)
+    protected function loadAllEntities($prettifier, $term, $limit)
     {
-        $result = $this->loadTasks($term, $limit);
+        $this->loadTasks($prettifier, $term, $limit);
 
         $event_result = wa('tasks')->event('backend_entity_autocomplete', ref([
             'term' => $term,
-            'limit' => $limit - count($result),
+            'limit' => $limit - $prettifier->count(),
         ]));
 
         $apps_handled = [];
         foreach($event_result as $app_id => $list) {
             $apps_handled[$app_id] = true;
             foreach($list as $entity) {
-                $result[] = $entity;
+                $prettifier->addEntity($entity);
             }
         }
 
         if (!isset($apps_handled['crm'])) {
-            $result = array_merge($result, $this->loadCrmEntities($term, $limit - count($result)));
+            $this->loadCrmEntities($prettifier, $term, $limit - $prettifier->count());
         }
 
         if (!isset($apps_handled['shop'])) {
-            $result = array_merge($result, $this->loadShopEntities($term, $limit - count($result)));
+            $this->loadShopEntities($prettifier, $term, $limit - $prettifier->count());
         }
-        return $result;
     }
 
-    protected function loadTasks($term, $limit)
+    protected function loadTasks($prettifier, $term, $limit)
     {
         if ($limit <= 0 || !preg_match('~^\d+\.\d+$~', $term)) {
-            return [];
+            return;
         }
         list($project_id, $task_number) = explode('.', $term);
 
@@ -84,63 +74,48 @@ class tasksTasksEntityAutocompleteController extends waJsonController
             'project_id' => $project_id,
             'number' => $task_number,
         ]);
-        if (!$task) {
-            return [];
+        if ($task) {
+            $prettifier->addTask($task);
         }
-
-        return [[
-            'app_id' => 'tasks',
-            'entity_type' => 'task',
-            'entity_image' => null,
-            'entity_title' => "{$project_id}.{$task_number} {$task['name']}",
-            'entity_url' => wa()->getAppUrl('tasks')."#/task/{$project_id}.{$task_number}/",
-            //'markdown_code' => "#{$project_id}.{$task_number}",
-        ]];
     }
 
-    protected function loadCrmEntities($term, $limit)
+    protected function loadCrmEntities($prettifier, $term, $limit)
     {
         if ($limit <= 0 || !wa()->appExists('crm') || !wa()->getUser()->getRights('crm', 'backend')) {
-            return [];
+            return;
         }
-
-        $result = [];
 
         // Deal (by id)
-        $result = array_merge($result, $this->loadCrmDealsById($term, $limit - count($result)));
+        $this->loadCrmDealsById($prettifier, $term, $limit - $prettifier->count());
 
         // Deal (by name)
-        $result = array_merge($result, $this->loadCrmDealsByName($term, $limit - count($result)));
+        $this->loadCrmDealsByName($prettifier, $term, $limit - $prettifier->count());
 
         // Contact (by name)
-        $result = array_merge($result, $this->loadCrmContactsByName($term, $limit - count($result)));
-
-        return $result;
+        $this->loadCrmContactsByName($prettifier, $term, $limit - $prettifier->count());
     }
 
-    protected function loadCrmDealsById($term, $limit)
+    protected function loadCrmDealsById($prettifier, $term, $limit)
     {
         if ($limit <= 0 || !wa_is_int($term)) {
-            return [];
+            return;
         }
         $deal = (new waModel())->query('SELECT id, name FROM crm_deal WHERE id=?', [$term])->fetchAssoc();
-        if (!$deal) {
-            return [];
+        if ($deal) {
+            $prettifier->addEntity([
+                'app_id' => 'crm',
+                'entity_type' => 'deal',
+                'entity_image' => null,
+                'entity_title' => $deal['name'],
+                'entity_url' => wa()->getAppUrl('crm')."deal/{$deal['id']}/",
+            ]);
         }
-        return [[
-            'app_id' => 'crm',
-            'entity_type' => 'deal',
-            'entity_image' => null,
-            'entity_title' => $deal['name'],
-            'entity_url' => wa()->getAppUrl('crm')."deal/{$deal['id']}/",
-            //default 'markdown_code'
-        ]];
     }
 
-    protected function loadCrmDealsByName($term, $limit)
+    protected function loadCrmDealsByName($prettifier, $term, $limit)
     {
         if ($limit <= 0) {
-            return [];
+            return;
         }
 
         $m = new waModel();
@@ -148,55 +123,45 @@ class tasksTasksEntityAutocompleteController extends waJsonController
             '%'.str_replace(['%', '_'], ['\\%', '\\_'], $term).'%'
         ])->fetchAll();
 
-        $result = [];
         foreach($deals as $deal) {
-            $result[] = [
+            $prettifier->addEntity([
                 'app_id' => 'crm',
                 'entity_type' => 'deal',
                 'entity_image' => null,
                 'entity_title' => $deal['name'],
                 'entity_url' => wa()->getAppUrl('crm')."deal/{$deal['id']}/",
-                //default 'markdown_code'
-            ];
+            ]);
         }
-
-        return $result;
     }
 
-    protected function loadCrmContactsByName($term, $limit)
+    protected function loadCrmContactsByName($prettifier, $term, $limit)
     {
         if ($limit <= 0) {
-            return [];
+            return;
         }
         $m = new waModel();
         $contacts = $m->query('SELECT id, name, photo, is_company FROM wa_contact WHERE name LIKE ? LIMIT '.((int)$limit), [
             '%'.str_replace(['%', '_'], ['\\%', '\\_'], $term).'%'
         ])->fetchAll();
 
-        $result = [];
         foreach($contacts as $c) {
-            $result[] = [
+            $prettifier->addEntity([
                 'app_id' => 'crm',
                 'entity_type' => 'contact',
                 'entity_image' => waContact::getPhotoUrl($c['id'], $c['photo'], null, null, ($c['is_company'] ? 'company' : 'person')),
                 'entity_title' => $c['name'],
                 'entity_url' => wa()->getAppUrl('crm')."contact/{$c['id']}/",
-                //default 'markdown_code'
-            ];
+            ]);
         }
-
-        return $result;
     }
 
-    protected function loadShopEntities($term, $limit)
+    protected function loadShopEntities($prettifier, $term, $limit)
     {
         if ($limit <= 0 || !wa()->appExists('shop') || !wa()->getUser()->getRights('shop', 'backend')) {
-            return [];
+            return;
         }
 
         wa('shop');
-        $result = [];
-
         $getRow = function($o) {
             return [
                 'app_id' => 'shop',
@@ -212,7 +177,7 @@ class tasksTasksEntityAutocompleteController extends waJsonController
             $collection = new shopOrdersCollection('id/'.$term);
             $orders = $collection->getOrders('id', 0, 1);
             if ($orders) {
-                $result[] = $getRow(reset($orders));
+                $prettifier->addEntity($getRow(reset($orders)));
             }
         }
 
@@ -220,46 +185,22 @@ class tasksTasksEntityAutocompleteController extends waJsonController
         $collection = new shopOrdersCollection('search/id='.$term);
         $orders = $collection->getOrders('id', 0, 1);
         if ($orders) {
-            $result[] = $getRow(reset($orders));
+            $prettifier->addEntity($getRow(reset($orders)));
         }
 
         // product name?
-        if ($limit > count($result)) {
+        if ($limit > $prettifier->count()) {
             $collection = new shopProductsCollection('search/query='.$term);
-            $products = $collection->getProducts('id,name', 0, $limit - count($result));
+            $products = $collection->getProducts('id,name', 0, $limit - $prettifier->count());
             foreach($products as $p) {
-                $result[] = [
+                $prettifier->addEntity([
                     'app_id' => 'shop',
                     'entity_type' => 'product',
                     'entity_image' => null,
                     'entity_title' => $p['name'],
                     'entity_url' => wa()->getAppUrl('shop')."products/{$p['id']}/",
-                ];
+                ]);
             }
         }
-
-        return $result;
-    }
-
-    protected function addDefaults(&$result)
-    {
-        $all_apps = wa()->getApps();
-        $root_url = wa()->getConfig()->getRootUrl(false);
-        foreach ($result as &$row) {
-            //if (!isset($row['markdown_code'])) {
-            //    $title = str_replace('#', '', $row['entity_title']);
-            //    $row['markdown_code'] = "[{$title}]({$row['entity_url']})";
-            //}
-            if (!isset($row['entity_image']) && !empty($row['app_id'])) {
-                $app_id = $row['app_id'];
-                if (!empty($all_apps[$app_id])) {
-                    $app_icon = ifset($all_apps, $app_id, 'icon', 48, null);
-                    if ($app_icon) {
-                        $row['entity_image'] = $root_url.$app_icon;
-                    }
-                }
-            }
-        }
-        unset($row);
     }
 }

@@ -12,12 +12,13 @@ class tasksTasksMentionAutocompleteController extends waJsonController
         $limit = min($limit, 50);
         $term = waRequest::request('term', '', 'string');
 
-        $result = $this->loadUsers($term, $limit);
+        $prettifier = new tasksLinksPrettifier();
+        $result = $this->loadUsers($prettifier, $term, $limit);
 
-        $this->response = $result;
+        $this->response = array_values($prettifier->getData());
     }
 
-    protected function loadUsers($term, $limit)
+    protected function loadUsers($prettifier, $term, $limit)
     {
         $term = mb_strtolower($term);
         $users = (new tasksTeamGetter())->getTeam(new taskTeamGetterParamsDto(null, false));
@@ -25,26 +26,20 @@ class tasksTasksMentionAutocompleteController extends waJsonController
         $result = [];
         foreach($users as $u) {
 
-            $data = join(' ', [
-                $u['name'],
-                $u['firstname'],
-                $u['middlename'],
-                $u['lastname'],
-                $u['login'],
-            ]);
-            if (strpos(mb_strtolower($data), $term) === false) {
-                continue;
+            if (strlen($term)) {
+                $data = join(' ', [
+                    $u['name'],
+                    $u['firstname'],
+                    $u['middlename'],
+                    $u['lastname'],
+                    $u['login'],
+                ]);
+                if (strpos(mb_strtolower($data), $term) === false) {
+                    continue;
+                }
             }
 
-            $result[] = [
-                'app_id' => 'tasks',
-                'entity_type' => 'user',
-                'entity_image' => waContact::getPhotoUrl($u['id'], $u['photo'], null, null, ($u['is_company'] ? 'company' : 'person')),
-                'entity_title' => '@'.$u['login'],
-                'entity_url' => wa()->getAppUrl('team')."u/{$u['login']}/",
-                'user_login' => $u['login'],
-            ];
+            $prettifier->addMention($u);
         }
-        return $result;
     }
 }
