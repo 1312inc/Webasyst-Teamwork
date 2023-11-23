@@ -401,21 +401,9 @@ class tasksConfig extends waAppConfig
                 );
             }
 
-            $countService = new tasksUserTasksCounterService();
-            $user = wa()->getUser();
-
-            $teamCounts = $countService->getTeamCounts($user);
-            $userCount = $teamCounts[$user->getId()] ?? ['count' => 0, 'total' => 0];
-            $hiddenCount = $countService->getHiddenCount($user);
-            if ($userCount['total'] == $userCount['count']) {
-                $inboxUrgentCount = $userCount['count'] - $hiddenCount;
-            } else {
-                $inboxUrgentCount = $userCount['count'];
-            }
-
-            return $inboxUrgentCount && $inboxUrgentCount != ($userCount['total'] - $hiddenCount)
-                ? $inboxUrgentCount
-                : null;
+            $user_id = wa()->getUser()->getId();
+            $counts = (new tasksUserTasksCounterService())->getBadgeCounts([$user_id]);
+            return $counts[$user_id]['total'];
         } catch (Exception $exception) {
             // silence
         }
