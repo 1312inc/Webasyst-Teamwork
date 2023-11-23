@@ -35,7 +35,7 @@ final class tasksPushSenderService
     /**
      * @throws waException
      */
-    public function send(string $type, $task, array $logItem, waContact $toContact): void
+    public function send(string $type, $task, array $logItem, waContact $toContact, ?array $badge_counts=null): void
     {
         tasksLogger::debug(
             sprintf(
@@ -61,7 +61,8 @@ final class tasksPushSenderService
                 'type' => $type,
                 'webasyst_installation_id' => $this->waInstallationId,
                 'group_name' => sprintf(_w('%d.%d %s'), $task['project_id'] , $task['number'], $task['name']),
-                'group_id' => sprintf('%s-%s', $this->waInstallationId, $task['id'])
+                'group_id' => sprintf('%s-%s', $this->waInstallationId, $task['id']),
+                'badge' => $badge_counts,
             ],
             null
         );

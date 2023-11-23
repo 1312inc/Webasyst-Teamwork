@@ -87,23 +87,27 @@ class tasksNotificationsSender
         // To prevent it order by action
         // Priority order like in defined in instance proper
 
+        $all_contact_ids = [];
         $order = $this->available_actions;
         $send_map_keys = array_keys($send_map);
         foreach ($this->uniqueMerge($order, $send_map_keys) as $action) {
             if (isset($send_map[$action])) {
                 $send_to = $send_map[$action];
+                $all_contact_ids += array_fill_keys($send_to, true);
                 unset($send_map[$action]);
                 // set in new order
                 $send_map[$action] = $send_to;
             }
         }
 
+        $badge_counts = (new tasksUserTasksCounterService())->getBadgeCounts(array_keys($all_contact_ids));
+
         $already_sent = [];
         foreach ($send_map as $action => $contact_ids) {
             $contact_ids = array_unique($contact_ids);
             foreach ($contact_ids as $contact_id) {
                 if (empty($already_sent[$contact_id])) {
-                    $this->sendOne($action, $contact_id);
+                    $this->sendOne($action, $contact_id, $badge_counts[$contact_id]);
                     $already_sent[$contact_id] = true;
                 }
             }
@@ -118,7 +122,7 @@ class tasksNotificationsSender
      *
      * @throws waException
      */
-    public function sendOne(string $type, $to_contact_id): void
+    public function sendOne(string $type, $to_contact_id, ?array $badge_counts=null): void
     {
         if ($to_contact_id == wa()->getUser()->getId()) {
             return;
@@ -132,7 +136,7 @@ class tasksNotificationsSender
 
             tasksNotifications::send($type, $this->task, $this->log_item, $to, $this->options['templateData'] ?? []);
 
-            $this->pushSender->send($type, $this->task, $this->log_item, $to);
+            $this->pushSender->send($type, $this->task, $this->log_item, $to, $badge_counts);
         } catch (Exception $exception) {
             tasksLogger::error($exception);
         }
