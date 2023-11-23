@@ -146,7 +146,7 @@ class tasksLinksPrettifier
 
     public function count()
     {
-        return count($this->data);
+        return $this->data ? count($this->data) : 0;
     }
 
     protected function parseMarkdownLink($markdown_code)
