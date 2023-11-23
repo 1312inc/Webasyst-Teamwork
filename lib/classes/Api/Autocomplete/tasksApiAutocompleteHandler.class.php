@@ -108,6 +108,27 @@ class tasksApiAutocompleteHandler
         if ($task) {
             $prettifier->addTask($task);
         }
+
+        $limit -= $prettifier->count();
+        if ($limit <= 0) {
+            return;
+        }
+
+        $sql = "SELECT id, project_id, number, name
+                FROM tasks_task
+                WHERE project_id=?
+                    AND number > ?
+                    AND number LIKE ?
+                ORDER BY number
+                LIMIT ".$limit;
+        $rows = $task_model->query($sql, [
+            $project_id,
+            $task_number,
+            $task_number.'%',
+        ]);
+        foreach($rows as $task) {
+            $prettifier->addTask($task);
+        }
     }
 
     protected function loadCrmEntities($prettifier, $term, $limit)
