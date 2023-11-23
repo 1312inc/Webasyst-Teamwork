@@ -168,8 +168,8 @@
             // detect
             if (
                 re.test(this.handleStr) &&
-                !this.selection.getTextAfterCaret(1).trim() &&
-                (range.endOffset !== 0 && range.endContainer.nodeName === '#text')
+                !this.selection.getTextAfterCaret().trim() &&
+                ((range.endOffset !== 0 && range.endContainer.nodeName === '#text') || (range.endOffset === 1 && range.endContainer.nodeName === 'P'))
             ) {
                 this.handleStr = this.handleStr.replace(re, "");
                 this.lastTrigger = full_match.substr(0, full_match.length - this.handleStr.length);
