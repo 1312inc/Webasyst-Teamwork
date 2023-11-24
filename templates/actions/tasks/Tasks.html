@@ -1,3 +1,15 @@
+{if $unread_tasks !== null}
+    {*
+     * !!!! 1.2411
+     * 1) {if $unread_tasks !== null}
+     *    Это значит, что мы во Входящих и сервер прислал инфу о непрочитанных.
+     * 2) {if $unread_tasks}
+     *    Это значит, что есть хотя бы одна непрочитанная задача.
+     * 3) {foreach $unread_tasks as $task}
+     *    $task - это такой же объект с данными, как все остальные задачи в $tasks.
+     *}
+{/if}
+
 {$is_in_my_list = $list && $list.is_own && $list.found_by_id}
 
 <div class="flexbox">
@@ -139,7 +151,7 @@
                     });
                 })(jQuery);</script>
             {/if}
-            
+
             <script>(function() { "use strict";
                 window.Tasks = { };
                 window.tasksHeader = new TasksHeader({

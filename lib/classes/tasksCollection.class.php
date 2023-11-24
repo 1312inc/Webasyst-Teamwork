@@ -699,9 +699,12 @@ class tasksCollection
         }
     }
 
-    protected function favoritesPrepare()
+    protected function favoritesPrepare($subhash='')
     {
-        $this->addJoin('tasks_favorite', null, ':table.contact_id = ' . (int) wa()->getUser()->getId());
+        $alias = $this->addJoin('tasks_favorite', null, ':table.contact_id = ' . (int) wa()->getUser()->getId());
+        if ($subhash === 'unread') {
+            $this->addWhere($alias.'.unread > 0');
+        }
     }
 
     protected function inboxPrepare()
