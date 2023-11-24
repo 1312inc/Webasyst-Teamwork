@@ -4,6 +4,13 @@
  */
 class tasksApiAutocompleteHandler
 {
+    protected $options;
+
+    public function __construct(?array $options = null)
+    {
+        $this->options = ifset($options, []);
+    }
+
     public function handle(string $term, int $limit): array
     {
         if ($term !== '') {
@@ -17,9 +24,16 @@ class tasksApiAutocompleteHandler
         return [];
     }
 
+    protected function getPrettifier()
+    {
+        return new tasksLinksPrettifier([
+            'absolute_urls' => !empty($this->options['absolute_urls']),
+        ]);
+    }
+
     protected function handleMention(string $term, int $limit)
     {
-        $prettifier = new tasksLinksPrettifier();
+        $prettifier = $this->getPrettifier();
         $result = $this->loadUsers($prettifier, $term, $limit);
 
         return array_values($prettifier->getData());
@@ -27,7 +41,7 @@ class tasksApiAutocompleteHandler
 
     protected function handleHashtag(string $term, int $limit)
     {
-        $prettifier = new tasksLinksPrettifier();
+        $prettifier = $this->getPrettifier();
 
         // Tags are loaded separately because allow for an empty $term
         $this->loadTags($prettifier, $term, $limit);

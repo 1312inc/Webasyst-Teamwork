@@ -381,6 +381,35 @@ paths:
           description: Запрещено
         500:
           description: Все плохо
+  /tasks.tasks.links:
+    get:
+      tags:
+        - Таски
+      summary: Информация о ссылках, содержащихся в тексте задачи
+      security:
+        - ApiKeyAuth: [ ]
+      parameters:
+        - in: query
+          name: id
+          description: id задачи
+          schema:
+            type: integer
+          required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/taskLink'
+        403:
+          description: Запрещено
+        500:
+          description: Все плохо
 # statuses
   /tasks.statuses.getList:
     get:
@@ -1483,22 +1512,7 @@ paths:
                   data:
                     type: array
                     items:
-                      type: object
-                      properties:
-                        app_id:
-                          type: string
-                        entity_type:
-                          type: string
-                        entity_image:
-                          type: string
-                          nullable: true
-                        entity_title:
-                          type: string
-                        entity_url:
-                          type: string
-                          nullable: true
-                        markdown_code:
-                          type: string
+                      $ref: '#/components/schemas/taskLink'
         400:
           $ref: '#/components/schemas/400fail'
         403:
@@ -1657,6 +1671,24 @@ components:
               inviteLink:
                 type: string
                 nullable: false
+
+    taskLink:
+      type: object
+      properties:
+        app_id:
+          type: string
+        entity_type:
+          type: string
+        entity_image:
+          type: string
+          nullable: true
+        entity_title:
+          type: string
+        entity_url:
+          type: string
+          nullable: true
+        markdown_code:
+          type: string
 
     taskInfo:
       type: object

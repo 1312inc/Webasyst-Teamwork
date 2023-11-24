@@ -8,10 +8,17 @@
  */
 class tasksLinksPrettifier
 {
+    protected $options;
+
     protected $processed = false;
     protected $data;
 
     protected static $team;
+
+    public function __construct(?array $options = null)
+    {
+        $this->options = ifset($options, []);
+    }
 
     public function addFromMarkdown($task_markdown_code)
     {
@@ -206,6 +213,7 @@ class tasksLinksPrettifier
 
         $apps_info = wa()->getApps();
         $root_url = wa()->getConfig()->getRootUrl(false);
+        $host_url = wa()->getConfig()->getHostUrl();
 
         $contact_ids = [];
 
@@ -239,6 +247,15 @@ class tasksLinksPrettifier
 
             if (!isset($link['markdown_code'])) {
                 $link['markdown_code'] = $code;
+            }
+
+            if (!empty($this->options['absolute_urls'])) {
+                if (!empty($link['entity_image']) && substr($link['entity_image'], 0, 4) !== 'http') {
+                    $link['entity_image'] = $host_url.$link['entity_image'];
+                }
+                if (!empty($link['entity_url']) && substr($link['entity_url'], 0, 4) !== 'http') {
+                    $link['entity_url'] = $host_url.$link['entity_url'];
+                }
             }
         }
         unset($link);

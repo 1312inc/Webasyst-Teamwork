@@ -9,7 +9,7 @@ class tasksAutocompleteMethod extends tasksApiAbstractMethod
         $term = waRequest::get('term', '', 'string');
 
         return new tasksApiResponse(tasksApiResponseInterface::HTTP_OK, [
-            'data' => (new tasksApiAutocompleteHandler())->handle($term, $limit),
+            'data' => (new tasksApiAutocompleteHandler(['absolute_urls' => true]))->handle($term, $limit),
         ]);
     }
 }
