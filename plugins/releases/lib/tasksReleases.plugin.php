@@ -29,7 +29,7 @@ class tasksReleasesPlugin extends waPlugin
 
     public function backendTaskInfo($params)
     {
-        $params['action']->milestones = (new tasksReleasesPluginMilestoneProjectsModel())->getMilestonesByProjectId($params['task']['project_id']);
+        $params['action']->milestones += (new tasksReleasesPluginMilestoneProjectsModel())->getMilestonesByProjectId($params['task']['project_id']);
     }
 
     public function backendTask($params)
