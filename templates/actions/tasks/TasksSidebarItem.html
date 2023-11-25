@@ -103,6 +103,7 @@
             </span>
 
             <span class="count align-right">
+
                 {* This vars will be mutated by tasksHelper::getDatetime, must be inited first because of Smary & PHP 7.4 cause the warnings otherwise *}
                 {$time_since_update_period = null}
                 {$time_since_update_template = null}
@@ -118,7 +119,15 @@
         </div>
 
         {* TITLE *}
-        <span class="t-task-item-title {if !empty($task.priority) && ($task.priority == '1' || $task.priority == '2' || $task.priority == '3')}bold{else}semibold{/if}{if !empty($task.priority) && $task.priority == '-1'} text-gray{/if}" title="{$task.name|escape|default:"(no name)"}">{$task.name|escape|default:"(no name)"|truncate:42}</span>
+        <div class="flexbox space-8">
+            <span class="t-task-item-title wide {if !empty($task.priority) && ($task.priority == '1' || $task.priority == '2' || $task.priority == '3')}bold{else}semibold{/if}{if !empty($task.priority) && $task.priority == '-1'} text-gray{/if}" title="{$task.name|escape|default:"(no name)"}">
+                {$task.name|escape|default:"(no name)"|truncate:42}
+            </span>
+            {* UNREAD MENTION *}
+            {if !empty($unread_mention)}
+                <span class="t-task-item-unread-mention"><span class="badge small red">@</span></span>
+            {/if}
+        </div>
 
         {* SUMMARY PREVIEW *}
         <p class="hint custom-mb-0" title="{strip_tags(tasksTask::formatText($task.text))|truncate:312}">

@@ -1,15 +1,3 @@
-{if $unread_tasks !== null}
-    {*
-     * !!!! 1.2411
-     * 1) {if $unread_tasks !== null}
-     *    Это значит, что мы во Входящих и сервер прислал инфу о непрочитанных.
-     * 2) {if $unread_tasks}
-     *    Это значит, что есть хотя бы одна непрочитанная задача.
-     * 3) {foreach $unread_tasks as $task}
-     *    $task - это такой же объект с данными, как все остальные задачи в $tasks.
-     *}
-{/if}
-
 {$is_in_my_list = $list && $list.is_own && $list.found_by_id}
 
 <div class="flexbox">
@@ -165,14 +153,20 @@
                 });
             })();</script>
 
-            {if $tasks}
+            {if $tasks || ($unread_tasks !== null)}
                 <div class="t-tasks-wrapper is-{$list_view_type}" id="t-tasks-wrapper" data-tasks-hash-type="{$hash_type}">
+
                     <ul class="list custom-m-0 bordered-bottom">
-                    {foreach $tasks as $task}{strip}
+                        {foreach $unread_tasks as $task}{strip}
 
-                        {include file="./TasksSidebarItem.html" inline}
+                            {include file="./TasksSidebarItem.html" unread_mention=true inline}
 
-                    {/strip}{/foreach}
+                        {/strip}{/foreach}
+                        {foreach $tasks as $task}{strip}
+
+                            {include file="./TasksSidebarItem.html" inline}
+
+                        {/strip}{/foreach}
                     </ul>
 
                     <div id="end-of-tasks" class="box small gray align-center">
