@@ -1394,6 +1394,9 @@ msgstr "%s edited the task you’ve created"
 msgid "User %s edited a task"
 msgstr "%s edited"
 
+msgid "User %s mentioned you in a task"
+msgstr "%s mentioned you in a task"
+
 msgid "All senders"
 msgstr ""
 

@@ -1469,8 +1469,8 @@ msgstr "%s отредактировал созданную вами задачу
 msgid "User %s edited a task"
 msgstr "%s отредактировал задачу"
 
-msgid "User %s mentioned you in a task."
-msgstr "%s упомянул вас в задаче."
+msgid "User %s mentioned you in a task"
+msgstr "%s отметил вас в задаче"
 
 msgid "invited"
 msgstr "приглашен"
