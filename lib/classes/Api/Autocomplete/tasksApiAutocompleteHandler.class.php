@@ -69,6 +69,14 @@ class tasksApiAutocompleteHandler
             if (!isset($apps_handled['shop'])) {
                 $this->loadShopEntities($prettifier, $term, $limit);
             }
+
+            if (!isset($apps_handled['helpdesk'])) {
+                $this->loadHelpdeskEntities($prettifier, $term, $limit);
+            }
+
+            if (!isset($apps_handled['hub'])) {
+                $this->loadHubEntities($prettifier, $term, $limit);
+            }
         }
 
         return array_values($prettifier->getData());
@@ -166,14 +174,18 @@ class tasksApiAutocompleteHandler
         if ($limit <= $prettifier->count() || !wa_is_int($term)) {
             return;
         }
-        $deal = (new waModel())->query('SELECT id, name FROM crm_deal WHERE id=?', [$term])->fetchAssoc();
+        try {
+            $deal = (new waModel())->query('SELECT id, name FROM crm_deal WHERE id=?', [$term])->fetchAssoc();
+        } catch (waDbException $e) {
+            return; // app never started yet
+        }
         if ($deal) {
             $prettifier->addEntity([
                 'app_id' => 'crm',
                 'entity_type' => 'deal',
                 'entity_image' => null,
                 'entity_title' => $deal['name'],
-                'entity_url' => wa()->getAppUrl('crm')."deal/{$deal['id']}/",
+                'entity_url' => $this->getAppBackendUrl('crm')."deal/{$deal['id']}/",
             ]);
         }
     }
@@ -185,10 +197,14 @@ class tasksApiAutocompleteHandler
             return;
         }
 
-        $m = new waModel();
-        $deals = $m->query('SELECT id, name FROM crm_deal WHERE name LIKE ? LIMIT '.((int)$limit), [
-            '%'.str_replace(['%', '_'], ['\\%', '\\_'], $term).'%'
-        ])->fetchAll();
+        try {
+            $m = new waModel();
+            $deals = $m->query('SELECT id, name FROM crm_deal WHERE name LIKE ? LIMIT '.((int)$limit), [
+                '%'.str_replace(['%', '_'], ['\\%', '\\_'], $term).'%'
+            ])->fetchAll();
+        } catch (waDbException $e) {
+            return; // app never started yet
+        }
 
         foreach($deals as $deal) {
             $prettifier->addEntity([
@@ -196,7 +212,7 @@ class tasksApiAutocompleteHandler
                 'entity_type' => 'deal',
                 'entity_image' => null,
                 'entity_title' => $deal['name'],
-                'entity_url' => wa()->getAppUrl('crm')."deal/{$deal['id']}/",
+                'entity_url' => $this->getAppBackendUrl('crm')."deal/{$deal['id']}/",
             ]);
         }
     }
@@ -218,7 +234,7 @@ class tasksApiAutocompleteHandler
                 'entity_type' => 'contact',
                 'entity_image' => waContact::getPhotoUrl($c['id'], $c['photo'], null, null, ($c['is_company'] ? 'company' : 'person')),
                 'entity_title' => $c['name'],
-                'entity_url' => wa()->getAppUrl('crm')."contact/{$c['id']}/",
+                'entity_url' => $this->getAppBackendUrl('crm')."contact/{$c['id']}/",
             ]);
         }
     }
@@ -236,7 +252,7 @@ class tasksApiAutocompleteHandler
                 'entity_type' => 'order',
                 'entity_image' => null,
                 'entity_title' => $o['id_encoded'],
-                'entity_url' => wa()->getAppUrl('shop')."#/orders/id={$o['id']}/",
+                'entity_url' => $this->getAppBackendUrl('shop')."#/orders/id={$o['id']}/",
             ];
         };
 
@@ -266,9 +282,74 @@ class tasksApiAutocompleteHandler
                     'entity_type' => 'product',
                     'entity_image' => null,
                     'entity_title' => $p['name'],
-                    'entity_url' => wa()->getAppUrl('shop')."products/{$p['id']}/",
+                    'entity_url' => $this->getAppBackendUrl('shop')."products/{$p['id']}/",
                 ]);
             }
         }
     }
+
+    protected function loadHelpdeskEntities($prettifier, $term, $limit)
+    {
+        if ($limit <= $prettifier->count() || !wa()->appExists('helpdesk') || !wa()->getUser()->getRights('helpdesk', 'backend')) {
+            return;
+        }
+
+        if (wa_is_int($term)) {
+            wa('helpdesk');
+            $request_model = new helpdeskRequestModel();
+            $request = $request_model->getById($term);
+
+            if ($request) {
+                $prettifier->addEntity([
+                    'app_id' => 'helpdesk',
+                    'entity_type' => 'request',
+                    'entity_title' => htmlspecialchars($request['summary']),
+                    'entity_url' => $this->getAppBackendUrl('helpdesk')."#/request/{$request['id']}/",
+                ]);
+            }
+        }
+    }
+
+    protected function loadHubEntities($prettifier, $term, $limit)
+    {
+        if ($limit <= $prettifier->count() || !wa()->appExists('hub') || !wa()->getUser()->getRights('hub', 'backend')) {
+            return;
+        }
+
+        try {
+            $sql = "SELECT id, title
+                    FROM hub_topic
+                    WHERE title LIKE ?
+                    LIMIT ".((int) $limit - $prettifier->count());
+            $rows = (new waModel())->query($sql, ["%$term%"]);
+        } catch (waDbException $e) {
+            return; // app never started yet
+        }
+
+        foreach($rows as $topic) {
+            $prettifier->addEntity([
+                'app_id' => 'hub',
+                'entity_type' => 'topic',
+                'entity_title' => htmlspecialchars($topic['title']),
+                'entity_url' => $this->getAppBackendUrl('hub')."#/topic/{$topic['id']}/",
+            ]);
+        }
+    }
+
+    protected function getAppBackendUrl($app)
+    {
+        $config = wa()->getConfig();
+        $url = $config->getRootUrl();
+
+        if (!empty($this->options['absolute_urls'])) {
+            $url = wa()->getConfig()->getHostUrl().$url;
+        }
+
+        if ($app == 'webasyst') {
+            return $url.$config->getBackendUrl()."/";
+        } else {
+            return $url.$config->getBackendUrl()."/".$app."/";
+        }
+    }
+
 }

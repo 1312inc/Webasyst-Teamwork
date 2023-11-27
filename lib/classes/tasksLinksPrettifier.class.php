@@ -84,6 +84,10 @@ class tasksLinksPrettifier
             return false;
         }
 
+        if (!empty($link['entity_url']) && substr($link['entity_url'], 0, 4) !== 'http') {
+            $link['entity_url'] = wa()->getConfig()->getHostUrl().$link['entity_url'];
+        }
+
         $link['markdown_code'] = "[{$link['entity_title']}]({$link['entity_url']})";
         $this->data[$markdown_code] = $link;
         return true;
@@ -119,7 +123,7 @@ class tasksLinksPrettifier
             'app_id' => 'tasks',
             'entity_type' => 'tag',
             'entity_image' => null,
-            'entity_title' => $tag,
+            'entity_title' => htmlspecialchars($tag),
             'entity_url' => wa()->getAppUrl('tasks')."#/tasks/tag/{$tag}/",
         ];
     }
@@ -197,7 +201,7 @@ class tasksLinksPrettifier
             'app_id' => $app_id,
             'entity_type' => null,
             'entity_image' => $app_icon,
-            'entity_title' => $link_text,
+            'entity_title' => htmlspecialchars($link_text),
             'entity_url' => $url,
             'entity_in_app_url' => $in_app_url,
         ];
@@ -232,6 +236,10 @@ class tasksLinksPrettifier
                     $link['entity_type'] = 'product';
                 } else if ($app_id == 'shop' && preg_match('~^#/orders/([^/]+&)?id=(\d+)~', $link['entity_in_app_url'])) {
                     $link['entity_type'] = 'order';
+                } else if ($app_id == 'helpdesk' && preg_match('~^#/request/(\d+)~', $link['entity_in_app_url'])) {
+                    $link['entity_type'] = 'request';
+                } else if ($app_id == 'hub' && preg_match('~^#/topic/(?:edit/)?(\d+)~', $link['entity_in_app_url'])) {
+                    $link['entity_type'] = 'topic';
                 } else if ($app_id == 'crm' && preg_match('~^contact/(\d+)~', $link['entity_in_app_url'], $m)) {
                     $link['entity_type'] = 'contact';
                     $contact_ids[$code] = $m[1];
