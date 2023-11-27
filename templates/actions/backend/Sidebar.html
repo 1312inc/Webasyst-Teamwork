@@ -168,7 +168,13 @@
                                                 {$scope.name|escape|truncate:42}
                                             </span>
                                             {if !empty($scope.project_access_full)}
-                                                <span class="count{if $_scope_is_100_complete} text-green bold{elseif !empty($scope.due_date) && $scope.due_date < date('Y-m-d')} text-red bold{/if}">{if $_scope_is_100_complete}<i class="fas fa-check-circle fa-xs text-green"></i> {else}{$scope.open_tasks|default:0}{/if}</span>
+                                                <span class="count{if $_scope_is_100_complete} text-green bold{elseif !empty($scope.due_date) && $scope.due_date < date('Y-m-d')} text-red bold{/if}">
+                                                    {if $_scope_is_100_complete}
+                                                        <i class="fas fa-check-circle fa-xs text-green"></i>
+                                                    {else}
+                                                        {tasksUserTasksCounterService::getPairs($scope.open_tasks, $scope.proirity_tasks, $scope.priority_count_bg_color, $scope.priority_count_text_color)}
+                                                    {/if}
+                                                </span>
                                             {/if}
                                         </span>
 

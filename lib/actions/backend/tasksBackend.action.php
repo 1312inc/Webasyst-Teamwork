@@ -90,20 +90,25 @@ class tasksBackendAction extends waViewAction
         }
 
         $scope_counts = $tasks_task_model->getCountTasksInScope();
-        if ($scope_counts) {
-            //Calculate percent closed tasks
-            foreach ($scope_counts as $count) {
-                $scope_id = $count['milestone_id'];
-                if (isset($scopes[$scope_id])) {
-                    $scope = $scopes[$scope_id];
-                    if ($scope['project_access_full']) {
-                        $percent = $count['closed'] / $count['total'] * 100;
-                        $percent = round($percent);
-                        $scopes[$scope_id]['closed_percent'] = $percent;
-                        $scopes[$scope_id]['closed_tasks'] = $count['closed'];
-                        $scopes[$scope_id]['open_tasks'] = $count['total'] - $count['closed'];
-                    }
-                }
+        foreach($scopes as $scope_id => $scope) {
+            $count = ifset($scope_counts, $scope_id, [
+                'milestone_id' => $scope_id,
+                'closed' => 0,
+                'total' => 0,
+                'count' => 0,
+                'bg_color' => 'transparent',
+                'text_color' => 'transparent',
+            ]);
+
+            if ($scope['project_access_full']) {
+                $percent = $count['total'] ? $count['closed'] / $count['total'] * 100 : 0;
+                $percent = round($percent);
+                $scopes[$scope_id]['closed_percent'] = $percent;
+                $scopes[$scope_id]['closed_tasks'] = $count['closed'];
+                $scopes[$scope_id]['open_tasks'] = $count['total'] - $count['closed'];
+                $scopes[$scope_id]['proirity_tasks'] = $count['count'];
+                $scopes[$scope_id]['priority_count_bg_color'] = $count['bg_color'];
+                $scopes[$scope_id]['priority_count_text_color'] = $count['text_color'];
             }
         }
 
