@@ -413,6 +413,7 @@ class tasksCollection
             $contacts = $contact_model->getById($contact_ids);
             foreach($contacts as &$c) {
                 $c['name'] = waContactNameField::formatName($c);
+                $c['photo_url'] = waContact::getPhotoUrl($c['id'], $c['photo'], null, null, ($c['is_company'] ? 'company' : 'person'));
             }
             unset($c);
 
