@@ -469,7 +469,7 @@ class tasksTask implements ArrayAccess
         $replace_map2 = array();
         foreach ($tags as $tag) {
             $link = str_replace('{$tag}', $tag, $link_pattern);
-            $replace_map[sprintf('/#%s\b/',preg_quote($tag,'/'))] = $link;
+            $replace_map[sprintf('/#%s\b/u',preg_quote($tag,'/'))] = $link;
             $replace_map2['#'.$tag] = $link;
         }
 

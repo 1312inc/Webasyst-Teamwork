@@ -18,7 +18,7 @@ class tasksTagModel extends waModel
             if (!$id) {
                 $name_ids[$name] = $this->insert(array(
                     'name' => $name,
-                ), 2);
+                ), self::INSERT_IGNORE);
             }
         }
         return array_values($name_ids);
