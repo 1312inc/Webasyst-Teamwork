@@ -1524,6 +1524,26 @@ paths:
           description: Запрещено
         500:
           description: Все плохо
+  /tasks.settings.get:
+    get:
+      summary: ''
+      security:
+        - ApiKeyAuth: [ ]
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  version:
+                    type: string
+        400:
+          $ref: '#/components/schemas/400fail'
+        403:
+          description: Запрещено
+        500:
+          description: Все плохо
 
 components:
   securitySchemes:
