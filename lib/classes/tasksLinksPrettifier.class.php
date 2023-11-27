@@ -271,7 +271,11 @@ class tasksLinksPrettifier
             foreach($contact_ids as $code => $contact_id) {
                 if (isset($this->data[$code])) {
                     $c = ifset($contacts, $contact_id, $default_contact);
-                    $this->data[$code]['entity_image'] = waContact::getPhotoUrl($c['id'], $c['photo'], null, null, ($c['is_company'] ? 'company' : 'person'));
+                    $contact_photo_url = waContact::getPhotoUrl($c['id'], $c['photo'], null, null, ($c['is_company'] ? 'company' : 'person'));
+                    if (!empty($this->options['absolute_urls'])) {
+                        $contact_photo_url = $host_url.$contact_photo_url;
+                    }
+                    $this->data[$code]['entity_image'] = $contact_photo_url;
                 }
             }
         }
