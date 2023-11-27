@@ -478,8 +478,9 @@ class tasksCollection
                 ['contact_id' => wa()->getUser()->getId(), 'task_id' => $ids],
                 'task_id'
             );
-            foreach ($favorites as $task_id => $_) {
+            foreach ($favorites as $task_id => $fav) {
                 $data[$task_id]['favorite'] = 1;
+                $data[$task_id]['favorite_unread'] = (int) $fav['unread'];
             }
         }
 

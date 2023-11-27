@@ -1789,6 +1789,8 @@ components:
             - $ref: '#/components/schemas/milestoneInfo'
         favorite:
           type: boolean
+        favorite_unread:
+          type: boolean
         publicLinks:
           description: Список публичных ссылок
           type: array

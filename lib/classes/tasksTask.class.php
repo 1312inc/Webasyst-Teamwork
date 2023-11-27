@@ -634,7 +634,15 @@ class tasksTask implements ArrayAccess
     public function getFavorite()
     {
         $favorite_model = new tasksFavoriteModel();
-        return $favorite_model->getByField(array('contact_id' => wa()->getUser()->getId(), 'task_id' => $this->id));
+        return $favorite_model->getByField(array('contact_id' => wa()->getUser()->getId(), 'task_id' => $this->id)) ?? false;
+    }
+
+    public function getFavoriteUnread()
+    {
+        if (!isset($this->data['favorite']) || !is_array($this->data['favorite'])) {
+            $this->data['favorite'] = $this->getFavorite();
+        }
+        return !empty($this->data['favorite']['unread']);
     }
 
     protected function getReturnLogItem()

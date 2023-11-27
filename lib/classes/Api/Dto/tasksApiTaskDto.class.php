@@ -145,6 +145,11 @@ final class tasksApiTaskDto implements JsonSerializable
     private $favorite;
 
     /**
+     * @var bool
+     */
+    private $favorite_unread;
+
+    /**
      * @var string|null
      */
     private $uuid;
@@ -189,7 +194,8 @@ final class tasksApiTaskDto implements JsonSerializable
         string $text_stripped,
         ?string $uuid,
         ?tasksApiMilestoneDto $milestone,
-        ?array $publicLinks
+        ?array $publicLinks,
+        bool $favorite_unread
     ) {
         $this->id = $id;
         $this->name = $name;
@@ -222,6 +228,7 @@ final class tasksApiTaskDto implements JsonSerializable
         $this->uuid = $uuid;
         $this->milestone = $milestone;
         $this->publicLinks = $publicLinks;
+        $this->favorite_unread = $favorite_unread;
     }
 
     public function getId(): int
@@ -357,6 +364,11 @@ final class tasksApiTaskDto implements JsonSerializable
     public function isFavorite(): bool
     {
         return $this->favorite;
+    }
+
+    public function isFavoriteUnread(): bool
+    {
+        return $this->favorite_unread;
     }
 
     public function getTextStripped(): string
