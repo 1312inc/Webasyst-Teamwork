@@ -10,6 +10,7 @@ class tasksCollection
     public const HASH_TAG = 'tag';
     public const HASH_INBOX = 'inbox';
     public const HASH_FAVORITES = 'favorites';
+    public const HASH_FAVORITES_UNREAD = 'favorites/unread';
     public const HASH_OUTBOX = 'outbox';
     public const HASH_STATUS = 'status';
     public const HASH_ID = 'id';

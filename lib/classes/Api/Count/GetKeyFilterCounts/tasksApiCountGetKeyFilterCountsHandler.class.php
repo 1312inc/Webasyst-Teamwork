@@ -16,10 +16,13 @@ final class tasksApiCountGetKeyFilterCountsHandler
     {
         $user = wa()->getUser();
 
+        list($hash_fav, $hash_unread) = $this->getFavoritesCountsPair();
+
         return [
             tasksCollection::HASH_INBOX => $this->getInboxCountPair($user),
             tasksCollection::HASH_OUTBOX => $this->getOutboxCountsPair(),
-            tasksCollection::HASH_FAVORITES => $this->getFavoritesCountsPair(),
+            tasksCollection::HASH_FAVORITES => $hash_fav,
+            tasksCollection::HASH_FAVORITES_UNREAD => $hash_unread,
 //            'hidden' => $this->getHiddenCountsPair($user),
             tasksCollection::HASH_URGENT => $this->getUrgentCountsPair(),
         ];
@@ -65,11 +68,14 @@ final class tasksApiCountGetKeyFilterCountsHandler
         );
     }
 
-    private function getFavoritesCountsPair(): tasksUserTasksCountPairDto
+    private function getFavoritesCountsPair(): array
     {
         $counts = $this->countService->getFavoritesCounts();
 
-        return $this->getPair((int) $counts['count'], (int) $counts['total']);
+        return [
+            new tasksUserTasksCountPairDto((int) $counts['count'], (int) $counts['total']),
+            new tasksUserTasksCountPairDto((int) $counts['unread'], (int) $counts['unread_total']),
+        ];
     }
 
     private function getOutboxCountsPair(): tasksUserTasksCountPairDto
