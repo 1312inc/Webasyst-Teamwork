@@ -15,17 +15,26 @@ class tasksFavoriteModel extends waModel
      * Remove from favorites
      * changeFavorite($contact_id, $task_id, false)
      *
-     * @param int  $contact_id - contact id
-     * @param int  $task_id    - task id
-     * @param bool $value      - add to favorites or remove from favorites
+     * @param int       $contact_id - contact id
+     * @param int       $task_id    - task id
+     * @param bool      $value      - add to favorites or remove from favorites
+     * @param bool|null $unread     - change unread status
      */
-    public function changeFavorite($contact_id, $task_id, $value)
+    public function changeFavorite($contact_id, $task_id, $value, $unread=null)
     {
         if ($value) {
-            return $this->insert([
-                'contact_id' => $contact_id,
-                'task_id' => $task_id,
-            ], self::INSERT_IGNORE);
+            if ($unread === null) {
+                return $this->insert([
+                    'contact_id' => $contact_id,
+                    'task_id' => $task_id,
+                ], self::INSERT_IGNORE);
+            } else {
+                return $this->insert([
+                    'contact_id' => $contact_id,
+                    'task_id' => $task_id,
+                    'unread' => $unread ? 1 : 0,
+                ], self::INSERT_ON_DUPLICATE_KEY_UPDATE);
+            }
         }
 
         return $this->deleteByField(['contact_id' => $contact_id, 'task_id' => $task_id]);

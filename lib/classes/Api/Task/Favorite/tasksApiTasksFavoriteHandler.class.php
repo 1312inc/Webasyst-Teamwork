@@ -31,6 +31,6 @@ final class tasksApiTasksFavoriteHandler
         }
 
         return (bool) (new tasksFavoriteModel())
-            ->changeFavorite($contact->getId(), $favoriteRequest->getTaskId(), $favoriteRequest->isFavorite());
+            ->changeFavorite($contact->getId(), $favoriteRequest->getTaskId(), $favoriteRequest->isFavorite(), $favoriteRequest->isUnread());
     }
 }

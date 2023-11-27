@@ -278,7 +278,7 @@ paths:
     post:
       tags:
         - Таски
-      summary: 'Добавляет таск в избранное'
+      summary: 'Добавляет таск в избранное или помечает как прочитанное (или непрочитанное)'
       security:
         - ApiKeyAuth: [ ]
       requestBody:
@@ -292,6 +292,11 @@ paths:
                   minimum: 1
                 favorite:
                   type: boolean
+                unread:
+                  type: string
+                  enum: [1, 0]
+                  nullable: true
+                  description: Если передать, то выставит статус "прочитано" (0) или "не прочитано" (1). Если не передавать, то при добавлении в избранное задача будет прочитанной; если задача уже была в избранном, и unread не передать, то статус останется без изменения.
                 contact_id:
                   type: integer
                   nullable: true
