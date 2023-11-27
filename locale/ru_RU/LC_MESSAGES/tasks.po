@@ -1529,6 +1529,12 @@ msgstr "Непрочитанные @упоминания"
 msgid "Both settings are force-set to on for every user on your team."
 msgstr "Обе настройки всегда включены для всех сотрудников в вашей команде."
 
+msgid "New @mentions"
+msgstr "Новые @упоминания"
+
+msgid "Notifications on new mentions are always on for every user on your team."
+msgstr "Уведомления о новых упоминаниях всегда включены у всех сотрудников в вашей команде."
+
 msgid "Push & Email"
 msgstr "Push-уведомления и почта"
 
