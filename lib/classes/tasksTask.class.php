@@ -590,9 +590,11 @@ class tasksTask implements ArrayAccess
         $result = [];
         $contact_model = new waContactModel();
         $contacts = $contact_model->getById($contact_ids);
+        $statusService = new tasksTeammateStatusService();
         foreach($contacts as $c) {
             $c['name'] = waContactNameField::formatName($c);
             $c['photo_url'] = waContact::getPhotoUrl($c['id'], $c['photo'], null, null, ($c['is_company'] ? 'company' : 'person'));
+            $c['calendar_status'] = $statusService->getForContactId($c['id'], new DateTimeImmutable());
             $result[$c['id']] = $c;
         }
         return $result;

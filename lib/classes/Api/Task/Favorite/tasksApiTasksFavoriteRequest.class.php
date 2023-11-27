@@ -21,7 +21,7 @@ final class tasksApiTasksFavoriteRequest
      */
     private $unread;
 
-    public function __construct(int $task_id, bool $favorite, int $contactId, ?int $unread)
+    public function __construct(int $task_id, bool $favorite, int $contactId, ?int $unread=null)
     {
         $this->taskId = $task_id;
         $this->favorite = $favorite;
