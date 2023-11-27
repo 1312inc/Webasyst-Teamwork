@@ -294,7 +294,7 @@ class tasksTask implements ArrayAccess
         if ($team === null) {
             $team = [];
             $collection = new waContactsCollection('users');
-            $users = $collection->getContacts('id,name,login,firstname,middlename,lastname,photo,is_company', 0, 500);
+            $users = $collection->getContacts('id,name,login,firstname,middlename,lastname,photo,is_company,is_user', 0, 500);
             foreach($users as $u) {
                 $team[strtolower($u['login'])] = $u;
             }

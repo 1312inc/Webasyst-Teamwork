@@ -96,12 +96,16 @@ class tasksLinksPrettifier
         }
 
         $login = $user['login'];
+        $name = waContactNameField::formatName($user);
+        if ($name === $login) {
+            $name = '@'.$name;
+        }
 
         $this->data['@'.$login] = [
             'app_id' => 'tasks',
             'entity_type' => 'user',
             'entity_image' => waContact::getPhotoUrl($user['id'], $user['photo'], null, null, ($user['is_company'] ? 'company' : 'person')),
-            'entity_title' => '@'.$login,
+            'entity_title' => $name,
             'entity_url' => wa()->getAppUrl('team')."u/{$login}/",
             'user_login' => $login,
         ];
