@@ -225,7 +225,8 @@
                     {* @event backend_task_edit.%plugin_id%.before_fields *}
                     {foreach $backend_task_edit as $_}{ifset($_.before_fields)}{/foreach}
 
-                    <div class="t-form-line">
+                    <div class="t-form-line t-attach-wrapper">
+                      <div class="t-attach-droparea" id="t-attach-droparea">
                         <div class="t-chips">
 
                             <div class="t-chip t-due-date-wrapper">
@@ -237,7 +238,15 @@
                             </div>
 
                             <div class="t-chip">
-                                <a class="t-form-line-autocomplete-chip" data-type="at"> 
+                                <a class="t-form-line-autocomplete-chip">
+                                    <i class="fas fa-paperclip"></i>
+                                    [`Files`]
+                                    <input type="file" name="files[]" multiple="true" />
+                                </a>
+                            </div>
+
+                            <div class="t-chip">
+                                <a class="t-form-line-autocomplete-chip" data-type="at">
                                     <i class="fas fa-at"></i>
                                     [`Watchers`]
                                 </a>
@@ -258,13 +267,14 @@
                                 </a>
                             </div>
                             {/if}
-                            
+
 
                             <!-- plugin hook: 'backend_task_edit.%plugin_id.more' -->
                             {* @event backend_task_edit.%plugin_id%.more *}
                             {foreach $backend_task_edit as $_}{ifset($_.more)}{/foreach}
 
                         </div>
+                      </div>
 
                     </div>
 
@@ -274,15 +284,7 @@
 
                 </div>
 
-                {* ATTACH DROPAREA *}
 
-                <div class="t-form-line t-attach-wrapper">
-                    {* Droparea *}
-                    <div class="t-attach-droparea" id="t-attach-droparea">
-                        <div class="t-droparea-hint"><i class="fas fa-paperclip"></i> [`Attach files`]</div>
-                        <input type="file" name="files[]" multiple="true" />
-                    </div>
-                </div>
 
                 {* ATTACHMENTS *}
 
