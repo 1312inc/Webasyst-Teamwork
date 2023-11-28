@@ -130,9 +130,11 @@
         </div>
 
         {* SUMMARY PREVIEW *}
+        {if empty($unread_mention) && !$task.favorite_unread}
         <p class="hint custom-mb-0" title="{strip_tags(tasksTask::formatText($task.text))|truncate:312}">
             <span class="break-word">{strip_tags(tasksTask::formatText($task.text))|truncate:83}</span>
         </p>
+        {/if}
 
         {* DUE *}
         {if !empty($task.due_date)}

@@ -48,7 +48,7 @@
                     {$inbox_urgent_count = $user_count.count}
                 {/if}
                 {if $favorites_counts.unread_total}
-                    <span class="badge red">@{$favorites_counts.unread_total|escape}</span>
+                    <span class="badge red">@{* $favorites_counts.unread_total|escape *}</span> 
                 {/if}
                 {tasksUserTasksCounterService::getPairs($user_count.total-$hidden_count, $inbox_urgent_count, $user_count.bg_color, $user_count.text_color)}
             </span>
