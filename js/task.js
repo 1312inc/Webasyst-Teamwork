@@ -765,9 +765,6 @@ var Task = ( function($) {
                                 that.reloadTask();
                             });
 
-                            // Remove textarea draft from ls (see initStatusFormTextarea)
-                            localStorage.removeItem(`tasks/textarea/${$form.data('task-action')}/${$form.data('task-id')}`);
-
                             if (typeof successCallback === 'function') {
                                 successCallback();
                             }
@@ -1011,21 +1008,24 @@ var Task = ( function($) {
                     onOpen: function ($drawer, drawer_instance) {
 
                         var $form = $drawer.find("form");
+                        var $textarea = $form.find('textarea');
+                        var taskAction = $form.data('task-action');
 
                         // Focus
-                        $form.find("textarea").focus();
+                        $textarea.focus();
 
                         // Handle close
                         $drawer.find(".t-hiddenform-cancel-link").on('click', function() {
                             drawer_instance.close();
                         })
-
-                        initStatusFormTextarea($form);
+                        
+                        var removeSavedMessage = that.makeTextareaSaveable($textarea, taskAction);
 
                         // Handle submit
                         $form.on("submit", function(e) {
                             e.preventDefault();
                             onStatusSubmit($(this), direction, function () {
+                                removeSavedMessage();
                                 drawer_instance.close();
                             });
                         });
@@ -1042,35 +1042,6 @@ var Task = ( function($) {
             that.is_status_opened = true;
         };
 
-        var initStatusFormTextarea = function ($form) {
-
-            const $textarea = $form.find('textarea');
-            const taskId = $form.data('task-id');
-            const taskAction = $form.data('task-action');
-            const taskUuid = $form.data('task-uuid');
-            const lsItem = `tasks/textarea/${taskAction}/${taskId}`;
-            
-            $textarea.val(localStorage.getItem(lsItem));
-            $textarea.on('input', saveDraft);
-
-            if ($.tasks.options.text_editor === 'wysiwyg' && window.$R) {
-                $textarea.redactor({
-                    'focus': true,
-                    minHeight: '150px',
-                    imageData: {
-                        task_uuid: taskUuid
-                    },
-                    callbacks: {
-                        changed: saveDraft
-                    }
-                });
-            }
-
-            function saveDraft () {
-                localStorage.setItem(lsItem, $textarea.val());
-            }
-        };
-
         // var hideHiddenContainer = function() {
         //     that.$statusWrapper
         //         .removeClass(storage.shown_class)
@@ -1080,6 +1051,38 @@ var Task = ( function($) {
         // };
 
         bindEvents();
+
+    };
+
+    Task.prototype.makeTextareaSaveable = function ($textarea, action) {
+        
+        const lsItem = `tasks/textarea/${action}/${this.task_id}`;
+
+        $textarea.val(localStorage.getItem(lsItem));
+        $textarea.on('input', saveDraft);
+
+        if ($.tasks.options.text_editor === 'wysiwyg' && window.$R) {
+            $textarea.redactor({
+                'focus': true,
+                minHeight: '150px',
+                imageData: {
+                    task_uuid: this.task_uuid
+                },
+                callbacks: {
+                    changed: saveDraft
+                }
+            });
+        }
+
+        function saveDraft () {
+            localStorage.setItem(lsItem, $textarea.val());
+        }
+
+        function removeLs () {
+            localStorage.removeItem(lsItem);
+        }
+
+        return removeLs
 
     };
 
@@ -1098,18 +1101,6 @@ var Task = ( function($) {
         var onAllDone = typeof callbacks.onAllDone === 'function' ? callbacks.onAllDone : null;
 
         var bindEvents = function() {
-
-            if ($.tasks.options.text_editor === 'wysiwyg') {
-                const taElement = $commentForm.find('.t-redactor-comments');
-                if (taElement.length) {
-                    taElement.redactor({
-                        minHeight: '150px',
-                        imageData: {
-                            task_uuid: that.task_uuid
-                        }
-                    });
-                }
-            }
 
             $commentForm.on("submit", function() {
                 var $submitButton = $(this).find('[type="submit"]');
@@ -1167,6 +1158,8 @@ var Task = ( function($) {
             return true;
         };
 
+        var removeSavedComment = that.makeTextareaSaveable($commentForm.find('.t-redactor-comments'), 'comment');
+
         var addComment = function() {
             var submit_href = $commentForm.attr("action"),
                 submit_data = $commentForm.serializeArray(),
@@ -1190,6 +1183,9 @@ var Task = ( function($) {
                                     alert("[`Error Comment ID`]");
                                     return;
                                 }
+                                
+                                removeSavedComment();
+
                                 onAllDone && onAllDone();
                             }
                         })
