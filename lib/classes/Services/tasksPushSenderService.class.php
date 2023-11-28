@@ -52,12 +52,15 @@ final class tasksPushSenderService
             return;
         }
 
+        $log_has_text = !!strlen(trim(ifset($logItem, 'text', '')));
+
         $dto = new tasksPushDataDto(
             $this->getTitle($type, $task),
             $this->getMessage($type, $task, $toContact, $logItem),
             null,
             [
                 'task_id' => $task['id'],
+                'comment_id' => $log_has_text ? $logItem['id'] : null,
                 'type' => $type,
                 'webasyst_installation_id' => $this->waInstallationId,
                 'group_name' => sprintf(_w('%d.%d %s'), $task['project_id'] , $task['number'], $task['name']),
