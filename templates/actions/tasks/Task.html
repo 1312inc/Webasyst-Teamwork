@@ -738,7 +738,7 @@
                         <li>
                             <a class="userpic userpic-48" href="#/tasks/assigned/{$c.id|escape}/" style="background-image: url('{$c.photo_url}');" title="{$c.name|escape}{if $c.calendar_status} - {$c.calendar_status->getName()|escape}{/if}">
                                 {if $c.calendar_status}
-                                    <span class="userstatus" style="background-color: {$c.calendar_status->getBgColor()};color: {$c.calendar_status->getFontColor()};" title="{$c.calendar_status->getName()|escape}"><i class="fas fa-umbrella-beach"></i></span>
+                                    <span class="userstatus" style="background-color: {$c.calendar_status->getBgColor()};color: {$c.calendar_status->getFontColor()};" title="{$c.calendar_status->getName()|escape}"><i class="{$c.calendar_status->getIcon()|escape}"></i></span>
                                 {/if}
                             </a>
                         </li>
