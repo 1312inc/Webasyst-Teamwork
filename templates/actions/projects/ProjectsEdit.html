@@ -1,3 +1,5 @@
+<style>.errormsg { color: red; }</style>
+
 <div class="flexbox">
 
     {$sidebar_html|default:''}
@@ -70,21 +72,12 @@
                                     [`Logo`]
                                 </div>
                                 <div class="value">
+                                    {* Legacy: there used to be a selection of predetermined icons *}
+                                    <input type="hidden" name="project[icon]" value="tasks">
 
-                                    {*
-                                        LEGACY
-                                        <ul class="chips" id="project-icon-selector">
-                                            {foreach $icons as $icon}
-                                                <li class="t-project-icon{if ($project.icon_class == $icon)} selected{/if}">
-                                                    <a href="javascript:void(0)">
-                                                        <i class="fas fa-{$icon}"></i>
-                                                    </a>
-                                            </li>
-                                            {/foreach}
-                                        </ul>
-                                    *}
+                                    <input type="file" name="icon_file" class="long">
 
-                                    <input type="hidden" name="project[icon]" value="tasks{* $project.icon *}">
+                                    <p class="hint">[`or specify a URL`]</p>
 
                                     <input id="t-icon-url" type="text" value="{$project.icon_url|escape}" name="icon_url" class="long" placeholder="https://" />
                                     <p class="hint">[`Image URL to be used as a tiny project icon all around.`]</p>
@@ -219,14 +212,21 @@
             e.preventDefault();
             $form.showLoading();
             $('#content .t-saved').slideUp();
-            
+
             $submitButton.attr('disabled', true);
             $submitButton.find('.fa-spinner').fadeIn();
-            
-            $.post($form.attr('action'), $form.serialize(), function (html) {
-                setTimeout(() => {
-                    $("#content").html(html);
-                }, 1000);
+
+            $.ajax({
+                url: $form.attr('action'),
+                type: 'post',
+                data: new FormData($form[0]),
+                processData: false,
+                contentType: false,
+                success: function (html) {
+                    setTimeout(() => {
+                        $("#content").html(html);
+                    }, 1000);
+                }
             });
         });
 

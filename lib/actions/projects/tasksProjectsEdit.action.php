@@ -57,6 +57,33 @@ class tasksProjectsEditAction extends waViewAction
                 }
             }
 
+            $file = waRequest::file('icon_file');
+            if (!$errors && $file->uploaded()) {
+                try {
+                    $file->transliterateFilename();
+                    $data_file_path = 'projects/img/'.$file->name;
+
+                    $image = $file->waImage();
+                    $image->resize(192, 192, waImage::INVERSE)->crop(192, 192);
+                    $file_path = wa()->getDataPath($data_file_path, true, 'tasks');
+
+                    $i = '';
+                    $ext = $file->extension;
+                    $ext_quote = preg_quote($ext);
+                    while (file_exists($file_path)) {
+                        $data_file_path = preg_replace('~'.$i.'\.'.$ext_quote.'$~i', '', $data_file_path);
+                        $i = (int) $i + 1;;
+                        $data_file_path .= $i.'.'.$ext;
+                        $file_path = wa()->getDataPath($data_file_path, true, 'tasks');
+                    }
+                    if ($image->save($file_path)) {
+                        $data['icon'] = wa()->getDataUrl($data_file_path, true, 'tasks', true);
+                    }
+                } catch (waException $e) {
+                    $errors['icon_file'] = _w('Unable to process image file');
+                }
+            }
+
             if (!$errors) {
                 $saved = true;
                 if ($project['id']) {
