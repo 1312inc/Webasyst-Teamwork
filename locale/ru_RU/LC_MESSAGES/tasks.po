@@ -1558,3 +1558,6 @@ msgstr "Тестовая задача. Нажмите «Взять в работ
 
 msgid "To attach a Pocket Lists checklist, save the task first."
 msgstr "Чтобы добавить чек-лист Pocket Lists, сначала сохраните задачу."
+
+msgid "Tags and links"
+msgstr "Теги и ссылки"

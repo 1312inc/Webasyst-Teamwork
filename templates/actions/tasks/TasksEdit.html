@@ -240,8 +240,15 @@
                             <div class="t-chip">
                                 <a class="t-form-line-autocomplete-chip">
                                     <i class="fas fa-paperclip"></i>
-                                    [`Files`]
+                                    [`Attach files`]
                                     <input type="file" name="files[]" multiple="true" />
+                                </a>
+                            </div>
+
+                            <div class="t-chip">
+                                <a class="t-form-line-autocomplete-chip" data-type="hashtag">
+                                    <i class="fas fa-hashtag"></i>
+                                    [`Tags and links`]
                                 </a>
                             </div>
 
@@ -251,14 +258,7 @@
                                     [`Watchers`]
                                 </a>
                             </div>
-
-                            <div class="t-chip">
-                                <a class="t-form-line-autocomplete-chip" data-type="hashtag">
-                                    <i class="fas fa-hashtag"></i>
-                                    [`Tags`]
-                                </a>
-                            </div>
-
+                            
                             {if $wa->pocketlists}
                             <div class="t-chip">
                                 <a class="t-form-line-checklist-chip">
