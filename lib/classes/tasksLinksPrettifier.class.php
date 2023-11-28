@@ -84,8 +84,10 @@ class tasksLinksPrettifier
             return false;
         }
 
-        if (!empty($link['entity_url']) && substr($link['entity_url'], 0, 4) !== 'http') {
-            $link['entity_url'] = wa()->getConfig()->getHostUrl().$link['entity_url'];
+        if (!empty($this->options['absolute_urls'])) {
+            if (!empty($link['entity_url']) && substr($link['entity_url'], 0, 4) !== 'http') {
+                $link['entity_url'] = wa()->getConfig()->getHostUrl().$link['entity_url'];
+            }
         }
 
         $link['markdown_code'] = "[{$link['entity_title']}]({$link['entity_url']})";
