@@ -1318,6 +1318,40 @@ class tasksParsedown
         }
     }
 
+    protected function iframeFromVideoUrl($href)
+    {
+        if (!preg_match('!^(?:https?://)?(?:www.)?(youtube\.com|youtu\.be/video)/(?:watch\?v=|shorts/)?([a-z0-9\-_]+)!i', $href, $m)) {
+            return null;
+        }
+        $site = strtolower($m[1]);
+        $id = $m[2];
+        if ($site == 'youtube.com') {
+            $site = 'youtu.be';
+        }
+        $id = $m[2];
+
+        $url = 'http://'.$site.'/'.$id;
+        $iframe_src = '//www.youtube.com/embed/'.$id;
+        if ($site == 'youtu.be' && preg_match('/(\?|&)t=(\d+)/i', $url, $match)) {
+            $url .= '?t='.$match[2];
+            $iframe_src .= '?start='.$match[2];
+        }
+
+        return array(
+            'name' => 'iframe',
+            'text' => $href,
+            'attributes' => array(
+                'src' => $iframe_src,
+                'width' => 560,
+                'height' => 315,
+                'frameborder' => 0,
+                'webkitallowfullscreen' => true,
+                'mozallowfullscreen' => true,
+                'allowfullscreen' => true,
+            ),
+        );
+    }
+
     protected function inlineUrl($Excerpt)
     {
         if ($this->urlsLinked !== true or ! isset($Excerpt['text'][2]) or $Excerpt['text'][2] !== '/')
@@ -1327,16 +1361,22 @@ class tasksParsedown
 
         if (preg_match('/\bhttps?:[\/]{2}[^\s<]+\b\/*/ui', $Excerpt['context'], $matches, PREG_OFFSET_CAPTURE))
         {
-            $Inline = array(
-                'extent' => strlen($matches[0][0]),
-                'position' => $matches[0][1],
-                'element' => array(
+            $href = $matches[0][0];
+            $element = $this->iframeFromVideoUrl($href);
+            if (!$element) {
+                $element = array(
                     'name' => 'a',
-                    'text' => $matches[0][0],
+                    'text' => $href,
                     'attributes' => array(
-                        'href' => $matches[0][0],
+                        'href' => $href,
                     ),
-                ),
+                );
+            }
+
+            $Inline = array(
+                'extent' => strlen($href),
+                'position' => $matches[0][1],
+                'element' => $element,
             );
 
             return $Inline;
@@ -1391,12 +1431,13 @@ class tasksParsedown
         {
             foreach ($Element['attributes'] as $name => $value)
             {
-                if ($value === null)
-                {
+                if ($value === null) {
                     continue;
+                } else if ($value === true) {
+                    $markup .= ' '.$name;
+                } else {
+                    $markup .= ' '.$name.'="'.$value.'"';
                 }
-
-                $markup .= ' '.$name.'="'.$value.'"';
             }
         }
 
