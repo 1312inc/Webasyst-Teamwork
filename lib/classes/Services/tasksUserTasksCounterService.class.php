@@ -168,7 +168,7 @@ assigned_contact_id = i:1',
 
         if ($count == $total) {
             return sprintf(
-                '<span class="badge" style="background:%s;color:%s">%s</span>',
+                '<span class="badge" style="background:%s;color:%s"><span style="display:none;">(</span>%s<span style="display:none;">)</span></span> ',
                 ifempty($bgColor, 'transparent'),
                 ifempty($textColor, '#999'),
                 $count
@@ -176,7 +176,7 @@ assigned_contact_id = i:1',
         }
 
         return sprintf(
-            '<span class="badge custom-mr-4" style="background:%s;color:%s">%s</span>%s',
+            '<span class="badge" style="background:%s;color:%s"><span style="display:none;">(</span>%s<span style="display:none;">)</span></span> %s',
             ifempty($bgColor, 'transparent'),
             ifempty($textColor, '#999'),
             $count,

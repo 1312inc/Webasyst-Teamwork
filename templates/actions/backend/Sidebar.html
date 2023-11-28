@@ -81,9 +81,9 @@
         </li>
         <li>
             <a href="#/tasks/urgent/">
-                <span class="count">{tasksUserTasksCounterService::getPairs($urgent_count, $super_urgent_count, '#ff0000', 'white')}</span>
                 <i class="fas fa-exclamation-triangle{if $urgent_count} text-red{/if}"></i>
                 <span>[`Urgent`]</span>
+                <span class="count">{tasksUserTasksCounterService::getPairs($urgent_count, $super_urgent_count, '#ff0000', 'white')}</span>
             </a>
         </li>
         <li class="inbox-hidden gray"{if !$hidden_count} style="display: none"{/if}>
