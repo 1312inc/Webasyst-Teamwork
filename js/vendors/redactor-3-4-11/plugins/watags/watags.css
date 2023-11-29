@@ -42,6 +42,7 @@
 
 .redactor-entity {
     display: inline;
+    white-space: nowrap;
     border-radius: .25rem;
     padding: .12rem .5rem;
 }

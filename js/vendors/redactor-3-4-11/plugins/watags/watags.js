@@ -162,7 +162,7 @@
             }
 
             var re = new RegExp("^" + this.tagsHandleTrigger);
-            var full_match = this.handleStr = this.selection.getTextBeforeCaret(20).split(/\s+/).pop();
+            var full_match = this.handleStr = this.selection.getTextBeforeCaret(20).replace(/(#|@)\uFEFF+/gm, "$1").split(/\s+/).pop();
             var range = document.getSelection().getRangeAt(0);
 
             // detect
