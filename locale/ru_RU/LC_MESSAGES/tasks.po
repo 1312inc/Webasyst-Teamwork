@@ -1561,3 +1561,9 @@ msgstr "Чтобы добавить чек-лист Pocket Lists, сначала
 
 msgid "Tags and links"
 msgstr "Теги и ссылки"
+
+msgid "Delete logo"
+msgstr "Удалить логотип"
+
+msgid "Save project to commit logo deletion."
+msgstr "Сохраните проект для подтверждения удаления логотипа."

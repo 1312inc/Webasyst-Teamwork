@@ -76,10 +76,12 @@
 
                                     <input type="file" name="icon_file" class="long">
 
-                                    {if 1}
-                                        <p class="hint">[`or specify a URL`]</p>
+                                    {if $project.icon_url}
+                                        <p><img src="{$project.icon_url|escape}" /></p>
                                         <input type="hidden" name="project[icon]" value="tasks">
-                                        <input id="t-icon-url" type="text" value="{$project.icon_url|escape}" name="icon_url" class="long" placeholder="https://" />
+                                        <input id="t-icon-url" type="hidden" value="{$project.icon_url|escape}" name="icon_url" />
+                                        <a href="###" class="small">[`Delete logo`]</a>
+                                        <p class="small italic hidden">[`Save project to commit logo deletion.`]</p>
                                     {/if}
                                     <p class="hint">[`Image URL to be used as a tiny project icon all around.`]</p>
 
