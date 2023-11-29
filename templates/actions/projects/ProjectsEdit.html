@@ -77,11 +77,11 @@
                                     <input type="file" name="icon_file" class="long">
 
                                     {if $project.icon_url}
-                                        <p><img src="{$project.icon_url|escape}" /></p>
+                                        <p><img class="t-project-img-logo" src="{$project.icon_url|escape}" /></p>
                                         <input type="hidden" name="project[icon]" value="tasks">
                                         <input id="t-icon-url" type="hidden" value="{$project.icon_url|escape}" name="icon_url" />
-                                        <a href="###" class="small">[`Delete logo`]</a>
-                                        <p class="small italic hidden">[`Save project to commit logo deletion.`]</p>
+                                        <a class="t-project-delete-logo small">[`Delete logo`]</a>
+                                        <p class="t-project-delete-logo-msg small italic hidden">[`Save project to commit logo deletion.`]</p>
                                     {/if}
                                     <p class="hint">[`Image URL to be used as a tiny project icon all around.`]</p>
 
@@ -231,6 +231,15 @@
                     }, 1000);
                 }
             });
+        });
+
+        // Deletion Logo
+        $('.t-project-delete-logo').on('click', function (event) {
+            event.preventDefault();
+            $('#t-icon-url').remove();
+            $('.t-project-img-logo').addClass('opacity-20');
+            $('.t-project-delete-logo-msg').removeClass('hidden');
+            $(this).hide();
         });
 
         // Deletion link
