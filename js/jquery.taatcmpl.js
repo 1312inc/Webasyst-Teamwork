@@ -75,6 +75,7 @@
         // This hack makes autocomplete widget not set the width property of <ul>
         $textarea.data("uiAutocomplete")._resizeMenu = function () {
             this.menu.element[0].style.width = 'auto';
+            this.menu.element[0].style['z-index'] = 999999;
         };
 
         $textarea.data("uiAutocomplete")._renderItem = function (ul, item) {

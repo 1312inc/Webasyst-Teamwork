@@ -1072,6 +1072,13 @@ var Task = ( function($) {
                     changed: saveDraft
                 }
             });
+        } else {
+            $textarea.textareaAutocomplete({
+                urlEntity: '?module=tasks&action=entityAutocomplete',
+                urlMention: '?module=tasks&action=mentionAutocomplete',
+                autoFocus: false,
+                delay: 300
+            });
         }
 
         function saveDraft () {
