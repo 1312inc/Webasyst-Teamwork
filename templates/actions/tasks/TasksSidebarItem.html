@@ -124,9 +124,11 @@
                 {$task.name|escape|default:"(no name)"|truncate:42}
             </span>
             {* UNREAD MENTION *}
-            {if !empty($unread_mention) || $task.favorite_unread}
-                <span class="t-task-item-unread-mention"><span class="badge small red">@</span></span>
-            {/if}
+            <span class="t-task-item-subcount">
+                {if !empty($unread_mention) || $task.favorite_unread}
+                    <span class="t-task-item-unread-mention"><span class="badge small red">@</span></span>
+                {/if}
+            </span>
         </div>
 
         {* SUMMARY PREVIEW *}
