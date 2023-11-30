@@ -14,7 +14,6 @@
             this.caret = app.caret;
 
             this.tagRegExp = new RegExp("#[\\p{L}]+", "gu");
-            this.userRegExp = new RegExp("@[\\p{L}]+", "gu");
 
             this.taskLinks = window.taskLinks;
 
@@ -100,7 +99,6 @@
         // private
         _navigate: function (e) {
             var key = e.which;
-            var arrows = [38, 40]; // up and down
 
             if (key === this.keycodes.SPACE || key === this.keycodes.BACKSPACE) {
                 if (this.ajax) {
@@ -108,19 +106,36 @@
                 }
             }
 
+            if (key === this.keycodes.SPACE) {
+                var $current = this.selection.getCurrent();
+                if ($current.parentElement.className !== 'redactor-entity') {
+                    var currentText = $current.textContent;
+                    if (this.tagRegExp.test(currentText)) {
+                        $current.textContent = '';
+                        insertionTag = currentText.replace(this.tagRegExp, function (match) {
+                            return `<a class="redactor-entity redactor-entity--tag redactor-entity--raw" contenteditable="false">${match}</a>`;
+                        });
+                        this.insertion.insertHtml((/\S/.test(this.selection.getTextBeforeCaret()) ? ' ' : '') + insertionTag + (/\S/.test(this.selection.getTextAfterCaret()) ? ' ' : ''));
+                        return;
+                    }
+                }
+            }
+
             if (
-                (arrows.indexOf(key) !== -1 || key === this.keycodes.ENTER) &&
+                ([38, 40].indexOf(key) !== -1 || key === this.keycodes.ENTER) &&
                 this._isShown()
             ) {
                 e.preventDefault();
 
+                var children = this.$list.children('[data-type]');
+
                 if (key === this.keycodes.ENTER && this.activeIndex >= 0) {
-                    this._replace(this.$list.children().get(this.activeIndex));
+                    this._replace(children.get(this.activeIndex));
                     return;
                 }
 
                 if (key === 40) {
-                    if (this.activeIndex < this.$list.children().length - 1) {
+                    if (this.activeIndex < children.length - 1) {
                         this.activeIndex++;
                     } else {
                         this.activeIndex = -1;
@@ -131,15 +146,15 @@
                     if (this.activeIndex > -1) {
                         this.activeIndex--;
                     } else {
-                        this.activeIndex = this.$list.children().length - 1;
+                        this.activeIndex = children.length - 1;
                     }
                 }
 
-                this.$list.children().each(function (node) {
+                children.each(function (node) {
                     $R.dom(node).removeClass("active");
                 });
 
-                this.$list.children().eq(this.activeIndex).addClass("active");
+                children.eq(this.activeIndex).addClass("active");
             }
         },
 
@@ -150,10 +165,9 @@
                 e.key === "Control" ||
                 e.key === "Meta" ||
                 e.key === "Alt";
-            var arrows = [38, 40];
 
             if (
-                arrows.includes(key) ||
+                [38, 40].includes(key) ||
                 key === this.keycodes.DELETE ||
                 key === this.keycodes.ESC ||
                 ctrl
@@ -168,8 +182,8 @@
             // detect
             if (
                 re.test(this.handleStr) &&
-                !this.selection.getTextAfterCaret().trim() &&
-                ((range.endOffset !== 0 && range.endContainer.nodeName === '#text') || (range.endOffset === 1 && range.endContainer.nodeName === 'P'))
+                !(/\S/.test(this.selection.getTextAfterCaret())) &&
+                (range.endOffset !== 0 && range.endContainer.nodeName === '#text')
             ) {
                 this.handleStr = this.handleStr.replace(re, "");
                 this.lastTrigger = full_match.substr(0, full_match.length - this.handleStr.length);
@@ -235,6 +249,12 @@
             var that = this;
 
             this.$list.html("");
+
+            if (!this.handleStr) {
+                if ($.wa?.locale) {
+                    this.$list.append(`<div class="hint custom-m-8">${$.wa.locale.wisiwygAutocompleteStartMessage}</div>`);
+                }
+            }
 
             for (var term of this.data) {
                 var img = term.entity_type === 'tag' ? "#" : term.entity_image
