@@ -112,6 +112,7 @@ class tasksLinksPrettifier
             'entity_type' => 'user',
             'entity_image' => waContact::getPhotoUrl($user['id'], $user['photo'], null, null, ($user['is_company'] ? 'company' : 'person')),
             'entity_title' => $name,
+            'entity_link_name' => '@'.$login,
             'entity_url' => wa()->getAppUrl('team')."u/{$login}/",
             'user_login' => $login,
         ];
@@ -140,6 +141,7 @@ class tasksLinksPrettifier
             'entity_type' => 'task',
             'entity_image' => null,
             'entity_title' => "{$project_id}.{$task_number} {$task['name']}",
+            'entity_link_name' => "#{$project_id}.{$task_number}",
             'entity_url' => wa()->getAppUrl('tasks')."#/task/{$project_id}.{$task_number}/",
         ];
     }
@@ -261,6 +263,9 @@ class tasksLinksPrettifier
 
             if (!isset($link['markdown_code'])) {
                 $link['markdown_code'] = $code;
+            }
+            if (!isset($link['entity_link_name'])) {
+                $link['entity_link_name'] = $link['entity_title'];
             }
 
             if (!empty($this->options['absolute_urls'])) {
