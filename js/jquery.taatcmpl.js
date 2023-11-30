@@ -5,6 +5,9 @@
      * Implements a tags autocompletion widget floating over textarea.
      */
     $.fn.textareaAutocomplete = function (options) {
+
+        $('head').append(`<style>.show-ac-message:before{content:"${$.wa?.locale?.wisiwygAutocompleteStartMessage ?? ''}";display:block;position:absolute;top:-16px;left:16px;color:var(--text-color-hint);font-size:10px;white-space:nowrap;}</style>`);
+
         var last_close_content = '';
         var $textarea = this;
         var timeout = null;
@@ -61,6 +64,10 @@
                 });
 
                 var term = tag.substr(1);
+
+                var $menu = $($textarea).autocomplete("widget");
+                $menu[!term.length ? 'addClass' : 'removeClass']('show-ac-message');
+
                 timeout && clearTimeout(timeout);
 
                 // No cached data, make an XHR after a dalay

@@ -1567,3 +1567,6 @@ msgstr "Удалить логотип"
 
 msgid "Save project to commit logo deletion."
 msgstr "Сохраните проект для подтверждения удаления логотипа."
+
+msgid "Hashtag, task number, order ID, etc."
+msgstr "Тег, номер задачи или заказа, контакт..."

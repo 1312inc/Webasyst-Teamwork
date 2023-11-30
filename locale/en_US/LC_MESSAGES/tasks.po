@@ -1432,3 +1432,6 @@ msgstr ""
 
 msgid "To attach a Pocket Lists checklist, save the task first."
 msgstr ""
+
+msgid "Hashtag, task number, order ID, etc."
+msgstr ""
