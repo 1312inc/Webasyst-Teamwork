@@ -172,9 +172,7 @@
 
                         {$is_public_link_exists = !!count($task.public_links)}
                         <div class="dropdown" id="publicLinkDropdown">
-                            <button class="dropdown-toggle without-arrow nowrap button nobutton circle {if !$is_public_link_exists}text-light-gray{/if}">
-                                <i class="fas fa-external-link-alt"></i>
-                            </button>
+                            <button class="dropdown-toggle without-arrow nowrap button light-gray rounded {if !$is_public_link_exists}text-light-gray{else}text-blue{/if}"><i class="fas fa-external-link-alt"></i></button>
                             <div class="dropdown-body right custom-p-8" style="width: auto;min-width: 300px;">
                                 <div class="t-public-link-block {if $is_public_link_exists}hidden{/if}">
                                     <p class="hint align-center custom-mb-0">
