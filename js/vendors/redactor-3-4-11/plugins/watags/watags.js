@@ -73,14 +73,10 @@
             var content = html;
             for (var k in this.taskLinks) {
                 var link = this.taskLinks[k];
-
                 var isSpan = ['tag', 'user', 'task'].includes(link.entity_type);
                 var $icon = link.entity_type === 'tag' ? '#' : `<i class="icon size-16 userpic custom-mr-4" data-redactor-style-cache="background-image: url(${link.entity_image})" style="background-image: url(${link.entity_image});${!['user', 'contact'].includes(link.entity_type) ? 'border-radius:0;' : ''}"></i>`;
-                var title = link.entity_type === 'task' ? '#'+link.entity_title.split(' ')[0] : link.entity_title;
-
-                var replacement = `<a href="${link.entity_url}" class="redactor-entity redactor-entity--${link.entity_type === 'tag' ? 'tag' : 'link'} ${isSpan ? 'redactor-entity--raw' : ''}" contenteditable=\"false\" target="_blank">${$icon}${title}</a>`;
-
-                var target = `<a href="${link.entity_url}">${link.entity_title}</a>`;
+                var replacement = `<a href="${link.entity_url}" class="redactor-entity redactor-entity--${link.entity_type === 'tag' ? 'tag' : 'link'} ${isSpan ? 'redactor-entity--raw' : ''}" contenteditable=\"false\" target="_blank">${$icon}${link.entity_link_name}</a>\uFEFF`;
+                var target = `<a href="${link.entity_url}">${link.entity_link_name}</a>`;
                 var re = new RegExp([target, k].join("|"),"gi");
                 content = content.replaceAll(re, replacement);
             }
@@ -266,6 +262,7 @@
                 $item.attr("data-type", term.entity_type);
                 $item.attr("data-url", term.entity_url);
                 $item.attr("data-image", term.entity_image);
+                $item.attr("data-link_name", term.entity_link_name);
                 $item.on("mousedown", function (e) {
                     e.preventDefault();
                     that._replace(e.target);
@@ -327,7 +324,7 @@
         _replace: function (e) {
 
             var itemData = {
-                title: e.dataset.title,
+                link_name: e.dataset.link_name,
                 type: e.dataset.type,
                 url: e.dataset.url,
                 image: e.dataset.image
@@ -344,8 +341,7 @@
             $container.addClass(isSpan ? 'redactor-entity--raw' : '');
             $container.attr('contenteditable', false);
             var $icon = itemData.type === 'tag' ? '#' : `<i class="icon size-16 userpic custom-mr-4" data-redactor-style-cache="background-image: url(${itemData.image})" style="background-image: url(${itemData.image});${!['user', 'contact'].includes(itemData.type) ? 'border-radius:0;' : ''}"></i>`;
-            var title = itemData.type === 'task' ? '#'+itemData.title.split(' ')[0] : itemData.title;
-            $container.html($icon + title);
+            $container.html($icon + itemData.link_name);
 
             $marker.before($container);
             $marker.before(' ');

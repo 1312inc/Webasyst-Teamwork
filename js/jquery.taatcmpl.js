@@ -21,15 +21,7 @@
             },
             select: function (event, ui) {
                 // Replace tag at cursor with the one user just selected in dropdown
-                var replacement = ui.item.entity_title;
-                if (['tag', 'task'].includes(ui.item.entity_type)) {
-                    replacement = '#' + replacement.split(' ')[0];
-                } else if (ui.item.entity_type === 'user') {
-                    
-                } else {
-                    replacement = `[${replacement}](${ui.item.entity_url})`;
-                }
-
+                var replacement = ui.item.markdown_code;
                 var content = $textarea.val();
                 var cursor_position = $textarea[0].selectionEnd;
                 var before_cursor = content.substring(0, cursor_position).replace(/(#|@)(\S*)$/, replacement + ' ');
