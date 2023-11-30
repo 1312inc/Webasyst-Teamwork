@@ -311,7 +311,15 @@
                 // Hide progress bar
                 waLoading.hide();
 
+                var countUnread = +($('.count-unread').text());
+                if (countUnread > 1) {
+                    $('.count-unread').text(countUnread - 1);
+                } else {
+                    $('.count-unread').parent().remove();
+                }
+                
                 $link.addClass('selected').siblings('.selected').removeClass('selected');
+                $link.find('.t-task-item-unread-mention').remove();
                 $link.parent().siblings('ul').find('.selected').removeClass('selected');
 
                 $taskWrapper.html(html);
