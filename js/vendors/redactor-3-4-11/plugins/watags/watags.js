@@ -156,24 +156,18 @@
 
         _handle: function (e) {
             var key = e.which;
-            var ctrl =
-                e.key === "Shift" ||
-                e.key === "Control" ||
-                e.key === "Meta" ||
-                e.key === "Alt";
 
             if (
                 [38, 40].includes(key) ||
                 key === this.keycodes.DELETE ||
-                key === this.keycodes.ESC ||
-                ctrl
+                key === this.keycodes.ESC
             ) {
                 return;
             }
 
             var re = new RegExp("^" + this.tagsHandleTrigger);
             var full_match = this.handleStr = this.selection.getTextBeforeCaret(20).replace(/(#|@)\uFEFF+/gm, "$1").split(/\s+/).pop();
-            var range = document.getSelection().getRangeAt(0);
+            var range = this.selection.getRange();
 
             // detect
             if (
