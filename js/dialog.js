@@ -87,6 +87,7 @@ var Dialog = ( function($) { "use strict";
     };
 
     Dialog.prototype.initialize = function() {
+        window.scrollTo(0, 0);
         var that = this;
         that.showDialog();
     };
