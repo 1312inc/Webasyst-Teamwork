@@ -240,7 +240,7 @@
 
             this.$list.html("");
 
-            if (!this.handleStr) {
+            if (!this.handleStr && that.lastTrigger === '#') {
                 if ($.wa?.locale) {
                     this.$list.append(`<div class="hint custom-m-8">${$.wa.locale.wisiwygAutocompleteStartMessage}</div>`);
                 }

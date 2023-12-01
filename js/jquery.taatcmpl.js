@@ -58,7 +58,7 @@
                 var term = tag.substr(1);
 
                 var $menu = $($textarea).autocomplete("widget");
-                $menu[!term.length ? 'addClass' : 'removeClass']('show-ac-message');
+                $menu[(!term.length && lastTrigger === '#') ? 'addClass' : 'removeClass']('show-ac-message');
 
                 timeout && clearTimeout(timeout);
 
