@@ -7,9 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <meta name="robots" content="noindex" />
     <title>{$task['name']|escape} — {$wa->accountName()}</title>
-    <script src="{$wa_url}wa-content/js/jquery-wa/wa.switch-mode.js?v={$wa->version()}"></script>
+    <script src="{$wa_url}wa-content/js/jquery-wa/wa.switch-mode.js?v{$wa->version(true)}"></script>
     <script defer src="{$wa_url}wa-content/js/fontawesome/fontawesome-all.min.js?v=513"></script>
-    <link href="{$wa_url}wa-content/css/wa/wa-2.0.css?v={$wa->version()}" rel="stylesheet" type="text/css">
+    <link href="{$wa_url}wa-content/css/wa/wa-2.0.css?v{$wa->version(true)}" rel="stylesheet" type="text/css">
     <link href="{$wa_app_static_url}css/tasks.min.css?v={$wa->version()}" rel="stylesheet" type="text/css" />
     <style>
         .container {
