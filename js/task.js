@@ -1055,11 +1055,14 @@ var Task = ( function($) {
     };
 
     Task.prototype.makeTextareaSaveable = function ($textarea, action) {
-        
-        const lsItem = `tasks/textarea/${action}/${this.task_id}`;
 
-        $textarea.val(localStorage.getItem(lsItem));
-        $textarea.on('input', saveDraft);
+        const lsItem = `tasks/textarea/${action}/${this.task_id}`;
+        const disableSaveable = $textarea[0].hasAttribute('data-disable-saveable');
+
+        if (!disableSaveable) {
+            $textarea.val(localStorage.getItem(lsItem));
+            $textarea.on('input', saveDraft);
+        }
 
         if ($.tasks.options.text_editor === 'wysiwyg' && window.$R) {
             $textarea.redactor({
@@ -1069,7 +1072,9 @@ var Task = ( function($) {
                     task_uuid: this.task_uuid
                 },
                 callbacks: {
-                    changed: saveDraft
+                    changed: () => {
+                        !disableSaveable && saveDraft();
+                    }
                 }
             });
         } else {
@@ -1086,10 +1091,12 @@ var Task = ( function($) {
         }
 
         function removeLs () {
-            localStorage.removeItem(lsItem);
+            if (!disableSaveable) {
+                localStorage.removeItem(lsItem);
+            }
         }
 
-        return removeLs
+        return removeLs;
 
     };
 
