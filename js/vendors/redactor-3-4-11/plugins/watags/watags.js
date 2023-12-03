@@ -45,7 +45,7 @@
 
                     if (isStart) {
                         if (isEmpty) {
-                            this.caret.setStart($editor.find('p'));
+                            this.app.offset.set({ start: 0, end: 0 });
                         } else if (!isFocus) {
                             this.caret.setEnd($editor);
                         }
