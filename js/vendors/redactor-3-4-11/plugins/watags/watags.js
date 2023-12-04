@@ -13,19 +13,15 @@
             this.insertion = app.insertion;
             this.caret = app.caret;
 
-            this.tagRegExp = new RegExp("#[\\p{L}]+", "gu");
-
-            this.taskLinks = window.taskLinks;
-
             // local
+            this.tagRegExp = new RegExp("#[\\p{L}]+", "gu");
+            this.taskLinks = window.taskLinks;
             this.ajax = null;
             this.spinner = null;
-            this.tagsHandleTrigger = '(#|@)';
             this.handleStr = "";
             this.lastTrigger = "";
             this.activeIndex = -1;
             this.pasteMode = false;
-            
         },
         // public
         start: function () {
@@ -192,7 +188,7 @@
 
             this.pasteMode = false
 
-            var re = new RegExp("^" + this.tagsHandleTrigger);
+            var re = new RegExp("^(#|@)");
             var full_match = this.handleStr = this.selection.getTextBeforeCaret(20).replace(/(#|@)\uFEFF+/gm, "$1").split(/\s+/).pop();
             var range = this.selection.getRange();
 
@@ -373,6 +369,12 @@
             var textBefore = marker.previousSibling;
             textBefore.textContent = textBefore.textContent.substring(0, textBefore.textContent.lastIndexOf(this.lastTrigger));
 
+            // remove extra trigger char after paste
+            var sibling = previousSiblingWithTrigger(marker);
+            if (sibling) {
+                sibling.textContent = sibling.textContent.substring(0, sibling.textContent.length - 1);
+            }
+
             var isSpan = ['tag', 'user', 'task'].includes(itemData.type);
             var $container = $R.dom('<a href=' + itemData.url + ' target="_blank">');
             $container.addClass('redactor-entity redactor-entity--' + (itemData.type === 'tag' ? 'tag' : 'link'));
@@ -386,6 +388,19 @@
 
             this.caret.setAfter($marker);
             this.marker.remove();
+
+            function previousSiblingWithTrigger (el) {
+                var prev = el.previousSibling;
+                if (prev) {
+                    if (/(#|@)$/.test(prev.textContent)) {
+                        return prev;
+                    } else {
+                        return previousSiblingWithTrigger(prev);
+                    }
+                } else {
+                    return undefined;
+                }
+            }
         }
     });
 })(Redactor);
