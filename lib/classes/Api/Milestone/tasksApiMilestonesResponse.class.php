@@ -17,7 +17,11 @@ final class tasksApiMilestonesResponse implements tasksApiResponseInterface
         $counts = tasksApiCountsDtoFactory::createForMilestones();
 
         $accessedProjects = (new tasksRights())->getAvailableProjectForContact(wa()->getUser());
-        $projects_counts_allowed = array_fill_keys($accessedProjects[tasksRights::PROJECT_ACCESS_FULL], true);
+        if (is_array($accessedProjects)) {
+            $projects_counts_allowed = array_fill_keys($accessedProjects[tasksRights::PROJECT_ACCESS_FULL], true);
+        } else {
+            $projects_counts_allowed = array_fill_keys(array_keys($counts), true);
+        }
 
         $sort = 0;
         foreach ($milestones as $milestone) {
