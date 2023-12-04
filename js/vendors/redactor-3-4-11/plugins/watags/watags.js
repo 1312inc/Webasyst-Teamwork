@@ -18,7 +18,9 @@
             this.taskLinks = window.taskLinks;
 
             // local
+            this.data = [];
             this.ajax = null;
+            this.spinner = null;
             this.tagsHandleTrigger = '(#|@)';
             this.handleStr = "";
             this.lastTrigger = "";
@@ -190,6 +192,18 @@
         _load: function () {
             var that = this;
             var csrf = document.cookie.match(new RegExp("(?:^|; )_csrf=([^;]*)"));
+
+            this._build();
+            this._buildData(that.data);
+
+            // add Spinner
+            that.spinner = $R.dom('<div class="spinner custom-mx-8 custom-mt-8 custom-mb-4">');
+            if (that.$list && that.$list.length) {
+                if (!that.$list.children('.spinner').length) {
+                    that.$list.prepend(that.spinner);
+                }
+            }
+
             if (that.ajax) {
                 that.ajax.xhr.abort();
             }
@@ -203,10 +217,17 @@
                     that.ajax = $R.ajax.post({
                         url: url,
                         data: "term=" + that.handleStr + "&_csrf=" + csrf[1],
-                        success: that._parse.bind(that),
+                        success: function (data) {
+                            that._parse(data);
+                            that.spinner.remove();
+                        },
+                        error: function () {
+                            that.spinner.remove();
+                        }
                     });
                 }
             }, that.opts.tagsHandleDelay || 500);
+            
         },
         _parse: function (json) {
             if (json === "") return;
@@ -218,7 +239,6 @@
                 data = [];
             }
 
-            this._build();
             this._buildData(data.data);
         },
         _build: function () {
@@ -238,15 +258,15 @@
         _update: function () {
             var that = this;
 
-            this.$list.html("");
+            that.$list.html("");
 
-            if (!this.handleStr && that.lastTrigger === '#') {
+            if (!that.handleStr && that.lastTrigger === '#') {
                 if ($.wa?.locale) {
-                    this.$list.append(`<div class="hint custom-m-8">${$.wa.locale.wisiwygAutocompleteStartMessage}</div>`);
+                    that.$list.append(`<div class="hint custom-m-8">${$.wa.locale.wisiwygAutocompleteStartMessage}</div>`);
                 }
             }
 
-            for (var term of this.data) {
+            for (var term of that.data) {
                 var img = term.entity_type === 'tag' ? "#" : term.entity_image
                     ? `<img src="${term.entity_image}" class="redactor-handle-list-img ${['user', 'contact'].includes(term.entity_type) ? 'redactor-handle-list-img--rounded' : ''}" />`
                     : '';
@@ -262,14 +282,14 @@
                     that._replace(e.target);
                 });
 
-                this.$list.append($item);
+                that.$list.append($item);
             }
 
             // position
-            var pos = this.selection.getPosition();
+            var pos = that.selection.getPosition();
 
-            this.$list.css({
-                top: pos.top + pos.height + this.$doc.scrollTop() + "px",
+            that.$list.css({
+                top: pos.top + pos.height + that.$doc.scrollTop() + "px",
                 left: pos.left + "px",
             });
         },
