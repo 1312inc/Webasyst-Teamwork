@@ -6,8 +6,10 @@
      */
     $.fn.textareaAutocomplete = function (options) {
 
-        $('head').append(`<style>.show-ac-message:before{content:"${$.wa?.locale?.wisiwygAutocompleteStartMessage ?? ''}";display:block;position:absolute;top:-16px;left:16px;color:var(--text-color-hint);font-size:10px;white-space:nowrap;}</style>`);
-
+        if (!$('#style-autocomplete').length) {
+            $('head').append(`<style id="style-autocomplete">.show-ac-message:before{content:"${$.wa?.locale?.wisiwygAutocompleteStartMessage ?? ''}";display:block;position:absolute;top:-16px;left:16px;color:var(--text-color-hint);font-size:10px;white-space:nowrap;}</style>`);
+        }
+    
         var last_close_content = '';
         var $textarea = this;
         var timeout = null;

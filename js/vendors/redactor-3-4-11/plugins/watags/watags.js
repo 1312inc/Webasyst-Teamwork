@@ -18,13 +18,14 @@
             this.taskLinks = window.taskLinks;
 
             // local
-            this.data = [];
             this.ajax = null;
             this.spinner = null;
             this.tagsHandleTrigger = '(#|@)';
             this.handleStr = "";
             this.lastTrigger = "";
             this.activeIndex = -1;
+            this.pasteMode = false;
+            
         },
         // public
         start: function () {
@@ -32,7 +33,19 @@
 
             var $editor = this.editor.getElement();
             $editor.on("keydown.redactor-plugin-handle", this._navigate.bind(this));
-            $editor.on("keyup.redactor-plugin-handle", this._handle.bind(this));
+            $editor.on("keyup.redactor-plugin-handle", (e) => {
+                if (this.showTimeout) {
+                    clearTimeout(this.showTimeout);
+                }
+                if (this._isShown()) {
+                    this._handle(e);
+                } else {
+                    this.showTimeout = setTimeout(() => {
+                        this.showTimeout = null;
+                        this._handle(e);
+                    }, 600);
+                }
+            });
 
             /**
              * Trigger Autocomplete Demo
@@ -98,6 +111,10 @@
         _navigate: function (e) {
             var key = e.which;
 
+            if ((e.ctrlKey || e.metaKey) && e.keyCode === 86) {
+                this.pasteMode = true;
+            }
+
             if (key === this.keycodes.SPACE || key === this.keycodes.BACKSPACE) {
                 if (this.ajax) {
                     this.ajax.xhr.abort();
@@ -158,14 +175,22 @@
 
         _handle: function (e) {
             var key = e.which;
-
+            var ctrl =
+                e.key === "Shift" ||
+                e.key === "Control" ||
+                e.key === "Meta" ||
+                e.key === "Alt";
+            
             if (
                 [38, 40].includes(key) ||
                 key === this.keycodes.DELETE ||
-                key === this.keycodes.ESC
+                key === this.keycodes.ESC ||
+                (ctrl && !this.pasteMode)
             ) {
                 return;
             }
+
+            this.pasteMode = false
 
             var re = new RegExp("^" + this.tagsHandleTrigger);
             var full_match = this.handleStr = this.selection.getTextBeforeCaret(20).replace(/(#|@)\uFEFF+/gm, "$1").split(/\s+/).pop();
@@ -194,10 +219,10 @@
             var csrf = document.cookie.match(new RegExp("(?:^|; )_csrf=([^;]*)"));
 
             this._build();
-            this._buildData(that.data);
+            this._buildData([]);
 
             // add Spinner
-            that.spinner = $R.dom('<div class="spinner custom-mx-8 custom-mt-8 custom-mb-4">');
+            that.spinner = $R.dom(`<div class="gray custom-m-8">${$.wa?.locale ? ($.wa.locale['Loading...'] ?? 'Loading...') : 'Loading...'}</div>`);
             if (that.$list && that.$list.length) {
                 if (!that.$list.children('.spinner').length) {
                     that.$list.prepend(that.spinner);
@@ -250,7 +275,6 @@
         },
         _buildData: function (data) {
             this.data = data;
-
             this.activeIndex = -1;
             this._update();
             this._show();
