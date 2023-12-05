@@ -66,7 +66,8 @@
 
                 // No cached data, make an XHR after a dalay
                 timeout = setTimeout(function () {
-                    $.post(lastTrigger === '@' ? options.urlMention : options.urlEntity, { term: term, extended: 1 }, function (r) {
+                    var taskId = typeof window.Tasks === 'object' ? Object.keys(window.Tasks)[0] : '';
+                    $.post(lastTrigger === '@' ? options.urlMention : options.urlEntity, { term: term, task_id: taskId, extended: 1 }, function (r) {
                         local_cache[term] = r.data || [];
                         response(local_cache[term]);
                     }, 'json');

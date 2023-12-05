@@ -235,9 +235,10 @@
                 that.timeout = null;
                 var url = that.lastTrigger === '#' ? that.opts.tagsHandle : that.opts.mentionsHandle;
                 if (url) {
+                    var taskId = typeof window.Tasks === 'object' ? Object.keys(window.Tasks)[0] : '';
                     that.ajax = $R.ajax.post({
                         url: url,
-                        data: "term=" + that.handleStr + "&_csrf=" + csrf[1],
+                        data: "task_id=" + taskId + "&term=" + that.handleStr + "&_csrf=" + csrf[1],
                         success: function (data) {
                             that._parse(data);
                             that.spinner.remove();
