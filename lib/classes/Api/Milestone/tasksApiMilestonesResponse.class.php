@@ -20,7 +20,7 @@ final class tasksApiMilestonesResponse implements tasksApiResponseInterface
         if (is_array($accessedProjects)) {
             $projects_counts_allowed = array_fill_keys($accessedProjects[tasksRights::PROJECT_ACCESS_FULL], true);
         } else {
-            $projects_counts_allowed = array_fill_keys(array_keys($counts), true);
+            $projects_counts_allowed = array_fill_keys(array_column($milestones, 'project_id'), true);
         }
 
         $sort = 0;
