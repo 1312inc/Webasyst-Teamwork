@@ -87,6 +87,13 @@ class tasksApiAutocompleteHandler
         $term = mb_strtolower($term);
         $users = (new tasksTeamGetter())->getTeam(new taskTeamGetterParamsDto(null, false));
 
+        $contacts_order = [];
+        if (!empty($this->options['context_task_id'])) {
+            // order contacts by how many records they have in task log
+            $task_log_model = new tasksTaskLogModel();
+            $contacts_order = $task_log_model->getLogCountsByContact([$this->options['context_task_id']]);
+        }
+
         foreach($users as $u) {
 
             if (strlen($term)) {
@@ -102,7 +109,13 @@ class tasksApiAutocompleteHandler
                 }
             }
 
-            $prettifier->addMention($u);
+            $contacts_order[$u['id']] = $u;
+        }
+
+        foreach($contacts_order as $u) {
+            if (is_array($u)) {
+                $prettifier->addMention($u);
+            }
         }
     }
 

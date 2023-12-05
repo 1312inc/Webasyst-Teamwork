@@ -11,6 +11,10 @@ class tasksTasksMentionAutocompleteController extends waJsonController
         $limit = waRequest::request('limit', self::DEFAULT_LIMIT, 'int');
         $limit = min($limit, 50);
         $term = waRequest::request('term', '', 'string');
-        $this->response = (new tasksApiAutocompleteHandler())->handle('@'.$term, $limit);
+        $context_task_id = waRequest::request('task_id', null, 'int');
+
+        $this->response = (new tasksApiAutocompleteHandler([
+            'context_task_id' => ifempty($context_task_id, null),
+        ]))->handle('@'.$term, $limit);
     }
 }

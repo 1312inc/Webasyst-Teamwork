@@ -1507,6 +1507,13 @@ paths:
             example: 10
             minimum: 1
             maximum: 50
+        - in: query
+          name: task_id
+          description: "В контексте какой задачи мы находимся; может влиять, например, на порядок выдачи пользователей в @-запросе"
+          required: false
+          schema:
+            type: integer
+            minimum: 1
       responses:
         200:
           content:
