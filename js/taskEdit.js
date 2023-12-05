@@ -958,18 +958,11 @@ var TaskEdit = ( function($) { "use strict";
 
         if (that.is_new) {
             if ($saved_task_title || $saved_task_text) {
-                if (confirm($.wa.locale["unsaved_task"]+' '+localStorage.getItem('draft_time')+' '+$.wa.locale["continue_editing"])) {
-                    if ($saved_task_title) {
-                        $task_title.val($saved_task_title);
-                    }
-                    if ($saved_task_text) {
-                        $task_text.val($saved_task_text);
-                    }
-                }else{
-                    // Clear localStorage Task draft
-                    localStorage.removeItem('task_title');
-                    localStorage.removeItem('task_text');
-                    localStorage.removeItem('draft_time');
+                if ($saved_task_title) {
+                    $task_title.val($saved_task_title);
+                }
+                if ($saved_task_text) {
+                    $task_text.val($saved_task_text);
                 }
             }
         }

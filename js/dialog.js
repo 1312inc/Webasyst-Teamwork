@@ -179,6 +179,10 @@ var Dialog = ( function($) { "use strict";
             });
         }, 0);
 
+        addEventListener("hashchange", function () {
+            that.$dialog.remove();
+            that.$body.removeClass(that.storage.showClass);
+        });
     };
 
     Dialog.prototype.hideDialog = function() {
