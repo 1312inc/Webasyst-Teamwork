@@ -22,7 +22,7 @@
         {/if}
     {/foreach}
     {foreach $_values as $_key => $_value}
-        data-{$_key}="{$_value}"
+        data-{$_key}="{$_value|escape}"
     {/foreach}
 {/function}
 
