@@ -46,6 +46,12 @@ class tasksOnesignalPushService extends onesignalPush
         $push_data = $requestData;
         $push_data['app_id'] = $this->tasksApiAppId;
         $push_data['include_player_ids'] = array_column($clientIds, 'client_id');
+
+        if (isset($push_data['data']['badge']['total'])) {
+            $push_data['ios_badgeType'] = 'SetTo';
+            $push_data['ios_badgeCount'] = $push_data['data']['badge']['total'];
+        }
+
         $response = $this->request('notifications', $push_data, waNet::METHOD_POST);
         tasksLogger::debug($response);
 
