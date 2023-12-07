@@ -89,9 +89,18 @@ class tasksApiAutocompleteHandler
 
         $contacts_order = [];
         if (!empty($this->options['context_task_id'])) {
-            // order contacts by how many records they have in task log
-            $task_log_model = new tasksTaskLogModel();
-            $contacts_order = $task_log_model->getLogCountsByContact([$this->options['context_task_id']]);
+            // task creator and current assigned user are at the top of the list
+            $task_model = new tasksTaskModel();
+            $task = $task_model->select('create_contact_id, assigned_contact_id')->where('id=?', [$this->options['context_task_id']])->fetchAssoc();
+            if ($task) {
+                $contacts_order[$task['assigned_contact_id']] = true;
+                $contacts_order[$task['create_contact_id']] = true;
+
+                // order other users by how many records they have in task log
+                $task_log_model = new tasksTaskLogModel();
+                $contacts_order += $task_log_model->getLogCountsByContact([$this->options['context_task_id']]);
+            }
+
         }
 
         foreach($users as $u) {
