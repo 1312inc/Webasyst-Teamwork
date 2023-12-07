@@ -289,10 +289,10 @@
 
             for (var term of that.data) {
                 var img = term.entity_type === 'tag' ? "#" : term.entity_image
-                    ? `<img src="${term.entity_image}" class="redactor-handle-list-img ${['user', 'contact'].includes(term.entity_type) ? 'redactor-handle-list-img--rounded' : ''}" />`
+                    ? `<img src="${term.entity_image}" class="custom-mr-4 redactor-handle-list-img ${['user', 'contact'].includes(term.entity_type) ? 'redactor-handle-list-img--rounded' : ''}" />`
                     : '';
                 var $item = $R.dom('<a>');
-                $item.html(img + term.entity_title);
+                $item.html(img + '<span>' + term.entity_title + '</span>');
                 $item.attr("data-title", term.entity_title);
                 $item.attr("data-type", term.entity_type);
                 $item.attr("data-url", term.entity_url);

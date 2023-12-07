@@ -15,10 +15,8 @@
 #redactor-handle-list a {
     display: flex;
     align-items: center;
-    gap: 4px;
     text-decoration: none;
     padding: 10px 8px;
-    white-space: nowrap;
     color: #000;
     border-bottom: 1px solid rgba(0, 0, 0, .05);
 }
@@ -26,6 +24,12 @@
 #redactor-handle-list a.active {
     color: #fff !important;
     background-color: #449aef !important;
+}
+
+#redactor-handle-list a span { 
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .redactor-handle-list-img {

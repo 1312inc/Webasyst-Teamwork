@@ -83,10 +83,10 @@
 
         $textarea.data("uiAutocomplete")._renderItem = function (ul, item) {
             var img = item.entity_type === 'tag' ? "#" : item.entity_image
-                ? `<span class="icon size-16 ${['user', 'contact'].includes(item.entity_type) ? 'userpic' : ''}" style="background-image: url('${item.entity_image}');"></span>`
+                ? `<span class="icon size-16 custom-mr-4 ${['user', 'contact'].includes(item.entity_type) ? 'userpic' : ''}" style="background-image: url('${item.entity_image}');"></span>`
                 : '';
             return $("<li>")
-                .append(`<div class="flexbox middle space-4">${img + item.entity_title}</div>`)
+                .append(`<div class="flexbox middle">${img}<span style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">${item.entity_title}</span></div>`)
                 .appendTo(ul);
         };
 
