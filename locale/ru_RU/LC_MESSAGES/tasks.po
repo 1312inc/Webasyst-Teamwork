@@ -1554,7 +1554,7 @@ msgid "Hello, World!"
 msgstr ""
 
 msgid "This is a demo task. Go ahead and click “Doing” or just close it. #webasyst #demo"
-msgstr "Это тестовая задача. Нажмите «Взять в работу» или «Закрыть». #webasyst #демо"
+msgstr "Это тестовая приветственная задача, чтобы показать, как все работает. Нажмите «Взять в работу» или «Закрыть». #webasyst #демо"
 
 msgid "To attach a Pocket Lists checklist, save the task first."
 msgstr "Чтобы добавить чек-лист Pocket Lists, сначала сохраните задачу."
