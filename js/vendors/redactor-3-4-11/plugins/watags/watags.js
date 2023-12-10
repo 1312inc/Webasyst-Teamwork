@@ -300,7 +300,7 @@
                 $item.attr("data-link_name", term.entity_link_name);
                 $item.on("mousedown", function (e) {
                     e.preventDefault();
-                    that._replace(e.target);
+                    that._replace($(this)[0]);
                 });
 
                 that.$list.append($item);
