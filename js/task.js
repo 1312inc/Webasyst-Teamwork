@@ -732,6 +732,7 @@ var Task = ( function($) {
         var onStatusSubmit = function($form, direction, successCallback) {
             var href = $form.attr("action"),
                 data = $form.serializeArray(),
+                $submitButton = $form.find('[type="submit"]'),
                 files_hash = that.getUpdatedFilesHash();
 
             if (!direction) {
@@ -744,6 +745,7 @@ var Task = ( function($) {
             });
 
             $form.showLoading();
+            $submitButton.addClass('disabled');
 
             filesController.uploadFiles(files_hash, {
                 onAllDone: function() {
@@ -774,10 +776,12 @@ var Task = ( function($) {
                         })
                         .always(function () {
                             $form.hideLoading();
+                            $submitButton.removeClass('disabled');
                         });
                 },
                 onAllAlways: function () {
                     $form.hideLoading();
+                    $submitButton.removeClass('disabled');
                 },
                 onError: function (errors, index) {
                     if (!arguments.length) {
