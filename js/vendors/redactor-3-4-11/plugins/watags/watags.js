@@ -14,7 +14,7 @@
             this.caret = app.caret;
 
             // local
-            this.tagRegExp = new RegExp("#[\\p{L}]+", "gu");
+            this.tagRegExp = new RegExp("#[a-zA-Z0-9_.-]+", "gu");
             this.taskLinks = window.taskLinks;
             this.ajax = null;
             this.spinner = null;
