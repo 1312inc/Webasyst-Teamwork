@@ -745,7 +745,7 @@ var Task = ( function($) {
             });
 
             $form.showLoading();
-            $submitButton.addClass('disabled');
+            $.tasks.showLoadingButton($submitButton);
 
             filesController.uploadFiles(files_hash, {
                 onAllDone: function() {
@@ -776,12 +776,12 @@ var Task = ( function($) {
                         })
                         .always(function () {
                             $form.hideLoading();
-                            $submitButton.removeClass('disabled');
+                            $.tasks.hideLoadingButton($submitButton);
                         });
                 },
                 onAllAlways: function () {
                     $form.hideLoading();
-                    $submitButton.removeClass('disabled');
+                    $.tasks.hideLoadingButton($submitButton);
                 },
                 onError: function (errors, index) {
                     if (!arguments.length) {

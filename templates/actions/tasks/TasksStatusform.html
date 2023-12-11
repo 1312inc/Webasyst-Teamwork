@@ -39,7 +39,7 @@
             {/foreach}
         {/if}
 
-        <input type="submit" class="button large" value="{$next_status.button|escape}" style="background: #{$next_status.params.button_color|escape}; color: #{$next_status.params.title_color|escape};">
+        <button type="submit" class="button large" style="background: #{$next_status.params.button_color|escape}; color: #{$next_status.params.title_color|escape};">{$next_status.button|escape}</button>
 
     </form>
 </div>
