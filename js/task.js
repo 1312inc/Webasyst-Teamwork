@@ -729,9 +729,10 @@ var Task = ( function($) {
             });
         };
 
-        var onStatusSubmit = function($form, direction) {
+        var onStatusSubmit = function($form, direction, successCallback) {
             var href = $form.attr("action"),
                 data = $form.serializeArray(),
+                $submitButton = $form.find('[type="submit"]'),
                 files_hash = that.getUpdatedFilesHash();
 
             if (!direction) {
@@ -744,6 +745,7 @@ var Task = ( function($) {
             });
 
             $form.showLoading();
+            $.tasks.showLoadingButton($submitButton);
 
             filesController.uploadFiles(files_hash, {
                 onAllDone: function() {
@@ -755,22 +757,37 @@ var Task = ( function($) {
                                 inviteAccess = $form.find('.t-team-invite__access:visible').val();
                             if (inviteAddress) {
                                 $.tasks.inviteUser({
-                                    email: inviteAddress, 
+                                    email: inviteAddress,
                                     taskId: that.task_id,
                                     accessId: inviteAccess
                                 });
                             }
                             $.tasks.reloadSidebar();
-                            that.moveTask(direction, function() {
+                            that.moveTask(direction, function () {
                                 that.reloadTask();
                             });
+
+                            if (typeof successCallback === 'function') {
+                                successCallback();
+                            }
+                        })
+                        .fail(function () {
+
                         })
                         .always(function () {
                             $form.hideLoading();
+                            $.tasks.hideLoadingButton($submitButton);
                         });
                 },
                 onAllAlways: function () {
                     $form.hideLoading();
+                    $.tasks.hideLoadingButton($submitButton);
+                },
+                onError: function (errors, index) {
+                    if (!arguments.length) {
+                        alert('Something went wrong on the server side. Please try again later or validate server error logs for details.');
+                        return;
+                    }
                 }
             });
         };
@@ -993,17 +1010,28 @@ var Task = ( function($) {
                     esc: false,
                     lock_body_scroll: false,
                     onOpen: function ($drawer, drawer_instance) {
+
+                        var $form = $drawer.find("form");
+                        var $textarea = $form.find('textarea');
+                        var taskAction = $form.data('task-action');
+
                         // Focus
-                        $drawer.find("textarea").focus();
+                        $textarea.focus();
+
                         // Handle close
                         $drawer.find(".t-hiddenform-cancel-link").on('click', function() {
                             drawer_instance.close();
                         })
+                        
+                        var removeSavedMessage = that.makeTextareaSaveable($textarea, taskAction);
+
                         // Handle submit
-                        $drawer.find("form").on("submit", function(e) {
-                            e.preventDefault()
-                            onStatusSubmit($(this), direction);
-                            drawer_instance.close();
+                        $form.on("submit", function(e) {
+                            e.preventDefault();
+                            onStatusSubmit($(this), direction, function () {
+                                removeSavedMessage();
+                                drawer_instance.close();
+                            });
                         });
 
                         commentFileEvents($drawer);
@@ -1030,6 +1058,52 @@ var Task = ( function($) {
 
     };
 
+    Task.prototype.makeTextareaSaveable = function ($textarea, action) {
+
+        const lsItem = `tasks/textarea/${action}/${this.task_id}`;
+        const disableSaveable = $textarea[0].hasAttribute('data-disable-saveable');
+
+        if (!disableSaveable) {
+            $textarea.val(localStorage.getItem(lsItem));
+            $textarea.on('input', saveDraft);
+        }
+
+        if ($.tasks.options.text_editor === 'wysiwyg' && window.$R) {
+            $textarea.redactor({
+                'focus': true,
+                minHeight: '150px',
+                imageData: {
+                    task_uuid: this.task_uuid
+                },
+                callbacks: {
+                    changed: () => {
+                        !disableSaveable && saveDraft();
+                    }
+                }
+            });
+        } else {
+            $textarea.textareaAutocomplete({
+                urlEntity: '?module=tasks&action=entityAutocomplete',
+                urlMention: '?module=tasks&action=mentionAutocomplete',
+                autoFocus: false,
+                delay: 300
+            });
+        }
+
+        function saveDraft () {
+            localStorage.setItem(lsItem, $textarea.val());
+        }
+
+        function removeLs () {
+            if (!disableSaveable) {
+                localStorage.removeItem(lsItem);
+            }
+        }
+
+        return removeLs;
+
+    };
+
     Task.prototype.initCommentForm = function ($commentForm, callbacks) {
         var that = this,
             filesController = new TaskCommentFilesUploader({
@@ -1045,18 +1119,6 @@ var Task = ( function($) {
         var onAllDone = typeof callbacks.onAllDone === 'function' ? callbacks.onAllDone : null;
 
         var bindEvents = function() {
-
-            if ($.tasks.options.text_editor === 'wysiwyg') {
-                const taElement = $commentForm.find('.t-redactor-comments');
-                if (taElement.length) {
-                    taElement.redactor({
-                        minHeight: '150px',
-                        imageData: {
-                            task_uuid: that.task_uuid
-                        }
-                    });
-                }
-            }
 
             $commentForm.on("submit", function() {
                 var $submitButton = $(this).find('[type="submit"]');
@@ -1114,6 +1176,8 @@ var Task = ( function($) {
             return true;
         };
 
+        var removeSavedComment = that.makeTextareaSaveable($commentForm.find('.t-redactor-comments'), 'comment');
+
         var addComment = function() {
             var submit_href = $commentForm.attr("action"),
                 submit_data = $commentForm.serializeArray(),
@@ -1137,6 +1201,9 @@ var Task = ( function($) {
                                     alert("[`Error Comment ID`]");
                                     return;
                                 }
+                                
+                                removeSavedComment();
+
                                 onAllDone && onAllDone();
                             }
                         })
@@ -1316,13 +1383,13 @@ var Task = ( function($) {
          * If tag not found and user tap "enter" need create new tag and bind to this task
          */
         $tags.on("keyup", ".js-t-task-tags-autocomplete", function (event) {
-            if (event.keyCode === 13) {
+            if (event.keyCode === 13 && $(this).val()) {
                     var data = {
                         task_id: that.task_id,
                         tag_name: $(this).val()
                     };
-                that.createTag(data);
                 $(this).val('');
+                that.createTag(data);
             }
         });
 
@@ -1364,17 +1431,34 @@ var Task = ( function($) {
         });
         var regexp = new RegExp('\/('+escaped_names.join('|')+')\/');
         that.$content.find('.t-description-wrapper a,.t-comment-content a').each(function() {
+
+            // Links specifically set up via call to $.tasks.setAppLinksOptions()
+            var $a = $(this);
+            try {
+                var attr_href = $a.attr('href');
+                var link_data = $.tasks.options.links_data[attr_href];
+                if (link_data?.entity_image) {
+                    prependIcon(link_data.app_id, link_data.entity_image, link_data.entity_type);
+                    return;
+                }
+            } catch (e) {
+            }
+
+            // If link's URL looks like it's from one of the known WA apps, show icon of that app
             var matches = this.pathname.match(regexp);
             if (matches) {
-                var $a = $(this);
                 if (!$a.parent().hasClass('break-word')) {
                     $a.wrap('<span class="break-word"></span>');
                 }
                 if (!$a.hasClass('js-no-app-icon') && !$a.hasClass('t-tag-link')) {
-                    $a.addClass('app-link app-'+matches[1]).prepend($.parseHTML(
-                        '<i class="icon app-icon custom-mr-4 app-'+matches[1]+'" style="background-image: url('+app_icons[matches[1]]+'); background-size: 100%; margin-top: 2px;"></i>'
-                    ));
+                    prependIcon(matches[1], app_icons[matches[1]]);
                 }
+            }
+
+            function prependIcon(app_id, icon_url, entity_type) {
+                $a.addClass('app-link app-'+app_id).prepend($.parseHTML(
+                    '<i class="icon app-icon userpic size-16 custom-mr-4 app-'+app_id+'" style="background-image: url('+icon_url+');'+(!['user', 'contact'].includes(entity_type) ? 'border-radius:0;' : '')+'"></i>'
+                ));
             }
         });
     };
@@ -1428,11 +1512,7 @@ var Task = ( function($) {
         $tags.find('.js-t-task-tags-autocomplete').autocomplete({
             source: '?module=tags&action=autocomplete',
             minLength: 1,
-            delay: 300,
-            select: function (event, ui) {
-                that.setTag(ui.item.id, ui.item.label);
-                return false;
-            }
+            delay: 300
         });
     };
 
@@ -1662,6 +1742,11 @@ var Task = ( function($) {
                 replace();
             }
 
+            // make all links with target="_blank"
+            $('.t-description-wrapper, .t-comment-content').find('a').each(function () {
+                $(this).attr('target', '_blank');
+            });
+
             // Update the task item in the second sidebar if exists
             $.get('?module=tasks&action=sidebarItem&id=' + that.task_id).then(function (html) {
                 var selector = '#t-tasks-wrapper [data-task-id="' + that.task_id + '"]',
@@ -1669,6 +1754,7 @@ var Task = ( function($) {
                     assignedContactId = $(html).data('assignedContactId'),
                     taskHidden = $(html).data('taskHidden'),
                     status = $(html).data('statusId');
+
                 if (el.length) {
                     el.replaceWith(html);
                     if (
@@ -1677,8 +1763,15 @@ var Task = ( function($) {
                         (+status === -1)
                     ) {
                         $.tasks.removeTotalFromPreviewName();
-                        $(selector).fadeOut();
+                        $(selector).fadeOut(500, function () {
+                            if (!$(selector).parent().find('li:visible').length) {
+                                if (TasksController) {
+                                    TasksController.setHash('#/tasks/inbox/');
+                                }
+                            }
+                        });
                     }
+                    $(selector).addClass('selected').siblings('.selected').removeClass('selected');
                 }
             });
 
@@ -1723,7 +1816,7 @@ var Task = ( function($) {
 
     Task.prototype.onFavorite = function ($link) {
         var that = this,
-            $i = $link.find('.fa-star').get(0),
+            $i = $link.find('.fa-at').get(0),
             value = $i.classList.contains('text-light-gray') ? 1 : 0,
             $spans = $link.find('span');
 
@@ -1734,11 +1827,11 @@ var Task = ( function($) {
                 if (value) {
                     $spans.eq(1).show();
                     $i.classList.remove('text-light-gray');
-                    $i.classList.add('text-yellow');
+                    $i.classList.add('text-orange');
                 } else {
                     $spans.eq(0).show();
                     $i.classList.add('text-light-gray');
-                    $i.classList.remove('text-yellow');
+                    $i.classList.remove('text-orange');
                 }
             }
         });
@@ -1866,7 +1959,7 @@ var Task = ( function($) {
                             </div>
                             <button class="copy-to-clipboard button small nobutton"><i class="fas fa-copy"></i></button>
                         </div>
-                    </li>               
+                    </li>
                 `);
         }
 

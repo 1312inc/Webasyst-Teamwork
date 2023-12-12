@@ -2,23 +2,21 @@
 
 <div class="sidebar width-19rem bordered-right t-settings-sidebar" id="t-settings-sidebar-wrapper">
 
-    <div class="bricks">
-        <a href="#/settings/" class="brick full-width selected" data-item-type="statuses">
-            <span class="icon" style="text-align: left; width: auto;">
-                <i class="rounded" style="background: var(--green);"></i>
-                <i class="rounded" style="background: var(--yellow);"></i>
-                <i class="rounded" style="background: var(--orange);"></i>
-                <i class="fas fa-check-circle text-light-gray"></i>
-            </span>
-            [`Task statuses`]
-        </a>
-    </div>
-
     <ul class="menu">
         <li>
             <a href="#/personal-settings/">
                 <span class="icon"><img src="{$wa->user()->getPhoto(96)}" class="userpic"></span>
-                <span>[`My preferences`]</span>
+                <span>
+                  [`My preferences`]
+                </span>
+            </a>
+        </li>
+        <li>
+            <a href="#/settings/" class="" data-item-type="statuses">
+                <span class="icon">
+                    <i class="fas fa-flag text-green"></i>
+                </span>
+                [`Task statuses`]
             </a>
         </li>
         <!-- plugin hook: 'backend_settings_sidebar.top_li' -->
@@ -29,7 +27,7 @@
     </ul>
 
     <!-- SCOPES -->
-    <h5 class="heading black">
+    <h5 class="heading">
         <a href="#/settings/scope/add/" class="count"><i class="fas fa-plus-circle"></i></a>
         [`Milestones`]
     </h5>
@@ -84,7 +82,7 @@
     {/if}
 
     <!-- PROJECTS -->
-    <h5 class="heading black">
+    <h5 class="heading">
         <a href="#/settings/project/add/" class="count"><i class="fas fa-plus-circle"></i></a>
         [`Projects`]
     </h5>

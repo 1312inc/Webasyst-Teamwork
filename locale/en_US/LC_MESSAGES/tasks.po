@@ -12,7 +12,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Basepath: .\n"
-"X-Generator: Poedit 3.1\n"
+"X-Generator: Poedit 3.3.2\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPath-1: .\n"
 
@@ -461,7 +461,7 @@ msgid "Your favorites list is empty"
 msgstr ""
 
 msgid "To add a task to your personal favorite list, click on a tiny star icon next to task name."
-msgstr "To start watching on a task progress, click on a tiny little star button next to a task name."
+msgstr "To start watching on a task progress, press ‘Watch’ button next to a task title."
 
 msgid "Task list is empty"
 msgstr ""
@@ -540,7 +540,7 @@ msgid "No access"
 msgstr ""
 
 msgid "Self tasks only"
-msgstr ""
+msgstr "Assigned tasks only"
 
 msgid "Full access"
 msgstr ""
@@ -683,8 +683,14 @@ msgstr ""
 msgid "DONE: %s was completed"
 msgstr "DONE: %s"
 
+msgid "DONE: %s %s"
+msgstr "CLOSED: %s %s"
+
 msgid "EDIT: %s was edited"
 msgstr "UPDATE: %s"
+
+msgid "EDIT: %s %s"
+msgstr "UPDATED: %s %s"
 
 msgid "created a task"
 msgstr ""
@@ -1388,6 +1394,9 @@ msgstr "%s edited the task you’ve created"
 msgid "User %s edited a task"
 msgstr "%s edited"
 
+msgid "User %s mentioned you in a task"
+msgstr "%s mentioned you in a task"
+
 msgid "All senders"
 msgstr ""
 
@@ -1395,9 +1404,6 @@ msgid "invited"
 msgstr ""
 
 msgid "Mobile app"
-msgstr ""
-
-msgid "Install Webasyst Teamwork mobile app on your phone today:"
 msgstr ""
 
 msgid "Android is available free today! iOS is coming soon."
@@ -1422,4 +1428,10 @@ msgid "copied"
 msgstr "Copied!"
 
 msgid "https://www.webasyst.com/store/app/tasks/"
+msgstr ""
+
+msgid "To attach a Pocket Lists checklist, save the task first."
+msgstr ""
+
+msgid "Hashtag, task number, order ID, etc."
 msgstr ""

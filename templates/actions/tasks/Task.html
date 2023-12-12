@@ -46,7 +46,7 @@
 {$_task_hooks = $task.hooks|default:[]}
 {$_backend_task_hook = $_task_hooks.backend_task|default:[]}
 
-<div class="article {$classes|join:' '}" id="task-{$task.id}" data-task-id="{$task.id}" data-task-uuid="{$task.uuid}">
+<div class="article wide {$classes|join:' '}" id="task-{$task.id}" data-task-id="{$task.id}" data-task-uuid="{$task.uuid}">
     <div class="article-body t-task-wrapper">
 
         <div class="t-content-column">
@@ -148,7 +148,7 @@
 
                         {* WATCH *}
                         <a class="t-favorite-link button light-gray rounded t-set-favorite nowrap" href="javascript:void(0);" title="[`Watch`]">
-                            <i class="fas fa-star {if empty($task.favorite)}text-light-gray{else}text-yellow{/if}"></i>
+                            <i class="fas fa-at {if empty($task.favorite)}text-light-gray{else}text-orange{/if}"></i>
                             <span class="custom-ml-4 desktop-only"{if !empty($task.favorite)} style="display: none;"{/if}>[`Watch`]</span>
                             <span class="custom-ml-4 desktop-only"{if empty($task.favorite)} style="display: none;"{/if}>[`Watching`]</span>
                         </a>
@@ -169,12 +169,10 @@
                                 </a>
                             </span>
                         {/if}
-                        
+
                         {$is_public_link_exists = !!count($task.public_links)}
                         <div class="dropdown" id="publicLinkDropdown">
-                            <button class="dropdown-toggle without-arrow nowrap button nobutton circle {if !$is_public_link_exists}text-light-gray{/if}">
-                                <i class="fas fa-external-link-alt"></i>
-                            </button>
+                            <button class="dropdown-toggle without-arrow nowrap button light-gray rounded {if !$is_public_link_exists}text-light-gray{else}text-blue{/if}"><i class="fas fa-external-link-alt"></i></button>
                             <div class="dropdown-body right custom-p-8" style="width: auto;min-width: 300px;">
                                 <div class="t-public-link-block {if $is_public_link_exists}hidden{/if}">
                                     <p class="hint align-center custom-mb-0">
@@ -285,7 +283,8 @@
                             <script>
                                 ( function($) {
                                     $("#t-task-dropdown-add-tag").waDropdown({
-                                        hover: true,
+                                        hover: false,
+                                        hide: false,
                                     });
 
                                     $('.js-tags-show-all-link').on('click', function (e) {
@@ -729,6 +728,22 @@
 
             {/if}
 
+            {if !empty($task.watching_contacts)}
+                <hr>
+                <h3><span class="gray">@</span> [`Watchers`] <span class="gray">{count($task.watching_contacts)}</span></h3>
+                <ul class="thumbs">
+                    {foreach $task.watching_contacts as $c}
+                        <li>
+                            <a class="userpic userpic-48" href="#/tasks/assigned/{$c.id|escape}/" style="background-image: url('{$c.photo_url}');" title="{$c.name|escape}{if $c.calendar_status} - {$c.calendar_status->getName()|escape}{/if}">
+                                {if $c.calendar_status}
+                                    <span class="userstatus" style="background-color: {$c.calendar_status->getBgColor()};color: {$c.calendar_status->getFontColor()};" title="{$c.calendar_status->getName()|escape}"><i class="{$c.calendar_status->getIcon()|escape|default:'fas fa-calendar-alt'}"></i></span>
+                                {/if}
+                            </a>
+                        </li>
+                    {/foreach}
+                </ul>
+            {/if}
+
             <h3 class="t-comments-h3 custom-mt-32">[`History &amp; Comments`] <span class="hint">{count($task.log)}</span></h3>
 
             <!-- plugin hook: 'backend_task.%plugin_id%.before_hidden_block' -->
@@ -884,6 +899,7 @@
                 {* ADD COMMENT FORM *}
                 {include file="./TaskCommentForm.inc.html"
                     post_action_url="?module=tasksComments&action=add&task_id={$task.id}"
+                    action="add"
                 inline}
 
                 <!-- plugin hook: 'backend_task.%plugin_id%.hidden_block' -->

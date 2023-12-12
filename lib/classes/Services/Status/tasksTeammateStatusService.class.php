@@ -17,21 +17,24 @@ final class tasksTeammateStatusService
         $defaultStatus = $this->hasDefaultStatus() ? 'wcc.default_status' : 'wcc.name';
 
         $sql = <<<SQL
-select if(isnull(wce.summary), {$defaultStatus}, wce.summary) name,
-       wcc.id calendar_id,
-       wcc.bg_color,
-       wcc.font_color,
-       datediff(wce.end, wce.start) days,
-       wce.id status_id
-from wa_contact_calendars wcc
-         left join (
-    select max(wce.id) last_wce_id ,wce.calendar_id
-    from wa_contact_events wce
-    where wce.is_status = 1
-      and wce.contact_id = i:contact_id
-      /*and wce.summary_type = 'custom'*/
-    group by wce.calendar_id) last_wce on wcc.id = last_wce.calendar_id
-         left join wa_contact_events wce on wce.id = last_wce.last_wce_id
+            SELECT if(isnull(wce.summary), {$defaultStatus}, wce.summary) AS name,
+                   wcc.id AS calendar_id,
+                   wcc.bg_color,
+                   wcc.font_color,
+                   wcc.icon,
+                   DATEDIFF(wce.end, wce.start) AS days,
+                   wce.id AS status_id
+            FROM wa_contact_calendars AS wcc
+                LEFT JOIN (
+                    SELECT max(wce.id) AS last_wce_id, wce.calendar_id
+                    FROM wa_contact_events AS wce
+                    WHERE wce.is_status = 1
+                        AND wce.contact_id = i:contact_id
+                    GROUP BY wce.calendar_id
+                ) AS last_wce
+                    ON wcc.id = last_wce.calendar_id
+                 LEFT JOIN wa_contact_events AS wce
+                    ON wce.id = last_wce.last_wce_id
 SQL;
 
         $result = tsks()->getModel()
@@ -43,7 +46,7 @@ SQL;
             if (empty($item['name'])) {
                 continue;
             }
-            $statuses = new tasksTeammateStatusDto($item['name'], $item['bg_color'], $item['font_color']);
+            $statuses = new tasksTeammateStatusDto($item['name'], $item['bg_color'], $item['font_color'], $item['icon']);
         }
 
         tsks()->getCache()->set($key, $statuses, 10);
@@ -69,6 +72,7 @@ select if(isnull(wce.summary), '{$defaultStatus}', wce.summary) name,
        wcc.id calendar_id,
        wcc.bg_color,
        wcc.font_color,
+       wcc.icon,
        datediff(wce.end, wce.start) days,
        wce.id status_id
 from wa_contact_calendars wcc
@@ -102,7 +106,7 @@ SQL;
 
         if ($result) {
             $result = reset($result);
-            $result = new tasksTeammateStatusDto($result['name'], $result['bg_color'], $result['font_color']);
+            $result = new tasksTeammateStatusDto($result['name'], $result['bg_color'], $result['font_color'], $result['icon']);
         } else {
             $result = null;
         }

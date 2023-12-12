@@ -22,7 +22,7 @@ final class tasksApiTasksFavoriteHandler
         }
 
         $rights = new tasksRights();
-        if (!$rights->canEditTask($task, wa()->getUser())) {
+        if (wa()->getUser()->getId() != $contact->getId() && !$rights->canEditTask($task, wa()->getUser())) {
             throw new tasksAccessException(_w('You cannot edit task'));
         }
 
@@ -31,6 +31,6 @@ final class tasksApiTasksFavoriteHandler
         }
 
         return (bool) (new tasksFavoriteModel())
-            ->changeFavorite($contact->getId(), $favoriteRequest->getTaskId(), $favoriteRequest->isFavorite());
+            ->changeFavorite($contact->getId(), $favoriteRequest->getTaskId(), $favoriteRequest->isFavorite(), $favoriteRequest->isUnread());
     }
 }

@@ -22,7 +22,8 @@ class tasksReleasesPluginTaskComponent extends tasksReleasesPluginComponent
         $em = new tasksReleasesPluginTaskExtModel();
         if ($this->task['id'] > 0) {
             $ext_info = $em->getById($this->task['id']);
-        } else {
+        }
+        if (empty($ext_info)) {
             $ext_info = $em->getEmptyRow();
         }
         $tm = new tasksReleasesPluginTaskTypesModel();

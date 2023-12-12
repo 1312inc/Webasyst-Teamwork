@@ -42,7 +42,6 @@ var TaskEdit = ( function($) { "use strict";
         // Dynamic Vars
         that.files_count = 0;
         that.attachedFiles = {};
-        that.loaded_files_count = 0;
         that.is_changed = false;
         that.project_id = ( options['project_id'] || false );
         that.is_date_picker_init = false;
@@ -406,6 +405,7 @@ var TaskEdit = ( function($) { "use strict";
             that.onSubmit($form, !!e.shiftKey);
             return false;
         });
+        
         $form.on("submit", function(e) {
             e.preventDefault();
             that.onSubmit($form);
@@ -419,6 +419,31 @@ var TaskEdit = ( function($) { "use strict";
                     that.is_changed = true;
                 }
             }
+        });
+
+        /**
+         * Trigger Autocomplete Demo
+         */
+        $form.on("mousedown", ".t-form-line-autocomplete-chip", ({ currentTarget }) => {
+
+            if ($.tasks.options.text_editor !== 'wysiwyg') {
+                const $textarea = this.$form.find('textarea');
+                const position = $textarea.is(":focus") ? $textarea.prop("selectionStart") : $textarea.val().length;
+                const text = $textarea.val();
+                const char = $(currentTarget).data('type') === 'at' ? '@' : '#';
+                setTimeout(() => {
+                    $textarea
+                        .val(text.slice(0, position) + ' ' + char + ' ' + text.slice(position))
+                        .prop('selectionEnd', position + 2)
+                        .focus()
+                        .trigger(jQuery.Event('keydown', { which: $.ui.keyCode.shiftKey }));
+                }, 100);
+            }
+        });
+
+        $form.on("click", ".t-form-line-checklist-chip", (e) => {
+            e.preventDefault();
+            alert($.wa.locale['attach_pl_checklist']);
         });
 
         var $selectPriority = $task.find(".t-priority-wrapper .t-custom-select");
@@ -461,8 +486,8 @@ var TaskEdit = ( function($) { "use strict";
 
     TaskEdit.prototype.initTextareaAutocomplete = function() {
         this.$form.find('textarea').textareaAutocomplete({
-            url: '?action=tagsatcmpl',
-            // appendTo: '#content',
+            urlEntity: '?module=tasks&action=entityAutocomplete',
+            urlMention: '?module=tasks&action=mentionAutocomplete',
             autoFocus: false,
             delay: 300
         });
@@ -933,18 +958,11 @@ var TaskEdit = ( function($) { "use strict";
 
         if (that.is_new) {
             if ($saved_task_title || $saved_task_text) {
-                if (confirm($.wa.locale["unsaved_task"]+' '+localStorage.getItem('draft_time')+' '+$.wa.locale["continue_editing"])) {
-                    if ($saved_task_title) {
-                        $task_title.val($saved_task_title);
-                    }
-                    if ($saved_task_text) {
-                        $task_text.val($saved_task_text);
-                    }
-                }else{
-                    // Clear localStorage Task draft
-                    localStorage.removeItem('task_title');
-                    localStorage.removeItem('task_text');
-                    localStorage.removeItem('draft_time');
+                if ($saved_task_title) {
+                    $task_title.val($saved_task_title);
+                }
+                if ($saved_task_text) {
+                    $task_text.val($saved_task_text);
                 }
             }
         }
@@ -986,7 +1004,7 @@ var TaskEdit = ( function($) { "use strict";
                 $form.showLoading();
                 that.updateTask($form)
                     .done(
-                        function(response) {
+                        function (response) {
                             if (response.status == "ok") {
                                 that.task_id = that.task_id ? that.task_id : response.data.id;
                                 that.closePage(response.data, return_to_new);
@@ -996,7 +1014,7 @@ var TaskEdit = ( function($) { "use strict";
                                     inviteAccess = $form.find('.t-team-invite__access:visible').val();
                                 if (inviteAddress) {
                                     $.tasks.inviteUser({
-                                        email: inviteAddress, 
+                                        email: inviteAddress,
                                         taskId: that.task_id,
                                         accessId: inviteAccess
                                     });
@@ -1022,8 +1040,13 @@ var TaskEdit = ( function($) { "use strict";
             },
             onAllAlways: function () {
                 $form.hideLoading();
+                $.tasks.hideLoadingButton($submitButton);
             },
             onError: function (errors, index) {
+                if (!arguments.length) {
+                    alert('Something went wrong on the server side. Please try again later or validate server error logs for details.');
+                    return;
+                }
                 that.renderFileError(index, errors);
             }
         });
@@ -1050,7 +1073,7 @@ var TaskEdit = ( function($) { "use strict";
     };
 
     // Upload
-    TaskEdit.prototype.uploadFiles = function(callbacks) {
+    TaskEdit.prototype.uploadFiles = function (callbacks) {
         var that = this,
             url = "?module=attachments&action=upload",
             hash = that.files_hash,
@@ -1063,17 +1086,15 @@ var TaskEdit = ( function($) { "use strict";
             onError = typeof callbacks.onError === 'function' ? callbacks.onError : null;
 
         if (that.files_count <= 0) {
-            onAllAlways && onAllAlways();
             onAllDone && onAllDone();
+            onAllAlways && onAllAlways();
             return;
         }
-
-        var all_files_counter = that.files_count;
 
         // Show progress bar
         waLoading.animate(6000, 99, true);
 
-        $.each(files, function (index, file) {
+        var uploads = $.map(files, function (file, index) {
             // Vars
             var formData = new FormData();
 
@@ -1081,46 +1102,42 @@ var TaskEdit = ( function($) { "use strict";
             var temp_file_name = 'image.png';
             if (temp_file_name == file.name) {
                 var ext = file.name.split(".");
-                ext = ext[ext.length-1].toLowerCase();
+                ext = ext[ext.length - 1].toLowerCase();
                 var random_file_name = Math.random().toString(36).substring(7) + $.now() + '.' + ext;
                 formData.append("files[]", file, random_file_name);
-            }else{
+            } else {
                 formData.append("files[]", file);
             }
             formData.append("hash", hash);
 
-            // Ajax request
-            $.ajax({
+            return $.ajax({
                 url: url,
                 data: formData,
                 cache: false,
                 contentType: false,
                 processData: false,
-                type: 'POST',
-                success: function(r){
-
-                    all_files_counter--;
-                    if (all_files_counter <= 0) {
-                        onAllAlways && onAllAlways();
-                        // Hide progress bar
-                        waLoading.hide();
-                    }
-
-                    if (r.status != 'ok') {
-                        if (!$.isEmptyObject(r.errors)) {
-                            onError && onError(r.errors, index, file);
-                        }
-                        return;
-                    }
-
-                    that.loaded_files_count++;
-                    if (that.loaded_files_count === that.files_count) {
-                        onAllDone && onAllDone();
-                    }
-                }
+                type: 'POST'
             });
         });
 
+        $.when(...uploads)
+            .done(function () {
+                // if (r.status !== 'ok') {
+                //     console.log('error');
+                //     if (!$.isEmptyObject(r.errors)) {
+                //         onError && onError(r.errors, index, file);
+                //     }
+                //     return;
+                // }
+                onAllDone && onAllDone();
+            })
+            .fail(function () {
+                onError && onError();
+            })
+            .always(function () {
+                waLoading.hide();
+                onAllAlways && onAllAlways();
+            });
     };
 
     TaskEdit.prototype.renderFileError = function (index, errors) {

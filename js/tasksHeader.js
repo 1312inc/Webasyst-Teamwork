@@ -19,7 +19,7 @@ var TasksHeader = ( function($) {
         that.$tasksWrapper = $("#t-tasks-wrapper");
         that.$header = that.$wrapper.find(".t-header-wrapper");
         that.$mainMenu = that.$header.find(".t-general-menu");
-        that.$selectedMenu = that.$header.find(".t-selection-menu");
+        that.$selectedMenu = that.$wrapper.find(".t-selection-menu");
         that.$filters = that.$mainMenu.find(".t-tasks-filter"),
         that.$order_selector = that.$mainMenu.find(".t-order-selector"),
         that.$hash_filter = that.$mainMenu.find('.t-tasks-hash-type-filter');
@@ -185,6 +185,7 @@ var TasksHeader = ( function($) {
             event.preventDefault();
             $('.t-checkbox-column').fadeIn();
             $('.t-tasks-wrapper').addClass('t-selection-checkboxes-visible');
+            $('.t-preview-description-content').slideUp(100);
         });
 
         // Reset all filters
@@ -192,15 +193,6 @@ var TasksHeader = ( function($) {
             if (this.href && this.href.indexOf('inbox') >= 0) {
                 $.storage.del('tasks/inbox_filters');
             }
-        });
-
-        // Select items in the second Sidebar
-        $('#wa-app > .flexbox > .content .sidebar a[href^="#/task/"]').on("click", function(e) {
-            if (e.which !== 1) {
-                return; // not a left-mouse-button click
-            }
-            $('#wa-app > .flexbox > .content .sidebar .selected').removeClass('selected');
-            $(this).closest('li').addClass('selected');
         });
     };
 
@@ -1066,18 +1058,18 @@ var TasksHeader = ( function($) {
         }
     };
 
-    Header.togglePulsarButton = function () {
+    Header.togglePulsarButton = function (forceShow = false) {
         var that = this,
             pulsarButtonSelector = '.pulsar.cloned',
             buttonSelector = '#sidebar .add-task-link';
-        
+
         var removePulsar = function () {
             $(".sidebar-body").off('.pulsar');
             $(window).off('.pulsar');
             $(pulsarButtonSelector).remove();
         }
 
-        if (that.total_count || location.hash.includes('#/tasks/search/')) {
+        if ((that.total_count || location.hash.includes('#/tasks/search/')) && !forceShow) {
             removePulsar();
         } else {
             if ($(buttonSelector).length && !$(pulsarButtonSelector).length) {

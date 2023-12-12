@@ -1,7 +1,7 @@
 {strip}
 
 <div class="t-return-form-block" id="return-wrapper-{$task.id}">
-    <form method="post" action="?module=tasksLog&action=return&id={$task.id}">
+    <form method="post" action="?module=tasksLog&action=return&id={$task.id}" data-task-action="return" data-task-id="{$task.id}" data-task-uuid="{$task.uuid}">
     <div class="fields">
         <div class="field">
             <div class="name for-checkbox">[`Return to status`]</div>
@@ -29,25 +29,11 @@
     <div class="field t-buttons-block">
         <div class="name"></div>
         <div class="value">
-            <input type="submit" class="button large" value="[`Return task`]">
+            <button type="submit" class="button large">[`Return task`]</button>
         </div>
     </div>
 
     </form>
 </div>
-
-<script>
-    (function ($) {
-        if ($.tasks.options.text_editor === 'wysiwyg') {
-            $R('#return-wrapper-{$task.id} .t-redactor-comments', {
-                'focus': true,
-                minHeight: '150px',
-                imageData: {
-                    task_uuid: '{$task.uuid}'
-                }
-            });
-        }
-    })(jQuery);
-</script>
 
 {/strip}

@@ -98,6 +98,64 @@ assigned_contact_id = i:1',
         return null;
     }
 
+    /**
+     * For several backend users return number of urgent tasks assigned to them; number of their favorite unread tasks;
+     * and total number of tasks either unread or urgent assigned. Used for badge counters on mobile and onCount.
+     *
+     * @param $contact_ids users to return info for; defaults to al users
+     * @return array
+     */
+    public function getBadgeCounts(?array $contact_ids = null): array
+    {
+        $contact_ids_condition = '';
+        if ($contact_ids !== null) {
+            $contact_ids = array_filter(array_map('intval', $contact_ids));
+            if ($contact_ids) {
+                $contact_ids_condition = "AND t.assigned_contact_id IN (?)";
+            } else {
+                return [];
+            }
+        }
+
+        $sql = "SELECT t.assigned_contact_id AS contact_id, SUM(IF(f.task_id IS NULL, 0, 1)) AS unread_assigned, COUNT(*) AS total_assigned
+                FROM tasks_task AS t
+                    LEFT JOIN tasks_favorite AS f
+                        ON f.task_id=t.id
+                            AND f.contact_id=t.assigned_contact_id
+                            AND f.unread>0
+                WHERE t.priority >= 2
+                    AND t.assigned_contact_id > 0 {$contact_ids_condition}
+                GROUP BY contact_id";
+
+        $assigned = (new waModel())->query($sql, [$contact_ids])->fetchAll('contact_id');
+
+        if ($contact_ids) {
+            $contact_ids_condition = "AND contact_id IN (?)";
+        }
+        $sql = "SELECT contact_id, COUNT(*) AS total_unread
+                FROM tasks_favorite
+                WHERE unread>0 $contact_ids_condition
+                GROUP BY contact_id";
+        $unread = (new waModel())->query($sql, [$contact_ids])->fetchAll('contact_id');
+        if (!$contact_ids) {
+            $contact_ids = array_keys($unread + $assigned);
+        }
+
+        $result = [];
+        foreach($contact_ids as $contact_id) {
+            $total_unread = (int) ifset($unread, $contact_id, 'total_unread', 0);
+            $total_assigned = (int) ifset($assigned, $contact_id, 'total_assigned', 0);
+            $unread_assigned = (int) ifset($assigned, $contact_id, 'unread_assigned', 0);
+            $result[$contact_id] = [
+                'unread' => $total_unread,
+                'assigned' => $total_assigned,
+                'total' => $total_unread + $total_assigned - $unread_assigned,
+            ];
+        }
+
+        return $result;
+    }
+
     public static function getPairs($total = 0, $count = 0, $bgColor = null, $textColor = null)
     {
         if (!$count) {
@@ -110,7 +168,7 @@ assigned_contact_id = i:1',
 
         if ($count == $total) {
             return sprintf(
-                '<span class="badge" style="background:%s;color:%s">%s</span>',
+                '<span class="badge" style="background:%s;color:%s"><span style="display:none;">(</span>%s<span style="display:none;">)</span></span> ',
                 ifempty($bgColor, 'transparent'),
                 ifempty($textColor, '#999'),
                 $count
@@ -118,7 +176,7 @@ assigned_contact_id = i:1',
         }
 
         return sprintf(
-            '<span class="badge custom-mr-4" style="background:%s;color:%s">%s</span>%s',
+            '<span class="badge" style="background:%s;color:%s"><span style="display:none;">(</span>%s<span style="display:none;">)</span></span> %s',
             ifempty($bgColor, 'transparent'),
             ifempty($textColor, '#999'),
             $count,

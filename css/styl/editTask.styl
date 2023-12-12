@@ -82,9 +82,6 @@ $yellow_color = #ffffe3;
         .t-attach-wrapper
             margin 0
 
-            .t-attach-droparea
-                padding 1rem
-
             .t-attached-files-wrapper
                 display none
 
@@ -102,9 +99,6 @@ $yellow_color = #ffffe3;
             &.is-shown
                 display block
 
-        .t-errors-block
-            min-height 20px
-
         .t-buttons-block
             padding 1rem 0
             position sticky
@@ -114,6 +108,7 @@ $yellow_color = #ffffe3;
 
             @media forMobile
                 position fixed
+                width 100%
 
             .icon16
                 position relative
@@ -156,6 +151,48 @@ $yellow_color = #ffffe3;
 .t-user-item.is-unassigned
     display block
 
-.t-milestone-wrapper
-  @media forMobile
-    margin-top 0.75rem
+.t-chips
+    margin: 0 0 0 0.75em
+    padding: 0
+    display: flex
+    flex-wrap: wrap
+
+    .t-chip
+        text-align: left;
+        flex: 0 0 auto;
+        position: relative;
+        vertical-align: top;
+        font-size 0.875rem
+        font-weight 600
+        line-height 1.4
+        outline: none;
+        font-style: normal;
+        text-decoration: none;
+        color: var(--menu-link-color)
+        background: var(--chips-background-color)
+        padding: 0.375em 0.75em 0.375em 0.5em;
+        cursor: pointer;
+        border-radius: 0.5em;
+        border: 1px solid transparent;
+        margin-right: 0.75em;
+        margin-bottom: 0.75em;
+        white-space: nowrap;
+
+        a
+            color: var(--menu-link-color);
+
+        svg
+            max-height: 1em;
+            color: var(--menu-glyph-color);
+            font-size: 1em
+            margin-right 0.25rem
+
+        input
+            background transparent
+            border-color transparent !important
+            width 100px
+            padding 0
+            font-weight 600
+
+        &:hover
+            background: var(--chips-background-color-hover)

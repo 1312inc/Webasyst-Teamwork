@@ -22,7 +22,7 @@
         {/if}
     {/foreach}
     {foreach $_values as $_key => $_value}
-        data-{$_key}="{$_value}"
+        data-{$_key}="{$_value|escape}"
     {/foreach}
 {/function}
 
@@ -138,7 +138,7 @@
 
         <script>
             ( function($) {
-                $("#t-menu-dropdown-tag").waDropdown( { hover: false } );
+                $("#t-menu-dropdown-tag").waDropdown( { hover: false, hide: false } );
 
                 $('.js-tags-show-all-link').on('click', function (e) {
                     e.preventDefault();

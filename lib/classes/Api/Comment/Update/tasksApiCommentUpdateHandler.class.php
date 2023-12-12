@@ -56,6 +56,9 @@ final class tasksApiCommentUpdateHandler
             throw new tasksException('Error on delete comment');
         }
 
+        // Parse @mentions
+        tasksHelper::updateUnreadForMentions($updateRequest->getText(), (new tasksTaskModel())->getById($comment['task_id']));
+
         (new tasksWaLogManager())->logAction(
             tasksWaLogManager::LOG_COMMENT_EDIT,
             sprintf('%d:%d:%s', $comment['task_id'], $comment['id'], $updateRequest->getText())

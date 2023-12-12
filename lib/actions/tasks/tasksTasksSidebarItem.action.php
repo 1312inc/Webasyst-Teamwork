@@ -8,11 +8,11 @@ class tasksTasksSidebarItemAction extends tasksTasksAction
         $uuid = waRequest::get('uuid', null, waRequest::TYPE_STRING_TRIM);
 
         if ($id) {
-            $c = new tasksCollection(sprintf('%s/%d', tasksCollection::HASH_ID, $id));
+            $hash = sprintf('%s/%d', tasksCollection::HASH_ID, $id);
         } elseif ($uuid) {
-            $c = new tasksCollection(sprintf('%s/%s', tasksCollection::HASH_UUID, $uuid));
+            $hash = sprintf('%s/%s', tasksCollection::HASH_UUID, $uuid);
         }
-
+        $c = new tasksCollection($hash);
         $task_rows = $c->getTasks(tasksCollection::FIELDS_TO_GET);
 
         $tasks = [];
@@ -33,6 +33,13 @@ class tasksTasksSidebarItemAction extends tasksTasksAction
 
         // prepare tasks for view
         tasksHelper::workupTasksForView($tasks);
+
+        $this->triggerBackendTasksEvent($tasks, [
+            'hash' => $hash,
+            'filters' => '',
+            'order' => 'oldest',
+            'is_sidebar_item' => true,
+        ]);
 
         $this->view->assign(['task' => reset($tasks)]);
     }

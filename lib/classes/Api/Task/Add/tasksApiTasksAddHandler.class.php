@@ -56,7 +56,7 @@ final class tasksApiTasksAddHandler
 
         (new tasksEventTriggerHandler())->triggerAdd($task2);
         if ($task2->getAssignedContactId()) {
-            $sender = new tasksNotificationsSender($task2->toArray(), 'new');
+            $sender = new tasksNotificationsSender($task2->toArray(), ['new', 'mention']);
             $sender->send();
         }
 

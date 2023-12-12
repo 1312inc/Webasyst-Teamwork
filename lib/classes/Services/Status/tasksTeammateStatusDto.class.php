@@ -17,11 +17,17 @@ class tasksTeammateStatusDto
      */
     protected $fontColor;
 
-    public function __construct(string $name, string $bgColor, string $fontColor)
+    /**
+     * @var ?string
+     */
+    protected $icon;
+
+    public function __construct(string $name, string $bgColor, string $fontColor, ?string $icon)
     {
         $this->name = $name;
         $this->bgColor = $bgColor;
         $this->fontColor = $fontColor;
+        $this->icon = $icon;
     }
 
     public function getName(): string
@@ -37,5 +43,10 @@ class tasksTeammateStatusDto
     public function getFontColor(): string
     {
         return $this->fontColor;
+    }
+
+    public function getIcon(): ?string
+    {
+        return $this->icon;
     }
 }

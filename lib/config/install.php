@@ -29,11 +29,19 @@ if (file_exists($file)) {
 
     $waModel = new waModel();
     try {
-        $waModel->exec('LOCK TABLES tasks_project WRITE, tasks_status WRITE, tasks_status_params WRITE, tasks_project_statuses WRITE, wa_app_settings WRITE');
+        $waModel->exec('LOCK TABLES
+                            tasks_project WRITE,
+                            tasks_status WRITE,
+                            tasks_status_params WRITE,
+                            tasks_project_statuses WRITE,
+                            tasks_task WRITE,
+                            tasks_tag WRITE,
+                            tasks_task_tags WRITE,
+                            wa_app_settings WRITE');
         waLog::log('Lock tables ok', 'tasks/install.log');
     } catch (waDbException $e) {
         waLog::log('Lock tables error', 'tasks/install.log');
-        waLog::log($e->getMessage(), 'tasks/install.log');
+        waLog::log($e->getMessage()."\n".$e->getTraceAsString(), 'tasks/install.log');
     }
 
     try {
@@ -89,10 +97,24 @@ if (file_exists($file)) {
                     'project_id' => $project_id,
                     'status_id' => $statusTestingId,
                 ]);
+
+                $task_model = new tasksTaskModel();
+                $task = $task_model->add([
+                    'uuid' => tasksUuid4::generate(),
+                    'project_id' => $project_id,
+                    'name' => _w('Hello, World!'),
+                    'text' => _w('This is a demo task. Go ahead and click “Doing” or just close it. #webasyst #demo'),
+                    'assigned_contact_id' => wa()->getUser()->getId(),
+                ]);
+
+                if ($task) {
+                    $tags = tasksTask::extractTags($task['text']);
+                    (new tasksTaskTagsModel())->save($task['id'], $tags);
+                }
             }
         }
     } catch (Exception $e) {
-        waLog::log($e->getMessage(), 'tasks/install.log');
+        waLog::log($e->getMessage()."\n".$e->getTraceAsString(), 'tasks/install.log');
     }
 
     try {
@@ -100,7 +122,7 @@ if (file_exists($file)) {
         waLog::log('Unlock tables ok', 'tasks/install.log');
     } catch (waDbException $e) {
         waLog::log('Unlock tables error', 'tasks/install.log');
-        waLog::log($e->getMessage(), 'tasks/install.log');
+        waLog::log($e->getMessage()."\n".$e->getTraceAsString(), 'tasks/install.log');
     }
 
     waLog::log(sprintf('%s. Demo was finished at %s', microtime(true), date('Y-m-d H:i:s')), 'tasks/install.log');
@@ -111,7 +133,7 @@ if (file_exists($file)) {
             try {
                 $utf8mb4->convertColumn($table, $column);
             } catch (Exception $e) {
-                waLog::log($e->getMessage(), 'tasks/install.log');
+                waLog::log($e->getMessage()."\n".$e->getTraceAsString(), 'tasks/install.log');
             }
         }
     }

@@ -8,10 +8,12 @@ class tasksNotificationsSender
     public const EVENT_INVITE_ASSIGN  = 'inviteAssign';
     public const EVENT_EDIT    = 'edit';
     public const EVENT_COMMENT = 'comment';
+    public const EVENT_MENTION = 'mention';
 
     protected $task;
     protected $log_item;
     protected $actions;
+    protected $contacts_mentioned;
 
     protected $options = [
         'check_rights' => true,
@@ -25,6 +27,7 @@ class tasksNotificationsSender
         self::EVENT_INVITE_ASSIGN,
         self::EVENT_EDIT,
         self::EVENT_COMMENT,
+        self::EVENT_MENTION,
     ];
 
     /**
@@ -51,6 +54,19 @@ class tasksNotificationsSender
 
         $this->options = array_merge($this->options, $options);
 
+        $this->contacts_mentioned = [];
+        if (in_array(self::EVENT_MENTION, $this->actions)) {
+            if (in_array(self::EVENT_NEW, $this->actions) || in_array(self::EVENT_EDIT, $this->actions)) {
+                if (false !== strpos($this->task['text'], '@')) {
+                    $this->contacts_mentioned += tasksTask::extractMentions($this->task['text']);
+                }
+            } else {
+                if ($this->log_item['text'] && false !== strpos($this->log_item['text'], '@')) {
+                    $this->contacts_mentioned += tasksTask::extractMentions($this->log_item['text']);
+                }
+            }
+        }
+
         $this->pushSender = new tasksPushSenderService();
     }
 
@@ -71,23 +87,27 @@ class tasksNotificationsSender
         // To prevent it order by action
         // Priority order like in defined in instance proper
 
+        $all_contact_ids = [];
         $order = $this->available_actions;
         $send_map_keys = array_keys($send_map);
         foreach ($this->uniqueMerge($order, $send_map_keys) as $action) {
             if (isset($send_map[$action])) {
                 $send_to = $send_map[$action];
+                $all_contact_ids += array_fill_keys($send_to, true);
                 unset($send_map[$action]);
                 // set in new order
                 $send_map[$action] = $send_to;
             }
         }
 
+        $badge_counts = (new tasksUserTasksCounterService())->getBadgeCounts(array_keys($all_contact_ids));
+
         $already_sent = [];
         foreach ($send_map as $action => $contact_ids) {
             $contact_ids = array_unique($contact_ids);
             foreach ($contact_ids as $contact_id) {
                 if (empty($already_sent[$contact_id])) {
-                    $this->sendOne($action, $contact_id);
+                    $this->sendOne($action, $contact_id, $badge_counts[$contact_id]);
                     $already_sent[$contact_id] = true;
                 }
             }
@@ -102,7 +122,7 @@ class tasksNotificationsSender
      *
      * @throws waException
      */
-    public function sendOne(string $type, $to_contact_id): void
+    public function sendOne(string $type, $to_contact_id, ?array $badge_counts=null): void
     {
         if ($to_contact_id == wa()->getUser()->getId()) {
             return;
@@ -116,7 +136,7 @@ class tasksNotificationsSender
 
             tasksNotifications::send($type, $this->task, $this->log_item, $to, $this->options['templateData'] ?? []);
 
-            $this->pushSender->send($type, $this->task, $this->log_item, $to);
+            $this->pushSender->send($type, $this->task, $this->log_item, $to, $badge_counts);
         } catch (Exception $exception) {
             tasksLogger::error($exception);
         }
@@ -137,8 +157,22 @@ class tasksNotificationsSender
         ]);
 
         $send_map = [];
+        $send_to_mentioned = $this->contacts_mentioned;
         foreach ($this->actions as $action) {
+            if ($action === self::EVENT_MENTION) {
+                continue;
+            }
             $send_map[$action] = $this->getContactIdsNeedSentTo($action, $settings);
+            foreach($send_map[$action] as $contact_id) {
+                unset($send_to_mentioned[$contact_id]);
+            }
+        }
+
+        // @-mentioned users are separate: they only receive 'mention' notification and not others,
+        // and only if not eligible for another notification type
+        if ($send_to_mentioned) {
+            $mentioned_settings = $this->getContactsNotificationSettings(array_keys($send_to_mentioned));
+            $send_map[self::EVENT_MENTION] = $this->getContactIdsNeedSentTo(self::EVENT_MENTION, $mentioned_settings);
         }
 
         return $send_map;
@@ -175,9 +209,15 @@ class tasksNotificationsSender
         $contact_ids = array_keys($settings);
         $send_to = [];
         foreach ($contact_ids as $contact_id) {
-            if (isset($settings[$contact_id]) &&
-                $this->needSent($contact_id, $action, $settings[$contact_id])) {
+            if ($action == self::EVENT_MENTION) {
+                // There's no setting for @-mentioning notifications (for now).
+                // Send to everyone eligible.
                 $send_to[] = $contact_id;
+            } else {
+                if (isset($settings[$contact_id]) &&
+                    $this->needSent($contact_id, $action, $settings[$contact_id])) {
+                    $send_to[] = $contact_id;
+                }
             }
         }
 

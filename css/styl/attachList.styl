@@ -124,17 +124,23 @@
 
     .t-attach-droparea
         position relative
-        padding 0.75rem
-        border-top 1px solid var(--border-color-soft)
+        padding 0.75rem 0 0.125rem
+        border-radius 0 0 0.75rem 0.75rem
         text-align center
         font-size 0.9375rem
-        background var(--background-color-blank)
+        background var(--attachment-droparea-background)
+        border-top 1px solid var(--border-color-soft)
         color: #aaa;
         transition background 200ms linear
         box-sizing border-box
 
+        .t-droparea-hint
+            margin-top 0.125rem
+            margin-bottom 0.75rem
+
         &:hover
-            background var(--background-color-editable)
+            background var(--attachment-droparea-background-hover)
+            color var(--text-color-link-hover)
 
         &.file-hover
             background var(--highlighted-yellow)

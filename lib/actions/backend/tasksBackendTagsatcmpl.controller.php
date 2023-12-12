@@ -1,4 +1,8 @@
 <?php
+/**
+ * Tags autocomplete used in old 1.3 editor in backend. Legacy only.
+ * UI 2.0 editor uses tasksTasksEntityAutocompleteController
+ */
 class tasksBackendTagsatcmplController extends waJsonController
 {
     public function execute()

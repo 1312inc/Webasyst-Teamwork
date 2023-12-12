@@ -18,9 +18,8 @@ class tasksApiAttachmentDtoFactory
             $data['ext'],
             $data['code'],
             sprintf(
-                '%s%s/api.php/tasks.attachments.download.method.php?id=%d',
+                '%sapi.php/tasks.attachments.download?id=%d',
                 wa()->getRootUrl(true),
-                wa()->getConfig()->getBackendUrl(),
                 $data['id']
             ),
             $isImage,
@@ -38,6 +37,6 @@ class tasksApiAttachmentDtoFactory
             $ext = '';
         }
 
-        return in_array(strtolower($ext), ['jpg', 'png', 'gif', 'jpeg']);
+        return in_array(strtolower($ext), ['jpg', 'png', 'gif', 'jpeg', 'webp']);
     }
 }

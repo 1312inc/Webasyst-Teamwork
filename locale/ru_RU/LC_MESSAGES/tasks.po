@@ -12,7 +12,7 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=((((n%10)==1)&&((n%100)!=11))?(0):(((((n%10)>=2)&&((n%10)<=4))&&(((n%100)<10)||((n%100)>=20)))?(1):2));\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Basepath: .\n"
-"X-Generator: Poedit 3.1\n"
+"X-Generator: Poedit 3.3.2\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPath-1: .\n"
 
@@ -494,7 +494,7 @@ msgid "Your favorites list is empty"
 msgstr "Ваш список избранных задач пуст"
 
 msgid "To add a task to your personal favorite list, click on a tiny star icon next to task name."
-msgstr "Чтобы следить за работой над задачей, нажмите по звездочке рядом с ее названием."
+msgstr "Чтобы следить за задачей, нажмите кнопку «Наблюдать» рядом с ее заголовком."
 
 msgid "Task list is empty"
 msgstr "Задач нет"
@@ -587,7 +587,7 @@ msgid "All <strong>%s</strong> in this project will be archived and won't be lis
 msgstr "Все <strong>%s</strong>, принадлежащие проекту, попадут в архив и перестанут отображаться в списках. Вы уверены?"
 
 msgid "Self tasks only"
-msgstr "Только свои задачи"
+msgstr "Только назначенные задачи"
 
 msgid "Full access"
 msgstr "Полный доступ"
@@ -710,7 +710,7 @@ msgid "Outbox automatically collects all tasks you’ve created."
 msgstr "Здесь будут собраны все задачи, в работе над которыми вы принимали участие."
 
 msgid "Your favorite task list is empty"
-msgstr "Избранных задач нет"
+msgstr "Здесь пока нет задач"
 
 msgid "Use projects to organize tasks and manage access rights for your teammates."
 msgstr "Используйте проекты для удобной организации задач и настройки прав доступа для сотрудников."
@@ -742,8 +742,18 @@ msgstr "НОВОЕ: %s %s"
 msgid "DONE: %s was completed"
 msgstr "ВЫПОЛНЕНО: %s"
 
+msgid "DONE: %s %s"
+msgstr "ВЫПОЛНЕНО: %s %s"
+
 msgid "EDIT: %s was edited"
 msgstr "ОБНОВЛЕНО: %s"
+
+msgid "EDIT: %s %s"
+msgstr "ОБНОВЛЕНО: %s %s"
+
+# @-mentions
+msgid "@ %s %s"
+msgstr "@ %s %s"
 
 msgid "created a task"
 msgstr "создал задачу"
@@ -812,7 +822,7 @@ msgid "No tasks in %s status"
 msgstr "В статусе «%s» нет задач"
 
 msgid "There are currently no tasks in %s status."
-msgstr "В статусе «%s» нет ни одной задачи."
+msgstr "В ваших проектах нет ни одной задачи в статусе «%s»."
 
 msgid "There are unsaved task draft."
 msgstr "Есть несохраненная задача."
@@ -1067,13 +1077,13 @@ msgid "Delete list “%s”"
 msgstr "Удалить список «%s»"
 
 msgid "My preferences"
-msgstr "Мои настройки"
+msgstr "Мои личные настройки"
 
 msgid "Actions"
 msgstr "Действия"
 
 msgid "Task title"
-msgstr "Заголовок"
+msgstr "Задача"
 
 msgid "No active work scopes are defined."
 msgstr "Текущие работы не заданы."
@@ -1276,6 +1286,9 @@ msgstr "Мои фильтры"
 msgid "%d open / %d closed"
 msgstr "%d открытых / %d закрытых"
 
+msgid "%d%% completed: %d open / %d closed"
+msgstr "Готовность %d%%: %d открытых задач / %d закрытых"
+
 msgid "Add a project to start creating tasks."
 msgstr "Создайте проект, чтобы начать ставить задачи."
 
@@ -1373,7 +1386,7 @@ msgid "Text editor"
 msgstr "Редактор"
 
 msgid "WYSIWYG"
-msgstr "Полноценный визуальный редактор (WYSIWYG)"
+msgstr "Визуальный редактор (WYSIWYG)"
 
 msgid "Markdown"
 msgstr "Markdown (просто текст)"
@@ -1456,14 +1469,17 @@ msgstr "%s отредактировал созданную вами задачу
 msgid "User %s edited a task"
 msgstr "%s отредактировал задачу"
 
+msgid "User %s mentioned you in a task"
+msgstr "%s отметил вас в задаче"
+
 msgid "invited"
 msgstr "приглашен"
 
 msgid "Mobile app"
-msgstr "Приложение"
+msgstr "Мобильное приложение"
 
-msgid "Install Webasyst Teamwork mobile app on your phone today:"
-msgstr "Установите Webasyst Задачи на свой телефон сегодня:"
+msgid "Install Webasyst Teamwork mobile app on your phone."
+msgstr "Установите Webasyst Задачи на свой телефон."
 
 msgid "Android is available free today! iOS is coming soon."
 msgstr "Бесплатно для Андроид уже сегодня. iOS — скоро!"
@@ -1488,3 +1504,69 @@ msgstr "Скопировано!"
 
 msgid "https://www.webasyst.com/store/app/tasks/"
 msgstr "https://www.webasyst.ru/store/app/tasks/"
+
+msgid "Watchers"
+msgstr "Наблюдатели"
+
+msgid "Checklist"
+msgstr "Чек-лист"
+
+msgid "404"
+msgstr ""
+
+msgid "Install Webasyst Teamwork mobile app on your phone today:"
+msgstr "Установите Webasyst Задачи на свой телефон:"
+
+msgid "App icon badge"
+msgstr "Счетчик на иконке"
+
+msgid "Urgent open tasks assigned to me"
+msgstr "Срочные открытые задачи, назначенные на меня"
+
+msgid "Unread @mentions"
+msgstr "Непрочитанные @упоминания"
+
+msgid "Both settings are force-set to on for every user on your team."
+msgstr "Обе настройки всегда включены для всех сотрудников в вашей команде."
+
+msgid "New @mentions"
+msgstr "Новые @упоминания"
+
+msgid "Notifications on new mentions are always on for every user on your team."
+msgstr "Уведомления о новых упоминаниях всегда включены у всех сотрудников в вашей команде."
+
+msgid "Push & Email"
+msgstr "Push-уведомления и почта"
+
+msgid "To receive push notifications, make sure the <a href=\"https://www.webasyst.com/mobile/\" target=\"_blank\">%s Webasyst Teamwork mobile app</a> is installed on your device with push notifications enabled/allowed."
+msgstr "Чтобы принимать пуш-уведомления о задачах, установите <a href=\"https://www.webasyst.ru/mobile/\" target=\"_blank\">%s мобильное приложение «Webasyst Задачи»</a> на свой телефон и убедитесь, что отправка уведомлений для приложения включена/разрешена."
+
+msgid "Teamwork"
+msgstr "Задачи"
+
+msgid "%d.%d %s"
+msgstr ""
+
+msgid "Webasyst ID auth is required to be enabled to send an invitation"
+msgstr "Для отправки приглашения вход с Webasyst ID должен быть включен"
+
+msgid "Hello, World!"
+msgstr ""
+
+msgid "This is a demo task. Go ahead and click “Doing” or just close it. #webasyst #demo"
+msgstr "Это тестовая приветственная задача, чтобы показать, как все работает. Нажмите «Взять в работу» или «Закрыть». #webasyst #демо"
+
+msgid "To attach a Pocket Lists checklist, save the task first."
+msgstr "Чтобы добавить чек-лист Pocket Lists, сначала сохраните задачу."
+
+msgid "Tags and links"
+msgstr "Теги и ссылки"
+
+msgid "Delete logo"
+msgstr "Удалить логотип"
+
+msgid "Save project to commit logo deletion."
+msgstr "Сохраните проект для подтверждения удаления логотипа."
+
+msgid "Hashtag, task number, order ID, etc."
+msgstr "Тег, номер задачи или заказа, контакт..."

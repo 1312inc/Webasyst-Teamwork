@@ -35,7 +35,7 @@ final class tasksPushSenderService
     /**
      * @throws waException
      */
-    public function send(string $type, $task, array $logItem, waContact $toContact): void
+    public function send(string $type, $task, array $logItem, waContact $toContact, ?array $badge_counts=null): void
     {
         tasksLogger::debug(
             sprintf(
@@ -52,16 +52,20 @@ final class tasksPushSenderService
             return;
         }
 
+        $log_has_text = !!strlen(trim(ifset($logItem, 'text', '')));
+
         $dto = new tasksPushDataDto(
             $this->getTitle($type, $task),
             $this->getMessage($type, $task, $toContact, $logItem),
             null,
             [
                 'task_id' => $task['id'],
+                'comment_id' => $log_has_text ? $logItem['id'] : null,
                 'type' => $type,
                 'webasyst_installation_id' => $this->waInstallationId,
                 'group_name' => sprintf(_w('%d.%d %s'), $task['project_id'] , $task['number'], $task['name']),
-                'group_id' => sprintf('%s-%s', $this->waInstallationId, $task['id'])
+                'group_id' => sprintf('%s-%s', $this->waInstallationId, $task['id']),
+                'badge' => $badge_counts,
             ],
             null
         );
@@ -142,6 +146,12 @@ final class tasksPushSenderService
 
                 return sprintf_wp('User %s wrote a comment.', wa()->getUser()->getName());
 
+            case tasksNotificationsSender::EVENT_MENTION:
+                return sprintf_wp(
+                    'User %s mentioned you in a task.',
+                    wa()->getUser()->getName()
+                );
+
             case tasksNotificationsSender::EVENT_EDIT:
                 if ($to->getId() == $log['assigned_contact_id']) {
                     return sprintf_wp('User %s edited a task you are assigned to', wa()->getUser()->getName());
@@ -174,6 +184,9 @@ final class tasksPushSenderService
 
             case tasksNotificationsSender::EVENT_DONE:
                 return sprintf('☑️️ ' . _w('%s %s'), $task['project_id'] . '.' . $task['number'], $task['name']);
+
+            case tasksNotificationsSender::EVENT_MENTION:
+                return sprintf(_w('@ %s %s'), $task['project_id'] . '.' . $task['number'], $task['name']);
 
             case tasksNotificationsSender::EVENT_COMMENT:
             case tasksNotificationsSender::EVENT_EDIT:

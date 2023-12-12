@@ -136,12 +136,15 @@ class tasksNotifications
                 );
                 break;
             case tasksNotificationsSender::EVENT_DONE:
-                $subject = sprintf('☑️ ' . _w('DONE: %s was completed'), $task['project_id'] . '.' . $task['number']);
+                $subject = sprintf('☑️ ' . _w('DONE: %s %s'), $task['project_id'] . '.' . $task['number'], $task['name']);
+                break;
+            case tasksNotificationsSender::EVENT_MENTION:
+                $subject = sprintf(_w('@ %s %s'), $task['project_id'] . '.' . $task['number'], $task['name']);
                 break;
             case tasksNotificationsSender::EVENT_COMMENT:
             case tasksNotificationsSender::EVENT_EDIT:
             default:
-                $subject = sprintf('⚡ ' . _w('EDIT: %s was edited'), $task['project_id'] . '.' . $task['number']);
+                $subject = sprintf('⚡ ' . _w('EDIT: %s %s'), $task['project_id'] . '.' . $task['number'], $task['name']);
                 break;
         }
 

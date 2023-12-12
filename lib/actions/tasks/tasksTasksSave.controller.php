@@ -84,6 +84,9 @@ class tasksTasksSaveController extends waJsonController
         $new_tags = array_merge($parse_new_tags, $collect_header_tags);
 
         $tasks_task_tags_model->save($task['id'], $new_tags);
+
+        // Parse @mentions
+        tasksHelper::updateUnreadForMentions($task['text'], $task);
     }
 
     /**
@@ -179,7 +182,7 @@ class tasksTasksSaveController extends waJsonController
             'prev_task' => $prev_task
         ));
 
-        $sender = new tasksNotificationsSender($task, 'edit');
+        $sender = new tasksNotificationsSender($task, ['edit', 'mention']);
         $sender->send();
 
         return $task;
@@ -211,7 +214,7 @@ class tasksTasksSaveController extends waJsonController
         ));
 
         if ($task['assigned_contact_id']) {
-            $sender = new tasksNotificationsSender($task, 'new');
+            $sender = new tasksNotificationsSender($task, ['new', 'mention']);
             $sender->send();
         }
 

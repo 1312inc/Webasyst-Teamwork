@@ -16,11 +16,17 @@ final class tasksApiTasksFavoriteRequest
      */
     private $contactId;
 
-    public function __construct(int $task_id, bool $favorite, int $contactId)
+    /**
+     * @var ?int
+     */
+    private $unread;
+
+    public function __construct(int $task_id, bool $favorite, int $contactId, ?int $unread=null)
     {
         $this->taskId = $task_id;
         $this->favorite = $favorite;
         $this->contactId = $contactId;
+        $this->unread = $unread;
     }
 
     public function getTaskId(): int
@@ -36,5 +42,10 @@ final class tasksApiTasksFavoriteRequest
     public function getContactId(): int
     {
         return $this->contactId;
+    }
+
+    public function isUnread(): ?bool
+    {
+        return $this->unread;
     }
 }

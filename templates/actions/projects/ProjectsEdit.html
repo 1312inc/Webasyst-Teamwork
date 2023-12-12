@@ -1,3 +1,5 @@
+<style>.errormsg { color: red; }</style>
+
 <div class="flexbox">
 
     {$sidebar_html|default:''}
@@ -70,23 +72,17 @@
                                     [`Logo`]
                                 </div>
                                 <div class="value">
+                                    {* Legacy: there used to be a selection of predetermined icons *}
 
-                                    {*
-                                        LEGACY
-                                        <ul class="chips" id="project-icon-selector">
-                                            {foreach $icons as $icon}
-                                                <li class="t-project-icon{if ($project.icon_class == $icon)} selected{/if}">
-                                                    <a href="javascript:void(0)">
-                                                        <i class="fas fa-{$icon}"></i>
-                                                    </a>
-                                            </li>
-                                            {/foreach}
-                                        </ul>
-                                    *}
+                                    <input type="file" name="icon_file" class="long">
 
-                                    <input type="hidden" name="project[icon]" value="tasks{* $project.icon *}">
-
-                                    <input id="t-icon-url" type="text" value="{$project.icon_url|escape}" name="icon_url" class="long" placeholder="https://" />
+                                    {if $project.icon_url}
+                                        <p><img class="t-project-img-logo" src="{$project.icon_url|escape}" /></p>
+                                        <input type="hidden" name="project[icon]" value="tasks">
+                                        <input id="t-icon-url" type="hidden" value="{$project.icon_url|escape}" name="icon_url" />
+                                        <a class="t-project-delete-logo small">[`Delete logo`]</a>
+                                        <p class="t-project-delete-logo-msg small italic hidden">[`Save project to commit logo deletion.`]</p>
+                                    {/if}
                                     <p class="hint">[`Image URL to be used as a tiny project icon all around.`]</p>
 
                                 </div>
@@ -159,7 +155,10 @@
 
                         </div>
                         <div class="custom-m-20">
-                            <input type="submit" class="button" value="[`Save`]">
+                            <button type="submit" class="button">
+                                <i class="fas fa-spinner wa-animation-spin speed-1000" style="display: none;"></i>
+                                <span>[`Save`]</span>
+                            </button>
                         </div>
                     </div>
                 </form>
@@ -185,6 +184,7 @@
     <script>( function($) { "use strict";
 
         var $form = $('#project-editor-form');
+        var $submitButton = $form.find('button[type="submit"]');
         var delete_confirm_msg = "[`DANGER: Deletion will be permanent with no ability to roll back. Are you sure?`]";
 
         {if $project.id}
@@ -215,9 +215,31 @@
             e.preventDefault();
             $form.showLoading();
             $('#content .t-saved').slideUp();
-            $.post($form.attr('action'), $form.serialize(), function (html) {
-                $("#content").html(html);
+
+            $submitButton.attr('disabled', true);
+            $submitButton.find('.fa-spinner').fadeIn();
+
+            $.ajax({
+                url: $form.attr('action'),
+                type: 'post',
+                data: new FormData($form[0]),
+                processData: false,
+                contentType: false,
+                success: function (html) {
+                    setTimeout(() => {
+                        $("#content").html(html);
+                    }, 1000);
+                }
             });
+        });
+
+        // Deletion Logo
+        $('.t-project-delete-logo').on('click', function (event) {
+            event.preventDefault();
+            $('#t-icon-url').remove();
+            $('.t-project-img-logo').addClass('opacity-20');
+            $('.t-project-delete-logo-msg').removeClass('hidden');
+            $(this).hide();
         });
 
         // Deletion link

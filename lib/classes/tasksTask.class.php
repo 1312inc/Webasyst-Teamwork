@@ -188,7 +188,7 @@ class tasksTask implements ArrayAccess
         } else {
             $ext = '';
         }
-        return in_array(strtolower($ext), array('jpg', 'png', 'gif', 'jpeg'));
+        return in_array(strtolower($ext), array('jpg', 'png', 'gif', 'jpeg', 'webp'));
     }
 
     /**
@@ -260,6 +260,7 @@ class tasksTask implements ArrayAccess
             $parser = new tasksParsedown();
             $parser->setBreaksEnabled(true);
             $parser->setMarkupEscaped(true);
+            $text = self::replaceMentionsWithLinks($text);
             $text = $parser->text($text);
         }
 
@@ -278,6 +279,43 @@ class tasksTask implements ArrayAccess
         tsks()->getCache()->set($key, $text, 3600);
 
         return $text;
+    }
+
+    public static function getAllMentionedUsers($text)
+    {
+        if (!preg_match_all('~(?:\s|^)@(\S+)~u', $text, $matches) || empty($matches[1])) {
+            return [];
+        }
+
+        $candidate_logins = array_map('strtolower', $matches[1]);
+
+        // List of all backend users with access to Tasks app
+        static $team = null;
+        if ($team === null) {
+            $team = [];
+            $collection = new waContactsCollection('users');
+            $users = $collection->getContacts('id,name,login,firstname,middlename,lastname,photo,is_company,is_user', 0, 500);
+            foreach($users as $u) {
+                $team[strtolower($u['login'])] = $u;
+            }
+            unset($users);
+        }
+
+        return array_intersect_key($team, array_fill_keys($candidate_logins, 1));
+    }
+
+    public static function replaceMentionsWithLinks($text)
+    {
+        $replace_map = [];
+        $root_url = wa()->getConfig()->getRootUrl(false);
+        $backend_url = wa()->getConfig()->getBackendUrl(false);
+        $user_url_template = $root_url.$backend_url.'/team/u/%s/';
+        foreach(self::getAllMentionedUsers($text) as $login => $user) {
+            $user_url = sprintf($user_url_template, $login);
+            $replace_map['~(\s|^)('.preg_quote('@'.$login).')(\s|$)~ui'] = '$1[$2]('.$user_url.')$3';
+        }
+
+        return preg_replace(array_keys($replace_map), array_values($replace_map), $text);
     }
 
     /**
@@ -308,7 +346,7 @@ class tasksTask implements ArrayAccess
             # Start of a tag
             \#
 
-            # Make sure it's not a number 
+            # Make sure it's not a number
             (?![0-9]+)
 
             # Make sure it's not a link to task
@@ -316,10 +354,38 @@ class tasksTask implements ArrayAccess
 
             # Make sure it's not a CSS color
             (?![0-9A-Fa-f]{3}\b|[0-9A-Fa-f]{6}\b)
-            
+
             # This matches the tag name
             ([^\s/!?()[\],\.#<>'\"\\\\]+)
         ~xu";
+    }
+
+    public static function extractMentions($text)
+    {
+        $pattern = "~
+            # Make sure the tag is preceded by newline or whitespace.
+            (?:\s|^)
+
+            # Start of a tag
+            \@
+
+            # This matches the tag name
+            ([^\s/!?()[\],\.#<>'\"\\\\]+)
+        ~xu";
+
+        $has_tags = preg_match_all($pattern, $text, $m);
+        if (!$has_tags) {
+            return [];
+        }
+
+        $possible_logins = $m[1];
+        $contact_model = new waContactModel();
+        $contacts = $contact_model->getByField([
+            'is_user' => 1,
+            'login' => $possible_logins,
+        ], 'id');
+
+        return $contacts;
     }
 
     /**
@@ -343,13 +409,13 @@ class tasksTask implements ArrayAccess
             # Make sure the tag is preceded by newline or whitespace.
             # Multiple '#'s are used in markdown for headers, # can be inside a URL, etc...
             (?:\s|^)
-        
+
             # Start of a tag
             \#
-        
+
             # Task Number
-            ([0-9]+\.[0-9]+) 
-            
+            ([0-9]+\.[0-9]+)
+
         ~x";
     }
 
@@ -403,7 +469,7 @@ class tasksTask implements ArrayAccess
         $replace_map2 = array();
         foreach ($tags as $tag) {
             $link = str_replace('{$tag}', $tag, $link_pattern);
-            $replace_map[sprintf('/#%s\b/',preg_quote($tag,'/'))] = $link;
+            $replace_map[sprintf('/#%s\b/u',preg_quote($tag,'/'))] = $link;
             $replace_map2['#'.$tag] = $link;
         }
 
@@ -515,6 +581,25 @@ class tasksTask implements ArrayAccess
         return $contact;
     }
 
+    /** @return array */
+    public function getWatchingContacts()
+    {
+        $favorite_model = new tasksFavoriteModel();
+        $contact_ids = array_keys($favorite_model->getByField(['task_id' => $this['id']], 'contact_id'));
+
+        $result = [];
+        $contact_model = new waContactModel();
+        $contacts = $contact_model->getById($contact_ids);
+        $statusService = new tasksTeammateStatusService();
+        foreach($contacts as $c) {
+            $c['name'] = waContactNameField::formatName($c);
+            $c['photo_url'] = waContact::getPhotoUrl($c['id'], $c['photo'], null, null, ($c['is_company'] ? 'company' : 'person'));
+            $c['calendar_status'] = $statusService->getForContactId($c['id'], new DateTimeImmutable());
+            $result[$c['id']] = $c;
+        }
+        return $result;
+    }
+
     /**
      * @param int $id
      * @return waContact
@@ -552,7 +637,15 @@ class tasksTask implements ArrayAccess
     public function getFavorite()
     {
         $favorite_model = new tasksFavoriteModel();
-        return $favorite_model->getByField(array('contact_id' => wa()->getUser()->getId(), 'task_id' => $this->id));
+        return $favorite_model->getByField(array('contact_id' => wa()->getUser()->getId(), 'task_id' => $this->id)) ?? false;
+    }
+
+    public function getFavoriteUnread()
+    {
+        if (!isset($this->data['favorite']) || !is_array($this->data['favorite'])) {
+            $this->data['favorite'] = $this->getFavorite();
+        }
+        return !empty($this->data['favorite']['unread']);
     }
 
     protected function getReturnLogItem()

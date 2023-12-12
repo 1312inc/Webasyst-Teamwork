@@ -183,6 +183,29 @@ class tasksHelper
     }
 
     /**
+     * Parse @mentions in given text (comment or task body).
+     * Get all mentioned users who have access rights to given task.
+     * Add the task to favorites for those users and mark as unread.
+     */
+    public static function updateUnreadForMentions(string $text, $task)
+    {
+        $contacts_mentioned = tasksTask::extractMentions($text);
+        if (!$contacts_mentioned) {
+            return;
+        }
+
+        // Make sure users have access to project
+        $teamGetter = new tasksTeamGetter();
+        $contacts_have_access = $teamGetter->getTeam(new taskTeamGetterParamsDto($task['project_id'], false, false, false, false, 2));
+        $contacts_mentioned = array_intersect_key($contacts_mentioned, $contacts_have_access);
+        if (!$contacts_mentioned) {
+            return;
+        }
+
+        (new tasksFavoriteModel())->markUnreadForContacts(array_keys($contacts_mentioned), (int)$task['id']);
+    }
+
+    /**
      * @return array|null
      * @deprecated
      * This method not-deprecated up to version 1.2.0
@@ -357,7 +380,7 @@ class tasksHelper
                 $style[] = 'background: var(--light-gray)';
             }
         }
-        $style[] = 'color:' . htmlspecialchars($color);
+        $style[] = 'color:' . htmlspecialchars($color) . ' !important';
         if (wa()->whichUI() == '1.3' && !empty($status['params']['title_style_italic'])) {
             $style[] = 'font-style:italic';
         }
@@ -476,14 +499,16 @@ class tasksHelper
 
         $update = self::updateTaskByLogInfo($log, $task, $do_not_update_datetime);
 
+        // Parse @mentions
+        tasksHelper::updateUnreadForMentions($log['text'], $update + $task);
+
         if ($send_notification) {
             $log['text'] = (string) $log['text'];
             $log['attach_count'] = $log_model->countAttachments($log['id']);
 
             $not_empty_log_item = strlen($log['text']) > 0 || $log['attach_count'] > 0;
 
-            $actions = [];
-
+            $actions = ['mention'];
             if (!empty($update['assigned_contact_id'])) {
                 $actions[] = 'assign';
             } elseif ($not_empty_log_item) {

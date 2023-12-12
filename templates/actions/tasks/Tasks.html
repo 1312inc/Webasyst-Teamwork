@@ -15,6 +15,131 @@
             <header class="t-header-wrapper">
                 {include file="./TasksHeader.html" inline}
             </header>
+
+            {if !empty($list_view_type)}
+                {* Bulk action buttons when tasks are selected in the list *}
+                <div class="t-selection-menu" id="t-selection-menu">
+                    <div class="t-menu-wrapper">
+
+                        <span class="t-checkbox-wrapper custom-mr-8">
+                            <label>
+                                <span class="wa-checkbox">
+                                    <input class="t-checkbox" id="check-all-tasks" type="checkbox" name="">
+                                    <span>
+                                        <span class="icon">
+                                            <i class="fas fa-check"></i>
+                                        </span>
+                                    </span>
+                                </span>
+                            </label>
+                        </span>
+
+                        <div class="dropdown">
+                            <span class="dropdown-toggle highlighted blue small custom-p-4 custom-pr-24 custom-pl-8 semibold counter" style="cursor: pointer; display: none;">
+                                <span>
+                                    [`Selected tasks`]
+                                    <span class="counter-number badge blue custom-mx-4"></span>
+                                </span>
+                            </span>
+                            <div class="dropdown-body" style="min-width: 300px;">
+
+                                <ul class="menu">
+                                    <li>
+                                        <a class="t-forward-link" href="javascript:void(0);" title="[`Forward`]">
+                                            <i class="fas fa-arrow-right"></i>
+                                            <span>[`Forward`]</span>
+                                        </a>
+                                    </li>
+                                    <li class="bottom-padded">
+                                        <a class="t-done-link" href="javascript:void(0);">
+                                            <i class="fas fa-check-circle text-gray"></i>
+                                            <span>[`Close tasks`]</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="set-priority-link" href="javascript:void(0);">
+                                            <i class="fas fa-exclamation-triangle text-yellow"></i>
+                                            <span>[`Set priority`]</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="set-deadline-link" href="javascript:void(0);">
+                                            <i class="fas fa-flag-checkered text-black"></i>
+                                            <span>[`Set due date`]</span>
+                                        </a>
+                                    </li>
+                                    <li class="top-padded">
+                                        <a class="t-delete-link" href="javascript:void(0);">
+                                            <i class="fas fa-trash-alt text-red"></i>
+                                            <span>[`Delete tasks`]</span>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                                <hr class="custom-mb-8" />
+
+                                <div class="t-tags-dropdown box custom-pt-0 custom-pb-4">
+
+                                    <ul class="chips tags small">
+
+                                        {if count($tags_cloud) <= tasksTaskTagsModel::TAGS_MAX_COUNT}
+                                            {foreach $tags_cloud as $tag}
+                                                <li>
+                                                    <a class="js-set-tag t-cloud-link t-set-tag"
+                                                        data-id="{$tag.id}" href="javscript:void(0);">
+                                                        <i class="fas fa-hashtag"></i>
+                                                        <span>{$tag.name|escape}</span>
+                                                    </a>
+                                                </li>
+                                            {/foreach}
+
+                                        {* else}
+                                            {<span class="hint" style="margin: 1em 0;">{sprintf(_w('There are more than %u tags.'), tasksTaskTagsModel::TAGS_MAX_COUNT)}<br>
+                                                [`Start typing in the search field to find a tag.`]
+                                            </span> *}
+
+                                        {/if}
+
+                                        <li class="t-add-tag">
+                                            <form action="?module=tags&action=set" class="t-submit">
+                                                <div class="t-input-wrapper">
+                                                    <i class="fas fa-hashtag text-green"></i>
+                                                    <input type="text" class="t-input custom-ml-8 shorter js-t-task-tags-autocomplete" name="tag_name"
+                                                        autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true"
+                                                        placeholder="[`Tag tasks`]">
+                                                    <input type="submit" class="button green" value="[`Add`]">
+                                                </div>
+                                            </form>
+                                        </li>
+                                    </ul>
+
+                                </div>
+
+                                <!-- plugin hook: 'backend_tasks.%plugin_id%.header.bulk' -->
+                                {* @event backend_tasks.%plugin_id%.header.bulk *}
+                                {foreach $_backend_header_hooks as $_}{$_.bulk|default:''}{/foreach}
+
+                            </div>
+                            <script>
+                                ( function($) {
+                                    $("#t-selection-menu .dropdown").waDropdown({
+                                        hover: false
+                                    });
+                                })(jQuery);
+                            </script>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="t-bulk-forward-dialog"></div>
+                <script>(function($) { "use strict";
+                    $.wa.locale = $.extend($.wa.locale, {
+                        /* Dialog header */
+                        'Forward (%d)': '[`Forward (%d)`]'
+                    });
+                })(jQuery);</script>
+            {/if}
+
             <script>(function() { "use strict";
                 window.Tasks = { };
                 window.tasksHeader = new TasksHeader({
@@ -28,14 +153,20 @@
                 });
             })();</script>
 
-            {if $tasks}
+            {if $tasks || ($unread_tasks !== null)}
                 <div class="t-tasks-wrapper is-{$list_view_type}" id="t-tasks-wrapper" data-tasks-hash-type="{$hash_type}">
+
                     <ul class="list custom-m-0 bordered-bottom">
-                    {foreach $tasks as $task}{strip}
+                        {foreach $unread_tasks as $task}{strip}
 
-                        {include file="./TasksSidebarItem.html" inline}
+                            {include file="./TasksSidebarItem.html" unread_mention=true inline}
 
-                    {/strip}{/foreach}
+                        {/strip}{/foreach}
+                        {foreach $tasks as $task}{strip}
+
+                            {include file="./TasksSidebarItem.html" inline}
+
+                        {/strip}{/foreach}
                     </ul>
 
                     <div id="end-of-tasks" class="box small gray align-center">
@@ -108,6 +239,42 @@
 
         </div>
 
+        {if !empty($tiny_ad)}
+        <div class="t-tiny-ad box custom-pb-0">
+            <div class="t-tiny-ad-box">
+
+                <a href="#" class="t-tiny-ad-close" title="[`Close`]">&times;</a>
+                <h5 class="heading"><span><span class="icon custom-mr-8"><img src="{$wa_app_static_url}img/tasks.svg" style="width: 20px; height: 20px; position: relative; top: -2px;" alt="[`Teamwork`]" /></span> [`Mobile app`]</span></h5>
+
+                <div class="flexbox space-12">
+                    <div>
+                        <a href="https://apps.apple.com/{if $wa->locale() == 'ru_RU'}ru{else}us{/if}/app/webasyst-teamwork/id1610735751" target="_blank">
+                            <img src="{$wa_app_static_url}img/badge-appstore{if $wa->locale() == 'ru_RU'}-ru{/if}.png" class="t-mobile-badge" alt="App Store">
+                        </a>
+                        <a href="https://play.google.com/store/apps/details?id=com.webasyst.teamwork" target="_blank">
+                            <img src="{$wa_app_static_url}img/badge-googleplay{if $wa->locale() == 'ru_RU'}-ru{/if}.png" class="t-mobile-badge" alt="Google Play">
+                        </a>
+                        {if $wa->locale() == 'ru_RU'}
+                            <a href="https://apps.rustore.ru/app/com.webasyst.teamwork" target="_blank">
+                                <img src="{$wa_app_static_url}img/badge-rustore.svg" class="t-mobile-badge" alt="RuStore">
+                            </a>
+                        {/if}
+                    </div>
+
+                    <div class="align-center middle">
+                        <a href="https://www.webasyst.{if $wa->locale() == 'ru_RU'}ru{else}com{/if}/mobile/" target="_blank">
+                            <img src="https://www.webasyst.{if $wa->locale() == 'ru_RU'}ru{else}com{/if}/wa-apps/site/themes/webasystcom/img/mobile-qr-{if $wa->locale() == 'ru_RU'}ru{else}en{/if}.webp" class="t-mobile-qr {if $wa->locale() != 'ru_RU'}t-tiny{/if}" />
+                        </a>
+                        <p{if $wa->locale() != 'ru_RU'} class="t-tiny"{/if}>
+                            [`Install Webasyst Teamwork mobile app on your phone.`]
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+        {/if}
 
     </div>
     <div class="content" id="task-preview-wrapper">
@@ -144,10 +311,33 @@
                 // Hide progress bar
                 waLoading.hide();
 
+                if ($link.find('.t-task-item-unread-mention').remove().length) {
+                    var countUnread = +($('.count-unread').text());
+                    if (countUnread > 1) {
+                        $('.count-unread').text(countUnread - 1);
+                    } else {
+                        $('.count-unread').parent().remove();
+                    }
+                }
+                
+                $link.addClass('selected').siblings('.selected').removeClass('selected');
+                $link.parent().siblings('ul').find('.selected').removeClass('selected');
+
                 $taskWrapper.html(html);
                 window.TasksController.skipDispatch = 1;
                 window.TasksController.setHash('/task/' + number + '/');
+
+                // make all links with target="_blank"
+                $taskWrapper.find('.t-description-wrapper, .t-comment-content').find('a').each(function () {
+                    $(this).attr('target', '_blank');
+                });
             });
+        });
+        $('.t-tiny-ad-close').click(function (e) {
+            e.preventDefault();
+
+            $(this).closest('.t-tiny-ad').hide();
+            $.post('?module=backend&action=hideTinyAd');
         });
     }());
 </script>

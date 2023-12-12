@@ -1,0 +1,19 @@
+{include inline file='./includes/Header.inc.html'}
+
+{include file="./Helpers.inc.html" inline}
+
+{sprintf('[`User %s mentioned you in a task`]:', $from.name|escape)}
+
+<br>
+<br>
+
+{project_title}
+{task_title}
+{priority_title}
+{tags_title}
+
+{task_block}
+
+{log_block}
+
+{include inline file='./includes/Footer.inc.html'}

@@ -97,6 +97,8 @@ h2
 
 pre
   white-space normal
+  &[rel="waException"]
+    white-space pre
 
 .t-project-icon
 
@@ -119,7 +121,7 @@ pre
       position absolute
       top 2.5rem
       left 2.6125rem
-      border-radius 0.375rem
+      border-radius 0.5rem
       padding 0.125rem
       background var(--white)
       line-height 1rem
@@ -186,6 +188,7 @@ pre
 
         a
           color var(--text-color)
+          padding 2px 0
 
           &:hover
             background var(--background-color-editable)
@@ -228,7 +231,7 @@ pre
       margin 0.5rem 0 0.75rem
       word-break break-word
       background var(--background-color)
-      border-radius 0.375rem
+      border-radius 0.75rem
       padding 0.5rem 1.25rem
 
       blockquote
@@ -273,7 +276,7 @@ pre
 
          .details
              background var(--background-color-input)
-             border-radius 0.375rem
+             border-radius 0.75rem
              padding 0.75rem 1rem
 
          .t-comment-content
@@ -291,7 +294,6 @@ pre
 
          .details
             background var(--background-color-blank)
-            box-shadow 0 0.5rem 1.5rem -1rem var(--dialog-shadow-color)
 
       &--right
          .t-comment-item
@@ -308,11 +310,14 @@ pre
     border-top 1px solid var(--border-color-soft)
 
 .t-big-editor-wrapper
-    border-radius 0.375rem
+    border-radius 0.75rem
     background var(--background-color-blank)
-    box-shadow 0 0.25rem 1.5rem -0.75rem var(--big-editor-shadow-color)
+    box-shadow 0 0.25rem 1.0rem -0.75rem var(--big-editor-shadow-color)
     overflow hidden
     word-break break-word
+
+    @media forMobile
+        margin-top 1rem
 
 .redactor-box.redactor-styles-on
     border-width 0 !important
@@ -333,7 +338,7 @@ textarea.t-redactor-comments
     resize vertical
     box-sizing border-box
     border-width 0
-    border-radius 0.375rem 0.375rem 0 0
+    border-radius 0.75rem 0.75rem 0 0
     border-color var(--border-color-soft)
     border-bottom-color transparent
     background-color var(--background-color-blank)
@@ -405,18 +410,24 @@ textarea.t-redactor-comments
     p
         line-height 1.25
 
+.ui-menu
+  font-family inherit
+  overflow-y auto
+  max-height 250px
+  max-width 200px
+
 .ui-menu .ui-menu-item
   color var(--menu-link-color) !important
   padding 0.5rem 1rem !important
   border-radius 0px !important
   border 0 !important
-  font-size 0.8rem !important
+  font-size 0.9rem !important
   font-weight normal !important
 
   &:hover, &.ui-state-focus
     margin 0
     font-weight normal !important
-    background-color var(--accent-color)
+    background-color var(--accent-color) !important
     color #fff !important
 
 
@@ -485,7 +496,7 @@ textarea.t-redactor-comments
     text-overflow ellipsis
 
 .t-description-wrapper
-  font-size 0.9375rem
+  font-size 1rem
   margin-top 1rem
   margin-bottom 3rem
   word-break break-word
@@ -559,13 +570,6 @@ textarea.t-redactor-comments
     img
       border 3px solid var(--blue)
 
-.sidebar .t-header-wrapper
-  @media forDesktop
-    position sticky
-    top 0
-    z-index 99
-    background var(--background-color-blank)
-
 .sidebar .sidebar-body
   height 100%
 
@@ -580,8 +584,15 @@ textarea.t-redactor-comments
     margin 0.5rem 0
 
 .t-tiny-ad-box
+  position: absolute
+  left 30px
+  right 30px
+  bottom 30px
+  z-index 1
+  max-width 350px
   border-radius 0.375rem
-  background var(--background-color-input-solid)
+  background var(--background-color-blank)
+  box-shadow 0 0.5rem 1.5rem -0.25rem rgba(0, 0, 0, 0.2)
   padding 0.75rem 0.75rem
   margin-top 0.25rem
   font-size 0.875rem
@@ -590,7 +601,7 @@ textarea.t-redactor-comments
   .t-tiny-ad-close
     float right
     color var(--light-gray)
-    font-size 1.25rem
+    font-size 1.5rem
     position relative
     top -0.6125rem
 
@@ -598,19 +609,33 @@ textarea.t-redactor-comments
     padding 0
     margin 0 0 0.75rem
 
-  img.t-mobile-badge
-    display block
-    max-width 95%
-    margin 0 auto 0.75rem
+  img.t-mobile-qr
+    max-width 85px
 
-    @media (max-width: 760px)
-      max-width 75%
+    @media (max-width: 1360px)
+      max-width 65px
+
+    &.t-tiny
+      max-width 65px
+
+  img.t-mobile-badge
+    display inline
+    max-width 156px
+    margin 0.35rem auto 0
+
+    @media (max-width: 1360px)
+      max-width 146px
 
   p
     font-size 0.8125rem
 
     @media (max-width: 760px)
-      font-size 0.937rem
+      font-size 0.75rem
+
+    &.t-tiny
+      font-size 0.75rem
+      line-height 1.2
+      margin-top 0.25rem
 
   p.hint
     font-size 0.75rem

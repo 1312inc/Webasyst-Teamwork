@@ -278,7 +278,7 @@ paths:
     post:
       tags:
         - Таски
-      summary: 'Добавляет таск в избранное'
+      summary: 'Добавляет таск в избранное или помечает как прочитанное (или непрочитанное)'
       security:
         - ApiKeyAuth: [ ]
       requestBody:
@@ -292,6 +292,11 @@ paths:
                   minimum: 1
                 favorite:
                   type: boolean
+                unread:
+                  type: string
+                  enum: [1, 0]
+                  nullable: true
+                  description: Если передать, то выставит статус "прочитано" (0) или "не прочитано" (1). Если не передавать, то при добавлении в избранное задача будет прочитанной; если задача уже была в избранном, и unread не передать, то статус останется без изменения.
                 contact_id:
                   type: integer
                   nullable: true
@@ -377,6 +382,35 @@ paths:
                     items:
                       type: integer
                       minItems: 1
+        403:
+          description: Запрещено
+        500:
+          description: Все плохо
+  /tasks.tasks.links:
+    get:
+      tags:
+        - Таски
+      summary: Информация о ссылках, содержащихся в тексте задачи
+      security:
+        - ApiKeyAuth: [ ]
+      parameters:
+        - in: query
+          name: id
+          description: id задачи
+          schema:
+            type: integer
+          required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/taskLink'
         403:
           description: Запрещено
         500:
@@ -1452,6 +1486,71 @@ paths:
           description: Запрещено
         500:
           description: Все плохо
+  /tasks.autocomplete:
+    get:
+      summary: 'Список вариантов, продолжающих введённую пользователем строку, которая начинается с @ или с #'
+      security:
+        - ApiKeyAuth: [ ]
+      parameters:
+        - in: query
+          name: term
+          required: false
+          description: "Строка запроса должна начинаться с @ или с #"
+          schema:
+            type: string
+            minLength: 1
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+            example: 10
+            minimum: 1
+            maximum: 50
+        - in: query
+          name: task_id
+          description: "В контексте какой задачи мы находимся; может влиять, например, на порядок выдачи пользователей в @-запросе"
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/taskLink'
+        400:
+          $ref: '#/components/schemas/400fail'
+        403:
+          description: Запрещено
+        500:
+          description: Все плохо
+  /tasks.settings.get:
+    get:
+      summary: ''
+      security:
+        - ApiKeyAuth: [ ]
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  version:
+                    type: string
+        400:
+          $ref: '#/components/schemas/400fail'
+        403:
+          description: Запрещено
+        500:
+          description: Все плохо
 
 components:
   securitySchemes:
@@ -1605,6 +1704,24 @@ components:
                 type: string
                 nullable: false
 
+    taskLink:
+      type: object
+      properties:
+        app_id:
+          type: string
+        entity_type:
+          type: string
+        entity_image:
+          type: string
+          nullable: true
+        entity_title:
+          type: string
+        entity_url:
+          type: string
+          nullable: true
+        markdown_code:
+          type: string
+
     taskInfo:
       type: object
       properties:
@@ -1703,6 +1820,8 @@ components:
           allOf:
             - $ref: '#/components/schemas/milestoneInfo'
         favorite:
+          type: boolean
+        favorite_unread:
           type: boolean
         publicLinks:
           description: Список публичных ссылок

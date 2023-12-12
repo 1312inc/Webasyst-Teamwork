@@ -18,13 +18,56 @@
         <form action="?module=settingsPersonal&action=save" class="t-setting-form">
             <input type="hidden" name="settings[notification][]" value="">
             <div class="t-settings-fields fields">
+
                 <div class="field-group blank">
                     <div class="field">
-                        <div class="name">
+                        <div class="name for-radio">
+                            [`App icon badge`]
+                            <span class="badge red smaller">1</span>
+                        </div>
+                        <div class="value">
+                          <ul class="menu custom-mt-4 custom-mb-8">
+                              <li>
+                                  <label>
+                                      <span class="wa-checkbox">
+                                          <input type="checkbox" name="1" id="checkbox" checked disabled>
+                                          <span>
+                                              <span class="icon">
+                                                  <i class="fas fa-check"></i>
+                                              </span>
+                                          </span>
+                                      </span>
+                                      [`Urgent open tasks assigned to me`]
+                                  </label>
+                              </li>
+                              <li>
+                                  <label>
+                                      <span class="wa-checkbox">
+                                          <input type="checkbox" name="1" id="checkbox" checked disabled>
+                                          <span>
+                                              <span class="icon">
+                                                  <i class="fas fa-check"></i>
+                                              </span>
+                                          </span>
+                                      </span>
+                                      [`Unread @mentions`]
+                                  </label>
+                              </li>
+                          </ul>
+                          <p class="hint custom-my-0">
+                              [`Both settings are force-set to on for every user on your team.`]
+                          </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field-group blank">
+                    <div class="field">
+                        <div class="name for-radio">
                             [`Text editor`]
                         </div>
                         <div class="value">
-                            <ul class="menu custom-mt-4">
+                            <ul class="menu custom-my-4">
                                 <li>
                                     <label>
                                         <span class="wa-radio">
@@ -52,8 +95,14 @@
 
                 <div class="field-group blank">
 
-                    <h5 class="heading custom-mb-12">[`My notification preferences`]</h5>
-                    
+                    <h5 class="heading custom-mb-12">
+                      <span>[`My notification preferences`] <span class="badge small squared custom-ml-4 light-gray">[`Push & Email`]</span></span>
+                    </h5>
+
+                    <p class="small">
+                      {sprintf('[`To receive push notifications, make sure the <a href="https://www.webasyst.com/mobile/" target="_blank">%s Webasyst Teamwork mobile app</a> is installed on your device with push notifications enabled/allowed.`]', '<i class="fab fa-apple text-gray custom-mr-4"></i><i class="fab fa-android text-green"></i>')}
+                    </p>
+
                     <div class="field">
                         <div class="name">
                             [`Notify me on`]
@@ -68,6 +117,24 @@
                                 {foreach $_items as $_id => $_label}
                                     <li>{action_li_item label=$_label id=$_id}</li>
                                 {/foreach}
+
+                                <li class="custom-mt-16">
+                                    <label>
+                                        <span class="wa-checkbox">
+                                            <input type="checkbox" name="1" id="checkbox" checked disabled>
+                                            <span>
+                                                <span class="icon">
+                                                    <i class="fas fa-check"></i>
+                                                </span>
+                                            </span>
+                                        </span>
+                                        [`New @mentions`]
+                                    </label>
+                                    <p class="hint custom-my-8" style="font-size: 0.8125rem;">
+                                        [`Notifications on new mentions are always on for every user on your team.`]
+                                    </p>
+                                </li>
+
                             </ul>
                         </div>
                     </div>

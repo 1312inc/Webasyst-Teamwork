@@ -6,10 +6,20 @@ class tasksTasksFavoriteMethod extends tasksApiAbstractMethod
 
     public function run(): tasksApiResponseInterface
     {
+        $unread = $this->post('unread', false);
+        if ($unread !== null) {
+            if ($unread === '') {
+                $unread = null;
+            } else {
+                $unread = $unread ? 1 : 0;
+            }
+        }
+
         $request = new tasksApiTasksFavoriteRequest(
             $this->post('task_id', true, self::CAST_INT),
             $this->post('favorite', true, self::CAST_BOOLEAN),
-            $this->post('contact_id', false, self::CAST_INT) ?: wa()->getUser()->getId()
+            $this->post('contact_id', false, self::CAST_INT) ?: wa()->getUser()->getId(),
+            $unread,
         );
 
         if ((new tasksApiTasksFavoriteHandler())->favorite($request)) {

@@ -15,7 +15,8 @@ class tasksBackendAction extends waViewAction
         $tag_model = new tasksTaskTagsModel();
         $cloud = $tag_model->getCloud();
 
-        $users = (new tasksTeamGetter())->getTeam(new taskTeamGetterParamsDto(null, true, false, true, true));
+        $is_tasks_admin = wa()->getUser()->isAdmin('tasks');
+        $users = (new tasksTeamGetter())->getTeam(new taskTeamGetterParamsDto(null, $is_tasks_admin ? false : true, false, true, true));
 
         $accessedProjects = (new tasksRights())
             ->getAvailableProjectForContact(wa()->getUser());
@@ -33,12 +34,11 @@ class tasksBackendAction extends waViewAction
             'projects' => self::getProjectsWithCounts(),
             'lists' => $this->getLists(),
             'cloud' => $cloud,
-            'scopes' => $this->getScopes(),
+            'scopes' => $this->getScopes($accessedProjects),
             'team_app_name' => $this->getTeamAppName(),
             'users' => $users,
             'text_editor' => wa()->getUser()->getSettings('tasks', 'text_editor', 'wysiwyg'),
-            'user_has_minimum_access' => $accessedProjects === true || !empty($accessedProjects[tasksRights::PROJECT_ANY_ACCESS]),
-            'tiny_ad' => (new tasksTinyAddService())->getAd(wa()->getUser())
+            'user_has_minimum_access' => $accessedProjects === true || !empty($accessedProjects[tasksRights::PROJECT_ANY_ACCESS])
         ];
 
         $this->view->assign($viewData);
@@ -70,7 +70,7 @@ class tasksBackendAction extends waViewAction
         return $lm->getByField(['contact_id' => $this->getUserId()], 'id');
     }
 
-    protected function getScopes()
+    protected function getScopes($accessedProjects)
     {
         $tasks_milestone_model = new tasksMilestoneModel();
         $tasks_task_model = new tasksTaskModel();
@@ -83,20 +83,33 @@ class tasksBackendAction extends waViewAction
                 unset($scopes[$id]);
                 continue;
             }
+            $scopes[$id]['project_access_full'] = $accessedProjects === true || in_array($scope['project_id'], $accessedProjects[tasksRights::PROJECT_ACCESS_FULL]);
             $scopes[$id]['project'] = $projects[$scope['project_id']];
+        }
+        if (!$scopes) {
+            return $scopes;
         }
 
         $scope_counts = $tasks_task_model->getCountTasksInScope();
-        if ($scope_counts) {
-            //Calculate percent closed tasks
-            foreach ($scope_counts as $count) {
-                if (isset($scopes[$count['milestone_id']])) {
-                    $percent = $count['closed'] / $count['total'] * 100;
-                    $percent = round($percent);
-                    $scopes[$count['milestone_id']]['closed_percent'] = $percent;
-                    $scopes[$count['milestone_id']]['closed_tasks'] = $count['closed'];
-                    $scopes[$count['milestone_id']]['open_tasks'] = $count['total'] - $count['closed'];
-                }
+        foreach($scopes as $scope_id => $scope) {
+            $count = ifset($scope_counts, $scope_id, [
+                'milestone_id' => $scope_id,
+                'closed' => 0,
+                'total' => 0,
+                'count' => 0,
+                'bg_color' => 'transparent',
+                'text_color' => 'transparent',
+            ]);
+
+            if ($scope['project_access_full']) {
+                $percent = $count['total'] ? $count['closed'] / $count['total'] * 100 : 0;
+                $percent = round($percent);
+                $scopes[$scope_id]['closed_percent'] = $percent;
+                $scopes[$scope_id]['closed_tasks'] = $count['closed'];
+                $scopes[$scope_id]['open_tasks'] = $count['total'] - $count['closed'];
+                $scopes[$scope_id]['proirity_tasks'] = $count['count'];
+                $scopes[$scope_id]['priority_count_bg_color'] = $count['bg_color'];
+                $scopes[$scope_id]['priority_count_text_color'] = $count['text_color'];
             }
         }
 

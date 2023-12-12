@@ -302,6 +302,7 @@ class tasksConfig extends waAppConfig
             if (empty($notification['task']) && $notification['action'] !== 'off') {
                 $notification['task'][] = 'assigned_to_me';
                 $notification['task'][] = 'created_by_me';
+                $notification['task'][] = 'favorites';
             }
 
             foreach ($notification['task'] as &$value) {
@@ -359,7 +360,7 @@ class tasksConfig extends waAppConfig
 
             $looks_like_default = false;
             sort($notification['task'], SORT_STRING);
-            if ($notification['task'] === ['assigned_to_me', 'created_by_me'] && $notification['action'] == 'always') {
+            if ($notification['task'] === ['assigned_to_me', 'created_by_me', 'favorites'] && $notification['action'] == 'always') {
                 $looks_like_default = true;
             }
 
@@ -400,21 +401,9 @@ class tasksConfig extends waAppConfig
                 );
             }
 
-            $countService = new tasksUserTasksCounterService();
-            $user = wa()->getUser();
-
-            $teamCounts = $countService->getTeamCounts($user);
-            $userCount = $teamCounts[$user->getId()] ?? ['count' => 0, 'total' => 0];
-            $hiddenCount = $countService->getHiddenCount($user);
-            if ($userCount['total'] == $userCount['count']) {
-                $inboxUrgentCount = $userCount['count'] - $hiddenCount;
-            } else {
-                $inboxUrgentCount = $userCount['count'];
-            }
-
-            return $inboxUrgentCount && $inboxUrgentCount != ($userCount['total'] - $hiddenCount)
-                ? $inboxUrgentCount
-                : null;
+            $user_id = wa()->getUser()->getId();
+            $counts = (new tasksUserTasksCounterService())->getBadgeCounts([$user_id]);
+            return $counts[$user_id]['total'];
         } catch (Exception $exception) {
             // silence
         }

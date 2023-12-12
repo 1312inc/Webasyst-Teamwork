@@ -5,12 +5,13 @@
     window.Tasks = { };
     $.tasks.forceHash("#/task/{$task.project_id}.{$task.number}/");
     $.tasks.setTitle({$task.name|json_encode});
+    $.tasks.setAppLinksOptions({$links_data|json_encode});
 })(jQuery);
 </script>
 
 <div class="t-main-wrapper">
     <header class="t-header-wrapper" STYLE="DISPLAY: NONE;">
-        
+
     </header>
 
     <div class="t-tasks-wrapper t-single-task-wrapper">

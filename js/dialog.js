@@ -87,6 +87,7 @@ var Dialog = ( function($) { "use strict";
     };
 
     Dialog.prototype.initialize = function() {
+        window.scrollTo(0, 0);
         var that = this;
         that.showDialog();
     };
@@ -178,6 +179,10 @@ var Dialog = ( function($) { "use strict";
             });
         }, 0);
 
+        addEventListener("hashchange", function () {
+            that.$dialog.remove();
+            that.$body.removeClass(that.storage.showClass);
+        });
     };
 
     Dialog.prototype.hideDialog = function() {

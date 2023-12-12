@@ -4,7 +4,7 @@ return array(
     'name'            => 'Releases',
     'description'     => 'Releases',
     'img'             => 'img/releases.svg',
-    'version'         => '0.3.2',
+    'version'         => '0.3.3',
     'vendor'          => '1021997',
     'custom_settings' => true,
     'handlers'        => array(
@@ -12,6 +12,7 @@ return array(
         'backend_tasks'            => 'backendTasks',
         'backend_task'             => 'backendTask',
         'backend_task_edit'        => 'backendTaskEdit',
+        'backend_task_info'        => 'backendTaskInfo',
         'task_save'                => 'taskSave',
         'project_delete'           => 'projectDelete',
         'backend_list_edit'        => 'backendListEdit',

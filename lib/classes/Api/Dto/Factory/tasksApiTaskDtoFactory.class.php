@@ -58,14 +58,15 @@ final class tasksApiTaskDtoFactory
                     ? tasksApiProjectDtoFactory::createFromArray($task['project'],
                     tasksApiCountsDtoFactory::createEmpty())
                     : null,
-                !empty($task->getFavorite()),
+                !empty($task['favorite']),
                 tasksHelper::convertToMarkdownAndStripTags($task->text,
                     tasksOptions::getApiTextStrippedTruncateLength()),
                 $task['uuid'] ?? null,
                 isset($task['milestone']) && is_array($task['milestone'])
                     ? tasksApiMilestoneDtoFactory::fromArray($task['milestone'], tasksApiCountsDtoFactory::createEmpty())
                     : null,
-                $task->getPublicLinks()
+                $task->getPublicLinks(),
+                !empty($task['favorite_unread'])
             );
         }
 

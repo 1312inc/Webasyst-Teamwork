@@ -618,7 +618,7 @@ SQL;
     public function findFirstLogForContactId(int $contactId): array
     {
         $sql = <<<SQL
-SELECT * 
+SELECT *
 FROM tasks_task_log
 WHERE contact_id = i:contact_id OR assigned_contact_id = i:contact_id
 ORDER BY id ASC
@@ -626,5 +626,18 @@ LIMIT 1
 SQL;
 
         return $this->query($sql, ['contact_id' => $contactId])->fetchAssoc() ?? [];
+    }
+
+    public function getLogCountsByContact(array $task_ids)
+    {
+        if (!$task_ids) {
+            return [];
+        }
+        $sql = "SELECT contact_id, COUNT(*) AS `count`
+                FROM {$this->table} AS tl
+                WHERE task_id IN (?)
+                GROUP BY contact_id
+                ORDER BY `count` DESC";
+        return $this->query($sql, [$task_ids])->fetchAll('contact_id', true);
     }
 }

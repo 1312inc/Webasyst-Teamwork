@@ -36,6 +36,13 @@ class tasksTasksAction extends waViewAction
             $total_count
         );
 
+        if ($c->getType() === tasksCollection::HASH_INBOX) {
+            // Add unread tasks to $task_rows temporarily in order to apply post-processing
+            $inbox_task_rows = (new tasksCollection('favorites/unread'))->getTasks(tasksCollection::FIELDS_TO_GET, 0, 500);
+            $remove_from_tasks_later = array_diff_key($inbox_task_rows, $task_rows);
+            $task_rows += $inbox_task_rows;
+        }
+
 //        if ($c->getType() == 'search') {
 //            $task_rows = (new tasksSearchService())->extend($task_rows, $c->getInfo());
 //        }
@@ -64,6 +71,13 @@ class tasksTasksAction extends waViewAction
 
         // prepare tasks for view
         tasksHelper::workupTasksForView($tasks);
+
+        $unread_tasks = null;
+        if (!empty($inbox_task_rows)) {
+            $unread_tasks = array_intersect_key($tasks, $inbox_task_rows);
+            $tasks = array_diff_key($tasks, $remove_from_tasks_later);
+            unset($inbox_task_rows, $remove_from_tasks_later);
+        }
 
         // hook jukebox
         $backend_tasks_hooks = $this->triggerBackendTasksEvent(
@@ -111,6 +125,7 @@ class tasksTasksAction extends waViewAction
                 'backend_tasks_hooks' => $backend_tasks_hooks,
                 'tags_cloud' => self::getTagsCloud($project_id),
                 'statuses' => self::getStatusFilterType(),
+                'tiny_ad' => (new tasksTinyAddService())->getAd(wa()->getUser()),
 
                 'show_settings' => wa()->getUser()->isAdmin('tasks') && in_array(
                         $c->getType(),
@@ -122,6 +137,7 @@ class tasksTasksAction extends waViewAction
                     : ($scopeId ? "scope/$scopeId/" : ''),
 
                 'milestone' => $milestone ?? null,
+                'unread_tasks' => $unread_tasks,
             ]
         );
     }
@@ -427,7 +443,7 @@ class tasksTasksAction extends waViewAction
                     'name' => _w('All assignees'),
                     'photo' => '',
                 ],
-            ] + tasksHelper::getTeam($project_id);
+            ] + tasksHelper::getTeam($project_id, true);
     }
 
     protected static function getListViewType()

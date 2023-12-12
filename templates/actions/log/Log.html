@@ -10,7 +10,7 @@
             {*
              * Filters by project, milestone and user
              *}
-            <div class="wide t-menu-wrapper flexbox wrap middle space-12">
+            <div class="wide small t-menu-wrapper flexbox wrap middle space-12">
                 {foreach $filter_types as $ft_id => $options}
                     <div class="dropdown t-menu-item" id="{$ft_id}" data-filter-id="{$ft_id}">
                         <button class="dropdown-toggle button t-selected-item light-gray"></button>
@@ -27,7 +27,7 @@
                                             {if !empty($o.photo)}
                                                 {$_userpic = waContact::getPhotoUrl($o.id, $o.photo, 40, 40, 'person', 0)}
                                             {/if}
-                                            <i class="userpic" style="background-image: url({$_userpic|escape})"></i>
+                                            <i class="userpic" style="background-image: url({$_userpic|escape}); position: relative; left: -0.125em; top: 0; margin: 0 0.125em -0.25em 0;"></i>
                                         {/if}
 
                                         <span class="{if $o@index > 0}is-bold{/if}">{$o.name|escape}</span>
@@ -58,7 +58,7 @@
             {*
              * Chart period selector
              *}
-            <div class="t-right-column flexbox middle space-16">
+            <div class="t-right-column small flexbox middle space-16">
 
                 <div class="t-custom-timeframe flexbox middle space-8 wrap">
                     <span>[`from`]</span>

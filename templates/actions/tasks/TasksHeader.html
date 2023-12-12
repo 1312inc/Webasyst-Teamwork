@@ -95,7 +95,7 @@
         {/if}
     </div>
 
-    <div class="box align-center t-my-lists-wrapper" id="t-my-lists-box">
+    <div class="align-center t-my-lists-wrapper" id="t-my-lists-box">
         {function star_link id='' title=''}
             <a href="javascript:void(0);" class="t-my-list-toggle button {if $id > 0}light-gray{/if} smaller outlined"
                title="{$title|default:''|escape}"
@@ -123,130 +123,6 @@
 
 </div>
 
-{if !empty($list_view_type)}
-    {* Bulk action buttons when tasks are selected in the list *}
-    <div class="t-selection-menu" id="t-selection-menu">
-        <div class="t-menu-wrapper">
-
-            <span class="t-checkbox-wrapper custom-mr-8">
-                <label>
-                    <span class="wa-checkbox">
-                        <input class="t-checkbox" id="check-all-tasks" type="checkbox" name="">
-                        <span>
-                            <span class="icon">
-                                <i class="fas fa-check"></i>
-                            </span>
-                        </span>
-                    </span>
-                </label>
-            </span>
-
-            <div class="dropdown">
-                <span class="dropdown-toggle highlighted blue small custom-p-4 custom-pr-24 custom-pl-8 semibold counter" style="cursor: pointer; display: none;">
-                    <span>
-                        [`Selected tasks`]
-                        <span class="counter-number badge blue custom-mx-4"></span>
-                    </span>
-                </span>
-                <div class="dropdown-body" style="min-width: 300px;">
-
-                    <ul class="menu">
-                        <li>
-                            <a class="t-forward-link" href="javascript:void(0);" title="[`Forward`]">
-                                <i class="fas fa-arrow-right"></i>
-                                <span>[`Forward`]</span>
-                            </a>
-                        </li>
-                        <li class="bottom-padded">
-                            <a class="t-done-link" href="javascript:void(0);">
-                                <i class="fas fa-check-circle text-gray"></i>
-                                <span>[`Close tasks`]</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="set-priority-link" href="javascript:void(0);">
-                                <i class="fas fa-exclamation-triangle text-yellow"></i>
-                                <span>[`Set priority`]</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="set-deadline-link" href="javascript:void(0);">
-                                <i class="fas fa-flag-checkered text-black"></i>
-                                <span>[`Set due date`]</span>
-                            </a>
-                        </li>
-                        <li class="top-padded">
-                            <a class="t-delete-link" href="javascript:void(0);">
-                                <i class="fas fa-trash-alt text-red"></i>
-                                <span>[`Delete tasks`]</span>
-                            </a>
-                        </li>
-                    </ul>
-
-                    <hr class="custom-mb-8" />
-
-                    <div class="t-tags-dropdown box custom-pt-0 custom-pb-4">
-
-                        <ul class="chips tags small">
-
-                            {if count($tags_cloud) <= tasksTaskTagsModel::TAGS_MAX_COUNT}
-                                {foreach $tags_cloud as $tag}
-                                    <li>
-                                        <a class="js-set-tag t-cloud-link t-set-tag"
-                                            data-id="{$tag.id}" href="javscript:void(0);">
-                                            <i class="fas fa-hashtag"></i>
-                                            <span>{$tag.name|escape}</span>
-                                        </a>
-                                    </li>
-                                {/foreach}
-
-                            {* else}
-                                {<span class="hint" style="margin: 1em 0;">{sprintf(_w('There are more than %u tags.'), tasksTaskTagsModel::TAGS_MAX_COUNT)}<br>
-                                    [`Start typing in the search field to find a tag.`]
-                                </span> *}
-
-                            {/if}
-
-                            <li class="t-add-tag">
-                                <form action="?module=tags&action=set" class="t-submit">
-                                    <div class="t-input-wrapper">
-                                        <i class="fas fa-hashtag text-green"></i>
-                                        <input type="text" class="t-input custom-ml-8 shorter js-t-task-tags-autocomplete" name="tag_name"
-                                               autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true"
-                                               placeholder="[`Tag tasks`]">
-                                        <input type="submit" class="button green" value="[`Add`]">
-                                    </div>
-                                </form>
-                            </li>
-                        </ul>
-
-                    </div>
-
-                    <!-- plugin hook: 'backend_tasks.%plugin_id%.header.bulk' -->
-                    {* @event backend_tasks.%plugin_id%.header.bulk *}
-                    {foreach $_backend_header_hooks as $_}{$_.bulk|default:''}{/foreach}
-
-                </div>
-                <script>
-                    ( function($) {
-                        $("#t-selection-menu .dropdown").waDropdown({
-                            hover: false
-                        });
-                    })(jQuery);
-                </script>
-            </div>
-        </div>
-    </div>
-
-    <div id="t-bulk-forward-dialog"></div>
-    <script>(function($) { "use strict";
-        $.wa.locale = $.extend($.wa.locale, {
-            /* Dialog header */
-            'Forward (%d)': '[`Forward (%d)`]'
-        });
-    })(jQuery);</script>
-{/if}
-
 <script>
     ( function($) {
         $('#t-filters-toggle').click(function() {
@@ -254,11 +130,13 @@
                 $('#t-filters-menu').slideDown(100);
                 $('#t-selection-menu').slideDown(100);
                 $('#t-my-lists-box').slideDown(100);
+                $('.t-preview-description-content').slideUp(100);
             }
             else {
                 $('#t-filters-menu').slideUp(100);
                 $('#t-selection-menu').slideUp(100);
                 $('#t-my-lists-box').slideUp(100);
+                $('.t-preview-description-content').slideDown(100);
             }
             $('#t-tasks-wrapper').toggleClass('t-selection-checkboxes-visible');
             $(this).toggleClass('upsidedown');

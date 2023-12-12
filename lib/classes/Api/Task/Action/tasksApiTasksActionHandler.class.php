@@ -140,6 +140,7 @@ final class tasksApiTasksActionHandler
          * For developer. Subject to change
          */
         $params = [
+            'task' => $task,
             'data' => array_merge($data, waRequest::post()),
             'status' => $status,
         ];

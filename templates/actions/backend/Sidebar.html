@@ -21,7 +21,7 @@
         <div class="flexbox space-8">
             <div class="wide">
                 <div class="state-with-inner-icon left width-100">
-                    <span class="icon"><i class="fas fa-search"></i></span>
+                    <span class="icon"><i class="fas fa-search text-gray"></i></span>
                     <input class="solid full-width" id="t-search-input" type="search" placeholder="[`Search`]"{if !empty($search_value)} value="{$search_value|escape}"{/if}>
                 </div>
                 <!-- <input class="t-sidebar-search-submit js-search-submit" type="button" value=""> -->
@@ -39,6 +39,7 @@
     <div class="bricks custom-mt-4">
         <a href="#/tasks/inbox/" class="brick">
             <span class="icon" style="color: var(--accent-color);"><i class="fas fa-inbox"></i></span>
+            <span>[`Inbox`]</span>
             <span class="count">
                 {$user_count = ifset($team_counts[$wa->user('id')], $empty_user_count)}
                 {if $user_count.total == $user_count.count}
@@ -46,24 +47,26 @@
                 {else}
                     {$inbox_urgent_count = $user_count.count}
                 {/if}
+                {if $favorites_counts.unread_total}
+                    <span class="badge red">@<span class="count-unread" style="display: none;">{$favorites_counts.unread_total|escape}</span></span> 
+                {/if}
                 {tasksUserTasksCounterService::getPairs($user_count.total-$hidden_count, $inbox_urgent_count, $user_count.bg_color, $user_count.text_color)}
             </span>
-            [`Inbox`]
         </a>
         <a href="#/tasks/outbox/" class="brick">
             <span class="icon"><i class="fas fa-paper-plane"></i></span>
+            <span>[`Outbox`]</span>
             <span class="count">{$outbox_count}</span>
-            [`Outbox`]
         </a>
         <a href="#/log/" class="brick t-mini-brick">
             <span class="icon text-yellow"><i class="fas fa-bolt"></i></span>
+            <span>[`Updates`]</span>
             <span class="count"></span>
-            [`Updates`]
         </a>
         <a href="#/kanban/" class="brick t-mini-brick">
             <span class="icon text-green"><i class="fas fa-table"></i></span>
+            <span>[`Kanban`]</span>
             <span class="count"></span>
-            [`Kanban`]
         </a>
     </div>
 
@@ -71,16 +74,16 @@
 
         <li>
             <a href="#/tasks/favorites/">
-                <i class="fas fa-star{if $favorites_counts.total} text-yellow{/if}"></i>
+                <i class="fas fa-at{if $favorites_counts.total} text-orange{/if}"></i>
                 <span>[`Watching`]</span>
                 <span class="count">{tasksUserTasksCounterService::getPairs($favorites_counts.total, $favorites_counts.count, $favorites_counts.bg_color, $favorites_counts.text_color)}</span>
             </a>
         </li>
         <li>
             <a href="#/tasks/urgent/">
-                <span class="count">{tasksUserTasksCounterService::getPairs($urgent_count, $super_urgent_count, '#ff0000', 'white')}</span>
                 <i class="fas fa-exclamation-triangle{if $urgent_count} text-red{/if}"></i>
                 <span>[`Urgent`]</span>
+                <span class="count">{tasksUserTasksCounterService::getPairs($urgent_count, $super_urgent_count, '#ff0000', 'white')}</span>
             </a>
         </li>
         <li class="inbox-hidden gray"{if !$hidden_count} style="display: none"{/if}>
@@ -152,22 +155,37 @@
                         {foreach $scopes as $scope}
                             {$_scope_is_100_complete = isset($scope.closed_percent) && $scope.closed_percent >= 100}
                             <li class="t-scope">
-                                <a href="#/tasks/scope/{$scope.id}/"{if isset($scope.closed_percent)}class="t-scope-title"{/if} title="{sprintf('[`%d open / %d closed`]', $scope.open_tasks|default:0, $scope.closed_tasks|default:0)}">
+                                <a href="#/tasks/scope/{$scope.id}/"
+                                    {if !empty($scope.project_access_full)}
+                                        {if isset($scope.closed_percent)}class="t-scope-title"{/if}
+                                        title="{sprintf('[`%d%% completed: %d open / %d closed`]', $scope.closed_percent|default: 0, $scope.open_tasks|default:0, $scope.closed_tasks|default:0)}"
+                                    {/if}
+                                >
                                     {$scope.project.icon_html}
                                     <span>
                                         <span class="flexbox">
                                             <span class="wide">
                                                 {$scope.name|escape|truncate:42}
                                             </span>
-                                            <span class="count{if $_scope_is_100_complete} text-green bold{elseif !empty($scope.due_date) && $scope.due_date < date('Y-m-d')} text-red{/if}">{if $_scope_is_100_complete}<i class="fas fa-check-circle text-green"></i> {/if}{if isset($scope.closed_percent)}{$scope.closed_percent}%{/if}</span>
+                                            {if !empty($scope.project_access_full)}
+                                                <span class="count{if $_scope_is_100_complete} text-green bold{elseif !empty($scope.due_date) && $scope.due_date < date('Y-m-d')} text-red bold{/if}">
+                                                    {if $_scope_is_100_complete}
+                                                        <i class="fas fa-check-circle fa-xs text-green"></i>
+                                                    {else}
+                                                        {tasksUserTasksCounterService::getPairs($scope.open_tasks, $scope.proirity_tasks, $scope.priority_count_bg_color, $scope.priority_count_text_color)}
+                                                    {/if}
+                                                </span>
+                                            {/if}
                                         </span>
 
-                                        <div class="progressbar">
-                                            <div class="progressbar-line-wrapper">
-                                                <div class="progressbar-outer"><div class="progressbar-inner" style="{if isset($scope.closed_percent)}width: {$scope.closed_percent}%;{/if}{if $_scope_is_100_complete}background: var(--green);{elseif !empty($scope.due_date) && $scope.due_date < date('Y-m-d')}background: var(--red);{/if}"></div></div>
-                                                <span class="hint t-closed-percent"></span>
+                                        {if !empty($scope.project_access_full)}
+                                            <div class="progressbar">
+                                                <div class="progressbar-line-wrapper">
+                                                    <div class="progressbar-outer"><div class="progressbar-inner" style="{if isset($scope.closed_percent)}width: {$scope.closed_percent}%;{/if}{if $_scope_is_100_complete}background: var(--green);{elseif !empty($scope.due_date) && $scope.due_date < date('Y-m-d')}background: var(--red);{/if}"></div></div>
+                                                    <span class="hint t-closed-percent"></span>
+                                                </div>
                                             </div>
-                                        </div>
+                                        {/if}
 
                                         <span class="hint{if !empty($scope.due_date) && $scope.due_date < date('Y-m-d')} text-red bold{/if}" style="display: block;">
                                             {if !empty($scope.due_date)}
@@ -379,54 +397,21 @@
 
 <div class="sidebar-footer shadowed">
 
-    {if !empty($tiny_ad)}
-    <div class="t-tiny-ad box custom-pb-0">
-        <div class="t-tiny-ad-box">
-
-            <a href="#" class="t-tiny-ad-close" title="[`Close`]">&times;</a>
-            <h5 class="heading">[`Mobile app`]</h5>
-
-            <div class="align-center">
-
-                <p>
-                    [`Install Webasyst Teamwork mobile app on your phone today:`]
-                </p>
-
-                <a href="https://play.google.com/store/apps/details?id=com.webasyst.teamwork" target="_blank">
-                    <img src="{$wa_app_static_url}img/badge-googleplay{if $wa->locale() == 'ru_RU'}-ru{/if}.png" class="t-mobile-badge" alt="Google Play">
-                </a>
-                <a href="https://apps.apple.com/us/app/webasyst-teamwork/id1610735751" target="_blank">
-                    <img src="{$wa_app_static_url}img/badge-appstore{if $wa->locale() == 'ru_RU'}-ru{/if}.png" class="t-mobile-badge" alt="App Store">
-                </a>
-
-            </div>
-
-        </div>
-    </div>
-    {/if}
-
     <ul class="menu">
         {if $is_admin}
-            <li>
-                <a href="#/settings/">
-                    <i class="fas fa-cog"></i>
-                    <span>[`Settings`]</span>
-                </a>
-            </li>
             <li>
                 <a href="#/plugins/">
                     <i class="fas fa-plug"></i>
                     <span>[s`Plugins`]</span>
                 </a>
             </li>
-        {else}
-            <li>
-                <a href="#/personal-settings/">
-                    <i class="fas fa-cog"></i>
-                    <span>[`Settings`]</span>
-                </a>
-            </li>
         {/if}
+        <li>
+            <a href="#/personal-settings/">
+                <i class="fas fa-cog"></i>
+                <span>[`Settings`]</span>
+            </a>
+        </li>
 
         <!-- plugin hook: 'backend_sidebar.bottom_li' -->
         {* @event backend_sidebar.%plugin_id%.bottom_li *}
@@ -458,13 +443,6 @@
             e.preventDefault();
             $(this).closest('.tags').find('.js-tags-hidden-tag').show();
             $(this).hide();
-        });
-
-        $('.t-tiny-ad-close').click(function (e) {
-            e.preventDefault();
-
-            $(this).closest('.t-tiny-ad').hide();
-            $.post('?module=backend&action=hideTinyAd');
         });
 
     })(jQuery);

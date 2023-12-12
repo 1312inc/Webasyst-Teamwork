@@ -1125,7 +1125,6 @@
   .redactor-styles h5,
   .redactor-styles h6 {
     font-weight: bold;
-    color: #111;
     text-rendering: optimizeLegibility;
     margin: 0;
     padding: 0;

@@ -14,6 +14,11 @@ final class tasksApiCountsDtoFactory
         );
     }
 
+    public static function createUnavailable(): tasksApiCountsDto
+    {
+        return new tasksApiCountsDto(-1, -1, -1, -1);
+    }
+
     public static function createEmpty(): tasksApiCountsDto
     {
         return self::createFromArray([]);

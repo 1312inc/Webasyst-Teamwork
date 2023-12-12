@@ -178,12 +178,14 @@ class tasksTaskModel extends waModel
         $result = [
             'count' => 0,
             'total' => 0,
+            'unread' => 0,
+            'unread_total' => 0,
             'text_color' => '#999',
             'bg_color' => 'transparent',
             'value' => -100500,
         ];
         $priorities = tasksOptions::getTasksPriorities();
-        $sql = "SELECT t.priority, count(*) AS `count`
+        $sql = "SELECT t.priority, count(*) AS `count`, SUM(IF(f.unread, 1, 0)) AS `unread`
                 FROM {$this->table} AS t
                     JOIN tasks_favorite AS f
                         ON t.id=f.task_id
@@ -199,6 +201,7 @@ class tasksTaskModel extends waModel
             }
 
             $result['total'] += $row['count'];
+            $result['unread_total'] += $row['unread'];
         }
 
         return $result;
@@ -227,11 +230,48 @@ class tasksTaskModel extends waModel
      */
     public function getCountTasksInScope()
     {
-        $result = $this->query(
-            "SELECT milestone_id, SUM(IF(status_id<0, 1, 0)) AS closed, count(*) AS total
-                                    FROM tasks_task WHERE milestone_id > 0
-                                    GROUP BY milestone_id"
-        )->fetchAll();
+        $priority_field = "IF(t.priority>=2, 2, 0)";
+
+        $priorities = tasksOptions::getTasksPriorities();
+        $rows = $this->query(
+            "SELECT t.milestone_id AS milestone_id,
+                    $priority_field AS priority,
+                    SUM(IF(status_id<0, 1, 0)) AS closed,
+                    count(*) AS total
+             FROM tasks_task AS t
+             WHERE milestone_id > 0
+             GROUP BY milestone_id, priority"
+        );
+
+        $result = [];
+        foreach($rows as $row) {
+            $milestone_id = $row['milestone_id'];
+            $priority_data = ifset($priorities, $row['priority'], reset($priorities));
+            $priority = $priority_data['value'];
+
+            if (empty($result[$milestone_id])) {
+                $result[$milestone_id] = $priority_data + [
+                    'milestone_id' => $milestone_id,
+                    'closed' => 0, // number of closed tasks attached to milestone
+                    'total' => 0, // total number of tasks attacked to a milestone
+                    'count' => 0, // number of open tasks in most urgent priority with at least one open
+                ];
+            }
+
+            if ($row['total'] > $row['closed']) {
+                if ($result[$milestone_id]['value'] < $priority) {
+                    // found priority more urgent than last known
+                    $result[$milestone_id] = $priority_data + $result[$milestone_id];
+                    $result[$milestone_id]['count'] = $row['total'] - $row['closed'];
+                } else if ($result[$milestone_id]['value'] == $priority) {
+                    // same level of priority as last known
+                    $result[$milestone_id]['count'] += $row['total'] - $row['closed'];
+                }
+            }
+
+            $result[$milestone_id]['total'] += $row['total'];
+            $result[$milestone_id]['closed'] += $row['closed'];
+        }
 
         return $result;
     }
@@ -254,7 +294,7 @@ class tasksTaskModel extends waModel
         }
 
         $sql = sprintf(
-            "SELECT t.* 
+            "SELECT t.*
                 FROM %s AS t
                 WHERE concat(t.project_id, '.', t.number, t.name)  LIKE '%s'
                 ORDER BY t.id ASC
