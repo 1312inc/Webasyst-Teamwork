@@ -1,7 +1,5 @@
 function amchart (element, data, locale) {
 
-    // TODO: make chart data dynamically
-
     if (window.logChart) {
         window.logChart.dispose();
     }
@@ -15,8 +13,8 @@ function amchart (element, data, locale) {
 
     const chart = am4core.create(element, am4charts.XYChart);
 
-    if (locale !== 'en_US') {
-        chart.language.locale = window[`am4lang_${locale}`];
+    if (locale === 'ru_RU') {
+        chart.language.locale = window.am4lang_ru_RU;
     }
 
     const xAxis = chart.xAxes.push(new am4charts.DateAxis());
