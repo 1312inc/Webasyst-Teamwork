@@ -1711,6 +1711,9 @@ components:
           type: string
         entity_type:
           type: string
+        entity_id:
+          type: string
+          nullable: true
         entity_image:
           type: string
           nullable: true
