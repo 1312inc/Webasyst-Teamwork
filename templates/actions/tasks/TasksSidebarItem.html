@@ -123,7 +123,7 @@
                     {$task.project_id}.{$task.number}
                 </span>
 
-                <span>{$task.name|escape|default:"(no name)"|truncate:32}</span>
+                <span>{$task.name|escape|default:"(no name)"|truncate:64}</span>
 
             </span>
             {* UNREAD MENTION *}
