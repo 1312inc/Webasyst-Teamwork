@@ -1070,7 +1070,7 @@ var Task = ( function($) {
 
         if ($.tasks.options.text_editor === 'wysiwyg' && window.$R) {
             $textarea.redactor({
-                'focus': true,
+                'focus': action !== 'comment',
                 minHeight: '150px',
                 imageData: {
                     task_uuid: this.task_uuid

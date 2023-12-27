@@ -107,13 +107,17 @@ class tasksLinksPrettifier
             $name = '@'.$name;
         }
 
+        $root_url = wa()->getConfig()->getRootUrl(true);
+        $backend_url = wa()->getConfig()->getBackendUrl(false);
+
         $this->data['@'.$login] = [
             'app_id' => 'tasks',
             'entity_type' => 'user',
+            'entity_id' => $user['id'],
             'entity_image' => waContact::getPhotoUrl($user['id'], $user['photo'], null, null, ($user['is_company'] ? 'company' : 'person')),
             'entity_title' => $name,
             'entity_link_name' => '@'.$login,
-            'entity_url' => wa()->getAppUrl('team')."u/{$login}/",
+            'entity_url' => $root_url.$backend_url."/team/u/{$login}/",
             'user_login' => $login,
         ];
 
@@ -139,6 +143,7 @@ class tasksLinksPrettifier
         $this->data["#{$project_id}.{$task_number}"] = [
             'app_id' => 'tasks',
             'entity_type' => 'task',
+            'entity_id' => $task['id'],
             'entity_image' => null,
             'entity_title' => "{$project_id}.{$task_number} {$task['name']}",
             'entity_link_name' => "#{$project_id}.{$task_number}",
@@ -235,20 +240,16 @@ class tasksLinksPrettifier
                 continue;
             }
             $app_id = $link['app_id'];
-            if (empty($link['entity_type']) && !empty($link['entity_in_app_url'])) {
-                if ($app_id == 'shop' && preg_match('~^products/(\d+)~', $link['entity_in_app_url'])) {
-                    $link['entity_type'] = 'product';
-                } else if ($app_id == 'shop' && preg_match('~^#/orders/([^/]+&)?id=(\d+)~', $link['entity_in_app_url'])) {
-                    $link['entity_type'] = 'order';
-                } else if ($app_id == 'helpdesk' && preg_match('~^#/request/(\d+)~', $link['entity_in_app_url'])) {
-                    $link['entity_type'] = 'request';
-                } else if ($app_id == 'hub' && preg_match('~^#/topic/(?:edit/)?(\d+)~', $link['entity_in_app_url'])) {
-                    $link['entity_type'] = 'topic';
-                } else if ($app_id == 'crm' && preg_match('~^contact/(\d+)~', $link['entity_in_app_url'], $m)) {
-                    $link['entity_type'] = 'contact';
-                    $contact_ids[$code] = $m[1];
-                } else if ($app_id == 'crm' && preg_match('~^deal/(\d+)~', $link['entity_in_app_url'], $m)) {
-                    $link['entity_type'] = 'deal';
+            if (!empty($link['entity_in_app_url'])) {
+                list($entity_type, $entity_id) = self::getEntityType($app_id, $link['entity_in_app_url']);
+                if (empty($link['entity_type'])) {
+                    $link['entity_type'] = $entity_type;
+                }
+                if (empty($link['entity_id'])) {
+                    $link['entity_id'] = $entity_id;
+                }
+                if ($entity_type == 'contact') {
+                    $contact_ids[$code] = $entity_id;
                 }
             }
             unset($link['entity_in_app_url']);
@@ -259,6 +260,9 @@ class tasksLinksPrettifier
 
             if (!isset($link['entity_image']) && $app_id) {
                 $link['entity_image'] = $root_url.ifset($apps_info, $app_id, 'icon', 48, null);
+            }
+            if (!isset($link['entity_id'])) {
+                $link['entity_id'] = null;
             }
 
             if (!isset($link['markdown_code'])) {
@@ -299,6 +303,24 @@ class tasksLinksPrettifier
             }
         }
     }
+
+    protected static function getEntityType($app_id, $in_app_url)
+    {
+        if ($app_id == 'shop' && preg_match('~^products/(\d+)~', $in_app_url, $m)) {
+            return ['product', $m[1]];
+        } else if ($app_id == 'shop' && preg_match('~^#/orders/([^/]+&)?id=(\d+)~', $in_app_url, $m)) {
+            return ['order', $m[1]];
+        } else if ($app_id == 'helpdesk' && preg_match('~^#/request/(\d+)~', $in_app_url, $m)) {
+            return ['request', $m[1]];
+        } else if ($app_id == 'hub' && preg_match('~^#/topic/(?:edit/)?(\d+)~', $in_app_url, $m)) {
+            return ['topic', $m[1]];
+        } else if ($app_id == 'crm' && preg_match('~^contact/(\d+)~', $in_app_url, $m)) {
+            return ['contact', $m[1]];
+        } else if ($app_id == 'crm' && preg_match('~^deal/(\d+)~', $in_app_url, $m)) {
+            return ['deal', $m[1]];
+        }
+    }
+
 
 }
 

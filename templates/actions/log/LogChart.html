@@ -1,10 +1,6 @@
 <script>
     (function () {
 
-        function runChart () {
-            amchart('logs-chart-wrapper', {json_encode($chart_data)}, '{$wa->locale()}');
-        }
-
         if (typeof am4core === 'undefined') {
             var script = document.createElement('script');
             script.onload = function () {
@@ -14,6 +10,10 @@
             document.head.appendChild(script);
         } else {
             runChart();
+        }
+
+        function runChart () {
+            amchart('logs-chart-wrapper', {$chart_data|json_encode}, '{$wa->locale()}');
         }
         
     })();
