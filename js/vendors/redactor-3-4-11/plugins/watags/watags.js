@@ -1,4 +1,14 @@
 (function ($R) {
+
+    function escapeRegExp (string) {
+        var reRegExpChar = /[\\^$.*+?()[\]{}|]/g,
+            reHasRegExpChar = RegExp(reRegExpChar.source);
+        
+        return (string && reHasRegExpChar.test(string))
+            ? string.replace(reRegExpChar, '\\$&')
+            : string;
+    }
+
     $R.add("plugin", "watags", {
         init: function (app) {
             this.app = app;
@@ -88,7 +98,7 @@
                 var $icon = link.entity_type === 'tag' ? '#' : `<i class="icon size-16 userpic custom-mr-4" data-redactor-style-cache="background-image: url(${link.entity_image})" style="background-image: url(${link.entity_image});${!['user', 'contact'].includes(link.entity_type) ? 'border-radius:0;' : ''}"></i>`;
                 var replacement = `<a href="${link.entity_url}" class="redactor-entity redactor-entity--${link.entity_type === 'tag' ? 'tag' : 'link'} ${isSpan ? 'redactor-entity--raw' : ''}" contenteditable=\"false\" target="_blank">${$icon}${link.entity_link_name}</a>\uFEFF`;
                 var target = `<a href="${link.entity_url}">${link.entity_link_name}</a>`;
-                var re = new RegExp([target, k].join("|"),"gi");
+                var re = new RegExp([target, k].filter(e => typeof e === 'string').map(e => escapeRegExp(e)).join("|"),"gi");
                 content = content.replaceAll(re, replacement);
             }
             this.app.source.setCode(content);
