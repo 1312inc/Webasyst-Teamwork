@@ -196,8 +196,23 @@ var TaskEdit = ( function($) { "use strict";
                     }
                 }
             });
-        }
+        } else {
+            var $textarea = $('.t-redactor-task-edit');
+            var resizeTextarea = function ($text) {
+                $text.css('height', 'auto');
+                $text.css('height', $text[0].scrollHeight + 'px');
+            }
 
+            $textarea.each(function () {
+                $(this).css('min-height', '20vh');
+                $(this).attr('rows', 1);
+                resizeTextarea($(this));
+            });
+
+            $textarea.on('input', function () {
+                resizeTextarea($(this));
+            });
+        }
     };
 
     TaskEdit.prototype.initMilestoneSelector = function () {
