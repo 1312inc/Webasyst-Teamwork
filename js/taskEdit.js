@@ -207,6 +207,9 @@ var TaskEdit = ( function($) { "use strict";
                 $(this).css('min-height', '20vh');
                 $(this).attr('rows', 1);
                 resizeTextarea($(this));
+                $(this).parents('#t-dialog-wrapper').one('transitionend', () => {
+                    resizeTextarea($(this));
+                });
             });
 
             $textarea.on('input', function () {
