@@ -85,11 +85,16 @@
 </head>
 <body>
     <div id="wa">
-        {$wa->header()|replace:'></script>':' async></script>'}
+        {$wa->header()}
         <div id="wa-app">
             <div class="flexbox wrap-mobile">
                 {* SIDEBAR *}
                 <aside class="t-sidebar-wrapper sidebar mobile-friendly width-adaptive flexbox wa-gradient-overlay-light" id="sidebar">
+                    {if $wa->isSingleAppMode()}
+                        <div class="box custom-py-0">
+                            {$wa->headerSingleAppUser()}
+                        </div>
+                    {/if}
                     <nav class="sidebar-mobile-toggle">
                         <div class="box align-center">
                             <a href="#" href="javascript:void(0);">

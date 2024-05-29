@@ -107,7 +107,7 @@ class tasksNotificationsSender
             $contact_ids = array_unique($contact_ids);
             foreach ($contact_ids as $contact_id) {
                 if (empty($already_sent[$contact_id])) {
-                    $this->sendOne($action, $contact_id, $badge_counts[$contact_id]);
+                    $this->sendOne($action, $contact_id, ifset($badge_counts, $contact_id, null));
                     $already_sent[$contact_id] = true;
                 }
             }
@@ -212,7 +212,9 @@ class tasksNotificationsSender
             if ($action == self::EVENT_MENTION) {
                 // There's no setting for @-mentioning notifications (for now).
                 // Send to everyone eligible.
-                $send_to[] = $contact_id;
+                if ($contact_id) {
+                    $send_to[] = $contact_id;
+                }
             } else {
                 if (isset($settings[$contact_id]) &&
                     $this->needSent($contact_id, $action, $settings[$contact_id])) {

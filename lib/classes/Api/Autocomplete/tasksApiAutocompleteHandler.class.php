@@ -205,6 +205,7 @@ class tasksApiAutocompleteHandler
             $prettifier->addEntity([
                 'app_id' => 'crm',
                 'entity_type' => 'deal',
+                'entity_id' => $deal['id'],
                 'entity_image' => null,
                 'entity_title' => $deal['name'],
                 'entity_url' => $this->getAppBackendUrl('crm')."deal/{$deal['id']}/",
@@ -232,6 +233,7 @@ class tasksApiAutocompleteHandler
             $prettifier->addEntity([
                 'app_id' => 'crm',
                 'entity_type' => 'deal',
+                'entity_id' => $deal['id'],
                 'entity_image' => null,
                 'entity_title' => $deal['name'],
                 'entity_url' => $this->getAppBackendUrl('crm')."deal/{$deal['id']}/",
@@ -254,6 +256,7 @@ class tasksApiAutocompleteHandler
             $prettifier->addEntity([
                 'app_id' => 'crm',
                 'entity_type' => 'contact',
+                'entity_id' => $c['id'],
                 'entity_image' => waContact::getPhotoUrl($c['id'], $c['photo'], null, null, ($c['is_company'] ? 'company' : 'person')),
                 'entity_title' => $c['name'],
                 'entity_url' => $this->getAppBackendUrl('crm')."contact/{$c['id']}/",
@@ -272,6 +275,7 @@ class tasksApiAutocompleteHandler
             return [
                 'app_id' => 'shop',
                 'entity_type' => 'order',
+                'entity_id' => $o['id'],
                 'entity_image' => null,
                 'entity_title' => $o['id_encoded'],
                 'entity_url' => $this->getAppBackendUrl('shop')."#/orders/id={$o['id']}/",
@@ -302,6 +306,7 @@ class tasksApiAutocompleteHandler
                 $prettifier->addEntity([
                     'app_id' => 'shop',
                     'entity_type' => 'product',
+                    'entity_id' => $p['id'],
                     'entity_image' => null,
                     'entity_title' => $p['name'],
                     'entity_url' => $this->getAppBackendUrl('shop')."products/{$p['id']}/",
@@ -325,6 +330,7 @@ class tasksApiAutocompleteHandler
                 $prettifier->addEntity([
                     'app_id' => 'helpdesk',
                     'entity_type' => 'request',
+                    'entity_id' => $request['id'],
                     'entity_title' => htmlspecialchars($request['summary']),
                     'entity_url' => $this->getAppBackendUrl('helpdesk')."#/request/{$request['id']}/",
                 ]);
@@ -352,6 +358,7 @@ class tasksApiAutocompleteHandler
             $prettifier->addEntity([
                 'app_id' => 'hub',
                 'entity_type' => 'topic',
+                'entity_id' => $topic['id'],
                 'entity_title' => htmlspecialchars($topic['title']),
                 'entity_url' => $this->getAppBackendUrl('hub')."#/topic/{$topic['id']}/",
             ]);

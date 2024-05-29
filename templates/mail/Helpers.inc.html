@@ -92,7 +92,7 @@
     {$_files_count = count($log.files|default:[])}
     {$_log_text_len = strlen($log.text)}
     {if $_log_text_len > 0 || $_images_count > 0 || $_files_count > 0}
-        <blockquote style="background: #ffc; padding: 10px;">
+        <blockquote style="background: #ffc; padding: 10px; font-size: 110%; border-radius: 8px;">
             {if $_log_text_len > 0}
                 {$log.text_formatted}
             {/if}
