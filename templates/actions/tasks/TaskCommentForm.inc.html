@@ -1,18 +1,25 @@
 {$comment = $comment|default:[]}
 
 <div class="t-comment-form">
+
     <form {if $post_action_url|default:''}action="{$post_action_url}"{/if} method="post">
 
         <div class="flexbox space-12">
             <div class="wide" style="overflow-x: hidden;">
 
+
                 <div class="t-big-editor-wrapper">
+
+                
 
                     {* TEXTAREA *}
                     <div class="line t-textarea-wrapper">
                         {$_text = $comment.text|default:''}
-                        <textarea name="data[text]" cols="" rows="" class="t-redactor-comments width-100" {if $action != 'add'}data-disable-saveable{/if} placeholder="[`Add comment`]">{$_text|escape}</textarea>
+                        <textarea id="demo1" data-rich-mode name="data[text]" cols="" rows="" class=" width-100" {if $action != 'add'}data-disable-saveable{/if} placeholder="[`Add comment`]">{$_text|escape}</textarea>
+
                     </div>
+
+                    <script src="{$wa_app_static_url}js/lexical/index.js?v={$wa->version()}"></script>
 
                     <div class="line t-attach-wrapper">
 
