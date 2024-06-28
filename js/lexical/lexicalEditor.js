@@ -16277,7 +16277,7 @@ function Nk({ loading: t, ...e }) {
   );
 }
 const Uv = T.forwardRef(({ selected: t, item: e, itemValue: n, ...r }, o) => {
-  const { data: i } = r, s = i.entity_type === "tag" ? e.trigger : i.entity_image ? /* @__PURE__ */ O.jsx("img", { src: i.entity_image, className: "mr-2 w-4 h-4" }) : e.trigger;
+  const { data: i } = r, s = i.entity_type === "tag" ? e.trigger : i.entity_image ? /* @__PURE__ */ O.jsx("img", { src: i.entity_image, className: `mr-2 w-4 h-4 ${i.entity_type === "user" ? "rounded-full" : ""}` }) : e.trigger;
   return /* @__PURE__ */ O.jsxs(
     "li",
     {
