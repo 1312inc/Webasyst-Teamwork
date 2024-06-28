@@ -206,8 +206,16 @@
                     <div class="t-form-line t-description-wrapper">
                         <hr>
 
-                        <textarea name="data[text]" cols="1" rows="1" class="t-redactor-task-edit" placeholder="[`Task summary`]">{$task.text|escape}</textarea>
-
+                        <textarea id="demo2" name="data[text]" cols="1" rows="1" class="" placeholder="[`Task summary`]">{$task.text|escape}</textarea>
+                        <script>
+                            {
+                                const editor = document.querySelector('#demo2');
+                                if (window.text_editor === 'wysiwyg' && editor) {
+                                    editor.setAttribute('data-rich-mode', '');
+                                }
+                            }
+                        </script>
+                        <script src="{$wa_app_static_url}js/lexical/index.js?v={$wa->version()}"></script>
                         <!-- plugin hook: 'backend_task_edit.%plugin_id.description' -->
                         {* @event backend_task_edit.%plugin_id%.description *}
                         {foreach $backend_task_edit as $_}{ifset($_.description)}{/foreach}

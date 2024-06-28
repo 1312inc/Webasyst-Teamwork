@@ -16271,7 +16271,7 @@ function Nk({ loading: t, ...e }) {
         scrollbarWidth: "none",
         msOverflowStyle: "none"
       },
-      className: "absolute top-[2px] m-0 min-w-[8rem] max-w-[14rem] overflow-hidden rounded-md border bg-white p-1 text-popover-foreground shadow-md",
+      className: "absolute z-50 top-[2px] m-0 min-w-[8rem] max-w-[14rem] overflow-hidden rounded-md border bg-white p-1 text-popover-foreground shadow-md",
       ...e
     }
   );
