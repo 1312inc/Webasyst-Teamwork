@@ -16303,7 +16303,7 @@ const Ok = {
   "#": "px-1 mx-2/3 mx-px align-baseline inline-block rounded break-words leading-5 dark:bg-green-100 bg-green-100"
 }, Fk = T.forwardRef(({ trigger: t, value: e, data: n, children: r, ...o }, i) => {
   let s = n.data.richMode ? n.data.entity_link_name : n.data.markdown_code;
-  const l = n.data.richMode ? n.data.entity_type === "tag" ? "#" : n.data.entity_image ? /* @__PURE__ */ O.jsx("img", { src: n.data.entity_image, className: "relative mr-1 top-[2px] w-4 h-4 float-left" }) : "" : "";
+  const l = n.data.richMode ? n.data.entity_type === "tag" ? "#" : n.data.entity_image ? /* @__PURE__ */ O.jsx("img", { src: n.data.entity_image, className: `relative mr-1 top-[2px] w-4 h-4 float-left ${n.data.entity_type === "user" ? "rounded-full" : ""}` }) : "" : "";
   return /* @__PURE__ */ O.jsxs("div", { ...o, ref: i, title: e, children: [
     l,
     s
