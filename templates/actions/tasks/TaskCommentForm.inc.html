@@ -15,8 +15,15 @@
                     {* TEXTAREA *}
                     <div class="line t-textarea-wrapper">
                         {$_text = $comment.text|default:''}
-                        <textarea id="demo1" data-rich-mode name="data[text]" cols="" rows="" class=" width-100" {if $action != 'add'}data-disable-saveable{/if} placeholder="[`Add comment`]">{$_text|escape}</textarea>
-
+                        <textarea id="demo1" name="data[text]" cols="" rows="" class="width-100" {if $action != 'add'}data-disable-saveable{/if} placeholder="[`Add comment`]">{$_text|escape}</textarea>
+                        <script>
+                            {
+                                const editor = document.querySelector('#demo1');
+                                if (window.text_editor === 'wysiwyg' && editor) {
+                                    editor.setAttribute('data-rich-mode', '');
+                                }
+                            }
+                        </script>
                     </div>
 
                     <script src="{$wa_app_static_url}js/lexical/index.js?v={$wa->version()}"></script>

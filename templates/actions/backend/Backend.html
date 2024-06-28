@@ -22,6 +22,10 @@
         text_editor: {$text_editor|json_encode}
     });</script>
 
+    <script>
+        window.text_editor = {$text_editor|json_encode};
+    </script>
+
     {$wa->css()}
     <link href="{$wa_app_static_url}js/vendors/jquery-ui.min.css" rel="stylesheet" type="text/css" />
     <link href="{$wa_app_static_url}css/tasks.min.css?v={$wa->version()}" rel="stylesheet" type="text/css" />
@@ -36,6 +40,8 @@
     <script src="{$wa_url}wa-content/js/jquery-wa/wa.js?v{$wa->version(true)}"></script>
     <script src="{$wa_app_static_url}js/tasks.min.js?v={$wa->version()}"></script>
 
+    <link rel="stylesheet" href="{$wa_app_static_url}js/lexical/style.css?v={$wa->version()}">
+
     {if $text_editor === "wysiwyg"}
     <link rel="stylesheet" href="{$wa_app_static_url}js/vendors/redactor-3-4-11/redactor.min.css">
     <link rel="stylesheet" href="{$wa_app_static_url}js/vendors/redactor-3-4-11/plugins/mdeditor/mdeditor.css?v={$wa->version()}">
@@ -49,8 +55,6 @@
     <script src="{$wa_app_static_url}js/vendors/redactor-3-4-11/plugins/mdeditor/mdeditor.js?v={$wa->version()}"></script>
     <script src="{$wa_app_static_url}js/vendors/redactor-3-4-11/plugins/watags/watags.js?v={$wa->version()}"></script>
     <script src="{$wa_app_static_url}js/vendors/redactor-3-4-11/plugins/imgupload/imgupload.js?v={$wa->version()}"></script>
-
-    <link rel="stylesheet" href="{$wa_app_static_url}js/lexical/style.css?v={$wa->version()}">
 
     <script>
         $R.options = {

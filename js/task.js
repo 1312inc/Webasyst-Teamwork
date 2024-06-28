@@ -1060,6 +1060,8 @@ var Task = ( function($) {
 
     Task.prototype.makeTextareaSaveable = function ($textarea, action) {
 
+        if(!$textarea[0]) return
+
         const lsItem = `tasks/textarea/${action}/${this.task_id}`;
         const disableSaveable = $textarea[0].hasAttribute('data-disable-saveable');
 
@@ -1202,7 +1204,7 @@ var Task = ( function($) {
                                     return;
                                 }
                                 
-                                removeSavedComment();
+                                // removeSavedComment();
 
                                 onAllDone && onAllDone();
                             }
