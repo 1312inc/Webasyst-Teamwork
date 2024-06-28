@@ -16347,7 +16347,7 @@ const Pk = async (t, e, n, r) => {
         o.append(i);
         const l = ZS(n, t.value).reduce((a, u) => {
           const c = oe(" ");
-          return u.__type !== "custom-beautifulMention" ? (Ek(u.__text, ya, i), [...a, c, ...i.getChildren()[0].getChildren()]) : [...a, c, u];
+          return u.__type !== "custom-beautifulMention" ? (Ek(u.__text, ya, i), [...a, ...i.getChildren()[0].getChildren(), c]) : [...a, u, c];
         }, []);
         console.log(l), i.remove(), yc(l);
       } else
