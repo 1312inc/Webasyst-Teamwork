@@ -1122,7 +1122,12 @@ var Task = ( function($) {
 
         var bindEvents = function() {
 
-            $commentForm.on("submit", function() {
+            $commentForm.on("submit", function(e) {
+                if (!e.originalEvent.submitter.matches('.t-add-comment-button')) {
+                    e.preventDefault();
+                    return false;
+                }
+                
                 var $submitButton = $(this).find('[type="submit"]');
 
                 $.tasks.showLoadingButton($submitButton);

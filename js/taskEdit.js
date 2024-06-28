@@ -426,7 +426,9 @@ var TaskEdit = ( function($) { "use strict";
         
         $form.on("submit", function(e) {
             e.preventDefault();
-            that.onSubmit($form);
+            if (e.originalEvent.submitter.matches('.t-save-task-link')) {
+                that.onSubmit($form);
+            }
             return false;
         });
 
