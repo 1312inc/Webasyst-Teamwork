@@ -206,7 +206,7 @@
                     <div class="t-form-line t-description-wrapper">
                         <hr>
 
-                        <textarea id="demo2" name="data[text]" cols="1" rows="1" class="" placeholder="[`Task summary`]">{$task.text|escape}</textarea>
+                        <textarea id="demo2" name="data[text]" data-task-id="{$task.id}" cols="1" rows="1" class="" placeholder="[`Task summary`]">{$task.text|escape}</textarea>
                         <script>
                             {
                                 const editor = document.querySelector('#demo2');

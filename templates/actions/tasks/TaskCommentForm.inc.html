@@ -15,7 +15,7 @@
                     {* TEXTAREA *}
                     <div class="line t-textarea-wrapper">
                         {$_text = $comment.text|default:''}
-                        <textarea id="demo1" name="data[text]" cols="" rows="" class="width-100" {if $action != 'add'}data-disable-saveable{/if} placeholder="[`Add comment`]">{$_text|escape}</textarea>
+                        <textarea id="demo1" name="data[text]" data-task-id="{$task.id}" cols="" rows="" class="width-100" {if $action != 'add'}data-disable-saveable{/if} placeholder="[`Add comment`]">{$_text|escape}</textarea>
                         <script>
                             {
                                 const editor = document.querySelector('#demo1');
