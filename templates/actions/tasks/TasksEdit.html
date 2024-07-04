@@ -164,7 +164,7 @@
                 {* @event backend_task_edit.%plugin_id%.before_name *}
                 {foreach $backend_task_edit as $_}{ifset($_.before_name)}{/foreach}
 
-                <div class="t-big-editor-wrapper">
+                <div class="t-big-editor-wrapper editor-wrapper-{$task_uuid}">
 
 
                     {* NAME && PRIORITY *}
@@ -216,7 +216,7 @@
                                         taskId: '{$task.id}',
                                         placeholder: '[`Task summary`]',
                                         mentions: window.taskLinks || {},
-                                        controls: document.querySelector('.t-big-editor-wrapper')
+                                        controls: document.querySelector('.editor-wrapper-{$task_uuid}')
                                     });
                                 }
                             })();                            
