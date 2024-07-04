@@ -1,5 +1,7 @@
 {$comment = $comment|default:[]}
 
+{$ident = rand(0, 1024)}
+
 <div class="t-comment-form">
 
     <form {if $post_action_url|default:''}action="{$post_action_url}"{/if} method="post">
@@ -7,26 +9,25 @@
         <div class="flexbox space-12">
             <div class="wide" style="overflow-x: hidden;">
 
-
                 <div class="t-big-editor-wrapper">
-
-                
 
                     {* TEXTAREA *}
                     <div class="line t-textarea-wrapper">
                         {$_text = $comment.text|default:''}
-                        <textarea id="demo1" name="data[text]" data-task-id="{$task.id}" cols="" rows="" class="width-100" {if $action != 'add'}data-disable-saveable{/if} placeholder="[`Add comment`]">{$_text|escape}</textarea>
+                        <textarea id="redactor-comment-{$ident}" name="data[text]" class="t-redactor-comments" {if $action != 'add'}data-disable-saveable{/if} placeholder="[`Add comment`]">{$_text|escape}</textarea>
                         <script>
-                            {
-                                const editor = document.querySelector('#demo1');
-                                if (window.text_editor === 'wysiwyg' && editor) {
-                                    editor.setAttribute('data-rich-mode', '');
+                            (function () {
+                                if (lexicalEditor) {
+                                    lexicalEditor.createLexicalInstance({
+                                        el: document.getElementById('redactor-comment-{$ident}'),
+                                        isRichMode: window.text_editor === 'wysiwyg',
+                                        taskId: '{$task.id}',
+                                        placeholder: '[`Add comment`]'
+                                    });
                                 }
-                            }
+                            })();                            
                         </script>
                     </div>
-
-                    <script src="{$wa_app_static_url}js/lexical/index.js?v={$wa->version()}"></script>
 
                     <div class="line t-attach-wrapper">
 

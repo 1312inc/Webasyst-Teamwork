@@ -1059,51 +1059,40 @@ var Task = ( function($) {
     };
 
     Task.prototype.makeTextareaSaveable = function ($textarea, action) {
-
+        
         if(!$textarea[0]) return
 
         const lsItem = `tasks/textarea/${action}/${this.task_id}`;
         const disableSaveable = $textarea[0].hasAttribute('data-disable-saveable');
 
         if (!disableSaveable) {
-            $textarea.val(localStorage.getItem(lsItem));
-            $textarea.on('input', saveDraft);
-        }
-
-        if ($.tasks.options.text_editor === 'wysiwyg' && window.$R) {
-            $textarea.redactor({
-                'focus': action !== 'comment',
-                minHeight: '150px',
-                imageData: {
-                    task_uuid: this.task_uuid
-                },
-                callbacks: {
-                    changed: () => {
-                        !disableSaveable && saveDraft();
-                    }
-                }
-            });
-        } else {
-            $textarea.textareaAutocomplete({
-                urlEntity: '?module=tasks&action=entityAutocomplete',
-                urlMention: '?module=tasks&action=mentionAutocomplete',
-                autoFocus: false,
-                delay: 300
-            });
+            try {
+                $textarea.val(localStorage.getItem(lsItem));
+                $textarea.on('input', saveDraft);
+            } catch (e) {
+                console.error(e);
+            }
         }
 
         function saveDraft () {
-            localStorage.setItem(lsItem, $textarea.val());
+            try {
+                localStorage.setItem(lsItem, $textarea.val());
+            } catch (e) {
+                console.error(e);
+            }
         }
 
         function removeLs () {
             if (!disableSaveable) {
-                localStorage.removeItem(lsItem);
+                try {
+                    localStorage.removeItem(lsItem);
+                } catch (e) {
+                    console.error(e);
+                }
             }
         }
 
         return removeLs;
-
     };
 
     Task.prototype.initCommentForm = function ($commentForm, callbacks) {
@@ -1209,7 +1198,7 @@ var Task = ( function($) {
                                     return;
                                 }
                                 
-                                // removeSavedComment();
+                                removeSavedComment();
 
                                 onAllDone && onAllDone();
                             }

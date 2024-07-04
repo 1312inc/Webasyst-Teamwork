@@ -206,16 +206,21 @@
                     <div class="t-form-line t-description-wrapper">
                         <hr>
 
-                        <textarea id="demo2" name="data[text]" data-task-id="{$task.id}" cols="1" rows="1" class="" placeholder="[`Task summary`]">{$task.text|escape}</textarea>
+                        <textarea id="redactor-task-{$task_uuid}" name="data[text]" placeholder="[`Task summary`]">{$task.text|escape}</textarea>
                         <script>
-                            {
-                                const editor = document.querySelector('#demo2');
-                                if (window.text_editor === 'wysiwyg' && editor) {
-                                    editor.setAttribute('data-rich-mode', '');
+                            (function () {
+                                if (lexicalEditor) {
+                                    lexicalEditor.createLexicalInstance({
+                                        el: document.getElementById('redactor-task-{$task_uuid}'),
+                                        isRichMode: window.text_editor === 'wysiwyg',
+                                        taskId: '{$task.id}',
+                                        placeholder: '[`Task summary`]',
+                                        mentions: window.taskLinks || {},
+                                        controls: document.querySelector('.t-big-editor-wrapper')
+                                    });
                                 }
-                            }
+                            })();                            
                         </script>
-                        <script src="{$wa_app_static_url}js/lexical/index.js?v={$wa->version()}"></script>
                         <!-- plugin hook: 'backend_task_edit.%plugin_id.description' -->
                         {* @event backend_task_edit.%plugin_id%.description *}
                         {foreach $backend_task_edit as $_}{ifset($_.description)}{/foreach}
