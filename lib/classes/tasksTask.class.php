@@ -370,7 +370,7 @@ class tasksTask implements ArrayAccess
             \@
 
             # This matches the tag name
-            ([^\s/!?()[\],\.#<>'\"\\\\]+)
+            ([^\\s/!?()[\\],#<>'\"\\\\]+)
         ~xu";
 
         $has_tags = preg_match_all($pattern, $text, $m);
