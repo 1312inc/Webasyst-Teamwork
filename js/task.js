@@ -1102,9 +1102,11 @@ var Task = ( function($) {
             });
 
         // Init Paste img on textarea Ctrl+V
-        $commentForm.find("textarea").pasteImageReader(function(result) {
-            filesController.displayFiles(result.files, true);
-        });
+        if (TasksController?.options?.text_editor === 'markdown') {
+            $commentForm.find(".t-textarea-wrapper").pasteImageReader(function(result) {
+                filesController.displayFiles(result.files, true);
+            });
+        }
 
         callbacks = $.isPlainObject(callbacks) ? callbacks : {};
         var onAllDone = typeof callbacks.onAllDone === 'function' ? callbacks.onAllDone : null;

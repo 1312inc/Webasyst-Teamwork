@@ -328,9 +328,11 @@ var TaskEdit = ( function($) { "use strict";
         });
 
         // Init Paste img on textarea Ctrl+V
-        $form.find('textarea').pasteImageReader(function(result) {
-            that.displayFiles(result.files, true);
-        });
+        if (TasksController?.options?.text_editor === 'markdown') {
+            $form.find('.t-description-wrapper').pasteImageReader(function(result) {
+                that.displayFiles(result.files, true);
+            });
+        }
 
         $dropArea.on("dragenter", function() {
             return false;
