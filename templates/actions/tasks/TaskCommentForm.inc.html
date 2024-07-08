@@ -20,7 +20,7 @@
                                 if (lexicalEditor) {
                                     lexicalEditor.createLexicalInstance({
                                         el: document.getElementById('redactor-comment-{$ident}'),
-                                        isRichMode: window.text_editor === 'wysiwyg',
+                                        isRichMode: TasksController?.options?.text_editor === 'wysiwyg',
                                         taskId: '{$task.id}',
                                         placeholder: '[`Add comment`]'
                                     });

@@ -212,7 +212,7 @@
                                 if (lexicalEditor) {
                                     lexicalEditor.createLexicalInstance({
                                         el: document.getElementById('redactor-task-{$task_uuid}'),
-                                        isRichMode: window.text_editor === 'wysiwyg',
+                                        isRichMode: TasksController?.options?.text_editor === 'wysiwyg',
                                         taskId: '{$task.id}',
                                         placeholder: '[`Task summary`]',
                                         mentions: window.taskLinks || {},
