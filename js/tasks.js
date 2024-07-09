@@ -562,6 +562,22 @@
             }
         },
 
+        getDraftKeyTaskText () {
+            return `tasks/task/text`;
+        },
+
+        getDraftKeyCommentText (taskId) {
+            if (taskId) {
+                return `tasks/${taskId}/comment/text`;
+            }
+        },
+
+        getDraftKeyActionText (taskId) {
+            if (taskId) {
+                return `tasks/${taskId}/action/text`;
+            }
+        },
+
         /**
          * Responsible for all task list views.
          * Parses hash for filters and other params to pass to PHP.

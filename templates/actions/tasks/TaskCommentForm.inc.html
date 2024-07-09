@@ -2,6 +2,8 @@
 
 {$ident = rand(0, 1024)}
 
+{$task_id = $task.id|default:$comment.task_id}
+
 <div class="t-comment-form">
 
     <form {if $post_action_url|default:''}action="{$post_action_url}"{/if} method="post">
@@ -14,14 +16,15 @@
                     {* TEXTAREA *}
                     <div class="line t-textarea-wrapper">
                         {$_text = $comment.text|default:''}
-                        <textarea id="redactor-comment-{$ident}" name="data[text]" class="t-redactor-comments" {if $action != 'add'}data-disable-saveable{/if} placeholder="[`Add comment`]">{$_text|escape}</textarea>
+                        <textarea id="redactor-comment-{$ident}" name="data[text]" class="t-redactor-comments" placeholder="[`Add comment`]">{$_text|escape}</textarea>
                         <script>
                             (function () {
                                 if (lexicalEditor) {
                                     lexicalEditor.createLexicalInstance({
                                         el: document.getElementById('redactor-comment-{$ident}'),
-                                        isRichMode: TasksController?.options?.text_editor === 'wysiwyg',
-                                        taskId: '{$task.id}',
+                                        isRichMode: TasksController ? TasksController.options.text_editor === 'wysiwyg' : false,
+                                        {if $action === 'add'}storage: TasksController ? TasksController.getDraftKeyCommentText({$task_id}) : '',{/if}
+                                        taskId: '{$task_id}',
                                         placeholder: '[`Add comment`]'
                                     });
                                 }

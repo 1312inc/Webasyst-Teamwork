@@ -1013,7 +1013,6 @@ var Task = ( function($) {
 
                         var $form = $drawer.find("form");
                         var $textarea = $form.find('textarea');
-                        var taskAction = $form.data('task-action');
 
                         // Focus
                         $textarea.focus();
@@ -1022,15 +1021,14 @@ var Task = ( function($) {
                         $drawer.find(".t-hiddenform-cancel-link").on('click', function() {
                             drawer_instance.close();
                         })
-                        
-                        var removeSavedMessage = that.makeTextareaSaveable($textarea, taskAction);
 
                         // Handle submit
                         $form.on("submit", function(e) {
                             e.preventDefault();
                             onStatusSubmit($(this), direction, function () {
-                                removeSavedMessage();
                                 drawer_instance.close();
+                                // remove draft action
+                                localStorage.removeItem(TasksController.getDraftKeyActionText(that.task_id));
                             });
                         });
 
@@ -1056,43 +1054,6 @@ var Task = ( function($) {
 
         bindEvents();
 
-    };
-
-    Task.prototype.makeTextareaSaveable = function ($textarea, action) {
-        
-        if(!$textarea[0]) return
-
-        const lsItem = `tasks/textarea/${action}/${this.task_id}`;
-        const disableSaveable = $textarea[0].hasAttribute('data-disable-saveable');
-
-        if (!disableSaveable) {
-            try {
-                $textarea.val(localStorage.getItem(lsItem));
-                $textarea.on('input', saveDraft);
-            } catch (e) {
-                console.error(e);
-            }
-        }
-
-        function saveDraft () {
-            try {
-                localStorage.setItem(lsItem, $textarea.val());
-            } catch (e) {
-                console.error(e);
-            }
-        }
-
-        function removeLs () {
-            if (!disableSaveable) {
-                try {
-                    localStorage.removeItem(lsItem);
-                } catch (e) {
-                    console.error(e);
-                }
-            }
-        }
-
-        return removeLs;
     };
 
     Task.prototype.initCommentForm = function ($commentForm, callbacks) {
@@ -1174,8 +1135,6 @@ var Task = ( function($) {
             return true;
         };
 
-        var removeSavedComment = that.makeTextareaSaveable($commentForm.find('.t-redactor-comments'), 'comment');
-
         var addComment = function() {
             var submit_href = $commentForm.attr("action"),
                 submit_data = $commentForm.serializeArray(),
@@ -1200,7 +1159,10 @@ var Task = ( function($) {
                                     return;
                                 }
                                 
-                                removeSavedComment();
+                                // remove draft comment
+                                if ((new URLSearchParams(submit_href)).get('action') === 'add') {
+                                    localStorage.removeItem(TasksController.getDraftKeyCommentText(that.task_id));
+                                }
 
                                 onAllDone && onAllDone();
                             }

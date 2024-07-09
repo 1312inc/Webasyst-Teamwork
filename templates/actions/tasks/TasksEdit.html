@@ -212,10 +212,11 @@
                                 if (lexicalEditor) {
                                     lexicalEditor.createLexicalInstance({
                                         el: document.getElementById('redactor-task-{$task_uuid}'),
-                                        isRichMode: TasksController?.options?.text_editor === 'wysiwyg',
+                                        isRichMode: TasksController ? TasksController.options.text_editor === 'wysiwyg' : false,
                                         taskId: '{$task.id}',
                                         placeholder: '[`Task summary`]',
                                         mentions: window.taskLinks || {},
+                                        storage: taskEdit.is_new ? (TasksController ? TasksController.getDraftKeyTaskText() : '') : '',
                                         controls: document.querySelector('.editor-wrapper-{$task_uuid}')
                                     });
                                 }

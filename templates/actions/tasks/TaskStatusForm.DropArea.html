@@ -1,10 +1,25 @@
+{$ident = rand(0, 1024)}
+
 <div class="t-status-comment-wrapper">
 
     <div class="t-big-editor-wrapper">
 
         {* TEXTAREA *}
         <div class="t-textarea-wrapper">
-            <textarea name="text" cols="" rows="" class="t-redactor-comments width-100" placeholder="[`Add comment`]"></textarea>
+            <textarea id="redactor-comment-{$ident}" name="text" class="t-redactor-comments width-100" placeholder="[`Add comment`]"></textarea>
+            <script>
+                (function () {
+                    if (lexicalEditor) {
+                        lexicalEditor.createLexicalInstance({
+                            el: document.getElementById('redactor-comment-{$ident}'),
+                            isRichMode: TasksController ? TasksController.options.text_editor === 'wysiwyg' : false,
+                            storage: TasksController ? TasksController.getDraftKeyActionText({$task.id}) : '',
+                            taskId: '{$task.id}',
+                            placeholder: '[`Add comment`]'
+                        });
+                    }
+                })();                            
+            </script>
         </div>
 
         {if empty($is_bulk)}

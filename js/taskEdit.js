@@ -878,34 +878,11 @@ var TaskEdit = ( function($) { "use strict";
     //Save task draft
     TaskEdit.prototype.saveTaskDraft = function() {
         var that = this,
-            $task_title = that.$form.find('[name="data[name]"]'),
-            $task_text = that.$form.find('[name="data[text]"]');
+            $task_title = that.$form.find('[name="data[name]"]');
 
         $task_title.on('input',function(){
             //Save task draft title
-            var data = new Date(),
-                result = data.toLocaleDateString("ru-RU", {
-                    year: "numeric",
-                    month: "2-digit",
-                    day: "2-digit",
-                    hour:"2-digit",
-                    minute: "2-digit"
-                });
             localStorage.setItem('task_title', $task_title.val());
-            localStorage.setItem('draft_time', result);
-        });
-        $task_text.on('input',function(){
-            //Save task draft text
-            var data = new Date(),
-                result = data.toLocaleDateString("ru-RU", {
-                    year: "numeric",
-                    month: "2-digit",
-                    day: "2-digit",
-                    hour:"2-digit",
-                    minute: "2-digit"
-                });
-            localStorage.setItem('task_text', $task_text.val());
-            localStorage.setItem('draft_time', result);
         });
     };
 
@@ -913,18 +890,11 @@ var TaskEdit = ( function($) { "use strict";
     TaskEdit.prototype.setTaskDraft = function() {
         var that = this,
             $task_title = that.$form.find('[name="data[name]"]'),
-            $task_text = that.$form.find('[name="data[text]"]'),
-            $saved_task_title = localStorage.getItem('task_title'),
-            $saved_task_text = localStorage.getItem('task_text');
+            $saved_task_title = localStorage.getItem('task_title');
 
         if (that.is_new) {
-            if ($saved_task_title || $saved_task_text) {
-                if ($saved_task_title) {
-                    $task_title.val($saved_task_title);
-                }
-                if ($saved_task_text) {
-                    $task_text.val($saved_task_text);
-                }
+            if ($task_title && $saved_task_title) {
+                $task_title.val($saved_task_title);
             }
         }
     };
@@ -984,8 +954,7 @@ var TaskEdit = ( function($) { "use strict";
                                 if (that.is_new) {
                                     // Clear localStorage Task draft
                                     localStorage.removeItem('task_title');
-                                    localStorage.removeItem('task_text');
-                                    localStorage.removeItem('draft_time');
+                                    localStorage.removeItem(TasksController.getDraftKeyTaskText());
                                 }
                             }
                         }
