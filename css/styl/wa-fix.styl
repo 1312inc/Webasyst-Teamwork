@@ -2,6 +2,20 @@ ul.chips > li > a svg:last-child
     margin-left: .25rem
     margin-right: 0
 
+table tr:first-child th,
+table tr:first-child td
+    border-top: 1px solid var(--border-color-soft)
+
+table tr:first-child th
+    background: var(--background-color-zebra-row-odd)
+
+table th,
+table td
+    border-right: 1px solid var(--border-color-soft)
+
+table th:first-child,
+table td:first-child
+    border-left: 1px solid var(--border-color-soft)
 
 @media screen and (max-width: 760px)
     .flexbox.wrap-mobile>* 
