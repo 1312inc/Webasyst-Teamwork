@@ -214,10 +214,13 @@
                                         el: document.getElementById('redactor-task-{$task_uuid}'),
                                         isRichMode: TasksController ? TasksController.options.text_editor === 'wysiwyg' : false,
                                         taskId: '{$task.id}',
-                                        placeholder: '[`Task summary`]',
-                                        mentions: window.taskLinks || {},
                                         storage: taskEdit.is_new ? (TasksController ? TasksController.getDraftKeyTaskText() : '') : '',
-                                        controls: document.querySelector('.editor-wrapper-{$task_uuid}')
+                                        placeholder: '[`Task summary`]',
+                                        imageUploadUrl: '?module=attachments&action=imageUpload',
+                                        imageUploadTaskUuid: '{$task_uuid}',
+                                        controls: document.querySelector('.editor-wrapper-{$task_uuid}'),
+                                        mentions: window.taskLinks || {},
+                                        mentionsFetchUrlWA: true
                                     });
                                 }
                             })();                            

@@ -23,9 +23,13 @@
                                     lexicalEditor.createLexicalInstance({
                                         el: document.getElementById('redactor-comment-{$ident}'),
                                         isRichMode: TasksController ? TasksController.options.text_editor === 'wysiwyg' : false,
-                                        {if $action === 'add'}storage: TasksController ? TasksController.getDraftKeyCommentText({$task_id}) : '',{/if}
                                         taskId: '{$task_id}',
-                                        placeholder: '[`Add comment`]'
+                                        {if $action === 'add'}storage: TasksController ? TasksController.getDraftKeyCommentText({$task_id}) : '',{/if}
+                                        placeholder: '[`Add comment`]',
+                                        imageUploadUrl: '?module=attachments&action=imageUpload',
+                                        imageUploadTaskUuid: '{$task_id}',
+                                        mentions: {},
+                                        mentionsFetchUrlWA: true
                                     });
                                 }
                             })();                            
