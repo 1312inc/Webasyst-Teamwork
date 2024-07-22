@@ -17,6 +17,11 @@ table th:first-child,
 table td:first-child
     border-left: 1px solid var(--border-color-soft)
 
+table th:empty::after,
+table td:empty::after {
+  content: '\00a0';
+}
+
 .t-description-wrapper table,
 .t-comment-content table
       table-layout fixed

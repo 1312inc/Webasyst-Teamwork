@@ -839,7 +839,7 @@ class tasksParsedown
 
                 $HeaderElement = array(
                     'name' => 'th',
-                    'text' => $headerCell ? $headerCell : "\n",
+                    'text' => $headerCell,
                     'handler' => 'line',
                 );
 
@@ -912,7 +912,7 @@ class tasksParsedown
                 $Element = array(
                     'name' => 'td',
                     'handler' => 'line',
-                    'text' => $cell ? $cell : "\n",
+                    'text' => $cell,
                 );
 
                 if (isset($Block['alignments'][$index]))
