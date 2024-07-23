@@ -214,7 +214,7 @@
                                         el: document.getElementById('redactor-task-{$task_uuid}'),
                                         isRichMode: TasksController ? TasksController.options.text_editor === 'wysiwyg' : false,
                                         taskId: '{$task.id}',
-                                        storage: taskEdit.is_new ? (TasksController ? TasksController.getDraftKeyTaskText() : '') : '',
+                                        storage: taskEdit ? (taskEdit.is_new ? (TasksController ? TasksController.getDraftKeyTaskText() : '') : '') : '',
                                         placeholder: '[`Task summary`]',
                                         imageUploadUrl: '?module=attachments&action=imageUpload',
                                         imageUploadTaskUuid: '{$task_uuid}',

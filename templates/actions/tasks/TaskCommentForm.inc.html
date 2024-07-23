@@ -27,7 +27,7 @@
                                         {if $action === 'add'}storage: TasksController ? TasksController.getDraftKeyCommentText({$task_id}) : '',{/if}
                                         placeholder: '[`Add comment`]',
                                         imageUploadUrl: '?module=attachments&action=imageUpload',
-                                        imageUploadTaskUuid: '{$task_id}',
+                                        imageUploadTaskUuid: document.querySelector('.article').dataset.taskUuid || '',
                                         mentions: {},
                                         mentionsFetchUrlWA: true
                                     });
