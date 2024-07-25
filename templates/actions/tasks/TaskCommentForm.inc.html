@@ -1,5 +1,7 @@
 {$comment = $comment|default:[]}
 
+{$loc = explode('_', $wa->locale())}
+
 {$ident = rand(0, 1024)}
 
 {$task_id = $task.id|default:$comment.task_id}
@@ -29,7 +31,8 @@
                                         imageUploadUrl: '?module=attachments&action=imageUpload',
                                         imageUploadTaskUuid: document.querySelector('.article').dataset.taskUuid || '',
                                         mentions: {},
-                                        mentionsFetchUrlWA: true
+                                        mentionsFetchUrlWA: true,
+                                        lang: '{$loc[0]}'
                                     });
                                 }
                             })();                            

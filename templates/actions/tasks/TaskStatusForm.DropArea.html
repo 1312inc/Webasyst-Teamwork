@@ -1,5 +1,7 @@
 {$ident = rand(0, 1024)}
 
+{$loc = explode('_', $wa->locale())}
+
 <div class="t-status-comment-wrapper">
 
     <div class="t-big-editor-wrapper">
@@ -19,7 +21,8 @@
                             imageUploadUrl: '?module=attachments&action=imageUpload',
                             imageUploadTaskUuid: document.querySelector('.article').dataset.taskUuid || '',
                             mentions: {},
-                            mentionsFetchUrlWA: true
+                            mentionsFetchUrlWA: true,
+                            lang: '{$loc[0]}'
                         });
                     }
                 })();                            

@@ -7,6 +7,8 @@
 
 {$task_uuid = $task.uuid|default:tasksUuid4::generate()}
 
+{$loc = explode('_', $wa->locale())}
+
 <script>
     window.taskLinks = {$links_data|json_encode};
 </script>
@@ -220,7 +222,8 @@
                                         imageUploadTaskUuid: '{$task_uuid}',
                                         controls: document.querySelector('.editor-wrapper-{$task_uuid}'),
                                         mentions: window.taskLinks || {},
-                                        mentionsFetchUrlWA: true
+                                        mentionsFetchUrlWA: true,
+                                        lang: '{$loc[0]}'
                                     });
                                 }
                             })();                            
