@@ -91,9 +91,19 @@
                 {* SIDEBAR *}
                 <aside class="t-sidebar-wrapper sidebar mobile-friendly width-adaptive flexbox wa-gradient-overlay-light" id="sidebar">
                     {if $wa->isSingleAppMode()}
-                        <div class="box custom-py-0">
+                        <div id="wa-single-app-nav-container" class="box custom-py-0">
                             {$wa->headerSingleAppUser()}
                         </div>
+                        <script>
+                            $(function () {
+                                $('#wa-single-app-nav-container')
+                                .parent()
+                                .css({ 
+                                    'z-index': 100500, 
+                                    'overflow': 'visible'
+                                });
+                            });
+                        </script>
                     {/if}
                     <nav class="sidebar-mobile-toggle">
                         <div class="box align-center">
