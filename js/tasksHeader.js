@@ -6,7 +6,8 @@ var TasksHeader = ( function($) {
 
     var storage = {
         shown_class: "is-shown",
-        selected_class: "selected"
+        selected_class: "selected",
+        observer: null
     };
 
     TasksHeader = function(options) {
@@ -1103,7 +1104,12 @@ var TasksHeader = ( function($) {
         const $waSingleAppNav = $('#wa-single-app-nav');
 
         if ($waSingleAppNav[0]) {
-            const observer = new MutationObserver(mutationsList => {
+            if(storage.observer) {
+                storage.observer.disconnect();
+                storage.observer = null;
+            }
+
+            storage.observer = new MutationObserver(mutationsList => {
                 for (let _ of mutationsList) {
                     if ($waSingleAppNav.find('.is-opened').length !== 0 || $('.alert-fixed-box:visible').length !== 0) {
                         $(pulsarButtonSelector).hide();
@@ -1114,7 +1120,7 @@ var TasksHeader = ( function($) {
                 }
             });
 
-            observer.observe($waSingleAppNav[0], {
+            storage.observer.observe($waSingleAppNav[0], {
                 childList: true,
                 subtree: true,
                 attributes: true,
