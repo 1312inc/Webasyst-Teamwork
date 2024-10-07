@@ -1096,6 +1096,31 @@ var TasksHeader = ( function($) {
             removePulsar();
         });
 
+        /**
+         * wa-single-app-nav Observer
+         * Hide pulsar button if any popup opened
+         */
+        const $waSingleAppNav = $('#wa-single-app-nav');
+
+        if ($waSingleAppNav[0]) {
+            const observer = new MutationObserver(mutationsList => {
+                for (let _ of mutationsList) {
+                    if ($waSingleAppNav.find('.is-opened').length !== 0 || $('.alert-fixed-box:visible').length !== 0) {
+                        $(pulsarButtonSelector).hide();
+                    } else {
+                        $(pulsarButtonSelector).show();
+                    }
+                    break;
+                }
+            });
+
+            observer.observe($waSingleAppNav[0], {
+                childList: true,
+                subtree: true,
+                attributes: true,
+            });
+        }
+
     };
 
     return TasksHeader;
