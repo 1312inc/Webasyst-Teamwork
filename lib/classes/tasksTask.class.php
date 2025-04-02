@@ -260,6 +260,7 @@ class tasksTask implements ArrayAccess
             $parser = new tasksParsedown();
             $parser->setBreaksEnabled(true);
             $parser->setMarkupEscaped(true);
+            $parser->setSafeMode(true);
             $text = self::replaceMentionsWithLinks($text);
             $text = $parser->text($text);
         }
