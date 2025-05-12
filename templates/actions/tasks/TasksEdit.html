@@ -212,21 +212,29 @@
                         <script>
                             (function () {
                                 if (lexicalEditor) {
-                                    lexicalEditor.createLexicalInstance({
-                                        el: document.getElementById('redactor-task-{$task_uuid}'),
-                                        isRichMode: TasksController ? TasksController.options.text_editor === 'wysiwyg' : false,
-                                        taskId: '{$task.id}',
-                                        storage: taskEdit ? (taskEdit.is_new ? (TasksController ? TasksController.getDraftKeyTaskText() : '') : '') : '',
-                                        placeholder: '[`Task summary`]',
-                                        imageUploadUrl: '?module=attachments&action=imageUpload',
-                                        imageUploadTaskUuid: '{$task_uuid}',
-                                        controls: document.querySelector('.editor-wrapper-{$task_uuid}'),
-                                        mentions: window.taskLinks || {},
-                                        mentionsFetchUrlWA: true,
-                                        lang: '{$loc[0]}'
-                                    });
+                                    window.waRedactorTaskInit = () => {
+                                        const $el = $('#redactor-task-{$task_uuid}');
+                                        $el.parent().find('.lexical-editor').remove();
+
+                                        lexicalEditor.createLexicalInstance({
+                                            el: $el[0],
+                                            isRichMode: TasksController ? TasksController.options.text_editor === 'wysiwyg' : false,
+                                            taskId: '{$task.id}',
+                                            storage: taskEdit ? (taskEdit.is_new ? (TasksController ? TasksController.getDraftKeyTaskText() : '') : '') : '',
+                                            placeholder: '[`Task summary`]',
+                                            imageUploadUrl: '?module=attachments&action=imageUpload',
+                                            imageUploadTaskUuid: '{$task_uuid}',
+                                            controls: document.querySelector('.editor-wrapper-{$task_uuid}'),
+                                            mentions: window.taskLinks || {},
+                                            mentionsFetchUrlWA: true,
+                                            lang: '{$loc[0]}'
+                                        });
+                                    }
                                 }
-                            })();                            
+
+                                waRedactorTaskInit();
+
+                            })();
                         </script>
                         <!-- plugin hook: 'backend_task_edit.%plugin_id.description' -->
                         {* @event backend_task_edit.%plugin_id%.description *}
@@ -278,7 +286,7 @@
                                     [`Watchers`]
                                 </a>
                             </div>
-                            
+
                             {if $wa->pocketlists}
                             <div class="t-chip">
                                 <a class="t-form-line-checklist-chip">
