@@ -11,7 +11,7 @@ class tasksTasksGetUsersForProjectController extends waJsonController
 
         foreach ($this->response as &$item) {
             foreach (['name', 'firstname', 'middlename', 'title', 'company', 'jobtitle', 'about', 'login'] as $toEscape) {
-                $item[$toEscape] = htmlspecialchars($item[$toEscape]);
+                $item[$toEscape] = htmlspecialchars((string) $item[$toEscape]);
             }
             if (!empty($item['calendar_status'])) {
                 $item['calendar_status'] = [
