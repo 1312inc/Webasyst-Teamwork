@@ -313,7 +313,7 @@ pre
     border-radius 0.75rem
     background var(--background-color-blank)
     box-shadow 0 0.25rem 1.0rem -0.75rem var(--big-editor-shadow-color)
-    overflow hidden
+    overflow clip
     word-break break-word
 
     @media forMobile
@@ -514,6 +514,12 @@ textarea.t-redactor-comments
 
   @media forMobile
     padding-left 0
+
+  .lexical-editor
+    .toolbar
+      position sticky
+      top 11rem
+      z-index 1
 
 .add-task-link.mobile-only
   position fixed
