@@ -568,18 +568,13 @@
                     <div class="t-task-button t-task-return">
                         <a href="javascript:void(0);" class="t-control-link button light-gray t-return-link" title="[`Return`]"> <span class="icon"><i class="fas fa-arrow-left"></i></span> <span class="t-button-label">[`Return`]</span></a>
                     </div>
-                    {if $task.next_status && $task.next_status.id != -1 && (($task.contact_id == $wa->user('id') && $task.assigned_contact_id == $task.contact_id) || $task->hasFullAccess())}
+                    {if $task.next_status.id != -1 && (($task.contact_id == $wa->user('id') && $task.assigned_contact_id == $task.contact_id) || $task->hasFullAccess())}
                         {* action & close buttons *}
                         <div class="t-task-button t-task-action">
                             {$task->buttonHtml()}
                         </div>
                         <div class="t-task-button t-task-close wide">
                             {$task->buttonHtml(-1)}
-                        </div>
-                    {else}
-                        {* close button only *}
-                        <div class="t-task-button t-task-close wide">
-                            {$task->buttonHtml()}
                         </div>
                     {/if}
                     <div class="t-task-button t-task-forward">
