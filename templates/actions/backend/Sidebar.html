@@ -15,6 +15,20 @@
     bg_color => 'transparent'
 ]}
 
+{if $wa->isSingleAppMode()}
+    <div class="box custom-py-0">
+        {$wa->headerSingleAppUser()}
+    </div>
+{/if}
+<nav class="sidebar-mobile-toggle">
+    <div class="box align-center">
+        <a href="#" href="javascript:void(0);">
+            <i class="fas fa-bars"></i>
+            [`Menu`]
+        </a>
+    </div>
+</nav>
+
 <div class="sidebar-body t-sidebar-block" id="t-sidebar">
 
     <div class="box custom-mt-4">
