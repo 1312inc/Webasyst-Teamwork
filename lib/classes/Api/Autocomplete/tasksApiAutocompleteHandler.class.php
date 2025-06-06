@@ -301,7 +301,7 @@ class tasksApiAutocompleteHandler
         // product name?
         if ($limit > $prettifier->count()) {
             $collection = new shopProductsCollection('search/query='.$term);
-            $products = $collection->getProducts('id,name', 0, $limit - $prettifier->count());
+            $products = $collection->getProducts('id,name', 0, $limit - $prettifier->count(), false);
             foreach($products as $p) {
                 $prettifier->addEntity([
                     'app_id' => 'shop',
