@@ -1335,6 +1335,12 @@ class tasksParsedown
     {
         if ($this->markupEscaped or $this->safeMode or strpos($Excerpt['text'], '>') === false)
         {
+            if (substr($Excerpt['text'], 0, 4) === '<br>') {
+                return array(
+                    'markup' => '<br>',
+                    'extent' => 4,
+                );
+            }
             return;
         }
 
