@@ -30,6 +30,17 @@ class tasksTask implements ArrayAccess
 
     protected static $data_storages;
 
+    const MENTION_REGEX = "~
+        # Make sure the tag is preceded by newline or whitespace.
+        (?:\s|^)
+
+        # Start of a tag
+        \@
+
+        # This matches the tag name; \p{C} means all weird invisible unicode characters
+        ([^\s/!?()[\],\.#<>'\p{C}\"\\\\]+)
+    ~xu";
+
     public function __construct($data=null)
     {
         $this->model = new tasksTaskModel();
@@ -283,7 +294,7 @@ class tasksTask implements ArrayAccess
 
     public static function getAllMentionedUsers($text)
     {
-        if (!preg_match_all('~(?:\s|^)@(\S+)~u', $text, $matches) || empty($matches[1])) {
+        if (!preg_match_all(self::MENTION_REGEX, $text, $matches) || empty($matches[1])) {
             return [];
         }
 
@@ -312,7 +323,7 @@ class tasksTask implements ArrayAccess
         $user_url_template = $root_url.$backend_url.'/team/u/%s/';
         foreach(self::getAllMentionedUsers($text) as $login => $user) {
             $user_url = sprintf($user_url_template, $login);
-            $replace_map['~(\s|^)('.preg_quote('@'.$login).')(\s|$)~ui'] = '$1[$2]('.$user_url.')$3';
+            $replace_map['~(\s|^)('.preg_quote('@'.$login).')\b~ui'] = '$1[$2]('.$user_url.')$3';
         }
 
         return preg_replace(array_keys($replace_map), array_values($replace_map), $text);
@@ -362,18 +373,7 @@ class tasksTask implements ArrayAccess
 
     public static function extractMentions($text)
     {
-        $pattern = "~
-            # Make sure the tag is preceded by newline or whitespace.
-            (?:\s|^)
-
-            # Start of a tag
-            \@
-
-            # This matches the tag name
-            ([^\s/!?()[\],\.#<>'\"\\\\]+)
-        ~xu";
-
-        $has_tags = preg_match_all($pattern, $text, $m);
+        $has_tags = preg_match_all(self::MENTION_REGEX, $text, $m);
         if (!$has_tags) {
             return [];
         }
