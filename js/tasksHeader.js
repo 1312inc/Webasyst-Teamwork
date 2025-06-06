@@ -6,7 +6,8 @@ var TasksHeader = ( function($) {
 
     var storage = {
         shown_class: "is-shown",
-        selected_class: "selected"
+        selected_class: "selected",
+        observer: null
     };
 
     TasksHeader = function(options) {
@@ -1095,6 +1096,36 @@ var TasksHeader = ( function($) {
         $(window).on('wa_before_dispatched.pulsar', function () {
             removePulsar();
         });
+
+        /**
+         * wa-single-app-nav Observer
+         * Hide pulsar button if any popup opened
+         */
+        const $waSingleAppNav = $('#wa-single-app-nav');
+
+        if ($waSingleAppNav[0]) {
+            if(storage.observer) {
+                storage.observer.disconnect();
+                storage.observer = null;
+            }
+
+            storage.observer = new MutationObserver(mutationsList => {
+                for (let _ of mutationsList) {
+                    if ($waSingleAppNav.find('.is-opened').length !== 0 || $('.alert-fixed-box:visible').length !== 0) {
+                        $(pulsarButtonSelector).hide();
+                    } else {
+                        $(pulsarButtonSelector).show();
+                    }
+                    break;
+                }
+            });
+
+            storage.observer.observe($waSingleAppNav[0], {
+                childList: true,
+                subtree: true,
+                attributes: true,
+            });
+        }
 
     };
 

@@ -4,66 +4,91 @@ info:
   version: 1.0.0
 servers:
   - url: /api.php
-    description: Current host server
+    description: Адрес API
 
 paths:
 # tasks
   /tasks.tasks.getList:
     get:
       tags:
-        - Таски
-      summary: 'Возвращает список тасков по заданному хешу с фильтрацией'
+        - Задачи
+      summary: Возвращает список задач, соответствующий указанным условиям.
+      externalDocs:
+        description: tasks.tasks.getList
+        url: https://developers.webasyst.ru/api/explorer/tasks/tasks.tasks.getList/
       security:
         - ApiKeyAuth: [ ]
       parameters:
         - in: query
           name: hash
           description: |
-            основной фильтр (условие) для выборки задач:
-            + id/ID - поиск по id таска
-            + all - все таски
-            + search/TERM - поиск по слову
-            + scope/ID - поиск по работе (milestone)
-            + project/ID - поиск по проекту
-            + inbox - входящие
-            + assigned/ID - назначенные на пользователя
-            + outbox - исходящие
-            + favorites - любименькое
-            + urgent
-            + hidden - ?
-            + creator/ID - создателя
-            + contact/ID - ?
-            + status/{inprogress|done|ID}
-            + unassigned - без исполнителя
-            + tag/TAG - поиск по тегу
-            + number/INT.INT - поиск по номеру (проект.номер)
+            Хеш-строка с описанием параметров фильтрации задач.
+
+            Примеры:
+            + **id/*42***: Поиск задачи с указанным ID
+            + **number/*10.20***: Поиск задачи с указанным номером в формате «project_id.task_number»
+            + **all**: Все задачи
+            + **inbox**: Входящие задачи для текущего пользователя
+            + **outbox**: Исходящие задачи для текущего пользователя
+            + **favorites**: Задачи из списка «Наблюдаю»
+            + **urgent**: Срочные задачи
+            + **unassigned**: Задачи без назначенного исполнителя
+            + **assigned/*12***: Задачи, назначенные на пользователя с указанным ID
+            + **creator/*12***: Задачи, созданные пользователем с указанным ID
+            + **scope/*1***: Задачи, связанные с указанным ID срока
+            + **project/*2***: Задачи, связанные с указанным ID проекта
+            + **status/inprogress**: Незавершенные задачи
+            + **status/done**: Завершенные задачи
+            + **status/*3***: Незавершенные задачи в статусе с указанным ID
+            + **search/*qwerty***: Поиск задач по указанному запросу
+            + **tag/*bug***: Задачи, связанные с указанным тегом
           schema:
             type: string
             nullable: true
-            example: inbox
-        - $ref: '#/components/parameters/offset'
-        - $ref: '#/components/parameters/limit'
+        - in: query
+          name: offset
+          description: Смещение относительно начала списка отфильтрованных задач
+          required: true
+          schema:
+            type: integer
+            minimum: 0
+        - in: query
+          name: limit
+          description: Максимальное количество задач, которые нужно получить
+          schema:
+            type: integer
+            nullable: true
+            minimum: 0
+            maximum: 500
+            default: 30
         - in: query
           name: filters
           description: |
-            дополнительный фильтр внутри выборки по hash:
-            + assigned_contact_id=1
-            + milestone_id=5
-            + status_id=-1
-            + и т.д
+            Параметр дополнительной фильтрации задач с учетом значения, указанного в параметре *hash*.
+
+            Примеры:
+            + **assigned_contact_id=*1***: Задачи, назначенные на сотрудника с указанным ID
+            + **milestone_id=*5***: Задачи, связанные с указанным ID срока
+            + **status_id=*-1*** Задачи с указанным ID статуса
           schema:
             type: string
             nullable: true
         - in: query
           name: since
           required: false
-          description: вернет таски, обновленные после этого timestamp
+          description: Timestamp, чтобы получить только задачи, обновленные после указанных даты и времени
           schema:
             type: number
             nullable: true
         - in: query
           name: order
-          description: сортировка
+          description: |
+            Порядок сортировки.
+            + **priority**: Приоритет
+            + **oldest**: Сначала старые
+            + **newest**: Сначала новые
+            + **due**: По сроку исполнения
+            + *(если не указано)*: Используются следующие значения сортировки по умолчанию: для значения `'outbox'`, указанного в параметре *hash*, — сортировка `'oldest'`; для значения `'status'`, указанного в параметре *hash*, и значения `'status_id=-1'`, указанного в параметре *filters*, — сортировка `'newest'`; в остальных случаях — сортировка `'priority'`.
           required: false
           schema:
             type: string
@@ -72,23 +97,33 @@ paths:
               - oldest
               - newest
               - due
-            default: priority
       responses:
         200:
-          description: Пагинированный список тасков
+          description: Список задач.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/getTasksListResponse'
         403:
-          description: Запрещено
+          description: Доступ запрещен.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         500:
-          description: Все плохо
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
   /tasks.tasks.add:
     post:
       tags:
-        - Таски
-      summary: 'Добавляет новый таск'
+        - Задачи
+      summary: Добавляет новую задачу.
+      externalDocs:
+        description: tasks.tasks.add
+        url: https://developers.webasyst.ru/api/explorer/tasks/tasks.tasks.add/
       security:
         - ApiKeyAuth: [ ]
       requestBody:
@@ -100,60 +135,84 @@ paths:
                 name:
                   type: string
                   minLength: 1
+                  description: Название задачи
                 text:
                   type: string
                   nullable: true
+                  format: text
+                  description: Описание
                 assigned_contact_id:
                   type: integer
                   nullable: true
                   minimum: 0
+                  description: ID сотрудника, на которого должна быть назначена задача
                 project_id:
                   type: integer
                   nullable: true
                   minimum: 0
+                  description: ID проекта задачи
                 milestone_id:
                   type: integer
                   nullable: true
                   minimum: 0
+                  description: ID срока, к которому должна относиться задача
                 priority:
                   type: integer
                   nullable: true
+                  description: Значение приоритета
                 status_id:
                   type: integer
                   nullable: true
                   minimum: 0
+                  description: ID статуса
                 hidden_timestamp:
                   type: integer
                   nullable: true
                   minimum: 0
+                  description: Timestamp отправки задачи в архив; значение больше нуля означает, что задача находится в архиве
                 due_date:
                   nullable: true
                   type: string
                   format: date
+                  description: Дата дедлайна
                 files_hash:
                   type: string
                   nullable: true
+                  description: Хеш файлов, загруженных с помощью метода *tasks.attachments.add*, если нужно прикрепить их к задаче
                 uuid:
                   type: string
+                  description: Уникальный идентификатор задачи длиной не более 36 символов; генерируется клиентским приложением по любому алгоритму
               required:
                 - name
                 - uuid
+                - project_id
       responses:
         200:
-          description: Новый таск
+          description: Свойства добавленной задачи.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/taskInfo'
         403:
-          description: Запрещено
+          description: Доступ запрещен.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         500:
-          description: Все плохо
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
   /tasks.tasks.update:
     post:
       tags:
-        - Таски
-      summary: 'Обновляет таск'
+        - Задачи
+      summary: Обновляет свойства задачи.
+      externalDocs:
+        description: tasks.tasks.update
+        url: https://developers.webasyst.ru/api/explorer/tasks/tasks.tasks.update/
       security:
         - ApiKeyAuth: [ ]
       requestBody:
@@ -165,47 +224,59 @@ paths:
                 id:
                   type: integer
                   minimum: 1
+                  description: ID задачи
                 name:
                   type: string
                   minLength: 1
+                  description: Название
                 text:
                   type: string
                   nullable: true
+                  format: text
+                  description: Описание
                 assigned_contact_id:
                   type: integer
                   nullable: true
                   minimum: 0
+                  description: ID сотрудника, на которого должна быть назначена задача
                 project_id:
                   type: integer
                   nullable: true
                   minimum: 0
+                  description: ID проекта задачи
                 milestone_id:
                   type: integer
                   nullable: true
                   minimum: 0
+                  description: ID срока, к которому должна относиться задача
                 priority:
                   type: integer
                   nullable: true
+                  description: Значение приоритета
                 status_id:
                   type: integer
                   nullable: true
                   minimum: 0
+                  description: ID статуса
                 hidden_timestamp:
                   type: integer
                   nullable: true
                   minimum: 0
+                  description: Timestamp отправки задачи в архив; значение больше нуля означает, что задача находится в архиве
                 due_date:
                   nullable: true
                   type: string
                   format: date
+                  description: Дата дедлайна
                 files_hash:
                   type: string
                   nullable: true
+                  description: Хеш файлов, загруженных с помощью метода *tasks.attachments.add*, если нужно прикрепить их к задаче
                 attachments_to_delete:
                   type: array
+                  description: ID прикрепленных файлов, которые нужно удалить из задачи
                   items:
                     type: integer
-                    minimum: 1
               required:
                 - id
                 - name
@@ -220,20 +291,31 @@ paths:
                 - files_hash
       responses:
         200:
-          description: Обвновленный таск
+          description: Обновленные свойства задачи.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/taskInfo'
         403:
-          description: Запрещено
+          description: Доступ запрещен.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         500:
-          description: Все плохо
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
   /tasks.tasks.action:
     post:
       tags:
-        - Таски
-      summary: 'Двигает таск по статусам'
+        - Задачи
+      summary: Переводит задачу в другой статус.
+      externalDocs:
+        description: tasks.tasks.action
+        url: https://developers.webasyst.ru/api/explorer/tasks/tasks.tasks.action/
       security:
         - ApiKeyAuth: [ ]
       requestBody:
@@ -245,40 +327,54 @@ paths:
                 id:
                   type: integer
                   minimum: 1
+                  description: ID задачи
+                action:
+                  type: string
+                  nullable: true
+                  description: ID действия
+                  enum:
+                    - return
+                    - forward
+                    - close
                 status_id:
                   type: integer
                   default: 0
-                action:
-                  type: string
-                  enum:
-                    - ""
-                    - "return"
-                    - "forward"
-                    - "close"
+                  description: ID статуса
                 text:
                   type: string
                   nullable: true
+                  format: text
+                  description: Комментарий к действию
                 assigned_contact_id:
                   type: integer
                   nullable: true
+                  description: ID сотрудника, на которого должна быть назначена задача
                 files_hash:
                   type: string
                   nullable: true
+                  description: Хеш файлов, загруженных с помощью метода *tasks.attachments.add*, если нужно прикрепить их к действию с задачей
               required:
                 - id
                 - action
       responses:
         200:
-          $ref: '#/components/schemas/logInfo'
+          description: Свойства записи о действии с задачей.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/logInfo'
         403:
-          description: Запрещено
+          description: Доступ запрещен.
         500:
-          description: Все плохо
+          description: Внутренняя ошибка сервера.
   /tasks.tasks.favorite:
     post:
       tags:
-        - Таски
-      summary: 'Добавляет таск в избранное или помечает как прочитанное (или непрочитанное)'
+        - Задачи
+      summary: Добавляет задачу в список «Наблюдаю» или исключает из этого списка.
+      externalDocs:
+        description: tasks.tasks.favorite
+        url: https://developers.webasyst.ru/api/explorer/tasks/tasks.tasks.favorite/
       security:
         - ApiKeyAuth: [ ]
       requestBody:
@@ -290,34 +386,58 @@ paths:
                 task_id:
                   type: integer
                   minimum: 1
+                  description: ID задачи
                 favorite:
                   type: boolean
+                  description: Признак добавления (если флаг установлен) либо исключения (если флаг снят) задачи из списка «Наблюдаю»
                 unread:
-                  type: string
+                  type: integer
                   enum: [1, 0]
-                  nullable: true
-                  description: Если передать, то выставит статус "прочитано" (0) или "не прочитано" (1). Если не передавать, то при добавлении в избранное задача будет прочитанной; если задача уже была в избранном, и unread не передать, то статус останется без изменения.
+                  description: |
+                    Статус непрочитанной задачи.
+                    + **1**: Не прочитана
+                    + **0**: Прочитана
+                    + *(если не указано)*: При добавлении в избранное задача отмечается как прочитанная; а если задача уже есть в избранном, то ее статус непрочитанной остается без изменений
                 contact_id:
                   type: integer
                   nullable: true
-                  description: Если не передавать, то в избранное для текущего пользователя. Если передать, то для переданного, при условии, что контакт имеет доступ к таску (ну и вообще существует).
+                  description: ID сотрудника, в чей список «Наблюдаю» должна быть добавлена или из которого должна быть исключена задача, к которой у него есть доступ (по умолчанию подразумевается текущий пользователь)
               required:
                 - task_id
                 - favorite
       responses:
         200:
-          $ref: '#/components/schemas/200ok'
+          description: Успешное выполнение запроса.
+          content:
+            text/plain:
+              schema:
+                type: string
         400:
-          description: Ошибка
+          description: Некорректное содержимое запроса.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         403:
-          description: Запрещено
+          description: Доступ запрещен.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         500:
-          description: Все плохо
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
   /tasks.tasks.publicLink:
     post:
       tags:
-        - Таски
-      summary: 'Получает или удаляет публичные ссылки для таска'
+        - Задачи
+      summary: Обновляет статус доступности задачи по публичной ссылке.
+      externalDocs:
+        description: tasks.tasks.publicLink
+        url: https://developers.webasyst.ru/api/explorer/tasks/tasks.tasks.publicLink/
       security:
         - ApiKeyAuth: [ ]
       requestBody:
@@ -329,33 +449,49 @@ paths:
                 id:
                   type: integer
                   minimum: 1
-                  description: Идентификатор таска
+                  description: ID задачи
                 publish:
                   type: boolean
+                  description: Статус доступности по публичной ссылке
               required:
                 - id
                 - publish
       responses:
         200:
-          description: Список адресов для разных доменов, пустой в случае отключения публичной ссылки
+          description: Успешное выполнение запроса.
           content:
             application/json:
               schema:
-                nullable: true
                 type: array
                 items:
+                  description: URL всех доступных публичных ссылок на задачу
                   type: string
         400:
-          description: Ошибка
+          description: Некорректное содержимое запроса.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         403:
-          description: Запрещено
+          description: Доступ запрещен.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         500:
-          description: Все плохо
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
   /tasks.tasks.delete:
     post:
       tags:
-        - Таски
-      summary: 'Удаляет 1 или несколько тасков'
+        - Задачи
+      summary: Удаляет одну или несколько задач.
+      externalDocs:
+        description: tasks.tasks.delete
+        url: https://developers.webasyst.ru/api/explorer/tasks/tasks.tasks.delete/
       security:
         - ApiKeyAuth: [ ]
       requestBody:
@@ -366,12 +502,13 @@ paths:
               properties:
                 ids:
                   type: array
+                  description: ID удаляемых задач
                   items:
                     type: integer
                     minItems: 1
       responses:
         200:
-          description: Список id тасков, которые успешно удалили
+          description: Успешное выполнение запроса.
           content:
             application/json:
               schema:
@@ -379,29 +516,42 @@ paths:
                 properties:
                   ids:
                     type: array
+                    description: ID удаленных задач
                     items:
                       type: integer
                       minItems: 1
         403:
-          description: Запрещено
+          description: Доступ запрещен.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         500:
-          description: Все плохо
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
   /tasks.tasks.links:
     get:
       tags:
-        - Таски
-      summary: Информация о ссылках, содержащихся в тексте задачи
+        - Задачи
+      summary: Возвращает список объектов, связанных с задачей с помощью функций «Теги и ссылки» и «Наблюдатели».
+      externalDocs:
+        description: tasks.tasks.links
+        url: https://developers.webasyst.ru/api/explorer/tasks/tasks.tasks.links/
       security:
         - ApiKeyAuth: [ ]
       parameters:
         - in: query
           name: id
-          description: id задачи
+          description: ID задачи
           schema:
             type: integer
           required: true
       responses:
         200:
+          description: Список связанных объектов.
           content:
             application/json:
               schema:
@@ -409,36 +559,51 @@ paths:
                 properties:
                   data:
                     type: array
+                    description: Свойства объектов
                     items:
                       $ref: '#/components/schemas/taskLink'
         403:
-          description: Запрещено
+          description: Доступ запрещен.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         500:
-          description: Все плохо
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
 # statuses
   /tasks.statuses.getList:
     get:
       tags:
         - Статусы
-      summary: 'Возвращает список статусов'
+      summary: Возвращает список статусов задач, которые включены в настройках проектов.
+      externalDocs:
+        description: tasks.statuses.getList
+        url: https://developers.webasyst.ru/api/explorer/tasks/tasks.statuses.getList/
       security:
         - ApiKeyAuth: [ ]
       responses:
         200:
-          description: Список статусов
+          description: Информация о статусах.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/getStatusesListResponse'
         403:
-          description: Запрещено
+          description: Доступ запрещен.
         500:
-          description: Все плохо
+          description: Внутренняя ошибка сервера.
   /tasks.statuses.add:
     post:
       tags:
         - Статусы
-      summary: 'Добавляет новый статус. Только админы'
+      summary: Добавляет новый статус задач.
+      externalDocs:
+        description: tasks.statuses.add
+        url: https://developers.webasyst.ru/api/explorer/tasks/tasks.statuses.add/
       security:
         - ApiKeyAuth: [ ]
       requestBody:
@@ -450,30 +615,27 @@ paths:
                 name:
                   type: string
                   minLength: 1
+                  description: Название статуса
                 button:
                   type: string
                   minLength: 1
-                  description: Текст на кнопке, которая переводит задачу в этот статус. Иногда может совпадать с названием статуса, но чаще всего все-таки является глаголом и поэтому отличается
-                icon:
-                  type: string
-                  nullable: true
+                  description: Текст на кнопке, которая переводит задачу в этот статус
                 assign:
                   type: string
                   enum:
-                    - ""
-                    - "user"
-                    - "author"
-                    - "select"
+                    - user
+                    - author
+                    - select
                   description: |
-                    Кому назначить таску:
-                    + "author" - Назначить задачу ее постановщику
-                    + "user" - Назначить выбранному пользователю
-                    + "select" - Предлагать выбрать исполнителя
-                    + "" - Оставить исполнителя без изменения
+                    На кого должна быть назначена задача при ее переводе в этот статус:
+                    + **author**: На создателя задачи
+                    + **user**: На указанного сотрудника
+                    + **select**: Предложить выбор сотрудника
+                    + *(если не указано)*: Оставить назначенного сотрудника без изменений
                 assign_user:
                   type: integer
                   nullable: true
-                  description: Новый назначенный пользователь
+                  description: Новый назначенный сотрудник
                 allow_clear_assign:
                   type: boolean
                   nullable: true
@@ -502,14 +664,17 @@ paths:
               schema:
                 $ref: '#/components/schemas/statusInfo'
         403:
-          description: Запрещено
+          description: Доступ запрещен.
         500:
-          description: Все плохо
+          description: Внутренняя ошибка сервера.
   /tasks.statuses.update:
     post:
       tags:
         - Статусы
-      summary: 'Обновляет статус. Только админы'
+      summary: Обновляет свойства статуса задач.
+      externalDocs:
+        description: tasks.statuses.update
+        url: https://developers.webasyst.ru/api/explorer/tasks/tasks.statuses.update/
       security:
         - ApiKeyAuth: [ ]
       requestBody:
@@ -520,80 +685,86 @@ paths:
               properties:
                 id:
                   type: integer
+                  description: ID статуса
                 name:
                   type: string
                   minLength: 1
+                  description: Название
                 button:
                   type: string
                   minLength: 1
-                  description: Текст на кнопке, которая переводит задачу в этот статус. Иногда может совпадать с названием статуса, но чаще всего все-таки является глаголом и поэтому отличается
-                icon:
-                  type: string
-                  nullable: true
+                  description: Текст на кнопке, которая переводит задачу в этот статус
                 assign:
                   type: string
                   enum:
-                    - ""
-                    - "user"
-                    - "author"
-                    - "select"
+                    - user
+                    - author
+                    - select
                   description: |
-                    Кому назначить таску:
-                    + "author" - Назначить задачу ее постановщику
-                    + "user" - Назначить выбранному пользователю
-                    + "select" - Предлагать выбрать исполнителя
-                    + "" - Оставить исполнителя без изменения
+                    На кого должна быть назначена задача при ее переводе в этот статус:
+                    + **author**: На создателя задачи
+                    + **user**: На указанного сотрудника
+                    + **select**: Предложить выбор сотрудника
+                    + *(если не указано)*: Оставить назначенного сотрудника без изменений
                 assign_user:
                   type: integer
                   nullable: true
-                  description: Новый назначенный пользователь
+                  description: Новый назначенный сотрудник
                 allow_clear_assign:
                   type: boolean
                   nullable: true
-                  description: Разрешить оставить задачу без назначения
+                  description: Флаг, означающий возможность оставить задачу в этом статусе без назначения сотруднику
                 button_color:
                   nullable: true
                   type: string
-                  description: Цвет фона
+                  description: HTML-значение цвета фона кнопки
                 title_color:
                   nullable: true
                   type: string
-                  description: Цвет текста
+                  description: HTML-значение цвета текста кнопки
                 allow_comment:
                   type: boolean
-                  description: Разрешить комментировать
+                  description: Возможность добавлять комментарии к задаче в этом статусе
                 sort:
                   type: integer
+                  description: Значение сортировки
               required:
                 - id
                 - name
                 - button
-                - icon
-                - assign_user
-                - assign
-                - allow_clear_assign
-                - button_color
-                - title_color
-                - allow_comment
-                - sort
       responses:
         200:
-          description: Информация об обновленном статусе
+          description: Обновленные свойства статуса.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/statusInfo'
         403:
-          description: Запрещено
+          description: Доступ запрещен.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         404:
-          description: Не найдено
+          description: Не найдено.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         500:
-          description: Все плохо
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
   /tasks.statuses.delete:
     post:
       tags:
         - Статусы
-      summary: 'Удаляет статус. Только админы'
+      summary: Удаляет статус задач из настроек приложения.
+      externalDocs:
+        description: tasks.statuses.delete
+        url: https://developers.webasyst.ru/api/explorer/tasks/tasks.statuses.delete/
       security:
         - ApiKeyAuth: [ ]
       requestBody:
@@ -604,22 +775,42 @@ paths:
               properties:
                 id:
                   type: integer
+                  description: ID статуса
               required:
                 - id
       responses:
         200:
-          $ref: '#/components/schemas/200ok'
+          description: Успешное выполнение запроса.
+          content:
+            text/plain:
+              schema:
+                type: string
         403:
-          description: Запрещено
+          description: Доступ запрещен.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         404:
-          description: Не найдено
+          description: Не найдено.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         500:
-          description: Все плохо
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
   /tasks.statuses.sort:
     post:
       tags:
         - Статусы
-      summary: 'Сортирует. Только админы'
+      summary: Изменяет порядок сортировки статусов задач.
+      externalDocs:
+        description: tasks.statuses.sort
+        url: https://developers.webasyst.ru/api/explorer/tasks/tasks.statuses.sort/
       security:
         - ApiKeyAuth: [ ]
       requestBody:
@@ -629,7 +820,7 @@ paths:
               type: object
               properties:
                 sorted_ids:
-                  description: Отсортированный массив id статусов
+                  description: ID статусов, перечисленные в требуемом порядке
                   type: array
                   items:
                     type: integer
@@ -637,126 +828,203 @@ paths:
                 - sorted_ids
       responses:
         200:
-          $ref: '#/components/schemas/getStatusesListResponse'
+          description: Успешное выполнение запроса.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getStatusesListResponse'
         403:
-          description: Запрещено
+          description: Доступ запрещен.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         404:
-          description: Не найдено
+          description: Не найдено.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         500:
-          description: Все плохо
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
 # counts
   /tasks.counts.getKeyFilterCounts:
     get:
       tags:
         - Счетчики
-      summary: 'Возвращает список счетчиков для текущего пользователя по разным критериям'
+      summary: |
+        Возвращает счетчики задач для текущего пользователя для основных фильтров: «Входящие», «Исходящие», «Наблюдаю», «Срочно».
+      externalDocs:
+        description: tasks.counts.getKeyFilterCounts
+        url: https://developers.webasyst.ru/api/explorer/tasks/tasks.counts.getKeyFilterCounts/
       security:
         - ApiKeyAuth: [ ]
       responses:
         200:
-          description: Список счетчиков
+          description: Данные счетчиков задач.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/getKeyFilterCountsResponse'
         403:
-          description: Запрещено
+          description: Доступ запрещен.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         500:
-          description: Все плохо
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
 # log
   /tasks.log.getList:
     get:
       tags:
         - Логи
-      summary: 'Возвращает список действий с тасками'
+      summary: Возвращает журнал действий с задачами.
+      externalDocs:
+        description: tasks.log.getList
+        url: https://developers.webasyst.ru/api/explorer/tasks/tasks.log.getList/
       security:
         - ApiKeyAuth: [ ]
       parameters:
         - in: query
+          name: offset
+          description: Смещение относительно начала списка отфильтрованных записей
+          required: true
+          schema:
+            type: integer
+            minimum: 0
+        - in: query
           name: project_id
           required: false
-          description: Фильтр по проекту
+          description: ID проекта, для которого нужно получить записи журнала
           schema:
             type: integer
             nullable: true
         - in: query
           name: milestone_id
           required: false
-          description: Фильтр по работе
+          description: ID срока, для которого нужно получить записи журнала
           schema:
             type: integer
             nullable: true
         - in: query
           name: contact_id
           required: false
-          description: Фильтр по пользователю
+          description: ID сотрудника, чтобы получить записи журнала только с его действиями
           schema:
             type: integer
             nullable: true
-        - $ref: '#/components/parameters/offset'
-        - $ref: '#/components/parameters/limit'
+        - in: query
+          name: limit
+          description: Максимальное количество записей, которые нужно получить
+          schema:
+            type: integer
+            nullable: true
+            minimum: 0
+            default: 30
       responses:
         200:
-          description: Список "логов"
+          description: Список записей журнала действий.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/getLogsListResponse'
         403:
-          description: Запрещено
+          description: Доступ запрещен.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         500:
-          description: Все плохо
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
 # team
   /tasks.team.getMySettings:
     get:
       tags:
         - Команда
-      summary: 'Возвращает ID текущего пользователя, таймзону, настройки по правам и другие полезности'
+      summary: Возвращает системную информацию о текущем пользователе.
+      externalDocs:
+        description: tasks.team.getMySettings
+        url: https://developers.webasyst.ru/api/explorer/tasks/tasks.team.getMySettings/
       security:
         - ApiKeyAuth: [ ]
       responses:
         200:
-          description: Настройки текущего пользователя
+          description: Информация о пользователе.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/teamGetMySettingsResponse'
         403:
-          description: Запрещено
+          description: Доступ запрещен.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         500:
-          description: Все плохо
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
   /tasks.team.getTopAssignees:
     get:
       tags:
         - Команда
-      summary: 'Возвращает список людей в тасках по разным критериям'
+      summary: Возвращает список сотрудников, «рекомендованных» для назначения новой задачи. Рекомендация формируется на основе истории действий сотрудников и их взаимодействия с коллегами в разных проектах.
+      externalDocs:
+        description: tasks.team.getTopAssignees
+        url: https://developers.webasyst.ru/api/explorer/tasks/tasks.team.getTopAssignees/
       security:
         - ApiKeyAuth: [ ]
       parameters:
         - in: query
           name: project_id
           required: false
-          description: Для конкретного проекта
+          description: ID проекта, для которого нужно сформировать список «рекомендованных» сотрудников
           schema:
             type: integer
             nullable: true
             example: 1
       responses:
         200:
-          description: Список людей
+          description: Информация о сотрудниках.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/getTeamGetTopAssigneesResponse'
         403:
-          description: Запрещено
+          description: Доступ запрещен.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         500:
-          description: Все плохо
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
   /tasks.team.inviteToTask:
     post:
       tags:
         - Команда
-      summary: 'Шлет приглашение новому пользователю на почту и назначает на него таску'
+      summary: Создает новый профиль сотрудника, назначает на него задачу и отправляет ему приглашение.
+      externalDocs:
+        description: tasks.team.inviteToTask
+        url: https://developers.webasyst.ru/api/explorer/tasks/tasks.team.inviteToTask/
       security:
         - ApiKeyAuth: [ ]
       requestBody:
@@ -765,32 +1033,35 @@ paths:
             schema:
               type: object
               properties:
+                task_id:
+                  type: integer
+                  description: ID задачи
                 email:
                   type: string
                   format: email
                   required: false
+                  description: Email-адрес сотрудника; должен быть указан, если пуст параметр *phone*
                 phone:
                   type: string
                   required: false
-                task_id:
-                  type: integer
+                  description: Телефонный номер сотрудника; должен быть указан, если пуст параметр *email*
                 access_right:
                   description: |
-                    Права для контакте:
-                    + 0 - минимальные
-                    + 1 - доступ ко всем проектам и таскам
-                    + 2 - полный доступ к приложению
+                    Права доступа приглашенного сотрудника.
+                    + **0**: Доступ только к назначенным задачам
+                    + **1**: Доступ ко всем проектам и задачам
+                    + **2**: Полный доступ к приложению
                   type: integer
                   enum:
                     - 0
                     - 1
                     - 2
+                  default: 0
               required:
-                - email
                 - task_id
       responses:
         200:
-          description: Идентификатор пользователя, если успешно отправилось приглашение
+          description: Успешное выполнение запроса.
           content:
             application/json:
               schema:
@@ -798,36 +1069,63 @@ paths:
                 properties:
                   contact:
                     type: integer
+                    description: ID созданного профиля сотрудника
         400:
-          description: Ошибка
+          description: Некорректное содержимое запроса.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         403:
-          description: Запрещено
+          description: Доступ запрещен.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         500:
-          description: Все плохо
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
   /tasks.team.getList:
     get:
       tags:
         - Команда
-      summary: 'Возвращает список людей, кроме текущего пользователя'
+      summary: Возвращает список всех коллег текущего пользователя, у которых есть доступ к «Задачам».
+      externalDocs:
+        description: tasks.team.getList
+        url: https://developers.webasyst.ru/api/explorer/tasks/tasks.team.getList/
       security:
         - ApiKeyAuth: [ ]
       responses:
         200:
-          description: Список людей
+          description: Список сотрудников.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/getTeamGetListResponse'
         403:
-          description: Запрещено
+          description: Доступ запрещен.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         500:
-          description: Все плохо
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
 # attachments
   /tasks.attachments.add:
     post:
       tags:
-        - Аттачменты
-      summary: 'Загружает файлы и создает аттачменты'
+        - Вложения
+      summary: Загружает файлы и либо сразу прикрепляет их к задаче, либо сохраняет их в виде свободных вложений, которые можно позже прикрепить к задаче, комментарию или действию.
+      externalDocs:
+        description: tasks.attachments.add
+        url: https://developers.webasyst.ru/api/explorer/tasks/tasks.attachments.add/
       security:
         - ApiKeyAuth: [ ]
       requestBody:
@@ -839,21 +1137,22 @@ paths:
                 hash:
                   type: string
                   minLength: 1
-                  description: Хеш, который нужно указывать при создании таски/комментария/действия, чтобы связать его с загруженными аттачметнами
-                task_id:
-                  type: integer
-                  description: ID таски, к которой прикрепить аттачменты
+                  description: Уникальный для каждого вызова метода хеш-идентификатор, который закрепится за загруженными файлами, — он потребуется для последующей связи этих файлов с задачей, комментарием или действием, если не указан параметр *task_id*
                 files[]:
                   type: array
+                  description: Файлы
                   items:
                     type: string
                     format: binary
+                task_id:
+                  type: integer
+                  description: ID задачи, к которой нужно прикрепить файлы
               required:
                 - hash
                 - files[]
       responses:
         200:
-          description: Список имен файлов, которые успешно загрузились
+          description: Информация о загруженных файлах
           content:
             application/json:
               schema:
@@ -861,46 +1160,74 @@ paths:
                 properties:
                   files:
                     type: array
+                    description: Имена файлов
                     items:
                       type: string
                       minItems: 0
         403:
-          description: Запрещено
+          description: Доступ запрещен.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         500:
-          description: Все плохо
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
   /tasks.attachments.download:
     get:
       tags:
-        - Аттачменты
-      summary: 'Скачивает аттачмент'
+        - Вложения
+      summary: Скачивает прикрепленный к задаче файл.
+      externalDocs:
+        description: tasks.attachments.download
+        url: https://developers.webasyst.ru/api/explorer/tasks/tasks.attachments.download/
       security:
         - ApiKeyAuth: [ ]
       parameters:
         - in: query
           name: id
           required: true
+          description: ID файла
           schema:
             type: integer
             example: 1
       responses:
         200:
-          description: Содержимое файла или fail
+          description: Содержимое файла.
           content:
             text/plain:
               schema:
                 type: string
                 format: binary
         403:
-          description: Запрещено
+          description: Доступ запрещен.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         404:
-          description: Не найден
+          description: Не найдено.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         500:
-          description: Все плохо
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
   /tasks.attachments.delete:
     post:
       tags:
-        - Аттачменты
-      summary: 'Удаляет аттачменты'
+        - Вложения
+      summary: Удаляет прикрепленный к задаче файл.
+      externalDocs:
+        description: tasks.attachments.delete
+        url: https://developers.webasyst.ru/api/explorer/tasks/tasks.attachments.delete/
       security:
         - ApiKeyAuth: [ ]
       requestBody:
@@ -909,26 +1236,37 @@ paths:
             schema:
               type: object
               properties:
-                ids:
+                id:
                   type: array
+                  description: ID файлов
                   required: true
                   items:
                     type: integer
       responses:
         200:
-          description: Без ошибок
+          description: Успешное выполнение запроса.
           content:
             text/plain:
               schema:
-                oneOf:
-                  - $ref: '#/components/schemas/200ok'
-                  - $ref: '#/components/schemas/200fail'
+                type: string
         400:
-          $ref: '#/components/schemas/400fail'
+          description: Некорректное содержимое запроса.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         403:
-          description: Запрещено
+          description: Доступ запрещен.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         500:
-          description: Все плохо
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
 # images
   /tasks.images.upload:
     post:
@@ -968,13 +1306,20 @@ paths:
         403:
           description: Запрещено
         500:
-          description: Все плохо
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
 # comments
   /tasks.comments.add:
     post:
       tags:
         - Комментарии
-      summary: 'Добавляет комментарий к таску'
+      summary: Добавляет комментарий к задаче.
+      externalDocs:
+        description: tasks.comments.add
+        url: https://developers.webasyst.ru/api/explorer/tasks/tasks.comments.add/
       security:
         - ApiKeyAuth: [ ]
       requestBody:
@@ -985,34 +1330,52 @@ paths:
               properties:
                 task_id:
                   type: integer
+                  description: ID задачи
                 text:
                   type: string
+                  format: text
                   minLength: 0
+                  description: Текст комментария
                 files_hash:
                   type: string
                   minLength: 1
-                  description: Хеш загрузки, который нужно указывать при создании комментария, чтобы связать его с загруженными аттачметнами
+                  description: Хеш файлов, загруженных с помощью метода *tasks.attachments.add*, если нужно прикрепить их к комментарию
               required:
                 - task_id
                 - text
       responses:
         200:
-          description: Информация о логе, который создался при добавлении комментария
+          description: Информация о выполненном действии с задачей.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/logInfo'
         403:
-          description: Запрещено
+          description: Доступ запрещен.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         404:
-          description: Не найдено
+          description: Не найдено.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         500:
-          description: Все плохо
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
   /tasks.comments.update:
     post:
       tags:
         - Комментарии
-      summary: 'Обновляет комментарий'
+      summary: Обновляет комментарий к задаче.
+      externalDocs:
+        description: tasks.comments.update
+        url: https://developers.webasyst.ru/api/explorer/tasks/tasks.comments.update/
       security:
         - ApiKeyAuth: [ ]
       requestBody:
@@ -1022,36 +1385,53 @@ paths:
               type: object
               properties:
                 id:
-                  description: ID комментария
+                  description: ID записи в логе действий, соответствующей обновляемому комментарию
                   type: integer
                 text:
                   type: string
                   minLength: 0
+                  format: text
+                  description: Новый текст комментария
                 files_hash:
                   type: string
                   minLength: 1
-                  description: Хеш загрузки, который нужно указывать при создании комментария, чтобы связать его с загруженными аттачметнами
+                  description: Хеш файлов, загруженных с помощью метода *tasks.attachments.add*, если нужно прикрепить их к комментарию
               required:
                 - id
                 - text
       responses:
         200:
-          description: Информация о логе, который обновился при добавлении комментария
+          description: Обновленная информация о добавленном комментарии к задаче.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/logInfo'
         403:
-          description: Запрещено
+          description: Доступ запрещен.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         404:
-          description: Не найдено
+          description: Не найдено.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         500:
-          description: Все плохо
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
   /tasks.comments.pin:
     post:
       tags:
         - Комментарии
-      summary: 'Закрепляет комментарий для таска'
+      summary: Закрепляет комментарий к задаче для отображения этого комментария в списке задач.
+      externalDocs:
+        description: tasks.comments.pin
+        url: https://developers.webasyst.ru/api/explorer/tasks/tasks.comments.pin/
       security:
         - ApiKeyAuth: [ ]
       requestBody:
@@ -1062,26 +1442,46 @@ paths:
               properties:
                 task_id:
                   type: integer
+                  description: ID задачи
                 id:
-                  description: ID комментария
+                  description: ID записи в логе действий, соответствующей комментарию
                   type: integer
               required:
                 - task_id
                 - id
       responses:
         200:
-          $ref: '#/components/schemas/200ok'
+          description: Успешное выполнение запроса.
+          content:
+            text/plain:
+              schema:
+                type: string
         403:
-          description: Запрещено
+          description: Доступ запрещен.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         404:
-          description: Не найдено
+          description: Не найдено.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         500:
-          description: Все плохо
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
   /tasks.comments.delete:
     post:
       tags:
         - Комментарии
-      summary: 'Удаляет комментарий'
+      summary: Удаляет комментарий к задаче.
+      externalDocs:
+        description: tasks.comments.delete
+        url: https://developers.webasyst.ru/api/explorer/tasks/tasks.comments.delete/
       security:
         - ApiKeyAuth: [ ]
       requestBody:
@@ -1091,43 +1491,73 @@ paths:
               type: object
               properties:
                 id:
-                  description: ID комментария
+                  description: ID записи в логе действий, соответствующей удаляемому комментарию
                   type: integer
               required:
                 - id
       responses:
         200:
-          $ref: '#/components/schemas/200ok'
+          description: Успешное выполнение запроса.
+          content:
+            text/plain:
+              schema:
+                type: string
         403:
-          description: Запрещено
+          description: Доступ запрещен.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         404:
-          description: Не найдено
+          description: Не найдено.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         500:
-          description: Все плохо
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
 # milestones
   /tasks.milestones.getList:
     get:
       tags:
-        - Работы
-      summary: 'Список всех работ'
+        - Сроки
+      summary: Возвращает список всех сроков.
+      externalDocs:
+        description: tasks.milestones.getList
+        url: https://developers.webasyst.ru/api/explorer/tasks/tasks.milestones.getList/
       security:
         - ApiKeyAuth: [ ]
       responses:
         200:
-          description: Список всех работ
+          description: Информация о сроках.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/getMilestonesListResponse'
         403:
-          description: Запрещено
+          description: Доступ запрещен.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         500:
-          description: Все плохо
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
   /tasks.milestones.add:
     post:
       tags:
-        - Работы
-      summary: 'Добавляет новую работу'
+        - Сроки
+      summary: Добавляет новый срок в настройки приложения.
+      externalDocs:
+        description: tasks.milestones.add
+        url: https://developers.webasyst.ru/api/explorer/tasks/tasks.milestones.add/
       security:
         - ApiKeyAuth: [ ]
       requestBody:
@@ -1139,36 +1569,56 @@ paths:
                 name:
                   type: string
                   minLength: 1
-                description:
-                  type: string
-                  minLength: 0
+                  description: Название срока
                 project_id:
                   type: integer
                   minimum: 1
+                  description: ID проекта
+                description:
+                  type: string
+                  minLength: 0
+                  format: text
+                  description: Описание
                 due_date:
                   type: string
                   format: date
+                  description: Дата дедлайна
               required:
                 - name
                 - project_id
       responses:
         200:
-          description: Информация о добавленной работе
+          description: Информация о добавленном сроке.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/milestoneInfo'
         403:
-          description: Запрещено
+          description: Доступ запрещен.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         404:
-          description: Не найдено
+          description: Не найдено.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         500:
-          description: Все плохо
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
   /tasks.milestones.update:
     post:
       tags:
-        - Работы
-      summary: 'Обновляет работу'
+        - Сроки
+      summary: Обновляет свойства срока в настройках приложения.
+      externalDocs:
+        description: tasks.milestones.update
+        url: https://developers.webasyst.ru/api/explorer/tasks/tasks.milestones.update/
       security:
         - ApiKeyAuth: [ ]
       requestBody:
@@ -1179,40 +1629,61 @@ paths:
               properties:
                 id:
                   type: integer
+                  description: ID срока
                 name:
                   type: string
                   minLength: 1
-                description:
-                  type: string
-                  minLength: 0
+                  description: Название
                 project_id:
                   type: integer
                   minimum: 1
+                  description: ID проекта
+                description:
+                  type: string
+                  minLength: 0
+                  format: text
+                  description: Описание
                 due_date:
                   type: string
                   format: date
+                  description: Дата дедлайна
               required:
                 - id
                 - name
                 - project_id
       responses:
         200:
-          description: Информация об обновленной работе
+          description: Информация об обновленном сроке.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/milestoneInfo'
         403:
-          description: Запрещено
+          description: Доступ запрещен.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         404:
-          description: Не найдено
+          description: Не найдено.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         500:
-          description: Все плохо
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
   /tasks.milestones.archive:
     post:
       tags:
-        - Работы
-      summary: 'Архивирует/разархивирует работу'
+        - Сроки
+      summary: Переносит срок в архив или восстанавливает его из архива. Статус относящихся к сроку задач не изменяется.
+      externalDocs:
+        description: tasks.milestones.archive
+        url: https://developers.webasyst.ru/api/explorer/tasks/tasks.milestones.archive/
       security:
         - ApiKeyAuth: [ ]
       requestBody:
@@ -1223,25 +1694,49 @@ paths:
               properties:
                 id:
                   type: integer
+                  description: ID срока
                 archive:
                   type: boolean
+                  description: |
+                    Признак переноса в архив.
+                    + **true**: Архивировать
+                    + **false**: Восстановить из архива
               required:
                 - id
                 - archive
       responses:
         200:
-          $ref: '#/components/schemas/200ok'
+          description: Успешное выполнение запроса.
+          content:
+            text/plain:
+              schema:
+                type: string
         403:
-          description: Запрещено
+          description: Доступ запрещен.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         404:
-          description: Не найдено
+          description: Не найдено.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         500:
-          description: Все плохо
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
   /tasks.milestones.delete:
     post:
       tags:
-        - Работы
-      summary: 'Удаляет работу'
+        - Сроки
+      summary: Удаляет срок из настроек приложения. Относящиеся к сроку задачи не удаляются.
+      externalDocs:
+        description: tasks.milestones.delete
+        url: https://developers.webasyst.ru/api/explorer/tasks/tasks.milestones.delete/
       security:
         - ApiKeyAuth: [ ]
       requestBody:
@@ -1252,41 +1747,72 @@ paths:
               properties:
                 id:
                   type: integer
+                  description: ID срока
               required:
                 - id
       responses:
         200:
-          $ref: '#/components/schemas/200ok'
+          description: Успешное выполнение запроса.
+          content:
+            text/plain:
+              schema:
+                type: string
         403:
-          description: Запрещено
+          description: Доступ запрещен.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         404:
-          description: Не найдено
+          description: Не найдено.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         500:
-          description: Все плохо
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
 # projects
   /tasks.projects.getList:
     get:
       tags:
         - Проекты
-      summary: 'Список всех проектов'
+      summary: Возвращает список доступных пользователю проектов, не находящихся в архиве.
+      externalDocs:
+        description: tasks.projects.getList
+        url: https://developers.webasyst.ru/api/explorer/tasks/tasks.projects.getList/
       security:
         - ApiKeyAuth: [ ]
       responses:
         200:
-          description: Список всех проектов
+          description: Информация о проектах.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/getProjectsListResponse'
         403:
-          description: Запрещено
+          description: Доступ запрещен.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         500:
-          description: Все плохо
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
   /tasks.projects.add:
     post:
       tags:
         - Проекты
-      summary: 'Добавляет новый проект'
+      summary: Добавляет новый проект.
+      externalDocs:
+        description: tasks.projects.add
+        url: https://developers.webasyst.ru/api/explorer/tasks/tasks.projects.add/
       security:
         - ApiKeyAuth: [ ]
       requestBody:
@@ -1296,7 +1822,7 @@ paths:
               type: object
               properties:
                 workflow:
-                  description: Упорядоченный массив с переходами из статуса в статус
+                  description: ID статусов, которые должны быть доступны для обработки задач проекта, в требуемом порядке
                   type: array
                   items:
                     type: integer
@@ -1304,22 +1830,39 @@ paths:
                 name:
                   type: string
                   minLength: 1
-                icon:
-                  type: string
-                  nullable: true
+                  description: Название проекта
                 color:
                   type: string
-                  nullable: true
+                  description: |
+                    Цвет для выделения задач проекта.
+                    + **t-white**: Белый
+                    + **t-gray**: Серый
+                    + **t-yellow**: Желтый
+                    + **t-green**: Зеленый
+                    + **t-blue**: Синий
+                    + **t-red**: Красный
+                    + **t-purple**: Фиолетовый
+                  enum:
+                    - t-white
+                    - t-gray
+                    - t-yellow
+                    - t-green
+                    - t-blue
+                    - t-red
+                    - t-purple
                 icon_url:
                   type: string
                   nullable: true
+                  format: uri
+                  description: URL логотипа
                 icon_hash:
-                  description: хеш загруженного файла с логотипом
+                  description: Хеш файла логотипа проекта, загруженного с помощью метода *tasks.attachments.add*, для случая, если не заполнен параметр *icon_url*
                   type: string
                   nullable: true
                 sort:
                   type: integer
                   default: 0
+                  description: Значение сортировки
               required:
                 - name
                 - workflow
@@ -1331,16 +1874,31 @@ paths:
               schema:
                 $ref: '#/components/schemas/projectInfo'
         403:
-          description: Запрещено
+          description: Доступ запрещен.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         404:
-          description: Не найдено
+          description: Не найдено.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         500:
-          description: Все плохо
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
   /tasks.projects.update:
     post:
       tags:
         - Проекты
-      summary: 'Обновляет проект'
+      summary: Обновляет свойства проекта.
+      externalDocs:
+        description: tasks.projects.update
+        url: https://developers.webasyst.ru/api/explorer/tasks/tasks.projects.update/
       security:
         - ApiKeyAuth: [ ]
       requestBody:
@@ -1351,8 +1909,9 @@ paths:
               properties:
                 id:
                   type: integer
+                  description: ID проекта
                 workflow:
-                  description: Упорядоченный массив с переходами из статуса в статус
+                  description: ID статусов, которые должны быть доступны для обработки задач проекта, в требуемом порядке
                   type: array
                   items:
                     type: integer
@@ -1360,48 +1919,73 @@ paths:
                 name:
                   type: string
                   minLength: 1
-                icon:
-                  type: string
-                  nullable: true
+                  description: Название проекта
+                sort:
+                  type: integer
+                  description: Значение сортировки
                 color:
                   type: string
-                  nullable: true
+                  description: |
+                    Цвет для выделения задач проекта.
+                    + **t-white**: Белый
+                    + **t-gray**: Серый
+                    + **t-yellow**: Желтый
+                    + **t-green**: Зеленый
+                    + **t-blue**: Синий
+                    + **t-red**: Красный
+                    + **t-purple**: Фиолетовый
+                  enum:
+                    - t-white
+                    - t-gray
+                    - t-yellow
+                    - t-green
+                    - t-blue
+                    - t-red
+                    - t-purple
                 icon_url:
                   type: string
                   nullable: true
+                  format: uri
+                  description: URL логотипа
                 icon_hash:
-                  description: хеш загруженного файла с логотипом
+                  description: Хеш файла логотипа проекта, загруженного с помощью метода *tasks.attachments.add*, для случая, если не заполнен параметр *icon_url*
                   type: string
                   nullable: true
-                sort:
-                  type: integer
-                  default: 0
               required:
                 - id
                 - name
                 - workflow
-                - icon
-                - color
-                - icon_url
                 - sort
       responses:
         200:
-          description: Информация об обновленном проекте
+          description: Свойства обновленного проекта.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/projectInfo'
         403:
-          description: Запрещено
+          description: Доступ запрещен.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         404:
-          description: Не найдено
+          description: Не найдено.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         500:
-          description: Все плохо
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
   /tasks.projects.archive:
     post:
       tags:
         - Проекты
-      summary: 'Архивирует/разархивирует проект'
+      summary: Переносит проект в архив или восстанавливает его из архива.
       security:
         - ApiKeyAuth: [ ]
       requestBody:
@@ -1412,25 +1996,49 @@ paths:
               properties:
                 id:
                   type: integer
+                  description: ID проекта
                 archive:
                   type: boolean
+                  description: |
+                    Признак переноса в архив.
+                    + **true**: Перенести в архив
+                    + **false**: Восстановить из архива
               required:
                 - id
                 - archive
       responses:
         200:
-          $ref: '#/components/schemas/200ok'
+          description: Успешное выполнение запроса.
+          content:
+            text/plain:
+              schema:
+                type: string
         403:
-          description: Запрещено
+          description: Доступ запрещен.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         404:
-          description: Не найдено
+          description: Не найдено.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         500:
-          description: Все плохо
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
   /tasks.projects.delete:
     post:
       tags:
         - Проекты
-      summary: 'Удаляет проект'
+      summary: Удаляет проект и все находящиеся в нем задачи.
+      externalDocs:
+        description: tasks.projects.delete
+        url: https://developers.webasyst.ru/api/explorer/tasks/tasks.projects.delete/
       security:
         - ApiKeyAuth: [ ]
       requestBody:
@@ -1441,22 +2049,42 @@ paths:
               properties:
                 id:
                   type: integer
+                  description: ID проекта
               required:
                 - id
       responses:
         200:
-          $ref: '#/components/schemas/200ok'
+          description: Успешное выполнение запроса.
+          content:
+            text/plain:
+              schema:
+                type: string
         403:
-          description: Запрещено
+          description: Доступ запрещен.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         404:
-          description: Не найдено
+          description: Не найдено.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         500:
-          description: Все плохо
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
   /tasks.push.enable:
     post:
       tags:
-        - Пуши
-      summary: 'Включает пуши для клиента'
+        - Push-уведомления
+      summary: Включает для текущего пользователя push-уведомления через сервис OneSignal.
+      externalDocs:
+        description: tasks.push.enable
+        url: https://developers.webasyst.ru/api/explorer/tasks/tasks.push.enable/
       security:
         - ApiKeyAuth: [ ]
       requestBody:
@@ -1467,23 +2095,42 @@ paths:
               properties:
                 client_id:
                   type: string
-                  description: Onesignal client id
+                  description: Идентификатор *client_id* из сервиса OneSignal
               required:
                 - client_id
       responses:
         200:
-          $ref: '#/components/schemas/200ok'
+          description: Успешное выполнение запроса.
+          content:
+            text/plain:
+              schema:
+                type: string
         400:
-          $ref: '#/components/schemas/400fail'
+          description: Некорректное содержимое запроса.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         403:
-          description: Запрещено
+          description: Доступ запрещен.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         500:
-          description: Все плохо
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
   /tasks.push.disable:
     post:
       tags:
-        - Пуши
-      summary: 'Отключает пуши для клиента'
+        - Push-уведомления
+      summary: Отключает push-уведомления для текущего пользователя.
+      externalDocs:
+        description: tasks.push.disable
+        url: https://developers.webasyst.ru/api/explorer/tasks/tasks.push.disable/
       security:
         - ApiKeyAuth: [ ]
       requestBody:
@@ -1494,68 +2141,105 @@ paths:
               properties:
                 client_id:
                   type: string
-                  description: Onesignal client id
+                  description: Идентификатор *client_id* из сервиса OneSignal
               required:
                 - client_id
       responses:
         200:
-          $ref: '#/components/schemas/200ok'
+          description: Успешное выполнение запроса.
+          content:
+            text/plain:
+              schema:
+                type: string
         400:
-          $ref: '#/components/schemas/400fail'
+          description: Некорректное содержимое запроса.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         403:
-          description: Запрещено
+          description: Доступ запрещен.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         500:
-          description: Все плохо
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
   /tasks.tags.getList:
     get:
       tags:
         - Теги
-      summary: 'Отдает облако тегов'
+      summary: Возвращает список всех тегов.
+      externalDocs:
+        description: tasks.tags.getList
+        url: https://developers.webasyst.ru/api/explorer/tasks/tasks.tags.getList/
       security:
         - ApiKeyAuth: [ ]
       responses:
         200:
-          description: Все теги
+          description: Информация о тегах.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/getTagsListResponse'
         400:
-          $ref: '#/components/schemas/400fail'
+          description: Некорректное содержимое запроса.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         403:
-          description: Запрещено
+          description: Доступ запрещен.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         500:
-          description: Все плохо
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
   /tasks.autocomplete:
     get:
-      summary: 'Список вариантов, продолжающих введённую пользователем строку, которая начинается с @ или с #'
+      summary: Возвращает результаты поиска для функций «Теги и ссылки» и «Наблюдатели».
+      externalDocs:
+        description: tasks.autocomplete
+        url: https://developers.webasyst.ru/api/explorer/tasks/tasks.autocomplete/
       security:
         - ApiKeyAuth: [ ]
       parameters:
         - in: query
           name: term
           required: false
-          description: "Строка запроса должна начинаться с @ или с #"
+          description: |
+            Поисковый запрос, начинающийся с символа *#* (для функции «Теги и ссылки») или *@* (для функции «Наблюдатели»)
           schema:
             type: string
             minLength: 1
         - in: query
           name: limit
           required: false
+          description: Максимальное количество результатов, которое нужно получить
           schema:
             type: integer
-            example: 10
+            default: 10
             minimum: 1
             maximum: 50
         - in: query
           name: task_id
-          description: "В контексте какой задачи мы находимся; может влиять, например, на порядок выдачи пользователей в @-запросе"
+          description: ID задачи, если для функции «Наблюдатели» в самом начале списка результатов нужно получить сотрудника, создавшего задачу, и сотрудника, на которого она назначена (по умолчанию сотрудники в списке результатов сортируются по имени)
           required: false
           schema:
             type: integer
             minimum: 1
       responses:
         200:
+          description: Список найденных объектов.
           content:
             application/json:
               schema:
@@ -1563,17 +2247,33 @@ paths:
                 properties:
                   data:
                     type: array
+                    description: Свойства объектов
                     items:
                       $ref: '#/components/schemas/taskLink'
         400:
-          $ref: '#/components/schemas/400fail'
+          description: Некорректное содержимое запроса.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         403:
-          description: Запрещено
+          description: Доступ запрещен.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         500:
-          description: Все плохо
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
   /tasks.settings.get:
     get:
-      summary: ''
+      summary: Возвращает системную информацию о приложении «Задачи».
+      externalDocs:
+        description: tasks.settings.get
+        url: https://developers.webasyst.ru/api/explorer/tasks.settings.get/
       security:
         - ApiKeyAuth: [ ]
       responses:
@@ -1585,12 +2285,19 @@ paths:
                 properties:
                   version:
                     type: string
-        400:
-          $ref: '#/components/schemas/400fail'
+                    description: Номер версии
         403:
-          description: Запрещено
+          description: Доступ запрещен.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
         500:
-          description: Все плохо
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
 
 components:
   securitySchemes:
@@ -1605,9 +2312,10 @@ components:
       properties:
         total_count:
           type: number
-          description: сколько всего тасков найдено
+          description: Количество отфильтрованных задач
         data:
           type: array
+          description: Свойства задач
           items:
             $ref: '#/components/schemas/taskInfo'
 
@@ -1616,9 +2324,10 @@ components:
       properties:
         total_count:
           type: number
-          description: сколько всего статусов
+          description: Количество статусов
         data:
           type: array
+          description: Список статусов
           items:
             $ref: '#/components/schemas/statusInfo'
 
@@ -1627,9 +2336,10 @@ components:
       properties:
         total_count:
           type: number
-          description: сколько всего работ
+          description: Количество сроков
         data:
           type: array
+          description: Свойства сроков
           items:
             $ref: '#/components/schemas/milestoneInfo'
 
@@ -1638,9 +2348,10 @@ components:
       properties:
         total_count:
           type: number
-          description: сколько всего тегов
+          description: Количество тегов
         data:
           type: array
+          description: Свойства тегов
           items:
             $ref: '#/components/schemas/tagInfo'
 
@@ -1649,9 +2360,10 @@ components:
       properties:
         total_count:
           type: number
-          description: сколько всего проектов
+          description: Количество проектов
         data:
           type: array
+          description: Свойства проектов
           items:
             $ref: '#/components/schemas/projectInfo'
 
@@ -1660,6 +2372,7 @@ components:
       properties:
         data:
           type: array
+          description: Список счетчиков
           items:
             $ref: '#/components/schemas/countHashInfo'
 
@@ -1669,72 +2382,83 @@ components:
         total_count:
           type: integer
           minimum: 0
+          description: Общее количество записей журнала, соответствующее указанным параметрам фильтрации
         count:
           type: integer
           minimum: 0
+          description: Количество полученных записей журнала
         data:
-          type: array
-          items:
-            $ref: '#/components/schemas/logInfo'
+          type: object
+          description: Список записей
 
     getTeamGetTopAssigneesResponse:
       type: object
       properties:
         data:
           type: array
+          description: Список сотрудников
           items:
             type: object
             properties:
               contact:
-                $ref: '#/components/schemas/contactInfo'
+                description: Свойства сотрудника
+                allOf:
+                  - $ref: '#/components/schemas/contactInfo'
               status:
                 nullable: true
+                description: Информация о текущем статусе, установленном в календаре сотрудника
                 allOf:
                   - $ref: '#/components/schemas/teammateStatusInfo'
 
     teamGetMySettingsResponse:
       type: object
       properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: number
-              description: Идентификатор пользователя
-              minimum: 1
-            timezone:
-              type: string
-              nullable: true
-            rights:
-              $ref: '#/components/schemas/rightInfo'
-            ts:
-              type: number
-              description: UNIX время сервера
+        id:
+          type: number
+          description: ID пользователя
+          minimum: 1
+        timezone:
+          type: string
+          nullable: true
+          description: Часовой пояс
+        rights:
+          description: Права доступа
+          allOf:
+            - $ref: '#/components/schemas/rightInfo'
+        ts:
+          type: integer
+          description: Timestamp серверного времени на момент формирования ответа
 
     getTeamGetListResponse:
       type: object
       properties:
         data:
           type: array
+          description: Список сотрудников
           items:
             type: object
             properties:
               contact:
-                $ref: '#/components/schemas/contactInfo'
+                description: Основные свойства
+                allOf:
+                  - $ref: '#/components/schemas/contactInfo'
               contact_info:
-                $ref: '#/components/schemas/teammateContactInfo'
+                description: Дополнительные свойства
+                allOf:
+                  - $ref: '#/components/schemas/teammateContactInfo'
               status:
                 nullable: true
+                description: Информация о текущем статусе, установленном в календаре сотрудника
                 allOf:
                   - $ref: '#/components/schemas/teammateStatusInfo'
               last_log:
                 nullable: true
+                description: Информация о последнем действии, выполненном сотрудником
                 allOf:
                   - $ref: '#/components/schemas/logInfo'
               groups:
-                type: array
-                items:
-                  type: string
+                type: object
+                description: Список групп, в которых состоит сотрудник
               counts:
                 $ref: '#/components/schemas/taskCountInfo'
               sort:
@@ -1749,173 +2473,220 @@ components:
       properties:
         app_id:
           type: string
+          description: ID приложения
         entity_type:
           type: string
+          description: Тип объекта
         entity_id:
           type: string
           nullable: true
+          description: ID объекта
         entity_image:
           type: string
           nullable: true
+          format: uri
+          description: URL изображения объекта
         entity_title:
           type: string
+          description: Название объекта
+        entity_link_name:
+          type: string
+          description: Текст ссылки на объект
         entity_url:
           type: string
           nullable: true
+          description: URL ссылки на объект
         markdown_code:
           type: string
+          description: Код Markdown для добавления ссылки на объект
 
     taskInfo:
       type: object
       properties:
         id:
           type: integer
-          description: Идентификатор таски
+          description: ID задачи
         name:
           type: string
+          description: Название
         text:
           type: string
+          description: Описание
         text_stripped:
-          description: Текст таски без тегов, обрезанный до 256 символов
+          description: Описание без HTML-тегов, обрезанное до 256 символов
           type: string
         create_contact:
-          $ref: '#/components/schemas/contactInfo'
+          description: Создавший контакт
+          allOf:
+            - $ref: '#/components/schemas/contactInfo'
         visavis_contact:
+          description: Сотрудник, от которого получена задача
           nullable: true
           allOf:
             - $ref: '#/components/schemas/contactInfo'
         assigned_contact:
+          description: Сотрудник, на которого назначена задача
           nullable: true
           allOf:
             - $ref: '#/components/schemas/contactInfo'
         assignment_creator_contact:
-          description: Тот, кто добавил назначение, либо создатель
+          description: Контакт, создавший задачу либо назначивший ее на другого сотрудника
           nullable: true
           allOf:
             - $ref: '#/components/schemas/contactInfo'
         create_datetime:
-          $ref: '#/components/schemas/datetime'
+          description: Дата и время создания
+          format: date-time
+          allOf:
+            - $ref: '#/components/schemas/datetime'
         update_datetime:
+          description: Дата и время последнего обновления
+          format: date-time
           nullable: true
           allOf:
             - $ref: '#/components/schemas/datetime'
         project_id:
           type: integer
-          description: Идентификатор проекта
+          description: ID проекта
         milestone_id:
           nullable: true
           type: integer
-          description: Идентификатор работы
+          description: ID работы
         number:
           type: integer
           description: Порядковый номер в проекте
         status_id:
           type: integer
-          description: Идентификатор статуса
+          description: ID статуса
         next_status_id:
           type: integer
-          description: Идентификатор следующего по workflow статуса
+          description: ID следующего статуса согласно настройками проекта, к которому относится задача
         return_status_id:
           type: integer
-          description: Идентификатор статуса по workflow, на который вожно вернуть таску
+          description: ID статуса, в который можно вернуть задачу
         parent_id:
           nullable: false
           type: integer
+          description: ID родительской задачи
         priority:
           type: integer
+          description: Значение приоритета
         assign_log_id:
           nullable: true
           type: integer
-          description: ??
+          description: ID самой поздней записи в логе задачи о назначении сотрудника
         comment_log_id:
           nullable: true
           type: integer
-          description: Идентификатор лога с закрепленным комментарием
+          description: ID самой поздней записи из лога задачи о добавлении комментария
         contact_id:
           nullable: true
           type: integer
-          description: ???
+          description: ID сотрудника, который последним выполнял действие с задачей
         hidden_timestamp:
           nullable: true
           type: integer
-          description: ???
+          description: Timestamp даты и времени отправки задачи в архив
         due_date:
           nullable: true
           type: string
           format: date
-          description: Дедлайн
+          description: Дата дедлайна
         attachments:
           type: array
+          description: Список файлов, прикрепленных к задаче
           items:
             $ref: '#/components/schemas/attachmentInfo'
         log:
           type: array
+          description: Список действий в логе задачи
           items:
             $ref: '#/components/schemas/logInfo'
         tags:
           type: array
+          description: Теги
           items:
             $ref: '#/components/schemas/tagInfo'
         project:
-          $ref: '#/components/schemas/projectInfo'
+          description: Свойства проекта, к которому относится задача
+          allOf:
+            - $ref: '#/components/schemas/projectInfo'
         milestone:
           nullable: true
+          description: Свойства работы, к которой относится задача
           allOf:
             - $ref: '#/components/schemas/milestoneInfo'
         favorite:
           type: boolean
+          description: Признак присутствия задачи в списке «Наблюдаю» текущего пользователя
         favorite_unread:
           type: boolean
+          description: Признак присутствия задачи, отмеченной как непрочитанная, в списке «Наблюдаю» текущего пользователя
         publicLinks:
-          description: Список публичных ссылок
+          description: Список URL публичных ссылок на задачу
           type: array
           items:
             type: string
+        uuid:
+          type: string
+          description: Глобальный идентификатор
     projectInfo:
       type: object
       properties:
         id:
           type: integer
+          description: ID проекта
         name:
           type: string
+          description: Название
         contact:
-          $ref: '#/components/schemas/contactInfo'
+          description: Создавший сотрудник
+          allOf:
+            - $ref: '#/components/schemas/contactInfo'
         create_datetime:
-          $ref: '#/components/schemas/datetime'
+          description: Дата и время создания
+          allOf:
+            - $ref: '#/components/schemas/datetime'
         icon:
           type: string
+          description: Тип или URL иконки
         color:
           type: string
+          description: Обозначение цвета
         archive_datetime:
           nullable: true
+          description: Дата и время переноса в архив
           allOf:
             - $ref: '#/components/schemas/datetime'
         sort:
           type: integer
           minimum: 0
+          description: Значение сортировки
         counts:
-          $ref: '#/components/schemas/taskCountInfo'
+          description: Счетчики задач, относящихся к проекту
+          allOf:
+            - $ref: '#/components/schemas/taskCountInfo'
     teammateStatusInfo:
       type: object
       properties:
         name:
           type: string
-          description: название статуса
+          description: Описание статуса
           example: Отпуск
         bg_color:
           type: string
-          description: hex цвет фона
+          description: HTML-значение цвета фона
           example: '#000000'
         font_color:
           type: string
-          description: hex цвет текста
+          description: HTML-значение цвета текста
           example: '#ffffff'
     teammateContactInfo:
       type: object
       properties:
         name:
           type: string
-          description: Имя пользователя
+          description: Полное имя
         title:
           type: string
           nullable: true
@@ -1939,152 +2710,182 @@ components:
         company:
           type: string
           nullable: true
-          description: Компания
+          description: Название компании
         email:
           type: array
-          description: Список email
+          description: Email-адреса
           items:
             type: object
             properties:
               ext:
                 type: string
-                description: Тип, один из перечисления или кастомный
+                description: |
+                  Обозначение типа.
+                  + **work**: Рабочий
+                  + **personal**: Домашний
+                  + *(введенный пользователем)*
                 enum:
-                  - "work"
-                  - "personal"
-                  - ""
+                  - work
+                  - personal
               value:
                 type: string
+                description: Email-адрес
         phone:
           type: array
-          description: Список телефонов
+          description: Список телефонных номеров
           items:
             type: object
             properties:
               ext:
                 type: string
-                description: Тип, один из перечисления или кастомный
+                description: |
+                  Обозначение типа.
+                  + **work**: Рабочий
+                  + **mobile**: Мобильный
+                  + **home**: Домашний
+                  + *(введенный пользователем)*
                 enum:
-                  - "work"
-                  - "mobile"
-                  - "home"
-                  - ""
+                  - work
+                  - mobile
+                  - home
               value:
                 type: string
+                description: Телефонный номер
         gender:
-          description: Пол
+          description: |
+            Пол.
+            + **m**: Мужской
+            + **f**: Женский
           nullable: true
           type: string
           enum:
-            - "m"
-            - "f"
-            - ""
+            - m
+            - f
         im:
           type: array
-          description: Список мессенджеров
+          description: Аккаунты в мессенджерах
           items:
             type: object
             properties:
               ext:
                 type: string
-                description: Тип, один из перечисления или кастомный
+                description: |
+                  Идентификатор мессенджера.
                 enum:
-                  - "whatsapp"
-                  - "telegram"
-                  - "signal"
-                  - "viber"
-                  - "facebook"
-                  - "skype"
-                  - "wechat"
-                  - "imessage"
-                  - "line"
-                  - "qq"
-                  - "icq"
-                  - ""
+                  - whatsapp
+                  - telegram
+                  - signal
+                  - viber
+                  - facebook
+                  - skype
+                  - wechat
+                  - imessage
+                  - line
+                  - qq
+                  - icq
               value:
                 type: string
+                description: Идентификатор аккаунта
         address:
           type: array
-          description: Список адресов
+          description: Почтовые адреса
           items:
             type: object
             properties:
               ext:
                 type: string
-                description: Тип, один из перечисления или кастомный
+                description: |
+                  Обозначение типа.
+                  + **work**: Рабочий
+                  + **home**: Домашний
+                  + **shipping**: Адрес доставки
+                  + **billing**: Адрес плательщика
+                  + *(введенный пользователем)*
                 enum:
-                  - "work"
-                  - "shipping"
-                  - "billing"
-                  - "home"
-                  - ""
+                  - work
+                  - shipping
+                  - billing
+                  - home
               value:
                 type: string
+                description: Адрес
         url:
           type: array
-          description: Список веб-сайтов
+          description: Адреса сайтов
           items:
             type: object
             properties:
               ext:
                 type: string
-                description: Тип, один из перечисления или кастомный
+                description: |
+                  Обозначение типа.
+                  + **work**: Рабочий
+                  + **personal**: Личный
+                  + *(введенный пользователем)*
                 enum:
-                  - "work"
-                  - "personal"
-                  - ""
+                  - work
+                  - personal
               value:
                 type: string
+                format: uri
+                description: Адрес сайта
         birthday:
           nullable: true
           type: string
           format: date
+          description: Дата рождения
         locale:
           nullable: true
           type: string
+          description: Языковая локаль
         timezone:
           nullable: true
           type: string
+          description: Часовой пояс
         socialnetwork:
           type: array
-          description: Список соц сетей
+          description: Аккаунты в соцсетях
           items:
             type: object
             properties:
               ext:
                 type: string
-                description: Тип, один из перечисления или кастомный
+                description: Идентификатор соцсети
                 enum:
-                  - "facebook"
-                  - "instagram"
-                  - "tiktok"
-                  - "twitter"
-                  - "linkedin"
-                  - "vkontakte"
-                  - ""
+                  - facebook
+                  - instagram
+                  - tiktok
+                  - twitter
+                  - linkedin
+                  - vkontakte
               value:
                 type: string
+                description: Идентификатор аккаунта
         about:
           nullable: true
-          description: Описание себя любимого
+          description: Описание
           type: string
         large_photo_url:
           type: string
-          description: Абсолютная ссылка на большой аватар
+          format: uri
+          description: URL изображения
     contactInfo:
       type: object
       properties:
         id:
           type: integer
+          description: ID контакта
         name:
           type: string
+          description: Полное имя
         photo_url:
           type: string
           nullable: true
-          description: Абсолютная ссылка на аватар
+          format: uri
+          description: URL изображения
         is_me:
           type: boolean
-          description: Флаг, является ли пользователь текущим
+          description: Признак того, что контакт соответствует текущему пользователю
     statusInfo:
       type: object
       properties:
@@ -2096,183 +2897,201 @@ components:
           description: Название статуса
         button:
           type: string
-          description: Текст на кнопке, которая переводит задачу в этот статус. Иногда может совпадать с названием статуса, но чаще всего все-таки является глаголом и поэтому отличается
+          description: Текст на кнопке, которая переводит задачу в этот статус
         special:
           type: boolean
+          description: Признак системного статуса (встроенного в «Задачи»)
         sort:
           type: integer
+          description: Значение сортировки
         params:
-          $ref: '#/components/schemas/statusParams'
+          description: Дополнительные параметры
+          allOf:
+            - $ref: '#/components/schemas/statusParams'
         counts:
-          $ref: '#/components/schemas/taskCountInfo'
+          description: Счетчики задач, относящихся к проекту
+          allOf:
+            - $ref: '#/components/schemas/taskCountInfo'
     statusParams:
       type: object
       properties:
         assign_user:
           nullable: true
           type: integer
-          description: Новый назначенный пользователь
+          description: ID сотрудника, на которого должна быть назначена задача
         button_color:
           nullable: true
           type: string
-          description: Цвет фона
+          description: HTML-значение цвета фона кнопки
         title_color:
           nullable: true
           type: string
-          description: Цвет текста
+          description: HTML-значение цвета текста кнопки
         allow_comment:
           type: boolean
-          description: Разрешить комментировать
+          description: Флаг, означающий возможность добавлять комментарии к задаче в этом статусе
         allow_clear_assign:
           nullable: true
           type: boolean
-          description: Разрешить оставить задачу без назначения
+          description: Возможность оставить задачу в этом статусе без назначения сотруднику
         assign:
           nullable: true
           type: string
           enum:
-            - "author"
-            - "user"
-            - "select"
-            - ""
+            - author
+            - user
+            - select
           description: |
-            Кому назначить таску:
-            + "author" - Назначить задачу ее постановщику
-            + "user" - Назначить выбранному пользователю
-            + "select" - Предлагать выбрать исполнителя
-            + "" - Оставить исполнителя без изменения
+            На кого должна быть назначена задача при ее переводе в этот статус:
+            + **author**: На создателя задачи
+            + **user**: На указанного сотрудника
+            + **select**: Предложить выбор сотрудника
+            + *(если не указано)*: Оставить назначенного сотрудника без изменений
     taskCountInfo:
       type: object
-      description: Содержит информацию о количестве тасков для текущего контекста (статус, проект)
+      description: Счетчики задач
       properties:
         total:
           type: integer
           minimum: 0
-          description: Всего тасков (null - нет информации)
+          description: Общее количество задач
           nullable: true
         closed:
           type: integer
           minimum: 0
-          description: Всего закрытых тасков (null - нет информации)
+          description: Количество закрытых задач
           nullable: true
         active:
           type: integer
           minimum: 0
-          description: Всего открытых тасков (null - нет информации)
+          description: Количество открытых задач
           nullable: true
         active_priority:
           type: integer
           minimum: 0
-          description: Всего открытых тасков с высоким приоритетом (null - нет информации)
+          description: Количество открытых задач с высоким приоритетом
           nullable: true
     logInfo:
       type: object
-      description: Данные об одной записи из логов для таска
       properties:
         id:
           type: integer
           minimum: 0
+          description: ID записи
         project_id:
           type: integer
           nullable: true
+          description: ID проекта, к которому относится задача
         task_id:
           type: integer
+          description: ID задачи
         contact:
-          $ref: '#/components/schemas/contactInfo'
+          description: Сотрудник, выполнивший действие с задачей
+          allOf:
+            - $ref: '#/components/schemas/contactInfo'
         text:
           type: string
+          description: Текст, введенный при выполнении действия
         text_stripped:
-          description: Текст лога без тегов, обрезанный до 256 символов
+          description: Введенный текст без HTML-тегов, обрезанный до 256 символов
           type: string
         create_datetime:
-          $ref: '#/components/schemas/datetime'
+          description: Дата и время выполнения действия
+          format: date-time
+          allOf:
+            - $ref: '#/components/schemas/datetime'
         before_status_id:
           type: integer
           nullable: true
+          description: ID статуса, в котором задача была до выполнения действия
         after_status_id:
           type: integer
+          description: ID статуса, в который задача перешла после выполнения действия
           nullable: true
         action:
           type: string
+          description: ID действия, выполненного с задачей
+          nullable: true
           enum:
-            - 'add'
-            - 'create'
-            - 'comment'
-            - 'forward'
-            - 'return'
-            - 'edit'
-            - ''
+            - add
+            - create
+            - comment
+            - forward
+            - return
+            - edit
         assigned_contact:
+          description: Сотрудник, на которого была назначена задача при выполнении действия
           nullable: true
           allOf:
             - $ref: '#/components/schemas/contactInfo'
         status_changed:
           type: boolean
           nullable: true
+          description: Признак смены статуса задачи при выполнении действия
         assignment_changed:
           type: boolean
           nullable: true
+          description: Признак смены назначенного сотрудника при выполнении действия
         attachments:
           type: array
+          description: Файлы, загруженные при выполнении действия
           items:
             $ref: '#/components/schemas/attachmentInfo'
         params:
           type: array
+          description: Дополнительные параметры
         task_number:
           type: integer
           nullable: true
+          description: Номер задачи в рамках проекта
         task_name:
           type: string
           nullable: true
-    groupedByDateLogInfo:
-      type: object
-      description: Сгруппированные по дате логи
-      properties:
-        group:
-          type: string
-          description: Название группы
-        date:
-          type: string
-          description: Дата группы
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/logInfo'
+          description: Название задачи
     attachmentInfo:
       type: object
-      description: Объект аттачмента, может относится как к задаче, так и к логу задачи
       properties:
         id:
           type: integer
           minimum: 0
+          description: ID прикрепленного файла
         log_id:
           type: integer
           nullable: true
+          description: ID записи о добавлении задачи в логе действий сотрудников
         create_datetime:
-          $ref: '#/components/schemas/datetime'
+          description: Дата и время прикрепления файла к задаче
+          allOf:
+            - $ref: '#/components/schemas/datetime'
         contact:
-          $ref: '#/components/schemas/contactInfo'
+          description: Сотрудник, создавший задачу
+          allOf:
+            - $ref: '#/components/schemas/contactInfo'
         name:
           type: string
+          description: Имя файла
         size:
           type: integer
+          description: Размер в байтах
         ext:
           type: string
+          description: Расширение имени
         code:
           type: string
+          description: Случайный код
         download_url:
           type: string
-          description: Абсолютный урл для загрузки
+          format: uri
+          description: URL для скачивания файла
         is_image:
           type: boolean
-          description: Признак изображения
+          description: Признак графического файла
         preview_url:
           type: string
           nullable: true
-          description: Абсолютный урл до превью изображения
+          description: URL версии файла с изображением для предварительного просмотра
     countHashInfo:
       type: object
-      description: Содержит информацию о количестве тасков для различных критериев
       properties:
         hash:
           type: string
@@ -2281,105 +3100,131 @@ components:
             - outbox
             - favorites
             - urgent
-          description: Хеш критерия
+          description: |
+            Обозначение списка задач.
+            + **inbox**: Входящие
+            + **outbox**: Исходящие
+            + **favorites**: Избранные
+            + **favorites/unread**: Избранные/непрочитанные
+            + **urgent**: Срочные
         counts:
           $ref: '#/components/schemas/taskCountInfo'
     milestoneInfo:
       type: object
-      description: Описание работы
       properties:
         id:
           type: integer
+          description: ID срока
         name:
           type: string
+          description: Название
         project_id:
           type: integer
+          description: ID проекта
         description:
           type: string
+          description: Описание
         due_date:
           nullable: true
           type: string
           format: date
+          description: Дата дедлайна
         due_info:
           type: object
+          description: Свойства дедлайна
           properties:
             days_left:
               nullable: true
               type: integer
+              description: Количество оставшихся дней
             text:
               nullable: true
               type: string
+              description: Локализованное описание оставшегося периода времени
             color:
               nullable: true
               type: string
+              description: Обозначение цвета
         closed:
           type: boolean
+          description: Признак завершенного срока
         counts:
-          $ref: '#/components/schemas/taskCountInfo'
+          description: Счетчики задач, относящихся к сроку
+          allOf:
+            - $ref: '#/components/schemas/taskCountInfo'
         sort:
           type: integer
           nullable: true
+          description: Значение сортировки
     tagInfo:
       type: object
-      description: Описание тега
       properties:
         id:
           type: integer
+          description: ID тега
         name:
           type: string
+          description: Название
     rightInfo:
       type: object
       properties:
         is_admin:
           type: boolean
-          description: Пользователь админ или имеет полный доступ к приложению
+          description: Признак полного доступа к «Задачам»
         projects_assigned:
           type: array
-          description: Массив ID проектов, в которых пользователь может видеть только назначенные на себя таски
+          description: |
+            Для пользователя с ограниченными правами доступа: ID проектов, для которых есть доступ к назначенным на пользователя задачам
           items:
             type: integer
             minimum: 1
         projects_assigned_all:
           type: boolean
-          description: Флаг, что пользователь может видеть только назначенные на себя таски во всех проектах
+          description: Признак наличия у пользователя доступа к назначенным на него задачам во всех проектах
         projects_full:
           type: array
-          description: Массив ID проектов, в которых пользователь имеет полный доступ
+          description: |
+            Для пользователя с ограниченными правами доступа: ID проектов, к которым у него есть полный доступ
           items:
             type: integer
             minimum: 1
         projects_full_all:
           type: boolean
-          description: Флаг, что пользователь имеет полный доступ ко всем проектам
-    200ok:
-      type: string
-      example: 'ok'
-    200fail:
-      type: string
-      example: 'fail'
-    400fail:
-      type: string
-      example: 'fail'
+          description: Признак наличия полного доступа ко всем проектам
     datetime:
       type: string
       format: date-time
       example: "2020-01-28T16:22:37-00:00"
-      description: UTC
-  parameters:
-    offset:
-      in: query
-      name: offset
-      required: true
-      schema:
-        type: integer
-        default: 0
-        minimum: 0
-    limit:
-      in: query
-      name: limit
-      description: максимальное в ответе. не может быть более 500.
-      schema:
-        type: integer
-        nullable: true
-        minimum: 0
-        default: 30
+    errorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Код ошибки
+        error_message:
+          type: string
+          description: Описание ошибки
+        trace:
+          type: array
+          description: Стек вызовов
+          items:
+            type: object
+            properties:
+              file:
+                type: string
+                description: Путь к файлу
+              line:
+                type: integer
+                description: Номер строки
+              function:
+                type: string
+                description: Имя метода или функции
+              class:
+                type: string
+                description: Имя класса
+              type:
+                type: string
+                description: Оператор разрешения области видимости метода
+              args:
+                type: array
+                description: Аргументы, переданные при вызове метода

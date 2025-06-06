@@ -1255,7 +1255,12 @@
         reloadSidebar: function(callback) {
             //$('#add-task-link .icon16').attr('class', 'icon16 loading');
             $.post('?sidebar=1', function(r) {
-                $('#wa-app > .flexbox > .sidebar').html(r);
+                var $container = $('#wa-app > .flexbox > .sidebar');
+                var $singleAppHeader = $container.find('#wa-single-app-nav-container').detach();
+
+                $container.html(r); 
+                $singleAppHeader && $singleAppHeader.prependTo($container);
+
                 self.initSidebar();
                 self.highlightSidebar();
                 callback && callback();
