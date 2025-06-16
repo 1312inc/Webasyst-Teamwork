@@ -1073,6 +1073,14 @@ var Task = ( function($) {
         callbacks = $.isPlainObject(callbacks) ? callbacks : {};
         var onAllDone = typeof callbacks.onAllDone === 'function' ? callbacks.onAllDone : null;
 
+        // Load draft
+        if (TasksController?.options?.text_editor === 'markdown') {
+            const commentText = localStorage.getItem(TasksController.getDraftKeyCommentText(that.task_id));
+            if (commentText) {
+                $commentForm.find('textarea').val(commentText);
+            }
+        }
+
         var bindEvents = function() {
 
             $commentForm.on("submit", function(e) {
@@ -1114,6 +1122,12 @@ var Task = ( function($) {
                 filesController.deleteFile($file);
                 return false;
             });
+
+            if (TasksController?.options?.text_editor === 'markdown') {
+                $commentForm.on("input", "textarea", function () {
+                    localStorage.setItem(TasksController.getDraftKeyCommentText(that.task_id), $(this).val());
+                });
+            }
         };
 
         var clearCommentErrors = function() {
