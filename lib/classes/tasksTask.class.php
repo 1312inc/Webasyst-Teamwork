@@ -99,6 +99,9 @@ class tasksTask implements ArrayAccess
     public function hasStatusForm()
     {
         $status = $this->getNextStatus();
+        if (!is_array($status) || empty($status['params'])) {
+            return false;
+        }
         return !empty($status['params']['allow_comment']) || ifset($status['params']['assign']) == 'select';
     }
 
