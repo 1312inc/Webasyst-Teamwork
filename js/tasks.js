@@ -572,9 +572,9 @@
             }
         },
 
-        getDraftKeyActionText (taskId) {
+        getDraftKeyActionText (taskId, action) {
             if (taskId) {
-                return `tasks/${taskId}/action/text`;
+                return `tasks/${taskId}/action${action ? '/' + action : ''}/text`;
             }
         },
 
@@ -1258,7 +1258,7 @@
                 var $container = $('#wa-app > .flexbox > .sidebar');
                 var $singleAppHeader = $container.find('#wa-single-app-nav-container').detach();
 
-                $container.html(r); 
+                $container.html(r);
                 $singleAppHeader && $singleAppHeader.prependTo($container);
 
                 self.initSidebar();

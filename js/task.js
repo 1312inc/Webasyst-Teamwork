@@ -1013,6 +1013,7 @@ var Task = ( function($) {
 
                         var $form = $drawer.find("form");
                         var $textarea = $form.find('textarea');
+                        const action = $form.data('task-action');
 
                         // Focus
                         $textarea.focus();
@@ -1028,7 +1029,7 @@ var Task = ( function($) {
                             onStatusSubmit($(this), direction, function () {
                                 drawer_instance.close();
                                 // remove draft action
-                                localStorage.removeItem(TasksController.getDraftKeyActionText(that.task_id));
+                                localStorage.removeItem(TasksController.getDraftKeyActionText(that.task_id, action));
                             });
                         });
 
@@ -1079,7 +1080,7 @@ var Task = ( function($) {
                     e.preventDefault();
                     return false;
                 }
-                
+
                 var $submitButton = $(this).find('[type="submit"]');
 
                 $.tasks.showLoadingButton($submitButton);
@@ -1158,7 +1159,7 @@ var Task = ( function($) {
                                     alert("[`Error Comment ID`]");
                                     return;
                                 }
-                                
+
                                 // remove draft comment
                                 if ((new URLSearchParams(submit_href)).get('action') === 'add') {
                                     localStorage.removeItem(TasksController.getDraftKeyCommentText(that.task_id));

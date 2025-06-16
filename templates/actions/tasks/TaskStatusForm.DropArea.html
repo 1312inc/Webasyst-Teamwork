@@ -12,11 +12,13 @@
             <script>
                 (function () {
                     if (lexicalEditor) {
+                        const $el = document.getElementById('redactor-comment-{$ident}');
+                        const action = $el.closest('form').dataset.taskAction;
                         lexicalEditor.createLexicalInstance({
-                            el: document.getElementById('redactor-comment-{$ident}'),
+                            el: $el,
                             isRichMode: TasksController ? TasksController.options.text_editor === 'wysiwyg' : false,
                             taskId: '{$task.id}',
-                            storage: TasksController ? TasksController.getDraftKeyActionText({$task.id}) : '',
+                            storage: TasksController ? TasksController.getDraftKeyActionText({$task.id}, action) : '',
                             placeholder: '[`Add comment`]',
                             imageUploadUrl: '?module=attachments&action=imageUpload',
                             imageUploadTaskUuid: document.querySelector('.article').dataset.taskUuid || '',
@@ -25,7 +27,7 @@
                             lang: '{$loc[0]}'
                         });
                     }
-                })();                            
+                })();
             </script>
         </div>
 
