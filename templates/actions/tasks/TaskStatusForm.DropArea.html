@@ -26,6 +26,9 @@
                             mentionsFetchUrlWA: true,
                             lang: '{$loc[0]}'
                         });
+
+                        // Load draft
+                        TasksController.storageDataInMdMode($el, 'getDraftKeyActionText', {$task.id}, action);
                     }
                 })();
             </script>

@@ -563,18 +563,30 @@
         },
 
         getDraftKeyTaskText () {
-            return `tasks/task/text`;
+            let md_suffix = '';
+            if(TasksController.options.text_editor === 'markdown') {
+                md_suffix = '/md';
+            }
+            return `tasks/task/text${md_suffix}`;
         },
 
         getDraftKeyCommentText (taskId) {
             if (taskId) {
-                return `tasks/${taskId}/comment/text`;
+                let md_suffix = '';
+                if(TasksController.options.text_editor === 'markdown') {
+                    md_suffix = '/md';
+                }
+                return `tasks/${taskId}/comment/text${md_suffix}`;
             }
         },
 
         getDraftKeyActionText (taskId, action) {
             if (taskId) {
-                return `tasks/${taskId}/action${action ? '/' + action : ''}/text`;
+                let md_suffix = '';
+                if(TasksController.options.text_editor === 'markdown') {
+                    md_suffix = '/md';
+                }
+                return `tasks/${taskId}/action${action ? '/' + action : ''}/text${md_suffix}`;
             }
         },
 
@@ -1884,6 +1896,25 @@
                 };
 
                 initCustomSelector(timeframe);
+            }
+        },
+
+        storageDataInMdMode: function($el, key, task_id = null, action = null) {
+            if (TasksController?.options?.text_editor === 'markdown') {
+                const ls_key = TasksController[key](task_id, action);
+                if (!ls_key) {
+                    return;
+                }
+                const content = localStorage.getItem(ls_key);
+                const $textarea = $($el);
+
+                if (content) {
+                    $textarea.val(content);
+                }
+
+                $textarea.on("input", function () {
+                    localStorage.setItem(ls_key, $(this).val());
+                });
             }
         }
     };
