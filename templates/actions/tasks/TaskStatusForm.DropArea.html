@@ -29,6 +29,15 @@
 
                         // Load draft
                         TasksController.storageDataInMdMode($el, 'getDraftKeyActionText', {$task.id}, action);
+
+                        if(TasksController.options.text_editor === 'markdown') {
+                            $($el).textareaAutocomplete({
+                                urlEntity: '?module=tasks&action=entityAutocomplete',
+                                urlMention: '?module=tasks&action=mentionAutocomplete',
+                                autoFocus: false,
+                                delay: 300
+                            });
+                        }
                     }
                 })();
             </script>

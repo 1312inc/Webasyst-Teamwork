@@ -22,8 +22,10 @@
                         <script>
                             (function () {
                                 if (lexicalEditor) {
+                                    const el = document.getElementById('redactor-comment-{$ident}');
+
                                     lexicalEditor.createLexicalInstance({
-                                        el: document.getElementById('redactor-comment-{$ident}'),
+                                        el,
                                         isRichMode: TasksController ? TasksController.options.text_editor === 'wysiwyg' : false,
                                         taskId: '{$task_id}',
                                         {if $action === 'add'}storage: TasksController ? TasksController.getDraftKeyCommentText({$task_id}) : '',{/if}
@@ -35,6 +37,15 @@
                                         lang: '{$loc[0]}',
                                         autoFocus: true
                                     });
+
+                                    if(TasksController.options.text_editor === 'markdown') {
+                                        $(el).textareaAutocomplete({
+                                            urlEntity: '?module=tasks&action=entityAutocomplete',
+                                            urlMention: '?module=tasks&action=mentionAutocomplete',
+                                            autoFocus: false,
+                                            delay: 300
+                                        });
+                                    }
                                 }
                             })();
                         </script>
