@@ -5,7 +5,7 @@
 <script>(function() { "use strict";
 
     var data = {};
-    {$fields = ifempty($fields, ['name', 'text', 'params'])}
+    {$fields = $fields|default:['name', 'text', 'params']}
     {foreach $fields as $f}{if !empty($task[$f])}
         data['task[%s]'.replace('%s', {$f|json_encode})] = {$task[$f]|json_encode};
     {/if}{/foreach}
