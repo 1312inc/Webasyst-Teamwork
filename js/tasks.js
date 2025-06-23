@@ -846,6 +846,12 @@
             });
         },
 
+        upgradeAction: function () {
+            this.load('?module=upgrade', function () {
+
+            });
+        },
+
         settingsOrderingAction: function() {
             this.load('?module=settings&action=ordering');
         },
