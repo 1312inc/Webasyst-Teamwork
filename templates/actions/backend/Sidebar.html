@@ -62,7 +62,7 @@
                     {$inbox_urgent_count = $user_count.count}
                 {/if}
                 {if $favorites_counts.unread_total}
-                    <span class="badge red">@<span class="count-unread" style="display: none;">{$favorites_counts.unread_total|escape}</span></span> 
+                    <span class="badge red">@<span class="count-unread" style="display: none;">{$favorites_counts.unread_total|escape}</span></span>
                 {/if}
                 {tasksUserTasksCounterService::getPairs($user_count.total-$hidden_count, $inbox_urgent_count, $user_count.bg_color, $user_count.text_color)}
             </span>
@@ -427,12 +427,19 @@
             </a>
         </li>
 
-        <li class="top-padded">
-            <a href="#/upgrade/">
-                <i class="fas fa-star"></i>
-                <span>[`Premium`]</span>
-            </a>
-        </li>
+        {if $is_admin}
+            {$is_premium = $wa->tasks->isPremium()}
+            <li class="top-padded">
+                <a href="#/upgrade/">
+                    <i class="fas fa-star{if !$is_premium} text-yellow{/if}"></i>
+                    <span>[`Premium`]</span>
+                    {if !$is_premium}
+                        {$p = $wa->tasks->getPremiumPricing()}
+                        {if !empty($p.special_short)}<span class="count"><span class="badge small {$p.special_color}">{$p.special_short}</span></span>{/if}
+                    {/if}
+                </a>
+            </li>
+        {/if}
 
         <!-- plugin hook: 'backend_sidebar.bottom_li' -->
         {* @event backend_sidebar.%plugin_id%.bottom_li *}
