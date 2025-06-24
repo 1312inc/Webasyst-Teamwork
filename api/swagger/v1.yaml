@@ -1267,6 +1267,50 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/errorResponse'
+# images
+  /tasks.images.upload:
+    post:
+      tags:
+        - Аттачменты
+        - Изображения
+      summary: 'Загружает изображения для использования в тексте задач'
+      security:
+        - ApiKeyAuth: [ ]
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                task_uuid:
+                  type: string
+                image[]:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+              required:
+                - image[]
+      responses:
+        200:
+          description: Список имен файлов, которые успешно загрузились. Ключами в объекте files и errors являются имена файлов. Значения в files - URL до изображения. Значеия в errors - текст ошибки.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  files:
+                    type: object
+                  errors:
+                    type: object
+        403:
+          description: Запрещено
+        500:
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
 # comments
   /tasks.comments.add:
     post:

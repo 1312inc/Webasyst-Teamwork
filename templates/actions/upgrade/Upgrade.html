@@ -1,0 +1,179 @@
+<style>
+
+    .t-premium-appicon { position: relative; z-index: 10; height: 9rem; background: url('{$wa_url}wa-apps/tasks/img/tasks.svg') no-repeat center / 8rem; }
+    .t-premium-feature { border-radius: 0.75rem; background: var(--background-color-blank); margin-bottom: 1.5rem; padding: 1.5rem 2rem; }
+    .t-premium-feature.halfwidth { width: 40%; margin-bottom: 0; padding-bottom: 0.5rem; }
+    .t-premium-feature.halfwidth h3 { font-size: 1.25rem; }
+
+    @media screen and (max-width: 760px) {
+        .t-premium-feature.halfwidth { width: 100%; }
+    }
+
+</style>
+
+{$_is_premium = $wa->tasks->isPremium()}
+{$_premium_pricing = $wa->tasks->getPremiumPricing()}
+{$_upgrade_url = '[`https://www.webasyst.com/my/buy/upgrade-to-premium/tasks/`]'|cat:'?domain='|cat:str_replace('http://','',str_replace('https://','',$wa->domainUrl()))}
+
+{capture "getpremiumbutton"}
+{if !$_is_premium}
+<figure class="box align-center t-upgrade-ad">
+    <a href="{$_upgrade_url}" class="button rounded {$_premium_pricing.special_color} largest" target="_blank">[`Pre-order now`]</a>
+    <h4>
+        {if !empty($_premium_pricing.compare_price)}<strike class="gray">{$_premium_pricing.compare_price}</strike>{/if}
+        {$_premium_pricing.price}
+        / [`lifetime`]
+    </h4>
+    <p class="width-60 width-100-mobile custom-mx-auto small">
+        {if !empty($_premium_pricing.special)}
+            {sprintf('[`%s limited offer for upgrading existing app license to the premium version`]', sprintf('<span class="badge %s">%s</span>', $_premium_pricing.special_color, $_premium_pricing.special))}<br>
+            <b>{date('Y.m')}</b> [`pre-order`]
+        {/if}
+    </p>
+</figure>
+{/if}
+{/capture}
+
+{function name="_render_feature" _p=[] _is_premium_license=false _halfwidth=false _is_free_feature=false}
+<div class="card t-premium-feature{if $_halfwidth} halfwidth{/if}">
+    <div class="flexbox space-12 wrap-mobile">
+        <div class="wide">
+            <h3>
+                {if !$_is_free_feature}<i class="fas fa-star text-yellow custom-mr-4"></i>{/if}
+                {$_p.title}
+            </h3>
+        </div>
+        <div>
+            {if empty($_p.eta)}
+                <span class="nowrap badge green"><i class="fas fa-check"></i> {if !$_is_free_feature}{if $_is_premium_license}[`Enabled`]{else}[`Available now`]{/if}{/if}</span>
+            {elseif trim($_p.eta)}
+                <span class="nowrap badge {$_p.eta_class|default:'light-gray'}"><i class="fas fa-clock"></i> {$_p.eta}</span>
+            {/if}
+        </div>
+    </div>
+    <div class="small custom-mt-16{if $_is_premium} hidden{/if}">{if !empty($_p.body)}{$_p.body}{/if}</div>
+</div>
+{/function}
+
+<div class="article">
+
+    <main class="article-body">
+
+        <article class="t-upgrade-content">
+
+            <div class="t-premium-appicon"></div>
+
+            {if $_is_premium}
+
+                <h1 class="top-padded align-center">[`You are all set!`]</h1>
+                <p class="small align-center">
+                    [`Thank you for being a premium user and for supporting the project.`]<br>
+                    [`With premium, you are among the first to have access to all features.`]
+                    <a class="bold" href="[`https://www.webasyst.com/store/app/tasks/`]" target="_blank">[`https://www.webasyst.com/store/app/tasks/`]</a>
+                </p>
+
+            {else}
+
+                <h1 class="top-padded align-center width-70 custom-mx-auto custom-mb-24 width-100-mobile">{if $wa->locale() == 'ru_RU'}Предзаказ премиум<br> со скидкой{else}Pre-order premium<br> with a discount{/if}</h1>
+
+            {/if}
+
+            <p class="small align-center custom-mb-24">
+                {if $wa->locale() == 'ru_RU'}
+                    Первый релиз премиум-версии приложения «<a href="https://www.webasyst.ru/store/app/tasks/" target="_blank"><b>Задачи</b></a>» планируется <b>в июле 2025</b>. Предзаказ позволяет получить доступ к премиум-фичам первым и с максимальной скидкой.
+                {else}
+                    The first release of the <a href="https://www.webasyst.com/store/app/tasks/" target="_blank"><b>Teamwork app</b></a> premium version is scheduled for <b>July 2025</b>. Pre-order now to get the biggest upgrade discount and to be the first to access new premium features.
+                {/if}
+                 [`All scheduled features will be delivered as free updates via Installer.`]
+                 [`See the roadmap below for the planned feature delivery timeline.`]
+            </p>
+
+            {$_premium_stuff = []}
+
+            {$_premium_stuff[] = [
+              'title' => '[`Task types`]',
+              'eta' => '[`July 2025`]',
+              'eta_class' => 'orange',
+              'body' => '[`Specify any custom task type list: dev, bug, feature, story, epic, lead, whatever.`]'
+            ]}
+
+            {$_premium_stuff[] = [
+              'title' => '[`Gantt chart`]',
+              'eta' => '[`July 2025`]',
+              'eta_class' => 'orange',
+              'body' => '[`Visualize working progress based on scopes/milestones.`]'
+            ]}
+
+            {$_premium_stuff[] = [
+              'title' => '[`Custom fields`]',
+              'eta' => '[`July 2025`]',
+              'eta_class' => 'orange',
+              'body' => '[`Configure custom task fields based on a task type.`]'
+            ]}
+
+            {$_premium_stuff[] = [
+              'title' => '[`AI assistant`]',
+              'eta' => '[`July 2025`]',
+              'eta_class' => 'orange',
+              'body' => '[`Spellcheck & improve your texts in the task editor with a click. Powered by Webasyst AI.`]'
+            ]}
+
+            {$_premium_stuff[] = [
+              'title' => '[`Reports & visuals`]',
+              'eta' => '[`Summer 2025`]',
+              'eta_class' => 'yellow',
+              'body' => '[`Track  working progress with CFD and LTDC charts, task completion tables, more.`]'
+            ]}
+
+            {$_premium_stuff[] = [
+              'title' => '[`Project summary private links`]',
+              'eta' => '[`Summer 2025`]',
+              'eta_class' => 'yellow',
+              'body' => '[`Showcase project & its tasks current status to your client via a private link (Teamwork app frontend). View only access with no need to sign up and get extra access to your Webasyst backend.`]'
+            ]}
+
+            {$_premium_stuff[] = [
+              'title' => '[`In-project limited access for clients`]',
+              'eta' => '[`Summer 2025`]',
+              'eta_class' => 'yellow',
+              'body' => '[`With the basic version, you can invite your clients to your Webasyst backend using the free Team app and grant full access to a specific project. With premium, more sophisticated in-project access rights option will be available, such as view, comment, and follow specific tasks only.`]'
+            ]}
+
+            {$_premium_stuff[] = [
+              'title' => '[`Project templates`]',
+              'eta' => '[`Later in 2025`]',
+              'body' => '[`Quickly start new projects with a pre-defined set of template-based tasks & workflows.`]'
+            ]}
+            {$_premium_stuff[] = [
+              'title' => '[`Per-task time tracking`]',
+              'eta' => '[`Later in 2025`]',
+              'body' => '[`Track working time within an individual task (in integration with the Status app).`]'
+            ]}
+            {$_premium_stuff[] = [
+              'title' => '[`Suggest a feature`]',
+              'eta' => ' ',
+              'body' => '[`Share your feedback and suggestions, <a href="https://support.webasyst.com/forum/ideas/" target="_blank">post your ideas on the foum &rsaquo;</a>`]'
+            ]}
+
+            {$smarty.capture.getpremiumbutton}
+
+            {foreach $_premium_stuff as $_p}
+                {_render_feature _p=$_p _is_premium_license=$_is_premium}
+            {/foreach}
+            <p class="align-center gray">[`All scheduled features will be delivered as free updates via Installer.`]</p>
+
+            {$smarty.capture.getpremiumbutton}
+
+
+
+        </article>
+
+    </main>
+
+</div>
+
+<script type="text/javascript">
+    (function(){
+        $.tasks.setTitle('[`Premium`]');
+    }());
+</script>

@@ -1,10 +1,46 @@
+{$ident = rand(0, 1024)}
+
+{$loc = explode('_', $wa->locale())}
+
 <div class="t-status-comment-wrapper">
 
     <div class="t-big-editor-wrapper">
 
         {* TEXTAREA *}
         <div class="t-textarea-wrapper">
-            <textarea name="text" cols="" rows="" class="t-redactor-comments width-100" placeholder="[`Add comment`]"></textarea>
+            <textarea id="redactor-comment-{$ident}" name="text" class="t-redactor-comments width-100" placeholder="[`Add comment`]"></textarea>
+            <script>
+                (function () {
+                    if (lexicalEditor) {
+                        const $el = document.getElementById('redactor-comment-{$ident}');
+                        const action = $el.closest('form').dataset.taskAction;
+                        lexicalEditor.createLexicalInstance({
+                            el: $el,
+                            isRichMode: TasksController ? TasksController.options.text_editor === 'wysiwyg' : false,
+                            taskId: '{$task.id}',
+                            storage: TasksController ? TasksController.getDraftKeyActionText({$task.id}, action) : '',
+                            placeholder: '[`Add comment`]',
+                            imageUploadUrl: '?module=attachments&action=imageUpload',
+                            imageUploadTaskUuid: document.querySelector('.article').dataset.taskUuid || '',
+                            mentions: {},
+                            mentionsFetchUrlWA: true,
+                            lang: '{$loc[0]}'
+                        });
+
+                        // Load draft
+                        TasksController.storageDataInMdMode($el, 'getDraftKeyActionText', {$task.id}, action);
+
+                        if(TasksController.options.text_editor === 'markdown') {
+                            $($el).textareaAutocomplete({
+                                urlEntity: '?module=tasks&action=entityAutocomplete',
+                                urlMention: '?module=tasks&action=mentionAutocomplete',
+                                autoFocus: false,
+                                delay: 300
+                            });
+                        }
+                    }
+                })();
+            </script>
         </div>
 
         {if empty($is_bulk)}

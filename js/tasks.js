@@ -562,6 +562,34 @@
             }
         },
 
+        getDraftKeyTaskText () {
+            let md_suffix = '';
+            if(TasksController.options.text_editor === 'markdown') {
+                md_suffix = '/md';
+            }
+            return `tasks/task/text${md_suffix}`;
+        },
+
+        getDraftKeyCommentText (taskId) {
+            if (taskId) {
+                let md_suffix = '';
+                if(TasksController.options.text_editor === 'markdown') {
+                    md_suffix = '/md';
+                }
+                return `tasks/${taskId}/comment/text${md_suffix}`;
+            }
+        },
+
+        getDraftKeyActionText (taskId, action) {
+            if (taskId) {
+                let md_suffix = '';
+                if(TasksController.options.text_editor === 'markdown') {
+                    md_suffix = '/md';
+                }
+                return `tasks/${taskId}/action${action ? '/' + action : ''}/text${md_suffix}`;
+            }
+        },
+
         /**
          * Responsible for all task list views.
          * Parses hash for filters and other params to pass to PHP.
@@ -814,6 +842,12 @@
 
         personalSettingsAction: function () {
             this.load('?module=settingsPersonal', function () {
+
+            });
+        },
+
+        upgradeAction: function () {
+            this.load('?module=upgrade', function () {
 
             });
         },
@@ -1242,7 +1276,7 @@
                 var $container = $('#wa-app > .flexbox > .sidebar');
                 var $singleAppHeader = $container.find('#wa-single-app-nav-container').detach();
 
-                $container.html(r); 
+                $container.html(r);
                 $singleAppHeader && $singleAppHeader.prependTo($container);
 
                 self.initSidebar();
@@ -1868,6 +1902,25 @@
                 };
 
                 initCustomSelector(timeframe);
+            }
+        },
+
+        storageDataInMdMode: function($el, key, task_id = null, action = null) {
+            if (TasksController?.options?.text_editor === 'markdown') {
+                const ls_key = TasksController[key](task_id, action);
+                if (!ls_key) {
+                    return;
+                }
+                const content = localStorage.getItem(ls_key);
+                const $textarea = $($el);
+
+                if (content) {
+                    $textarea.val(content);
+                }
+
+                $textarea.on("input", function () {
+                    localStorage.setItem(ls_key, $(this).val());
+                });
             }
         }
     };

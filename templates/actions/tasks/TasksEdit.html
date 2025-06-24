@@ -7,6 +7,8 @@
 
 {$task_uuid = $task.uuid|default:tasksUuid4::generate()}
 
+{$loc = explode('_', $wa->locale())}
+
 <script>
     window.taskLinks = {$links_data|json_encode};
 </script>
@@ -164,7 +166,7 @@
                 {* @event backend_task_edit.%plugin_id%.before_name *}
                 {foreach $backend_task_edit as $_}{ifset($_.before_name)}{/foreach}
 
-                <div class="t-big-editor-wrapper">
+                <div class="t-big-editor-wrapper editor-wrapper-{$task_uuid}">
 
 
                     {* NAME && PRIORITY *}
@@ -206,8 +208,36 @@
                     <div class="t-form-line t-description-wrapper">
                         <hr>
 
-                        <textarea name="data[text]" cols="1" rows="1" class="t-redactor-task-edit" placeholder="[`Task summary`]">{$task.text|escape}</textarea>
+                        <textarea id="redactor-task-{$task_uuid}" class="t-redactor-task-edit" name="data[text]" placeholder="[`Task summary`]">{$task.text|escape}</textarea>
+                        <script>
+                            (function () {
+                                if (lexicalEditor) {
+                                    window.waRedactorTaskInit = () => {
+                                        const $el = $('#redactor-task-{$task_uuid}');
+                                        $el.parent().find('.lexical-editor').remove();
 
+                                        lexicalEditor.createLexicalInstance({
+                                            el: $el[0],
+                                            isRichMode: TasksController ? TasksController.options.text_editor === 'wysiwyg' : false,
+                                            taskId: '{$task.id}',
+                                            storage: taskEdit ? (taskEdit.is_new ? (TasksController ? TasksController.getDraftKeyTaskText() : '') : '') : '',
+                                            placeholder: '[`Task summary`]',
+                                            imageUploadUrl: '?module=attachments&action=imageUpload',
+                                            imageUploadTaskUuid: '{$task_uuid}',
+                                            controls: document.querySelector('.editor-wrapper-{$task_uuid}'),
+                                            mentions: window.taskLinks || {},
+                                            mentionsFetchUrlWA: true,
+                                            lang: '{$loc[0]}'
+                                        });
+
+                                        TasksController.storageDataInMdMode($el[0], 'getDraftKeyTaskText');
+                                    }
+                                }
+
+                                waRedactorTaskInit();
+
+                            })();
+                        </script>
                         <!-- plugin hook: 'backend_task_edit.%plugin_id.description' -->
                         {* @event backend_task_edit.%plugin_id%.description *}
                         {foreach $backend_task_edit as $_}{ifset($_.description)}{/foreach}
@@ -258,7 +288,7 @@
                                     [`Watchers`]
                                 </a>
                             </div>
-                            
+
                             {if $wa->pocketlists}
                             <div class="t-chip">
                                 <a class="t-form-line-checklist-chip">

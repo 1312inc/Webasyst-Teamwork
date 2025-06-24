@@ -117,13 +117,16 @@
 
                                 <!-- plugin hook: 'backend_tasks.%plugin_id%.header.bulk' -->
                                 {* @event backend_tasks.%plugin_id%.header.bulk *}
-                                {foreach $_backend_header_hooks as $_}{$_.bulk|default:''}{/foreach}
+                                {if !empty($_backend_header_hooks)}
+                                    {foreach $_backend_header_hooks as $_}{$_.bulk|default:''}{/foreach}
+                                {/if}
 
                             </div>
                             <script>
                                 ( function($) {
                                     $("#t-selection-menu .dropdown").waDropdown({
-                                        hover: false
+                                        hover: false,
+                                        hide: false
                                     });
                                 })(jQuery);
                             </script>
