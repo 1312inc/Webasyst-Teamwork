@@ -751,7 +751,6 @@ msgstr "ОБНОВЛЕНО: %s"
 msgid "EDIT: %s %s"
 msgstr "ОБНОВЛЕНО: %s %s"
 
-# @-mentions
 msgid "@ %s %s"
 msgstr "@ %s %s"
 
@@ -1570,3 +1569,120 @@ msgstr "Сохраните проект для подтверждения уда
 
 msgid "Hashtag, task number, order ID, etc."
 msgstr "Тег, номер задачи или заказа, контакт..."
+
+msgid "https://www.webasyst.com/my/buy/upgrade-to-premium/tasks/"
+msgstr "https://www.webasyst.ru/my/buy/upgrade-to-premium/tasks/"
+
+msgid "Pre-order now"
+msgstr "Предзаказ"
+
+msgid "lifetime"
+msgstr "навсегда"
+
+msgid "%s limited offer for upgrading existing app license to the premium version"
+msgstr "%s спецпредложение на апгрейд базовой лицензии до премиум-версии"
+
+msgid "pre-order"
+msgstr "предзаказ"
+
+msgid "Enabled"
+msgstr "Включено"
+
+msgid "Available now"
+msgstr "Уже доступно"
+
+msgid "You are all set!"
+msgstr "Все включено!"
+
+msgid "Thank you for being a premium user and for supporting the project."
+msgstr "Спасибо за покупку премиум-версии и поддержку проекта!"
+
+msgid "With premium, you are among the first to have access to all features."
+msgstr "У вас приоритетный доступ ко всем новым функциям и обновлениям."
+
+msgid "All scheduled features will be delivered as free updates via Installer."
+msgstr "Все обновления будут доступны в Инсталлере бесплатно."
+
+msgid "See the roadmap below for the planned feature delivery timeline."
+msgstr "Смотрите примерные планы по срокам выпуска обновлений в списке ниже."
+
+msgid "Task types"
+msgstr "Типы задач"
+
+msgid "July 2025"
+msgstr "Июль 2025"
+
+msgid "Specify any custom task type list: dev, bug, feature, story, epic, lead, whatever."
+msgstr "Создавайте кастомные типы задач: фича, баг, пожелание, эпик, стори, заявка, что хотите."
+
+msgid "Gantt chart"
+msgstr "Диаграмма Ганта"
+
+msgid "Visualize working progress based on scopes/milestones."
+msgstr "Следите за процессом закрытия работ и выполнения сроков."
+
+msgid "Custom fields"
+msgstr "Кастомные поля"
+
+msgid "Configure custom task fields based on a task type."
+msgstr "Настраивайте дополнительные описательные поля для задач в зависимости от их типа."
+
+msgid "Reports & visuals"
+msgstr "Отчеты и графики"
+
+msgid "Track  working progress with CFD and LTDC charts, task completion tables, more."
+msgstr "Контролируйте рабочий процесс на графиках CFD, LTDC и сводных таблицах."
+
+msgid "AI assistant"
+msgstr "ИИ-ассистент"
+
+msgid "Summer 2025"
+msgstr "Лето 2025"
+
+msgid "Spellcheck & improve your texts in the task editor with a click. Powered by Webasyst AI."
+msgstr "Пишите правильно и красиво, проверяйте орфографию и стилизуйте текст на основе Webasyst AI."
+
+msgid "Project summary private links"
+msgstr "Приватные ссылки на статус проекта"
+
+msgid "Showcase project & its tasks current status to your client via a private link (Teamwork app frontend). View only access with no need to sign up and get extra access to your Webasyst backend."
+msgstr "Показывайте текущий статус работы над проектом клиенту по приватной ссылке (фронтенд приложения «Задачи»). Просмотр доступен без регистрации и предоставления доступа в бекенд вашего Webasyst."
+
+msgid "In-project limited access for clients"
+msgstr "Ограниченный доступ к проекту для клиентов"
+
+msgid "With the basic version, you can invite your clients to your Webasyst backend using the free Team app and grant full access to a specific project. With premium, more sophisticated in-project access rights option will be available, such as view, comment, and follow specific tasks only."
+msgstr "В базовой версии вы можете пригласить клиента в бекенд Webasyst с помощью бесплатного приложения «Команда» и представить полный доступ к проекту. В премиум-версии будет больше настроек доступа, в том числе только для просмотра, комментирования, наблюдения за избранными задачами."
+
+msgid "Project templates"
+msgstr "Шаблоны проектов"
+
+msgid "Later in 2025"
+msgstr "Позже в 2025"
+
+msgid "Quickly start new projects with a pre-defined set of template-based tasks & workflows."
+msgstr "Быстро создавайте проекты с заранее преднастроенным набором задач и статусов."
+
+msgid "Per-task time tracking"
+msgstr "Учет времени по задачами"
+
+msgid "Track working time within an individual task (in integration with the Status app)."
+msgstr "Указывайте рабочее время для каждой задачи (в интеграции с приложением «Удаленка»)."
+
+msgid "Suggest a feature"
+msgstr "Предложите свои идеи"
+
+msgid "Share your feedback and suggestions, <a href=\"https://support.webasyst.com/forum/ideas/\" target=\"_blank\">post your ideas on the foum &rsaquo;</a>"
+msgstr "Поделитесь мнением, предложите идеи по новым функциям <a href=\"https://support.webasyst.ru/forum/ideas/\" target=\"_blank\">на форуме &rsaquo;</a>"
+
+msgid "Premium"
+msgstr "Премиум"
+
+msgid "User %s mentioned you in a task."
+msgstr "%s упомянул вас в задаче."
+
+msgid "Promocode"
+msgstr "Промокод"
+
+msgid "Unable to process image file"
+msgstr "Ошибка обработки файла изображения"
