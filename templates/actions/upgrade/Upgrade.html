@@ -13,7 +13,7 @@
 
 {$_is_premium = $wa->tasks->isPremium()}
 {$_premium_pricing = $wa->tasks->getPremiumPricing()}
-{$_upgrade_url = '[`https://www.webasyst.com/my/buy/upgrade-to-premium/tasks/`]'}
+{$_upgrade_url = '[`https://www.webasyst.com/my/buy/upgrade-to-premium/tasks/`]'|cat:'?domain='|cat:str_replace('http://','',str_replace('https://','',$wa->domainUrl()))}
 
 {capture "getpremiumbutton"}
 {if !$_is_premium}
