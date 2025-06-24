@@ -155,67 +155,6 @@ var TaskEdit = ( function($) { "use strict";
         if ($('.pulsar.cloned').length) {
             $('.pulsar.cloned').removeClass('pulsar');
         }
-
-        if ($.tasks.options.text_editor === 'wysiwyg') {
-            $R('.t-redactor-task-edit', {
-                tabindex: 1,
-                toolbarFixedTarget: (function () {
-                    return $('#t-dialog-wrapper').length ? '#t-dialog-wrapper' : document;
-                })(),
-                toolbarFixedTopOffset: 64,
-                toolbarContext: false,
-                imageData: {
-                    task_uuid: that.task_uuid
-                },
-                callbacks: {
-                    started () {
-                        var that = this;
-                        var $el = this.element.getElement().get(0);
-                        
-                        // Textarea value changed
-                        $el.onchange = function () {
-                            that.source.setCode($($el).val());
-                            // Broadcast synchronization event between textarea and visual layer
-                            that.broadcast('syncingInverse', $($el).val());
-                        };
-                    },
-                    synced (html) {
-                        if (that.is_new) {
-                            //Save task draft text
-                            var data = new Date(),
-                                result = data.toLocaleDateString("ru-RU", {
-                                    year: "numeric",
-                                    month: "2-digit",
-                                    day: "2-digit",
-                                    hour: "2-digit",
-                                    minute: "2-digit"
-                                });
-                            localStorage.setItem('task_text', html);
-                            localStorage.setItem('draft_time', result);
-                        }
-                    }
-                }
-            });
-        } else {
-            var $textarea = $('.t-redactor-task-edit');
-            var resizeTextarea = function ($text) {
-                $text.css('height', 'auto');
-                $text.css('height', $text[0].scrollHeight + 'px');
-            }
-
-            $textarea.each(function () {
-                $(this).css('min-height', '20vh');
-                $(this).attr('rows', 1);
-                resizeTextarea($(this));
-                $(this).parents('#t-dialog-wrapper').one('transitionend', () => {
-                    resizeTextarea($(this));
-                });
-            });
-
-            $textarea.on('input', function () {
-                resizeTextarea($(this));
-            });
-        }
     };
 
     TaskEdit.prototype.initMilestoneSelector = function () {
@@ -389,9 +328,11 @@ var TaskEdit = ( function($) { "use strict";
         });
 
         // Init Paste img on textarea Ctrl+V
-        $form.find('textarea').pasteImageReader(function(result) {
-            that.displayFiles(result.files, true);
-        });
+        if (TasksController?.options?.text_editor === 'markdown') {
+            $form.find('.t-description-wrapper').pasteImageReader(function(result) {
+                that.displayFiles(result.files, true);
+            });
+        }
 
         $dropArea.on("dragenter", function() {
             return false;
@@ -426,7 +367,9 @@ var TaskEdit = ( function($) { "use strict";
         
         $form.on("submit", function(e) {
             e.preventDefault();
-            that.onSubmit($form);
+            if (e.originalEvent.submitter.matches('.t-save-task-link')) {
+                that.onSubmit($form);
+            }
             return false;
         });
 
@@ -935,34 +878,11 @@ var TaskEdit = ( function($) { "use strict";
     //Save task draft
     TaskEdit.prototype.saveTaskDraft = function() {
         var that = this,
-            $task_title = that.$form.find('[name="data[name]"]'),
-            $task_text = that.$form.find('[name="data[text]"]');
+            $task_title = that.$form.find('[name="data[name]"]');
 
-        $task_title.on('keyup',function(){
+        $task_title.on('input',function(){
             //Save task draft title
-            var data = new Date(),
-                result = data.toLocaleDateString("ru-RU", {
-                    year: "numeric",
-                    month: "2-digit",
-                    day: "2-digit",
-                    hour:"2-digit",
-                    minute: "2-digit"
-                });
             localStorage.setItem('task_title', $task_title.val());
-            localStorage.setItem('draft_time', result);
-        });
-        $task_text.on('keyup',function(){
-            //Save task draft text
-            var data = new Date(),
-                result = data.toLocaleDateString("ru-RU", {
-                    year: "numeric",
-                    month: "2-digit",
-                    day: "2-digit",
-                    hour:"2-digit",
-                    minute: "2-digit"
-                });
-            localStorage.setItem('task_text', $task_text.val());
-            localStorage.setItem('draft_time', result);
         });
     };
 
@@ -970,18 +890,11 @@ var TaskEdit = ( function($) { "use strict";
     TaskEdit.prototype.setTaskDraft = function() {
         var that = this,
             $task_title = that.$form.find('[name="data[name]"]'),
-            $task_text = that.$form.find('[name="data[text]"]'),
-            $saved_task_title = localStorage.getItem('task_title'),
-            $saved_task_text = localStorage.getItem('task_text');
+            $saved_task_title = localStorage.getItem('task_title');
 
         if (that.is_new) {
-            if ($saved_task_title || $saved_task_text) {
-                if ($saved_task_title) {
-                    $task_title.val($saved_task_title);
-                }
-                if ($saved_task_text) {
-                    $task_text.val($saved_task_text);
-                }
+            if ($task_title && $saved_task_title) {
+                $task_title.val($saved_task_title);
             }
         }
     };
@@ -1041,26 +954,26 @@ var TaskEdit = ( function($) { "use strict";
                                 if (that.is_new) {
                                     // Clear localStorage Task draft
                                     localStorage.removeItem('task_title');
-                                    localStorage.removeItem('task_text');
+                                    localStorage.removeItem(TasksController.getDraftKeyTaskText());
                                 }
                             }
                         }
                     )
                     .fail(function (error) {
+                        $.tasks.hideLoadingButton($submitButton);
                         if (error.status === 500) {
                             alert('Something went wrong on the server side (500). Please try again later or validate server error logs for details.');
                         }
                     })
                     .always(function () {
                         $form.hideLoading();
-                        $.tasks.hideLoadingButton($submitButton);
                     });
             },
             onAllAlways: function () {
                 $form.hideLoading();
-                $.tasks.hideLoadingButton($submitButton);
             },
             onError: function (errors, index) {
+                $.tasks.hideLoadingButton($submitButton);
                 if (!arguments.length) {
                     alert('Something went wrong on the server side. Please try again later or validate server error logs for details.');
                     return;

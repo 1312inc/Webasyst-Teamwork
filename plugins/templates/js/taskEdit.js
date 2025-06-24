@@ -56,7 +56,7 @@ var TasksTemplatesPluginTaskEdit = (function ($) {
             task_content_val = $task_content.val();
 
         if (typeof template.name === 'string' && template.name.length > 0 && (!that.open_content_lenght || !task_name_val)) {
-            $task_name.attr('placeholder', $.wa.encodeHTML(template.name || ''));
+            $task_name.attr('placeholder', $.wa.encodeHTML(template.name || '')).val($.wa.encodeHTML(template.name || ''));
         }
 
         if (typeof template.text === 'string' && template.text.length > 0) {
@@ -65,6 +65,10 @@ var TasksTemplatesPluginTaskEdit = (function ($) {
                 $task_content.val(task_content_val.split(delimiter)[0] + delimiter + template.text).trigger('change');
             } else {
                 $task_content.val(template.text).trigger('change');
+            }
+
+            if (waRedactorTaskInit) {
+                waRedactorTaskInit();
             }
         }
 

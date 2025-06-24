@@ -22,6 +22,10 @@
         text_editor: {$text_editor|json_encode}
     });</script>
 
+    <script>
+        window.static_url = '{$wa_app_static_url}';
+    </script>
+
     {$wa->css()}
     <link href="{$wa_app_static_url}js/vendors/jquery-ui.min.css" rel="stylesheet" type="text/css" />
     <link href="{$wa_app_static_url}css/tasks.min.css?v={$wa->version()}" rel="stylesheet" type="text/css" />
@@ -36,41 +40,8 @@
     <script src="{$wa_url}wa-content/js/jquery-wa/wa.js?v{$wa->version(true)}"></script>
     <script src="{$wa_app_static_url}js/tasks.min.js?v={$wa->version()}"></script>
 
-    {if $text_editor === "wysiwyg"}
-    <link rel="stylesheet" href="{$wa_app_static_url}js/vendors/redactor-3-4-11/redactor.min.css">
-    <link rel="stylesheet" href="{$wa_app_static_url}js/vendors/redactor-3-4-11/plugins/mdeditor/mdeditor.css?v={$wa->version()}">
-    <link rel="stylesheet" href="{$wa_app_static_url}js/vendors/redactor-3-4-11/plugins/watags/watags.css?v={$wa->version()}">
-
-    <script src="{$wa_app_static_url}js/vendors/redactor-3-4-11/redactor.min.js"></script>
-    <script src="{$wa_app_static_url}js/vendors/redactor-3-4-11/langs/{$loc[0]}.js"></script>
-    <!-- markdown-it and turndown are dependencies for mdeditor -->
-    <script src="{$wa_app_static_url}js/vendors/redactor-3-4-11/plugins/mdeditor/markdown-it.min.js"></script>
-    <script src="{$wa_app_static_url}js/vendors/redactor-3-4-11/plugins/mdeditor/turndown.js"></script>
-    <script src="{$wa_app_static_url}js/vendors/redactor-3-4-11/plugins/mdeditor/mdeditor.js?v={$wa->version()}"></script>
-    <script src="{$wa_app_static_url}js/vendors/redactor-3-4-11/plugins/watags/watags.js?v={$wa->version()}"></script>
-    <script src="{$wa_app_static_url}js/vendors/redactor-3-4-11/plugins/imgupload/imgupload.js?v={$wa->version()}"></script>
-    <script>
-        $R.options = {
-            lang: '{$loc[0]}',
-            buttons: ['format', 'bold', 'italic', 'deleted', 'ol', 'ul', 'link', 'image'],
-            formatting: ['p', 'h3', 'h4', 'h5'],
-            source: false,
-            minHeight: '20vh',
-            plugins: ['mdeditor', 'watags', 'imgupload'],
-            tagsHandle: '?module=tasks&action=entityAutocomplete',
-            mentionsHandle: '?module=tasks&action=mentionAutocomplete',
-            tagsHandleDelay: 500,
-            linkTarget: '_blank',
-            linkNewTab: false,
-            linkSize: 120,
-            shortcutsAdd: {
-                'shift+tab': {
-                    api: 'module.list.outdent'
-                },
-            }
-        };
-    </script>
-    {/if}
+    <link rel="stylesheet" href="{$wa_app_static_url}js/lexical/style.css?v={$wa->version()}">
+    <script src="{$wa_app_static_url}js/lexical/lexicalEditor.umd.js?v={$wa->version()}"></script>
 
     {$wa->js()}
     {if $wa->locale() != 'en_US'}
@@ -90,29 +61,6 @@
             <div class="flexbox wrap-mobile">
                 {* SIDEBAR *}
                 <aside class="t-sidebar-wrapper sidebar mobile-friendly width-adaptive flexbox wa-gradient-overlay-light" id="sidebar">
-                    {if $wa->isSingleAppMode()}
-                        <div id="wa-single-app-nav-container" class="box custom-py-0">
-                            {$wa->headerSingleAppUser()}
-                        </div>
-                        <script>
-                            $(function () {
-                                $('#wa-single-app-nav-container')
-                                .parent()
-                                .css({ 
-                                    'z-index': 100500, 
-                                    'overflow': 'visible'
-                                });
-                            });
-                        </script>
-                    {/if}
-                    <nav class="sidebar-mobile-toggle">
-                        <div class="box align-center">
-                            <a href="#" href="javascript:void(0);">
-                                <i class="fas fa-bars"></i>
-                                [`Menu`]
-                            </a>
-                        </div>
-                    </nav>
                     {include file="./Sidebar.html" inline}
                 </aside>
 

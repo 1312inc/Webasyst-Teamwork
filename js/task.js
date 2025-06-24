@@ -1013,7 +1013,7 @@ var Task = ( function($) {
 
                         var $form = $drawer.find("form");
                         var $textarea = $form.find('textarea');
-                        var taskAction = $form.data('task-action');
+                        const action = $form.data('task-action');
 
                         // Focus
                         $textarea.focus();
@@ -1022,15 +1022,14 @@ var Task = ( function($) {
                         $drawer.find(".t-hiddenform-cancel-link").on('click', function() {
                             drawer_instance.close();
                         })
-                        
-                        var removeSavedMessage = that.makeTextareaSaveable($textarea, taskAction);
 
                         // Handle submit
                         $form.on("submit", function(e) {
                             e.preventDefault();
                             onStatusSubmit($(this), direction, function () {
-                                removeSavedMessage();
                                 drawer_instance.close();
+                                // remove draft action
+                                localStorage.removeItem(TasksController.getDraftKeyActionText(that.task_id, action));
                             });
                         });
 
@@ -1058,52 +1057,6 @@ var Task = ( function($) {
 
     };
 
-    Task.prototype.makeTextareaSaveable = function ($textarea, action) {
-
-        const lsItem = `tasks/textarea/${action}/${this.task_id}`;
-        const disableSaveable = $textarea[0].hasAttribute('data-disable-saveable');
-
-        if (!disableSaveable) {
-            $textarea.val(localStorage.getItem(lsItem));
-            $textarea.on('input', saveDraft);
-        }
-
-        if ($.tasks.options.text_editor === 'wysiwyg' && window.$R) {
-            $textarea.redactor({
-                'focus': action !== 'comment',
-                minHeight: '150px',
-                imageData: {
-                    task_uuid: this.task_uuid
-                },
-                callbacks: {
-                    changed: () => {
-                        !disableSaveable && saveDraft();
-                    }
-                }
-            });
-        } else {
-            $textarea.textareaAutocomplete({
-                urlEntity: '?module=tasks&action=entityAutocomplete',
-                urlMention: '?module=tasks&action=mentionAutocomplete',
-                autoFocus: false,
-                delay: 300
-            });
-        }
-
-        function saveDraft () {
-            localStorage.setItem(lsItem, $textarea.val());
-        }
-
-        function removeLs () {
-            if (!disableSaveable) {
-                localStorage.removeItem(lsItem);
-            }
-        }
-
-        return removeLs;
-
-    };
-
     Task.prototype.initCommentForm = function ($commentForm, callbacks) {
         var that = this,
             filesController = new TaskCommentFilesUploader({
@@ -1111,16 +1064,31 @@ var Task = ( function($) {
             });
 
         // Init Paste img on textarea Ctrl+V
-        $commentForm.find("textarea").pasteImageReader(function(result) {
-            filesController.displayFiles(result.files, true);
-        });
+        if (TasksController?.options?.text_editor === 'markdown') {
+            $commentForm.find(".t-textarea-wrapper").pasteImageReader(function(result) {
+                filesController.displayFiles(result.files, true);
+            });
+        }
 
         callbacks = $.isPlainObject(callbacks) ? callbacks : {};
         var onAllDone = typeof callbacks.onAllDone === 'function' ? callbacks.onAllDone : null;
 
+        // Load draft
+        if (TasksController?.options?.text_editor === 'markdown') {
+            const commentText = localStorage.getItem(TasksController.getDraftKeyCommentText(that.task_id));
+            if (commentText) {
+                $commentForm.find('textarea').val(commentText);
+            }
+        }
+
         var bindEvents = function() {
 
-            $commentForm.on("submit", function() {
+            $commentForm.on("submit", function(e) {
+                if (!e.originalEvent.submitter.matches('.t-add-comment-button')) {
+                    e.preventDefault();
+                    return false;
+                }
+
                 var $submitButton = $(this).find('[type="submit"]');
 
                 $.tasks.showLoadingButton($submitButton);
@@ -1154,6 +1122,12 @@ var Task = ( function($) {
                 filesController.deleteFile($file);
                 return false;
             });
+
+            if (TasksController?.options?.text_editor === 'markdown') {
+                $commentForm.on("input", "textarea", function () {
+                    localStorage.setItem(TasksController.getDraftKeyCommentText(that.task_id), $(this).val());
+                });
+            }
         };
 
         var clearCommentErrors = function() {
@@ -1175,8 +1149,6 @@ var Task = ( function($) {
 
             return true;
         };
-
-        var removeSavedComment = that.makeTextareaSaveable($commentForm.find('.t-redactor-comments'), 'comment');
 
         var addComment = function() {
             var submit_href = $commentForm.attr("action"),
@@ -1201,8 +1173,11 @@ var Task = ( function($) {
                                     alert("[`Error Comment ID`]");
                                     return;
                                 }
-                                
-                                removeSavedComment();
+
+                                // remove draft comment
+                                if ((new URLSearchParams(submit_href)).get('action') === 'add') {
+                                    localStorage.removeItem(TasksController.getDraftKeyCommentText(that.task_id));
+                                }
 
                                 onAllDone && onAllDone();
                             }
