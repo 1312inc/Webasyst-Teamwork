@@ -860,6 +860,10 @@
             this.load('?module=projects&action=edit&id='+id);
         },
 
+        milestonesAction: function () {
+            this.load('?module=milestones');
+        },
+
         settingsScopeAction: function (id) {
             this.load('?module=milestones&action=edit&id=' + id);
         },
