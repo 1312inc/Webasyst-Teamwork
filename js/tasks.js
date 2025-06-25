@@ -840,6 +840,12 @@
             });
         },
 
+        typesSettingsAction: function () {
+            this.load('?module=types', function () {
+
+            });
+        },
+
         personalSettingsAction: function () {
             this.load('?module=settingsPersonal', function () {
 
