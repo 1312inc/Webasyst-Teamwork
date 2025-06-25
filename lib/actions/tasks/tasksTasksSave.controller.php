@@ -16,6 +16,12 @@ class tasksTasksSaveController extends waJsonController
             $task = $this->add($data);
         }
 
+        $te_model = new tasksTaskExtModel();
+        $te_model->save([
+            'task_id' => $task['id'],
+            'type'    => $data['task_type'],
+        ]);
+
         $this->response = array(
             'url' => $task['project_id'].'.'.$task['number'],
             'id'  => $task['id'],

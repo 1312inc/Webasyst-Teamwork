@@ -69,8 +69,6 @@
                             <span class="semibold">{$task.project.name|escape|truncate:42}</span>
                         </a>
 
-
-
                     </div>
 
                     <div class="t-controls-wrapper flexbox middle wrap-mobile space-12">
@@ -528,6 +526,9 @@
                     <span style="position:absolute;left:-100500px;">: </span>
 
                     {* TITLE *}
+                    {if $task_type}
+                    <span class="t-type-text" style="color: #{$task_type.color|escape}; font-weight: bold;">{$task_type.name|escape}:&nbsp;</span>
+                    {/if}
                     <span class="t-task-name-wrapper{if $task.status_id == -1} gray{/if}" href="#/task/{$task.project_id}.{$task.number}/">{$task.name|escape|default:"(no name)"}</span>
 
                     {* STATUS *}

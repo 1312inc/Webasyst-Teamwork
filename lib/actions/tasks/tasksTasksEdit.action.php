@@ -44,18 +44,28 @@ class tasksTasksEditAction extends waViewAction
 
         $backend_task_edit = $this->triggerEvent($task);
 
+        $em = new tasksTaskExtModel();
+        if ($this->task['id'] > 0) {
+            $ext_info = $em->getById($this->task['id']);
+        }
+        if (empty($ext_info)) {
+            $ext_info = $em->getEmptyRow();
+        }
+        $task_types = (new tasksTaskTypesModel())->getTypes();
         $links_data = (new tasksLinksPrettifier())->addFromMarkdown($this->task['text'])->getData();
 
         $this->view->assign([
-            'task' => $task,
-            'projects' => $projects,
-            'project' => $this->project,
-            'projects_users' => $this->projects_users,
-            'projects_priority_users' => [], // !!!
-            'milestones' => $this->milestones,
-            'users' => $this->users,
-            'backend_task_edit' => ifempty($backend_task_edit, []),
-            'links_data' => $links_data,
+            'task'                    => $task,
+            'projects'                => $projects,
+            'project'                 => $this->project,
+            'projects_users'          => $this->projects_users,
+            'projects_priority_users' => [],
+            'milestones'              => $this->milestones,
+            'users'                   => $this->users,
+            'backend_task_edit'       => ifempty($backend_task_edit, []),
+            'links_data'              => $links_data,
+            'task_types'              => $task_types,
+            'ext_info'                => $ext_info
         ]);
 
     }

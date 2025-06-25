@@ -175,6 +175,11 @@
                             <div class="t-task-name-wrapper">
                                 <input type="text" name="data[name]" class="t-task-name-input bold" value="{$task.name|escape}" placeholder="[`Task title`]" tabindex="1">
 
+                                {include file = "./TasksTypeSelector.html"
+                                    task_types = $task_types
+                                    ext_info = $ext_info
+                                inline}
+
                                 <!-- plugin hook: 'backend_task_edit.%plugin_id.name' -->
                                 {* @event backend_task_edit.%plugin_id%.name *}
                                 {foreach $backend_task_edit as $_}{ifset($_.name)}{/foreach}

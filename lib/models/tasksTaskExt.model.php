@@ -71,7 +71,6 @@ class tasksTaskExtModel extends waModel
 
         // all fields (except task_id, task_id is required) are null, so don't insert data
         if ($nulls_count == count($this->getMetadata()) - 1) {
-
             if ($this->getByField('task_id', $data['task_id'])) {
                 $this->deleteByField('task_id', $data['task_id']);
             }
@@ -129,7 +128,7 @@ class tasksTaskExtModel extends waModel
 
     public static function getTypes($with_names = true)
     {
-        $m = new tasksReleasesPluginTaskTypesModel();
+        $m = new tasksTaskTypesModel();
         $types = $m->getAll('id', true);
         $types = waUtils::getFieldValues($types, 'name', true);
         if ($with_names) {

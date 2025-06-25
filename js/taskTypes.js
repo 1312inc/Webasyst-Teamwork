@@ -64,7 +64,7 @@ var TasksTaskTypes = (function ($) {
             $input.attr('name', $input.attr('name').replace('_template_', id));
 
             $item.data('id', id).attr('data-id', id);
-            $item.removeClass('is-template').removeClass('hidden');
+            $item.removeClass('is-template');
             $item.appendTo($list);
 
             editor.makeEditable($item);
