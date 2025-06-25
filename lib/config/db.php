@@ -52,6 +52,21 @@ return array(
         ),
         ':options' => array('charset' => 'utf8mb4'),
     ),
+    'tasks_milestone_ext' => array(
+        'status_id' => array('int', 11, 'null' => 0),
+        'milestone_id' => array('int', 11, 'null' => 0),
+        'limit' => array('int', 11),
+        ':keys' => array(
+            'PRIMARY' => array('status_id', 'milestone_id')
+        ),
+    ),
+    'tasks_milestone_projects' => array(
+        'milestone_id' => array('int', 11, 'null' => 0),
+        'project_id' => array('int', 11, 'null' => 0),
+        ':keys' => array(
+            'PRIMARY' => array('milestone_id', 'project_id')
+        )
+    ),
     'tasks_project' => array(
         'id' => array('int', 11, 'null' => 0, 'autoincrement' => 1),
         'name' => array('varchar', 255, 'null' => 0),
@@ -157,6 +172,22 @@ return array(
         ),
         ':options' => array('charset' => 'utf8mb4'),
     ),
+    'tasks_task_ext' => array(
+        'task_id' => array('int', 11, 'null' => 0),
+        'type' => array('varchar', 32),
+        'gravity' => array('varchar', 32),
+        'timecosts_plan' => array('int', 11),
+        'timecosts_fact' => array('int', 11),
+        'affected_version' => array('varchar', 32),
+        'resolution' => array('varchar', 32),
+        'kanban_color' => array('varchar', 50),
+        ':keys' => array(
+            'PRIMARY' => 'task_id',
+            'type' => 'type',
+            'gravity' => 'gravity',
+            'resolution' => 'resolution'
+        ),
+    ),
     'tasks_task_log' => array(
         'id' => array('int', 11, 'null' => 0, 'autoincrement' => 1),
         'project_id' => array('int', 11, 'null' => 0),
@@ -201,5 +232,14 @@ return array(
             'PRIMARY' => array('task_id', 'tag_id'),
             'tag_id' => 'tag_id',
         ),
+    ),
+    'tasks_task_types' => array(
+        'id' => array('varchar', 32, 'null' => 0),
+        'name' => array('varchar', 32, 'null' => 0),
+        'color' => array('varchar', 64),
+        'sort' => array('int', 11, 'null' => 0, 'default' => '0'),
+        ':keys' => array(
+            'PRIMARY' => 'id'
+        )
     ),
 );
