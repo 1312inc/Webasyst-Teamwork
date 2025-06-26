@@ -44,14 +44,8 @@ class tasksTasksEditAction extends waViewAction
 
         $backend_task_edit = $this->triggerEvent($task);
 
-        $em = new tasksTaskExtModel();
-        if ($this->task['id'] > 0) {
-            $ext_info = $em->getById($this->task['id']);
-        }
-        if (empty($ext_info)) {
-            $ext_info = $em->getEmptyRow();
-        }
-        $task_types = (new tasksTaskTypesModel())->getTypes();
+        $ext_model = new tasksTaskExtModel();
+        $ext_info = ($this->task['id'] > 0 ? $ext_model->getById($this->task['id']) : $ext_model->getEmptyRow());
         $links_data = (new tasksLinksPrettifier())->addFromMarkdown($this->task['text'])->getData();
 
         $this->view->assign([
@@ -64,8 +58,8 @@ class tasksTasksEditAction extends waViewAction
             'users'                   => $this->users,
             'backend_task_edit'       => ifempty($backend_task_edit, []),
             'links_data'              => $links_data,
-            'task_types'              => $task_types,
-            'ext_info'                => $ext_info
+            'type_selector_html'      => $this->getTypeSelectorHtml($ext_info),
+            'task_ext_html'           => $this->getExtEditHtml($ext_info)
         ]);
 
     }
@@ -172,5 +166,49 @@ class tasksTasksEditAction extends waViewAction
         return wa()->event('backend_task_edit', $params);
     }
 
+    private function getTypeSelectorHtml($ext_info)
+    {
+        $task_types = (new tasksTaskTypesModel())->getTypes();
+        $view = wa()->getView();
+        $view->assign([
+            'task_types' => $task_types,
+            'ext_info'   => $ext_info
+        ]);
+
+        return $view->fetch(wa()->getAppPath('templates/actions/tasks/TasksTypeSelector.html', 'tasks'));
+    }
+
+    private function getExtEditHtml($ext_info)
+    {
+        $view = wa()->getView();
+        $view->assign([
+            'task'        => $this->task,
+            'gravities'   => tasksTaskExtModel::getGravities(),
+            'resolutions' => tasksTaskExtModel::getResolutions(),
+            'field_names' => tasksTaskExtModel::getFieldNames(),
+            'ext_info'    => $ext_info,
+            'milestones'  => $this->getMilestones()
+        ]);
+
+        return $view->fetch(wa()->getAppPath('templates/actions/tasks/TasksExtEdit.html', 'tasks'));
+    }
+
+    private function getMilestones()
+    {
+        $milestone_model = new tasksMilestoneModel();
+        $milestones = $milestone_model->where('closed = 0')->order('due_date')->fetchAll('id');
+        $relation_model = new tasksMilestoneProjectsModel();
+        $related_projects = $relation_model->getRelatedProjectIds(array_keys($milestones));
+        foreach ($milestones as &$milestone) {
+            $milestone['related_projects'] = $related_projects[$milestone['id']];
+            $milestone['related_projects'][] = $milestone['project_id'];
+            $milestone['related_projects'] = array_unique($milestone['related_projects']);
+            // important for js, don't touch it
+            $milestone['related_projects'] = tasksHelper::toIntArray($milestone['related_projects']);
+        }
+        unset($milestone);
+
+        return $milestones;
+    }
 }
 

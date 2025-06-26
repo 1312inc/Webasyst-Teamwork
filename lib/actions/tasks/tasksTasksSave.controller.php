@@ -9,6 +9,7 @@ class tasksTasksSaveController extends waJsonController
     {
         $task_id = $this->getId();
         $data = $this->getData();
+        $data_ext = $this->getExtData();
 
         if ($task_id > 0) {
             $task = $this->update($task_id, $data);
@@ -16,11 +17,10 @@ class tasksTasksSaveController extends waJsonController
             $task = $this->add($data);
         }
 
-        $te_model = new tasksTaskExtModel();
-        $te_model->save([
-            'task_id' => $task['id'],
-            'type'    => $data['task_type'],
-        ]);
+        if ($data_ext) {
+            $te_model = new tasksTaskExtModel();
+            $te_model->save($data_ext);
+        }
 
         $this->response = array(
             'url' => $task['project_id'].'.'.$task['number'],
@@ -53,6 +53,20 @@ class tasksTasksSaveController extends waJsonController
         $data['files_hash'] = $hash;
 
         return $data;
+    }
+
+    /**
+     * @return array
+     * @throws waException
+     */
+    protected function getExtData()
+    {
+        if ($ext = (array) wa()->getRequest()->post('task_ext')) {
+            $ext['task_id'] = $this->getId();
+            return $ext;
+        }
+
+        return [];
     }
 
     protected function saveAttachments($id, $data)
