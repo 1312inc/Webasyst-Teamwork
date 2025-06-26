@@ -571,18 +571,16 @@
                     <div class="t-task-button t-task-return">
                         <a href="javascript:void(0);" class="t-control-link button light-gray t-return-link" title="[`Return`]"> <span class="icon"><i class="fas fa-arrow-left"></i></span> <span class="t-button-label">[`Return`]</span></a>
                     </div>
-                    {if (($task.contact_id == $wa->user('id') && $task.assigned_contact_id == $task.contact_id) || $task->hasFullAccess())}
+                    {if isset($task.next_status.id) && $task.next_status.id != -1 && (($task.contact_id == $wa->user('id') && $task.assigned_contact_id == $task.contact_id) || $task->hasFullAccess())}
                         {* action & close buttons *}
-                        {if isset($task.next_status.id) && $task.next_status.id != -1}
-                            <div class="t-task-button t-task-action">
-                                {$task->buttonHtml()}
-                            </div>
-                        {/if}
-                        {if $task.status.id != -1}
-                            <div class="t-task-button t-task-close wide">
-                                {$task->buttonHtml(-1)}
-                            </div>
-                        {/if}
+                        <div class="t-task-button t-task-action wide">
+                            {$task->buttonHtml()}
+                        </div>
+                    {else}
+                        {* close button only *}
+                        <div class="t-task-button t-task-close wide">
+                            {$task->buttonHtml()}
+                        </div>
                     {/if}
                     <div class="t-task-button t-task-forward">
                         <a href="javascript:void(0);" class="t-control-link button light-gray t-forward-link" title="[`Forward`]"> <span class="icon"><i class="fas fa-arrow-right"></i></span> <span class="t-button-label">[`Forward`]</span></a>
