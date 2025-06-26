@@ -198,6 +198,6 @@ class tasksTasksInfoAction extends waViewAction
             'field_names' => tasksTaskExtModel::getFieldNames(),
         ]);
 
-        return $view->fetch(wa()->getAppPath('templates/actions/tasks/includes/TasksExtInfo.html', 'tasks'));
+        return $view->fetch(wa()->getAppPath('templates/actions/tasks/includes/TasksExtInfo.inc.html', 'tasks'));
     }
 }
