@@ -175,7 +175,7 @@ class tasksTasksEditAction extends waViewAction
             'ext_info'   => $ext_info
         ]);
 
-        return $view->fetch(wa()->getAppPath('templates/actions/tasks/TasksTypeSelector.html', 'tasks'));
+        return $view->fetch(wa()->getAppPath('templates/actions/tasks/includes/TasksTypeSelector.html', 'tasks'));
     }
 
     private function getExtEditHtml($ext_info)
@@ -190,7 +190,7 @@ class tasksTasksEditAction extends waViewAction
             'milestones'  => $this->getMilestones()
         ]);
 
-        return $view->fetch(wa()->getAppPath('templates/actions/tasks/TasksExtEdit.html', 'tasks'));
+        return $view->fetch(wa()->getAppPath('templates/actions/tasks/includes/TasksExtEdit.html', 'tasks'));
     }
 
     private function getMilestones()

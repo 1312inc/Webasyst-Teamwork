@@ -83,6 +83,7 @@ class tasksTasksInfoAction extends waViewAction
             'statuses'                  => $this->statuses,
             'task'                      => $task,
             'task_type'                 => $this->getTaskType($task),
+            'task_ext_info_html'        => $this->getTaskExtInfo($task),
             'taskAssignedContactStatus' => (new tasksTeammateStatusService())->getForContactId($task->assigned_contact_id, new DateTimeImmutable()),
             'hash_type'                 => waRequest::get('from_hash_type', '', waRequest::TYPE_STRING_TRIM),
             'milestones'                => $this->milestones,
@@ -177,5 +178,26 @@ class tasksTasksInfoAction extends waViewAction
             LEFT JOIN tasks_task_types ttt ON ttt.id = tte.type
             WHERE tte.task_id = i:task_id
         ", ['task_id' => $task['id']])->fetchAssoc();
+    }
+
+    /**
+     * @param tasksTask $task
+     * @return string
+     * @throws SmartyException
+     * @throws waException
+     */
+    private function getTaskExtInfo(tasksTask $task)
+    {
+        $te_model = new tasksTaskExtModel();
+        $ext_info = $te_model->getById($task['id']);
+        $view = wa()->getView();
+        $view->assign([
+            'ext_info'    => $ext_info,
+            'gravities'   => tasksTaskExtModel::getGravities(),
+            'resolutions' => tasksTaskExtModel::getResolutions(),
+            'field_names' => tasksTaskExtModel::getFieldNames(),
+        ]);
+
+        return $view->fetch(wa()->getAppPath('templates/actions/tasks/includes/TasksExtInfo.html', 'tasks'));
     }
 }

@@ -557,6 +557,8 @@
 
             </div>
 
+            {$task_ext_info_html}
+
             <!-- plugin hook: 'backend_task.%plugin_id%.before_buttons' -->
             {* @event backend_task.%plugin_id%.before_buttons *}
             {foreach $_backend_task_hook as $_}{$_.before_buttons|default:''}{/foreach}

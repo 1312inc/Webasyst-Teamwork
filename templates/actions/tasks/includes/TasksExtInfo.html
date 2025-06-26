@@ -1,0 +1,40 @@
+{$wrapper_id = uniqid('t-task-ext-info-block')}
+<div class="t-task-ext-info-block" id="{$wrapper_id}">
+    {$_output = []}
+    {$_ignore = array_fill_keys(['task_id', 'type'], true)}
+    {foreach $ext_info as $field_id => $value}
+        {if !isset($_ignore[$field_id]) && $value !== null}
+            {$_value = $value}
+            {if $field_id === 'gravity'}
+                {$_value = $gravities[$value]|default:''}
+            {elseif $field_id === 'resolution'}
+                {$_value = $resolutions[$value]|default:''}
+            {/if}
+            {$_output[$field_id] = [
+                'name' => $field_names[$field_id]|default:'',
+                'value' => $_value
+            ]}
+        {/if}
+    {/foreach}
+
+    {if $_output}
+        <ul class="menu">
+            {foreach $_output as $_key => $_item}
+                {if $_key == 'timecosts_plan' || $_key == 'timecosts_fact'}
+                    {if $_item.value >= 0}
+                        <li>
+                            <strong>{$_item.name|escape}:</strong>
+                            {if ($_item.value % 8) === 0}
+                                {_w('%d day', '%d days', ($_item.value/8))}
+                            {else}
+                                {_w('%d hour', '%d hours', $_item.value)}
+                            {/if}
+                        </li>
+                    {/if}
+                {else}
+                    <li><strong>{$_item.name|escape}:</strong> {$_item.value|escape}</li>
+                {/if}
+            {/foreach}
+        </ul>
+    {/if}
+</div>
