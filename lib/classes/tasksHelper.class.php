@@ -780,4 +780,25 @@ class tasksHelper
         return $url;
     }
 
+    /**
+     * @return array
+     * @throws waException
+     */
+    public static function getMilestones()
+    {
+        $milestone_model = new tasksMilestoneModel();
+        $milestones = $milestone_model->where('closed = 0')->order('due_date')->fetchAll('id');
+        $relation_model = new tasksMilestoneProjectsModel();
+        $related_projects = $relation_model->getRelatedProjectIds(array_keys($milestones));
+        foreach ($milestones as &$milestone) {
+            $milestone['related_projects'] = $related_projects[$milestone['id']];
+            $milestone['related_projects'][] = $milestone['project_id'];
+            $milestone['related_projects'] = array_unique($milestone['related_projects']);
+            // important for js, don't touch it
+            $milestone['related_projects'] = self::toIntArray($milestone['related_projects']);
+        }
+        unset($milestone);
+
+        return $milestones;
+    }
 }

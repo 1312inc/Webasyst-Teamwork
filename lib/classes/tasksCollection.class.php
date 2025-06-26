@@ -801,6 +801,13 @@ class tasksCollection
                     );
             } elseif ($parts[0] == 'tag') {
                 $this->tagPrepare($parts[2]);
+            } elseif (in_array($parts[0], ['task.type', 'task.gravity']) && isset($parts[2])) {
+                $field = explode('.', $parts[0])[1];
+                if (empty($alias)) {
+                    $alias = $this->addJoin('tasks_task_ext', 't.id = :table.task_id', ':table.'.$field.$this->getExpression($parts[1], $parts[2]));
+                } else {
+                    $this->where[] = "$alias.$field".$this->getExpression($parts[1], $parts[2]);
+                }
             } elseif ($model->fieldExists($parts[0])) {
 
                 //Show all tasks if status_id == all

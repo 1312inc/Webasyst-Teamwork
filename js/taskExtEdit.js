@@ -222,7 +222,7 @@ var TaskExtEdit = (function ($) {
             $.each(filter_params, function (index, item) {
                 var param_value = item.split('=');
 
-                if (param_value[0] == 'plugin.releases.type') { // set task type
+                if (param_value[0] == 'task.type') { // set task type
                     var $task_types_list = $task.find('.js-task-types-list .js-type-item');
 
                     if ($task_types_list.length) {
@@ -245,8 +245,8 @@ var TaskExtEdit = (function ($) {
                     }
                 }
 
-                if (param_value[0] == 'plugin.releases.gravity') { // set task gravity
-                    var $gravity = $task.find('select[name="task_plugin_releases_task_ext[gravity]"]');
+                if (param_value[0] == 'task.gravity') { // set task gravity
+                    var $gravity = $task.find('select[name="task_ext[gravity]"]');
 
                     if ($gravity.length) {
                         $gravity.find('option').each(function () {

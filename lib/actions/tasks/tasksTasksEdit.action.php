@@ -187,28 +187,10 @@ class tasksTasksEditAction extends waViewAction
             'resolutions' => tasksTaskExtModel::getResolutions(),
             'field_names' => tasksTaskExtModel::getFieldNames(),
             'ext_info'    => $ext_info,
-            'milestones'  => $this->getMilestones()
+            'milestones'  => tasksHelper::getMilestones()
         ]);
 
         return $view->fetch(wa()->getAppPath('templates/actions/tasks/includes/TasksExtEdit.inc.html', 'tasks'));
-    }
-
-    private function getMilestones()
-    {
-        $milestone_model = new tasksMilestoneModel();
-        $milestones = $milestone_model->where('closed = 0')->order('due_date')->fetchAll('id');
-        $relation_model = new tasksMilestoneProjectsModel();
-        $related_projects = $relation_model->getRelatedProjectIds(array_keys($milestones));
-        foreach ($milestones as &$milestone) {
-            $milestone['related_projects'] = $related_projects[$milestone['id']];
-            $milestone['related_projects'][] = $milestone['project_id'];
-            $milestone['related_projects'] = array_unique($milestone['related_projects']);
-            // important for js, don't touch it
-            $milestone['related_projects'] = tasksHelper::toIntArray($milestone['related_projects']);
-        }
-        unset($milestone);
-
-        return $milestones;
     }
 }
 
