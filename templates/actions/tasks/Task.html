@@ -570,7 +570,7 @@
                     </div>
                     {if isset($task.next_status.id) && $task.next_status.id != -1 && (($task.contact_id == $wa->user('id') && $task.assigned_contact_id == $task.contact_id) || $task->hasFullAccess())}
                         {* action & close buttons *}
-                        <div class="t-task-button t-task-action">
+                        <div class="t-task-button t-task-action wide">
                             {$task->buttonHtml()}
                         </div>
                     {else}
