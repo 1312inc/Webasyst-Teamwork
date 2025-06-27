@@ -38,7 +38,7 @@ class tasksKanbanAction extends tasksLogAction
 
             $statusData = $kanbanService->getTasksForStatus($kanbanRequest) + ['status' => $status];
             tasksHelper::workupTasksForView($statusData['tasks']);
-            $kanban[] = $statusData;
+            $kanban[] = $this->kanbanStatusTasks($statusData);
         }
 
         if (!empty($filters['tag'])) {
@@ -87,16 +87,15 @@ class tasksKanbanAction extends tasksLogAction
 
         $isFilterSet = count(array_filter($filters));
 
-        $this->view->assign(
-            [
-                'kanban_page_hooks' => $pageHooks,
-                'filter_types' => $filterTypes,
-                'click_to_load_more' => $offset > 100,
-                'is_filter_set' => $isFilterSet,
-                'kanban' => $kanban,
-                'tags_cloud' => self::getTagsCloud(),
-            ]
-        );
+        $this->view->assign([
+            'kanban_page_hooks'  => $pageHooks,
+            'filter_types'       => $filterTypes,
+            'click_to_load_more' => $offset > 100,
+            'is_filter_set'      => $isFilterSet,
+            'kanban'             => $kanban,
+            'tags_cloud'         => self::getTagsCloud(),
+            'hide_filter_html'   => $this->getHideFilterHtml()
+        ]);
     }
 
     protected function getFilters(): array
@@ -191,5 +190,80 @@ class tasksKanbanAction extends tasksLogAction
             }
         }
         unset($task);
+    }
+
+    protected function getHideFilterHtml()
+    {
+        $limits = 10;
+        $milestone_id = waRequest::get('milestone_id', 0, waRequest::TYPE_INT);
+        if ($milestone_id) {
+            $tasks_releases_milestone_ext_model = new tasksReleasesPluginMilestoneExtModel();
+            $limits = json_encode($tasks_releases_milestone_ext_model->where('milestone_id = ?', $milestone_id)->fetchAll('status_id'));
+        }
+
+        $view = wa()->getView();
+        $view->assign([
+            'limits'        => $limits,
+            'milestone_id'  => $milestone_id,
+            'is_hide_tasks' => (bool) wa()->getUser()->getSettings('tasks', 'hide_new_and_completed_tasks', false)
+        ]);
+
+        return $view->fetch(wa()->getAppPath('templates/actions/kanban/KanbanHideFilter.inc.html', 'tasks'));
+    }
+
+    public function kanbanStatusTasks($status_data)
+    {
+        $task_ids = [];
+        $kanban_colors = [];
+        $view = wa()->getView();
+
+        /** @var tasksTask $task */
+        foreach ($status_data['tasks'] as $task) {
+            $task_ids[] = (int) $task->id;
+        }
+
+        if ($task_ids) {
+            $tasks_ext_model = new tasksTaskExtModel();
+            $kanban_colors = $tasks_ext_model->select('task_id, kanban_color')
+                ->where('task_id IN (i:ids)', ['ids' => $task_ids])
+                ->fetchAll('task_id');
+        }
+
+        /** @var tasksTask $task **/
+        foreach ($status_data['tasks'] as &$task) {
+            $task_id = $task->id;
+            $changed_time = null;
+            $date_difference = 0;
+            foreach ($task->getLog() as $log) {
+                if (
+                    $log['project_id'] == $task->project_id
+                    && $log['before_status_id'] != $log['after_status_id']
+                    && ($log['before_status_id'] == null || $log['before_status_id'] == $task->status_id || $log['after_status_id'] == $task->status_id)
+                ) {
+                    if ($log['after_status_id'] == $task->status_id) {
+                        $changed_time = strtotime($log['create_datetime']);
+                    } elseif ($changed_time && $log['before_status_id'] == $task->status_id) {
+                        $date_difference += strtotime($log['create_datetime']) - $changed_time;
+                        $changed_time = null;
+                    }
+                }
+            }
+
+            if ($changed_time) {
+                $date_difference += time() - $changed_time;
+            }
+            $days_difference = floor(($date_difference) / 3600 / 24);
+            $task_color = ifset($kanban_colors, $task_id, 'kanban_color', '');
+
+            $view->clearAllAssign();
+            $view->assign([
+                'task_id'         => $task_id,
+                'task_color'      => $task_color,
+                'days_difference' => $days_difference
+            ]);
+            $task['status_html'] = $view->fetch(wa()->getAppPath('templates/actions/kanban/KanbanSettings.inc.html', 'tasks'));
+        }
+
+        return $status_data;
     }
 }
