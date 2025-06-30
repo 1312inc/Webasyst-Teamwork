@@ -858,6 +858,18 @@
             });
         },
 
+        cfdAction: function (params) {
+            this.load('?module=reports&action=cfd&'+ (params || ''), function () {
+
+            });
+        },
+
+        ltdcAction: function (params) {
+            this.load('?module=reports&action=ltdc&'+ (params || ''), function () {
+
+            });
+        },
+
         settingsOrderingAction: function() {
             this.load('?module=settings&action=ordering');
         },
