@@ -82,6 +82,10 @@
                             </div>
 
                             <div class="t-more-fields">
+                                {$projects_html}
+                            </div>
+
+                            <div class="t-more-fields">
                                 <!-- plugin hook: 'backend_milestone_edit.%plugin_id%.more' -->
                                 {* @event backend_milestone_edit.%plugin_id%.more *}
                                 {foreach $_backend_milestone_edit as $_}{$_.more|default:''}{/foreach}

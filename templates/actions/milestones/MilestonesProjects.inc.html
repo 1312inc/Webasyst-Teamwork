@@ -1,0 +1,89 @@
+{$wrapper_id = uniqid('t-milestone-edit-block')}
+{$input_ns = 'tasks_milestone_project'}
+
+<div class="t-milestone-edit-block" id="{$wrapper_id}">
+
+    <div class="field">
+        <div class="value js-type-wrapper">
+            <ul class="menu with-icons">
+                {$_checked_map = array_fill_keys($related_projects, true)}
+                {foreach $projects as $_project}
+                    {$_checked = $_checked_map[$_project.id]|default:false}
+                    <li>
+                        <label>
+                            <span class="wa-checkbox">
+                                {$_project.icon_html|default:''}
+                                <input type="checkbox" name="{$input_ns}[]" value="{$_project.id|escape}" {if $_checked}checked="checked"{/if}>
+                                <span>
+                                    <span class="icon">
+                                        <i class="fas fa-check"></i>
+                                    </span>
+                                </span>
+                            </span>
+                            {$_project.name|escape|default:''}
+                        </label>
+                    </li>
+                {/foreach}
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        (function ($) {
+            var TasksMilestoneEdit = (function ($) {
+                "use strict";
+
+                TasksMilestoneEdit = function (options) {
+                    var that = this;
+
+                    // DOM
+                    that.$wrapper = options.$wrapper;
+                    that.$editor = options.$editor;
+                    that.$milestone = that.$editor.find('select[name="milestone[project_id]"]')
+
+                    // Vars
+
+                    // Dynamic Vars
+
+                    // INIT
+                    that.init();
+                };
+
+                TasksMilestoneEdit.prototype.init = function () {
+                    var that = this;
+                    var $editor = that.$editor;
+                    var $wrapper = that.$wrapper;
+
+                    $editor.find('.t-milestone-project-field').after($wrapper);
+
+                    that.initMilestoneSelector();
+                };
+
+                TasksMilestoneEdit.prototype.initMilestoneSelector = function () {
+                    var that = this;
+                    var $milestone = that.$milestone;
+                    var $wrapper = that.$wrapper;
+                    var $checkboxes = $wrapper.find('input[name="tasks_milestone_project[]"]');
+
+                    var disableCheckbox = function () {
+                        var milestone_id = $milestone.val() || '';
+                        $checkboxes.attr('disabled', false);
+                        $checkboxes.filter('[value="' + milestone_id + '"]').attr('disabled', true).attr('checked', true);
+                    };
+
+                    that.$milestone.on('change', disableCheckbox);
+                    disableCheckbox();
+                };
+
+                return TasksMilestoneEdit;
+
+            })(jQuery);
+
+            new TasksMilestoneEdit({
+                '$wrapper': $('#{$wrapper_id}'),
+                '$editor': $('#milestone-editor-form')
+            });
+        })(jQuery);
+    </script>
+
+</div>

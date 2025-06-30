@@ -197,8 +197,8 @@ class tasksKanbanAction extends tasksLogAction
         $limits = 10;
         $milestone_id = waRequest::get('milestone_id', 0, waRequest::TYPE_INT);
         if ($milestone_id) {
-            $tasks_releases_milestone_ext_model = new tasksReleasesPluginMilestoneExtModel();
-            $limits = json_encode($tasks_releases_milestone_ext_model->where('milestone_id = ?', $milestone_id)->fetchAll('status_id'));
+            $tasks_milestone_ext_model = new tasksMilestoneExtModel();
+            $limits = json_encode($tasks_milestone_ext_model->where('milestone_id = ?', $milestone_id)->fetchAll('status_id'));
         }
 
         $view = wa()->getView();
