@@ -559,6 +559,12 @@
 
             {$task_ext_info_html}
 
+            {$logs = array_values($task.log)}
+            {$last_log = end($logs)}
+            {if isset($last_log) && $last_log.after_status_id == -1 && $wa->installer && method_exists($wa->installer, 'reviewWidget')}
+                {$wa->installer->reviewWidget('app/tasks')}
+            {/if}
+
             <!-- plugin hook: 'backend_task.%plugin_id%.before_buttons' -->
             {* @event backend_task.%plugin_id%.before_buttons *}
             {foreach $_backend_task_hook as $_}{$_.before_buttons|default:''}{/foreach}
