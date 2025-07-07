@@ -558,10 +558,13 @@
             </div>
 
             {$task_ext_info_html}
-
+            
+            {* Show review widget if new task or completed *}
+            {$is_just_created_task = strtotime($task.create_datetime) - strtotime(date('Y-m-d H:i:s')) >= -1 }
             {$logs = array_values($task.log)}
             {$last_log = end($logs)}
-            {if isset($last_log) && $last_log.after_status_id == -1 && $wa->installer && method_exists($wa->installer, 'reviewWidget')}
+            {$cond = $is_just_created_task || (isset($last_log) && $last_log.after_status_id == -1)}
+            {if $cond && $wa->installer && method_exists($wa->installer, 'reviewWidget')}
                 {$wa->installer->reviewWidget('app/tasks')}
             {/if}
 
