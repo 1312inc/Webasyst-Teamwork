@@ -1686,3 +1686,6 @@ msgstr "Промокод"
 
 msgid "Unable to process image file"
 msgstr "Ошибка обработки файла изображения"
+
+msgid "Set milestone"
+msgstr "Привязать к сроку"

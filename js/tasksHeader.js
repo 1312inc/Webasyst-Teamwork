@@ -67,6 +67,8 @@ var TasksHeader = ( function($) {
         //
         that.initMultiPriorityChanger();
 
+        that.initMoveMilestoneTasks();
+
         that.initMultiDeadlineSetter();
 
         that.fixOutboxFilter();
@@ -1046,6 +1048,47 @@ var TasksHeader = ( function($) {
             $('#t-priority-multi-changer').closest('.dialog').remove();
         }
 
+    };
+
+    Header.initMoveMilestoneTasks = function () {
+        var that = this;
+        var $selected_menu = that.$selectedMenu;
+
+        $selected_menu.on("click", ".set-milestone-link", function (e) {
+            e.preventDefault();
+            $.post('?module=tasks&action=milestoneDialog')
+                .done(function (html) {
+                    showDialog({
+                        html: html
+                    });
+                });
+        });
+
+        function showDialog(options) {
+            options = options || {};
+
+            $.waDialog({
+                html: options.html,
+                onOpen: function ($dialog, dialog_instance) {
+                    $dialog.on('click', '[type="submit"]', function (e) {
+                        e.preventDefault();
+                        submitDialog($dialog, dialog_instance);
+                    })
+                }
+            });
+        }
+
+        function submitDialog($dialog, dialog_instance) {
+            $.post('?module=tasksBulk&action=moveMilestone', {
+                ids: that.getSelectedTaskIds(),
+                milestone: $dialog.find('input[name="milestone"]:checked').val()
+            }, function (r) {
+                dialog_instance.close();
+                $.tasks.redispatch();
+            }, 'json');
+
+            return false;
+        }
     };
 
     Header.fixOutboxFilter = function () {
