@@ -104,32 +104,13 @@ function css () {
         .pipe(dest('./css/'));
 }
 
-// CSS Redactor 
-
-function cssRedactor () {
-    const source = 'js/vendors/redactor-3-4-11/redactor.css';
-
-    return src(source)
-        .pipe(autoprefixer({
-            overrideBrowserslist: ['last 2 versions'],
-            cascade: false
-        }))
-        .pipe(cssnano({ zindex: false }))
-        .pipe(rename({
-            extname: '.min.css'
-        }))
-        .pipe(dest('./js/vendors/redactor-3-4-11/'));
-}
-
-
 // Watch files
 
 function watchFiles () {
     watch('css/**/*.styl', css);
     watch(['js/*.js', 'js/**/*.js', '!js/tasks.min.js'], js);
-    watch(['js/vendors/redactor-3-4-11/redactor.css'], cssRedactor);
     // watch('js/amcharts/assets/*.js', amcharts);
 }
 
 exports.watch = watchFiles;
-exports.default = parallel(js, css, cssRedactor, amcharts);
+exports.default = parallel(js, css, amcharts);
