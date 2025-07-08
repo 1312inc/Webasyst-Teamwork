@@ -1,4 +1,35 @@
-<div class="t-milestones-wrapper">
+
+<link rel="stylesheet" href="{$wa_app_static_url}css/gantt.css">
+
+<div class="gantt-container">
+    <div class="gantt-controls">
+        <label>От: <select id="range-from">
+                <option value="-1">-1 мес</option>
+                <option value="-3" selected>-3 мес</option>
+                <option value="-12">-12 мес</option>
+            </select></label>
+        <label>До: <select id="range-to">
+                <option value="3">+3 мес</option>
+                <option value="6">+6 мес</option>
+                <option value="12" selected>+12 мес</option>
+                <option value="36">+36 мес</option>
+            </select></label>
+        <label>Zoom: <input type="range" id="zoom-slider" min="10" max="80" step="1" value="20"></label>
+    </div>
+
+    <div class="gantt-table">
+        <div class="gantt-left-column" id="left-col"></div>
+        <div class="gantt-right-timeline-wrapper" id="right-wrapper">
+            <div class="gantt-header" id="timeline-header"></div>
+            <div class="gantt-right-timeline" id="timeline"></div>
+        </div>
+    </div>
+</div>
+
+<script src="{$wa_app_static_url}js/gantt.js"></script>
+
+
+<!-- <div class="t-milestones-wrapper">
     <h1>[`Scopes`]</h1>
 
     <ul class="menu-h with-icons" style="margin-top: 15px">
@@ -86,4 +117,4 @@
         </div>
     </div>
 
-</div>
+</div> -->
