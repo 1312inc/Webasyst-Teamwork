@@ -63,7 +63,7 @@
     top: 0;
     /* background: #f8f8f8;
     border-bottom: 1px solid #ccc; */
-    z-index: 1;
+    z-index: 9999;
     font-size: 10px;
     text-align: center;
     align-items: center;
@@ -78,4 +78,17 @@
 
 .today-cell {
     background-color: #fff0f0;
+}
+
+.gantt-bar {
+  position: absolute;
+  height: 24px;
+  border-radius: 4px;
+  color: white;
+  font-size: 12px;
+  padding: 2px 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  z-index: 999;
 }
