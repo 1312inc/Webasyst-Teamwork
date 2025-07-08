@@ -63,11 +63,46 @@
                             </div>
 
                             <div class="field">
+                                <div class="name for-input">[`Start date`]</div>
+                                <div class="value">
+                                    <input type="text" class="datepicker-start-date bold" placeholder="[`Date`]">
+                                    <input type="hidden" name="milestone[start_date]" value="{$milestone.start_date|escape}">
+                                    <i class="fas fa-flag-checkered"></i>
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <div class="name for-input">[`End date`]</div>
+                                <div class="value">
+                                    <input type="text" class="datepicker-end-date bold" placeholder="[`Date`]">
+                                    <input type="hidden" name="milestone[end_date]" value="{$milestone.end_date|escape}">
+                                    <i class="fas fa-flag-checkered"></i>
+                                </div>
+                            </div>
+
+                            <div class="field">
                                 <div class="name">[`Description`]</div>
                                 <div class="value"><textarea name="milestone[description]" style="max-width:24rem;" class="small">{$milestone.description|escape}</textarea>
                                     <span class="hint">[`A tiny hint describing your teammates what this milestone is all about.`]</span>
                                 </div>
                             </div>
+
+                            <div class="field">
+                                <div class="name for-input">[`Parent scope ID`]</div>
+                                <div class="value no-shift">
+                                    <div class="wa-select">
+                                        <select name="milestone[parent_scope_id]">
+                                            {foreach $milestones as $mlst}
+                                            <option value="{$mlst.id}"{if $mlst.id == $milestone.parent_scope_id} selected{/if}>{$mlst.name|escape|truncate:42}</option>
+                                            {foreachelse}
+                                            <option selected disabled value="">[`Empty scope`]</option>
+                                            {/foreach}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+
                             <div class="field t-milestone-project-field">
                                 <div class="name for-input">[`Project`]</div>
                                 <div class="value no-shift">

@@ -45,7 +45,10 @@ return array(
         'name' => array('varchar', 255, 'null' => 0),
         'description' => array('text'),
         'project_id' => array('int', 11, 'null' => 0),
+        'parent_scope_id' => array('int', 'default' => null),
         'due_date' => array('date'),
+        'start_date' => array('date'),
+        'end_date' => array('date'),
         'closed' => array('int', 1, 'null' => 0, 'default' => '0'),
         ':keys' => array(
             'PRIMARY' => 'id',

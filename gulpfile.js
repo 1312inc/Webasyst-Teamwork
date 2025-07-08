@@ -58,6 +58,8 @@ function js () {
         'js/sidebar.js',
         'js/task.js',
         'js/taskEdit.js',
+        'js/taskExtEdit.js',
+        'js/taskTypes.js',
         'js/tasksPageFilters.js',
         'js/dropDownMenu.js',
         'js/tasksHeader.js',

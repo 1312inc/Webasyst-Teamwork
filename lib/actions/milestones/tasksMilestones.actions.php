@@ -55,8 +55,19 @@ class tasksMilestonesActions extends waViewActions
         if (!$this->getUser()->isAdmin('tasks')) {
             $this->accessDenied();
         }
-        
-        $milestone = $this->getMilestone($milestone_id);
+
+        $milestone_model = new tasksMilestoneModel();
+        $milestones = $milestone_model->getMilestonesWithOrder();
+        if ($milestone_id === 'new') {
+            $milestone = $milestone_model->getEmptyRow();
+        } elseif ($milestone_id > 0) {
+            $milestone = ifset($milestones, $milestone_id, null);
+        } else {
+            $milestone = null;
+        }
+        if (!$milestone) {
+            $this->notFound();
+        }
 
         $saved = false;
         $errors = array();
@@ -72,6 +83,7 @@ class tasksMilestonesActions extends waViewActions
 
         $this->view->assign([
             'milestone'     => $milestone,
+            'milestones'    => $milestones,
             'projects'      => tsks()->getEntityRepository(tasksProject::class)->getProjectsAsArray(),
             'errors'        => $errors,
             'saved'         => $saved,
@@ -188,22 +200,6 @@ class tasksMilestonesActions extends waViewActions
 
         $this->triggerSaveEvent($milestone, $hook_params);
 
-        return $milestone;
-    }
-
-    protected function getMilestone($id)
-    {
-        $m = new tasksMilestoneModel();
-        if ($id === 'new') {
-            $milestone = $m->getEmptyRow();
-        } elseif ($id > 0) {
-            $milestone = $m->getById((int)$id);
-        } else {
-            $milestone = null;
-        }
-        if (!$milestone) {
-            $this->notFound();
-        }
         return $milestone;
     }
 
