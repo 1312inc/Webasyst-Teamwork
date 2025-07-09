@@ -2,17 +2,25 @@
 
 <div class="gantt-container">
     <div class="gantt-controls">
-        <label>От: <select id="range-from">
+        <label>От: 
+            <div class="wa-select">
+            <select id="range-from"> 
                 <option value="-1">-1 мес</option>
                 <option value="-3" selected>-3 мес</option>
                 <option value="-12">-12 мес</option>
-            </select></label>
-        <label>До: <select id="range-to">
+            </select>
+            </div>
+        </label>
+        <label>До: 
+            <div class="wa-select">
+            <select id="range-to">
                 <option value="3">+3 мес</option>
                 <option value="6">+6 мес</option>
                 <option value="12" selected>+12 мес</option>
                 <option value="36">+36 мес</option>
-            </select></label>
+            </select>
+            </div>
+        </label>
         <label>Zoom: <input type="range" id="zoom-slider" min="10" max="80" step="1" value="20"></label>
         <button id="today-button">Сегодня</button>
     </div>

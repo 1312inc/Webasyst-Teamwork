@@ -14,6 +14,7 @@ class GanttChart {
         this.timelineHeader = document.getElementById(options.timelineHeaderId);
         this.totalDays = 0;
 
+        this.handleQueryParams();
         this.initEvents();
         this.render();
     }
@@ -21,7 +22,9 @@ class GanttChart {
     initEvents () {
         // Controls event
         [this.selFrom, this.selTo].forEach(el => {
-            el.addEventListener('input', () => this.render());
+            el.addEventListener('input', () => {
+                this.setQueryParams();
+            });
         });
 
         // Zoom event
@@ -180,6 +183,29 @@ class GanttChart {
 
             this.timeline.appendChild(bar);
         });
+    }
+
+    handleQueryParams () {
+        const hash = window.location.hash.split('/')[2];
+        const query = hash.split('?')[1];
+        if (!query) return;
+        const queryParams = new URLSearchParams(query);
+        const from = queryParams.get('from');
+        const to = queryParams.get('to');
+        if (['-1', '-3', '-12'].includes(from)) {
+            this.selFrom.value = from;
+        }
+        if (['3', '6', '12', '36'].includes(to)) {
+            this.selTo.value = to;
+        }
+    }
+
+    setQueryParams () {
+        const [path, query] = window.location.hash.split('?');
+        const params = new URLSearchParams(query || '');
+        params.set('from', this.selFrom.value);
+        params.set('to', this.selTo.value);
+        window.location.hash = path + '?' + params.toString();
     }
 }
 
