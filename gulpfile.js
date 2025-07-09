@@ -68,7 +68,8 @@ function js () {
         'js/settings/personal.js',
         'js/settings/sidebar.js',
         'js/settings/scopeEdit.js',
-        'js/tasksKanban.js'
+        'js/tasksKanban.js',
+        'js/spellCheck.js'
     ];
 
     return src(source, { allowEmpty: true })
