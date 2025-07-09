@@ -4,13 +4,15 @@
  * @returns {Promise<string>} - Returns corrected text
  * @throws {Error} - Throws error if request fails or response is invalid
  */
-const spellCheck = async (text) => {
-    if (typeof text !== 'string' || !text.trim()) {
+const spellCheck = async (inputMd) => {
+    if (typeof inputMd !== 'string' || !inputMd.trim()) {
         throw new Error('Invalid input: text must be a non-empty string');
     }
 
+    const { text, placeholders } = extractCodeBlocks(inputMd);
+
     const payload = new FormData();
-    payload.append('text', text.trim());
+    payload.append('text', text);
 
     try {
         const response = await fetch('/webasyst/tasks/?module=tasks&action=ai', {
@@ -28,13 +30,53 @@ const spellCheck = async (text) => {
         const data = await response.json();
 
         if (data?.status === 'ok' && data.data?.response?.content) {
-            return data.data.response.content;
+            const restored = restoreCodeBlocks(data.data.response.content, placeholders);
+            return restored;
         }
-        
+
         throw new Error('Invalid response format from server');
     } catch (error) {
         console.error('Spell check failed:', error);
         throw new Error(`Spell check service unavailable: ${error.message}`);
+    }
+
+    function extractCodeBlocks (mdText) {
+        const placeholders = [];
+        let placeholderIndex = 0;
+
+        // Replace ```...```
+        mdText = mdText.replace(/```([\s\S]*?)```/g, (_, code) => {
+            const key = `__BLOCK_PLACEHOLDER_${placeholderIndex}__`;
+            placeholders.push({ key, content: `\`\`\`${code}\`\`\`` });
+            placeholderIndex++;
+            return key;
+        });
+
+        // Replace `...`
+        mdText = mdText.replace(/`([^`\n]+?)`/g, (_, code) => {
+            const key = `__INLINE_PLACEHOLDER_${placeholderIndex}__`;
+            placeholders.push({ key, content: `\`${code}\`` });
+            placeholderIndex++;
+            return key;
+        });
+
+        // Replace quotes > ...
+        mdText = mdText.replace(/(^>.*(?:\n>.*)*)/gm, (quote) => {
+            const key = `__QUOTE_PLACEHOLDER_${placeholderIndex}__`;
+            placeholders.push({ key, content: quote });
+            placeholderIndex++;
+            return key;
+        });
+
+        return { text: mdText, placeholders };
+    }
+
+    function restoreCodeBlocks (processedText, placeholders) {
+        let restored = processedText;
+        for (const { key, content } of placeholders) {
+            restored = restored.replace(key, content);
+        }
+        return restored;
     }
 };
 
