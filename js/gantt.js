@@ -1,23 +1,7 @@
-const projects = [
-    {
-        id: 'p1',
-        name: 'Проект А',
-        start: '2025-06-01',
-        end: '2025-07-15',
-        color: '#4ade80' // зелёный
-    },
-    {
-        id: 'p2',
-        name: 'Проект Б',
-        start: '2025-06-20',
-        end: '2025-09-01',
-        color: '#f59e0b' // жёлтый
-    }
-];
-
 class GanttChart {
     constructor(options) {
-        this.leftCol = document.getElementById(options.leftColId);
+        this.data = options.data,
+            this.leftCol = document.getElementById(options.leftColId);
         this.timeline = document.getElementById(options.timelineId);
         this.rightWrapper = document.getElementById(options.rightWrapperId);
         this.selFrom = document.getElementById(options.rangeFromId);
@@ -26,6 +10,7 @@ class GanttChart {
         this.rowsCount = options.rows || 50;
         this.dayWidthBase = options.dayWidthBase || 40;
         this.zoomWidth = parseInt(this.zoomSlider.value, 10);
+        this.todayButton = document.getElementById(options.todayButton);
         this.timelineHeader = document.getElementById(options.timelineHeaderId);
         this.totalDays = 0;
 
@@ -43,6 +28,7 @@ class GanttChart {
         this.zoomSlider.addEventListener('input', () => {
             this.zoomWidth = parseInt(this.zoomSlider.value, 10);
             this.updateCellWidths();
+            this.renderBars(this.data);
         });
 
         // Scroll sync
@@ -53,6 +39,10 @@ class GanttChart {
         this.rightWrapper.addEventListener('scroll', () => {
             this.leftCol.scrollTop = this.rightWrapper.scrollTop;
             this.timelineHeader.scrollLeft = this.rightWrapper.scrollLeft;
+        });
+
+        this.todayButton.addEventListener('click', () => {
+            this.scrollToToday();
         });
     }
 
@@ -88,7 +78,6 @@ class GanttChart {
         for (let i = 0; i < this.rowsCount; i++) {
             const row = document.createElement('div');
             row.className = 'gantt-row';
-            row.textContent = `Проект ${i + 1}`;
             this.leftCol.appendChild(row);
         }
 
@@ -106,7 +95,7 @@ class GanttChart {
             }
         }
 
-        this.renderBars(projects);
+        this.renderBars(this.data);
 
         setTimeout(() => {
             this.scrollToToday();
@@ -118,6 +107,13 @@ class GanttChart {
         today.setMonth(today.getMonth() - monthsBefore);
         today.setHours(0, 0, 0, 0);
         return today;
+    }
+
+    getEndDate (monthsBefore) {
+        const start = this.getStartDate(monthsBefore);
+        const end = new Date(start);
+        end.setDate(end.getDate() + this.totalDays - 1);
+        return end;
     }
 
     updateCellWidths () {
@@ -143,18 +139,24 @@ class GanttChart {
         const monthsBefore = Math.abs(parseInt(this.selFrom.value, 10));
         const timelineStart = this.getStartDate(monthsBefore);
         const dayMs = 1000 * 60 * 60 * 24;
-
         const rows = this.leftCol.querySelectorAll('.gantt-row');
 
+        this.timeline.querySelectorAll('.gantt-bar').forEach(element => {
+            element.remove();
+        });
 
         projects.forEach((project, index) => {
             const row = rows[index];
             if (!row) return;
-            const start = new Date(project.start);
-            const end = new Date(project.end);
+
+            row.innerHTML = project.name;
+
+            const start = new Date(project.start_date);
+            const end = new Date(project.end_date || project.due_date || this.getEndDate(monthsBefore));
+            const isShowDue = project.end_date && project.due_date;
 
             const offsetDays = Math.max(0, Math.floor((start - timelineStart) / dayMs));
-            const durationDays = Math.max(1, Math.ceil((end - start) / dayMs));
+            const durationDays = Math.max(1, Math.ceil((end - start) / dayMs) + 1);
 
             const left = offsetDays * (this.dayWidthBase + this.zoomWidth);
             const width = durationDays * (this.dayWidthBase + this.zoomWidth);
@@ -167,21 +169,18 @@ class GanttChart {
             bar.style.backgroundColor = project.color || '#3b82f6';
             bar.textContent = project.name;
 
+            if (isShowDue) {
+                const offsetDays = Math.max(0, Math.floor((new Date(project.due_date) - start) / dayMs));
+                const left = offsetDays * (this.dayWidthBase + this.zoomWidth) + (this.dayWidthBase + this.zoomWidth) / 2;
+                const pointer = document.createElement('div');
+                pointer.className = 'gantt-bar-pointer';
+                pointer.style.left = `${left}px`;
+                bar.appendChild(pointer);
+            }
+
             this.timeline.appendChild(bar);
         });
     }
 }
 
-
-new GanttChart({
-    leftColId: 'left-col',
-    timelineId: 'timeline',
-    rightWrapperId: 'right-wrapper',
-    timelineHeaderId: 'timeline-header',
-    rangeFromId: 'range-from',
-    rangeToId: 'range-to',
-    zoomSliderId: 'zoom-slider',
-    rows: 26,
-    dayWidthBase: 30
-});
-
+window.GanttChart = GanttChart;

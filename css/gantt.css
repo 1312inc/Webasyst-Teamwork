@@ -92,3 +92,12 @@
   text-overflow: ellipsis;
   z-index: 999;
 }
+
+.gantt-bar-pointer {
+    position: absolute;
+    top: 8px;
+    width: 10px;
+    height: 10px;
+    background-color: aquamarine;
+    transform: translateX(-50%);
+}
