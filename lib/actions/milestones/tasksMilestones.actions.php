@@ -6,6 +6,7 @@ class tasksMilestonesActions extends waViewActions
     {
         $this->view->assign(array(
             'milestones' => self::getMilestones(),
+            'projects'      => tsks()->getEntityRepository(tasksProject::class)->getProjectsAsArray(),
         ));
     }
 

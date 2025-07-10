@@ -1,5 +1,6 @@
 class GanttChart {
     constructor(options) {
+        this.originalData = options.data;
         this.data = options.data;
         this.leftCol = document.getElementById(options.leftColId);
         this.timeline = document.getElementById(options.timelineId);
@@ -7,16 +8,20 @@ class GanttChart {
         this.selFrom = document.getElementById(options.rangeFromId);
         this.selTo = document.getElementById(options.rangeToId);
         this.zoomSlider = document.getElementById(options.zoomSliderId);
+        this.projectSelector = document.getElementById(options.projectSelectorId);
         this.rowsCount = options.rows || 50;
-        this.dayWidthBase = options.dayWidthBase || 40;
+        this.dayWidthBase = 0;
         this.zoomWidth = parseInt(this.zoomSlider.value, 10);
-        this.todayButton = document.getElementById(options.todayButton);
+        // this.todayButton = document.getElementById(options.todayButton);
         this.timelineHeader = document.getElementById(options.timelineHeaderId);
         this.totalDays = 0;
 
         this.handleQueryParams();
         this.initEvents();
-        this.render();
+        setTimeout(() => {
+            this.render();
+        });
+
     }
 
     initEvents () {
@@ -31,7 +36,12 @@ class GanttChart {
         this.zoomSlider.addEventListener('input', () => {
             this.zoomWidth = parseInt(this.zoomSlider.value, 10);
             this.updateCellWidths();
-            this.renderBars(this.data);
+            this.renderBars();
+            this.scrollToToday();
+        });
+
+        this.projectSelector.addEventListener('change', () => {
+            this.setQueryParams();
         });
 
         // Scroll sync
@@ -44,8 +54,14 @@ class GanttChart {
             this.timelineHeader.scrollLeft = this.rightWrapper.scrollLeft;
         });
 
-        this.todayButton.addEventListener('click', () => {
-            this.scrollToToday();
+        // this.todayButton.addEventListener('click', () => {
+        //     this.scrollToToday();
+        // });
+
+        window.addEventListener('resize', () => {
+            this.changeDayWidthBase();
+            this.updateCellWidths();
+            this.renderBars();
         });
     }
 
@@ -59,7 +75,7 @@ class GanttChart {
         today.setHours(0, 0, 0, 0);
         const todayIndex = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
 
-        // Set cells width
+        this.changeDayWidthBase();
         this.updateCellWidths();
 
         // Reset
@@ -77,8 +93,7 @@ class GanttChart {
             if (d === todayIndex) {
                 cell.classList.add('today-cell');
             }
-            cell.textContent = date.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' });
-
+            // cell.textContent = date.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' });
             this.timelineHeader.appendChild(cell);
         }
 
@@ -93,15 +108,19 @@ class GanttChart {
         this.renderTimelineRowsAsync(todayIndex);
 
         // Render milestones bars
-        this.renderBars(this.data);
-        
+        this.renderBars();
+
         setTimeout(() => {
             this.scrollToToday();
         });
-        
+
     }
 
-    renderTimelineRowsAsync(todayIndex) {
+    changeDayWidthBase () {
+        this.dayWidthBase = this.rightWrapper.offsetWidth / this.totalDays;
+    }
+
+    renderTimelineRowsAsync (todayIndex) {
         let rowIndex = 0;
 
         const renderRow = () => {
@@ -161,7 +180,7 @@ class GanttChart {
         });
     }
 
-    renderBars (projects) {
+    renderBars (projects = this.data) {
         const monthsBefore = Math.abs(parseInt(this.selFrom.value, 10));
         const timelineStart = this.getStartDate(monthsBefore);
         const dayMs = 1000 * 60 * 60 * 24;
@@ -169,6 +188,10 @@ class GanttChart {
 
         this.timeline.querySelectorAll('.gantt-bar').forEach(element => {
             element.remove();
+        });
+
+        rows.forEach(element => {
+            element.innerHTML = '';
         });
 
         projects.forEach((project, index) => {
@@ -188,12 +211,10 @@ class GanttChart {
             const width = durationDays * (this.dayWidthBase + this.zoomWidth);
 
             const bar = document.createElement('div');
-            bar.className = 'gantt-bar';
-            bar.style.top = `${40 * index + 6}px`;
+            bar.className = `gantt-bar ${project.project.color}`;
+            bar.style.top = `${40 * index + 5}px`;
             bar.style.left = `${left}px`;
             bar.style.width = `${width}px`;
-            bar.style.backgroundColor = project.color || '#3b82f6';
-            bar.textContent = project.name;
 
             if (isShowDue) {
                 const offsetDays = Math.max(0, Math.floor((new Date(project.due_date) - start) / dayMs));
@@ -215,11 +236,17 @@ class GanttChart {
         const queryParams = new URLSearchParams(query);
         const from = queryParams.get('from');
         const to = queryParams.get('to');
+        const project = queryParams.get('project');
         if (['-1', '-3', '-12'].includes(from)) {
             this.selFrom.value = from;
         }
         if (['3', '6', '12', '36'].includes(to)) {
             this.selTo.value = to;
+        }
+        const validProjectIds = this.originalData.map(m => m.project_id);
+        if (validProjectIds.includes(project)) {
+            this.projectSelector.value = project;
+            this.data = this.originalData.filter(m => m.project_id === this.projectSelector.value);
         }
     }
 
@@ -228,6 +255,7 @@ class GanttChart {
         const params = new URLSearchParams(query || '');
         params.set('from', this.selFrom.value);
         params.set('to', this.selTo.value);
+        params.set('project', this.projectSelector.value);
         window.location.hash = path + '?' + params.toString();
     }
 }

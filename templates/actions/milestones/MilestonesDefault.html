@@ -1,7 +1,18 @@
 <link rel="stylesheet" href="{$wa_app_static_url}css/gantt.css">
 
+                            
 <div class="gantt-container">
     <div class="gantt-controls">
+        <label>
+            <div class="wa-select">
+                <select id="project-selector">
+                    <option value="">[`All projects`]</option>
+                    {foreach $projects as $p}
+                        <option value="{$p.id}">{$p.name|escape|truncate:42}</option>
+                    {/foreach}
+                </select>
+            </div>
+        </label>
         <label>От: 
             <div class="wa-select">
             <select id="range-from"> 
@@ -21,8 +32,8 @@
             </select>
             </div>
         </label>
-        <label>Zoom: <input type="range" id="zoom-slider" min="10" max="80" step="1" value="20"></label>
-        <button id="today-button">Сегодня</button>
+        <label>Zoom: <input type="range" id="zoom-slider" min="0" max="80" step="1" value="0"></label>
+        <!-- <button id="today-button">Сегодня</button> -->
     </div>
 
     <div class="gantt-table">
@@ -47,9 +58,9 @@
             rangeFromId: 'range-from',
             rangeToId: 'range-to',
             zoomSliderId: 'zoom-slider',
-            todayButton: 'today-button',
-            rows: 26,
-            dayWidthBase: 30
+            projectSelectorId: 'project-selector',
+            // todayButton: 'today-button',
+            rows: 26
         });
     })();
 </script>
