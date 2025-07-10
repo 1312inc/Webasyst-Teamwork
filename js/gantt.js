@@ -1,7 +1,7 @@
 class GanttChart {
     constructor(options) {
-        this.data = options.data,
-            this.leftCol = document.getElementById(options.leftColId);
+        this.data = options.data;
+        this.leftCol = document.getElementById(options.leftColId);
         this.timeline = document.getElementById(options.timelineId);
         this.rightWrapper = document.getElementById(options.rightWrapperId);
         this.selFrom = document.getElementById(options.rangeFromId);
@@ -59,25 +59,30 @@ class GanttChart {
         today.setHours(0, 0, 0, 0);
         const todayIndex = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
 
+        // Set cells width
+        this.updateCellWidths();
+
         // Reset
         this.leftCol.innerHTML = '';
         this.timeline.innerHTML = '';
         this.timelineHeader.innerHTML = '';
 
-        this.updateCellWidths();
-
+        // Render timeline
         for (let d = 0; d < this.totalDays; d++) {
             const date = new Date(startDate);
             date.setDate(date.getDate() + d);
 
             const cell = document.createElement('div');
             cell.className = 'gantt-header-cell';
+            if (d === todayIndex) {
+                cell.classList.add('today-cell');
+            }
             cell.textContent = date.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' });
 
             this.timelineHeader.appendChild(cell);
         }
 
-        // Render rows
+        // Render left rows
         for (let i = 0; i < this.rowsCount; i++) {
             const row = document.createElement('div');
             row.className = 'gantt-row';
@@ -85,24 +90,42 @@ class GanttChart {
         }
 
         // Render cells
-        for (let r = 0; r < this.rowsCount; r++) {
-            for (let d = 0; d < this.totalDays; d++) {
-                const cell = document.createElement('div');
-                cell.className = 'gantt-cell';
+        this.renderTimelineRowsAsync(todayIndex);
 
-                if (d === todayIndex) {
-                    cell.classList.add('today-cell');
-                }
-
-                this.timeline.appendChild(cell);
-            }
-        }
-
+        // Render milestones bars
         this.renderBars(this.data);
-
+        
         setTimeout(() => {
             this.scrollToToday();
         });
+        
+    }
+
+    renderTimelineRowsAsync(todayIndex) {
+        let rowIndex = 0;
+
+        const renderRow = () => {
+            if (rowIndex >= this.rowsCount) return;
+
+            const rowDiv = document.createElement('div');
+            rowDiv.className = 'gantt-timeline-row';
+
+            for (let d = 0; d < this.totalDays; d++) {
+                const cell = document.createElement('div');
+                cell.className = 'gantt-cell';
+                if (d === todayIndex) {
+                    cell.classList.add('today-cell');
+                }
+                rowDiv.appendChild(cell);
+            }
+
+            this.timeline.appendChild(rowDiv);
+            rowIndex++;
+
+            requestAnimationFrame(renderRow);
+        };
+
+        renderRow();
     }
 
     getStartDate (monthsBefore) {
@@ -120,13 +143,13 @@ class GanttChart {
     }
 
     updateCellWidths () {
-        this.timeline.style.gridTemplateColumns = `repeat(${this.totalDays}, ${this.dayWidthBase + this.zoomWidth}px)`;
-        this.timelineHeader.style.gridTemplateColumns = `repeat(${this.totalDays}, ${this.dayWidthBase + this.zoomWidth}px)`;
+        document.documentElement.style.setProperty('--cell-width', `${this.dayWidthBase + this.zoomWidth}px`);
+        document.documentElement.style.setProperty('--days-count', this.totalDays);
     }
 
     scrollToToday () {
         const container = this.rightWrapper;
-        const todayCell = this.timeline.querySelector('.today-cell');
+        const todayCell = this.timelineHeader.querySelector('.today-cell');
         const cellLeft = todayCell.offsetLeft;
         const cellWidth = todayCell.offsetWidth;
         const containerWidth = container.clientWidth;

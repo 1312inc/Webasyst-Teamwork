@@ -1,3 +1,8 @@
+:root {
+  --cell-width: 40px;
+  --days-count: 365;
+}
+
 .t-content-wrapper {
     min-width: 1px;
 }
@@ -37,8 +42,14 @@
 
 .gantt-right-timeline {
     position: relative;
+    min-width: max-content;
+}
+
+.gantt-timeline-row {
+    position: relative;
     display: grid;
     grid-auto-rows: 40px;
+    grid-template-columns: repeat(var(--days-count), var(--cell-width));
     min-width: max-content;
 }
 
@@ -59,6 +70,7 @@
 .gantt-header {
     height: 20px;
     display: grid;
+    grid-template-columns: repeat(var(--days-count), var(--cell-width));
     position: sticky;
     top: 0;
     /* background: #f8f8f8;
@@ -71,7 +83,8 @@
 }
 
 .gantt-header-cell {
-    /* border-right: 1px solid #e0e0e0; */
+    border-right: 1px solid #e0e0e0;
+    height: 100%;
     padding: 0 4px;
     /* box-sizing: border-box; */
 }
