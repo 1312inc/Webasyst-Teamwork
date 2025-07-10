@@ -15,7 +15,7 @@ const spellCheck = async (inputMd) => {
     payload.append('text', text);
 
     try {
-        const response = await fetch('/webasyst/tasks/?module=tasks&action=ai', {
+        const response = await fetch('?module=tasks&action=ai', {
             method: 'POST',
             body: payload,
             headers: {
