@@ -3,10 +3,19 @@
 .t-task-edit-block-more-options-link .icon16.darr { top: 0px !important; margin: 0 !important; }
 .t-task-edit-block-more-options-link .icon16.uarr { top: 1px !important; margin: 0 !important; }
 
-.t-task-type-selector-wrapper { display: inline-block; width: 12%; float: left; }
-.t-task-name-input { width: 86% !important; float: right; }
-
 /* Types Menu */
+
+.t-task-type-selector-wrapper .dropdown-toggle {
+    white-space: nowrap;
+    max-width: 180px;
+    overflow: hidden;
+    padding-right: 2rem !important;
+}
+@media (max-width:760px) {
+    .t-task-type-selector-wrapper .dropdown-toggle {
+        max-width: 240px;
+    }
+}
 .t-task-type-selector-wrapper .t-menu-item .dropdown .t-task-type-selector{
     margin: 0px;
     padding: 1px 4px;
