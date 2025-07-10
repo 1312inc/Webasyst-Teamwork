@@ -1689,3 +1689,6 @@ msgstr "Ошибка обработки файла изображения"
 
 msgid "Set milestone"
 msgstr "Привязать к сроку"
+
+msgid "Spellcheck"
+msgstr "Орфография"
