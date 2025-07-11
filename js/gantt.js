@@ -12,10 +12,9 @@ class GanttChart {
         this.leftCol = document.getElementById(options.leftColId);
         this.timeline = document.getElementById(options.timelineId);
         this.rightWrapper = document.getElementById(options.rightWrapperId);
-        this.selFrom = document.getElementById(options.rangeFromId);
-        this.selTo = document.getElementById(options.rangeToId);
+        this.selFrom = -1;
+        this.selTo = 12;
         this.zoomSlider = document.getElementById(options.zoomSliderId);
-        this.projectSelector = document.getElementById(options.projectSelectorId);
         this.rowsCount = options.rows || 50;
         this.dayWidthBase = 0;
         this.zoomWidth = parseInt(this.zoomSlider.value, 10);
@@ -31,16 +30,12 @@ class GanttChart {
     }
 
     addControlEvents() {
-        [this.selFrom, this.selTo].forEach(el => {
-            el.addEventListener('input', () => this.setQueryParams());
-        });
         this.zoomSlider.addEventListener('input', () => {
             this.zoomWidth = parseInt(this.zoomSlider.value, 10);
             this.updateCellWidths();
             this.renderBars();
             this.scrollToToday();
         });
-        this.projectSelector.addEventListener('change', () => this.setQueryParams());
     }
 
     addScrollEvents() {
@@ -127,7 +122,7 @@ class GanttChart {
     }
 
     updateMilestoneDates (bar, dayPx) {
-        const monthsBefore = Math.abs(parseInt(this.selFrom.value, 10));
+        const monthsBefore = Math.abs(parseInt(this.selFrom, 10));
         const timelineStart = this.getStartDate(monthsBefore);
 
         const projectId = bar.dataset.projectId;
@@ -154,7 +149,7 @@ class GanttChart {
 
     updateBarTooltips(bar) {
         if (bar._startTip && bar._endTip) {
-            const monthsBefore = Math.abs(parseInt(this.selFrom.value, 10));
+            const monthsBefore = Math.abs(parseInt(this.selFrom, 10));
             const timelineStart = this.getStartDate(monthsBefore);
             const offsetDays = Math.round(bar.offsetLeft / (this.dayWidthBase + this.zoomWidth));
             const durationDays = Math.round(bar.offsetWidth / (this.dayWidthBase + this.zoomWidth));
@@ -168,8 +163,8 @@ class GanttChart {
     }
 
     render () {
-        const monthsBefore = Math.abs(parseInt(this.selFrom.value, 10));
-        const monthsAfter = parseInt(this.selTo.value, 10);
+        const monthsBefore = Math.abs(parseInt(this.selFrom, 10));
+        const monthsAfter = parseInt(this.selTo, 10);
         this.totalDays = (monthsBefore + monthsAfter) * 30;
 
         const startDate = this.getStartDate(monthsBefore);
@@ -283,7 +278,7 @@ class GanttChart {
     }
 
     renderBars (projects = this.data) {
-        const monthsBefore = Math.abs(parseInt(this.selFrom.value, 10));
+        const monthsBefore = Math.abs(parseInt(this.selFrom, 10));
         const timelineStart = this.getStartDate(monthsBefore);
         const dayMs = 1000 * 60 * 60 * 24;
         const rows = this.leftCol.querySelectorAll('.gantt-row');
@@ -368,7 +363,7 @@ class GanttChart {
     }
 
     handleQueryParams () {
-        const hash = window.location.hash.split('/')[2];
+        const hash = decodeURIComponent(window.location.hash).split('/')[2];
         const query = hash.split('?')[1];
         if (!query) return;
         const queryParams = new URLSearchParams(query);
@@ -376,25 +371,15 @@ class GanttChart {
         const to = queryParams.get('to');
         const project = queryParams.get('project');
         if (['-1', '-3', '-12'].includes(from)) {
-            this.selFrom.value = from;
+            this.selFrom = from;
         }
         if (['3', '6', '12', '36'].includes(to)) {
-            this.selTo.value = to;
+            this.selTo = to;
         }
         const validProjectIds = this.originalData.map(m => m.project_id);
         if (validProjectIds.includes(project)) {
-            this.projectSelector.value = project;
-            this.data = this.originalData.filter(m => m.project_id === this.projectSelector.value);
+            this.data = this.originalData.filter(m => m.project_id === project);
         }
-    }
-
-    setQueryParams () {
-        const [path, query] = window.location.hash.split('?');
-        const params = new URLSearchParams(query || '');
-        params.set('from', this.selFrom.value);
-        params.set('to', this.selTo.value);
-        params.set('project', this.projectSelector.value);
-        window.location.hash = path + '?' + params.toString();
     }
 
      waitForTippy() {

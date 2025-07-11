@@ -1,9 +1,35 @@
 <link rel="stylesheet" href="{$wa_app_static_url}css/gantt.css">
-
                             
 <div class="gantt-container">
     <div class="gantt-controls">
-        <label>
+        <div class="dropdown small" id="dropdown-project" style="z-index: 9999;">
+            <button class="dropdown-toggle button light-gray" type="button">[`All projects`]</button>
+            <div class="dropdown-body">
+                <ul class="menu">
+                    <li>
+                        <a href="javascript:void(0);" data-id="">
+                            <span>[`All projects`]</span>
+                        </a>
+                    </li>
+                    {foreach $projects as $p}
+                        <li>
+                            <a href="javascript:void(0);" data-value="{$p.id}">
+                                {if $p.icon_url}
+                                <span class="icon">
+                                    <i class="size-20 t-project-icon-rounded" style="background-image: url({$p.icon_url});"></i>
+                                </span>
+                                {/if}
+                                <span>{$p.name|escape|truncate:42}</span>
+                            </a>
+                        </li>
+                    {/foreach}
+                </ul>
+
+            </div>
+            
+        </div>
+
+        <!-- <label>
             <div class="wa-select">
                 <select id="project-selector">
                     <option value="">[`All projects`]</option>
@@ -12,8 +38,34 @@
                     {/foreach}
                 </select>
             </div>
-        </label>
-        <label>От: 
+        </label> -->
+
+        <div class="dropdown small" id="dropdown-from" style="z-index: 9999;">
+            <button class="dropdown-toggle button light-gray" type="button">-1 мес</button>
+            <div class="dropdown-body">
+                <ul class="menu">
+                    <li>
+                        <a href="javascript:void(0);" data-value="-1">
+                            <span>-1 мес</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0);" data-value="-3">
+                            <span>-3 мес</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0);" data-value="-12">
+                            <span>-12 мес</span>
+                        </a>
+                    </li>
+                </ul>
+
+            </div>
+            
+        </div>
+
+        <!-- <label>От: 
             <div class="wa-select">
             <select id="range-from"> 
                 <option value="-1">-1 мес</option>
@@ -21,8 +73,38 @@
                 <option value="-12">-12 мес</option>
             </select>
             </div>
-        </label>
-        <label>До: 
+        </label> -->
+
+        <div class="dropdown small" id="dropdown-to" style="z-index: 9999;">
+            <button class="dropdown-toggle button light-gray" type="button">+12 мес</button>
+            <div class="dropdown-body">
+                <ul class="menu">
+                    <li>
+                        <a href="javascript:void(0);" data-value="3">
+                            <span>+3 мес</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0);" data-value="6">
+                            <span>+6 мес</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0);" data-value="12">
+                            <span>+12 мес</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0);" data-value="36">
+                            <span>+36 мес</span>
+                        </a>
+                    </li>
+                </ul>
+
+            </div>
+            
+        </div>
+        <!-- <label>До: 
             <div class="wa-select">
             <select id="range-to">
                 <option value="3">+3 мес</option>
@@ -31,8 +113,8 @@
                 <option value="36">+36 мес</option>
             </select>
             </div>
-        </label>
-        <label>Zoom: <input type="range" id="zoom-slider" min="0" max="80" step="1" value="0"></label>
+        </label> -->
+        <label class="flexbox space-8"><small>Zoom:</small> <input type="range" id="zoom-slider" min="0" max="80" step="1" value="0"></label>
         <!-- <button id="today-button">Сегодня</button> -->
     </div>
 
@@ -45,6 +127,52 @@
     </div>
 </div>
 
+<script>
+                ( function($) {
+                    const query = decodeURIComponent(location.hash). split('/')[2]
+                    const queryParams = new URLSearchParams(query);
+
+                    ["dropdown-project", "dropdown-from", "dropdown-to"].forEach(function(id) {
+                        const defaultValue = $("#" + id + " .dropdown-toggle").text().trim();
+
+                        $("#" + id).waDropdown({
+                            items: ".menu > li > a",
+                            change: function(event, target, dropdown) {
+                                const value = $(target).data("value");
+                                setQueryParams(id.replace('dropdown-', ''), value);
+                            }
+                        });
+
+                        $("#" + id + " .dropdown-toggle").html(
+                            $("#" + id + " .menu > li > a[data-value='" + queryParams.get(id.replace('dropdown-', '')) + "']").html() ||
+                            defaultValue
+                        );
+                    });
+
+                    function setQueryParams(name, value) {
+                        const [path, query] = window.location.hash.split('?');
+                        const params = new URLSearchParams(query || '');
+
+                        if (value) {
+                            params.set(name, value);
+                        } else {
+                            params.delete(name);
+                        }
+
+                        const allowed = ['from', 'to', 'project'];
+                        const newParams = new URLSearchParams();
+                        allowed.forEach(key => {
+                            if (params.has(key)) {
+                                newParams.set(key, params.get(key));
+                            }
+                        });
+
+                        window.location.hash = path + (newParams.toString() ? '?' + newParams.toString() : '');
+                    }
+
+                })(jQuery);
+            </script>
+
 <script src="{$wa_app_static_url}js/gantt.js"></script>
 <script>
     (() => {
@@ -55,11 +183,7 @@
             timelineId: 'timeline',
             rightWrapperId: 'right-wrapper',
             timelineHeaderId: 'timeline-header',
-            rangeFromId: 'range-from',
-            rangeToId: 'range-to',
             zoomSliderId: 'zoom-slider',
-            projectSelectorId: 'project-selector',
-            // todayButton: 'today-button',
             rows: 26
         });
     })();
