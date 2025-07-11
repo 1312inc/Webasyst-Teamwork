@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="{$wa_app_static_url}css/gantt.css">
+<link rel="stylesheet" href="{$wa_app_static_url}css/gantt.css?v={$wa->version()}">
                             
 <div class="gantt-container">
     <div class="gantt-controls">
@@ -173,7 +173,7 @@
                 })(jQuery);
             </script>
 
-<script src="{$wa_app_static_url}js/gantt.js"></script>
+<script src="{$wa_app_static_url}js/gantt.js?v={$wa->version()}"></script>
 <script>
     (() => {
         const milestones = {json_encode(array_values($milestones))};
