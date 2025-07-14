@@ -1441,3 +1441,9 @@ msgstr ""
 
 msgid "Spellcheck"
 msgstr "Check spelling"
+
+msgid "Task fields"
+msgstr ""
+
+msgid "Please select task type"
+msgstr ""

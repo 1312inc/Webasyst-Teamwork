@@ -1692,3 +1692,9 @@ msgstr "Привязать к сроку"
 
 msgid "Spellcheck"
 msgstr "Орфография"
+
+msgid "Task fields"
+msgstr "Поля задач"
+
+msgid "Please select task type"
+msgstr "Пожалуйста выберите тип задачи"

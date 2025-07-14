@@ -286,3 +286,5 @@
     border-radius: 100%;
     background-color: #000;
 }
+
+.t-settings-task-fields-wrapper .t-fields-list-item.is-template { display: none; }

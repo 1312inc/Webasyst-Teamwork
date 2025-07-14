@@ -24,6 +24,24 @@ return array(
             'contact_unread' => array('contact_id', 'unread'),
         ),
     ),
+    'tasks_field' => array(
+        'id' => array('int', 11, 'null' => 0, 'autoincrement' => 1),
+        'name' => array('varchar', 64, 'null' => 0),
+        'control' => array('varchar', 64, 'null' => 0),
+        'sort' => array('int', 11, 'null' => 0, 'default' => '0'),
+        'data' => array('text'),
+        ':keys' => array(
+            'PRIMARY' => 'id',
+        ),
+    ),
+    'tasks_field_data' => array(
+        'task_id' => array('int', 11, 'null' => 0),
+        'field_id' => array('int', 11, 'null' => 0),
+        'value' => array('text'),
+        ':keys' => array(
+            'PRIMARY' => array('task_id', 'field_id')
+        )
+    ),
     'tasks_list' => array(
         'id' => array('int', 11, 'null' => 0, 'autoincrement' => 1),
         'create_datetime' => array('datetime', 'null' => 0),
@@ -244,5 +262,9 @@ return array(
         ':keys' => array(
             'PRIMARY' => 'id'
         )
+    ),
+    'tasks_type_fields' => array(
+        'type_id' => array('varchar', 32, 'null' => 0),
+        'field_id' => array('int', 11, 'null' => 0),
     ),
 );

@@ -278,7 +278,9 @@
                                 </a>
                             </div>
 
-                            {$task_ext_html}
+                            <div class="fields t-fields-block" style="display: none;">
+                            {include file = "./includes/TasksFieldEdit.inc.html" inline}
+                            </div>
 
                             <!-- plugin hook: 'backend_task_edit.%plugin_id.more' -->
                             {* @event backend_task_edit.%plugin_id%.more *}
@@ -376,6 +378,16 @@
                     <button class="button green large t-save-task-link" type="submit">{if !empty($task.id)}[`Save task`]{else}[`Create task`]{/if}</button>
                     <a class="t-close-link button large light-gray" href="javascript:void(0);">[`Cancel`]</a>
 
+                    <a class="inline-link js-more-options t-task-edit-block-more-options-link flexbox space-8 float-right gray small">
+                        [`More options`]
+                        <div class="darr custom-ml-4">
+                            <i class="fas fa-chevron-down fa-xs"></i>
+                        </div>
+                        <div class="uarr custom-ml-4">
+                            <i class="fas fa-chevron-up fa-xs"></i>
+                        </div>
+                    </a>
+
                     <!-- plugin hook: 'backend_task_edit.%plugin_id.buttons' -->
                     {* @event backend_task_edit.%plugin_id%.buttons *}
                     {foreach $backend_task_edit as $_}{ifset($_.buttons)}{/foreach}
@@ -433,7 +445,7 @@
             spellcheckInProcess = false;
             $spellcheckBtn.find('.icon').removeClass('shimmer');
         })
-    };
+    }
 
     function checkLength () {
         const charCount = $el.val().length;

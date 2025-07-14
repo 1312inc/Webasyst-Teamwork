@@ -846,6 +846,12 @@
             });
         },
 
+        fieldsSettingsAction: function () {
+            this.load('?module=fields', function () {
+
+            });
+        },
+
         personalSettingsAction: function () {
             this.load('?module=settingsPersonal', function () {
 

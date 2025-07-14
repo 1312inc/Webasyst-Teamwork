@@ -9,7 +9,6 @@ class tasksTasksSaveController extends waJsonController
     {
         $task_id = $this->getId();
         $data = $this->getData();
-        $data_ext = $this->getExtData();
 
         if ($task_id > 0) {
             $task = $this->update($task_id, $data);
@@ -17,9 +16,18 @@ class tasksTasksSaveController extends waJsonController
             $task = $this->add($data);
         }
 
-        if ($data_ext) {
-            $te_model = new tasksTaskExtModel();
-            $te_model->save($data_ext);
+        $task_id = ifset($task, 'id', null);
+
+        if ($task_type = $this->getRequest()->post('task_type', '', waRequest::TYPE_STRING_TRIM)) {
+            (new tasksTaskExtModel())->save([
+                'type'    => $task_type,
+                'task_id' => $task_id
+            ]);
+
+            $fields_data = $this->getRequest()->post('fields', [], waRequest::TYPE_ARRAY);
+            if ($fields_data = ifempty($fields_data, $task_type, [])) {
+                (new tasksFieldDataModel())->save($task_id, $fields_data);
+            }
         }
 
         $this->response = array(
@@ -53,20 +61,6 @@ class tasksTasksSaveController extends waJsonController
         $data['files_hash'] = $hash;
 
         return $data;
-    }
-
-    /**
-     * @return array
-     * @throws waException
-     */
-    protected function getExtData()
-    {
-        if ($ext = (array) wa()->getRequest()->post('task_ext')) {
-            $ext['task_id'] = $this->getId();
-            return $ext;
-        }
-
-        return [];
     }
 
     protected function saveAttachments($id, $data)

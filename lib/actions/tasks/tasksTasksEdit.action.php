@@ -59,9 +59,8 @@ class tasksTasksEditAction extends waViewAction
             'backend_task_edit'       => ifempty($backend_task_edit, []),
             'links_data'              => $links_data,
             'type_selector_html'      => $this->getTypeSelectorHtml($ext_info),
-            'task_ext_html'           => $this->getExtEditHtml($ext_info)
+            'task_field_html'         => $this->getFieldEditHtml()
         ]);
-
     }
 
     protected function getProjectsUsers($projects, $users)
@@ -178,19 +177,22 @@ class tasksTasksEditAction extends waViewAction
         return $view->fetch(wa()->getAppPath('templates/actions/tasks/includes/TasksTypeSelector.inc.html', 'tasks'));
     }
 
-    private function getExtEditHtml($ext_info)
+    private function getFieldEditHtml()
     {
+        $fields_data = [];
+        $fields = (new tasksTask())->getFieldsByType();
+        if ($this->task['id']) {
+            $fields_data = (new tasksFieldDataModel())->getData($this->task['id']);
+        }
+
         $view = wa()->getView();
         $view->assign([
-            'task'        => $this->task,
-            'gravities'   => tasksTaskExtModel::getGravities(),
-            'resolutions' => tasksTaskExtModel::getResolutions(),
-            'field_names' => tasksTaskExtModel::getFieldNames(),
-            'ext_info'    => $ext_info,
-            'milestones'  => tasksHelper::getMilestones()
+            'fields'      => $fields,
+            'fields_data' => $fields_data,
+            'task'        => $this->task
         ]);
 
-        return $view->fetch(wa()->getAppPath('templates/actions/tasks/includes/TasksExtEdit.inc.html', 'tasks'));
+        return $view->fetch(wa()->getAppPath('templates/actions/tasks/includes/TasksFieldEdit.inc.html', 'tasks'));
     }
 }
 
