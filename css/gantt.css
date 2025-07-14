@@ -57,7 +57,7 @@
 }
 
 .gantt-left-column {
-    padding-top: 20px;
+    padding-top: 12px;
     width: 250px;
     overflow-y: auto;
     border-right: 1px solid #ccc;
@@ -97,7 +97,7 @@
 }
 
 .gantt-header {
-    height: 20px;
+    height: 12px;
     display: grid;
     grid-template-columns: repeat(var(--days-count), var(--cell-width));
     position: sticky;
@@ -112,10 +112,31 @@
 }
 
 .gantt-header-cell {
-    border-right: 1px solid #e0e0e0;
     height: 100%;
     padding: 0 4px;
-    /* box-sizing: border-box; */
+}
+
+.gantt-header:not(.wider) .gantt-header-cell:nth-child(7n) {
+    border-right: 1px solid #e0e0e0;
+}
+
+.gantt-header.wider .gantt-header-cell {
+    border-right: 1px solid #e0e0e0;
+}
+
+.gantt-header-date {
+    display: none;
+    width: 100%;
+    text-align: center;
+    color: #666;
+}
+
+.gantt-header.wide .gantt-header-cell:nth-child(7n + 1) .gantt-header-date {
+    display: inline-block;
+}
+
+.gantt-header.wider .gantt-header-date {
+    display: inline-block;
 }
 
 .today-cell {

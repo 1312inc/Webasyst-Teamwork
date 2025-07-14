@@ -35,6 +35,7 @@ class GanttChart {
             this.updateCellWidths();
             this.renderBars();
             this.scrollToToday();
+            this.updateTimeline();
         });
     }
 
@@ -54,6 +55,20 @@ class GanttChart {
             this.updateCellWidths();
             this.renderBars();
         });
+    }
+
+    updateTimeline() {
+        const header = document.querySelector('.gantt-header');
+        if (this.dayWidthBase + this.zoomWidth > 6) {
+            header.classList.add('wide');
+        } else {
+            header.classList.remove('wide');
+        }
+        if (this.dayWidthBase + this.zoomWidth > 50) {
+            header.classList.add('wider');
+        } else {
+            header.classList.remove('wider');
+        }
     }
 
     addBarEvents() {
@@ -157,8 +172,8 @@ class GanttChart {
             newStart.setDate(newStart.getDate() + offsetDays);
             const newEnd = new Date(newStart);
             newEnd.setDate(newEnd.getDate() + durationDays - 1);
-            bar._startTip.setContent(`Начало: ${newStart.toLocaleDateString()}`);
-            bar._endTip.setContent(`Конец: ${newEnd.toLocaleDateString()}`);
+            bar._startTip.setContent(`Начало: ${newStart.toLocaleDateString('ru-RU')}`);
+            bar._endTip.setContent(`Конец: ${newEnd.toLocaleDateString('ru-RU')}`);
         }
     }
 
@@ -186,11 +201,11 @@ class GanttChart {
             date.setDate(date.getDate() + d);
 
             const cell = document.createElement('div');
+            cell.innerHTML = `<span class="gantt-header-date">${date.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' })}</span>`;
             cell.className = 'gantt-header-cell';
             if (d === todayIndex) {
                 cell.classList.add('today-cell');
             }
-            // cell.textContent = date.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' });
             this.timelineHeader.appendChild(cell);
         }
 
@@ -321,14 +336,14 @@ class GanttChart {
 
             this.waitForTippy().then(() => {
                 const startTip = tippy(bar, {
-                    content: `Начало: ${start.toLocaleDateString()}`,
+                    content: `Начало: ${start.toLocaleDateString('ru-RU')}`,
                     placement: 'top-start',
                     trigger: 'manual',
                     hideOnClick: false, 
                     interactive: true
                 });
                 const endTip = tippy(bar, {
-                    content: `Конец: ${end.toLocaleDateString()}`,
+                    content: `Конец: ${end.toLocaleDateString('ru-RU')}`,
                     placement: 'top-end',
                     trigger: 'manual',
                     hideOnClick: false, 
