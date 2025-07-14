@@ -72,6 +72,7 @@
 .gantt-right-timeline {
     position: relative;
     min-width: max-content;
+    overflow: hidden;
 }
 
 .gantt-timeline-row {
@@ -114,14 +115,15 @@
 .gantt-header-cell {
     height: 100%;
     padding: 0 4px;
+    border-right: 1px solid transparent;
 }
 
-.gantt-header:not(.wider) .gantt-header-cell:nth-child(7n) {
-    border-right: 1px solid #e0e0e0;
-}
 
-.gantt-header.wider .gantt-header-cell {
-    border-right: 1px solid #e0e0e0;
+.gantt-header.year .gantt-header-cell:nth-child(360n),
+.gantt-header.month:not(.year) .gantt-header-cell:nth-child(30n),
+.gantt-header.week:not(.month) .gantt-header-cell:nth-child(7n),
+.gantt-header.day:not(.week) .gantt-header-cell {
+    border-color: #e0e0e0;
 }
 
 .gantt-header-date {
@@ -131,11 +133,33 @@
     color: #666;
 }
 
-.gantt-header.wide .gantt-header-cell:nth-child(7n + 1) .gantt-header-date {
+.gantt-header-date__withYear {
+    display: none;
+}
+
+.gantt-header-date__withoutYear {
+    display: none;
+}
+
+.gantt-header.year .gantt-header-date {
+    transform: translateX(8px);
+}
+
+.gantt-header.month .gantt-header-date {
+    transform: translateX(6px);
+}
+
+.gantt-header.year .gantt-header-cell:nth-child(360n + 1) .gantt-header-date, 
+.gantt-header.month:not(.year) .gantt-header-cell:nth-child(30n + 1) .gantt-header-date, 
+.gantt-header.week:not(.month) .gantt-header-cell:nth-child(7n + 1) .gantt-header-date,
+.gantt-header.day:not(.week) .gantt-header-date {
     display: inline-block;
 }
 
-.gantt-header.wider .gantt-header-date {
+.gantt-header.year .gantt-header-date__withYear {
+    display: inline-block;
+}
+.gantt-header:not(.year) .gantt-header-date__withoutYear {
     display: inline-block;
 }
 

@@ -6,7 +6,7 @@ class GanttChart {
         setTimeout(() => this.render());
     }
 
-    initOptions(options) {
+    initOptions (options) {
         this.originalData = options.data;
         this.data = options.data;
         this.leftCol = document.getElementById(options.leftColId);
@@ -22,24 +22,31 @@ class GanttChart {
         this.totalDays = 0;
     }
 
-    initEvents() {
+    initEvents () {
         this.addControlEvents();
         this.addScrollEvents();
         this.addResizeEvent();
         this.addBarEvents();
     }
 
-    addControlEvents() {
+    addControlEvents () {
+        let rafId = null;
         this.zoomSlider.addEventListener('input', () => {
-            this.zoomWidth = parseInt(this.zoomSlider.value, 10);
-            this.updateCellWidths();
-            this.renderBars();
-            this.scrollToToday();
-            this.updateTimeline();
+            if (rafId) {
+                cancelAnimationFrame(rafId);
+            }
+            rafId = requestAnimationFrame(() => {
+                this.zoomWidth = parseInt(this.zoomSlider.value, 10);
+                this.updateCellWidths();
+                this.renderBars();
+                this.scrollToToday();
+                this.updateTimeline();
+                rafId = null;
+            });
         });
     }
 
-    addScrollEvents() {
+    addScrollEvents () {
         this.leftCol.addEventListener('scroll', () => {
             this.rightWrapper.scrollTop = this.leftCol.scrollTop;
         });
@@ -49,29 +56,41 @@ class GanttChart {
         });
     }
 
-    addResizeEvent() {
+    addResizeEvent () {
+        let rafId;
         window.addEventListener('resize', () => {
-            this.changeDayWidthBase();
-            this.updateCellWidths();
-            this.renderBars();
+            if (rafId) {
+                cancelAnimationFrame(rafId);
+            }
+            rafId = requestAnimationFrame(() => {
+                this.changeDayWidthBase();
+                this.updateCellWidths();
+                this.renderBars();
+                rafId;
+            });
         });
     }
 
-    updateTimeline() {
+    updateTimeline () {
         const header = document.querySelector('.gantt-header');
-        if (this.dayWidthBase + this.zoomWidth > 6) {
-            header.classList.add('wide');
+        const width = this.dayWidthBase + this.zoomWidth;
+
+        if (width > 50) {
+            header.classList.add('day');
+            header.classList.remove('week', 'month', 'year');
+        } else if (width > 10) {
+            header.classList.add('week');
+            header.classList.remove('day', 'month', 'year');
+        } else if (width > 1.5) {
+            header.classList.add('month');
+            header.classList.remove('day', 'week', 'year');
         } else {
-            header.classList.remove('wide');
-        }
-        if (this.dayWidthBase + this.zoomWidth > 50) {
-            header.classList.add('wider');
-        } else {
-            header.classList.remove('wider');
+            header.classList.add('year');
+            header.classList.remove('day', 'week', 'month');
         }
     }
 
-    addBarEvents() {
+    addBarEvents () {
         this.timeline.addEventListener('mousedown', (e) => {
             const handle = e.target.closest('.resize-handle');
             if (!handle) return;
@@ -129,7 +148,7 @@ class GanttChart {
                 document.removeEventListener('mouseup', onMouseUp);
 
                 this.updateMilestoneDates(bar, dayPx);
-                
+
             };
             document.addEventListener('mousemove', onMouseMove);
             document.addEventListener('mouseup', onMouseUp);
@@ -162,7 +181,7 @@ class GanttChart {
         console.log('Resized project:', projectId, newStart.toISOString().slice(0, 10), newEnd.toISOString().slice(0, 10));
     }
 
-    updateBarTooltips(bar) {
+    updateBarTooltips (bar) {
         if (bar._startTip && bar._endTip) {
             const monthsBefore = Math.abs(parseInt(this.selFrom, 10));
             const timelineStart = this.getStartDate(monthsBefore);
@@ -189,6 +208,7 @@ class GanttChart {
 
         this.changeDayWidthBase();
         this.updateCellWidths();
+        this.updateTimeline();
 
         // Reset
         this.leftCol.innerHTML = '';
@@ -201,7 +221,13 @@ class GanttChart {
             date.setDate(date.getDate() + d);
 
             const cell = document.createElement('div');
-            cell.innerHTML = `<span class="gantt-header-date">${date.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' })}</span>`;
+
+            cell.innerHTML = `
+                <div class="gantt-header-date">
+                    <div class="gantt-header-date__withYear">${date.toLocaleDateString('ru-RU')}</div>
+                    <div class="gantt-header-date__withoutYear">${date.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' })}</div>
+                </div>
+                `;
             cell.className = 'gantt-header-cell';
             if (d === todayIndex) {
                 cell.classList.add('today-cell');
@@ -339,14 +365,14 @@ class GanttChart {
                     content: `Начало: ${start.toLocaleDateString('ru-RU')}`,
                     placement: 'top-start',
                     trigger: 'manual',
-                    hideOnClick: false, 
+                    hideOnClick: false,
                     interactive: true
                 });
                 const endTip = tippy(bar, {
                     content: `Конец: ${end.toLocaleDateString('ru-RU')}`,
                     placement: 'top-end',
                     trigger: 'manual',
-                    hideOnClick: false, 
+                    hideOnClick: false,
                     interactive: true
                 });
                 bar.addEventListener('mouseenter', () => {
@@ -361,8 +387,8 @@ class GanttChart {
 
                 bar._startTip = startTip;
                 bar._endTip = endTip;
-            })
-            
+            });
+
 
             if (isShowDue) {
                 const offsetDays = Math.max(0, Math.floor((new Date(project.due_date) - start) / dayMs));
@@ -397,9 +423,9 @@ class GanttChart {
         }
     }
 
-     waitForTippy() {
+    waitForTippy () {
         return new Promise((resolve, reject) => {
-            
+
             if (window.tippy) {
                 return resolve();
             }
