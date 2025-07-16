@@ -63,6 +63,10 @@
     border-right: 1px solid #ccc;
 }
 
+.gantt-left-column .gantt-row {
+    padding-right: 8px;
+}
+
 .gantt-right-timeline-wrapper {
     flex: 1;
     overflow: auto;
@@ -95,6 +99,9 @@
     padding-left: 8px;
     border-bottom: 1px solid #eee;
     box-sizing: border-box;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 .gantt-header {
@@ -175,7 +182,7 @@
   font-size: 12px;
   padding: 2px 4px;
   white-space: nowrap;
-  overflow: hidden;
+  /* overflow: hidden; */
   text-overflow: ellipsis;
   z-index: 99;
     box-sizing: border-box;
@@ -191,6 +198,15 @@
     transform: translateX(-50%);
 }
 
+.gantt-bar__icon {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translate(20px, -50%);
+    font-size: 16px;
+    color: green;
+}
+
 .resize-handle {
   position: absolute;
   display: none;
@@ -199,6 +215,7 @@
   height: 100%;
   background: rgba(0, 0, 0, 0.2);
   cursor: ew-resize;
+  border-radius: 4px;
 }
 .resize-handle.left { left: 0; }
 .resize-handle.right { right: 0; }

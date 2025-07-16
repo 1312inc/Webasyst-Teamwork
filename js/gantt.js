@@ -389,6 +389,7 @@ class GanttChart {
 
             const bar = document.createElement('div');
             bar.className = `gantt-bar ${project.project.color}`;
+            bar.style.opacity = project.closed !== '1' ? '1' : '0.5';
             bar.style.top = `${40 * index + 5}px`;
             bar.style.left = `${left}px`;
             bar.style.width = `${width}px`;
@@ -397,6 +398,13 @@ class GanttChart {
             bar.innerHTML = `
                 <div class="resize-handle left"></div>
                 <div class="resize-handle right"></div>
+                ${
+                    project.closed !== '1' ? '' : `
+                    <div class="gantt-bar__icon">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    `
+                }
             `;
 
             this.waitForTippy().then(() => {
