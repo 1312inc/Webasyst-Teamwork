@@ -6,14 +6,14 @@ class tasksMilestonesActions extends waViewActions
     {
         $this->view->assign(array(
             'milestones' => self::getMilestones(),
-            'projects'      => tsks()->getEntityRepository(tasksProject::class)->getProjectsAsArray(),
+            'projects'   => tsks()->getEntityRepository(tasksProject::class)->getProjectsAsArray(),
         ));
     }
 
     protected static function getMilestones()
     {
         $milestone_model = new tasksMilestoneModel();
-        $milestones = $milestone_model->getMilestonesWithOrder(false);
+        $milestones = $milestone_model->getMilestonesWithOrder();
 
         $projects = tsks()->getEntityRepository(tasksProject::class)->getProjectsAsArray();
         $project_model = new tasksProjectModel();
