@@ -74,6 +74,11 @@ class tasksMilestonesActions extends waViewActions
         $errors = array();
         if ($post = wa()->getRequest()->post('milestone')) {
             $errors = array();
+
+            if (ifset($milestone, 'closed', '0') == 0 && ifset($post, 'closed', '1') == 1) {
+                $post['end_date'] = date('Y-m-d');
+            }
+
             $related_projects = wa()->getRequest()->post('tasks_milestone_project', []);
             $result = $this->saveMilestone($milestone, $post, $related_projects, $errors);
             if ($result) {
