@@ -203,6 +203,7 @@
     left: 50%;
     width: 2px;
     height: 100%;
+    transform: translateX(-50%);
     background-color: red;
 }
 .gantt-bar.closed .gantt-bar-pointer {
