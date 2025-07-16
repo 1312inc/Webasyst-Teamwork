@@ -170,6 +170,7 @@ class GanttChart {
         });
         this.timeline.addEventListener('mousedown', (e) => {
             const bar = e.target.closest('.gantt-bar');
+            if (bar.classList.contains('closed')) return;
             if (!bar || e.target.closest('.resize-handle')) return;
             const startX = e.clientX;
             const origLeft = bar.offsetLeft;
@@ -392,7 +393,7 @@ class GanttChart {
             const width = durationDays * (this.dayWidthBase + this.zoomWidth);
 
             const bar = document.createElement('div');
-            bar.className = `gantt-bar ${project.project.color}`;
+            bar.className = `gantt-bar ${project.project.color} ${project.closed === '1' ? 'closed' : ''}`;
             bar.style.opacity = project.closed !== '1' ? '1' : '0.5';
             bar.style.top = `${40 * index + 5}px`;
             bar.style.left = `${left}px`;

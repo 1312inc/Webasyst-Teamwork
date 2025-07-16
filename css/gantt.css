@@ -220,6 +220,7 @@
 .resize-handle.left { left: 0; }
 .resize-handle.right { right: 0; }
 
-.gantt-bar:hover .resize-handle {
+.gantt-bar:not(.closed):hover .resize-handle {
   display: block;
 }
+
