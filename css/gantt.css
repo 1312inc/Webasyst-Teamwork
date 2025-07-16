@@ -192,10 +192,21 @@
     position: absolute;
     top: 0px;
     bottom: 0px;
-    width: 2px;
-    /* height: 10px; */
-    background-color: red;
+    /* background-color: red; */
     transform: translateX(-50%);
+    cursor: ew-resize;
+}
+.gantt-bar-pointer::after {
+    content: ' ';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 2px;
+    height: 100%;
+    background-color: red;
+}
+.gantt-bar.closed .gantt-bar-pointer {
+    cursor: default;
 }
 
 .gantt-bar__icon {

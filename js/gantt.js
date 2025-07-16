@@ -169,9 +169,36 @@ class GanttChart {
             document.addEventListener('mouseup', onMouseUp);
         });
         this.timeline.addEventListener('mousedown', (e) => {
+            const pointer = e.target.closest('.gantt-bar-pointer');
+            if (!pointer) return;
+            const bar = pointer.closest('.gantt-bar');
+            if (!bar || bar.classList.contains('closed')) return;
+            
+            const startX = e.clientX;
+            const origLeft = pointer.offsetLeft;
+            const dayPx = this.dayWidthBase + this.zoomWidth;
+            const onMouseMove = (e) => {
+                const dx = e.clientX - startX;
+                const deltaDays = Math.round(dx / dayPx);
+                const snapDx = deltaDays * dayPx;
+                const newLeft = origLeft + snapDx;
+                if (newLeft < 0 || newLeft > bar.offsetWidth) return;
+                pointer.style.left = `${newLeft}px`;
+            };
+            const onMouseUp = () => {
+                document.removeEventListener('mousemove', onMouseMove);
+                document.removeEventListener('mouseup', onMouseUp);
+
+                this.updateMilestoneDates(bar, dayPx);
+
+            };
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+        });
+        this.timeline.addEventListener('mousedown', (e) => {
             const bar = e.target.closest('.gantt-bar');
             if (bar.classList.contains('closed')) return;
-            if (!bar || e.target.closest('.resize-handle')) return;
+            if (!bar || e.target.closest('.resize-handle') || e.target.closest('.gantt-bar-pointer')) return;
             const startX = e.clientX;
             const origLeft = bar.offsetLeft;
             const dayPx = this.dayWidthBase + this.zoomWidth;
@@ -205,6 +232,11 @@ class GanttChart {
         const newLeft = bar.offsetLeft;
         const newWidth = bar.offsetWidth;
         const offsetDays = Math.round(newLeft / dayPx);
+        
+        const pointer = bar.querySelector('.gantt-bar-pointer');
+        const pointerLeft = pointer.offsetLeft;
+        const pointerOffsetDays = Math.floor(pointerLeft / dayPx);
+
         const durationDays = Math.round(newWidth / dayPx);
 
         const newStart = new Date(timelineStart);
@@ -213,14 +245,12 @@ class GanttChart {
         const newEnd = new Date(newStart);
         newEnd.setDate(newEnd.getDate() + durationDays - 1);
 
+        const newDue = new Date(newStart);
+        newDue.setDate(newDue.getDate() + pointerOffsetDays);
+
         milestone.start_date = newStart.toISOString().slice(0, 10);
         milestone.end_date = newEnd.toISOString().slice(0, 10);
-
-        if (milestone.due_date > milestone.end_date) {
-            milestone.due_date = milestone.end_date;
-        } else if (milestone.due_date < milestone.start_date) {
-            milestone.due_date = milestone.start_date;
-        }   
+        milestone.due_date = newDue.toISOString().slice(0, 10); 
         
         this.fetchUpdate(milestone.id, milestone.start_date, milestone.end_date, milestone.due_date);
     }
@@ -447,6 +477,7 @@ class GanttChart {
                 const left = offsetDays * (this.dayWidthBase + this.zoomWidth) + (this.dayWidthBase + this.zoomWidth) / 2;
                 const pointer = document.createElement('div');
                 pointer.className = 'gantt-bar-pointer';
+                pointer.style.width = `${this.dayWidthBase + this.zoomWidth}px`;
                 pointer.style.left = `${left}px`;
                 bar.appendChild(pointer);
             }
