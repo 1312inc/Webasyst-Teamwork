@@ -127,52 +127,6 @@
     </div>
 </div>
 
-<script>
-                ( function($) {
-                    const query = decodeURIComponent(location.hash). split('/')[2]
-                    const queryParams = new URLSearchParams(query);
-
-                    ["dropdown-project", "dropdown-from", "dropdown-to"].forEach(function(id) {
-                        const defaultValue = $("#" + id + " .dropdown-toggle").text().trim();
-
-                        $("#" + id).waDropdown({
-                            items: ".menu > li > a",
-                            change: function(event, target, dropdown) {
-                                const value = $(target).data("value");
-                                setQueryParams(id.replace('dropdown-', ''), value);
-                            }
-                        });
-
-                        $("#" + id + " .dropdown-toggle").html(
-                            $("#" + id + " .menu > li > a[data-value='" + queryParams.get(id.replace('dropdown-', '')) + "']").html() ||
-                            defaultValue
-                        );
-                    });
-
-                    function setQueryParams(name, value) {
-                        const [path, query] = window.location.hash.split('?');
-                        const params = new URLSearchParams(query || '');
-
-                        if (value) {
-                            params.set(name, value);
-                        } else {
-                            params.delete(name);
-                        }
-
-                        const allowed = ['from', 'to', 'project'];
-                        const newParams = new URLSearchParams();
-                        allowed.forEach(key => {
-                            if (params.has(key)) {
-                                newParams.set(key, params.get(key));
-                            }
-                        });
-
-                        window.location.hash = path + (newParams.toString() ? '?' + newParams.toString() : '');
-                    }
-
-                })(jQuery);
-            </script>
-
 <script src="{$wa_app_static_url}js/gantt.js?v={$wa->version()}"></script>
 <script>
     (() => {

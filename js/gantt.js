@@ -17,9 +17,10 @@ class GanttChart {
         this.zoomSlider = document.getElementById(options.zoomSliderId);
         this.rowsCount = options.rows || 50;
         this.dayWidthBase = 0;
-        this.zoomWidth = parseInt(this.zoomSlider.value, 10);
+        this.zoomWidth = 0;
         this.timelineHeader = document.getElementById(options.timelineHeaderId);
         this.totalDays = 0;
+        this.hash = '';
     }
 
     initEvents () {
@@ -30,6 +31,42 @@ class GanttChart {
     }
 
     addControlEvents () {
+        this.initZoomControl();
+        this.initSelectsControl();
+    }
+
+    initSelectsControl () {
+        const [path, query] = this.hash.split('?');
+        const queryParams = new URLSearchParams(query || '');
+
+        const zoomSlider = document.getElementById('zoom-slider');
+        if (zoomSlider) {
+            zoomSlider.value = queryParams.get('zoom') || 0;
+        }
+
+        // Initialize dropdowns for project, from, and to filters. It uses jQuery or $ if available. (waDropdown)
+        if (!window.$) return;
+
+        ["dropdown-project", "dropdown-from", "dropdown-to"].forEach((id) => {
+            const defaultValue = $("#" + id + " .dropdown-toggle").text().trim();
+
+            $("#" + id).waDropdown({
+                items: ".menu > li > a",
+                change: (event, target) => {
+                    const value = $(target).data("value");
+                    this.setQueryParams(id.replace('dropdown-', ''), value);
+                }
+            });
+
+            $("#" + id + " .dropdown-toggle").html(
+                $("#" + id + " .menu > li > a[data-value='" + queryParams.get(id.replace('dropdown-', '')) + "']").html() ||
+                defaultValue
+            );
+        });
+
+    }
+
+    initZoomControl () {
         let rafId = null;
         this.zoomSlider.addEventListener('input', () => {
             if (rafId) {
@@ -42,6 +79,8 @@ class GanttChart {
                 this.scrollToToday();
                 this.updateTimeline();
                 rafId = null;
+
+                this.setQueryParams('zoom', this.zoomWidth);
             });
         });
     }
@@ -403,19 +442,53 @@ class GanttChart {
         });
     }
 
+    setQueryParams (name, value) {
+        const [path, query] = this.hash.split('?');
+        const params = new URLSearchParams(query || '');
+
+        if (value) {
+            params.set(name, value);
+        } else {
+            params.delete(name);
+        }
+
+        const allowed = ['from', 'to', 'project', 'zoom'];
+        const newParams = new URLSearchParams();
+        allowed.forEach(key => {
+            if (params.has(key)) {
+                newParams.set(key, params.get(key));
+            }
+        });
+
+        const paramsWithoutZoom = new URLSearchParams(newParams);
+        paramsWithoutZoom.delete('zoom');
+
+        const hash = path + (newParams.toString() ? '?' + newParams.toString() : '');
+        const hashWithoutZoom = path + (paramsWithoutZoom.toString() ? '?' + paramsWithoutZoom.toString() : '');
+        localStorage.setItem('tasks/gantt-hash', hash);
+        if (name === 'zoom') return;
+        window.location.hash = hashWithoutZoom;
+    }
+
     handleQueryParams () {
-        const hash = decodeURIComponent(window.location.hash).split('/')[2];
-        const query = hash.split('?')[1];
-        if (!query) return;
-        const queryParams = new URLSearchParams(query);
+        const storedHash = localStorage.getItem('tasks/gantt-hash');
+        this.hash = storedHash || window.location.hash;
+
+        const [path, query] = this.hash.split('?');
+        const queryParams = new URLSearchParams(query || '');
+
         const from = queryParams.get('from');
         const to = queryParams.get('to');
         const project = queryParams.get('project');
+        const zoom = queryParams.get('zoom');
         if (['-1', '-3', '-12'].includes(from)) {
             this.selFrom = from;
         }
         if (['3', '6', '12', '36'].includes(to)) {
             this.selTo = to;
+        }
+        if (zoom) {
+            this.zoomWidth = parseInt(zoom, 10);
         }
         const validProjectIds = this.originalData.map(m => m.project_id);
         if (validProjectIds.includes(project)) {
