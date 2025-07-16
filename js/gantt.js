@@ -198,10 +198,8 @@ class GanttChart {
         const monthsBefore = Math.abs(parseInt(this.selFrom, 10));
         const timelineStart = this.getStartDate(monthsBefore);
 
-        const projectId = bar.dataset.projectId;
         const milestoneId = bar.dataset.milestoneId;
         const milestone = this.data.find(m => m.id === milestoneId);
-        console.log('Resizing project:', milestone.name);
 
         const newLeft = bar.offsetLeft;
         const newWidth = bar.offsetWidth;
@@ -212,12 +210,18 @@ class GanttChart {
         newStart.setDate(newStart.getDate() + offsetDays + 1);
 
         const newEnd = new Date(newStart);
-        newEnd.setDate(newEnd.getDate() + durationDays);
+        newEnd.setDate(newEnd.getDate() + durationDays - 1);
 
         milestone.start_date = newStart.toISOString().slice(0, 10);
         milestone.end_date = newEnd.toISOString().slice(0, 10);
 
-        console.log('Resized project:', projectId, newStart.toISOString().slice(0, 10), newEnd.toISOString().slice(0, 10));
+        if (milestone.due_date > milestone.end_date) {
+            milestone.due_date = milestone.end_date;
+        } else if (milestone.due_date < milestone.start_date) {
+            milestone.due_date = milestone.start_date;
+        }   
+        
+        this.fetchUpdate(milestone.id, milestone.start_date, milestone.end_date, milestone.due_date);
     }
 
     updateBarTooltips (bar) {
@@ -460,7 +464,7 @@ class GanttChart {
             params.delete(name);
         }
 
-        const allowed = ['from', 'to', 'project', 'zoom'];
+        const allowed = ['from', 'to', 'project', 'zoom', 'error'];
         const newParams = new URLSearchParams();
         allowed.forEach(key => {
             if (params.has(key)) {
@@ -502,6 +506,32 @@ class GanttChart {
         if (validProjectIds.includes(project)) {
             this.data = this.originalData.filter(m => m.project_id === project);
         }
+    }
+
+    fetchUpdate (milestoneId, newStart, newEnd, newDue) {
+        const data = new FormData();
+        data.append('milestone_id', milestoneId);
+        data.append('start_date', newStart);
+        data.append('end_date', newEnd);
+        data.append('due_date', newDue);
+        
+        fetch('?module=milestones&action=save', {
+            method: 'POST',
+            body: data
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data?.data?.success) {
+                console.log('Milestones updated successfully');
+                this.setQueryParams('error', '');
+            } else {
+                throw new Error('Failed to update milestones');
+            }
+        })
+        .catch(error => {
+            console.error('Error updating milestones:', error);
+            this.setQueryParams('error', Date.now());
+        });
     }
 
     waitForTippy () {
