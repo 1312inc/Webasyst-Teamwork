@@ -241,16 +241,23 @@ class GanttChart {
 
         const newStart = new Date(timelineStart);
         newStart.setDate(newStart.getDate() + offsetDays + 1);
+        const newStartDate = newStart.toISOString().slice(0, 10);
 
         const newEnd = new Date(newStart);
         newEnd.setDate(newEnd.getDate() + durationDays - 1);
+        const newEndDate = newEnd.toISOString().slice(0, 10);
 
         const newDue = new Date(newStart);
         newDue.setDate(newDue.getDate() + pointerOffsetDays);
+        const newDueDate = newDue.toISOString().slice(0, 10);
+        
+        if (milestone.start_date === newStartDate && milestone.end_date === newEndDate && milestone.due_date === newDueDate) {
+            return;
+        }
 
-        milestone.start_date = newStart.toISOString().slice(0, 10);
-        milestone.end_date = newEnd.toISOString().slice(0, 10);
-        milestone.due_date = newDue.toISOString().slice(0, 10); 
+        milestone.start_date = newStartDate;
+        milestone.end_date = newEndDate;
+        milestone.due_date = newDueDate
         
         this.fetchUpdate(milestone.id, milestone.start_date, milestone.end_date, milestone.due_date);
     }
