@@ -43,16 +43,24 @@ var TasksScopeEdit = (function ($) {
     };
 
     TasksScopeEdit.prototype.submit = function (data) {
-        var that = this,
-            $form = that.$form,
-            $submitButton = $form.find('button[type="submit"]'),
-            date = $form.find('.datepicker-due-date').datepicker('getDate');
+        var that = this;
+        var $form = that.$form;
+        var $submitButton = $form.find('button[type="submit"]');
+        var due_date = $form.find('.datepicker-due-date').datepicker('getDate');
+        var start_date = $form.find('.datepicker-start-date').datepicker('getDate');
+        var end_date = $form.find('.datepicker-end-date').datepicker('getDate');
 
         $submitButton.attr('disabled', true);
         $submitButton.find('.fa-spinner').fadeIn();
 
-        if (!date) {
+        if (!due_date) {
             $form.find('[name="milestone[due_date]"]').val('');
+        }
+        if (!start_date) {
+            $form.find('[name="milestone[start_date]"]').val('');
+        }
+        if (!end_date) {
+            $form.find('[name="milestone[end_date]"]').val('');
         }
         var form_data = $form.serializeArray();
 
