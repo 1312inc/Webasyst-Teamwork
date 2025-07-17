@@ -75,7 +75,10 @@ class tasksMilestonesActions extends waViewActions
         if ($post = wa()->getRequest()->post('milestone')) {
             $errors = array();
 
-            if (ifset($milestone, 'closed', '0') == 0 && ifset($post, 'closed', '1') == 1) {
+            if ($milestone_id === 'new' && empty($post['start_date'])) {
+                $post['start_date'] = date('Y-m-d');
+            }
+            if ($milestone_id !== 'new' && ifset($milestone, 'closed', '0') == 0 && ifset($post, 'closed', '1') == 1) {
                 $post['end_date'] = date('Y-m-d');
             }
 
