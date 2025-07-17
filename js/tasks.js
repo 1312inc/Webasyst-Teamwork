@@ -884,8 +884,9 @@
             this.load('?module=projects&action=edit&id='+id);
         },
 
-        milestonesAction: function () {
-            this.load('?module=milestones');
+        milestonesAction: function (q) {
+            q = (q ? '&'+ q.replace(/[?]+/, '') : '');
+            this.load('?module=milestones'+ q);
         },
 
         settingsScopeAction: function (id) {

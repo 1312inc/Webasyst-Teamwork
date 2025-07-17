@@ -12,8 +12,22 @@ class tasksMilestonesActions extends waViewActions
 
     protected static function getMilestones()
     {
+        $from = wa()->getRequest()->get('from', null, waRequest::TYPE_STRING_TRIM);
+        $to = wa()->getRequest()->get('to', null, waRequest::TYPE_STRING_TRIM);
         $milestone_model = new tasksMilestoneModel();
         $milestones = $milestone_model->getMilestonesWithOrder();
+
+        try {
+            if ($from) {
+                $from = strtotime("$from month");
+            }
+            if ($to) {
+                $to = strtotime("$to month");
+            }
+        } catch (Exception $exception) {
+            $from = null;
+            $to = null;
+        }
 
         $projects = tsks()->getEntityRepository(tasksProject::class)->getProjectsAsArray();
         $project_model = new tasksProjectModel();
@@ -21,6 +35,14 @@ class tasksMilestonesActions extends waViewActions
         tasksMilestoneModel::workup($milestones);
 
         foreach($milestones as $mid => &$m) {
+            if (
+                $from && (empty($m['start_date']) || $from > strtotime($m['start_date']))
+                || $to && (empty($m['end_date']) || $to < strtotime($m['end_date']))
+            ) {
+                 unset($milestones[$mid]);
+                 continue;
+            }
+
             if (!empty($projects[$m['project_id']])) {
                 $m['project'] = $projects[$m['project_id']];
             } else if (wa()->getUser()->isAdmin('tasks')) {
