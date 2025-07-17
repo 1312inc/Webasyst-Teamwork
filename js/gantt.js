@@ -197,8 +197,8 @@ class GanttChart {
         });
         this.timeline.addEventListener('mousedown', (e) => {
             const bar = e.target.closest('.gantt-bar');
-            if (bar.classList.contains('closed')) return;
             if (!bar || e.target.closest('.resize-handle') || e.target.closest('.gantt-bar-pointer')) return;
+            if (bar.classList.contains('closed')) return;
             const startX = e.clientX;
             const origLeft = bar.offsetLeft;
             const dayPx = this.dayWidthBase + this.zoomWidth;
