@@ -121,10 +121,24 @@
 
 .gantt-header-cell {
     height: 100%;
-    padding: 0 4px;
+    /* padding: 0 4px; */
     border-right: 1px solid transparent;
 }
-
+.gantt-header-cell:hover {
+    position: relative;
+    cursor: default;
+}
+.gantt-header-cell:hover:after {
+    content: ' ';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    height: calc(100vh - 4rem);
+    background-color: var(--text-color-heading);
+    display: block;
+    width: 1px;
+    z-index: 999;
+}
 
 .gantt-header.year .gantt-header-cell:nth-child(360n),
 .gantt-header.month:not(.year) .gantt-header-cell:nth-child(30n),
@@ -156,6 +170,10 @@
     transform: translateX(6px);
 }
 
+.gantt-header.week .gantt-header-date {
+    transform: translateX(4px);
+}
+
 .gantt-header.year .gantt-header-cell:nth-child(360n + 1) .gantt-header-date, 
 .gantt-header.month:not(.year) .gantt-header-cell:nth-child(30n + 1) .gantt-header-date, 
 .gantt-header.week:not(.month) .gantt-header-cell:nth-child(7n + 1) .gantt-header-date,
@@ -165,9 +183,11 @@
 
 .gantt-header.year .gantt-header-date__withYear {
     display: inline-block;
+    pointer-events: none;
 }
 .gantt-header:not(.year) .gantt-header-date__withoutYear {
     display: inline-block;
+    pointer-events: none;
 }
 
 .today-cell {

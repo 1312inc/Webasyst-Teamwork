@@ -28,11 +28,40 @@ class GanttChart {
         this.addScrollEvents();
         this.addResizeEvent();
         this.addBarEvents();
+        this.addTimelineToolbar();
     }
 
     addControlEvents () {
         this.initZoomControl();
         this.initSelectsControl();
+    }
+
+    addTimelineToolbar () {
+        this.waitForTippy().then(() => {
+            const header = document.querySelector('.gantt-header');
+            const tip = tippy(header, {
+                content: ``,
+                placement: 'top-start',
+                trigger: 'manual',
+                hideOnClick: false,
+                interactive: true,
+                followCursor: true
+            });
+            
+            header.addEventListener('mouseenter', () => {
+                tip.show();
+            });
+
+            header.addEventListener('mouseleave', () => {
+                tip.hide();
+            });
+
+            header.addEventListener('mousemove', (e) => {
+                const date = e.target.querySelector('.gantt-header-date .gantt-header-date__withYear').innerText;
+                if(!date) return;
+                tip.setContent(date);
+            })
+        });
     }
 
     initSelectsControl () {
@@ -127,6 +156,7 @@ class GanttChart {
             header.classList.add('year');
             header.classList.remove('day', 'week', 'month');
         }
+
     }
 
     addBarEvents () {
@@ -524,6 +554,19 @@ class GanttChart {
     handleQueryParams () {
         const storedHash = localStorage.getItem('tasks/gantt-hash');
         this.hash = storedHash || window.location.hash;
+        // let [_, currentQuery] = window.location.hash.split('?');
+        // if(!currentQuery && storedHash) {
+        //     // if (TasksController) {
+        //     //     TasksController.skipDispatch = 1
+        //     // }
+        //     window.location.hash = storedHash
+        //     return;
+        // }
+
+        // this.hash = window.location.hash || '';
+        // if (this.hash.at(-1) === '/') {
+        //     this.hash = this.hash.slice(0, -1);
+        // }
 
         const [path, query] = this.hash.split('?');
         const queryParams = new URLSearchParams(query || '');
