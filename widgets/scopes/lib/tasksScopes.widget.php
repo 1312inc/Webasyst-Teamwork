@@ -63,6 +63,7 @@ class tasksScopesWidget extends tasksAbstractWidget
             $project = $projects[$scope['project_id']];
             $scope['icon_html'] = $project['icon_html'];
             $scope['progress'] = 0;
+            $scope['icon_url'] = $project['icon_url'];
         }
         unset($scope);
 
