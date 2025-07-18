@@ -12,7 +12,8 @@
             <div class="wide">
                 {if !empty($_item.name)}
                     <div class="custom-mb-8">
-                        <div class="flexbox">
+                        <div class="flexbox space-4">
+                            <img src="/wa-apps/pocketlists/img/pocketlists.png" width="32" height="32" alt="">
                             <span class="wide">{$_item.name|escape|truncate:42}</span>
                             <span class="count nowrap hint">{$_item.progress}%</span>
                         </div>
