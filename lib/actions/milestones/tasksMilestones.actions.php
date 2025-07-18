@@ -65,6 +65,7 @@ class tasksMilestonesActions extends waViewActions
 
         $milestone_model = new tasksMilestoneModel();
         $milestones = $milestone_model->getMilestonesWithOrder();
+        tasksMilestoneModel::workup($milestones, ['extra' => 'project']);
         if ($milestone_id === 'new') {
             $milestone = $milestone_model->getEmptyRow();
         } elseif ($milestone_id > 0) {
