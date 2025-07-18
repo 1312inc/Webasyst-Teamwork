@@ -90,15 +90,42 @@
                             <div class="field">
                                 <div class="name for-input">[`Parent scope ID`]</div>
                                 <div class="value no-shift">
-                                    <div class="wa-select">
-                                        <select name="milestone[parent_scope_id]">
-                                            {foreach $milestones as $mlst}
-                                            <option value="{$mlst.id}"{if $mlst.id == $milestone.parent_scope_id} selected{/if}>{$mlst.name|escape|truncate:42}</option>
-                                            {foreachelse}
-                                            <option selected disabled value="">[`Empty scope`]</option>
-                                            {/foreach}
-                                        </select>
+                                    <div class="dropdown" id="parent-scope-id">
+                                        <button class="dropdown-toggle button light-gray" type="button">[`Empty scope`]</button>
+                                        <div class="dropdown-body">
+                                            <ul class="menu">
+                                                <li>
+                                                    <a href="javascript:void(0);" data-id="0">
+                                                        <span>[`Empty scope`]</span>
+                                                    </a>
+                                                </li>
+                                                {foreach $milestones as $mlst}
+                                                <li>
+                                                    <a href="javascript:void(0);" data-id="{$mlst.id}">
+                                                        <span>{$mlst.name|escape|truncate:42}</span>
+                                                    </a>
+                                                </li>
+                                                {/foreach}
+                                            </ul>
+                                        </div>
                                     </div>
+                                    <input id="input" name="milestone[parent_scope_id]" type="hidden" value="">
+                                    <script>
+                                        ( function($) {
+                                            $("#parent-scope-id").waDropdown({
+                                                hover: false,
+                                                items: ".menu > li > a",
+                                                ready: (dropdown) => {
+                                                    const active = dropdown.$menu.find('[data-id="{$milestone.parent_scope_id}"]');
+                                                    if(!active) return;
+                                                    dropdown.$button.text(active.text());
+                                                },
+                                                change: (event, target, dropdown) => {
+                                                    $('[name="milestone[parent_scope_id]"]').val( $(target).data("id") );
+                                                }
+                                            });
+                                        })(jQuery);
+                                    </script>
                                 </div>
                             </div>
 
@@ -106,13 +133,37 @@
                             <div class="field t-milestone-project-field">
                                 <div class="name for-input">[`Project`]</div>
                                 <div class="value no-shift">
-                                    <div class="wa-select">
-                                        <select name="milestone[project_id]">
-                                            {foreach $projects as $p}
-                                                <option value="{$p.id}"{if $p.id == $milestone.project_id} selected{/if}>{$p.name|escape|truncate:42}</option>
-                                            {/foreach}
-                                        </select>
+                                    <div class="dropdown" id="project-id">
+                                        <button class="dropdown-toggle button light-gray" type="button"></button>
+                                        <div class="dropdown-body">
+                                            <ul class="menu">
+                                                {foreach $projects as $p}
+                                                <li>
+                                                    <a href="javascript:void(0);" data-id="{$p.id}">
+                                                        <span>{$p.name|escape|truncate:42}</span>
+                                                    </a>
+                                                </li>
+                                                {/foreach}
+                                            </ul>
+                                        </div>
                                     </div>
+                                    <input id="input" name="milestone[project_id]" type="hidden" value="">
+                                    <script>
+                                        ( function($) {
+                                            $("#project-id").waDropdown({
+                                                hover: false,
+                                                items: ".menu > li > a",
+                                                ready: (dropdown) => {
+                                                    const active = dropdown.$menu.find('[data-id="{$milestone.project_id}"]');
+                                                    if(!active) return;
+                                                    dropdown.$button.text(active.text());
+                                                },
+                                                change: (event, target, dropdown) => {
+                                                    $('[name="milestone[project_id]"]').val( $(target).data("id") );
+                                                }
+                                            });
+                                        })(jQuery);
+                                    </script>
                                 </div>
                             </div>
 
