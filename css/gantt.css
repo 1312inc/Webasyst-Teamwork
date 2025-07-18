@@ -171,7 +171,18 @@
 }
 
 .today-cell {
-    background-color: #fff0f0;
+    position: relative;
+}
+.today-cell:after {
+    content: ' ';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    height: 100%;
+    background-color: var(--text-color-heading);
+    display: block;
+    width: 2px;
+    z-index: 999;
 }
 
 .gantt-bar {
