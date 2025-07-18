@@ -628,6 +628,32 @@ SQL;
         return $this->query($sql, ['contact_id' => $contactId])->fetchAssoc() ?? [];
     }
 
+    public function getContactByMilestone(array $milestone_ids)
+    {
+        $result = [];
+        if (!empty($milestone_ids)) {
+            $data = $this->query("
+                SELECT tm.id, ttl.contact_id, COUNT(ttl.id) AS action_count FROM tasks_task_log ttl
+                LEFT JOIN tasks_milestone tm ON tm.project_id = ttl.project_id
+                WHERE tm.id IN (120, 121) AND ttl.contact_id <> 0
+                GROUP BY tm.id, ttl.contact_id
+                ORDER BY action_count
+            ", [$milestone_ids])->fetchAll();
+
+            $collection = new waContactsCollection('id/' . implode(',', array_unique(array_column($data, 'contact_id'))));
+            $contacts = $collection->getContacts('firstname,middlename,lastname,name,photo_url');
+
+            foreach ($data as $_d) {
+                if (empty($result[$_d['id']])) {
+                    $result[$_d['id']] = [];
+                }
+                $result[$_d['id']][$_d['contact_id']] = ifset($contacts, $_d['contact_id'], null);
+            }
+        }
+
+        return $result;
+    }
+
     public function getLogCountsByContact(array $task_ids)
     {
         if (!$task_ids) {

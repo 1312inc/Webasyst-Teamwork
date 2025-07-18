@@ -12,6 +12,7 @@ class tasksMilestonesActions extends waViewActions
 
     protected static function getMilestones()
     {
+        $contacts = [];
         $from = wa()->getRequest()->get('from', null, waRequest::TYPE_STRING_TRIM);
         $to = wa()->getRequest()->get('to', null, waRequest::TYPE_STRING_TRIM);
         $milestone_model = new tasksMilestoneModel();
@@ -34,6 +35,10 @@ class tasksMilestonesActions extends waViewActions
 
         tasksMilestoneModel::workup($milestones);
 
+        if ($milestone_ids = array_keys($milestones)) {
+            $log_model = new tasksTaskLogModel();
+            $contacts = $log_model->getContactByMilestone($milestone_ids);
+        }
         foreach($milestones as $mid => &$m) {
             if (
                 $from && (empty($m['start_date']) || $from > strtotime($m['start_date']))
@@ -53,6 +58,7 @@ class tasksMilestonesActions extends waViewActions
                 continue;
             }
 
+            $m['users'] = ifset($contacts, $m['id'], []);
             $m['statuses'] = array(
                 array(
                     'bg_color' => 'transparent',
