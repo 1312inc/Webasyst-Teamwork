@@ -157,17 +157,8 @@ class tasksTasksBulkActions extends waJsonActions
         $task_model = new tasksTaskModel();
         $tasks = $task_model->getById($task_ids);
         $milestone = (new tasksMilestoneModel())->getById($milestone_id);
-        $project_id = ifset($milestone, 'project_id', null);
 
-        foreach ($task_ids as $id) {
-            $task = ifset($tasks, $id, null);
-            if ($task && $project_id == $task['project_id']) {
-                continue;
-            }
-            unset($tasks[$id]);
-        }
-
-        if ($tasks) {
+        if ($tasks && $milestone) {
             $task_model->update(array_column($tasks, 'id'), ['milestone_id' => $milestone_id]);
         }
     }
