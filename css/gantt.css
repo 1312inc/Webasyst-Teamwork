@@ -124,11 +124,11 @@
     /* padding: 0 4px; */
     border-right: 1px solid transparent;
 }
-.gantt-header-cell:hover {
+.gantt-header-cell:not(.today-cell):hover {
     position: relative;
     cursor: default;
 }
-.gantt-header-cell:hover:after {
+.gantt-header-cell:not(.today-cell):hover:after {
     content: ' ';
     position: absolute;
     top: 0;
