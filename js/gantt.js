@@ -448,6 +448,13 @@ class GanttChart {
             if (!row) return;
 
             row.innerHTML = project.name;
+            // const template = document.getElementById('milestone-row');
+            // const clone = template.content.cloneNode(true);
+            // clone.querySelector('.gantt-row__name').textContent = project.name;
+            // clone.querySelector('.gantt-row__users').textContent = 2;
+
+            // row.appendChild(clone);
+
 
             const start = new Date(project.start_date);
             const end = new Date(project.end_date || project.due_date || this.getEndDate(monthsBefore));
@@ -575,19 +582,34 @@ class GanttChart {
         const to = queryParams.get('to');
         const project = queryParams.get('project');
         const zoom = queryParams.get('zoom');
+
+        let filtered = [...this.originalData]; 
+
         if (['-1', '-3', '-12'].includes(from)) {
             this.selFrom = from;
+            filtered = filtered.filter(m => {
+                const d = new Date();
+                d.setMonth(d.getMonth() + parseInt(from, 10));
+                return new Date(m.end_date) > d
+            })
         }
         if (['3', '6', '12', '36'].includes(to)) {
             this.selTo = to;
+            filtered = filtered.filter((m) => {
+                const d = new Date();
+                d.setMonth(d.getMonth() + parseInt(to, 10));
+                return new Date(m.start_date) < d
+            })
         }
         if (zoom) {
             this.zoomWidth = parseInt(zoom, 10);
         }
         const validProjectIds = this.originalData.map(m => m.project_id);
         if (validProjectIds.includes(project)) {
-            this.data = this.originalData.filter(m => m.project_id === project);
+            filtered = filtered.filter(m => m.project_id === project);
         }
+
+        this.data = filtered;
     }
 
     fetchUpdate (milestoneId, newStart, newEnd, newDue) {
