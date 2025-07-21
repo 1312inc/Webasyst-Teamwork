@@ -13,6 +13,7 @@ class tasksMilestonesActions extends waViewActions
     protected static function getMilestones()
     {
         $contacts = [];
+        $scope_counts = [];
         $milestone_model = new tasksMilestoneModel();
         $milestones = $milestone_model->getMilestonesWithOrder();
 
@@ -24,6 +25,9 @@ class tasksMilestonesActions extends waViewActions
         if ($milestone_ids = array_keys($milestones)) {
             $log_model = new tasksTaskLogModel();
             $contacts = $log_model->getContactByMilestone($milestone_ids);
+
+            $task_model = new tasksTaskModel();
+            $scope_counts = $task_model->getCountTasksInScope();
         }
         foreach($milestones as $mid => &$m) {
             if (!empty($projects[$m['project_id']])) {
@@ -36,6 +40,7 @@ class tasksMilestonesActions extends waViewActions
                 continue;
             }
 
+            $m['closed_percent'] = null;
             $m['users'] = ifset($contacts, $m['id'], []);
             $m['statuses'] = array(
                 array(
@@ -44,6 +49,10 @@ class tasksMilestonesActions extends waViewActions
                     'name' => '',
                 ),
             );
+            if ($count = ifset($scope_counts, $mid, [])) {
+                $percent = $count['total'] ? $count['closed'] / $count['total'] * 100 : 0;
+                $m['closed_percent'] = round($percent);
+            }
         }
         unset($m);
 
