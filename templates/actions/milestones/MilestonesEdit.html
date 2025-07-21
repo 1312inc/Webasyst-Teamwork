@@ -102,6 +102,11 @@
                                                 {foreach $milestones as $mlst}
                                                 <li>
                                                     <a href="javascript:void(0);" data-id="{$mlst.id}">
+                                                        {if $mlst.project.icon_url}
+                                                        <span class="icon">
+                                                            <i class="size-20 t-project-icon-rounded" style="background-image: url({$mlst.project.icon_url});"></i>
+                                                        </span>
+                                                        {/if}
                                                         <span>{$mlst.name|escape|truncate:42}</span>
                                                     </a>
                                                 </li>
@@ -117,7 +122,7 @@
                                                 items: ".menu > li > a",
                                                 ready: (dropdown) => {
                                                     const active = dropdown.$menu.find('[data-id="{$milestone.parent_scope_id}"]');
-                                                    if(!active) return;
+                                                    if(!active[0]) return;
                                                     dropdown.$button.text(active.text());
                                                 },
                                                 change: (event, target, dropdown) => {
@@ -134,12 +139,17 @@
                                 <div class="name for-input">[`Project`]</div>
                                 <div class="value no-shift">
                                     <div class="dropdown" id="project-id">
-                                        <button class="dropdown-toggle button light-gray" type="button"></button>
+                                        <button class="dropdown-toggle button light-gray" type="button">[`Project`]</button>
                                         <div class="dropdown-body">
                                             <ul class="menu">
                                                 {foreach $projects as $p}
                                                 <li>
                                                     <a href="javascript:void(0);" data-id="{$p.id}">
+                                                        {if $p.icon_url}
+                                                        <span class="icon">
+                                                            <i class="size-20 t-project-icon-rounded" style="background-image: url({$p.icon_url});"></i>
+                                                        </span>
+                                                        {/if}
                                                         <span>{$p.name|escape|truncate:42}</span>
                                                     </a>
                                                 </li>
@@ -155,7 +165,7 @@
                                                 items: ".menu > li > a",
                                                 ready: (dropdown) => {
                                                     const active = dropdown.$menu.find('[data-id="{$milestone.project_id}"]');
-                                                    if(!active) return;
+                                                    if(!active[0]) return;
                                                     dropdown.$button.text(active.text());
                                                 },
                                                 change: (event, target, dropdown) => {
