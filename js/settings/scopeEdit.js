@@ -62,7 +62,10 @@ var TasksScopeEdit = (function ($) {
         if (!end_date) {
             $form.find('[name="milestone[end_date]"]').val('');
         }
+
+        const $disabled = $form.find(':disabled').prop('disabled', false);
         var form_data = $form.serializeArray();
+        $disabled.prop('disabled', true); 
 
         if ($.isArray(data) && data.length) {
             form_data = form_data.concat(data);

@@ -169,7 +169,7 @@
                                                     dropdown.$button.text(active.text());
                                                 },
                                                 change: (event, target, dropdown) => {
-                                                    $('[name="milestone[project_id]"]').val( $(target).data("id") );
+                                                    $('[name="milestone[project_id]"]').val( $(target).data("id") ).trigger('input');
                                                 }
                                             });
                                         })(jQuery);

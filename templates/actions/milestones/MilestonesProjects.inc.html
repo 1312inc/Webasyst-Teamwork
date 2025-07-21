@@ -39,7 +39,7 @@
                     // DOM
                     that.$wrapper = options.$wrapper;
                     that.$editor = options.$editor;
-                    that.$milestone = that.$editor.find('select[name="milestone[project_id]"]')
+                    that.$milestone = that.$editor.find('[name="milestone[project_id]"]')
 
                     // Vars
 
@@ -71,7 +71,7 @@
                         $checkboxes.filter('[value="' + milestone_id + '"]').attr('disabled', true).attr('checked', true);
                     };
 
-                    that.$milestone.on('change', disableCheckbox);
+                    that.$milestone.on('input', disableCheckbox);
                     disableCheckbox();
                 };
 
