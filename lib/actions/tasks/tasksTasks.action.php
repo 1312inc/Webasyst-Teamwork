@@ -409,6 +409,7 @@ class tasksTasksAction extends waViewAction
     {
         $milestone_model = new tasksMilestoneModel();
         $milestones = $milestone_model->getMilestonesWithOrder(false);
+        tasksMilestoneModel::workup($milestones, ['extra' => 'project']);
 
         return [
                 '' => [
