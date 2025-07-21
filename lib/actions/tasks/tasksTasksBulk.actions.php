@@ -163,6 +163,20 @@ class tasksTasksBulkActions extends waJsonActions
         }
     }
 
+    protected function detachMilestoneAction()
+    {
+        $task_ids = $this->getIds();
+        if (empty($task_ids)) {
+            return;
+        }
+        $task_model = new tasksTaskModel();
+        $tasks = $task_model->getById($task_ids);
+
+        if ($tasks) {
+            $task_model->update(array_column($tasks, 'id'), ['milestone_id' => null]);
+        }
+    }
+
     protected function getDueDate()
     {
         $due_date = $this->getRequest()->post('due_date');

@@ -69,6 +69,8 @@ var TasksHeader = ( function($) {
 
         that.initMoveMilestoneTasks();
 
+        that.initDetachMilestoneTasks();
+
         that.initMultiDeadlineSetter();
 
         that.fixOutboxFilter();
@@ -1089,6 +1091,20 @@ var TasksHeader = ( function($) {
 
             return false;
         }
+    };
+
+    Header.initDetachMilestoneTasks = function () {
+        var that = this;
+        var $selected_menu = that.$selectedMenu;
+
+        $selected_menu.on("click", ".set-no-milestone-link", function (e) {
+            e.preventDefault();
+            $.post('?module=tasksBulk&action=detachMilestone', {
+                ids: that.getSelectedTaskIds()
+            }, function () {
+                $.tasks.redispatch();
+            }, 'json');
+        });
     };
 
     Header.fixOutboxFilter = function () {
