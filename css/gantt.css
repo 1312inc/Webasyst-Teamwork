@@ -241,6 +241,13 @@
     cursor: default;
 }
 
+.gantt-bar__progressbar {
+    position: absolute;
+    height: 3px;
+    left: 0;
+    bottom: 0;
+}
+
 .gantt-bar__icon {
     position: absolute;
     top: 50%;

@@ -262,11 +262,6 @@ class GanttChart {
         const newLeft = bar.offsetLeft;
         const newWidth = bar.offsetWidth;
         const offsetDays = Math.round(newLeft / dayPx);
-
-        const pointer = bar.querySelector('.gantt-bar-pointer');
-        const pointerLeft = pointer.offsetLeft;
-        const pointerOffsetDays = Math.floor(pointerLeft / dayPx);
-
         const durationDays = Math.round(newWidth / dayPx);
 
         const newStart = new Date(timelineStart);
@@ -277,9 +272,15 @@ class GanttChart {
         newEnd.setDate(newEnd.getDate() + durationDays - 1);
         const newEndDate = newEnd.toISOString().slice(0, 10);
 
-        const newDue = new Date(newStart);
-        newDue.setDate(newDue.getDate() + pointerOffsetDays);
-        const newDueDate = newDue.toISOString().slice(0, 10);
+        const pointer = bar.querySelector('.gantt-bar-pointer');
+        let newDueDate
+        if (pointer) {
+            const newDue = new Date(newStart);
+            const pointerLeft = pointer.offsetLeft;
+            const pointerOffsetDays = Math.floor(pointerLeft / dayPx);
+            newDue.setDate(newDue.getDate() + pointerOffsetDays);
+            newDueDate = newDue.toISOString().slice(0, 10);
+        }
 
         if (milestone.start_date === newStartDate && milestone.end_date === newEndDate && milestone.due_date === newDueDate) {
             return;
@@ -458,6 +459,7 @@ class GanttChart {
 
             const start = new Date(project.start_date);
             const end = new Date(project.end_date || this.getEndDate(monthsBefore));
+
             const offsetDays = Math.max(0, Math.floor((start - timelineStart) / dayMs));
             const durationDays = Math.max(1, Math.ceil((end - start) / dayMs) + 1);
 
@@ -472,7 +474,12 @@ class GanttChart {
             bar.style.width = `${width}px`;
             bar.dataset.milestoneId = project.id;
             bar.dataset.projectId = project.project_id;
+            
+            const due = project.due_date ? new Date(project.due_date) : new Date();
+            const progressbarColor = project.closed_percent === 100 ? 'green' : (project.closed_percent < 100) ? (due < new Date()) ? 'red' : 'blue' : 'blue';
+
             bar.innerHTML = `
+                <div class="gantt-bar__progressbar" style="width: ${project.closed_percent || 0}%; background: var(--${progressbarColor});"></div>
                 <div class="resize-handle left"></div>
                 <div class="resize-handle right"></div>
                 ${project.closed !== '1' ? '' : `
@@ -616,7 +623,10 @@ class GanttChart {
         data.append('milestone_id', milestoneId);
         data.append('start_date', newStart);
         data.append('end_date', newEnd);
-        data.append('due_date', newDue);
+        if (newDue) {
+            data.append('due_date', newDue);
+        }
+        
 
         fetch('?module=milestones&action=save', {
             method: 'POST',
