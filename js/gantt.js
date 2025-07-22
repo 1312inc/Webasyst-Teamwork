@@ -588,26 +588,33 @@ class GanttChart {
         const toOffset = parseInt(this.selTo, 10);
 
         const startDate = this.selFrom
-        ? new Date(new Date().setMonth(new Date().getMonth() + fromOffset))
-        : null;
+            ? new Date(new Date().setMonth(new Date().getMonth() + fromOffset))
+            : null;
 
         const endDate = this.selTo
-        ? new Date(new Date().setMonth(new Date().getMonth() + toOffset))
-        : null;
+            ? new Date(new Date().setMonth(new Date().getMonth() + toOffset))
+            : null;
+
+        if (!startDate && !endDate) {
+            return this.originalData;
+        }
 
         const filtered = this.originalData.filter(item => {
-        const itemEnd = item.end_date ? new Date(item.end_date) : null;
-        const itemStart = item.start_date ? new Date(item.start_date) : null;
+            const itemStart = item.start_date ? new Date(item.start_date) : null;
+            const itemEnd = item.end_date ? new Date(item.end_date) : null;
 
-        const afterStart = startDate && itemEnd instanceof Date && !isNaN(itemEnd)
-            ? itemEnd > startDate
-            : false;
+            if (!(itemStart instanceof Date) || isNaN(itemStart)) {
+                return false;
+            }
 
-        const beforeEnd = endDate && itemStart instanceof Date && !isNaN(itemStart)
-            ? itemStart < endDate
-            : false;
+            const effectiveItemEnd = itemEnd && !isNaN(itemEnd)
+                ? itemEnd
+                : new Date(8640000000000000); // max date в JS
 
-        return afterStart || beforeEnd;
+            const effectiveFilterStart = startDate || new Date(-8640000000000000); // min date
+            const effectiveFilterEnd = endDate || new Date(8640000000000000);     // max date
+
+            return itemStart <= effectiveFilterEnd && effectiveItemEnd >= effectiveFilterStart;
         });
 
         const validProjectIds = this.originalData.map(m => m.project_id);
