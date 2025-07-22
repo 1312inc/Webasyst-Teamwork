@@ -360,7 +360,7 @@ class tasksConfig extends waAppConfig
 
             $looks_like_default = false;
             sort($notification['task'], SORT_STRING);
-            if ($notification['task'] === ['assigned_to_me', 'created_by_me', 'favorites'] && $notification['action'] == 'always') {
+            if ($notification['task'] === ['assigned_to_me', 'created_by_me'] && $notification['action'] == 'always') {
                 $looks_like_default = true;
             }
 
