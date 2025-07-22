@@ -47,7 +47,7 @@ class GanttChart {
                 interactive: true,
                 followCursor: true
             });
-            
+
             header.addEventListener('mouseenter', () => {
                 tip.show();
             });
@@ -58,9 +58,9 @@ class GanttChart {
 
             header.addEventListener('mousemove', (e) => {
                 const date = e.target.querySelector('.gantt-header-date .gantt-header-date__withYear').innerText;
-                if(!date) return;
+                if (!date) return;
                 tip.setContent(date);
-            })
+            });
         });
     }
 
@@ -203,7 +203,7 @@ class GanttChart {
             if (!pointer) return;
             const bar = pointer.closest('.gantt-bar');
             if (!bar || bar.classList.contains('closed')) return;
-            
+
             const startX = e.clientX;
             const origLeft = pointer.offsetLeft;
             const dayPx = this.dayWidthBase + this.zoomWidth;
@@ -262,7 +262,7 @@ class GanttChart {
         const newLeft = bar.offsetLeft;
         const newWidth = bar.offsetWidth;
         const offsetDays = Math.round(newLeft / dayPx);
-        
+
         const pointer = bar.querySelector('.gantt-bar-pointer');
         const pointerLeft = pointer.offsetLeft;
         const pointerOffsetDays = Math.floor(pointerLeft / dayPx);
@@ -280,15 +280,15 @@ class GanttChart {
         const newDue = new Date(newStart);
         newDue.setDate(newDue.getDate() + pointerOffsetDays);
         const newDueDate = newDue.toISOString().slice(0, 10);
-        
+
         if (milestone.start_date === newStartDate && milestone.end_date === newEndDate && milestone.due_date === newDueDate) {
             return;
         }
 
         milestone.start_date = newStartDate;
         milestone.end_date = newEndDate;
-        milestone.due_date = newDueDate
-        
+        milestone.due_date = newDueDate;
+
         this.fetchUpdate(milestone.id, milestone.start_date, milestone.end_date, milestone.due_date);
     }
 
@@ -477,8 +477,7 @@ class GanttChart {
             bar.innerHTML = `
                 <div class="resize-handle left"></div>
                 <div class="resize-handle right"></div>
-                ${
-                    project.closed !== '1' ? '' : `
+                ${project.closed !== '1' ? '' : `
                     <div class="gantt-bar__icon">
                         <i class="fas fa-check"></i>
                     </div>
@@ -561,19 +560,6 @@ class GanttChart {
     handleQueryParams () {
         const storedHash = localStorage.getItem('tasks/gantt-hash');
         this.hash = storedHash || window.location.hash;
-        // let [_, currentQuery] = window.location.hash.split('?');
-        // if(!currentQuery && storedHash) {
-        //     // if (TasksController) {
-        //     //     TasksController.skipDispatch = 1
-        //     // }
-        //     window.location.hash = storedHash
-        //     return;
-        // }
-
-        // this.hash = window.location.hash || '';
-        // if (this.hash.at(-1) === '/') {
-        //     this.hash = this.hash.slice(0, -1);
-        // }
 
         const [path, query] = this.hash.split('?');
         const queryParams = new URLSearchParams(query || '');
@@ -583,27 +569,43 @@ class GanttChart {
         const project = queryParams.get('project');
         const zoom = queryParams.get('zoom');
 
-        let filtered = [...this.originalData]; 
-
         if (['-1', '-3', '-12'].includes(from)) {
             this.selFrom = from;
-            filtered = filtered.filter(m => {
-                const d = new Date();
-                d.setMonth(d.getMonth() + parseInt(from, 10));
-                return new Date(m.end_date) > d
-            })
         }
         if (['3', '6', '12', '36'].includes(to)) {
             this.selTo = to;
-            filtered = filtered.filter((m) => {
-                const d = new Date();
-                d.setMonth(d.getMonth() + parseInt(to, 10));
-                return new Date(m.start_date) < d
-            })
         }
         if (zoom) {
             this.zoomWidth = parseInt(zoom, 10);
         }
+
+        const fromOffset = parseInt(this.selFrom, 10);
+        const toOffset = parseInt(this.selTo, 10);
+
+        const startDate = this.selFrom
+            ? new Date(new Date().setMonth(new Date().getMonth() + fromOffset))
+            : null;
+
+        const endDate = this.selTo
+            ? new Date(new Date().setMonth(new Date().getMonth() + toOffset))
+            : null;
+
+        const filtered = this.originalData.filter(item => {
+            const rawEnd = item.end_date || item.due_date;
+            const itemEnd = rawEnd ? new Date(rawEnd) : null;
+            const itemStart = item.start_date ? new Date(item.start_date) : null;
+
+            const afterStart = startDate && itemEnd instanceof Date && !isNaN(itemEnd)
+                ? itemEnd > startDate
+                : false;
+
+            const beforeEnd = endDate && itemStart instanceof Date && !isNaN(itemStart)
+                ? itemStart < endDate
+                : false;
+
+            return afterStart || beforeEnd;
+        });
+
         const validProjectIds = this.originalData.map(m => m.project_id);
         if (validProjectIds.includes(project)) {
             filtered = filtered.filter(m => m.project_id === project);
@@ -618,24 +620,24 @@ class GanttChart {
         data.append('start_date', newStart);
         data.append('end_date', newEnd);
         data.append('due_date', newDue);
-        
+
         fetch('?module=milestones&action=save', {
             method: 'POST',
             body: data
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data?.data?.success) {
-                console.log('Milestones updated successfully');
-                this.setQueryParams('error', '');
-            } else {
-                throw new Error('Failed to update milestones');
-            }
-        })
-        .catch(error => {
-            console.error('Error updating milestones:', error);
-            this.setQueryParams('error', Date.now());
-        });
+            .then(response => response.json())
+            .then(data => {
+                if (data?.data?.success) {
+                    console.log('Milestones updated successfully');
+                    this.setQueryParams('error', '');
+                } else {
+                    throw new Error('Failed to update milestones');
+                }
+            })
+            .catch(error => {
+                console.error('Error updating milestones:', error);
+                this.setQueryParams('error', Date.now());
+            });
     }
 
     waitForTippy () {
