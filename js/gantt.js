@@ -457,9 +457,7 @@ class GanttChart {
 
 
             const start = new Date(project.start_date);
-            const end = new Date(project.end_date || project.due_date || this.getEndDate(monthsBefore));
-            const isShowDue = project.end_date && project.due_date;
-
+            const end = new Date(project.end_date || this.getEndDate(monthsBefore));
             const offsetDays = Math.max(0, Math.floor((start - timelineStart) / dayMs));
             const durationDays = Math.max(1, Math.ceil((end - start) / dayMs) + 1);
 
@@ -515,7 +513,7 @@ class GanttChart {
             });
 
 
-            if (isShowDue) {
+            if (project.due_date) {
                 const offsetDays = Math.max(0, Math.floor((new Date(project.due_date) - start) / dayMs));
                 const left = offsetDays * (this.dayWidthBase + this.zoomWidth) + (this.dayWidthBase + this.zoomWidth) / 2;
                 const pointer = document.createElement('div');
@@ -583,27 +581,26 @@ class GanttChart {
         const toOffset = parseInt(this.selTo, 10);
 
         const startDate = this.selFrom
-            ? new Date(new Date().setMonth(new Date().getMonth() + fromOffset))
-            : null;
+        ? new Date(new Date().setMonth(new Date().getMonth() + fromOffset))
+        : null;
 
         const endDate = this.selTo
-            ? new Date(new Date().setMonth(new Date().getMonth() + toOffset))
-            : null;
+        ? new Date(new Date().setMonth(new Date().getMonth() + toOffset))
+        : null;
 
         const filtered = this.originalData.filter(item => {
-            const rawEnd = item.end_date || item.due_date;
-            const itemEnd = rawEnd ? new Date(rawEnd) : null;
-            const itemStart = item.start_date ? new Date(item.start_date) : null;
+        const itemEnd = item.end_date ? new Date(item.end_date) : null;
+        const itemStart = item.start_date ? new Date(item.start_date) : null;
 
-            const afterStart = startDate && itemEnd instanceof Date && !isNaN(itemEnd)
-                ? itemEnd > startDate
-                : false;
+        const afterStart = startDate && itemEnd instanceof Date && !isNaN(itemEnd)
+            ? itemEnd > startDate
+            : false;
 
-            const beforeEnd = endDate && itemStart instanceof Date && !isNaN(itemStart)
-                ? itemStart < endDate
-                : false;
+        const beforeEnd = endDate && itemStart instanceof Date && !isNaN(itemStart)
+            ? itemStart < endDate
+            : false;
 
-            return afterStart || beforeEnd;
+        return afterStart || beforeEnd;
         });
 
         const validProjectIds = this.originalData.map(m => m.project_id);
