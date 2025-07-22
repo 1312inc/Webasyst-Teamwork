@@ -558,7 +558,7 @@
             </div>
 
             {$task_ext_info_html}
-            
+
             {* Show review widget if new task or completed *}
             {$is_just_created_task = strtotime($task.create_datetime) - strtotime(date('Y-m-d H:i:s')) >= -1 }
             {$logs = array_values($task.log)}
@@ -581,14 +581,15 @@
                         <a href="javascript:void(0);" class="t-control-link button light-gray t-return-link" title="[`Return`]"> <span class="icon"><i class="fas fa-arrow-left"></i></span> <span class="t-button-label">[`Return`]</span></a>
                     </div>
                     {if isset($task.next_status.id) && $task.next_status.id != -1 && (($task.contact_id == $wa->user('id') && $task.assigned_contact_id == $task.contact_id) || $task->hasFullAccess())}
-                        {* action & close buttons *}
+                        {* action buttons *}
                         <div class="t-task-button t-task-action wide">
                             {$task->buttonHtml()}
                         </div>
-                    {else}
+                    {/if}
+                    {if $task.status.id != -1}
                         {* close button only *}
                         <div class="t-task-button t-task-close wide">
-                            {$task->buttonHtml()}
+                            {$task->buttonHtml(-1)}
                         </div>
                     {/if}
                     <div class="t-task-button t-task-forward">
