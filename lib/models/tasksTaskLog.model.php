@@ -635,7 +635,7 @@ SQL;
             $data = $this->query("
                 SELECT tm.id, ttl.contact_id, COUNT(ttl.id) AS action_count FROM tasks_task_log ttl
                 LEFT JOIN tasks_milestone tm ON tm.project_id = ttl.project_id
-                WHERE tm.id IN (120, 121) AND ttl.contact_id <> 0
+                WHERE tm.id IN (?) AND ttl.contact_id <> 0
                 GROUP BY tm.id, ttl.contact_id
                 ORDER BY action_count
             ", [$milestone_ids])->fetchAll();
@@ -644,10 +644,12 @@ SQL;
             $contacts = $collection->getContacts('firstname,middlename,lastname,name,photo_url');
 
             foreach ($data as $_d) {
-                if (empty($result[$_d['id']])) {
-                    $result[$_d['id']] = [];
+                if ($_contact = ifset($contacts, $_d['contact_id'], null)) {
+                    if (empty($result[$_d['id']])) {
+                        $result[$_d['id']] = [];
+                    }
+                    $result[$_d['id']][] = $_contact;
                 }
-                $result[$_d['id']][$_d['contact_id']] = ifset($contacts, $_d['contact_id'], null);
             }
         }
 
