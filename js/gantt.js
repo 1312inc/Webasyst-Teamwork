@@ -599,7 +599,7 @@ class GanttChart {
             return this.originalData;
         }
 
-        const filtered = this.originalData.filter(item => {
+        let filtered = this.originalData.filter(item => {
             const itemStart = item.start_date ? new Date(item.start_date) : null;
             const itemEnd = item.end_date ? new Date(item.end_date) : null;
 
