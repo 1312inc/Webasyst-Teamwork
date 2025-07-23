@@ -738,21 +738,140 @@
 
             {/if}
 
-            {if !empty($task.watching_contacts)}
+                        
+                <style>
+                    .t-watchers-remove-icon {
+                        display: none !important;
+                    }
+                    .userpic:hover .t-watchers-remove-icon {
+                        display: flex !important;
+                    }
+                </style>
+
                 <hr>
-                <h3><span class="gray">@</span> [`Watchers`] <span class="gray">{count($task.watching_contacts)}</span></h3>
-                <ul class="thumbs">
+                <h3><span class="gray">@</span> [`Watchers`] <span class="gray t-watchers-counter">{if count($task.watching_contacts) > 0}{count($task.watching_contacts)}{/if}</span></h3>
+                <ul class="thumbs t-watchers-thumbs">
                     {foreach $task.watching_contacts as $c}
-                        <li>
-                            <a class="userpic userpic-48" href="#/tasks/assigned/{$c.id|escape}/" style="background-image: url('{$c.photo_url}');" title="{$c.name|escape}{if $c.calendar_status} - {$c.calendar_status->getName()|escape}{/if}">
+                        <li data-id="{$c.id}">
+                            <a class="userpic userpic48" href="#/tasks/assigned/{$c.id|escape}/" style="background-image: url('{$c.photo_url}');" title="{$c.name|escape}{if $c.calendar_status} - {$c.calendar_status->getName()|escape}{/if}">
                                 {if $c.calendar_status}
                                     <span class="userstatus" style="background-color: {$c.calendar_status->getBgColor()};color: {$c.calendar_status->getFontColor()};" title="{$c.calendar_status->getName()|escape}"><i class="{$c.calendar_status->getIcon()|escape|default:'fas fa-calendar-alt'}"></i></span>
                                 {/if}
+                                <span class="userstatus t-watchers-remove-icon bg-red"><i class="fas fa-times"></i></span>
                             </a>
                         </li>
                     {/foreach}
+                    <li class="t-watchers-add-icon">
+                        <div class="dropdown" id="addWatcherSelect">
+                            <a href="#" style="width: 48px; height: 48px;" class="dropdown-toggle without-arrow flexbox middle">
+                                <span class="icon text-light-gray size-24"><i class="fas fa-plus"></i></span>
+                            </a>
+                            <div class="dropdown-body">
+                                <ul class="menu">
+                                    <li>
+                                        <a href="javascript:void(0);" data-id="">
+                                            <span></span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
                 </ul>
-            {/if}
+
+                <script>
+                    
+                    (() => {
+                        /*
+                            Add / Remove watchers
+                        */
+                        $.get('?module=tasks&action=getUsersForProject&project_id={$task.project_id}', function (data) {
+                            
+                            if (data.status !== 'ok') return;
+
+                            const users = data.data;
+
+                            const addWatcherSelect = $('#addWatcherSelect');
+                            const menu = addWatcherSelect.find('.dropdown-body .menu');
+                            const li = menu.find('li');
+
+                            users.forEach(user => {
+                                const item = li.clone();
+                                item.find('a').attr('data-id', user.id);
+                                item.find('span').text(user.name);
+                                item.appendTo(menu);
+                            });       
+
+                            li.remove();
+
+                            addWatcherSelect.waDropdown({
+                                hover: false,
+                                items: ".menu > li > a",
+                                update_title: false,
+                                change: (_event, target) => {
+                                    const userId = $(target).data('id');
+                                    if ($('.t-watchers-thumbs li[data-id='+userId+']')[0]) {
+                                        return;
+                                    }
+                                    $.post('?module=tasks&action=favorite', {
+                                        id: {$task.id},
+                                        user_id: userId,
+                                        value: 1
+                                    }, function (data) {
+                                        if (data.status !== 'ok') return;
+                                        const user = users.find(u => u.id == userId);
+                                        if (!user) return;
+                                        const tpl = `
+                                            <li data-id="`+user.id+`">
+                                                <a class="userpic userpic48" href="#/tasks/assigned/`+user.id+`/" style="background-image: url('`+user.photo_url+`');">
+                                                    <span class="userstatus t-watchers-remove-icon bg-red"><i class="fas fa-times"></i></span>
+                                                </a>
+                                            </li>
+                                        `;
+                                        
+                                        $(".t-watchers-add-icon").before(tpl);
+                                        updateCounter(1);
+                                        addEvents();
+                                    });
+                                }
+                            });
+                        });
+
+                        function removeWatcher (userId) {
+                            $.post('?module=tasks&action=favorite', {
+                                id: {$task.id},
+                                user_id: userId,
+                                value: 0
+                            }, function (data) {
+                                if (data.status !== 'ok') return;
+                                $(".t-watchers-thumbs li[data-id="+userId+"]").remove();
+                                updateCounter(-1);
+                            });
+                        };
+
+                        function updateCounter (num) {
+                            const currentNum = parseInt($(".t-watchers-counter").text(), 10) || 0;
+                            console.log(currentNum);
+                            const nextNum = (currentNum + num) || '';
+                            $(".t-watchers-counter").text(nextNum);
+                        };
+
+                        function addEvents () {
+                            $('.t-watchers-thumbs li[data-id]').each(function () {
+                                const userId = $(this).data('id');
+                                $(this).find('.t-watchers-remove-icon').off('click.watchers').on('click.watchers', function (event) {
+                                    event.preventDefault();
+                                    event.stopPropagation();
+                                    removeWatcher(userId);
+                                });
+                            });
+                        };
+
+                        addEvents();
+                
+                    })();
+                </script>
+            
 
             <h3 class="t-comments-h3 custom-mt-32">[`History &amp; Comments`] <span class="hint">{count($task.log)}</span></h3>
 
