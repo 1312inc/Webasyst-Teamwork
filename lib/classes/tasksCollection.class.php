@@ -808,6 +808,14 @@ class tasksCollection
                 } else {
                     $this->where[] = "$alias.$field".$this->getExpression($parts[1], $parts[2]);
                 }
+            } elseif (is_numeric($parts[0])) {
+                /** custom fields */
+                $alias_field_data = $this->addJoin('tasks_field_data', 't.id = :table.task_id');
+                if (empty($alias_field)) {
+                    $alias_field = $this->addJoin('tasks_field', "$alias_field_data.field_id = :table.id");
+                }
+                $this->where[] = "$alias_field_data.field_id".$this->getExpression('=', $parts[0], 'int');
+                $this->where[] = "$alias_field_data.value".$this->getExpression('=', $parts[2]);
             } elseif ($model->fieldExists($parts[0])) {
 
                 //Show all tasks if status_id == all

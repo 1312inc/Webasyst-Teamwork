@@ -21,6 +21,8 @@ class tasksTypeFieldModel extends waModel
     public function save($item)
     {
         $this->truncate();
-        $this->multipleInsert($item);
+        $db_result = $this->multipleInsert($item);
+
+        return $db_result->result();
     }
 }

@@ -34,6 +34,29 @@ class tasksFieldModel extends waModel
         return $fields;
     }
 
+    public function getByControls($controls = [])
+    {
+        $fields = [];
+        $controls = array_intersect($controls, $this::INPUT_ELEMENTS);
+        if ($controls) {
+            $fields = $this->select('*')
+                ->where('control IN (?)', [$controls])
+                ->order('sort')
+                ->fetchAll();
+
+            foreach ($fields as &$_field) {
+                if (empty($_field['data'])) {
+                    $_field['data'] = [];
+                } else {
+                    $_field['data'] = self::decodeData($_field['data']);
+                }
+            }
+            unset($_field);
+        }
+
+        return $fields;
+    }
+
     public static function decodeData($data = '')
     {
         try {
@@ -52,6 +75,11 @@ class tasksFieldModel extends waModel
             tasksLogger::error($e);
             return '';
         }
+    }
+
+    public static function getCode($name = '')
+    {
+        return preg_replace('/[^a-zA-Z0-9_]+/', '_', trim(strtolower(waLocale::transliterate($name))));
     }
 
     public function saveFields($fields = [])

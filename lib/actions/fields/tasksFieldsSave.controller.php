@@ -20,6 +20,7 @@ class tasksFieldsSaveController extends waJsonController
                 continue;
             }
             $_field['sort'] = $sort++;
+            $_field['data'] = ifset($_field, 'data', []);
         }
         unset($sort, $key, $_field);
 

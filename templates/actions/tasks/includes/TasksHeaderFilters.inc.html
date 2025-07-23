@@ -88,39 +88,6 @@ inline}
     })();
 </script>
 
-<!-- FILTER BY GRAVITIES -->
-{include file="./TasksFilter.inc.html"
-    default_title = '[`Gravities`]'
-    filter_id = 'task.gravity'
-    items = array_merge(['' => '[`Any gravity`]'], $gravities)
-inline}
-
-<!-- FILTER BY RESOLUTIONS -->
-<span class="js-resolution-filter" style="display: none;">
-{include file="./TasksFilter.inc.html"
-    default_title = '[`Resolutions`]'
-    filter_id = 'task.resolution'
-    items = array_merge(['' => '[`Any resolution`]'], $resolutions)
-inline}
-</span>
-<script>
-    $(function () {
-        var filters = localStorage.getItem('tasks/inbox_filters');
-
-        if (filters) {
-            var filter_params = filters.split('&');
-            $.each(filter_params, function (index, item) {
-                var param_value = item.split('=');
-
-                if (param_value[1] == 'bug' || param_value[1] == 'sr') {
-                    $('.js-resolution-filter').show();
-                }
-            });
-        }
-    });
-</script>
-
-
 <!-- plugin hook: 'backend_tasks.%plugin_id%.header.filters' -->
 {* @event backend_tasks.%plugin_id%.header.filters *}
 {foreach $_backend_header_hooks as $_}

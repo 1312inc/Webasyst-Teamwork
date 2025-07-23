@@ -127,8 +127,6 @@ class tasksTasksAction extends waViewAction
             'unread_tasks'        => $unread_tasks,
             'types'               => $this->getTypes(),
             'milestones'          => tasksHelper::getMilestones(),
-            'gravities'           => tasksTaskExtModel::getGravities(),
-            'resolutions'         => tasksTaskExtModel::getResolutions()
         ]);
     }
 
@@ -352,7 +350,7 @@ class tasksTasksAction extends waViewAction
             'options' => self::getStatusFilterType($project_id),
         ];
 
-        return $filter_types;
+        return array_merge($filter_types, self::getCustomFiltersType());
     }
 
     protected static function getProjectFilterType($hash = null): array
@@ -435,6 +433,26 @@ class tasksTasksAction extends waViewAction
                     'photo' => '',
                 ],
             ] + tasksHelper::getTeam($project_id, true);
+    }
+
+    protected static function getCustomFiltersType()
+    {
+        $custom_filters = [];
+        if ($fields = (new tasksFieldModel())->getByControls(['select', 'radio'])) {
+            foreach ($fields as $_field) {
+                $options = array_merge(
+                    ['' => ['id' => '', 'name' => $_field['name']]],
+                    array_map(function ($fld) {return ['id' => $fld, 'name' => $fld];}, ifempty($_field, 'data', 'values', []))
+                );
+
+                $custom_filters[tasksFieldModel::getCode($_field['name'])] = [
+                    'id'      => $_field['id'],
+                    'options' => $options
+                ];
+            }
+        }
+
+        return $custom_filters;
     }
 
     protected static function getListViewType()
