@@ -770,6 +770,9 @@
                                 <ul class="menu">
                                     <li>
                                         <a href="javascript:void(0);" data-id="">
+                                            <div class="icon">
+                                                <i class="size-20"></i>
+                                            </div>
                                             <span></span>
                                         </a>
                                     </li>
@@ -799,6 +802,7 @@
                                 const item = li.clone();
                                 item.find('a').attr('data-id', user.id);
                                 item.find('span').text(user.name);
+                                item.find('.icon i').css('background-image', 'url('+user.photo_url+')');
                                 item.appendTo(menu);
                             });       
 
