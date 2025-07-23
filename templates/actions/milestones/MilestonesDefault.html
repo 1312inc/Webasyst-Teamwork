@@ -29,17 +29,6 @@
             
         </div>
 
-        <!-- <label>
-            <div class="wa-select">
-                <select id="project-selector">
-                    <option value="">[`All projects`]</option>
-                    {foreach $projects as $p}
-                        <option value="{$p.id}">{$p.name|escape|truncate:42}</option>
-                    {/foreach}
-                </select>
-            </div>
-        </label> -->
-
         <div class="dropdown small" id="dropdown-from" style="z-index: 9999;">
             <button class="dropdown-toggle button light-gray" type="button">-1 мес</button>
             <div class="dropdown-body">
@@ -64,16 +53,6 @@
             </div>
             
         </div>
-
-        <!-- <label>От: 
-            <div class="wa-select">
-            <select id="range-from"> 
-                <option value="-1">-1 мес</option>
-                <option value="-3" selected>-3 мес</option>
-                <option value="-12">-12 мес</option>
-            </select>
-            </div>
-        </label> -->
 
         <div class="dropdown small" id="dropdown-to" style="z-index: 9999;">
             <button class="dropdown-toggle button light-gray" type="button">+12 мес</button>
@@ -104,18 +83,7 @@
             </div>
             
         </div>
-        <!-- <label>До: 
-            <div class="wa-select">
-            <select id="range-to">
-                <option value="3">+3 мес</option>
-                <option value="6">+6 мес</option>
-                <option value="12" selected>+12 мес</option>
-                <option value="36">+36 мес</option>
-            </select>
-            </div>
-        </label> -->
         <label class="flexbox space-8"><small>Zoom:</small> <input type="range" id="zoom-slider" min="0" max="80" step="1" value="0"></label>
-        <!-- <button id="today-button">Сегодня</button> -->
     </div>
 
     <div class="gantt-table">
@@ -126,6 +94,13 @@
         </div>
     </div>
 </div>
+
+<template id="milestone-row">
+  <div class="flexbox">
+    <div class="gantt-row__name wide"></div>
+    <div class="gantt-row__users flexbox middle"></div>
+  </div>
+</template>
 
 <script src="{$wa_app_static_url}js/gantt.js?v={$wa->version()}"></script>
 <script>

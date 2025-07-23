@@ -448,14 +448,7 @@ class GanttChart {
             const row = rows[index];
             if (!row) return;
 
-            row.innerHTML = project.name;
-            // const template = document.getElementById('milestone-row');
-            // const clone = template.content.cloneNode(true);
-            // clone.querySelector('.gantt-row__name').textContent = project.name;
-            // clone.querySelector('.gantt-row__users').textContent = 2;
-
-            // row.appendChild(clone);
-
+            row.appendChild(this.renderMilestoneRow(project));
 
             const start = new Date(project.start_date);
             const end = new Date(project.end_date || this.getEndDate(monthsBefore));
@@ -566,7 +559,7 @@ class GanttChart {
         const storedHash = localStorage.getItem('tasks/gantt-hash');
         this.hash = storedHash || window.location.hash;
 
-        const [path, query] = this.hash.split('?');
+        const [_, query] = this.hash.split('?');
         const queryParams = new URLSearchParams(query || '');
 
         const from = queryParams.get('from');
@@ -634,7 +627,6 @@ class GanttChart {
             data.append('due_date', newDue);
         }
         
-
         fetch('?module=milestones&action=save', {
             method: 'POST',
             body: data
@@ -652,6 +644,22 @@ class GanttChart {
                 console.error('Error updating milestones:', error);
                 this.setQueryParams('error', Date.now());
             });
+    }
+
+    renderMilestoneRow (project) {
+        const template = document.getElementById('milestone-row');
+        const clone = template.content.cloneNode(true);
+        clone.querySelector('.gantt-row__name').textContent = project.name;
+
+        let users = '';
+        project.users.forEach(user => {
+            users += `
+                <a class="userpic userpic-20" href="#/tasks/assigned/${user.id}/" style="background-image: url('${user.photo_url}');"></span></a>
+            `; 
+        })
+
+        clone.querySelector('.gantt-row__users').innerHTML = users;
+        return clone;
     }
 
     waitForTippy () {

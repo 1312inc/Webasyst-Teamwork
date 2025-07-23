@@ -58,7 +58,7 @@
 
 .gantt-left-column {
     padding-top: 12px;
-    width: 250px;
+    width: 300px;
     overflow-y: auto;
     border-right: 1px solid #ccc;
 }
@@ -102,6 +102,15 @@
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+}
+
+.gantt-row__name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.gantt-row__users .userpic:not(:first-child) {
+    margin-left: -8px;
 }
 
 .gantt-header {
