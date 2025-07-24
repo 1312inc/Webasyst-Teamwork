@@ -651,14 +651,25 @@ class GanttChart {
         const clone = template.content.cloneNode(true);
         clone.querySelector('.gantt-row__name').textContent = project.name;
 
-        let users = '';
+        let usersTpl = '';
+        const overflow = project.users.length > 5 ? project.users.length - 5 : 0;
+
+        if (overflow > 0) {
+            project.users.splice(0, 5);
+        }
+
         project.users.forEach(user => {
-            users += `
-                <a class="userpic userpic-20" href="#/tasks/assigned/${user.id}/" style="background-image: url('${user.photo_url}');"></span></a>
+            usersTpl += `
+                <a class="userpic userpic-20" href="#/tasks/assigned/${user.id}/" style="background-image: url('${user.photo_url}');"></a>
             `; 
         })
+        if (overflow > 0) {
+             usersTpl += `
+                <span class="userpic userpic-20 smaller flexbox align-center">+${more}</span>
+            `; 
+        }
 
-        clone.querySelector('.gantt-row__users').innerHTML = users;
+        clone.querySelector('.gantt-row__users').innerHTML = usersTpl;
         return clone;
     }
 
