@@ -665,7 +665,7 @@ class GanttChart {
         })
         if (overflow > 0) {
              usersTpl += `
-                <span class="userpic userpic-20 smaller flexbox align-center">+${more}</span>
+                <span class="userpic userpic-20 smaller flexbox align-center">+${overflow}</span>
             `; 
         }
 
