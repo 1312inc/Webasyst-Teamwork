@@ -653,12 +653,9 @@ class GanttChart {
 
         let usersTpl = '';
         const overflow = project.users.length > 5 ? project.users.length - 5 : 0;
+        const users = overflow > 0 ? project.users.slice(0, 5) : project.users;
 
-        if (overflow > 0) {
-            project.users.splice(0, 5);
-        }
-
-        project.users.forEach(user => {
+        users.forEach(user => {
             usersTpl += `
                 <a class="userpic userpic-20" href="#/tasks/assigned/${user.id}/" style="background-image: url('${user.photo_url}');"></a>
             `; 
