@@ -648,6 +648,7 @@ SQL;
                     if (empty($result[$_d['milestone_id']])) {
                         $result[$_d['milestone_id']] = [];
                     }
+                    $_contact['action_count'] = $_d['action_count'];
                     $result[$_d['milestone_id']][] = $_contact;
                 }
             }
