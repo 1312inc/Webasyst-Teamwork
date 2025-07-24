@@ -637,10 +637,10 @@ SQL;
                 LEFT JOIN tasks_milestone tm ON tm.project_id = ttl.project_id
                 WHERE tm.id IN (?) AND ttl.contact_id <> 0
                 GROUP BY tm.id, ttl.contact_id
-                ORDER BY action_count
+                ORDER BY action_count DESC
             ", [$milestone_ids])->fetchAll();
 
-            $collection = new waContactsCollection('id/' . implode(',', array_unique(array_column($data, 'contact_id'))));
+            $collection = new waContactsCollection('id/'.implode(',', array_unique(array_column($data, 'contact_id'))));
             $contacts = $collection->getContacts('firstname,middlename,lastname,name,photo_url');
 
             foreach ($data as $_d) {
