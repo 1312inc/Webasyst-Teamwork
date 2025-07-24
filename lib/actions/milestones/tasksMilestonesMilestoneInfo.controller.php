@@ -13,6 +13,6 @@ class tasksMilestonesMilestoneInfoController extends waJsonController
         $collection = new tasksCollection(tasksCollection::HASH_SCOPE.'/'.$milestone_id);
         $collection->orderBy('create_datetime');
 
-        $this->response = $collection->getTasks('*, log', 0, 500);
+        $this->response = array_values($collection->getTasks('*, log', 0, 500));
     }
 }
