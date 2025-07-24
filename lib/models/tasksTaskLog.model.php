@@ -633,11 +633,11 @@ SQL;
         $result = [];
         if (!empty($milestone_ids)) {
             $data = $this->query("
-                SELECT tm.id, ttl.contact_id, COUNT(ttl.id) AS action_count FROM tasks_task_log ttl
-                LEFT JOIN tasks_milestone tm ON tm.project_id = ttl.project_id
-                WHERE tm.id IN (?) AND ttl.contact_id <> 0
-                GROUP BY tm.id, ttl.contact_id
-                ORDER BY action_count DESC
+                SELECT tt.milestone_id, ttl.contact_id, COUNT(ttl.id) AS action_count FROM tasks_task_log ttl
+                LEFT JOIN tasks_task tt ON tt.id = ttl.task_id
+                WHERE ttl.contact_id <> 0 AND tt.milestone_id IN (123, 120)
+                GROUP BY tt.milestone_id, ttl.contact_id
+                ORDER BY tt.milestone_id, action_count DESC
             ", [$milestone_ids])->fetchAll();
 
             $collection = new waContactsCollection('id/'.implode(',', array_unique(array_column($data, 'contact_id'))));
@@ -645,10 +645,10 @@ SQL;
 
             foreach ($data as $_d) {
                 if ($_contact = ifset($contacts, $_d['contact_id'], null)) {
-                    if (empty($result[$_d['id']])) {
-                        $result[$_d['id']] = [];
+                    if (empty($result[$_d['milestone_id']])) {
+                        $result[$_d['milestone_id']] = [];
                     }
-                    $result[$_d['id']][] = $_contact;
+                    $result[$_d['milestone_id']][] = $_contact;
                 }
             }
         }
