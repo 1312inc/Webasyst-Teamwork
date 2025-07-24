@@ -635,7 +635,7 @@ SQL;
             $data = $this->query("
                 SELECT tt.milestone_id, ttl.contact_id, COUNT(ttl.id) AS action_count FROM tasks_task_log ttl
                 LEFT JOIN tasks_task tt ON tt.id = ttl.task_id
-                WHERE ttl.contact_id <> 0 AND tt.milestone_id IN (123, 120)
+                WHERE ttl.contact_id <> 0 AND tt.milestone_id IN (?)
                 GROUP BY tt.milestone_id, ttl.contact_id
                 ORDER BY tt.milestone_id, action_count DESC
             ", [$milestone_ids])->fetchAll();
