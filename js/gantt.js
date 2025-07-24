@@ -15,7 +15,7 @@ class GanttChart {
         this.selFrom = -1;
         this.selTo = 12;
         this.zoomSlider = document.getElementById(options.zoomSliderId);
-        this.rowsCount = options.rows || 50;
+        this.rowsCount = options.data.length || 50;
         this.dayWidthBase = 0;
         this.zoomWidth = 0;
         this.timelineHeader = document.getElementById(options.timelineHeaderId);
