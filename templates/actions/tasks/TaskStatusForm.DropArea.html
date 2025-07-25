@@ -17,8 +17,8 @@
                         lexicalEditor.createLexicalInstance({
                             el: $el,
                             isRichMode: TasksController ? TasksController.options.text_editor === 'wysiwyg' : false,
-                            taskId: '{$task.id}',
-                            storage: TasksController ? TasksController.getDraftKeyActionText({$task.id}, action) : '',
+                            taskId: '{if !empty($task)}{$task.id}{/if}',
+                            storage: TasksController ? TasksController.getDraftKeyActionText({if !empty($task)}{$task.id}{else}null{/if}, action) : '',
                             placeholder: '[`Add comment`]',
                             imageUploadUrl: '?module=attachments&action=imageUpload',
                             imageUploadTaskUuid: document.querySelector('.article').dataset.taskUuid || '',
@@ -28,7 +28,7 @@
                         });
 
                         // Load draft
-                        TasksController.storageDataInMdMode($el, 'getDraftKeyActionText', {$task.id}, action);
+                        TasksController.storageDataInMdMode($el, 'getDraftKeyActionText', {if !empty($task)}{$task.id}{else}null{/if}, action);
 
                         if(TasksController.options.text_editor === 'markdown') {
                             $($el).textareaAutocomplete({
