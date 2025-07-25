@@ -5,7 +5,7 @@
     <div class="custom-my-6 custom-ml-40 js-option-values">
         {foreach ifset($field, 'data', 'values', []) as $_value}
         <div class="custom-my-4 js-option-block">
-            <input type="text" name="{$i_name}[data][values][]" value="{$_value}" placeholder="[`Значение`]">
+            <input type="text" name="{$i_name}[data][values][]" value="{$_value}" placeholder="[`Value`]">
             <a class="js-delete-option custom-ml-12" title="[`Delete`]">
                 <i class="fas fa-trash-alt text-pink"></i>
             </a>
@@ -16,7 +16,7 @@
 
 {function get_input_elements field = []}
     {$i_name = "fields[{$field.id}]"}
-    <input type="text" name="{$i_name}[name]" value="{$field.name}" placeholder="[`Название поля`]">
+    <input type="text" name="{$i_name}[name]" value="{$field.name}" placeholder="[`Field name`]">
     <input type="hidden" name="{$i_name}[id]" value="{$field.id}">
     <div class="wa-select">
         <select name="{$i_name}[control]">

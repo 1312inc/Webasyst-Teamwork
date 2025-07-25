@@ -32,11 +32,11 @@ final class tasksTinyAddService
         //         'appurl' => $_webasyst_base_url . 'store/app/cash/?utm_source=statusappwebasyst&utm_medium=inapp_tiny_ad&utm_campaign=1312_inapp_statusappwebasyst_cashapp_wa' . $_whichUI,
         //         'buyurl' => $_webasyst_base_url . 'buy/store/5136/?utm_source=statusappwebasyst&utm_medium=inapp_tiny_ad&utm_campaign=1312_inapp_statusappwebasyst_cashapp_wa' . $_whichUI,
         //         'image' => wa()->getAppStaticUrl() . 'img/tinyad/ad-cash-app-144.png',
-        //         'title' => _w('Cash Flow'),
-        //         'subtitle' => _w('Forecasts and saves your business money.'),
-        //         'teaser' => _w('Promocode for managing money the smarter way.'),
-        //         'body' => '<strong>' . _w('Forecasts and saves your money.') . '</strong>' . ' ' .
-        //             _w(
+        //         'title' => _ww('Cash Flow'),
+        //         'subtitle' => _ww('Forecasts and saves your business money.'),
+        //         'teaser' => _ww('Promocode for managing money the smarter way.'),
+        //         'body' => '<strong>' . _ww('Forecasts and saves your money.') . '</strong>' . ' ' .
+        //             _ww(
         //                 'Shows exact cash on hand balance for any date in the future. This app could have been a <em>life saver</em> for most businesses which did not survive a cash gap because of not knowing it’s coming.'
         //             ),
         //         'promocode' => '9ZYNJO6ENP',
