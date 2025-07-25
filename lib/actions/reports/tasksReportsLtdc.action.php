@@ -172,7 +172,7 @@ class tasksReportsLtdcAction extends tasksLogAction
         $result['task_type'] = [
             '' => [
                 'id' => '',
-                'name' => 'Все типы задач',
+                'name' => _w('All task types'),
             ],
             'sr' => [
                 'id' => 'sr',

@@ -137,8 +137,8 @@
     </header>
 
     <div class="ltdc-chart-wrapper">
-        <h1 class="align-center">Частотная диаграмма времени выполнения задач</h1>
-        <div class="align-center">Всего задач - <span id="quantity-tasks"></span></div>
+        <h1 class="align-center">[`Lead time distribution chart`]</h1>
+        <div class="align-center">[`Total tasks`]: <span id="quantity-tasks"></span></div>
         <div class="ltdc-chart-canvas" style="position: relative; margin: 0 auto; height:80vh; width:80vw">
             <canvas id="ltdc-chart"></canvas>
         </div>
@@ -181,7 +181,7 @@
     var ltdc_data = {
         labels: time_labels,
         datasets: [{
-            label: 'Количество задач',
+            label: {_w('Number of tasks')|json_encode},
             data: count_tasks,
             backgroundColor: 'rgb(153, 102, 255)',
         }],
@@ -205,14 +205,14 @@
                 x: {
                     title: {
                         display: true,
-                        text: 'Время производства (календарных дней от обязательства до поставки)'
+                        text: {_w('Production time (calendar days from obligation to delivery)')|json_encode}
                     }
                 },
                 y: {
                     stacked: true,
                     title: {
                         display: true,
-                        text: 'Количество элементов с указанным временем производства'
+                        text: {_w('Number of items with specified production time')|json_encode}
                     },
                     suggestedMax: 5
                 }

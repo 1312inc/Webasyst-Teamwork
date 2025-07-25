@@ -1,5 +1,5 @@
 <link rel="stylesheet" href="{$wa_app_static_url}css/gantt.css?v={$wa->version()}">
-                            
+
 <div class="gantt-container">
     <div class="gantt-controls">
         <div class="dropdown small" id="dropdown-project" style="z-index: 9999;">
@@ -26,64 +26,64 @@
                 </ul>
 
             </div>
-            
+
         </div>
 
         <div class="dropdown small" id="dropdown-from" style="z-index: 9999;">
-            <button class="dropdown-toggle button light-gray" type="button">-1 мес</button>
+            <button class="dropdown-toggle button light-gray" type="button">{sprintf_wp('%s mo.', '-1')}</button>
             <div class="dropdown-body">
                 <ul class="menu">
                     <li>
                         <a href="javascript:void(0);" data-value="-1">
-                            <span>-1 мес</span>
+                            <span>{sprintf_wp('%s mo.', '-1')}</span>
                         </a>
                     </li>
                     <li>
                         <a href="javascript:void(0);" data-value="-3">
-                            <span>-3 мес</span>
+                            <span>{sprintf_wp('%s mo.', '-3')}</span>
                         </a>
                     </li>
                     <li>
                         <a href="javascript:void(0);" data-value="-12">
-                            <span>-12 мес</span>
+                            <span>{sprintf_wp('%s mo.', '-12')}</span>
                         </a>
                     </li>
                 </ul>
 
             </div>
-            
+
         </div>
 
         <div class="dropdown small" id="dropdown-to" style="z-index: 9999;">
-            <button class="dropdown-toggle button light-gray" type="button">+12 мес</button>
+            <button class="dropdown-toggle button light-gray" type="button">{sprintf_wp('%s mo.', '+12')}</button>
             <div class="dropdown-body">
                 <ul class="menu">
                     <li>
                         <a href="javascript:void(0);" data-value="3">
-                            <span>+3 мес</span>
+                            <span>{sprintf_wp('%s mo.', '+3')}</span>
                         </a>
                     </li>
                     <li>
                         <a href="javascript:void(0);" data-value="6">
-                            <span>+6 мес</span>
+                            <span>{sprintf_wp('%s mo.', '+6')}</span>
                         </a>
                     </li>
                     <li>
                         <a href="javascript:void(0);" data-value="12">
-                            <span>+12 мес</span>
+                            <span>{sprintf_wp('%s mo.', '+12')}</span>
                         </a>
                     </li>
                     <li>
                         <a href="javascript:void(0);" data-value="36">
-                            <span>+36 мес</span>
+                            <span>{sprintf_wp('%s mo.', '+36')}</span>
                         </a>
                     </li>
                 </ul>
 
             </div>
-            
+
         </div>
-        <label class="flexbox space-8"><small>Zoom:</small> <input type="range" id="zoom-slider" min="0" max="80" step="1" value="0"></label>
+        <label class="flexbox space-8"><small>[`Zoom`]:</small> <input type="range" id="zoom-slider" min="0" max="80" step="1" value="0"></label>
     </div>
 
     <div class="gantt-table">

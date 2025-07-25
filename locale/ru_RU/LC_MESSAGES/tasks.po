@@ -1788,3 +1788,33 @@ msgstr "Отчеты работают только в интерфейсе Webas
 
 msgid "Bad parameters"
 msgstr "Получены неверные параметры"
+
+msgid "Dates"
+msgstr "Даты"
+
+msgid "Number of tasks"
+msgstr "Количество задач"
+
+msgid "Lead time distribution chart"
+msgstr "Частотная диаграмма времени выполнения задач"
+
+msgid "Total tasks"
+msgstr "Всего задач"
+
+msgid "Production time (calendar days from obligation to delivery)"
+msgstr "Время производства (календарных дней от обязательства до поставки)"
+
+msgid "Number of items with specified production time"
+msgstr "Количество элементов с указанным временем производства"
+
+msgid "%s mo."
+msgstr "%s мес"
+
+msgid "Zoom"
+msgstr "Масштаб"
+
+msgid "All task types"
+msgstr "Все типы задач"
+
+msgid "Cumulative flow diagram"
+msgstr "Накопительная диаграмма потока"
