@@ -509,14 +509,14 @@ class GanttChart {
                     placement: 'top-start',
                     trigger: 'manual',
                     hideOnClick: false,
-                    interactive: true
+                    // interactive: true
                 });
                 const endTip = tippy(bar, {
                     content: `Конец: ${end.toLocaleDateString('ru-RU')}`,
-                    placement: 'top-end',
+                    placement: 'bottom-end',
                     trigger: 'manual',
                     hideOnClick: false,
-                    interactive: true
+                    // interactive: true
                 });
                 bar.addEventListener('mouseenter', () => {
                     startTip.show();
