@@ -255,6 +255,14 @@
     cursor: default;
 }
 
+.gantt-task-pointer {
+    position: absolute;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    z-index: 99999;
+}
+
 .gantt-bar__progressbar {
     position: absolute;
     height: 3px;

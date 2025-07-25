@@ -3,7 +3,9 @@ class GanttChart {
         this.initOptions(options);
         this.handleQueryParams();
         this.initEvents();
-        setTimeout(() => this.render());
+        this.setActiveMilestone().then(() => {
+            this.render();
+        })
     }
 
     initOptions (options) {
@@ -15,7 +17,9 @@ class GanttChart {
         this.selFrom = -1;
         this.selTo = 12;
         this.zoomSlider = document.getElementById(options.zoomSliderId);
-        this.rowsCount = options.data.length || 50;
+        this.selectedMilestone = 0;
+        this.selectedMilestoneTasks = [];
+        this.rowsCount = 0;
         this.dayWidthBase = 0;
         this.zoomWidth = 0;
         this.timelineHeader = document.getElementById(options.timelineHeaderId);
@@ -34,6 +38,20 @@ class GanttChart {
     addControlEvents () {
         this.initZoomControl();
         this.initSelectsControl();
+    }
+
+    async setActiveMilestone () {
+        if (!this.selectedMilestone) return;
+
+        const data = await fetch(`?module=milestones&action=milestoneInfo&milestone_id=${this.selectedMilestone}`)
+            .then(response => response.json())
+            .then(data => data.data)
+            .catch((e) => {});
+    
+        if (!Array.isArray(data)) return;
+
+        this.selectedMilestoneTasks = data;
+        this.rowsCount += this.selectedMilestoneTasks.length;
     }
 
     addTimelineToolbar () {
@@ -65,7 +83,7 @@ class GanttChart {
     }
 
     initSelectsControl () {
-        const [path, query] = this.hash.split('?');
+        const query = this.hash.split('/')[2];
         const queryParams = new URLSearchParams(query || '');
 
         const zoomSlider = document.getElementById('zoom-slider');
@@ -273,7 +291,7 @@ class GanttChart {
         const newEndDate = newEnd.toISOString().slice(0, 10);
 
         const pointer = bar.querySelector('.gantt-bar-pointer');
-        let newDueDate
+        let newDueDate = null
         if (pointer) {
             const newDue = new Date(newStart);
             const pointerLeft = pointer.offsetLeft;
@@ -283,6 +301,7 @@ class GanttChart {
         }
 
         if (milestone.start_date === newStartDate && milestone.end_date === newEndDate && milestone.due_date === newDueDate) {
+            this.setQueryParams('milestone', this.selectedMilestone ? null : milestoneId);
             return;
         }
 
@@ -436,18 +455,19 @@ class GanttChart {
         const dayMs = 1000 * 60 * 60 * 24;
         const rows = this.leftCol.querySelectorAll('.gantt-row');
 
-        this.timeline.querySelectorAll('.gantt-bar').forEach(element => {
+        // Remove all bars and tasks
+        this.timeline.querySelectorAll('.gantt-bar, .gantt-task-pointer').forEach(element => {
             element.remove();
         });
 
+        // Clear all left rows
         rows.forEach(element => {
             element.innerHTML = '';
         });
 
-        projects.forEach((project, index) => {
-            const row = rows[index];
-            if (!row) return;
-
+        let rowIndex = 0;
+        projects.forEach((project) => {
+            const row = rows[rowIndex];
             row.appendChild(this.renderMilestoneRow(project));
 
             const start = new Date(project.start_date);
@@ -462,7 +482,7 @@ class GanttChart {
             const bar = document.createElement('div');
             bar.className = `gantt-bar ${project.project.color} ${project.closed === '1' ? 'closed' : ''}`;
             bar.style.opacity = project.closed !== '1' ? '1' : '0.5';
-            bar.style.top = `${40 * index + 5}px`;
+            bar.style.top = `${40 * rowIndex + 5}px`;
             bar.style.left = `${left}px`;
             bar.style.width = `${width}px`;
             bar.dataset.milestoneId = project.id;
@@ -524,11 +544,67 @@ class GanttChart {
             }
 
             this.timeline.appendChild(bar);
+
+            if (project.id === this.selectedMilestone) {
+                this.selectedMilestoneTasks.forEach(task => {
+                    rowIndex++;
+
+                    rows[rowIndex].innerHTML = `<a href="#/task/${task.project_id}.${task.number}/" class="hint">${task.project_id}.${task.number} ${task.name}</a>`;
+
+                    const dates = new Set();
+
+                    task.log.forEach(log => {
+                        let pointerDate = null;
+                        let actionName = '';
+                        let iconClass = '';
+                        if (log.action === 'add') {
+                            pointerDate = new Date(log.create_datetime);
+                            actionName = 'Add';
+                            iconClass = 'fas fa-plus';
+                        } else if (log.after_status_id === '-1') {
+                            pointerDate = new Date(log.create_datetime);
+                            actionName = 'Close';
+                            iconClass = 'fas fa-check';
+                        } else if (log.action === 'return') {
+                            pointerDate = new Date(log.create_datetime);
+                            actionName = 'Return';
+                            iconClass = 'fas fa-arrow-left';
+                        }
+
+                        if (!pointerDate) return;
+                        if (dates.has(pointerDate.toISOString().split('T')[0])) return;
+                        dates.add(pointerDate.toISOString().split('T')[0]);
+
+                        const offsetDays = Math.max(0, Math.floor((pointerDate - timelineStart) / dayMs));
+                        const left = offsetDays * (this.dayWidthBase + this.zoomWidth) + (this.dayWidthBase + this.zoomWidth) / 2;
+                        const pointer = document.createElement('div');
+                        pointer.className = 'gantt-task-pointer text-gray';
+                        pointer.dataset.test = pointerDate;
+                        pointer.style.top = `${40 * rowIndex + 5}px`;
+                        pointer.style.width = `${this.dayWidthBase + this.zoomWidth}px`;
+                        pointer.style.left = `${left}px`;
+                        pointer.innerHTML = `<i class="icon size-12 ${iconClass}"></i>`;
+                        this.timeline.appendChild(pointer);
+                        
+                        this.waitForTippy().then(() => {
+                            tippy(pointer, {
+                                content: `${actionName}: ${pointerDate.toLocaleDateString('ru-RU')}`,
+                                placement: 'top-start'
+                            });
+                        });
+                    });
+                })
+            }
+
+            rowIndex++;
         });
     }
 
     setQueryParams (name, value) {
-        const [path, query] = this.hash.split('?');
+        let [path, query] = this.hash.split('?');
+        if (query.at(-1) === '/') {
+            query = query.slice(1);
+        }
         const params = new URLSearchParams(query || '');
 
         if (value) {
@@ -537,7 +613,7 @@ class GanttChart {
             params.delete(name);
         }
 
-        const allowed = ['from', 'to', 'project', 'zoom', 'error'];
+        const allowed = ['from', 'to', 'project', 'zoom', 'error', 'milestone'];
         const newParams = new URLSearchParams();
         allowed.forEach(key => {
             if (params.has(key)) {
@@ -559,13 +635,14 @@ class GanttChart {
         const storedHash = localStorage.getItem('tasks/gantt-hash');
         this.hash = storedHash || window.location.hash;
 
-        const [_, query] = this.hash.split('?');
+        const query = this.hash.split('/')[2];
         const queryParams = new URLSearchParams(query || '');
 
         const from = queryParams.get('from');
         const to = queryParams.get('to');
         const project = queryParams.get('project');
         const zoom = queryParams.get('zoom');
+        const milestone = queryParams.get('milestone');
 
         if (['-1', '-3', '-12'].includes(from)) {
             this.selFrom = from;
@@ -575,6 +652,9 @@ class GanttChart {
         }
         if (zoom) {
             this.zoomWidth = parseInt(zoom, 10);
+        }
+        if (milestone) {
+            this.selectedMilestone = milestone;
         }
 
         const fromOffset = parseInt(this.selFrom, 10);
@@ -616,6 +696,7 @@ class GanttChart {
         }
 
         this.data = filtered;
+        this.rowsCount += this.data.length;
     }
 
     fetchUpdate (milestoneId, newStart, newEnd, newDue) {
