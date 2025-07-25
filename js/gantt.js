@@ -301,7 +301,7 @@ class GanttChart {
         }
 
         if (milestone.start_date === newStartDate && milestone.end_date === newEndDate && milestone.due_date === newDueDate) {
-            this.setQueryParams('milestone', this.selectedMilestone ? null : milestoneId);
+            this.setQueryParams('milestone', milestoneId === this.selectedMilestone ? null : milestoneId);
             return;
         }
 
@@ -569,9 +569,26 @@ class GanttChart {
                             pointerDate = new Date(log.create_datetime);
                             actionName = 'Return';
                             iconClass = 'fas fa-arrow-left';
-                        }
+                        } else if (log.action === 'forward') {
+                            pointerDate = new Date(log.create_datetime);
+                            actionName = 'Forward';
+                            iconClass = 'fas fa-arrow-right';
+                        } else if (log.action === 'edit') {
+                            pointerDate = new Date(log.create_datetime);
+                            actionName = 'Edit';
+                            iconClass = 'fas fa-pen';
+                        } else if (log.action === 'comment') {
+                            pointerDate = new Date(log.create_datetime);
+                            actionName = 'Comment';
+                            iconClass = 'fas fa-comment';
+                        } else if (log.action === 'commit') {
+                            pointerDate = new Date(log.create_datetime);
+                            actionName = 'Commit';
+                            iconClass = 'fab fa-github';
+                        } 
 
-                        if (!pointerDate) return;
+                        if (!pointerDate || pointerDate < timelineStart) return;
+                        
                         if (dates.has(pointerDate.toISOString().split('T')[0])) return;
                         dates.add(pointerDate.toISOString().split('T')[0]);
 
@@ -579,7 +596,6 @@ class GanttChart {
                         const left = offsetDays * (this.dayWidthBase + this.zoomWidth) + (this.dayWidthBase + this.zoomWidth) / 2;
                         const pointer = document.createElement('div');
                         pointer.className = 'gantt-task-pointer text-gray';
-                        pointer.dataset.test = pointerDate;
                         pointer.style.top = `${40 * rowIndex + 5}px`;
                         pointer.style.width = `${this.dayWidthBase + this.zoomWidth}px`;
                         pointer.style.left = `${left}px`;
