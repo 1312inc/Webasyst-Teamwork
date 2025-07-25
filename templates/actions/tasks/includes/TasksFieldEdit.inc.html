@@ -43,7 +43,7 @@
                         </span>
                     </span>
                 </span>
-                {$value}
+                {$value|escape}
             </label>
             {else}
                 <input type="{$f.control}" name="{$f_name}" value="{$value}" disabled>
