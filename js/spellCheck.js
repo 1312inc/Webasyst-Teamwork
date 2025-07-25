@@ -77,6 +77,22 @@ const spellCheck = async (inputMd) => {
             return key;
         });
 
+        // Replace mentions
+        mdText = mdText.replace(/(@\w+)/g, (mention) => {
+            const key = `__MENTION_PLACEHOLDER_${placeholderIndex}__`;
+            placeholders.push({ key, content: mention });
+            placeholderIndex++;
+            return key;
+        });
+
+        // Replace tags
+        mdText = mdText.replace(/(#\w+)/g, (hashtag) => {
+            const key = `__HASHTAG_PLACEHOLDER_${placeholderIndex}__`;
+            placeholders.push({ key, content: hashtag });
+            placeholderIndex++;
+            return key;
+        });
+
         return { text: mdText, placeholders };
     }
 
