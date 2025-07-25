@@ -100,14 +100,14 @@ class tasksTaskExtModel extends waModel
 
     public function cleanEmptyRows()
     {
-        $sql = "DELETE FROM `{$this->table}` 
-            WHERE 
+        $sql = "DELETE FROM `{$this->table}`
+            WHERE
                 `type` IS NULL AND
                 `gravity` IS NULL AND
                 `timecosts_plan` IS NULL AND
                 `timecosts_fact` IS NULL AND
                 `affected_version` IS NULL AND
-                `resolution` IS NULL AND 
+                `resolution` IS NULL AND
                 `kanban_color` IS NULL
             ";
         $this->exec($sql);
@@ -116,13 +116,13 @@ class tasksTaskExtModel extends waModel
     public static function getFieldNames()
     {
         return [
-            'type'             => _w('Тип'),
-            'gravity'          => _w('Серьёзность'),
-            'timecosts_plan'   => _w('Трудозатраты плановые'),
-            'timecosts_fact'   => _w('Трудозатраты фактические'),
-            'affected_version' => _w('Где найдено'),
-            'resolution'       => _w('Результат'),
-            'kanban_color'     => _w('Цвет')
+            'type'             => _w('Type'),
+            'gravity'          => _w('Gravity'),
+            'timecosts_plan'   => _w('Planned time costs'),
+            'timecosts_fact'   => _w('Actual time costs'),
+            'affected_version' => _w('Affected version'),
+            'resolution'       => _w('Result'),
+            'kanban_color'     => _w('Color')
         ];
     }
 

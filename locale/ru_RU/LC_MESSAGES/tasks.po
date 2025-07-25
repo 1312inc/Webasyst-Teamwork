@@ -12,7 +12,7 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=((((n%10)==1)&&((n%100)!=11))?(0):(((((n%10)>=2)&&((n%10)<=4))&&(((n%100)<10)||((n%100)>=20)))?(1):2));\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Basepath: .\n"
-"X-Generator: Poedit 3.3.2\n"
+"X-Generator: Poedit 3.4.2\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPath-1: .\n"
 
@@ -1696,5 +1696,125 @@ msgstr "Орфография"
 msgid "Task fields"
 msgstr "Поля задач"
 
-msgid "Please select task type"
-msgstr "Пожалуйста выберите тип задачи"
+msgid "Please select a task type"
+msgstr "Пожалуйста, выберите тип задачи"
+
+msgid "Gantt"
+msgstr "Гант"
+
+msgid "Charts"
+msgstr "Графики"
+
+msgid "CFD"
+msgstr "CFD"
+
+msgid "LTDC"
+msgstr "LTDC"
+
+msgid "Any type"
+msgstr "Любой тип"
+
+msgid "Types"
+msgstr "Типы"
+
+msgid "Type"
+msgstr "Тип"
+
+msgid "No milestones available."
+msgstr "Нет доступных для выбора сроков."
+
+msgid "Initial status"
+msgstr "Начальный статус"
+
+msgid "Target status"
+msgstr "Конечный статус"
+
+msgid "New type"
+msgstr "Новый тип"
+
+msgid "Open settings"
+msgstr "Открыть настройки"
+
+msgid "Number of days in this status"
+msgstr "Количество дней в этом статусе"
+
+msgid "Hide new & completed"
+msgstr "Спрятать новые и завершенные"
+
+msgid "Color settings"
+msgstr "Настройки цвета"
+
+msgid "Or enter a color value"
+msgstr "Или задайте цвет вручную"
+
+msgid "Value"
+msgstr "Значение"
+
+msgid "Field name"
+msgstr "Название поля"
+
+msgid "New field"
+msgstr "Новое поле"
+
+msgid "Start date"
+msgstr "Начальная дата"
+
+msgid "End date"
+msgstr "Конечная дата"
+
+msgid "Parent scope"
+msgstr "Родительская работа"
+
+msgid "Not specified"
+msgstr "Не указана"
+
+msgid "Gravity"
+msgstr "Серьезность"
+
+msgid "Planned time costs"
+msgstr "Трудозатраты плановые"
+
+msgid "Actual time costs"
+msgstr "Трудозатраты фактические"
+
+msgid "Affected version"
+msgstr "В какой версии обнаружено"
+
+msgid "Result"
+msgstr "Результат"
+
+msgid "Reports are available in the Webasyst 2 interface only."
+msgstr "Отчеты работают только в интерфейсе Webasyst 2."
+
+msgid "Bad parameters"
+msgstr "Получены неверные параметры"
+
+msgid "Dates"
+msgstr "Даты"
+
+msgid "Number of tasks"
+msgstr "Количество задач"
+
+msgid "Lead time distribution chart"
+msgstr "Частотная диаграмма времени выполнения задач"
+
+msgid "Total tasks"
+msgstr "Всего задач"
+
+msgid "Production time (calendar days from obligation to delivery)"
+msgstr "Время производства (календарных дней от обязательства до поставки)"
+
+msgid "Number of items with specified production time"
+msgstr "Количество элементов с указанным временем производства"
+
+msgid "%s mo."
+msgstr "%s мес"
+
+msgid "Zoom"
+msgstr "Масштаб"
+
+msgid "All task types"
+msgstr "Все типы задач"
+
+msgid "Cumulative flow diagram"
+msgstr "Накопительная диаграмма потока"

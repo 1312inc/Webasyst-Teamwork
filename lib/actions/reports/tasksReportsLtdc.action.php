@@ -7,7 +7,7 @@ class tasksReportsLtdcAction extends tasksLogAction
     public function execute()
     {
         if (wa()->whichUI('tasks') != '2.0') {
-            throw new waException(_w('Отчёты работают только в стилях 2.0'));
+            throw new waException(_w('Reports are available in the Webasyst 2 interface only.'));
         }
 
         // Get parameters from GET/POST
@@ -172,7 +172,7 @@ class tasksReportsLtdcAction extends tasksLogAction
         $result['task_type'] = [
             '' => [
                 'id' => '',
-                'name' => 'Все типы задач',
+                'name' => _w('All task types'),
             ],
             'sr' => [
                 'id' => 'sr',

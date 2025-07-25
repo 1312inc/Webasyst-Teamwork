@@ -5,7 +5,7 @@
     <form method="post" action="?module=kanban&action=settingsSave">
         <div class="dialog-body dialog-window">
             <a href="#" class="dialog-close js-close-dialog"><i class="fas fa-times"></i></a>
-            <header class="dialog-header"><h1>[`Настройки цвета`]</h1></header>
+            <header class="dialog-header"><h1>[`Color settings`]</h1></header>
             <div class="dialog-content">
                 <div class="dialog-content-indent">
                     <div class="fields">
@@ -25,7 +25,7 @@
                             </div>
                         </div>
                         <div class="field">
-                            <div class="name for-input">[`Или задайте цвет вручную`]</div>
+                            <div class="name for-input">[`Or enter a color value`]</div>
                             <div class="value colorpicker">
                                 # <input type="text" name="kanban_task_settings[custom_color]" value="{if strpos($kanban_color, 't-') === false}{$kanban_color|escape}{/if}" data-type="text" class="short small" placeholder="f0f0f0" style="width: 80px;">
                             </div>

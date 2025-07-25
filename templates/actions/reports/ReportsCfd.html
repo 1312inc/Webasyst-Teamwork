@@ -94,7 +94,7 @@
     </header>
 
     <div class="cfd-chart-wrapper">
-        <h1 class="align-center">Cumulative Flow Diagram</h1>
+        <h1 class="align-center">[`Cumulative flow diagram`]</h1>
         <div class="cfd-chart-canvas" style="position: relative; margin: 0 auto; height:80vh; width:80vw">
             <canvas id="cfd-chart"></canvas>
         </div>
@@ -164,14 +164,14 @@
                 x: {
                     title: {
                         display: true,
-                        text: 'Даты'
+                        text: {_w('Dates')|json_encode}
                     }
                 },
                 y: {
                     stacked: true,
                     title: {
                         display: true,
-                        text: 'Количество задач'
+                        text: {_w('Number of tasks')|json_encode}
                     }
                 }
             },

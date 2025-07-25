@@ -6,7 +6,7 @@
 
     <div class="field">
         <div class="name">
-            {$f.name}
+            {$f.name|escape}
         </div>
         <div class="value small">
             {if $f.control == 'select'}
@@ -14,7 +14,7 @@
                 <select name="{$f_name}" disabled>
                 {if ifset($f, 'data', 'values', [])}
                     {foreach $f.data.values as $_option}
-                    <option value="{$_option}"{if $_option == $value} selected{/if}>{$_option}</option>
+                    <option value="{$_option|escape}"{if $_option == $value} selected{/if}>{$_option|escape}</option>
                     {/foreach}
                 {/if}
                 </select>
@@ -26,17 +26,17 @@
                     {foreach $f.data.values as $_value}
                         <label>
                             <span class="wa-radio">
-                                <input type="{$f.control}" name="{$f_name}" value="{$_value}"{if $_value == $value} checked="checked"{/if} disabled>
+                                <input type="{$f.control}" name="{$f_name}" value="{$_value|escape}"{if $_value == $value} checked="checked"{/if} disabled>
                                 <span></span>
                             </span>
-                            {$_value}
+                            {$_value|escape}
                         </label>
                     {/foreach}
                 {/if}
             {elseif $f.control == 'checkbox'}
             <label>
                 <span class="wa-checkbox">
-                    <input type="{$f.control}" name="{$f_name}" value="{$f.name}"{if $f.name == $value} checked{/if} disabled>
+                    <input type="{$f.control}" name="{$f_name}" value="{$f.name|escape}"{if $f.name == $value} checked{/if} disabled>
                     <span>
                         <span class="icon">
                             <i class="fas fa-check"></i>
@@ -71,7 +71,7 @@
             '$editor': $('#t-edit-task-form'),
             'task': {$_task|json_encode},
             'locales': {
-                select_task_type: "[`Please select task type`]"
+                select_task_type: "[`Please select a task type`]"
             }
         })
     })(jQuery);
