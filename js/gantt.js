@@ -509,14 +509,42 @@ class GanttChart {
                     placement: 'top-start',
                     trigger: 'manual',
                     hideOnClick: false,
-                    // interactive: true
+                    interactive: true,
+                    popperOptions: {
+                        modifiers: [
+                            {
+                                name: 'preventOverlap',
+                                enabled: true
+                            },
+                            {
+                                name: 'flip',
+                                options: {
+                                    fallbackPlacements: ['left', 'top', 'right', 'bottom']
+                                }
+                            }
+                        ]
+                    },
                 });
                 const endTip = tippy(bar, {
                     content: `Конец: ${end.toLocaleDateString('ru-RU')}`,
                     placement: 'bottom-end',
                     trigger: 'manual',
                     hideOnClick: false,
-                    // interactive: true
+                    interactive: true,
+                    popperOptions: {
+                        modifiers: [
+                            {
+                                name: 'preventOverlap',
+                                enabled: true
+                            },
+                            {
+                                name: 'flip',
+                                options: {
+                                    fallbackPlacements: ['right', 'top', 'left', 'bottom']
+                                }
+                            }
+                        ]
+                    },
                 });
                 bar.addEventListener('mouseenter', () => {
                     startTip.show();
