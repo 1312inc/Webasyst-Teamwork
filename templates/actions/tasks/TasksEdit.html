@@ -441,7 +441,9 @@
         window.spellCheck(text).then((correctedText) => {
             $el.val(correctedText).trigger('input').trigger('change');
             waRedactorTaskInit();
-        }).finally(() => {
+        })
+        .catch(() => {})
+        .finally(() => {
             spellcheckInProcess = false;
             $spellcheckBtn.find('.icon').removeClass('shimmer');
         })

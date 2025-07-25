@@ -34,6 +34,15 @@ const spellCheck = async (inputMd) => {
             return restored;
         }
 
+        if (data.data?.response?.error_description) {
+            const errorContainer = document.querySelector('.t-errors-block');
+            if (!errorContainer) return;
+            errorContainer.innerHTML = `<span style="color: red;"><br>${data.data.response.error_description}</span>`;
+            setTimeout(() => {
+                errorContainer.innerHTML = '';
+            }, 3000);
+        }
+
         throw new Error('Invalid response format from server');
     } catch (error) {
         console.error('Spell check failed:', error);
