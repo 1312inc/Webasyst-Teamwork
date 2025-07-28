@@ -277,8 +277,8 @@ class tasksTask implements ArrayAccess
             $parser->setSafeMode(true);
             $text = self::replaceMentionsWithLinks($text);
             $text = $parser->text($text);
-            // Allow <u> tags
-            $text = str_replace(['&lt;u&gt;', '&lt;/u&gt;'], ['<u>', '</u>'], $text);
+            // Исправляем теги подчеркивания
+            $text = self::fixUnderlineTags($text);
         }
 
         if (isset($options['escape']) && $options['escape'] === true) {
@@ -538,6 +538,30 @@ class tasksTask implements ArrayAccess
             'url_pattern' => $url_pattern,
             'link_pattern' => $link_pattern
         ));
+    }
+
+    /**
+     * Исправляет незакрытые теги подчеркивания в тексте
+     * Преобразует &lt;u&gt; в правильные <u></u> теги
+     * 
+     * @param string $text Исходный текст с незакрытыми тегами
+     * @return string Текст с корректными HTML тегами
+     */
+    public static function fixUnderlineTags(string $text): string
+    {
+        // Простая замена: каждый нечетный тег - открывающий, каждый четный - закрывающий
+        $count = 0;
+        $result = preg_replace_callback('/&lt;u&gt;/i', function($matches) use (&$count) {
+            $count++;
+            return ($count % 2 === 1) ? '<u>' : '</u>';
+        }, $text);
+        
+        // Если количество тегов нечетное, добавляем закрывающий тег в конец
+        if ($count % 2 === 1) {
+            $result .= '</u>';
+        }
+        
+        return $result;
     }
 
     /**
