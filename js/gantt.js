@@ -75,7 +75,7 @@ class GanttChart {
             });
 
             header.addEventListener('mousemove', (e) => {
-                const date = e.target.querySelector('.gantt-header-date .gantt-header-date__withYear').innerText;
+                const date = e.target.querySelector('.gantt-header-date .gantt-header-date__withYear')?.innerText;
                 if (!date) return;
                 tip.setContent(date);
             });
@@ -646,7 +646,7 @@ class GanttChart {
 
     setQueryParams (name, value) {
         let [path, query] = this.hash.split('?');
-        if (query.at(-1) === '/') {
+        if (query?.at(-1) === '/') {
             query = query.slice(1);
         }
         const params = new URLSearchParams(query || '');
