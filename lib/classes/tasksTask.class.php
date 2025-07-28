@@ -277,6 +277,8 @@ class tasksTask implements ArrayAccess
             $parser->setSafeMode(true);
             $text = self::replaceMentionsWithLinks($text);
             $text = $parser->text($text);
+            // Allow <u> tags
+            $text = str_replace(['&lt;u&gt;', '&lt;/u&gt;'], ['<u>', '</u>'], $text);
         }
 
         if (isset($options['escape']) && $options['escape'] === true) {
