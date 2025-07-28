@@ -495,7 +495,7 @@ class GanttChart {
 
             const bar = document.createElement('div');
             bar.className = `gantt-bar ${project.project.color} ${project.closed === '1' ? 'closed' : ''}`;
-            bar.style.opacity = project.closed !== '1' ? '1' : '0.5';
+            bar.style.opacity = project.closed !== '1' ? '1' : '0.2';
             bar.style.top = `${40 * rowIndex + 5}px`;
             bar.style.left = `${left}px`;
             bar.style.width = `${width}px`;
@@ -509,12 +509,6 @@ class GanttChart {
                 <div class="gantt-bar__progressbar" style="width: ${project.closed_percent || 0}%; background: var(--${progressbarColor});"></div>
                 <div class="resize-handle left"></div>
                 <div class="resize-handle right"></div>
-                ${project.closed !== '1' ? '' : `
-                    <div class="gantt-bar__icon">
-                        <i class="fas fa-check"></i>
-                    </div>
-                    `
-                }
             `;
 
             this.waitForTippy().then(() => {
@@ -789,7 +783,13 @@ class GanttChart {
     renderMilestoneRow (project) {
         const template = document.getElementById('milestone-row');
         const clone = template.content.cloneNode(true);
-        clone.querySelector('.gantt-row__name').textContent = project.name;
+        clone.querySelector('.gantt-row__name').innerHTML = `
+            ${project.project.icon_url ? `<span class="icon"><i class="size-20" style="background-image: url('${project.project.icon_url}');" title="${project.project.name}"></i></span>` : ''}
+            <a href="#/tasks/scope/${project.id}/" class="${project.closed !== '1' ? '' : 'text-gray'}">
+                ${project.name}
+            </a>
+            ${project.closed !== '1' ? '' : '<span class="hint"><i class="fas fa-check fa-xs"></i></span>'}
+        `;
 
         let usersTpl = '';
         const overflow = project.users.length > 5 ? project.users.length - 5 : 0;

@@ -4,32 +4,32 @@
 }
 
 .t-white {
-    background: var(--white-color-strong);
-    border-color: var(--white-color-strongest)
+    background: var(--white);
+    border-color: var(--white);
 }
 
 .t-gray {
-    background: var(--gray-color-strong)
+    background: var(--gray);
 }
 
 .t-yellow {
-    background: var(--yellow-color-strong)
+    background: var(--yellow);
 }
 
 .t-green {
-    background: var(--green-color-strong)
+    background: var(--green);
 }
 
 .t-blue {
-    background: var(--blue-color-strong);
+    background: var(--blue);
 }
 
 .t-red {
-    background: var(--red-color-strong)
+    background: var(--red);
 }
 
 .t-purple {
-    background: var(--purple-color-strong)
+    background: var(--purple);
 }
 
 .t-content-wrapper {
