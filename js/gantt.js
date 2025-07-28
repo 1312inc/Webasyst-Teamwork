@@ -734,8 +734,7 @@ class GanttChart {
             return itemStart <= effectiveFilterEnd && effectiveItemEnd >= effectiveFilterStart;
         });
 
-        const validProjectIds = this.originalData.map(m => m.project_id);
-        if (validProjectIds.includes(project)) {
+        if (project) {
             filtered = filtered.filter(m => m.project_id === project);
         }
 
@@ -782,7 +781,7 @@ class GanttChart {
 
         users.forEach(user => {
             usersTpl += `
-                <a class="userpic userpic-20" href="#/tasks/assigned/${user.id}/" style="background-image: url('${user.photo_url}');"></a>
+                <a class="userpic userpic-20" data-tooltip="${user.action_count}" href="#/tasks/assigned/${user.id}/" style="background-image: url('${user.photo_url}');"></a>
             `; 
         })
         if (overflow > 0) {
@@ -792,6 +791,14 @@ class GanttChart {
         }
 
         clone.querySelector('.gantt-row__users').innerHTML = usersTpl;
+
+        this.waitForTippy().then(() => {
+            tippy(document.querySelectorAll('.userpic[data-tooltip]'), {
+                content: (element) => element.getAttribute('data-tooltip')
+            });
+        });
+        
+
         return clone;
     }
 
