@@ -16,6 +16,20 @@ class tasksTasksSaveController extends waJsonController
             $task = $this->add($data);
         }
 
+        $task_id = ifset($task, 'id', null);
+
+        if ($task_type = $this->getRequest()->post('task_type', '', waRequest::TYPE_STRING_TRIM)) {
+            (new tasksTaskExtModel())->save([
+                'type'    => $task_type,
+                'task_id' => $task_id
+            ]);
+
+            $fields_data = $this->getRequest()->post('fields', [], waRequest::TYPE_ARRAY);
+            if ($fields_data = ifempty($fields_data, $task_type, [])) {
+                (new tasksFieldDataModel())->save($task_id, $fields_data);
+            }
+        }
+
         $this->response = array(
             'url' => $task['project_id'].'.'.$task['number'],
             'id'  => $task['id'],

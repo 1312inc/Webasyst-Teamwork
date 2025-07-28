@@ -840,6 +840,18 @@
             });
         },
 
+        typesSettingsAction: function () {
+            this.load('?module=types', function () {
+
+            });
+        },
+
+        fieldsSettingsAction: function () {
+            this.load('?module=fields', function () {
+
+            });
+        },
+
         personalSettingsAction: function () {
             this.load('?module=settingsPersonal', function () {
 
@@ -852,12 +864,28 @@
             });
         },
 
+        cfdAction: function (params) {
+            this.load('?module=reports&action=cfd&'+ (params || ''), function () {
+
+            });
+        },
+
+        ltdcAction: function (params) {
+            this.load('?module=reports&action=ltdc&'+ (params || ''), function () {
+
+            });
+        },
+
         settingsOrderingAction: function() {
             this.load('?module=settings&action=ordering');
         },
 
         settingsProjectAction: function(id) {
             this.load('?module=projects&action=edit&id='+id);
+        },
+
+        milestonesAction: function () {
+            this.load('?module=milestones');
         },
 
         settingsScopeAction: function (id) {

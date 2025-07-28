@@ -22,26 +22,25 @@ class tasksBackendAction extends waViewAction
             ->getAvailableProjectForContact(wa()->getUser());
 
         $countService = new tasksUserTasksCounterService();
-        $viewData = [
-            'team_counts' => $countService->getTeamCounts(wa()->getUser()),
-            'hidden_count' => $countService->getHiddenCount(wa()->getUser()),
-            'outbox_count' => $countService->getOutboxCount(),
-            'urgent_count' => $countService->getUrgentCount(),
-            'status_counts' => $countService->getStatusCounts(wa()->getUser()),
-            'favorites_counts' => $countService->getFavoritesCounts(),
-            'super_urgent_count' => $countService->getSuperUrgentCount(),
-            'is_admin' => wa()->getUser()->isAdmin('tasks'),
-            'projects' => self::getProjectsWithCounts(),
-            'lists' => $this->getLists(),
-            'cloud' => $cloud,
-            'scopes' => $this->getScopes($accessedProjects),
-            'team_app_name' => $this->getTeamAppName(),
-            'users' => $users,
-            'text_editor' => wa()->getUser()->getSettings('tasks', 'text_editor', 'wysiwyg'),
-            'user_has_minimum_access' => $accessedProjects === true || !empty($accessedProjects[tasksRights::PROJECT_ANY_ACCESS])
-        ];
-
-        $this->view->assign($viewData);
+        $this->view->assign([
+            'team_counts'             => $countService->getTeamCounts(wa()->getUser()),
+            'hidden_count'            => $countService->getHiddenCount(wa()->getUser()),
+            'outbox_count'            => $countService->getOutboxCount(),
+            'urgent_count'            => $countService->getUrgentCount(),
+            'status_counts'           => $countService->getStatusCounts(wa()->getUser()),
+            'favorites_counts'        => $countService->getFavoritesCounts(),
+            'super_urgent_count'      => $countService->getSuperUrgentCount(),
+            'is_admin'                => wa()->getUser()->isAdmin('tasks'),
+            'projects'                => self::getProjectsWithCounts(),
+            'lists'                   => $this->getLists(),
+            'cloud'                   => $cloud,
+            'scopes'                  => $this->getScopes($accessedProjects),
+            'team_app_name'           => $this->getTeamAppName(),
+            'users'                   => $users,
+            'text_editor'             => wa()->getUser()->getSettings('tasks', 'text_editor', 'wysiwyg'),
+            'user_has_minimum_access' => $accessedProjects === true || !empty($accessedProjects[tasksRights::PROJECT_ANY_ACCESS]),
+            'is_premium'              => tasksLicensing::isPremium()
+        ]);
 
         /**
          * Include plugins js and css

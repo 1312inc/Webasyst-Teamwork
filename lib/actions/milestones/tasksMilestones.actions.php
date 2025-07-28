@@ -6,19 +6,29 @@ class tasksMilestonesActions extends waViewActions
     {
         $this->view->assign(array(
             'milestones' => self::getMilestones(),
+            'projects'   => tsks()->getEntityRepository(tasksProject::class)->getProjectsAsArray(),
         ));
     }
 
     protected static function getMilestones()
     {
+        $contacts = [];
+        $scope_counts = [];
         $milestone_model = new tasksMilestoneModel();
-        $milestones = $milestone_model->getMilestonesWithOrder(false);
+        $milestones = $milestone_model->getMilestonesWithOrder();
 
         $projects = tsks()->getEntityRepository(tasksProject::class)->getProjectsAsArray();
         $project_model = new tasksProjectModel();
 
         tasksMilestoneModel::workup($milestones);
 
+        if ($milestone_ids = array_keys($milestones)) {
+            $log_model = new tasksTaskLogModel();
+            $contacts = $log_model->getContactByMilestone($milestone_ids);
+
+            $task_model = new tasksTaskModel();
+            $scope_counts = $task_model->getCountTasksInScope();
+        }
         foreach($milestones as $mid => &$m) {
             if (!empty($projects[$m['project_id']])) {
                 $m['project'] = $projects[$m['project_id']];
@@ -30,6 +40,8 @@ class tasksMilestonesActions extends waViewActions
                 continue;
             }
 
+            $m['closed_percent'] = null;
+            $m['users'] = ifset($contacts, $m['id'], []);
             $m['statuses'] = array(
                 array(
                     'bg_color' => 'transparent',
@@ -37,6 +49,10 @@ class tasksMilestonesActions extends waViewActions
                     'name' => '',
                 ),
             );
+            if ($count = ifset($scope_counts, $mid, [])) {
+                $percent = $count['total'] ? $count['closed'] / $count['total'] * 100 : 0;
+                $m['closed_percent'] = round($percent);
+            }
         }
         unset($m);
 
@@ -51,31 +67,54 @@ class tasksMilestonesActions extends waViewActions
 
     protected function editAction()
     {
+        $milestone_id = wa()->getRequest()->request('id');
         if (!$this->getUser()->isAdmin('tasks')) {
             $this->accessDenied();
         }
-        
-        $milestone = $this->getMilestone();
+
+        $milestone_model = new tasksMilestoneModel();
+        $milestones = $milestone_model->getMilestonesWithOrder();
+        tasksMilestoneModel::workup($milestones, ['extra' => 'project']);
+        if ($milestone_id === 'new') {
+            $milestone = $milestone_model->getEmptyRow();
+        } elseif ($milestone_id > 0) {
+            $milestone = ifset($milestones, $milestone_id, null);
+        } else {
+            $milestone = null;
+        }
+        if (!$milestone) {
+            $this->notFound();
+        }
 
         $saved = false;
         $errors = array();
-        $post = wa()->getRequest()->post('milestone');
-        if ($post) {
+        if ($post = wa()->getRequest()->post('milestone')) {
             $errors = array();
-            $result = $this->saveMilestone($milestone, $post, $errors);
+
+            if ($milestone_id === 'new' && empty($post['start_date'])) {
+                $post['start_date'] = date('Y-m-d');
+            }
+            if ($milestone_id !== 'new' && ifset($milestone, 'closed', '0') == 0 && ifset($post, 'closed', '0') == 1) {
+                $post['end_date'] = date('Y-m-d');
+            }
+
+            $related_projects = wa()->getRequest()->post('tasks_milestone_project', []);
+            $result = $this->saveMilestone($milestone, $post, $related_projects, $errors);
             if ($result) {
                 $saved = true;
                 $milestone = $result;
             }
         }
 
-        $this->view->assign(array(
-            'milestone' => $milestone,
-            'projects' => tsks()->getEntityRepository(tasksProject::class)->getProjectsAsArray(),
-            'errors' => $errors,
-            'saved' => $saved,
-            'sidebar_html' => $this->getSidebarHtml()
-        ));
+        $this->view->assign([
+            'milestone'     => $milestone,
+            'milestones'    => $milestones,
+            'projects'      => tsks()->getEntityRepository(tasksProject::class)->getProjectsAsArray(),
+            'errors'        => $errors,
+            'saved'         => $saved,
+            'sidebar_html'  => $this->getSidebarHtml(),
+            'projects_html' => $this->getProjectsHtml($milestone_id)
+        ]);
 
         $this->view->assign('backend_milestone_edit', $this->triggerEditEvent($milestone));
     }
@@ -84,6 +123,19 @@ class tasksMilestonesActions extends waViewActions
     {
         $sidebar = new tasksSettingsSidebarAction();
         return $sidebar->display();
+    }
+
+    protected function getProjectsHtml($milestone_id)
+    {
+        $m = new tasksMilestoneProjectsModel();
+        $view = wa()->getView();
+        $related_projects = $m->getRelatedProjectIds($milestone_id);
+        $view->assign([
+            'projects'         => tasksHelper::getProjects(),
+            'related_projects' => $related_projects
+        ]);
+
+        return $view->fetch(wa()->getAppPath('templates/actions/milestones/MilestonesProjects.inc.html', 'tasks'));
     }
 
     protected function triggerEditEvent($milestone)
@@ -117,7 +169,7 @@ class tasksMilestonesActions extends waViewActions
         wa()->event('milestone_save', $params);
     }
 
-    protected function saveMilestone($milestone, $data, &$errors)
+    protected function saveMilestone($milestone, $data, $related_projects, &$errors)
     {
         $model = new tasksMilestoneModel();
 
@@ -160,25 +212,19 @@ class tasksMilestonesActions extends waViewActions
 
         $milestone = $model->getById($id);
 
+        if ($related_projects) {
+            foreach ($related_projects as $index => $project_id) {
+                if ($id == $project_id || !isset($projects[$project_id])) {
+                    unset($related_projects[$index]);
+                }
+            }
+            $m = new tasksMilestoneProjectsModel();
+            $m->saveRelatedProjects($id, $related_projects);
+        }
+
+
         $this->triggerSaveEvent($milestone, $hook_params);
 
-        return $milestone;
-    }
-
-    protected function getMilestone()
-    {
-        $m = new tasksMilestoneModel();
-        $id = wa()->getRequest()->request('id');
-        if ($id === 'new') {
-            $milestone = $m->getEmptyRow();
-        } elseif ($id > 0) {
-            $milestone = $m->getById((int)$id);
-        } else {
-            $milestone = null;
-        }
-        if (!$milestone) {
-            $this->notFound();
-        }
         return $milestone;
     }
 

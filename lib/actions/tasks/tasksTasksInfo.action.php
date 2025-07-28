@@ -78,15 +78,17 @@ class tasksTasksInfoAction extends waViewAction
 
         $this->triggerGlobalEvent($task);
 
-        $this->view->assign('tags_cloud', $this->tags_cloud);
-        $this->view->assign('statuses', $this->statuses);
-        $this->view->assign('task', $task);
-        $this->view->assign('taskAssignedContactStatus', (new tasksTeammateStatusService())->getForContactId($task->assigned_contact_id, new DateTimeImmutable()));
-
-        $this->view->assign('hash_type', waRequest::get('from_hash_type', '', waRequest::TYPE_STRING_TRIM));
-
-        $this->view->assign('milestones', $this->milestones);
-        $this->view->assign('links_data', $links_prettifier->getData());
+        $this->view->assign([
+            'tags_cloud'                => $this->tags_cloud,
+            'statuses'                  => $this->statuses,
+            'task'                      => $task,
+            'task_type'                 => $this->getTaskType($task),
+            'task_ext_info_html'        => $this->getTaskExtInfo($task),
+            'taskAssignedContactStatus' => (new tasksTeammateStatusService())->getForContactId($task->assigned_contact_id, new DateTimeImmutable()),
+            'hash_type'                 => waRequest::get('from_hash_type', '', waRequest::TYPE_STRING_TRIM),
+            'milestones'                => $this->milestones,
+            'links_data'                => $links_prettifier->getData()
+        ]);
     }
 
     public function workup(&$task)
@@ -160,5 +162,42 @@ class tasksTasksInfoAction extends waViewAction
             'task' => $task,
             'action' => $this,
         ]));
+    }
+
+    /**
+     * @param tasksTask $task
+     * @return array|null
+     * @throws waDbException
+     */
+    private function getTaskType(tasksTask $task)
+    {
+        $model = new waModel();
+
+        return $model->query("
+            SELECT tte.*, ttt.name, ttt.color FROM tasks_task_ext tte 
+            LEFT JOIN tasks_task_types ttt ON ttt.id = tte.type
+            WHERE tte.task_id = i:task_id
+        ", ['task_id' => $task['id']])->fetchAssoc();
+    }
+
+    /**
+     * @param tasksTask $task
+     * @return string
+     * @throws SmartyException
+     * @throws waException
+     */
+    private function getTaskExtInfo(tasksTask $task)
+    {
+        $te_model = new tasksTaskExtModel();
+        $ext_info = $te_model->getById($task['id']);
+        $view = wa()->getView();
+        $view->assign([
+            'ext_info'    => $ext_info,
+            'gravities'   => tasksTaskExtModel::getGravities(),
+            'resolutions' => tasksTaskExtModel::getResolutions(),
+            'field_names' => tasksTaskExtModel::getFieldNames(),
+        ]);
+
+        return $view->fetch(wa()->getAppPath('templates/actions/tasks/includes/TasksExtInfo.inc.html', 'tasks'));
     }
 }

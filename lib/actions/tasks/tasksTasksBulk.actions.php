@@ -145,6 +145,38 @@ class tasksTasksBulkActions extends waJsonActions
         ));
     }
 
+    protected function moveMilestoneAction()
+    {
+        $task_ids = $this->getIds();
+        $milestone_id = $this->getRequest()->post('milestone', null, waRequest::TYPE_INT);
+
+        if (empty($task_ids) || empty($milestone_id)) {
+            return;
+        }
+
+        $task_model = new tasksTaskModel();
+        $tasks = $task_model->getById($task_ids);
+        $milestone = (new tasksMilestoneModel())->getById($milestone_id);
+
+        if ($tasks && $milestone) {
+            $task_model->update(array_column($tasks, 'id'), ['milestone_id' => $milestone_id]);
+        }
+    }
+
+    protected function detachMilestoneAction()
+    {
+        $task_ids = $this->getIds();
+        if (empty($task_ids)) {
+            return;
+        }
+        $task_model = new tasksTaskModel();
+        $tasks = $task_model->getById($task_ids);
+
+        if ($tasks) {
+            $task_model->update(array_column($tasks, 'id'), ['milestone_id' => null]);
+        }
+    }
+
     protected function getDueDate()
     {
         $due_date = $this->getRequest()->post('due_date');

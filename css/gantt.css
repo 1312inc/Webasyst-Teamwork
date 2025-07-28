@@ -1,0 +1,298 @@
+:root {
+  --cell-width: 40px;
+  --days-count: 365;
+}
+
+.t-white {
+    background: var(--white-color-strong);
+    border-color: var(--white-color-strongest)
+}
+
+.t-gray {
+    background: var(--gray-color-strong)
+}
+
+.t-yellow {
+    background: var(--yellow-color-strong)
+}
+
+.t-green {
+    background: var(--green-color-strong)
+}
+
+.t-blue {
+    background: var(--blue-color-strong);
+}
+
+.t-red {
+    background: var(--red-color-strong)
+}
+
+.t-purple {
+    background: var(--purple-color-strong)
+}
+
+.t-content-wrapper {
+    min-width: 1px;
+}
+
+.gantt-container {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 4rem);
+}
+
+.gantt-controls {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.gantt-table {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+.gantt-left-column {
+    padding-top: 12px;
+    width: 300px;
+    overflow-y: auto;
+    border-right: 1px solid #ccc;
+}
+
+.gantt-left-column .gantt-row {
+    padding-right: 8px;
+}
+
+.gantt-right-timeline-wrapper {
+    flex: 1;
+    overflow: auto;
+    position: relative;
+}
+
+.gantt-right-timeline {
+    position: relative;
+    min-width: max-content;
+    overflow: hidden;
+}
+
+.gantt-timeline-row {
+    position: relative;
+    display: grid;
+    grid-auto-rows: 40px;
+    grid-template-columns: repeat(var(--days-count), var(--cell-width));
+    min-width: max-content;
+}
+
+.gantt-cell {
+    border-bottom: 1px solid #eee;
+    border-right: 1px solid #fafafa;
+    box-sizing: border-box;
+}
+
+.gantt-row {
+    align-content: center;
+    height: 40px;
+    padding-left: 8px;
+    border-bottom: 1px solid #eee;
+    box-sizing: border-box;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.gantt-row .userpic {
+    background-color: var(--background-color);
+    border: 1px solid #fff;
+}
+
+.gantt-row__name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.gantt-row__users .userpic:not(:first-child) {
+    margin-left: -6px;
+}
+
+.gantt-header {
+    height: 12px;
+    display: grid;
+    grid-template-columns: repeat(var(--days-count), var(--cell-width));
+    position: sticky;
+    top: 0;
+    /* background: #f8f8f8;
+    border-bottom: 1px solid #ccc; */
+    z-index: 999;
+    font-size: 10px;
+    text-align: center;
+    align-items: center;
+    /* box-sizing: border-box; */
+}
+
+.gantt-header-cell {
+    height: 100%;
+    /* padding: 0 4px; */
+    border-right: 1px solid transparent;
+}
+.gantt-header-cell:not(.today-cell):hover {
+    position: relative;
+    cursor: default;
+}
+.gantt-header-cell:not(.today-cell):hover:after {
+    content: ' ';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    height: calc(100vh - 4rem);
+    background-color: var(--text-color-heading);
+    display: block;
+    width: 1px;
+    z-index: 999;
+}
+
+.gantt-header.year .gantt-header-cell:nth-child(360n),
+.gantt-header.month:not(.year) .gantt-header-cell:nth-child(30n),
+.gantt-header.week:not(.month) .gantt-header-cell:nth-child(7n),
+.gantt-header.day:not(.week) .gantt-header-cell {
+    border-color: #e0e0e0;
+}
+
+.gantt-header-date {
+    display: none;
+    width: 100%;
+    text-align: center;
+    color: #666;
+}
+
+.gantt-header-date__withYear {
+    display: none;
+}
+
+.gantt-header-date__withoutYear {
+    display: none;
+}
+
+.gantt-header.year .gantt-header-date {
+    transform: translateX(8px);
+}
+
+.gantt-header.month .gantt-header-date {
+    transform: translateX(6px);
+}
+
+.gantt-header.week .gantt-header-date {
+    transform: translateX(4px);
+}
+
+.gantt-header.year .gantt-header-cell:nth-child(360n + 1) .gantt-header-date, 
+.gantt-header.month:not(.year) .gantt-header-cell:nth-child(30n + 1) .gantt-header-date, 
+.gantt-header.week:not(.month) .gantt-header-cell:nth-child(7n + 1) .gantt-header-date,
+.gantt-header.day:not(.week) .gantt-header-date {
+    display: inline-block;
+}
+
+.gantt-header.year .gantt-header-date__withYear {
+    display: inline-block;
+    pointer-events: none;
+}
+.gantt-header:not(.year) .gantt-header-date__withoutYear {
+    display: inline-block;
+    pointer-events: none;
+}
+
+.today-cell {
+    position: relative;
+}
+.today-cell:after {
+    content: ' ';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    height: 100%;
+    background-color: var(--text-color-heading);
+    display: block;
+    width: 2px;
+    z-index: 999;
+}
+
+.gantt-bar {
+  position: absolute;
+  height: 30px;
+  border-radius: 4px;
+  color: white;
+  font-size: 12px;
+  padding: 2px 4px;
+  white-space: nowrap;
+  /* overflow: hidden; */
+  text-overflow: ellipsis;
+  z-index: 99;
+    box-sizing: border-box;
+}
+
+.gantt-bar-pointer {
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    /* background-color: red; */
+    transform: translateX(-50%);
+    cursor: ew-resize;
+}
+.gantt-bar-pointer::after {
+    content: ' ';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 2px;
+    height: 100%;
+    transform: translateX(-50%);
+    background-color: red;
+}
+.gantt-bar.closed .gantt-bar-pointer {
+    cursor: default;
+}
+
+.gantt-task-pointer {
+    position: absolute;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    z-index: 99999;
+}
+
+.gantt-bar__progressbar {
+    position: absolute;
+    height: 3px;
+    left: 0;
+    bottom: 0;
+}
+
+.gantt-bar__icon {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translate(20px, -50%);
+    font-size: 16px;
+    color: green;
+}
+
+.resize-handle {
+  position: absolute;
+  display: none;
+  top: 0;
+  width: 6px;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.2);
+  cursor: ew-resize;
+  border-radius: 4px;
+}
+.resize-handle.left { left: 0; }
+.resize-handle.right { right: 0; }
+
+.gantt-bar:not(.closed):hover .resize-handle {
+  display: block;
+}
+

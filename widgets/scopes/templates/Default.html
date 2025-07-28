@@ -12,7 +12,10 @@
             <div class="wide">
                 {if !empty($_item.name)}
                     <div class="custom-mb-8">
-                        <div class="flexbox">
+                        <div class="flexbox space-4"> 
+                            {if $_item.icon_url}
+                            <img src="{$_item.icon_url}" width="32" height="32" alt="">
+                            {/if}
                             <span class="wide">{$_item.name|escape|truncate:42}</span>
                             <span class="count nowrap hint">{$_item.progress}%</span>
                         </div>

@@ -43,10 +43,6 @@ class tasksTasksAction extends waViewAction
             $task_rows += $inbox_task_rows;
         }
 
-//        if ($c->getType() == 'search') {
-//            $task_rows = (new tasksSearchService())->extend($task_rows, $c->getInfo());
-//        }
-
         $tasks = [];
         $logs_by_task = [];
         foreach ($task_rows as $t) {
@@ -102,44 +98,36 @@ class tasksTasksAction extends waViewAction
                 ->findById($scopeId);
         }
 
-        $this->view->assign(
-            [
-                'hash_type' => $c->getType(),
-                'count' => $count,
-                'offset' => $offset,
-                'total_count' => $total_count,
-                'search_value' => $search_value,
-                'click_to_load_more' => $offset > 100,
-                'next_page_url' => self::getNextPageUrl($offset, $limit, $count, $total_count),
-                'filter_types' => self::getFilterTypes($project_id, $hash),
-                'emptymsg' => self::getEmptyMsg($c->getType(), $collection_info, $filters),
-                'updater_url' => self::getUpdaterUrl($c, $tasks, $total_count),
-                'no_filters_hash' => '#/tasks/' . trim($hash, '\/') . '/',
-                'list_view_type' => self::getListViewType(),
-                'is_filter_set' => !!$filters,
-                'current_sort' => $order,
-                'tasks' => $tasks,
-                'hash' => $hash,
-                'parsed_hash' => $c->getHash(),
-                'list' => $list,
-                'backend_tasks_hooks' => $backend_tasks_hooks,
-                'tags_cloud' => self::getTagsCloud($project_id),
-                'statuses' => self::getStatusFilterType(),
-                'tiny_ad' => (new tasksTinyAddService())->getAd(wa()->getUser()),
-
-                'show_settings' => wa()->getUser()->isAdmin('tasks') && in_array(
-                        $c->getType(),
-                        [tasksCollection::HASH_PROJECT, tasksCollection::HASH_SCOPE],
-                        true
-                    ),
-                'settings_url' => $project_id
-                    ? "project/$project_id/"
-                    : ($scopeId ? "scope/$scopeId/" : ''),
-
-                'milestone' => $milestone ?? null,
-                'unread_tasks' => $unread_tasks,
-            ]
-        );
+        $this->view->assign([
+            'hash_type'           => $c->getType(),
+            'count'               => $count,
+            'offset'              => $offset,
+            'total_count'         => $total_count,
+            'search_value'        => $search_value,
+            'click_to_load_more'  => $offset > 100,
+            'next_page_url'       => self::getNextPageUrl($offset, $limit, $count, $total_count),
+            'filter_types'        => self::getFilterTypes($project_id, $hash),
+            'emptymsg'            => self::getEmptyMsg($c->getType(), $collection_info, $filters),
+            'updater_url'         => self::getUpdaterUrl($c, $tasks, $total_count),
+            'no_filters_hash'     => '#/tasks/' . trim($hash, '\/') . '/',
+            'list_view_type'      => self::getListViewType(),
+            'is_filter_set'       => !!$filters,
+            'current_sort'        => $order,
+            'tasks'               => $tasks,
+            'hash'                => $hash,
+            'parsed_hash'         => $c->getHash(),
+            'list'                => $list,
+            'backend_tasks_hooks' => $backend_tasks_hooks,
+            'tags_cloud'          => self::getTagsCloud($project_id),
+            'statuses'            => self::getStatusFilterType(),
+            'tiny_ad'             => (new tasksTinyAddService())->getAd(wa()->getUser()),
+            'show_settings'       => wa()->getUser()->isAdmin('tasks') && in_array($c->getType(), [tasksCollection::HASH_PROJECT, tasksCollection::HASH_SCOPE], true),
+            'settings_url'        => ($project_id ? "project/$project_id/" : ($scopeId ? "scope/$scopeId/" : '')),
+            'milestone'           => $milestone ?? null,
+            'unread_tasks'        => $unread_tasks,
+            'types'               => $this->getTypes(),
+            'milestones'          => tasksHelper::getMilestones(),
+        ]);
     }
 
     protected function applyFilters(tasksCollection $c, $filters): void
@@ -362,7 +350,7 @@ class tasksTasksAction extends waViewAction
             'options' => self::getStatusFilterType($project_id),
         ];
 
-        return $filter_types;
+        return array_merge($filter_types, self::getCustomFiltersType());
     }
 
     protected static function getProjectFilterType($hash = null): array
@@ -419,6 +407,7 @@ class tasksTasksAction extends waViewAction
     {
         $milestone_model = new tasksMilestoneModel();
         $milestones = $milestone_model->getMilestonesWithOrder(false);
+        tasksMilestoneModel::workup($milestones, ['extra' => 'project']);
 
         return [
                 '' => [
@@ -444,6 +433,26 @@ class tasksTasksAction extends waViewAction
                     'photo' => '',
                 ],
             ] + tasksHelper::getTeam($project_id, true);
+    }
+
+    protected static function getCustomFiltersType()
+    {
+        $custom_filters = [];
+        if ($fields = (new tasksFieldModel())->getByControls(['select', 'radio'])) {
+            foreach ($fields as $_field) {
+                $options = array_merge(
+                    ['' => ['id' => '', 'name' => $_field['name']]],
+                    array_map(function ($fld) {return ['id' => $fld, 'name' => $fld];}, ifempty($_field, 'data', 'values', []))
+                );
+
+                $custom_filters[tasksFieldModel::getCode($_field['name'])] = [
+                    'id'      => $_field['id'],
+                    'options' => $options
+                ];
+            }
+        }
+
+        return $custom_filters;
     }
 
     protected static function getListViewType()
@@ -664,5 +673,16 @@ class tasksTasksAction extends waViewAction
         $tasks_tags_model = new tasksTaskTagsModel();
 
         return $tasks_tags_model->getCloud($project_id);
+    }
+
+    protected function getTypes($with_empty = true)
+    {
+        $tm = new tasksTaskTypesModel();
+        $types = $tm->getTypes();
+        if ($with_empty) {
+            $types = ['' => $tm->getEmptyRow()] + $types;
+        }
+
+        return $types;
     }
 }

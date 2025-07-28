@@ -44,20 +44,23 @@ class tasksTasksEditAction extends waViewAction
 
         $backend_task_edit = $this->triggerEvent($task);
 
+        $ext_model = new tasksTaskExtModel();
+        $ext_info = ($this->task['id'] > 0 ? $ext_model->getById($this->task['id']) : $ext_model->getEmptyRow());
         $links_data = (new tasksLinksPrettifier())->addFromMarkdown($this->task['text'])->getData();
 
         $this->view->assign([
-            'task' => $task,
-            'projects' => $projects,
-            'project' => $this->project,
-            'projects_users' => $this->projects_users,
-            'projects_priority_users' => [], // !!!
-            'milestones' => $this->milestones,
-            'users' => $this->users,
-            'backend_task_edit' => ifempty($backend_task_edit, []),
-            'links_data' => $links_data,
+            'task'                    => $task,
+            'projects'                => $projects,
+            'project'                 => $this->project,
+            'projects_users'          => $this->projects_users,
+            'projects_priority_users' => [],
+            'milestones'              => $this->milestones,
+            'users'                   => $this->users,
+            'backend_task_edit'       => ifempty($backend_task_edit, []),
+            'links_data'              => $links_data,
+            'type_selector_html'      => $this->getTypeSelectorHtml($ext_info),
+            'task_field_html'         => $this->getFieldEditHtml()
         ]);
-
     }
 
     protected function getProjectsUsers($projects, $users)
@@ -162,5 +165,34 @@ class tasksTasksEditAction extends waViewAction
         return wa()->event('backend_task_edit', $params);
     }
 
+    private function getTypeSelectorHtml($ext_info)
+    {
+        $task_types = (new tasksTaskTypesModel())->getTypes();
+        $view = wa()->getView();
+        $view->assign([
+            'task_types' => $task_types,
+            'ext_info'   => $ext_info
+        ]);
+
+        return $view->fetch(wa()->getAppPath('templates/actions/tasks/includes/TasksTypeSelector.inc.html', 'tasks'));
+    }
+
+    private function getFieldEditHtml()
+    {
+        $fields_data = [];
+        $fields = (new tasksTask())->getFieldsByType();
+        if ($this->task['id']) {
+            $fields_data = (new tasksFieldDataModel())->getData($this->task['id']);
+        }
+
+        $view = wa()->getView();
+        $view->assign([
+            'fields'      => $fields,
+            'fields_data' => $fields_data,
+            'task'        => $this->task
+        ]);
+
+        return $view->fetch(wa()->getAppPath('templates/actions/tasks/includes/TasksFieldEdit.inc.html', 'tasks'));
+    }
 }
 

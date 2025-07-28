@@ -7,7 +7,7 @@
 
 <!-- HASH FILTER -->
 
-<ul class="chips small" style="position: relative;">
+<ul class="chips small sidebar-dropdown-container" style="position: relative;">
 {show_filter
     class='t-tasks-hash-type-filter js-header-title-participant'
     filter=[
@@ -49,6 +49,44 @@
 
 <!-- TAG CLOUD WIDGET FILTER -->
 {showTagsCloud class='t-tasks-tag-cloud-filter js-header-title-participant' cloud=$tags_cloud}
+
+<!-- FILTER BY TYPE -->
+{$types[''].name = '[`Any type`]'}
+{include file="./TasksFilter.inc.html"
+    default_title = '[`Types`]'
+    filter_id = 'task.type'
+    items = $types
+inline}
+
+<script>
+    (function () {
+        var milestones = {$milestones|json_encode};
+
+        $(window).one('wa_loaded', function () {
+            var $header = $(".t-header-wrapper");
+            var $project = $header.find('.js-dropdown-menu[data-id="project_id"]');
+            var $milestone = $header.find('.js-dropdown-menu[data-id="milestone_id"]');
+
+            var updateMilestoneSelector = function (project_id) {
+                var milestone_menu = $milestone.data('dropDownMenu');
+                milestone_menu.eachOption(function (milestone_id, milestone) {
+                    var related_projects = milestones[milestone_id] ? (milestones[milestone_id].related_projects || []) : [];
+                    if (!project_id || !milestone.project_id || milestone.project_id == project_id ||
+                        related_projects.indexOf(project_id) >= 0) {
+                        milestone_menu.enableItem(milestone_id);
+                    } else {
+                        milestone_menu.disableItem(milestone_id);
+                    }
+                });
+            };
+
+            $project.data('dropDownMenu').onSelect(function (project_id) {
+                updateMilestoneSelector(project_id);
+            });
+            updateMilestoneSelector($project.data('dropDownMenu').getSelected('value'));
+        });
+    })();
+</script>
 
 <!-- plugin hook: 'backend_tasks.%plugin_id%.header.filters' -->
 {* @event backend_tasks.%plugin_id%.header.filters *}

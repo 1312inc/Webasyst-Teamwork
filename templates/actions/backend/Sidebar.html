@@ -82,6 +82,16 @@
             <span>[`Kanban`]</span>
             <span class="count"></span>
         </a>
+        <a href="#/milestones/" class="brick t-mini-brick">
+            <span class="icon text-purple"><i class="fas fa-stream"></i></span>
+            <span>[`Gantt`]</span>
+            <span class="count"></span>
+        </a>
+        <a href="#/cfd/" class="brick t-mini-brick">
+            <span class="icon text-orange"><i class="fas fa-chart-line"></i></span>
+            <span>[`Charts`]</span>
+            <span class="count"></span>
+        </a>
     </div>
 
     <ul class="menu custom-mt-0 mobile-friendly">
@@ -220,6 +230,31 @@
             </div>
         </div>
     {/if}
+
+    <div id="graphic-list-wrapper" class="collapsible" data-type="graphic">
+        <h5 class="heading">
+        <span>
+            <span class="caret"><i class="fas fa-caret-down"></i></span>
+            [`Charts`]
+        </span>
+        </h5>
+        <div class="collapsible__content">
+            <ul class="menu">
+                <li>
+                    <a href="#/cfd/">
+                        <i class="fas fa-chart-line"></i>
+                        <span>[`CFD`]</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#/ltdc/">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>[`LTDC`]</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
 
     <!-- plugin hook: 'backend_sidebar.section' -->
     {* @event backend_sidebar.%plugin_id%.section *}
