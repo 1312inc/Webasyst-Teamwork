@@ -9,13 +9,13 @@
             <div>
                 <ul class="menu">
                     {foreach $milestones as $milestone}
-                    <li>
+                    <li class="custom-mb-12">
                         <label>
                             <span class="wa-radio">
                                 <input type="radio" name="milestone" value="{$milestone.id}">
                                 <span></span>
                             </span>
-                            {$milestone.name}
+                            &nbsp;{$milestone.name}
                         </label>
                     </li>
                     {foreachelse}
@@ -23,12 +23,11 @@
                     {/foreach}
                 </ul>
             </div>
-
-            <footer class="dialog-footer">
-                <input class="button green custom-mr-12" type="submit" value="[`Save`]">
-                <a href="#" class="js-close-dialog button light-gray cancel">[`Cancel`]</a>
-            </footer>
         </div>
+        <footer class="dialog-footer">
+            <input class="button green custom-mr-12" type="submit" value="[`Save`]">
+            <a href="#" class="js-close-dialog button light-gray cancel">[`Cancel`]</a>
+        </footer>
     </div>
 </div>
 
