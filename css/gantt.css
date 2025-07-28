@@ -112,6 +112,7 @@
 .gantt-row__name {
     overflow: hidden;
     text-overflow: ellipsis;
+    font-size: 0.875rem;
 }
 
 .gantt-row__users .userpic:not(:first-child) {
@@ -188,8 +189,8 @@
     transform: translateX(4px);
 }
 
-.gantt-header.year .gantt-header-cell:nth-child(360n + 1) .gantt-header-date, 
-.gantt-header.month:not(.year) .gantt-header-cell:nth-child(30n + 1) .gantt-header-date, 
+.gantt-header.year .gantt-header-cell:nth-child(360n + 1) .gantt-header-date,
+.gantt-header.month:not(.year) .gantt-header-cell:nth-child(30n + 1) .gantt-header-date,
 .gantt-header.week:not(.month) .gantt-header-cell:nth-child(7n + 1) .gantt-header-date,
 .gantt-header.day:not(.week) .gantt-header-date {
     display: inline-block;
@@ -221,8 +222,8 @@
 
 .gantt-bar {
   position: absolute;
-  height: 30px;
-  border-radius: 4px;
+  height: 24px;
+  border-radius: 5px;
   color: white;
   font-size: 12px;
   padding: 2px 4px;
@@ -235,8 +236,8 @@
 
 .gantt-bar-pointer {
     position: absolute;
-    top: 0px;
-    bottom: 0px;
+    top: -2px;
+    bottom: -2px;
     /* background-color: red; */
     transform: translateX(-50%);
     cursor: ew-resize;
@@ -295,4 +296,3 @@
 .gantt-bar:not(.closed):hover .resize-handle {
   display: block;
 }
-
