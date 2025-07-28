@@ -4,8 +4,8 @@
 }
 
 .t-white {
-    background: var(--white);
-    border-color: var(--white);
+    background: var(--gray);
+    border-color: var(--gray);
 }
 
 .t-gray {
@@ -222,7 +222,7 @@
 
 .gantt-bar {
   position: absolute;
-  height: 24px;
+  height: 20px;
   border-radius: 5px;
   color: white;
   font-size: 12px;
@@ -236,8 +236,8 @@
 
 .gantt-bar-pointer {
     position: absolute;
-    top: -2px;
-    bottom: -2px;
+    top: -3px;
+    bottom: -3px;
     /* background-color: red; */
     transform: translateX(-50%);
     cursor: ew-resize;
