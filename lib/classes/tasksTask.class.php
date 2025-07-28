@@ -913,6 +913,26 @@ class tasksTask implements ArrayAccess
         return null;
     }
 
+    public function getFieldsByType()
+    {
+        $fields_type = [];
+        $t_fields = $this->model->query("
+            SELECT ttf.type_id, tf.* FROM tasks_type_fields ttf
+            LEFT JOIN tasks_field tf ON tf.id = ttf.field_id 
+            WHERE tf.id IS NOT NULL
+            ORDER BY ttf.type_id, tf.sort
+        ")->fetchAll();
+
+        foreach ($t_fields as $_field) {
+            if (empty($fields_type[$_field['type_id']])) {
+                $fields_type[$_field['type_id']] = [];
+            }
+            $_field['data'] = tasksFieldModel::decodeData($_field['data']);
+            $fields_type[$_field['type_id']][] = $_field;
+        }
+
+        return $fields_type;
+    }
 
     /**
      * Whether a offset exists

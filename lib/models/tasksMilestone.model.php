@@ -153,7 +153,7 @@ class tasksMilestoneModel extends waModel
     public function getMilestonesWithOrder($withClosed = true)
     {
         $result = $this->select('*')
-            ->order('closed DESC, IFNULL(due_date, \'9999-12-31 23:59:59\') ASC');
+            ->order('closed DESC, end_date, IFNULL(due_date, \'9999-12-31 23:59:59\') ASC');
 
         if (!$withClosed) {
             $result->where('closed=0');

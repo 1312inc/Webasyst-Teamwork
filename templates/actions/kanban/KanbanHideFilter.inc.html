@@ -1,0 +1,28 @@
+{if $milestone_id}
+<script>
+    (function () {
+        var kanban_task_settings = new KanbanTaskSettings({$limits}, {$milestone_id});
+        kanban_task_settings.init();
+    })(jQuery);
+</script>
+{/if}
+
+<div class="t-checkbox-column" id="js-hide-new-and-completed-tasks">
+    <label>
+        <span class="wa-checkbox">
+            <input type="checkbox" name="hide_new_and_completed_tasks" value="1"{if $is_hide_tasks} checked{/if}/>
+            <span>
+                <span class="icon">
+                    <i class="fas fa-check"></i>
+                </span>
+            </span>
+        </span>
+        <span class="custom-ml-4">[`Hide new & completed`]</span>
+    </label>
+</div>
+<script>
+    (function () {
+        var kanban_task_settings_hide_new_and_completed = new KanbanTaskSettingHideNewAndCompleted({if $is_hide_tasks}true{/if});
+        kanban_task_settings_hide_new_and_completed.init();
+    })(jQuery);
+</script>

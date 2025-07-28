@@ -1435,3 +1435,15 @@ msgstr ""
 
 msgid "Hashtag, task number, order ID, etc."
 msgstr ""
+
+msgid "Set milestone"
+msgstr ""
+
+msgid "Spellcheck"
+msgstr "Check spelling"
+
+msgid "Task fields"
+msgstr ""
+
+msgid "Please select task type"
+msgstr ""

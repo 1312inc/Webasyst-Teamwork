@@ -1,0 +1,50 @@
+{$class_id = 'kanban-task-settings-dialog'}
+{$dialog_id = uniqid({$class_id})}
+<div class="dialog width500px height400px {$class_id}" id="{$dialog_id}">
+    <div class="dialog-background"></div>
+    <form method="post" action="?module=kanban&action=settingsSave">
+        <div class="dialog-body dialog-window">
+            <a href="#" class="dialog-close js-close-dialog"><i class="fas fa-times"></i></a>
+            <header class="dialog-header"><h1>[`Color settings`]</h1></header>
+            <div class="dialog-content">
+                <div class="dialog-content-indent">
+                    <div class="fields">
+                        <div class="field">
+                            <div class="name for-input">[`Color`]</div>
+                            <div class="value">
+                                <div class="flexbox space-12 t-project-settings-colorbox" data-colors="{implode(' ', $colors)}">
+                                    {foreach $colors as $color}
+                                        <label class="{$color}">
+                                            <span class="wa-radio">
+                                                <input type="radio" name="kanban_task_settings[color]" value="{$color|escape}"{if ($kanban_color == $color)} checked{/if}>
+                                                <span></span>
+                                            </span>
+                                        </label>
+                                    {/foreach}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="name for-input">[`Or enter a color value`]</div>
+                            <div class="value colorpicker">
+                                # <input type="text" name="kanban_task_settings[custom_color]" value="{if strpos($kanban_color, 't-') === false}{$kanban_color|escape}{/if}" data-type="text" class="short small" placeholder="f0f0f0" style="width: 80px;">
+                            </div>
+                        </div>
+                        <input type="hidden" name="task_id" value="{$task_id}">
+                    </div>
+                </div>
+            </div>
+            <div class="dialog-footer dialog-buttons">
+                <div class="dialog-buttons-gradient">
+                    {$wa->csrf()}
+                    <input class="button green t-button t-confirm" type="submit" value="[`Save`]">
+                    <span class="t-cancel-link-wrapper">
+                        <i class="icon16 loading t-loading" style="display: none;"></i>
+                        [`or`]
+                        <a href="javascript:void(0)" class="js-close-dialog cancel">[`cancel`]</a>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

@@ -24,6 +24,10 @@ final class tasksApiMilestoneArchiveHandler
             throw new tasksResourceNotFoundException('Milestone not found');
         }
 
+        if ($archiveRequest->isArchive() && !$milestone->isClosed()) {
+            $milestone->setEndDate(date('Y-m-d'));
+        }
+
         $milestone->setClosed($archiveRequest->isArchive());
 
         if (!$repository->save($milestone)) {

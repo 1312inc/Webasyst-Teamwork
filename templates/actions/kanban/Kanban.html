@@ -1,3 +1,5 @@
+<script src="{$wa_app_static_url}js/taskKanbanSettings.js?v={$wa->version()}"></script>
+
 {include file="./../tasks/includes/TasksHeaderFiltersHelpers.inc.html" inline}
 
 {if $wa->installer && method_exists($wa->installer, 'reviewWidget')}
@@ -69,6 +71,8 @@
                         </label>
                     </div>
 
+                    {$hide_filter_html}
+
                     {$_kanban_page_hooks_header = $kanban_page_hooks.header|default:[]}
                     {foreach $_kanban_page_hooks_header as $pluginId => $h}
                         <!-- {$pluginId} filters -->
@@ -114,7 +118,8 @@
     </div>
 {/strip}
 
-<script>(function () {
+<script>(
+    function () {
         "use strict";
 
         var $main_menu = $('.t-header-wrapper');
@@ -192,4 +197,5 @@
             // $tagsWrapper.removeClass(storage.shown_class);
         });
 
-    })();</script>
+    })();
+</script>

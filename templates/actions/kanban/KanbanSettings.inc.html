@@ -1,0 +1,14 @@
+<span class="t-task-color-setting" data-kanban-task-color="{$task_color}">
+    <a href="javascript:void(0);" class="t-control-link button light-gray smallest rounded t-return-link kanban-task-link" title="[`Open settings`]" data-kanban-task-id="{$task_id}">
+        <i class="fas fa-cog"></i>
+    </a>
+    <script>
+        (function () {
+            var kanban_task_color = new KanbanTaskColor({$task_id});
+            kanban_task_color.setColor();
+        })(jQuery);
+    </script>
+</span>
+<div class="days-points flexbox space-8 custom-p-4{if $days_difference > 7} red{/if}" title="[`Number of days in this status`]: {$days_difference}">
+    {str_repeat('<div class="day-point"></div>', min(10, $days_difference))}
+</div>

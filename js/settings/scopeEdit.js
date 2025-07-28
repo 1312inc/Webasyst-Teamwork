@@ -43,18 +43,29 @@ var TasksScopeEdit = (function ($) {
     };
 
     TasksScopeEdit.prototype.submit = function (data) {
-        var that = this,
-            $form = that.$form,
-            $submitButton = $form.find('button[type="submit"]'),
-            date = $form.find('.datepicker-due-date').datepicker('getDate');
+        var that = this;
+        var $form = that.$form;
+        var $submitButton = $form.find('button[type="submit"]');
+        var due_date = $form.find('.datepicker-due-date').datepicker('getDate');
+        var start_date = $form.find('.datepicker-start-date').datepicker('getDate');
+        var end_date = $form.find('.datepicker-end-date').datepicker('getDate');
 
         $submitButton.attr('disabled', true);
         $submitButton.find('.fa-spinner').fadeIn();
 
-        if (!date) {
+        if (!due_date) {
             $form.find('[name="milestone[due_date]"]').val('');
         }
+        if (!start_date) {
+            $form.find('[name="milestone[start_date]"]').val('');
+        }
+        if (!end_date) {
+            $form.find('[name="milestone[end_date]"]').val('');
+        }
+
+        const $disabled = $form.find(':disabled').prop('disabled', false);
         var form_data = $form.serializeArray();
+        $disabled.prop('disabled', true); 
 
         if ($.isArray(data) && data.length) {
             form_data = form_data.concat(data);
@@ -94,13 +105,40 @@ var TasksScopeEdit = (function ($) {
     };
 
     TasksScopeEdit.prototype.initDatepicker = function () {
-        var that = this,
-            $form = that.$form,
-            $date_hidden_field = $form.find('[name="milestone[due_date]"]'),
-            ms = Date.parse($date_hidden_field.val()),
-            date = ms ? new Date(ms) : null;
+        var ms;
+        var date;
+        var $date_hidden_field;
+        var that = this;
+        var $form = that.$form;
 
+        $date_hidden_field = $form.find('[name="milestone[due_date]"]');
+        ms = Date.parse($date_hidden_field.val());
+        date = ms ? new Date(ms) : null;
         $form.find('.datepicker-due-date').datepicker({
+            changeYear: true,
+            changeMonth: true,
+            gotoCurrent: true,
+            constrainInput: false,
+            altField: $date_hidden_field,
+            altFormat: 'yy-mm-dd'
+        }).datepicker("setDate", date);
+
+        $date_hidden_field = $form.find('[name="milestone[start_date]"]');
+        ms = Date.parse($date_hidden_field.val());
+        date = ms ? new Date(ms) : null;
+        $form.find('.datepicker-start-date').datepicker({
+            changeYear: true,
+            changeMonth: true,
+            gotoCurrent: true,
+            constrainInput: false,
+            altField: $date_hidden_field,
+            altFormat: 'yy-mm-dd'
+        }).datepicker("setDate", date);
+
+        $date_hidden_field = $form.find('[name="milestone[end_date]"]');
+        ms = Date.parse($date_hidden_field.val());
+        date = ms ? new Date(ms) : null;
+        $form.find('.datepicker-end-date').datepicker({
             changeYear: true,
             changeMonth: true,
             gotoCurrent: true,

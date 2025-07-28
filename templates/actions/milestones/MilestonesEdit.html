@@ -63,22 +63,122 @@
                             </div>
 
                             <div class="field">
+                                <div class="name for-input">[`Start date`]</div>
+                                <div class="value">
+                                    <input type="text" class="datepicker-start-date bold" placeholder="[`Date`]">
+                                    <input type="hidden" name="milestone[start_date]" value="{$milestone.start_date|escape}">
+                                    <i class="fas fa-flag-checkered"></i>
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <div class="name for-input">[`End date`]</div>
+                                <div class="value">
+                                    <input type="text" class="datepicker-end-date bold" placeholder="[`Date`]">
+                                    <input type="hidden" name="milestone[end_date]" value="{$milestone.end_date|escape}">
+                                    <i class="fas fa-flag-checkered"></i>
+                                </div>
+                            </div>
+
+                            <div class="field">
                                 <div class="name">[`Description`]</div>
                                 <div class="value"><textarea name="milestone[description]" style="max-width:24rem;" class="small">{$milestone.description|escape}</textarea>
                                     <span class="hint">[`A tiny hint describing your teammates what this milestone is all about.`]</span>
                                 </div>
                             </div>
+
+                            <div class="field">
+                                <div class="name for-input">[`Parent scope`]</div>
+                                <div class="value no-shift">
+                                    <div class="dropdown" id="parent-scope-id">
+                                        <button class="dropdown-toggle button light-gray" type="button">[`Not specified`]</button>
+                                        <div class="dropdown-body">
+                                            <ul class="menu">
+                                                <li>
+                                                    <a href="javascript:void(0);" data-id="0">
+                                                        <span>[`Not specified`]</span>
+                                                    </a>
+                                                </li>
+                                                {foreach $milestones as $mlst}
+                                                <li>
+                                                    <a href="javascript:void(0);" data-id="{$mlst.id}">
+                                                        {if $mlst.project.icon_url}
+                                                        <span class="icon">
+                                                            <i class="size-20 t-project-icon-rounded" style="background-image: url({$mlst.project.icon_url});"></i>
+                                                        </span>
+                                                        {/if}
+                                                        <span>{$mlst.name|escape|truncate:42}</span>
+                                                    </a>
+                                                </li>
+                                                {/foreach}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <input id="input" name="milestone[parent_scope_id]" type="hidden" value="{$milestone.parent_scope_id}">
+                                    <script>
+                                        ( function($) {
+                                            $("#parent-scope-id").waDropdown({
+                                                hover: false,
+                                                items: ".menu > li > a",
+                                                ready: (dropdown) => {
+                                                    const active = dropdown.$menu.find('[data-id="{$milestone.parent_scope_id}"]');
+                                                    if(!active[0]) return;
+                                                    dropdown.$button.text(active.text());
+                                                },
+                                                change: (event, target, dropdown) => {
+                                                    $('[name="milestone[parent_scope_id]"]').val( $(target).data("id") );
+                                                }
+                                            });
+                                        })(jQuery);
+                                    </script>
+                                </div>
+                            </div>
+
+
                             <div class="field t-milestone-project-field">
                                 <div class="name for-input">[`Project`]</div>
                                 <div class="value no-shift">
-                                    <div class="wa-select">
-                                        <select name="milestone[project_id]">
-                                            {foreach $projects as $p}
-                                                <option value="{$p.id}"{if $p.id == $milestone.project_id} selected{/if}>{$p.name|escape|truncate:42}</option>
-                                            {/foreach}
-                                        </select>
+                                    <div class="dropdown" id="project-id">
+                                        <button class="dropdown-toggle button light-gray" type="button">[`Project`]</button>
+                                        <div class="dropdown-body">
+                                            <ul class="menu">
+                                                {foreach $projects as $p}
+                                                <li>
+                                                    <a href="javascript:void(0);" data-id="{$p.id}">
+                                                        {if $p.icon_url}
+                                                        <span class="icon">
+                                                            <i class="size-20 t-project-icon-rounded" style="background-image: url({$p.icon_url});"></i>
+                                                        </span>
+                                                        {/if}
+                                                        <span>{$p.name|escape|truncate:42}</span>
+                                                    </a>
+                                                </li>
+                                                {/foreach}
+                                            </ul>
+                                        </div>
                                     </div>
+                                    <input id="input" name="milestone[project_id]" type="hidden" value="{$milestone.project_id}">
+                                    <script>
+                                        ( function($) {
+                                            $("#project-id").waDropdown({
+                                                hover: false,
+                                                items: ".menu > li > a",
+                                                ready: (dropdown) => {
+                                                    const active = dropdown.$menu.find('[data-id="{$milestone.project_id}"]');
+                                                    if(!active[0]) return;
+                                                    dropdown.$button.text(active.text());
+                                                },
+                                                change: (event, target, dropdown) => {
+                                                    $('[name="milestone[project_id]"]').val( $(target).data("id") ).trigger('input');
+                                                }
+                                            });
+                                        })(jQuery);
+                                    </script>
                                 </div>
+                            </div>
+
+                            <div class="t-more-fields">
+                                {$projects_html}
                             </div>
 
                             <div class="t-more-fields">
