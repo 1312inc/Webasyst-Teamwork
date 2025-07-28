@@ -487,7 +487,7 @@ class GanttChart {
 
             const end = project.end_date ? new Date(project.end_date) : project.due_date ? new Date(project.due_date) : this.getEndDate(monthsBefore);
 
-            const offsetDays = Math.max(0, Math.floor((start - timelineStart) / dayMs));
+            const offsetDays = Math.floor((start - timelineStart) / dayMs);
             const durationDays = Math.max(1, Math.ceil((end - start) / dayMs) + 1);
 
             const left = offsetDays * (this.dayWidthBase + this.zoomWidth);
@@ -570,7 +570,7 @@ class GanttChart {
 
 
             if (project.due_date) {
-                const offsetDays = Math.max(0, Math.floor((new Date(project.due_date) - start) / dayMs));
+                const offsetDays = Math.floor((new Date(project.due_date) - start) / dayMs);
                 const left = offsetDays * (this.dayWidthBase + this.zoomWidth) + (this.dayWidthBase + this.zoomWidth) / 2;
                 const pointer = document.createElement('div');
                 pointer.className = 'gantt-bar-pointer';
@@ -628,7 +628,7 @@ class GanttChart {
                         if (dates.has(pointerDate.toISOString().split('T')[0])) return;
                         dates.add(pointerDate.toISOString().split('T')[0]);
 
-                        const offsetDays = Math.max(0, Math.floor((pointerDate - timelineStart) / dayMs));
+                        const offsetDays = Math.floor((pointerDate - timelineStart) / dayMs);
                         const left = offsetDays * (this.dayWidthBase + this.zoomWidth) + (this.dayWidthBase + this.zoomWidth) / 2;
                         const pointer = document.createElement('div');
                         pointer.className = 'gantt-task-pointer text-gray';
