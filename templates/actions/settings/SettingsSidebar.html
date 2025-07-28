@@ -1,8 +1,9 @@
 {$_backend_sidebar = $backend_settings_sidebar|default:[]}
+{$_is_premium = $wa->tasks->isPremium()}
 
-<div class="sidebar width-19rem bordered-right t-settings-sidebar" id="t-settings-sidebar-wrapper">
+<div class="sidebar width-21rem bordered-right t-settings-sidebar" id="t-settings-sidebar-wrapper">
 
-    <ul class="menu">
+    <ul class="menu large">
         <li>
             <a href="#/personal-settings/">
                 <span class="icon"><img src="{$wa->user()->getPhoto(96)}" class="userpic"></span>
@@ -20,17 +21,17 @@
             </a>
         </li>
         <li>
-            <a href="#/types-settings/" class="" data-item-type="task_types">
+            <a href="#/types-settings/" class="{if !$_is_premium}opacity-50{/if}" data-item-type="task_types">
                 <span class="icon">
-                    <i class="fas fa-shapes"></i>
+                    <i class="fas fa-{if $_is_premium}shapes{else}star{/if}"></i>
                 </span>
                 <span>[`Task types`]</span>
             </a>
         </li>
         <li>
-            <a href="#/fields-settings/" class="" data-item-type="task_fields">
+            <a href="#/fields-settings/" class="{if !$_is_premium}opacity-50{/if}" data-item-type="task_fields">
                 <span class="icon">
-                    <i class="fas fa-receipt"></i>
+                    <i class="fas fa-{if $_is_premium}receipt{else}star{/if}"></i>
                 </span>
                 <span>[`Task fields`]</span>
             </a>
@@ -45,7 +46,7 @@
     <!-- SCOPES -->
     <h5 class="heading">
         <a href="#/settings/scope/add/" class="count"><i class="fas fa-plus-circle"></i></a>
-        [`Milestones`]
+        [`Scopes`]
     </h5>
     {if !$scopes}
         <div class="box align-center custom-my-16">

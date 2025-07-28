@@ -1,3 +1,5 @@
+{$_we_are_all_in = $wa->tasks->isPremium()}
+
 <script src="{$wa_app_static_url}js/chart.min.js?v={$wa->version()}"></script>
 
 <div class="t-main-wrapper t-log-page">
@@ -10,6 +12,7 @@
             </div>
 
             {** FILTERS BY PROJECT, MILESTONE AND USER **}
+            {if $_we_are_all_in}
             <div class="wide t-menu-wrapper small flexbox wrap middle space-12">
                 {foreach $filter_types as $ft_id => $options}
                     <div class="dropdown t-menu-item" id="{$ft_id}" data-filter-id="{$ft_id}">
@@ -54,8 +57,10 @@
                     </div>
                 {/if}
             </div>
+            {/if}
 
             {** CHART PERIOD SELECTOR **}
+            {if $_we_are_all_in}
             <div class="t-right-column small flexbox middle space-16">
 
                 {$statuses = tasksHelper::getStatuses(null, false)}
@@ -138,10 +143,22 @@
                     </script>
                 </div>
             </div>
+            {/if}
         </div>
     </header>
 
-    <div class="ltdc-chart-wrapper">
+    {if !$_we_are_all_in}
+        <div class="box">
+            <h3>[`Premium only`]</h3>
+            <p class="small">
+              <i class="fas fa-star text-yellow"></i> [`Upgrade to premium to have the feature enabled and this message to disappear permanently.`]
+            </p>
+            <a href="{$wa_app_url}#/upgrade/" class="button yellow small">[`See what’s there in premium`]</a>
+            <hr class="custom-mt-24" />
+        </div>
+    {/if}
+
+    <div class="ltdc-chart-wrapper"{if !$_we_are_all_in} style="opacity: 0.2;"{/if}>
         <h3 class="align-center custom-mt-24">[`Lead time distribution chart`] ([`LTDC`])</h3>
         <div class="align-center">[`Total tasks`]: <span id="quantity-tasks"></span></div>
         <div class="ltdc-chart-canvas" style="position: relative; margin: 0 auto; height:80vh; width:80vw">

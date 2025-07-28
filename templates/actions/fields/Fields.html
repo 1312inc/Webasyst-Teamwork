@@ -1,3 +1,4 @@
+{$_we_are_all_in = $wa->tasks->isPremium()}
 {$wrapper_id = uniqid('t-settings-task-fields-wrapper')}
 
 {function get_options field = []}
@@ -54,37 +55,53 @@
     <div class="content">
         <div class="article">
         <div class="article-body">
-            <h1>[`Task fields`]</h1>
 
-            <a href="javascript:void(0)" class="button light-gray t-add-new-field-link rounded">
-                <i class="fas fa-plus text-blue"></i>
-                <span>[`New field`]</span>
-            </a>
+            {if !$_we_are_all_in}
 
-            <form method="post" class="t-save-settings-form">
-                <div class="t-settings-wrapper">
-                    <div class="t-fields-list-wrapper">
-                        <ul class="menu t-fields-list" style="position: relative;">
-                            {foreach $fields as $field}
-                            <li class="t-fields-list-item{if $field.id == '_template_'} is-template{/if}" data-id="{$field.id}">
-                                <span class="item">
-                                    <i class="fas fa-bars t-sort-handler"></i>
-                                    {get_input_elements field = $field}
-                                    <a class="t-delete-field-link custom-ml-12" title="[`Delete`]">
-                                        <i class="fas fa-trash-alt t-delete text-red"></i>
-                                    </a>
-                                </span>
-                                {get_options field = $field}
-                            </li>
-                            {/foreach}
-                        </ul>
+                <h3>[`Premium only`]</h3>
+                <p class="small">
+                  <i class="fas fa-star text-yellow"></i> [`Upgrade to premium to have the feature enabled and this message to disappear permanently.`]
+                </p>
+                <a href="{$wa_app_url}#/upgrade/" class="button yellow small">[`See what’s there in premium`]</a>
+                <hr class="custom-mt-24" />
+
+            {/if}
+
+            <div{if !$_we_are_all_in} style="opacity: 0.4;{/if}">
+
+                <h1>[`Task fields`]</h1>
+
+                <a href="javascript:void(0)" class="button light-gray t-add-new-field-link rounded">
+                    <i class="fas fa-plus text-blue"></i>
+                    <span>[`New field`]</span>
+                </a>
+
+                <form method="post" class="t-save-settings-form">
+                    <div class="t-settings-wrapper">
+                        <div class="t-fields-list-wrapper">
+                            <ul class="menu t-fields-list" style="position: relative;">
+                                {foreach $fields as $field}
+                                <li class="t-fields-list-item{if $field.id == '_template_'} is-template{/if}" data-id="{$field.id}">
+                                    <span class="item">
+                                        <i class="fas fa-bars t-sort-handler"></i>
+                                        {get_input_elements field = $field}
+                                        <a class="t-delete-field-link custom-ml-12" title="[`Delete`]">
+                                            <i class="fas fa-trash-alt t-delete text-red"></i>
+                                        </a>
+                                    </span>
+                                    {get_options field = $field}
+                                </li>
+                                {/foreach}
+                            </ul>
+                        </div>
+                        <div class="t-save-settings-wrapper">
+                            <input type="submit" class="t-save-button button green" value="[`Save`]">
+                            <i class="icon16 loading t-loading" style="display: none;"></i>
+                        </div>
                     </div>
-                    <div class="t-save-settings-wrapper">
-                        <input type="submit" class="t-save-button button green" value="[`Save`]">
-                        <i class="icon16 loading t-loading" style="display: none;"></i>
-                    </div>
-                </div>
-            </form>
+                </form>
+
+            </div>
 
         </div>
         </div>
