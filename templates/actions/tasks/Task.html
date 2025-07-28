@@ -582,7 +582,7 @@
                     </div>
                     {if isset($task.next_status.id) && $task.next_status.id != -1 && (($task.contact_id == $wa->user('id') && $task.assigned_contact_id == $task.contact_id) || $task->hasFullAccess())}
                         {* action buttons *}
-                        <div class="t-task-button t-task-action wide">
+                        <div class="t-task-button t-task-action{if $task.status.id == -1} wide{/if}">
                             {$task->buttonHtml()}
                         </div>
                     {/if}
@@ -738,7 +738,7 @@
 
             {/if}
 
-                        
+
                 <style>
                     .t-watchers-remove-icon {
                         display: none !important;
@@ -783,13 +783,13 @@
                 </ul>
 
                 <script>
-                    
+
                     (() => {
                         /*
                             Add / Remove watchers
                         */
                         $.get('?module=tasks&action=getUsersForProject&project_id={$task.project_id}', function (data) {
-                            
+
                             if (data.status !== 'ok') return;
 
                             const users = data.data;
@@ -804,7 +804,7 @@
                                 item.find('span').text(user.name);
                                 item.find('.icon i').css('background-image', 'url('+user.photo_url+')');
                                 item.appendTo(menu);
-                            });       
+                            });
 
                             li.remove();
 
@@ -832,7 +832,7 @@
                                                 </a>
                                             </li>
                                         `;
-                                        
+
                                         $(".t-watchers-add-icon").before(tpl);
                                         updateCounter(1);
                                         addEvents();
@@ -872,10 +872,10 @@
                         };
 
                         addEvents();
-                
+
                     })();
                 </script>
-            
+
 
             <h3 class="t-comments-h3 custom-mt-32">[`History &amp; Comments`] <span class="hint">{count($task.log)}</span></h3>
 

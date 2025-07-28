@@ -53,30 +53,26 @@
                                 <div class="name for-input">[`Name`]</div>
                                 <div class="value"><input type="text" name="milestone[name]" class="bold long large" value="{$milestone.name|escape}"></div>
                             </div>
+
+                            <div class="field">
+                                <div class="name for-input">[`Plan`]</div>
+                                <div class="value">
+                                    <input type="text" class="datepicker-start-date shorter bold" placeholder="[`Start`]">
+                                    <input type="hidden" name="milestone[start_date]" value="{$milestone.start_date|escape}">
+                                    —&nbsp;
+                                    <input type="text" class="datepicker-end-date shorter bold" placeholder="[`End`]">
+                                    <input type="hidden" name="milestone[end_date]" value="{$milestone.end_date|escape}">
+                                    <i class="fas fa-calendar-alt text-gray"></i>
+                                </div>
+                            </div>
+
                             <div class="field">
                                 <div class="name for-input">[`Due date`]</div>
                                 <div class="value">
                                     <input type="text" class="datepicker-due-date bold" placeholder="[`Date`]">
                                     <input type="hidden" name="milestone[due_date]" value="{$milestone.due_date|escape}">
                                     <i class="fas fa-flag-checkered "></i>
-                                </div>
-                            </div>
-
-                            <div class="field">
-                                <div class="name for-input">[`Start date`]</div>
-                                <div class="value">
-                                    <input type="text" class="datepicker-start-date bold" placeholder="[`Date`]">
-                                    <input type="hidden" name="milestone[start_date]" value="{$milestone.start_date|escape}">
-                                    <i class="fas fa-flag-checkered"></i>
-                                </div>
-                            </div>
-
-                            <div class="field">
-                                <div class="name for-input">[`End date`]</div>
-                                <div class="value">
-                                    <input type="text" class="datepicker-end-date bold" placeholder="[`Date`]">
-                                    <input type="hidden" name="milestone[end_date]" value="{$milestone.end_date|escape}">
-                                    <i class="fas fa-flag-checkered"></i>
+                                    <p class="hint">[`Due date is a milestone to be specifically highlighted on a Gantt chart and in the UI.`]</p>
                                 </div>
                             </div>
 
