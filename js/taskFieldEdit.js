@@ -101,6 +101,7 @@ var TaskFieldEdit = (function ($) {
 
         $form.on('task_before_submit', function (event) {
             event.preventDefault();
+            $form.removeData('validate');
             var task_type = $task.find('.js-task-type-hidden').val();
 
             if (!task_type) {
