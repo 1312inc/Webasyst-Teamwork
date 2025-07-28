@@ -63,6 +63,7 @@
                                     <input type="text" class="datepicker-end-date shorter bold" placeholder="[`End`]">
                                     <input type="hidden" name="milestone[end_date]" value="{$milestone.end_date|escape}">
                                     <i class="fas fa-calendar-alt text-gray"></i>
+                                    <p class="hint">[`Planned dates identify this scope on a Gantt chart.`]</p>
                                 </div>
                             </div>
 
@@ -72,7 +73,7 @@
                                     <input type="text" class="datepicker-due-date bold" placeholder="[`Date`]">
                                     <input type="hidden" name="milestone[due_date]" value="{$milestone.due_date|escape}">
                                     <i class="fas fa-flag-checkered "></i>
-                                    <p class="hint">[`Due date is a milestone to be specifically highlighted on a Gantt chart and in the UI.`]</p>
+                                    <p class="hint">[`Due date is a milestone when all scope tasks are supposed to be completed.`]</p>
                                 </div>
                             </div>
 
