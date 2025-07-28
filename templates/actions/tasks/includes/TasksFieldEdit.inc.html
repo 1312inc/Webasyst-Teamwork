@@ -4,7 +4,7 @@
     {$f_name = "fields[$tt][{$f.id}]"}
     {$value = ifset($d, $f.id, '')}
 
-    <div class="field">
+    <div class="field align-left">
         <div class="name">
             {$f.name|escape}
         </div>
@@ -52,7 +52,7 @@
     </div>
 {/function}
 
-<div id="{$wrapper_id}">
+<div id="{$wrapper_id}" class="custom-mb-12">
     {foreach $fields as $task_type => $_fields}
     <div class="fields" data-task-type="{$task_type}" style="display: none;">
         {foreach $_fields as $_field}
