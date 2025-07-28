@@ -4,8 +4,13 @@
     <header class="t-header-wrapper">
         <div class="t-general-menu is-shown flexbox space-20">
 
+            <div class="toggle smaller custom-mr-8">
+                <a href="#/cfd/" class="semibold selected">[`CFD`]</a>
+                <a href="#/ltdc/" class="semibold">[`LTDC`]</a>
+            </div>
+
             {** FILTERS BY PROJECT, MILESTONE AND USER **}
-            <div class="wide t-menu-wrapper flexbox wrap middle space-12">
+            <div class="wide t-menu-wrapper small flexbox wrap middle space-12">
                 {foreach $filter_types as $ft_id => $options}
                     <div class="dropdown t-menu-item" id="{$ft_id}" data-filter-id="{$ft_id}">
                         <button class="dropdown-toggle button t-selected-item light-gray"></button>
@@ -51,7 +56,7 @@
             </div>
 
             {** CHART PERIOD SELECTOR **}
-            <div class="t-right-column flexbox middle space-16">
+            <div class="t-right-column small flexbox middle space-16">
 
                 <div class="t-custom-timeframe flexbox middle space-8" style="display:none">
                     <span>[`from`]</span>
@@ -94,7 +99,7 @@
     </header>
 
     <div class="cfd-chart-wrapper">
-        <h1 class="align-center">[`Cumulative flow diagram`]</h1>
+        <h3 class="align-center custom-mt-24">[`Cumulative flow diagram`] ([`CFD`])</h3>
         <div class="cfd-chart-canvas" style="position: relative; margin: 0 auto; height:80vh; width:80vw">
             <canvas id="cfd-chart"></canvas>
         </div>

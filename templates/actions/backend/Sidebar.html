@@ -89,7 +89,7 @@
         </a>
         <a href="#/cfd/" class="brick t-mini-brick">
             <span class="icon text-orange"><i class="fas fa-chart-line"></i></span>
-            <span>[`Charts`]</span>
+            <span>[`Reports`]</span>
             <span class="count"></span>
         </a>
     </div>
@@ -98,14 +98,14 @@
 
         <li>
             <a href="#/tasks/favorites/">
-                <i class="fas fa-at{if $favorites_counts.total} text-orange{/if}"></i>
+                <i class="fas fa-at"></i>
                 <span>[`Watching`]</span>
                 <span class="count">{tasksUserTasksCounterService::getPairs($favorites_counts.total, $favorites_counts.count, $favorites_counts.bg_color, $favorites_counts.text_color)}</span>
             </a>
         </li>
         <li>
             <a href="#/tasks/urgent/">
-                <i class="fas fa-exclamation-triangle{if $urgent_count} text-red{/if}"></i>
+                <i class="fas fa-exclamation-triangle{if $super_urgent_count} text-red{/if}"></i>
                 <span>[`Urgent`]</span>
                 <span class="count">{tasksUserTasksCounterService::getPairs($urgent_count, $super_urgent_count, '#ff0000', 'white')}</span>
             </a>
@@ -167,7 +167,7 @@
             <h5 class="heading">
                 <span>
                     <span class="caret"><i class="fas fa-caret-down"></i></span>
-                    [`Milestones`]
+                    [`Scopes`]
                 </span>
                 {if $is_admin}
                     <a class="add-scope count action" href="#/webasyst/tasks/#/settings/scope/add/"><i class="fas fa-plus-circle"></i></a>
@@ -230,31 +230,6 @@
             </div>
         </div>
     {/if}
-
-    <div id="graphic-list-wrapper" class="collapsible" data-type="graphic">
-        <h5 class="heading">
-        <span>
-            <span class="caret"><i class="fas fa-caret-down"></i></span>
-            [`Charts`]
-        </span>
-        </h5>
-        <div class="collapsible__content">
-            <ul class="menu">
-                <li>
-                    <a href="#/cfd/">
-                        <i class="fas fa-chart-line"></i>
-                        <span>[`CFD`]</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#/ltdc/">
-                        <i class="fas fa-chart-bar"></i>
-                        <span>[`LTDC`]</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </div>
 
     <!-- plugin hook: 'backend_sidebar.section' -->
     {* @event backend_sidebar.%plugin_id%.section *}
