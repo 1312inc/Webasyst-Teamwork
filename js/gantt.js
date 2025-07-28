@@ -230,7 +230,7 @@ class GanttChart {
                 const deltaDays = Math.round(dx / dayPx);
                 const snapDx = deltaDays * dayPx;
                 const newLeft = origLeft + snapDx;
-                if (newLeft < 0 || newLeft > bar.offsetWidth) return;
+                // if (newLeft < 0 || newLeft > bar.offsetWidth) return;
                 pointer.style.left = `${newLeft}px`;
             };
             const onMouseUp = () => {
@@ -470,8 +470,22 @@ class GanttChart {
             const row = rows[rowIndex];
             row.appendChild(this.renderMilestoneRow(project));
 
-            const start = new Date(project.start_date);
-            const end = new Date(project.end_date || this.getEndDate(monthsBefore));
+            if (!project.start_date && !project.due_date && !project.end_date) {
+                return;
+            }
+
+            let start = project.start_date ? new Date(project.start_date) : null;
+            if (!start) {
+                start = project.end_date ? new Date(project.end_date) : project.due_date ? new Date(project.due_date) : null;
+            } else {
+                if (project.end_date && new Date(project.start_date) > new Date(project.end_date)) {
+                    start = new Date(project.end_date)
+                } else if (project.due_date && new Date(project.start_date) > new Date(project.due_date)) {
+                    start = new Date(project.due_date)
+                }
+            }
+
+            const end = project.end_date ? new Date(project.end_date) : project.due_date ? new Date(project.due_date) : this.getEndDate(monthsBefore);
 
             const offsetDays = Math.max(0, Math.floor((start - timelineStart) / dayMs));
             const durationDays = Math.max(1, Math.ceil((end - start) / dayMs) + 1);
@@ -717,8 +731,10 @@ class GanttChart {
         }
 
         let filtered = this.originalData.filter(item => {
-            const itemStart = item.start_date ? new Date(item.start_date) : null;
-            const itemEnd = item.end_date ? new Date(item.end_date) : null;
+            const rawStart = item.start_date || item.due_date;
+            const itemStart = rawStart ? new Date(rawStart) : null;
+            const rawEnd = item.end_date || item.due_date;
+            const itemEnd = rawEnd ? new Date(rawEnd) : null;
 
             if (!(itemStart instanceof Date) || isNaN(itemStart)) {
                 return false;
