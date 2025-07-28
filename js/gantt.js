@@ -783,6 +783,8 @@ class GanttChart {
     renderMilestoneRow (project) {
         const template = document.getElementById('milestone-row');
         const clone = template.content.cloneNode(true);
+        
+        clone.firstElementChild.dataset.milestoneId = project.id;
         clone.querySelector('.gantt-row__name').innerHTML = `
             ${project.project.icon_url ? `<span class="icon"><i class="size-20" style="background-image: url('${project.project.icon_url}');" title="${project.project.name}"></i></span>` : ''}
             <a href="#/tasks/scope/${project.id}/" class="${project.closed !== '1' ? '' : 'text-gray'}">
@@ -809,7 +811,7 @@ class GanttChart {
         clone.querySelector('.gantt-row__users').innerHTML = usersTpl;
 
         this.waitForTippy().then(() => {
-            tippy(document.querySelectorAll('.userpic[data-tooltip]'), {
+            tippy(document.querySelectorAll(`[data-milestone-id="${project.id}"] .userpic[data-tooltip]`), {
                 content: (element) => element.getAttribute('data-tooltip')
             });
         });
