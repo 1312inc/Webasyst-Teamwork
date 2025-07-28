@@ -4,32 +4,31 @@
 }
 
 .t-white {
-    background: var(--gray);
-    border-color: var(--gray);
+    background: rgba(from var(--gray) r g b / 60%);
 }
 
 .t-gray {
-    background: var(--gray);
+    background: rgba(from var(--gray) r g b / 60%);
 }
 
 .t-yellow {
-    background: var(--yellow);
+    background: rgba(from var(--yellow) r g b / 60%);
 }
 
 .t-green {
-    background: var(--green);
+    background: rgba(from var(--green) r g b / 60%);
 }
 
 .t-blue {
-    background: var(--blue);
+    background: rgba(from var(--blue) r g b / 60%);
 }
 
 .t-red {
-    background: var(--red);
+    background: rgba(from var(--red) r g b / 60%);
 }
 
 .t-purple {
-    background: var(--purple);
+    background: rgba(from var(--purple) r g b / 60%);
 }
 
 .t-content-wrapper {
@@ -266,9 +265,10 @@
 
 .gantt-bar__progressbar {
     position: absolute;
-    height: 3px;
+    height: 100%;
     left: 0;
     bottom: 0;
+    border-radius: 5px;
 }
 
 .gantt-bar__icon {
