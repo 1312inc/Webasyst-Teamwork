@@ -1,4 +1,4 @@
-var TasksTaskField = (function ($) { 
+var TasksTaskField = (function ($) {
     'use strict';
 
     TasksTaskField = function (options) {
@@ -112,7 +112,7 @@ var TasksTaskField = (function ($) {
                 return;
             }
 
-            if (confirm('Are you sure?')) {
+            if (confirm('Delete?')) {
                 $item.hide();
                 $.post('?module=fields&action=delete', {id: id})
                     .done(function () {

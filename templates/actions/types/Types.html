@@ -23,13 +23,14 @@
             <div{if !$_we_are_all_in} style="opacity: 0.4;{/if}">
 
                 <h1>[`Task types`]</h1>
+                <p class="small">[`Task types enable custom fields functionality and additional task filters. Task type examples: <em>story, bug, issue, feedback, memo, etc.</em>`]</p>
 
                 <div class="hidden alert success t-saved bordered-bottom">
                     <i class="fas fa-check-circle"></i>
                     <span>[`Settings successfully updated`]</span>
                 </div>
 
-                <a href="javascript:void(0)" class="button light-gray t-add-new-type-link rounded">
+                <a href="javascript:void(0)" class="button light-gray small t-add-new-type-link rounded">
                     <i class="fas fa-plus text-blue"></i>
                     <span>[`New type`]</span>
                 </a>
@@ -52,13 +53,15 @@
 
                                             <i class="fas fa-bars t-sort-handler"></i>
 
-                                            <span class="t-type-name-text" {if $_type.color}style="color:#{$_type.color|escape}"{/if}>{$_type.name|escape}</span>
-                                            <input type="text" class="t-type-name-input"
-                                                   name="data[type][{$_type.id}][name]" value="{$_type.name|escape}"
-                                                    style="display: none;" placeholder="Type name">
+                                            <span>
+                                                <span class="t-type-name-text semibold" style="font-size: 1rem; {if $_type.color} color:#{$_type.color|escape}{/if}">{$_type.name|escape}</span>
+                                                <input type="text" class="t-type-name-input semibold"
+                                                       name="data[type][{$_type.id}][name]" value="{$_type.name|escape}"
+                                                        style="display: none;" placeholder="Type name">
+                                            </span>
                                             <div class="t-type-color-wrapper" style="display: none;">
                                                 <label class="t-type-label-color" style="color: #a29d9d;">[`Color`]</label>
-                                                #<input type="text" class="short js-colorpicker t-type-color-input"
+                                                # <input type="text" class="short js-colorpicker t-type-color-input shortest"
                                                        name="data[type][{$_type.id}][color]" value="{$_type.color|escape}" autocomplete="off">
                                                 <i class="icon rounded" style="background:#{ifset($_type.color, 'f0f0f0')|escape};"></i>
                                             </div>

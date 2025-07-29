@@ -308,7 +308,7 @@
                                 </a>
                             </div>
 
-                            <div class="fields t-fields-block" style="display: none;">
+                            <div class="fields t-fields-block">
                             {include file = "./includes/TasksFieldEdit.inc.html" inline}
                             </div>
 
@@ -408,6 +408,7 @@
                     <button class="button green large t-save-task-link" type="submit">{if !empty($task.id)}[`Save task`]{else}[`Create task`]{/if}</button>
                     <a class="t-close-link button large light-gray" href="javascript:void(0);">[`Cancel`]</a>
 
+                    {* // always display custom fields. consider re-activacting this button to do otherwise
                     <a class="inline-link js-more-options t-task-edit-block-more-options-link flexbox space-8 float-right gray small">
                         [`More options`]
                         <div class="darr custom-ml-4">
@@ -417,6 +418,7 @@
                             <i class="fas fa-chevron-up fa-xs"></i>
                         </div>
                     </a>
+                    *}
 
                     <!-- plugin hook: 'backend_task_edit.%plugin_id.buttons' -->
                     {* @event backend_task_edit.%plugin_id%.buttons *}

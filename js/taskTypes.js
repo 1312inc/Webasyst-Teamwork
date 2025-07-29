@@ -1,4 +1,4 @@
-var TasksTaskTypes = (function ($) { 
+var TasksTaskTypes = (function ($) {
     "use strict";
 
     TasksTaskTypes = function (options) {
@@ -85,7 +85,7 @@ var TasksTaskTypes = (function ($) {
                 return;
             }
 
-            if (confirm('Are you sure?')) {
+            if (confirm('Delete?')) {
                 $item.hide();
                 $.post('?module=types&action=delete', { id: id })
                     .done(function () {

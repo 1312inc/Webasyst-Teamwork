@@ -6,7 +6,7 @@
     <div class="custom-my-6 custom-ml-40 js-option-values">
         {foreach ifset($field, 'data', 'values', []) as $_value}
         <div class="custom-my-4 js-option-block">
-            <input type="text" name="{$i_name}[data][values][]" value="{$_value}" placeholder="[`Value`]">
+            <input type="text" name="{$i_name}[data][values][]" value="{$_value}" placeholder="[`Value`]" class="small">
             <a class="js-delete-option custom-ml-12" title="[`Delete`]">
                 <i class="fas fa-trash-alt text-pink"></i>
             </a>
@@ -17,7 +17,7 @@
 
 {function get_input_elements field = []}
     {$i_name = "fields[{$field.id}]"}
-    <input type="text" name="{$i_name}[name]" value="{$field.name}" placeholder="[`Field name`]">
+    <input type="text" name="{$i_name}[name]" value="{$field.name}" placeholder="[`Field name`]" class="semibold">
     <input type="hidden" name="{$i_name}[id]" value="{$field.id}">
     <div class="wa-select">
         <select name="{$i_name}[control]">
@@ -32,21 +32,23 @@
         <i class="fas fa-plus text-blue"></i>
     </div>
 
-    {foreach $task_types as $_task_type}
-    {$checked = false}
-    {if in_array($_task_type.id, ifset($type_field_links, $field.id, []))}
-        {$checked = true}
-    {/if}
-    <label>
-        <span class="wa-checkbox">
-            <input type="checkbox" name="{$i_name}[type_link][]" value="{$_task_type.id}"{if $checked} checked{/if}>
-            <span><span class="icon"><i class="fas fa-check"></i></span></span>
-        </span>
-        <span style="color: #{$_task_type.color}">
-            {$_task_type.name}
-        </span>
-    </label>
-    {/foreach}
+    <div>
+        {foreach $task_types as $_task_type}
+        {$checked = false}
+        {if in_array($_task_type.id, ifset($type_field_links, $field.id, []))}
+            {$checked = true}
+        {/if}
+        <label class="custom-mr-8 nowrap">
+            <span class="wa-checkbox">
+                <input type="checkbox" name="{$i_name}[type_link][]" value="{$_task_type.id}"{if $checked} checked{/if}>
+                <span><span class="icon"><i class="fas fa-check"></i></span></span>
+            </span>
+            <span style="color: #{$_task_type.color}">
+                {$_task_type.name}
+            </span>
+        </label>
+        {/foreach}
+    </div>
 {/function}
 
 <div class="flexbox t-settings-task-fields-wrapper" id="{$wrapper_id}">
@@ -69,9 +71,10 @@
 
             <div{if !$_we_are_all_in} style="opacity: 0.4;{/if}">
 
-                <h1>[`Task fields`]</h1>
+                <h1>[`Custom fields`]</h1>
+                <p class="small">[`Task custom fields depend on task types so make sure create at least one task type first.`]</p>
 
-                <a href="javascript:void(0)" class="button light-gray t-add-new-field-link rounded">
+                <a href="javascript:void(0)" class="button light-gray small t-add-new-field-link rounded">
                     <i class="fas fa-plus text-blue"></i>
                     <span>[`New field`]</span>
                 </a>
@@ -83,13 +86,14 @@
                                 {foreach $fields as $field}
                                 <li class="t-fields-list-item{if $field.id == '_template_'} is-template{/if}" data-id="{$field.id}">
                                     <span class="item">
-                                        <i class="fas fa-bars t-sort-handler"></i>
+                                        <i class="fas fa-bars t-sort-handler custom-mt-8"></i>
                                         {get_input_elements field = $field}
                                         <a class="t-delete-field-link custom-ml-12" title="[`Delete`]">
-                                            <i class="fas fa-trash-alt t-delete text-red"></i>
+                                            <i class="fas fa-trash-alt custom-mt-8 t-delete text-red"></i>
                                         </a>
                                     </span>
                                     {get_options field = $field}
+                                    <hr class="custom-my-12">
                                 </li>
                                 {/foreach}
                             </ul>
