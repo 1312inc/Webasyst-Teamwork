@@ -7,28 +7,56 @@
     background: rgba(from var(--gray) r g b / 60%);
 }
 
+.t-white .gantt-bar__progressbar {
+    background: var(--gray);
+}
+
 .t-gray {
     background: rgba(from var(--gray) r g b / 60%);
+}
+
+.t-gray .gantt-bar__progressbar {
+    background: var(--gray);
 }
 
 .t-yellow {
     background: rgba(from var(--yellow) r g b / 60%);
 }
 
+.t-yellow .gantt-bar__progressbar {
+    background: var(--yellow);
+}
+
 .t-green {
     background: rgba(from var(--green) r g b / 60%);
+}
+
+.t-green .gantt-bar__progressbar {
+    background: var(--green);
 }
 
 .t-blue {
     background: rgba(from var(--blue) r g b / 60%);
 }
 
+.t-blue .gantt-bar__progressbar {
+    background: var(--blue);
+}
+
 .t-red {
     background: rgba(from var(--red) r g b / 60%);
 }
 
+.t-red .gantt-bar__progressbar {
+    background: var(--red);
+}
+
 .t-purple {
     background: rgba(from var(--purple) r g b / 60%);
+}
+
+.t-purple .gantt-bar__progressbar {
+    background: var(--purple);
 }
 
 .t-content-wrapper {

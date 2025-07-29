@@ -488,10 +488,15 @@ class GanttChart {
             const end = project.end_date ? new Date(project.end_date) : project.due_date ? new Date(project.due_date) : this.getEndDate(monthsBefore);
 
             const offsetDays = Math.floor((start - timelineStart) / dayMs);
+            const offsetDaysFromTheTimeline = Math.max(0, Math.floor((start - timelineStart) / dayMs));
             const durationDays = Math.max(1, Math.ceil((end - start) / dayMs) + 1);
 
             const left = offsetDays * (this.dayWidthBase + this.zoomWidth);
+            const leftFromTheTimeline = offsetDaysFromTheTimeline * (this.dayWidthBase + this.zoomWidth);
+            
             const width = durationDays * (this.dayWidthBase + this.zoomWidth);
+            const hiddenOffset = leftFromTheTimeline - left;
+            const progressbarWidth = (width - hiddenOffset) * project.closed_percent / 100;
 
             const bar = document.createElement('div');
             bar.className = `gantt-bar ${project.project.color} ${project.closed === '1' ? 'closed' : ''}`;
@@ -502,11 +507,8 @@ class GanttChart {
             bar.dataset.milestoneId = project.id;
             bar.dataset.projectId = project.project_id;
             
-            const due = project.due_date ? new Date(project.due_date) : new Date();
-            const progressbarColor = project.closed_percent === 100 ? 'green' : (project.closed_percent < 100) ? (due < new Date()) ? 'red' : 'blue' : 'blue';
-
             bar.innerHTML = `
-                <div class="gantt-bar__progressbar" style="width: ${project.closed_percent || 0}%; background: var(--${progressbarColor});"></div>
+                <div class="gantt-bar__progressbar" style="left: ${hiddenOffset}px; width: ${progressbarWidth}px;"></div>
                 <div class="resize-handle left"></div>
                 <div class="resize-handle right"></div>
             `;
@@ -799,7 +801,7 @@ class GanttChart {
 
         users.forEach(user => {
             usersTpl += `
-                <a class="userpic userpic-20" data-tooltip="${user.action_count}" href="#/tasks/assigned/${user.id}/" style="background-image: url('${user.photo_url}');"></a>
+                <a class="userpic userpic-20" data-tooltip="Количество действий: ${user.action_count}" href="#/tasks/assigned/${user.id}/" style="background-image: url('${user.photo_url}');"></a>
             `; 
         })
         if (overflow > 0) {
