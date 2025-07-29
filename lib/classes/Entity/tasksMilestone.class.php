@@ -28,6 +28,16 @@ class tasksMilestone implements tasksPersistableInterface
     private $due_date;
 
     /**
+     * @var string|null
+     */
+    private $start_date;
+
+    /**
+     * @var string|null
+     */
+    private $end_date;
+
+    /**
      * @var bool
      */
     private $closed = false;
@@ -138,6 +148,44 @@ class tasksMilestone implements tasksPersistableInterface
     public function setDueDate(?DateTimeImmutable $due_date): tasksMilestone
     {
         $this->due_date = $due_date;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getStartDate()
+    {
+        return $this->start_date;
+    }
+
+    /**
+     * @param string|null $start_date
+     * @return tasksMilestone
+     */
+    public function setStartDate($start_date): tasksMilestone
+    {
+        $this->start_date = $start_date;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getEndDate()
+    {
+        return $this->end_date;
+    }
+
+    /**
+     * @param string|null $end_date
+     * @return tasksMilestone
+     */
+    public function setEndDate($end_date): tasksMilestone
+    {
+        $this->end_date = $end_date;
 
         return $this;
     }

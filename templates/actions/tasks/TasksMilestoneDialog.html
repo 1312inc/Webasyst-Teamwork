@@ -1,0 +1,34 @@
+{strip}
+
+<div class="dialog">
+    <div class="dialog-background"></div>
+    <div class="dialog-body">
+        <a href="#" class="dialog-close js-close-dialog"><i class="fas fa-times"></i></a>
+        <header class="dialog-header"><h1>[`Set milestone`]</h1></header>
+        <div class="dialog-content">
+            <div>
+                <ul class="menu">
+                    {foreach $milestones as $milestone}
+                    <li class="custom-mb-12">
+                        <label>
+                            <span class="wa-radio">
+                                <input type="radio" name="milestone" value="{$milestone.id}">
+                                <span></span>
+                            </span>
+                            &nbsp;{$milestone.name}
+                        </label>
+                    </li>
+                    {foreachelse}
+                        <p class="state-caution">[`No milestones available.`]</p>
+                    {/foreach}
+                </ul>
+            </div>
+        </div>
+        <footer class="dialog-footer">
+            <input class="button green custom-mr-12" type="submit" value="[`Save`]">
+            <a href="#" class="js-close-dialog button light-gray cancel">[`Cancel`]</a>
+        </footer>
+    </div>
+</div>
+
+{/strip}

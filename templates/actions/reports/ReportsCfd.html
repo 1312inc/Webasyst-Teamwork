@@ -1,0 +1,384 @@
+{$_we_are_all_in = $wa->tasks->isPremium()}
+
+<script src="{$wa_app_static_url}js/chart.min.js?v={$wa->version()}"></script>
+
+<div class="t-main-wrapper t-log-page">
+
+    <header class="t-header-wrapper">
+        <div class="t-general-menu is-shown flexbox space-20">
+
+            <div class="toggle smaller custom-mr-8">
+                <a href="#/cfd/" class="semibold selected">[`CFD`]</a>
+                <a href="#/ltdc/" class="semibold">[`LTDC`]</a>
+            </div>
+
+            {** FILTERS BY PROJECT, MILESTONE AND USER **}
+            {if $_we_are_all_in}
+            <div class="wide t-menu-wrapper small flexbox wrap middle space-12">
+                {foreach $filter_types as $ft_id => $options}
+                    <div class="dropdown t-menu-item" id="{$ft_id}" data-filter-id="{$ft_id}">
+                        <button class="dropdown-toggle button t-selected-item light-gray"></button>
+                        <div class="dropdown-body">
+                            <ul class="menu">
+                                {foreach $options as $o}
+                                    <li class="t-nav-item" data-value="{$o.id}"><a href="javascript:void(0);">
+                                        {if !empty($o.icon_html) && ifempty($o.icon) != 'unknown'}
+                                            {$o.icon_html}
+                                        {/if}
+
+                                        {if !empty($o.id) && array_key_exists('photo', $o)}
+                                            {$_userpic = "{$wa_url}wa-content/img/userpic.svg"}
+                                            {if !empty($o.photo)}
+                                                {$_userpic = waContact::getPhotoUrl($o.id, $o.photo, 40, 40, 'person', 0)}
+                                            {/if}
+                                            <i class="userpic" style="background-image: url({$_userpic|escape})"></i>
+                                        {/if}
+
+                                        <span class="{if $o@index > 0}is-bold{/if}">{$o.name|escape}</span>
+                                    </a></li>
+                                {/foreach}
+                            </ul>
+                        </div>
+                        <script>
+                            ( function($) {
+                                $("#{$ft_id}").waDropdown({
+                                    hover: false
+                                });
+                            })(jQuery);
+                        </script>
+                    </div>
+                {/foreach}
+                {if !empty($is_filter_set)}
+                    <div class="t-menu-item">
+                        <span class="t-menu-name">
+                            <a href="#/cfd/" class="t-remove-filters-link">
+                                <i class="far fa-times-circle" title="[`Clear filters`]"></i>
+                            </a>
+                        </span>
+                    </div>
+                {/if}
+            </div>
+            {/if}
+
+            {** CHART PERIOD SELECTOR **}
+            {if $_we_are_all_in}
+            <div class="t-right-column small flexbox middle space-16">
+
+                <div class="t-custom-timeframe flexbox middle space-8" style="display:none">
+                    <span>[`from`]</span>
+                    <input type="text" name="from" style="max-width: 120px;">
+                    <span>[`to`]</span>
+                    <input type="text" name="to" style="max-width: 120px;">
+                    <div class="wa-select">
+                        <select name="groupby">
+                            <option value="days">[`by day`]</option>
+                            <option value="months">[`by month`]</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="dropdown t-menu-item" id="timeframe">
+                    <button class="dropdown-toggle button t-selected-item light-gray"></button>
+                    <div class="dropdown-body t-logs-timeframe">
+                        <ul class="menu t-logs-timeframe-dropdown">
+                            <li data-timeframe="30" data-groupby="days"><a href="javascript:void(0)" class="nowrap">{_w('Last %d day', 'Last %d days', 30)}</a></li>
+                            <li data-timeframe="90" data-groupby="days" data-default-choice="1"><a href="javascript:void(0)" class="nowrap">{_w('Last %d day', 'Last %d days', 90)}</a></li>
+                            <li data-timeframe="365" data-groupby="months"><a href="javascript:void(0)" class="nowrap">{_w('Last %d day', 'Last %d days', 365)}</a></li>
+                            <li data-timeframe="all" data-groupby="months"><a href="javascript:void(0)" class="nowrap">[`All time`]</a></li>
+                            <li data-timeframe="custom"><a href="javascript:void(0)" class="nowrap">[`Select dates...`]</a></li>
+                        </ul>
+                    </div>
+                    <script>
+                        (function ($) {
+                            $("#timeframe").waDropdown({
+                                hover: false,
+                                items: '.menu > li > a',
+                                change: function (event, target, dropdown) {
+                                    return false;
+                                }
+                            });
+                        })(jQuery);
+                    </script>
+                </div>
+            </div>
+            {/if}
+
+        </div>
+    </header>
+
+    {if !$_we_are_all_in}
+        <div class="box">
+            <h3>[`Premium only`]</h3>
+            <p class="small">
+              <i class="fas fa-star text-yellow"></i> [`Upgrade to premium to have the feature enabled and this message to disappear permanently.`]
+            </p>
+            <a href="{$wa_app_url}#/upgrade/" class="button yellow small">[`See what’s there in premium`]</a>
+            <hr class="custom-mt-24" />
+        </div>
+    {/if}
+
+    <div class="cfd-chart-wrapper"{if !$_we_are_all_in} style="opacity: 0.2;"{/if}>
+        <h3 class="align-center custom-mt-24">[`Cumulative flow diagram`] ([`CFD`])</h3>
+        <div class="cfd-chart-canvas" style="position: relative; margin: 0 auto; height:80vh; width:80vw">
+            <canvas id="cfd-chart"></canvas>
+        </div>
+    </div>
+</div>
+
+<script>
+(function () {
+    "use strict";
+
+    var $main_menu = $('.t-header-wrapper');
+    var list_hash = $.tasks.cleanHash(window.location.hash) || '#/cfd/';
+    var list_params = list_hash.substr(6).split('/')[0];
+
+    var cfd_canvas = document.getElementById('cfd-chart').getContext('2d');
+
+    var date_labels = [],
+        timestamps = {$timestamps|json_encode};
+    $.each(timestamps, function (index, value) {
+        date_labels.push(value.date);
+    });
+
+    var chart_datasets = [],
+        statuses_id = {},
+        i = 0,
+        statuses = {$statuses|array_reverse|json_encode};
+
+    $.each(statuses, function (index, value) {
+        var dataset = {
+            label: value.name,
+            data: [],
+            backgroundColor: '#' + value.params.button_color + 'FF',
+            fill: true
+        };
+        chart_datasets.push(dataset);
+        statuses_id[value.id] = i;
+        i++;
+    });
+
+    var chart_data = {$chart_data|json_encode};
+    $.each(chart_data, function (index, one_set) {
+        $.each(one_set, function (status_id, value) {
+            var set_id = Number(statuses_id[status_id]);
+            chart_datasets[set_id].data.push(value);
+        });
+    });
+    var cfd_data = {
+        labels: date_labels,
+        datasets: chart_datasets
+    };
+
+    var cfd_chart = new Chart(cfd_canvas, {
+        type: 'line',
+        data: cfd_data,
+        options: {
+            responsive: true,
+            plugins: {
+                tooltip: {
+                    mode: 'index'
+                },
+            },
+            interaction: {
+                axis: 'x',
+                intersect: false
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: {_w('Dates')|json_encode}
+                    }
+                },
+                y: {
+                    stacked: true,
+                    title: {
+                        display: true,
+                        text: {_w('Number of tasks')|json_encode}
+                    }
+                }
+            },
+            elements: {
+                line: {
+                    borderWidth: 0,
+                },
+                point: {
+                    radius: 0,
+                }
+            }
+        }
+    });
+
+    var initReportsTimeframeSelector = function ($wrapper, hash_prefix) {
+        var $visible_option = $wrapper.children('#timeframe .dropdown-toggle');
+        var $custom_wrapper = $('.t-custom-timeframe');
+
+        // Initial selection in dropdown menu
+        var timeframe = getTimeframeData();
+        setActiveLi(timeframe.$li);
+        if (timeframe.timeframe == 'custom') {
+            $custom_wrapper.show();
+
+            // Delay initialization to allow datepicker locale to set up properly.
+            // Looks kinda paranoid, but otherwise localization sometimes fails in FF.
+            $(function() {
+                setTimeout(function() {
+                    initCustomSelector(timeframe);
+                }, 100);
+            });
+        } else {
+            $custom_wrapper.hide();
+        }
+
+        // Change selection when user clicks on dropdown list item
+        $wrapper.children('#timeframe .dropdown-body').on('click', 'li:not(.selected)', function () {
+            var $li = $(this);
+            var tf = getTimeframeData($li);
+            setActiveLi($li);
+            if (tf.timeframe == 'custom') {
+                $custom_wrapper.show();
+                initCustomSelector(tf);
+            } else {
+                $custom_wrapper.hide();
+                reloadChart();
+            }
+        });
+
+        // Load chart based on current selected dates
+        function reloadChart() {
+            var timeframe = getTimeframeData();
+            var params = window.location.hash.substring(hash_prefix.length).split('/')[0] || '';
+            'to from groupby timeframe'.split(' ').forEach(function(name) {
+                params = $.tasks.replaceParam(params, name, timeframe[name] || '');
+            });
+
+            $.wa.setHash($.tasks.cleanHash(hash_prefix + params + '/'));
+        }
+
+        // Helper to get timeframe data from <li> element,
+        // or when $li is not specified, deduce it from current selected element and/or URL hash.
+        function getTimeframeData($li) {
+            var result;
+            if (!$li || !$li.length) {
+                $li = $wrapper.find('ul li.selected').first();
+                if (!$li.length) {
+                    // Determine active timeframe from url hash and find corresponding <li>
+                    var params = window.location.hash.substring(hash_prefix.length).split('/')[0] || '';
+                    var timeframe = $.tasks.deparam(params);
+                    if (timeframe.timeframe && timeframe.groupby) {
+                        $wrapper.find('ul li').each(function() {
+                            var tf = getTimeframeData($(this));
+                            if (tf.timeframe == timeframe.timeframe && tf.groupby == timeframe.groupby) {
+                                $li = $(this);
+                                return false;
+                            }
+                        });
+                        if ($li) {
+                            result = {
+                                $li: $li,
+                                timeframe: timeframe.timeframe,
+                                groupby: timeframe.groupby
+                            };
+                            if (result.timeframe == 'custom') {
+                                result.from = timeframe.from || null;
+                                result.to = timeframe.to || null;
+                            }
+                            return result;
+                        }
+                    }
+                }
+                if (!$li.length) {
+                    $li = $wrapper.find('ul li[data-default-choice]').first();
+                }
+                if (!$li.length) {
+                    // throw new Error("Something's badly wrong with the timeframe selector.");
+                }
+            }
+
+            result = {
+                $li: $li,
+                timeframe: ($li && $li.data('timeframe')) || 30,
+                groupby: ($li && $li.data('groupby')) || 'days'
+            };
+
+            if (result.timeframe == 'custom') {
+                result.from = $custom_wrapper.find('[name="from"]').datepicker('getDate');
+                if (result.from) {
+                    result.from = result.from.getTime() / 1000;
+                }
+                result.to = $custom_wrapper.find('[name="to"]').datepicker('getDate');
+                if (result.to) {
+                    result.to = result.to.getTime() / 1000;
+                }
+            }
+
+            return result;
+        }
+
+        // Helper to set active timeframe <li>
+        function setActiveLi($li) {
+            $visible_option.text($li.text());
+            $li.addClass('selected').siblings('.selected').removeClass('selected');
+        }
+
+        // Helper to set up custom period selector
+        function initCustomSelector(timeframe) {
+            var $groupby = $custom_wrapper.find('select');
+            var $inputs = $custom_wrapper.find('input');
+            var $from = $inputs.filter('[name="from"]');
+            var $to = $inputs.filter('[name="to"]');
+            var delay_timeout = null;
+
+            // One-time initialization
+            (function() {
+                $inputs.datepicker().change(function() {
+                    delay_timeout && clearTimeout(delay_timeout);
+                    delay_timeout = setTimeout(reloadChart, 500);
+                }).keyup(function(e) {
+                    delay_timeout && clearTimeout(delay_timeout);
+                    if (e.which == 13 || e.which == 10) {
+                        reloadChart();
+                    }
+                });
+                $inputs.datepicker('widget').hide();
+                $groupby.change(reloadChart);
+            })();
+
+            // Code to run each time 'Custom' is selected
+            initCustomSelector = function(timeframe) {
+                // Set datepicker values depending on previously selected options
+                if (timeframe.timeframe == 'custom') {
+                    $from.datepicker('setDate', timeframe.from ? new Date(timeframe.from*1000) : null);
+                    $to.datepicker('setDate', timeframe.to ? new Date(timeframe.to*1000) : null);
+                } else if (timeframe.timeframe == 'all') {
+                    $from.datepicker('setDate', null);
+                    $to.datepicker('setDate', null);
+                } else {
+                    $from.datepicker('setDate', '-'+parseInt(timeframe.timeframe, 10)+'d');
+                    $to.datepicker('setDate', new Date());
+                }
+                $groupby.val(timeframe.groupby);
+            };
+
+            initCustomSelector(timeframe);
+        }
+    };
+
+
+    initReportsTimeframeSelector($('#timeframe'), '#/cfd/');
+
+    // Set <a href=...> on filters
+    $main_menu.find(".t-nav-item[data-value]").each(function() {
+        var $nav_item = $(this),
+            filter_id = $nav_item.closest(".t-menu-item").data("filter-id"),
+            params = $.tasks.replaceParam(list_params, filter_id, $nav_item.data('value')),
+            item_hash = '#/cfd/'+params+(params ? '/' : '');
+        $nav_item.find("a").attr('href', item_hash);
+        if (item_hash == list_hash) {
+            $nav_item.closest(".t-menu-item").find(".t-selected-item").html($nav_item.find('a').html());
+        }
+    });
+
+})();
+</script>

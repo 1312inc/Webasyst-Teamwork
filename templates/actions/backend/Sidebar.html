@@ -8,6 +8,8 @@
     {/strip}{/function}
 
 
+{$is_premium = $wa->tasks->isPremium()}
+
 {$empty_user_count = [
     count => 0,
     total => 0,
@@ -82,20 +84,32 @@
             <span>[`Kanban`]</span>
             <span class="count"></span>
         </a>
+        {if $is_admin}
+        <a href="#/milestones/" class="brick t-mini-brick">
+            <span class="icon{if $is_premium} text-purple{/if}"><i class="fas fa-stream"></i></span>
+            <span>[`Gantt`]</span>
+            <span class="count"></span>
+        </a>
+        <a href="#/cfd/" class="brick t-mini-brick">
+            <span class="icon{if $is_premium} text-orange{/if}"><i class="fas fa-chart-line"></i></span>
+            <span>[`Reports`]</span>
+            <span class="count"></span>
+        </a>
+        {/if}
     </div>
 
     <ul class="menu custom-mt-0 mobile-friendly">
 
         <li>
             <a href="#/tasks/favorites/">
-                <i class="fas fa-at{if $favorites_counts.total} text-orange{/if}"></i>
+                <i class="fas fa-at"></i>
                 <span>[`Watching`]</span>
                 <span class="count">{tasksUserTasksCounterService::getPairs($favorites_counts.total, $favorites_counts.count, $favorites_counts.bg_color, $favorites_counts.text_color)}</span>
             </a>
         </li>
         <li>
             <a href="#/tasks/urgent/">
-                <i class="fas fa-exclamation-triangle{if $urgent_count} text-red{/if}"></i>
+                <i class="fas fa-exclamation-triangle{if $super_urgent_count} text-red{/if}"></i>
                 <span>[`Urgent`]</span>
                 <span class="count">{tasksUserTasksCounterService::getPairs($urgent_count, $super_urgent_count, '#ff0000', 'white')}</span>
             </a>
@@ -157,7 +171,7 @@
             <h5 class="heading">
                 <span>
                     <span class="caret"><i class="fas fa-caret-down"></i></span>
-                    [`Milestones`]
+                    [`Scopes`]
                 </span>
                 {if $is_admin}
                     <a class="add-scope count action" href="#/webasyst/tasks/#/settings/scope/add/"><i class="fas fa-plus-circle"></i></a>
@@ -428,7 +442,6 @@
         </li>
 
         {if $is_admin}
-            {$is_premium = $wa->tasks->isPremium()}
             <li class="top-padded">
                 <a href="#/upgrade/">
                     <i class="fas fa-star{if !$is_premium} text-yellow{/if}"></i>

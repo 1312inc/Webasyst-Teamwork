@@ -1,0 +1,80 @@
+{$wrapper_id = uniqid('t-field-edit-block')}
+
+{function get_field f=[] tt='' d=[]}
+    {$f_name = "fields[$tt][{$f.id}]"}
+    {$value = ifset($d, $f.id, '')}
+
+    <div class="field align-left">
+        <div class="name">
+            {$f.name|escape}
+        </div>
+        <div class="value small">
+            {if $f.control == 'select'}
+            <div class="wa-select">
+                <select name="{$f_name}" disabled>
+                {if ifset($f, 'data', 'values', [])}
+                    {foreach $f.data.values as $_option}
+                    <option value="{$_option|escape}"{if $_option == $value} selected{/if}>{$_option|escape}</option>
+                    {/foreach}
+                {/if}
+                </select>
+            </div>
+            {elseif $f.control == 'textarea'}
+                <textarea rows="10" cols="30" class="smallest" name="{$f_name}" disabled>{$value}</textarea>
+            {elseif $f.control == 'radio'}
+                {if ifset($f, 'data', 'values', [])}
+                    {foreach $f.data.values as $_value}
+                        <div class="custom-mb-12">
+                            <label>
+                                <span class="wa-radio">
+                                    <input type="{$f.control}" name="{$f_name}" value="{$_value|escape}"{if $_value == $value} checked="checked"{/if} disabled>
+                                    <span></span>
+                                </span>
+                                {$_value|escape}
+                            </label>
+                        </div>
+                    {/foreach}
+                {/if}
+            {elseif $f.control == 'checkbox'}
+            <label>
+                <span class="wa-checkbox">
+                    <input type="{$f.control}" name="{$f_name}" value="{$f.name|escape}"{if $f.name == $value} checked{/if} disabled>
+                    <span>
+                        <span class="icon">
+                            <i class="fas fa-check"></i>
+                        </span>
+                    </span>
+                </span>
+                {$value|escape}
+            </label>
+            {else}
+                <input type="{$f.control}" name="{$f_name}" value="{$value}" disabled>
+            {/if}
+        </div>
+    </div>
+{/function}
+
+<div id="{$wrapper_id}" class="custom-mb-12">
+    {foreach $fields as $task_type => $_fields}
+    <div class="fields" data-task-type="{$task_type}" style="display: none;">
+        {foreach $_fields as $_field}
+        {get_field f=$_field tt=$task_type d=$fields_data}
+        {/foreach}
+    </div>
+    {/foreach}
+</div>
+
+{$_task = ['id' => $task.id]}
+
+<script>
+    (function ($) {
+        new TaskFieldEdit({
+            '$wrapper': $('#{$wrapper_id}'),
+            '$editor': $('#t-edit-task-form'),
+            'task': {$_task|json_encode},
+            'locales': {
+                select_task_type: "[`Please select a task type`]"
+            }
+        })
+    })(jQuery);
+</script>

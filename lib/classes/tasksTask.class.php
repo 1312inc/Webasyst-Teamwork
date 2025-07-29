@@ -277,6 +277,8 @@ class tasksTask implements ArrayAccess
             $parser->setSafeMode(true);
             $text = self::replaceMentionsWithLinks($text);
             $text = $parser->text($text);
+            // Исправляем теги подчеркивания
+            $text = self::fixUnderlineTags($text);
         }
 
         if (isset($options['escape']) && $options['escape'] === true) {
@@ -536,6 +538,30 @@ class tasksTask implements ArrayAccess
             'url_pattern' => $url_pattern,
             'link_pattern' => $link_pattern
         ));
+    }
+
+    /**
+     * Исправляет незакрытые теги подчеркивания в тексте
+     * Преобразует &lt;u&gt; в правильные <u></u> теги
+     * 
+     * @param string $text Исходный текст с незакрытыми тегами
+     * @return string Текст с корректными HTML тегами
+     */
+    public static function fixUnderlineTags(string $text): string
+    {
+        // Простая замена: каждый нечетный тег - открывающий, каждый четный - закрывающий
+        $count = 0;
+        $result = preg_replace_callback('/&lt;u&gt;/i', function($matches) use (&$count) {
+            $count++;
+            return ($count % 2 === 1) ? '<u>' : '</u>';
+        }, $text);
+        
+        // Если количество тегов нечетное, добавляем закрывающий тег в конец
+        if ($count % 2 === 1) {
+            $result .= '</u>';
+        }
+        
+        return $result;
     }
 
     /**
@@ -911,6 +937,26 @@ class tasksTask implements ArrayAccess
         return null;
     }
 
+    public function getFieldsByType()
+    {
+        $fields_type = [];
+        $t_fields = $this->model->query("
+            SELECT ttf.type_id, tf.* FROM tasks_type_fields ttf
+            LEFT JOIN tasks_field tf ON tf.id = ttf.field_id 
+            WHERE tf.id IS NOT NULL
+            ORDER BY ttf.type_id, tf.sort
+        ")->fetchAll();
+
+        foreach ($t_fields as $_field) {
+            if (empty($fields_type[$_field['type_id']])) {
+                $fields_type[$_field['type_id']] = [];
+            }
+            $_field['data'] = tasksFieldModel::decodeData($_field['data']);
+            $fields_type[$_field['type_id']][] = $_field;
+        }
+
+        return $fields_type;
+    }
 
     /**
      * Whether a offset exists

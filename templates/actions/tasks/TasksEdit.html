@@ -172,7 +172,8 @@
                     {* NAME && PRIORITY *}
                     <div class="t-form-line t-table-layout">
                         <div class="t-column">
-                            <div class="t-task-name-wrapper">
+                            <div class="t-task-name-wrapper flexbox wrap-mobile space-4">
+                                {$type_selector_html}
                                 <input type="text" name="data[name]" class="t-task-name-input bold" value="{$task.name|escape}" placeholder="[`Task title`]" tabindex="1">
 
                                 <!-- plugin hook: 'backend_task_edit.%plugin_id.name' -->
@@ -209,35 +210,7 @@
                         <hr>
 
                         <textarea id="redactor-task-{$task_uuid}" class="t-redactor-task-edit" name="data[text]" placeholder="[`Task summary`]">{$task.text|escape}</textarea>
-                        <script>
-                            (function () {
-                                if (lexicalEditor) {
-                                    window.waRedactorTaskInit = () => {
-                                        const $el = $('#redactor-task-{$task_uuid}');
-                                        $el.parent().find('.lexical-editor').remove();
 
-                                        lexicalEditor.createLexicalInstance({
-                                            el: $el[0],
-                                            isRichMode: TasksController ? TasksController.options.text_editor === 'wysiwyg' : false,
-                                            taskId: '{$task.id}',
-                                            storage: taskEdit ? (taskEdit.is_new ? (TasksController ? TasksController.getDraftKeyTaskText() : '') : '') : '',
-                                            placeholder: '[`Task summary`]',
-                                            imageUploadUrl: '?module=attachments&action=imageUpload',
-                                            imageUploadTaskUuid: '{$task_uuid}',
-                                            controls: document.querySelector('.editor-wrapper-{$task_uuid}'),
-                                            mentions: window.taskLinks || {},
-                                            mentionsFetchUrlWA: true,
-                                            lang: '{$loc[0]}'
-                                        });
-
-                                        TasksController.storageDataInMdMode($el[0], 'getDraftKeyTaskText');
-                                    }
-                                }
-
-                                waRedactorTaskInit();
-
-                            })();
-                        </script>
                         <!-- plugin hook: 'backend_task_edit.%plugin_id.description' -->
                         {* @event backend_task_edit.%plugin_id%.description *}
                         {foreach $backend_task_edit as $_}{ifset($_.description)}{/foreach}
@@ -298,6 +271,16 @@
                             </div>
                             {/if}
 
+                            <div class="t-chip" style="display: none;">
+                                <a class="t-form-line-spellcheck-chip">
+                                    <span class="icon webasyst-magic-wand-ai custom-mr-4"></span>
+                                    [`Check spelling`]
+                                </a>
+                            </div>
+
+                            <div class="fields t-fields-block">
+                            {include file = "./includes/TasksFieldEdit.inc.html" inline}
+                            </div>
 
                             <!-- plugin hook: 'backend_task_edit.%plugin_id.more' -->
                             {* @event backend_task_edit.%plugin_id%.more *}
@@ -395,6 +378,18 @@
                     <button class="button green large t-save-task-link" type="submit">{if !empty($task.id)}[`Save task`]{else}[`Create task`]{/if}</button>
                     <a class="t-close-link button large light-gray" href="javascript:void(0);">[`Cancel`]</a>
 
+                    {* // always display custom fields. consider re-activacting this button to do otherwise
+                    <a class="inline-link js-more-options t-task-edit-block-more-options-link flexbox space-8 float-right gray small">
+                        [`More options`]
+                        <div class="darr custom-ml-4">
+                            <i class="fas fa-chevron-down fa-xs"></i>
+                        </div>
+                        <div class="uarr custom-ml-4">
+                            <i class="fas fa-chevron-up fa-xs"></i>
+                        </div>
+                    </a>
+                    *}
+
                     <!-- plugin hook: 'backend_task_edit.%plugin_id.buttons' -->
                     {* @event backend_task_edit.%plugin_id%.buttons *}
                     {foreach $backend_task_edit as $_}{ifset($_.buttons)}{/foreach}
@@ -409,4 +404,130 @@
         </form>
     </div>
 </div>
+
+<script>
+(function () {
+    if (!lexicalEditor) return;
+
+    const $el = $('#redactor-task-{$task_uuid}');
+    const $spellcheckBtn = $('.t-form-line-spellcheck-chip');
+    const $spellcheckBtnParent = $spellcheckBtn.parent();
+    let spellcheckInProcess = false;
+
+    window.waRedactorTaskInit = () => {
+        $el.parent().find('.lexical-editor').remove();
+
+        lexicalEditor.createLexicalInstance({
+            el: $el[0],
+            isRichMode: TasksController ? TasksController.options.text_editor === 'wysiwyg' : false,
+            taskId: '{$task.id}',
+            storage: taskEdit ? (taskEdit.is_new ? (TasksController ? TasksController.getDraftKeyTaskText() : '') : '') : '',
+            placeholder: '[`Task summary`]',
+            imageUploadUrl: '?module=attachments&action=imageUpload',
+            imageUploadTaskUuid: '{$task_uuid}',
+            controls: document.querySelector('.editor-wrapper-{$task_uuid}'),
+            mentions: {},
+            mentionsFetchUrlWA: true,
+            lang: '{$loc[0]}'
+        });
+
+        TasksController.storageDataInMdMode($el[0], 'getDraftKeyTaskText');
+    };
+
+    function runSpellCheck () {
+        if (!window.spellCheck || spellcheckInProcess) return;
+        const text = $el.val();
+
+        spellcheckInProcess = true;
+        $spellcheckBtn.find('.icon').addClass('shimmer');
+        window.spellCheck(text).then((correctedText) => {
+            textReplaceConfirm({
+                title: "[`AI response`]",
+                text: correctedText,
+                success_button_title: '[`Get the entire text`]',
+                success_button_class: 'blue',
+                cancel_button_title: '[`Close`]',
+                cancel_button_class: 'light-gray',
+                onSuccess: () => {
+                    $el.val(correctedText).trigger('input').trigger('change');
+                    waRedactorTaskInit();
+                }
+            });
+        })
+        .catch(() => {})
+        .finally(() => {
+            spellcheckInProcess = false;
+            $spellcheckBtn.find('.icon').removeClass('shimmer');
+        })
+    }
+
+    function checkLength () {
+        const charCount = $el.val().length;
+        $spellcheckBtnParent.hide();
+        if (charCount > 10) {
+            $spellcheckBtnParent.show();
+        }
+    }
+
+    waRedactorTaskInit();
+    checkLength();
+
+    $spellcheckBtn.on('click', function (e) {
+        e.preventDefault();
+        runSpellCheck();
+    });
+
+    $el.on('input', checkLength);
+
+    function textReplaceConfirm(options) {
+        {literal}
+        var deferred = $.Deferred();
+
+        var header = ( options.title ? '<h3>' + options.title + '</h3>' : null );
+        var text = ( options.text ? options.text : "" );
+        var success_button_title = ( options.success_button_title ? options.success_button_title : $.wa.translate("Confirm") );
+        var success_button_class = ( options.success_button_class ? options.success_button_class : "blue" );
+        var cancel_button_title = ( options.cancel_button_title ? options.cancel_button_title : $.wa.translate("Cancel") );
+        var cancel_button_class = ( options.cancel_button_class ? options.cancel_button_class : "light-gray" );
+
+        var success_button = `<button class="js-success-action button ${success_button_class}">${success_button_title}</button>`,
+            cancel_button = `<button class="js-dialog-close button ${cancel_button_class}">${cancel_button_title}</button>`;
+
+        var footer = success_button + cancel_button;
+
+        var is_success = false;
+
+        $.waDialog({
+            header: header,
+            content: text,
+            footer: footer,
+            onOpen: function($wrapper, dialog) {
+                $wrapper.on("click", ".js-success-action", function(event) {
+                    event.preventDefault();
+                    is_success = true;
+                    dialog.close();
+                });
+            },
+            onClose: function($wrapper) {
+                if (is_success) {
+                    if (typeof options.onSuccess === "function") {
+                        options.onSuccess($wrapper);
+                    }
+                    deferred.resolve();
+                } else {
+                    if (typeof options.onCancel === "function") {
+                        options.onCancel($wrapper);
+                    }
+                    deferred.reject();
+                }
+            }
+        });
+
+        return deferred.promise();
+        {/literal}
+    }
+
+})();
+</script>
+
 {/strip}

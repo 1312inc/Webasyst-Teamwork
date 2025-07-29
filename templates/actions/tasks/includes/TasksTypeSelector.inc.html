@@ -1,0 +1,35 @@
+{$_is_premium = $wa->tasks->isPremium()}
+{if $_is_premium && !empty($task_types) && count($task_types) > 0}
+{$wrapper_id = uniqid('t-task-type-selector-wrapper')}
+<div id="{$wrapper_id}" class="t-task-type-selector-wrapper">
+    <div class="dropdown width-100 t-custom-select">
+        <button class="dropdown-toggle width-100 button light-gray t-selected-item js-selected-item selected-custom-item" style="text-align: left; font-size: 1.125rem; padding: 0.75rem 0.5rem;">
+            {if !empty($ext_info.type) && $ext_info.type}
+                <span style="color:#{if !empty($task_types[$ext_info.type].color)}{$task_types[$ext_info.type].color|escape}{else}999{/if}">{$task_types[$ext_info.type].name|escape}</span>
+            {else}
+                [`Type`]
+            {/if}
+        </button>
+        <div class="dropdown-body">
+            <ul class="menu js-task-types-list">
+                {foreach $task_types as $_type}
+                    <li class="t-nav-item js-type-item">
+                        <a class="js-custom-select set-custom-select" href="javascript:void(0);" {if !empty($_type.color)}data-color="{$_type.color}"{/if} data-value="{$_type.id|escape}">
+                            <span style="color:#{if !empty($_type.color)}{$_type.color}{else}999{/if}">{$_type.name|escape}</span>
+                        </a>
+                    </li>
+                {/foreach}
+            </ul>
+        </div>
+        <input type="hidden" name="task_type" class="js-task-type-hidden" value="{$ext_info.type|escape}">
+    </div>
+    <script>
+        (function ($) {
+            $('#{$wrapper_id} .dropdown').waDropdown({
+                hover: true,
+                items: ".menu > li > a",
+             });
+        })(jQuery);
+    </script>
+</div>
+{/if}

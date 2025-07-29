@@ -1686,3 +1686,207 @@ msgstr "Промокод"
 
 msgid "Unable to process image file"
 msgstr "Ошибка обработки файла изображения"
+
+msgid "Set milestone"
+msgstr "Привязать к сроку"
+
+msgid "Spellcheck"
+msgstr "Орфография"
+
+msgid "Task fields"
+msgstr "Поля задач"
+
+msgid "Please select a task type"
+msgstr "Пожалуйста, выберите тип задачи"
+
+msgid "Gantt"
+msgstr "Гант"
+
+msgid "Charts"
+msgstr "Графики"
+
+msgid "Reports"
+msgstr "Отчеты"
+
+msgid "CFD"
+msgstr "CFD"
+
+msgid "LTDC"
+msgstr "LTDC"
+
+msgid "Any type"
+msgstr "Любой тип"
+
+msgid "Types"
+msgstr "Типы"
+
+msgid "Type"
+msgstr "Тип"
+
+msgid "No milestones available."
+msgstr "Нет доступных для выбора сроков."
+
+msgid "Initial status"
+msgstr "Начальный статус"
+
+msgid "Target status"
+msgstr "Конечный статус"
+
+msgid "New type"
+msgstr "Новый тип"
+
+msgid "Open settings"
+msgstr "Открыть настройки"
+
+msgid "Number of days in this status"
+msgstr "Количество дней в этом статусе"
+
+msgid "Hide new & completed"
+msgstr "Спрятать новые и завершенные"
+
+msgid "Color settings"
+msgstr "Настройки цвета"
+
+msgid "Or enter a color value"
+msgstr "Или задайте цвет вручную"
+
+msgid "Value"
+msgstr "Значение"
+
+msgid "Field name"
+msgstr "Название поля"
+
+msgid "New field"
+msgstr "Новое поле"
+
+msgid "Start date"
+msgstr "Начальная дата"
+
+msgid "End date"
+msgstr "Конечная дата"
+
+msgid "Parent scope"
+msgstr "Родительская работа"
+
+msgid "Not specified"
+msgstr "Не указана"
+
+msgid "Gravity"
+msgstr "Серьезность"
+
+msgid "Planned time costs"
+msgstr "Трудозатраты плановые"
+
+msgid "Actual time costs"
+msgstr "Трудозатраты фактические"
+
+msgid "Affected version"
+msgstr "В какой версии обнаружено"
+
+msgid "Result"
+msgstr "Результат"
+
+msgid "Reports are available in the Webasyst 2 interface only."
+msgstr "Отчеты работают только в интерфейсе Webasyst 2."
+
+msgid "Bad parameters"
+msgstr "Получены неверные параметры"
+
+msgid "Dates"
+msgstr "Даты"
+
+msgid "Number of tasks"
+msgstr "Количество задач"
+
+msgid "Lead time distribution chart"
+msgstr "Частотная диаграмма времени выполнения задач"
+
+msgid "Total tasks"
+msgstr "Всего задач"
+
+msgid "Production time (calendar days from obligation to delivery)"
+msgstr "Время производства (календарных дней от обязательства до поставки)"
+
+msgid "Number of items with specified production time"
+msgstr "Количество элементов с указанным временем производства"
+
+msgid "%s mo."
+msgstr "%s мес"
+
+msgid "Zoom"
+msgstr "Масштаб"
+
+msgid "All task types"
+msgstr "Все типы задач"
+
+msgid "Cumulative flow diagram"
+msgstr "Накопительная диаграмма потока"
+
+msgid "Upgrade to premium"
+msgstr "Подключить премиум"
+
+msgid "special offer!"
+msgstr "спецпредложение!"
+
+msgid "Advanced features for efficient teamwork and productive teams"
+msgstr "Продвинутые функции для эффективных команд и больших свершений"
+
+msgid "Soon"
+msgstr "Скоро"
+
+msgid "Later"
+msgstr "Позже"
+
+msgid "Check spelling"
+msgstr "Проверить ошибки"
+
+msgid "Premium only"
+msgstr "Только в премиум"
+
+msgid "Upgrade to premium to have the feature enabled and this message to disappear permanently."
+msgstr "Апгрейд до премиум сразу откроет все продвинутые функции, а эта надпись исчезнет."
+
+msgid "See what’s there in premium"
+msgstr "Что еще есть в премиум"
+
+msgid "Task types enable custom fields functionality and additional task filters. Task type examples: <em>story, bug, issue, feedback, memo, etc.</em>"
+msgstr "Типы задач позволяют более гибко фильтровать задачи и указывать для задач кастомные поля. Примеры типа: <em>фича, баг, пожелание, эпик, стори, заявка, служебка, шеф сказал, что хотите.</em>"
+
+msgid "Add scope"
+msgstr "Добавить работу"
+
+msgid "Plan"
+msgstr "План"
+
+msgid "Start"
+msgstr "Начало"
+
+msgid "End"
+msgstr "Конец"
+
+msgid "Planned dates identify this scope on a Gantt chart."
+msgstr "Даты начала и окончания работы определяют ее положение на диаграмме Ганта."
+
+msgid "Due date is a milestone when all scope tasks are supposed to be completed."
+msgstr "Дедлайн будет явно подсвечен в интерфейсе для каждой задачи, которая входит в данную работу."
+
+msgid "Task custom fields depend on task types so make sure create at least one task type first."
+msgstr "Кастомные поля заполняются для задач в зависимости от типа."
+
+msgid "1 day"
+msgstr "1 день"
+
+msgid "3 days"
+msgstr "3 дня"
+
+msgid "1 week"
+msgstr "1 неделя"
+
+msgid "2 weeks"
+msgstr "2 недели"
+
+msgid "AI response"
+msgstr "Ответ ИИ"
+
+msgid "Get the entire text"
+msgstr "Взять весь текст"

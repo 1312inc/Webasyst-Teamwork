@@ -3,7 +3,7 @@
 {$ident = rand(0, 1024)}
 
 <div class="t-task-forward-wrapper" id="forward-wrapper-{$ident}">
-    <form method="post" action="{$form_url}" data-task-action="forward" data-task-id="{$task.id}" data-task-uuid="{$task_uuid|default:''}">
+    <form method="post" action="{$form_url}" data-task-action="forward" data-task-id="{$task.id|default:''}" data-task-uuid="{$task_uuid|default:''}">
     <div class="fields">
 
         {if !empty($projects)}
@@ -40,7 +40,7 @@
             <div class="value">
                 <input type="hidden" name="assigned_contact_id" value="">
                 <div class="t-team-list-wrapper"></div>
-                
+
                 {include file="./includes/TasksEditInviteForm.inc.html" inline}
                 
                 <script>
@@ -88,7 +88,7 @@
                                 targetField: $wrapper.find('[name="assigned_contact_id"]'),
                                 inviteField: $wrapper.find('.t-team-invite'),
                                 projectId: project_id,
-                                assignedContactId: {$task.assigned_contact_id|default:"\"\""}
+                                assignedContactId: '{$task.assigned_contact_id|default:""}'
                             });
                         }
 
@@ -96,7 +96,7 @@
                             fetchTeamList(e.target.value);
                         });
 
-                        fetchTeamList({$task.project_id|default:"\"\""});
+                        fetchTeamList({$task.project_id|default:""});
 
                     })(jQuery);
                 </script>

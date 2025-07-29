@@ -86,6 +86,8 @@
 
         </div>
 
+        {$task.status_html}
+
         {$_task_hooks_kanban_taks = $task.hooks[tasksEventsStorage::KANBAN_STATUS_TASKS]|default:[]}
         {foreach $_task_hooks_kanban_taks as $pluginId => $h}
             <!-- {$pluginId} after_body -->

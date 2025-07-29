@@ -1,0 +1,103 @@
+{$_we_are_all_in = $wa->tasks->isPremium()}
+{$wrapper_id = uniqid('t-settings-task-types-wrapper')}
+<div class="flexbox t-settings-task-types-wrapper" id="{$wrapper_id}">
+
+    {$sidebar_html|default:''}
+
+    <div class="content">
+
+        <div class="article">
+        <div class="article-body">
+
+            {if !$_we_are_all_in}
+
+                <h3>[`Premium only`]</h3>
+                <p class="small">
+                  <i class="fas fa-star text-yellow"></i> [`Upgrade to premium to have the feature enabled and this message to disappear permanently.`]
+                </p>
+                <a href="{$wa_app_url}#/upgrade/" class="button yellow small">[`See what’s there in premium`]</a>
+                <hr class="custom-mt-24" />
+
+            {/if}
+
+            <div{if !$_we_are_all_in} style="opacity: 0.4;{/if}">
+
+                <h1>[`Task types`]</h1>
+                <p class="small">[`Task types enable custom fields functionality and additional task filters. Task type examples: <em>story, bug, issue, feedback, memo, etc.</em>`]</p>
+
+                <div class="hidden alert success t-saved bordered-bottom">
+                    <i class="fas fa-check-circle"></i>
+                    <span>[`Settings successfully updated`]</span>
+                </div>
+
+                <a href="javascript:void(0)" class="button light-gray small t-add-new-type-link rounded">
+                    <i class="fas fa-plus text-blue"></i>
+                    <span>[`New type`]</span>
+                </a>
+
+
+                <form method="post" class="t-save-settings-form">
+                    <div class="t-settings-wrapper">
+                        <div class="t-types-list-wrapper">
+                            <ul class="menu t-types-list" style="position: relative;">
+
+                                {$_types = $types}
+                                {$_empty = $empty}
+                                {$_empty.id = '_template_'}
+                                {$_types[$_empty.id] = $_empty}
+
+                                {foreach $_types as $_type}
+                                    {$_is_template = $_type.id == '_template_'}
+                                    <li data-id="{$_type.id}" class="t-types-list-item {if $_is_template}is-template{/if}">
+                                        <span class="item">
+
+                                            <i class="fas fa-bars t-sort-handler"></i>
+
+                                            <span>
+                                                <span class="t-type-name-text semibold" style="font-size: 1rem; {if $_type.color} color:#{$_type.color|escape}{/if}">{$_type.name|escape}</span>
+                                                <input type="text" class="t-type-name-input semibold"
+                                                       name="data[type][{$_type.id}][name]" value="{$_type.name|escape}"
+                                                        style="display: none;" placeholder="Type name">
+                                            </span>
+                                            <div class="t-type-color-wrapper" style="display: none;">
+                                                <label class="t-type-label-color" style="color: #a29d9d;">[`Color`]</label>
+                                                # <input type="text" class="short js-colorpicker t-type-color-input shortest"
+                                                       name="data[type][{$_type.id}][color]" value="{$_type.color|escape}" autocomplete="off">
+                                                <i class="icon rounded" style="background:#{ifset($_type.color, 'f0f0f0')|escape};"></i>
+                                            </div>
+
+                                            <a class="t-edit-type-link" title="[`Edit`]">
+                                                <i class="fas fa-edit t-edit text-blue"></i>
+                                            </a>
+
+                                            <a class="t-delete-type-link custom-ml-12" title="[`Delete`]">
+                                                <i class="fas fa-trash-alt t-delete text-red"></i>
+                                            </a>
+                                        </span>
+                                    </li>
+                                {/foreach}
+
+                            </ul>
+                        </div>
+                        <div class="t-save-settings-wrapper">
+                            <input type="submit" class="t-save-button button green" value="[`Save`]">
+                            <i class="icon16 loading t-loading" style="display: none;"></i>
+                        </div>
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+        </div>
+
+    </div>
+    <script>
+        (function ($) {
+            new TasksTaskTypes({
+                $wrapper: $('#{$wrapper_id}')
+            });
+        })(jQuery);
+    </script>
+</div>

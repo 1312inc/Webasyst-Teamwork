@@ -1,0 +1,290 @@
+.t-task-edit-block { margin: 0.75rem 0 1.25rem; text-align: left; }
+
+.t-task-edit-block-more-options-link .icon16.darr { top: 0px !important; margin: 0 !important; }
+.t-task-edit-block-more-options-link .icon16.uarr { top: 1px !important; margin: 0 !important; }
+
+/* Types Menu */
+
+.t-task-type-selector-wrapper .dropdown-toggle {
+    white-space: nowrap;
+    max-width: 180px;
+    overflow: hidden;
+    padding-right: 2rem !important;
+}
+@media (max-width:760px) {
+    .t-task-type-selector-wrapper .dropdown-toggle {
+        max-width: 240px;
+    }
+}
+.t-task-type-selector-wrapper .t-menu-item .dropdown .t-task-type-selector{
+    margin: 0px;
+    padding: 1px 4px;
+    width: 100%;
+    border: 1px solid #a9a9a9;
+    line-height: 12px;
+}
+.t-task-type-selector-wrapper .t-menu-item .dropdown .t-selected-item {
+    display: inline-block;
+    width: 100%;
+    position: relative;
+    padding: 0 5px;
+    margin: 0;
+    max-width: 170px;
+    line-height: 22px;
+    white-space: nowrap;
+    -o-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-size: 1.3em;
+    margin-top: 2px;
+    color: #999;
+}
+.t-task-type-selector-wrapper .t-menu-item .dropdown .t-selected-item:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 5px;
+    width: 30px;
+    height: 100%;
+    background: transparent url(../img/arror-down-icon.png) 50% no-repeat;
+    -webkit-background-size: 8px;
+    -moz-background-size: 8px;
+    background-size: 8px;
+    opacity: .5;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+    filter: alpha(opacity=50);
+}
+
+.t-settings-task-types-wrapper .t-sort-handler { cursor: move; margin: 4px 7px 3px; }
+.t-settings-task-types-wrapper .t-loading { margin-top: 6px; }
+.t-settings-task-types-wrapper .t-type-color-wrapper { display: inline-block; }
+.t-settings-task-types-wrapper .t-type-color-wrapper .color { vertical-align: sub; }
+.t-settings-task-types-wrapper .t-delete-type-link { display: inline-block; float: right; }
+.t-settings-task-types-wrapper .t-edit-type-link { display: inline-block; float: right; margin-right: 6px; }
+.t-settings-task-types-wrapper .t-close-link { display: inline-block; margin-left: 6px; }
+.t-settings-task-types-wrapper .t-delete-type-link i { margin-top: 3px; margin-right: 8px; }
+.t-settings-task-types-wrapper .t-edit-type-link i { margin-top: 3px; }
+.t-settings-task-types-wrapper .t-types-list-item.is-template { display: none; }
+.t-settings-task-types-wrapper .t-types-list-item { width: 100%; margin-bottom: 0; line-height: 25px; }
+.t-settings-task-types-wrapper .t-types-list-item:nth-child(odd) { background: #f2f7ff; }
+
+/* Stats Graph */
+.t-tasks-scope-tags .t-graph-wrapper {
+    position: relative;
+    background: #fff;
+    margin-top: 25px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e4e4e4;
+}
+.t-task-scope-tag-statistic {
+    position: relative;
+}
+.t-task-scope-tag-statistic .t-scope-readiness {
+    font-size: 18px;
+}
+.t-task-scope-tag-statistic .t-task-status .menu-v li {
+    margin: 0;
+    top: 2px;
+    padding: 3px 1px;
+}
+.t-task-scope-tag-statistic .t-scope-due-block {
+    position: absolute;
+    left: 0;
+    right: 0;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    z-index: 1;
+    width: 220px;
+}
+.t-task-scope-tag-statistic .t-scope-due-text {
+    display: inline-block;
+    background: rgba(249, 249, 249, 0.58);
+    padding: 7px 10px;
+    border-radius: 2px;
+    border: 1px solid #e4e4e4;
+    text-align: center;
+    font-size: 18px;
+}
+.t-task-scope-tag-statistic .t-scope-status {
+    position: absolute;
+    right: 15px;
+    z-index: 1;
+    text-align: right;
+    background: rgba(249, 249, 249, 0.58);
+    padding: 7px 10px;
+    border-radius: 2px;
+    border: 1px solid #e4e4e4;
+}
+.t-task-scope-tag-statistic .t-task-status {
+    position: absolute;
+    z-index: 1;
+    left: 45px;
+    background: rgba(255, 255, 255, 0.78);
+    padding: 0px 15px 10px 10px;
+    border-radius: 2px;
+    border: 1px solid #e4e4e4;
+}
+.t-scope-due-text.green {
+    color: #2bb316;
+}
+.t-tasks-scope-tags .t-graph-wrapper .t-graph {
+    position: relative;
+    width: 100%;
+    height: 215px;
+    padding: 0 0 90px;
+    overflow: hidden;
+}
+
+.t-tasks-scope-tags .t-graph-wrapper .t-graph svg {
+    display: block;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+
+.t-tasks-scope-tags .t-graph-wrapper .t-graph svg path {
+    fill: #f0f0f0;
+    stroke-width: 0;
+    shape-rendering: auto
+}
+
+.t-tasks-scope-tags .t-graph-wrapper .t-graph svg rect {
+    stroke-width: 1px;
+    stroke: #fff;
+    shape-rendering: auto
+}
+
+.t-tasks-scope-tags .t-graph-wrapper .t-graph svg .axis path,.t-tasks-scope-tags .t-graph-wrapper .t-graph svg .axis line {
+    fill: none;
+    stroke: #999;
+    shape-rendering: crispEdges
+}
+
+.t-tasks-scope-tags .t-graph-wrapper .t-graph svg .axis text {
+    font-family: sans-serif;
+    font-size: 11px;
+    fill: #999
+}
+
+.t-tasks-scope-tags .t-graph-wrapper .t-graph svg .axis .x .domain {
+    stroke-width: 1px;
+    stroke: #999
+}
+
+.t-tasks-scope-tags .t-graph-wrapper .t-graph svg .axis .x line {
+    display: none
+}
+
+.t-tasks-scope-tags .t-graph-wrapper .t-graph svg .axis .y .domain {
+    display: none
+}
+
+.t-tasks-scope-tags .t-graph-wrapper .t-graph svg .axis .y line {
+    stroke: #999
+}
+
+.t-tasks-scope-tags .t-graph-wrapper .t-graph svg .axis .y text {
+    fill: #999
+}
+
+.t-tasks-scope-tags .t-graph-wrapper .t-graph svg .background {
+    opacity: .05;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=5)";
+    filter: alpha(opacity=5);
+}
+
+.t-tasks-scope-tags .t-graph-wrapper .t-graph svg .background line {
+    stroke: #318bbd;
+    shape-rendering: crispEdges;
+}
+
+.t-tasks-scope-tags .t-graph-wrapper .t-graph svg .background line:first-child {
+    shape-rendering: auto
+}
+
+.t-tasks-scope-tags .t-graph-wrapper .t-graph svg .background rect {
+    fill: #fcfeff
+}
+
+.t-tasks-scope-tags .t-graph-wrapper .t-hint-wrapper {
+    display: block;
+    visibility: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 10px;
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    max-width: 500px;
+    background: #fff;
+    -webkit-box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    -webkit-transition: opacity 200ms linear;
+    -moz-transition: opacity 200ms linear;
+    -o-transition: opacity 200ms linear;
+    -ms-transition: opacity 200ms linear;
+    transition: opacity 200ms linear;
+    opacity: 0;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+    filter: alpha(opacity=0);
+}
+
+.t-tasks-scope-tags .t-graph-wrapper .t-hint-wrapper.is-shown {
+    visibility: visible;
+    opacity: 1;
+    -ms-filter: none;
+    filter: none;
+    z-index: 99;
+}
+
+.t-tasks-scope-tags .t-graph-wrapper .t-hint-wrapper .t-line {
+    margin: 4px 0 0;
+}
+
+.t-tasks-scope-tags .t-graph-wrapper .t-hint-wrapper .t-line:first-child {
+    margin-top: 0
+}
+
+.t-tasks-scope-tags .t-graph-wrapper .t-hint-wrapper .t-line .t-date {
+    font-size: .8571428571428571em;
+    color: #aaa
+}
+
+.t-tasks-scope-tags .t-graph-wrapper .t-hint-wrapper .t-line .t-value {
+    font-weight: bold
+}
+
+.t-task-color-setting {
+    position: absolute;
+    display: none;
+    right: 0.5rem;
+    top: 0.5rem;
+}
+
+.t-kanban__list__body__item:hover .t-task-color-setting {
+    display: block;
+}
+
+.js-maximum-tasks-number:hover {
+    cursor: default;
+    color: #323232;
+    text-decoration: underline;
+}
+
+.days-points {
+    justify-content: flex-end;
+}
+
+.days-points.red .day-point {
+    background-color: #f00;
+}
+
+.day-point {
+    width: 4px;
+    height: 4px;
+    border-radius: 100%;
+    background-color: #000;
+}
+
+.t-settings-task-fields-wrapper .t-fields-list-item.is-template { display: none; }

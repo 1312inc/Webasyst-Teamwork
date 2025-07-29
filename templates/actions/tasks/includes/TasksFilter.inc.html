@@ -1,0 +1,27 @@
+<li class="dropdown t-menu-item js-dropdown-menu t-tasks-filter js-header-title-participant" data-id="{$filter_id}">
+    <button class="dropdown-toggle button light-gray t-selected-item js-dropdown-menu-title" type="button"></button>
+    <div class="dropdown-body">
+        <ul class="menu">
+            {foreach $items as $_id => $_item}
+                {$_index = $_item@index}
+                {if is_scalar($_item)}
+                    {$_name = $_item}
+                {else}
+                    {$_name = $_item.name|default:''}
+                {/if}
+                <li class="t-nav-item js-dropdown-menu-item" data-value="{$_id}"
+                    {if !$_id} data-title="{if isset($default_title)}{$default_title}{/if}"{/if}
+                    {if isset($_item.color)}data-color="{$_item.color|escape}"{/if}>
+                    <a href="javascript:void(0);">
+                        <span class="{if $_index > 0}is-bold{/if}">{$_name|escape}</span>
+                    </a>
+                </li>
+            {/foreach}
+        </ul>
+    </div>
+    <script>
+        (function ($) {
+            $('[data-id="{$filter_id}"]').waDropdown({ hover: false });
+        })(jQuery);
+    </script>
+</li>

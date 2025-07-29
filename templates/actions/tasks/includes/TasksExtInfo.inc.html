@@ -1,0 +1,13 @@
+{$_is_premium = $wa->tasks->isPremium()}
+{$wrapper_id = uniqid('t-task-ext-info-block')}
+{if $_is_premium}
+<div class="t-task-ext-info-block" id="{$wrapper_id}">
+    <ul class="menu">
+        {foreach $fields as $_field}
+            {if !empty($fields_data[$_field['id']])}
+            <li><strong>{$_field.name|escape}:</strong> {$fields_data[$_field['id']]|escape}</li>
+            {/if}
+        {/foreach}
+    </ul>
+</div>
+{/if}

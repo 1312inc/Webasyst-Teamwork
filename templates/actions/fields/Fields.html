@@ -1,0 +1,120 @@
+{$_we_are_all_in = $wa->tasks->isPremium()}
+{$wrapper_id = uniqid('t-settings-task-fields-wrapper')}
+
+{function get_options field = []}
+    {$i_name = "fields[{$field.id}]"}
+    <div class="custom-my-6 custom-ml-40 js-option-values">
+        {foreach ifset($field, 'data', 'values', []) as $_value}
+        <div class="custom-my-4 js-option-block">
+            <input type="text" name="{$i_name}[data][values][]" value="{$_value}" placeholder="[`Value`]" class="small">
+            <a class="js-delete-option custom-ml-12" title="[`Delete`]">
+                <i class="fas fa-trash-alt text-pink"></i>
+            </a>
+        </div>
+        {/foreach}
+    </div>
+{/function}
+
+{function get_input_elements field = []}
+    {$i_name = "fields[{$field.id}]"}
+    <input type="text" name="{$i_name}[name]" value="{$field.name}" placeholder="[`Field name`]" class="semibold">
+    <input type="hidden" name="{$i_name}[id]" value="{$field.id}">
+    <div class="wa-select">
+        <select name="{$i_name}[control]">
+            {foreach $input_elements as $_input_element}
+            <option value="{$_input_element}"{if $_input_element == $field.control} selected{/if}>{$_input_element}</option>
+            {/foreach}
+        </select>
+    </div>
+
+
+    <div class="custom-m-8 js-add-option"{if !in_array($field.control, ['select', 'radio'])} style="display: none;"{/if}>
+        <i class="fas fa-plus text-blue"></i>
+    </div>
+
+    <div>
+        {foreach $task_types as $_task_type}
+        {$checked = false}
+        {if in_array($_task_type.id, ifset($type_field_links, $field.id, []))}
+            {$checked = true}
+        {/if}
+        <label class="custom-mr-8 nowrap">
+            <span class="wa-checkbox">
+                <input type="checkbox" name="{$i_name}[type_link][]" value="{$_task_type.id}"{if $checked} checked{/if}>
+                <span><span class="icon"><i class="fas fa-check"></i></span></span>
+            </span>
+            <span style="color: #{$_task_type.color}">
+                {$_task_type.name}
+            </span>
+        </label>
+        {/foreach}
+    </div>
+{/function}
+
+<div class="flexbox t-settings-task-fields-wrapper" id="{$wrapper_id}">
+    {$sidebar_html|default:''}
+
+    <div class="content">
+        <div class="article">
+        <div class="article-body">
+
+            {if !$_we_are_all_in}
+
+                <h3>[`Premium only`]</h3>
+                <p class="small">
+                  <i class="fas fa-star text-yellow"></i> [`Upgrade to premium to have the feature enabled and this message to disappear permanently.`]
+                </p>
+                <a href="{$wa_app_url}#/upgrade/" class="button yellow small">[`See what’s there in premium`]</a>
+                <hr class="custom-mt-24" />
+
+            {/if}
+
+            <div{if !$_we_are_all_in} style="opacity: 0.4;{/if}">
+
+                <h1>[`Custom fields`]</h1>
+                <p class="small">[`Task custom fields depend on task types so make sure create at least one task type first.`]</p>
+
+                <a href="javascript:void(0)" class="button light-gray small t-add-new-field-link rounded">
+                    <i class="fas fa-plus text-blue"></i>
+                    <span>[`New field`]</span>
+                </a>
+
+                <form method="post" class="t-save-settings-form">
+                    <div class="t-settings-wrapper">
+                        <div class="t-fields-list-wrapper">
+                            <ul class="menu t-fields-list" style="position: relative;">
+                                {foreach $fields as $field}
+                                <li class="t-fields-list-item{if $field.id == '_template_'} is-template{/if}" data-id="{$field.id}">
+                                    <span class="item flexbox middle">
+                                        <i class="fas fa-bars t-sort-handler"></i>
+                                        {get_input_elements field = $field}
+                                        <a class="t-delete-field-link custom-ml-12" title="[`Delete`]">
+                                            <i class="fas fa-trash-alt t-delete text-red"></i>
+                                        </a>
+                                    </span>
+                                    {get_options field = $field}
+                                    <hr class="custom-my-12">
+                                </li>
+                                {/foreach}
+                            </ul>
+                        </div>
+                        <div class="t-save-settings-wrapper">
+                            <input type="submit" class="t-save-button button green" value="[`Save`]">
+                            <i class="icon16 loading t-loading" style="display: none;"></i>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+
+        </div>
+        </div>
+    </div>
+</div>
+<script>
+    (function ($) {
+        new TasksTaskField({
+            $wrapper: $('#{$wrapper_id}')
+        });
+    })(jQuery);
+</script>

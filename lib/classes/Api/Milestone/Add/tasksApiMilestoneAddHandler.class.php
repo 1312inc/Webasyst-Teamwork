@@ -19,6 +19,10 @@ final class tasksApiMilestoneAddHandler
         $milestone = tsks()->getEntityFactory(tasksMilestone::class)
             ->createFromApiVo($addRequest);
 
+        if (!$milestone->getId()) {
+            $milestone->setStartDate(date('Y-m-d'));
+        }
+
         if (!tsks()->getEntityRepository(tasksMilestone::class)->save($milestone)) {
             throw new tasksException('Error on milestone add');
         }
