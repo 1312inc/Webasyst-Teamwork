@@ -4,7 +4,8 @@
 }
 
 .t-white {
-    background: rgba(from var(--gray) r g b / 80%);
+    background: var(--gray);
+    background: color-mix(in srgb, var(--gray) 80%, transparent);
 }
 
 .t-white .gantt-bar__progressbar {
@@ -12,7 +13,8 @@
 }
 
 .t-gray {
-    background: rgba(from var(--gray) r g b / 80%);
+    background: var(--gray);
+    background: color-mix(in srgb, var(--gray) 80%, transparent);
 }
 
 .t-gray .gantt-bar__progressbar {
@@ -20,7 +22,8 @@
 }
 
 .t-yellow {
-    background: rgba(from var(--yellow) r g b / 80%);
+    background: var(--yellow);
+    background: color-mix(in srgb, var(--yellow) 80%, transparent);
 }
 
 .t-yellow .gantt-bar__progressbar {
@@ -28,7 +31,8 @@
 }
 
 .t-green {
-    background: rgba(from var(--green) r g b / 80%);
+    background: var(--green);
+    background: color-mix(in srgb, var(--green) 80%, transparent);
 }
 
 .t-green .gantt-bar__progressbar {
@@ -36,7 +40,8 @@
 }
 
 .t-blue {
-    background: rgba(from var(--blue) r g b / 80%);
+    background: var(--blue);
+    background: color-mix(in srgb, var(--blue) 80%, transparent);
 }
 
 .t-blue .gantt-bar__progressbar {
@@ -44,7 +49,8 @@
 }
 
 .t-red {
-    background: rgba(from var(--red) r g b / 80%);
+    background: var(--red);
+    background: color-mix(in srgb, var(--red) 80%, transparent);
 }
 
 .t-red .gantt-bar__progressbar {
@@ -52,7 +58,8 @@
 }
 
 .t-purple {
-    background: rgba(from var(--purple) r g b / 80%);
+    background: var(--purple);
+    background: color-mix(in srgb, var(--purple) 80%, transparent);
 }
 
 .t-purple .gantt-bar__progressbar {
@@ -121,7 +128,8 @@
 }
 
 .gantt-row {
-    align-content: center;
+    display: flex;
+    align-items: center;
     height: 40px;
     padding-left: 8px;
     border-bottom: 1px solid #eee;
