@@ -85,11 +85,11 @@
                             <ul class="menu t-fields-list" style="position: relative;">
                                 {foreach $fields as $field}
                                 <li class="t-fields-list-item{if $field.id == '_template_'} is-template{/if}" data-id="{$field.id}">
-                                    <span class="item">
-                                        <i class="fas fa-bars t-sort-handler custom-mt-8"></i>
+                                    <span class="item flexbox middle">
+                                        <i class="fas fa-bars t-sort-handler"></i>
                                         {get_input_elements field = $field}
                                         <a class="t-delete-field-link custom-ml-12" title="[`Delete`]">
-                                            <i class="fas fa-trash-alt custom-mt-8 t-delete text-red"></i>
+                                            <i class="fas fa-trash-alt t-delete text-red"></i>
                                         </a>
                                     </span>
                                     {get_options field = $field}

@@ -76,6 +76,8 @@ var TasksTaskField = (function ($) {
             $item.data('id', id_counter).attr('data-id', id_counter);
             $item.removeClass('is-template');
             $item.appendTo($list);
+            // Trigger initSelectElement method to hide options
+            $item.find('select').trigger('change');
         });
     };
 
