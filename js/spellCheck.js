@@ -29,20 +29,21 @@ const spellCheck = async (inputMd) => {
 
         const data = await response.json();
 
-        if (data?.status === 'ok' && data.data?.response?.content) {
-            const restored = restoreCodeBlocks(data.data.response.content, placeholders);
+        if (data?.status === 'ok' && data.data?.content) {
+            const restored = restoreCodeBlocks(data.data.content, placeholders);
             return restored;
         }
 
-        if (data.data?.response?.error_description) {
+        if (data.errors?.error_description) {
             const errorContainer = document.querySelector('.t-errors-block');
             if (!errorContainer) return;
-            errorContainer.innerHTML = `<span style="color: red;"><br>${data.data.response.error_description}</span>`;
+            errorContainer.innerHTML = `<span style="color: red;"><br>${data.errors.error_description}</span>`;
             setTimeout(() => {
                 errorContainer.innerHTML = '';
             }, 3000);
         }
 
+        console.log('Invalid response format from server', data);
         throw new Error('Invalid response format from server');
     } catch (error) {
         console.error('Spell check failed:', error);
