@@ -489,7 +489,7 @@ class GanttChart {
             bar.dataset.projectId = project.project_id;
             
             bar.innerHTML = `
-                <div class="gantt-bar__progressbar" style="left: ${hiddenOffset}px; width: ${progressbarWidth}px;"></div>
+                <div class="gantt-bar__progressbar" ${project.closed_percent ? `title="${project.closed_percent}%"` : ''} style="left: ${hiddenOffset}px; width: ${progressbarWidth}px;"></div>
                 <div class="resize-handle left"></div>
                 <div class="resize-handle right"></div>
             `;
