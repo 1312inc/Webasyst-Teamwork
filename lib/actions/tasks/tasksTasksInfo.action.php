@@ -188,14 +188,20 @@ class tasksTasksInfoAction extends waViewAction
      */
     private function getTaskExtInfo(tasksTask $task)
     {
-        $te_model = new tasksTaskExtModel();
-        $ext_info = $te_model->getById($task['id']);
+        $fields = [];
+        $fields_data = [];
+        if ($task['id']) {
+            $fields_data = (new tasksFieldDataModel())->getData($task['id']);
+            if ($task_ext = (new tasksTaskExtModel())->getById($task['id'])) {
+                $fields = (new tasksTask())->getFieldsByType();
+                $fields = ifset($fields, $task_ext['type'], []);
+            }
+        }
+
         $view = wa()->getView();
         $view->assign([
-            'ext_info'    => $ext_info,
-            'gravities'   => tasksTaskExtModel::getGravities(),
-            'resolutions' => tasksTaskExtModel::getResolutions(),
-            'field_names' => tasksTaskExtModel::getFieldNames(),
+            'fields'      => $fields,
+            'fields_data' => $fields_data
         ]);
 
         return $view->fetch(wa()->getAppPath('templates/actions/tasks/includes/TasksExtInfo.inc.html', 'tasks'));
