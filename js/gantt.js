@@ -1,3 +1,17 @@
+const locales = {
+  en: {
+    start: "Start",
+    end: "End",
+    actions: "Actions",
+    completed: "Completed"
+  },
+  ru: {
+    start: "Начало",
+    end: "Конец",
+    actions: "Количество действий",
+    completed: "Готовность"
+  }
+};
 class GanttChart {
     constructor(options) {
         this.initOptions(options);
@@ -21,6 +35,9 @@ class GanttChart {
         this.timelineHeader = document.getElementById(options.timelineHeaderId);
         this.totalDays = 0;
         this.hash = '';
+        this.locale = options.locale?.replace('_', '-') || 'en-US';
+        this.localeShort = this.locale.split('-')[0];
+        this.locales = locales[this.localeShort];
     }
 
     initEvents () {
@@ -303,8 +320,8 @@ class GanttChart {
             newStart.setDate(newStart.getDate() + offsetDays);
             const newEnd = new Date(newStart);
             newEnd.setDate(newEnd.getDate() + durationDays - 1);
-            bar._startTip.setContent(`Начало: ${newStart.toLocaleDateString('ru-RU')}`);
-            bar._endTip.setContent(`Конец: ${newEnd.toLocaleDateString('ru-RU')}`);
+            bar._startTip.setContent(`${this.locales.start}: ${newStart.toLocaleDateString(this.locale)}`);
+            bar._endTip.setContent(`${this.locales.end}: ${newEnd.toLocaleDateString(this.locale)}`);
         }
     }
 
@@ -336,8 +353,8 @@ class GanttChart {
 
             cell.innerHTML = `
                 <div class="gantt-header-date">
-                    <div class="gantt-header-date__withYear">${date.toLocaleDateString('ru-RU')}</div>
-                    <div class="gantt-header-date__withoutYear">${date.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' })}</div>
+                    <div class="gantt-header-date__withYear">${date.toLocaleDateString(this.locale)}</div>
+                    <div class="gantt-header-date__withoutYear">${date.toLocaleDateString(this.locale, { day: '2-digit', month: '2-digit' })}</div>
                 </div>
                 `;
             cell.className = 'gantt-header-cell';
@@ -489,14 +506,14 @@ class GanttChart {
             bar.dataset.projectId = project.project_id;
             
             bar.innerHTML = `
-                <div class="gantt-bar__progressbar" ${project.closed_percent ? `title="${project.closed_percent}%"` : ''} style="left: ${hiddenOffset}px; width: ${progressbarWidth}px;"></div>
+                <div class="gantt-bar__progressbar" ${project.closed_percent ? `title="${this.locales.completed}: ${project.closed_percent}%"` : ''} style="left: ${hiddenOffset}px; width: ${progressbarWidth}px;"></div>
                 <div class="resize-handle left"></div>
                 <div class="resize-handle right"></div>
             `;
 
             this.waitForTippy().then(() => {
                 const startTip = tippy(bar, {
-                    content: `Начало: ${start.toLocaleDateString('ru-RU')}`,
+                    content: `${this.locales.start}: ${start.toLocaleDateString(this.locale)}`,
                     placement: 'top-start',
                     trigger: 'manual',
                     hideOnClick: false,
@@ -517,7 +534,7 @@ class GanttChart {
                     },
                 });
                 const endTip = tippy(bar, {
-                    content: `Конец: ${end.toLocaleDateString('ru-RU')}`,
+                    content: `${this.locales.end}: ${end.toLocaleDateString(this.locale)}`,
                     placement: 'bottom-end',
                     trigger: 'manual',
                     hideOnClick: false,
@@ -711,7 +728,7 @@ class GanttChart {
 
         users.forEach(user => {
             usersTpl += `
-                <a class="userpic userpic-20" data-tooltip="Количество действий: ${user.action_count}" href="#/tasks/assigned/${user.id}/" style="background-image: url('${user.photo_url}');"></a>
+                <a class="userpic userpic-20" data-tooltip="${this.locales.actions}: ${user.action_count}" href="#/tasks/assigned/${user.id}/" style="background-image: url('${user.photo_url}');"></a>
             `; 
         })
         if (overflow > 0) {
