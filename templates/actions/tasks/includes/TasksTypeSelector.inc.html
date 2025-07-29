@@ -1,5 +1,5 @@
 {$_is_premium = $wa->tasks->isPremium()}
-{if $_is_premium && !empty(task_types) && count(task_types) > 0}
+{if $_is_premium && !empty($task_types) && count($task_types) > 0}
 {$wrapper_id = uniqid('t-task-type-selector-wrapper')}
 <div id="{$wrapper_id}" class="t-task-type-selector-wrapper">
     <div class="dropdown width-100 t-custom-select">
