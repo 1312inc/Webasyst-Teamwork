@@ -1821,3 +1821,54 @@ msgstr "Все типы задач"
 
 msgid "Cumulative flow diagram"
 msgstr "Накопительная диаграмма потока"
+
+msgid "Upgrade to premium"
+msgstr "Подключить премиум"
+
+msgid "special offer!"
+msgstr "спецпредложение!"
+
+msgid "Advanced features for efficient teamwork and productive teams"
+msgstr "Продвинутые функции для эффективных команд и больших свершений"
+
+msgid "Soon"
+msgstr "Скоро"
+
+msgid "Later"
+msgstr "Позже"
+
+msgid "Check spelling"
+msgstr "Проверить ошибки"
+
+msgid "Premium only"
+msgstr "Только в премиум"
+
+msgid "Upgrade to premium to have the feature enabled and this message to disappear permanently."
+msgstr "Апгрейд до премиум сразу откроет все продвинутые функции, а эта надпись исчезнет."
+
+msgid "See what’s there in premium"
+msgstr "Что еще есть в премиум"
+
+msgid "Task types enable custom fields functionality and additional task filters. Task type examples: <em>story, bug, issue, feedback, memo, etc.</em>"
+msgstr "Типы задач позволяют более гибко фильтровать задачи и указывать для задач кастомные поля. Примеры типа: <em>фича, баг, пожелание, эпик, стори, заявка, служебка, шеф сказал, что хотите.</em>"
+
+msgid "Add scope"
+msgstr "Добавить работу"
+
+msgid "Plan"
+msgstr "План"
+
+msgid "Start"
+msgstr "Начало"
+
+msgid "End"
+msgstr "Конец"
+
+msgid "Planned dates identify this scope on a Gantt chart."
+msgstr "Даты начала и окончания работы определяют ее положение на диаграмме Ганта."
+
+msgid "Due date is a milestone when all scope tasks are supposed to be completed."
+msgstr "Дедлайн будет явно подсвечен в интерфейсе для каждой задачи, которая входит в данную работу."
+
+msgid "Task custom fields depend on task types so make sure create at least one task type first."
+msgstr "Кастомные поля заполняются для задач в зависимости от типа."
