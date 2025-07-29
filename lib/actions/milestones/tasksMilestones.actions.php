@@ -113,7 +113,7 @@ class tasksMilestonesActions extends waViewActions
             'errors'        => $errors,
             'saved'         => $saved,
             'sidebar_html'  => $this->getSidebarHtml(),
-            'projects_html' => $this->getProjectsHtml($milestone_id)
+            'projects_html' => $this->getProjectsHtml($milestone)
         ]);
 
         $this->view->assign('backend_milestone_edit', $this->triggerEditEvent($milestone));
@@ -125,11 +125,14 @@ class tasksMilestonesActions extends waViewActions
         return $sidebar->display();
     }
 
-    protected function getProjectsHtml($milestone_id)
+    protected function getProjectsHtml($milestone)
     {
-        $m = new tasksMilestoneProjectsModel();
+        $related_projects = [];
         $view = wa()->getView();
-        $related_projects = $m->getRelatedProjectIds($milestone_id);
+        if (!empty($milestone['id'])) {
+            $m = new tasksMilestoneProjectsModel();
+            $related_projects = $m->getRelatedProjectIds($milestone['id']);
+        }
         $view->assign([
             'projects'         => tasksHelper::getProjects(),
             'related_projects' => $related_projects
