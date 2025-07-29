@@ -4,31 +4,31 @@
 }
 
 .t-white {
-    background: rgba(from var(--gray) r g b / 60%);
+    background: rgba(from var(--gray) r g b / 80%);
 }
 
 .t-gray {
-    background: rgba(from var(--gray) r g b / 60%);
+    background: rgba(from var(--gray) r g b / 80%);
 }
 
 .t-yellow {
-    background: rgba(from var(--yellow) r g b / 60%);
+    background: rgba(from var(--yellow) r g b / 80%);
 }
 
 .t-green {
-    background: rgba(from var(--green) r g b / 60%);
+    background: rgba(from var(--green) r g b / 80%);
 }
 
 .t-blue {
-    background: rgba(from var(--blue) r g b / 60%);
+    background: rgba(from var(--blue) r g b / 80%);
 }
 
 .t-red {
-    background: rgba(from var(--red) r g b / 60%);
+    background: rgba(from var(--red) r g b / 80%);
 }
 
 .t-purple {
-    background: rgba(from var(--purple) r g b / 60%);
+    background: rgba(from var(--purple) r g b / 80%);
 }
 
 .t-content-wrapper {
@@ -112,6 +112,10 @@
     overflow: hidden;
     text-overflow: ellipsis;
     font-size: 0.875rem;
+}
+.gantt-row__name .icon {
+    font-size: 1.25rem;
+    margin-right: 2px;
 }
 
 .gantt-row__users .userpic:not(:first-child) {
@@ -230,7 +234,8 @@
   /* overflow: hidden; */
   text-overflow: ellipsis;
   z-index: 99;
-    box-sizing: border-box;
+  box-sizing: border-box;
+  margin-top: 5px;
 }
 
 .gantt-bar-pointer {
