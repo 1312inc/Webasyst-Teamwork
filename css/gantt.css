@@ -78,7 +78,7 @@
 
 .gantt-controls {
     padding: 10px;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid var(--border-color-hard);
     display: flex;
     gap: 8px;
     align-items: center;
@@ -94,7 +94,7 @@
     padding-top: 12px;
     width: 300px;
     overflow-y: auto;
-    border-right: 1px solid #ccc;
+    border-right: 1px solid var(--border-color-hard);
 }
 
 .gantt-left-column .gantt-row {
@@ -122,8 +122,9 @@
 }
 
 .gantt-cell {
-    border-bottom: 1px solid #eee;
-    border-right: 1px solid #fafafa;
+    border-bottom: 1px solid var(--border-color-hard);
+    border-right: 1px solid var(--border-color-soft);
+    border-right: 1px solid color-mix(in srgb, var(--border-color-soft) 50%, transparent);
     box-sizing: border-box;
 }
 
@@ -132,7 +133,7 @@
     align-items: center;
     height: 40px;
     padding-left: 8px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--border-color-hard);
     box-sizing: border-box;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -141,7 +142,6 @@
 
 .gantt-row .userpic {
     background-color: var(--background-color);
-    border: 1px solid #fff;
 }
 
 .gantt-row__name {
@@ -164,18 +164,14 @@
     grid-template-columns: repeat(var(--days-count), var(--cell-width));
     position: sticky;
     top: 0;
-    /* background: #f8f8f8;
-    border-bottom: 1px solid #ccc; */
     z-index: 999;
     font-size: 10px;
     text-align: center;
     align-items: center;
-    /* box-sizing: border-box; */
 }
 
 .gantt-header-cell {
     height: 100%;
-    /* padding: 0 4px; */
     border-right: 1px solid transparent;
 }
 .gantt-header-cell:not(.today-cell):hover {
@@ -198,14 +194,13 @@
 .gantt-header.month:not(.year) .gantt-header-cell:nth-child(30n),
 .gantt-header.week:not(.month) .gantt-header-cell:nth-child(7n),
 .gantt-header.day:not(.week) .gantt-header-cell {
-    border-color: #e0e0e0;
+    border-color: var(--border-color-soft);
 }
 
 .gantt-header-date {
     display: none;
     width: 100%;
     text-align: center;
-    color: #666;
 }
 
 .gantt-header-date__withYear {
@@ -267,7 +262,6 @@
   font-size: 12px;
   padding: 2px 4px;
   white-space: nowrap;
-  /* overflow: hidden; */
   text-overflow: ellipsis;
   z-index: 99;
   box-sizing: border-box;
@@ -278,7 +272,6 @@
     position: absolute;
     top: -3px;
     bottom: -3px;
-    /* background-color: red; */
     transform: translateX(-50%);
     cursor: ew-resize;
 }
@@ -301,7 +294,7 @@
     height: 30px;
     display: flex;
     align-items: center;
-    z-index: 99999;
+    z-index: 999;
 }
 
 .gantt-bar__progressbar {
