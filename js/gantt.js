@@ -47,7 +47,7 @@ class GanttChart {
             .then(response => response.json())
             .then(data => data.data)
             .catch((e) => {});
-    
+
         if (!Array.isArray(data)) return;
 
         this.selectedMilestoneTasks = data;
@@ -500,7 +500,7 @@ class GanttChart {
 
             const bar = document.createElement('div');
             bar.className = `gantt-bar ${project.project.color} ${project.closed === '1' ? 'closed' : ''}`;
-            bar.style.opacity = project.closed !== '1' ? '1' : '0.5';
+            bar.style.opacity = project.closed !== '1' ? '1' : '0.25';
             bar.style.top = `${40 * rowIndex + 5}px`;
             bar.style.left = `${left}px`;
             bar.style.width = `${width}px`;
@@ -623,10 +623,10 @@ class GanttChart {
                             pointerDate = new Date(log.create_datetime);
                             actionName = 'Commit';
                             iconClass = 'fab fa-github';
-                        } 
+                        }
 
                         if (!pointerDate || pointerDate < timelineStart) return;
-                        
+
                         if (dates.has(pointerDate.toISOString().split('T')[0])) return;
                         dates.add(pointerDate.toISOString().split('T')[0]);
 
@@ -639,7 +639,7 @@ class GanttChart {
                         pointer.style.left = `${left}px`;
                         pointer.innerHTML = `<i class="icon size-12 ${iconClass}"></i>`;
                         this.timeline.appendChild(pointer);
-                        
+
                         this.waitForTippy().then(() => {
                             tippy(pointer, {
                                 content: `${actionName}: ${pointerDate.toLocaleDateString('ru-RU')}`,
@@ -762,7 +762,7 @@ class GanttChart {
         if (newDue) {
             data.append('due_date', newDue);
         }
-        
+
         fetch('?module=milestones&action=save', {
             method: 'POST',
             body: data
@@ -785,7 +785,7 @@ class GanttChart {
     renderMilestoneRow (project) {
         const template = document.getElementById('milestone-row');
         const clone = template.content.cloneNode(true);
-        
+
         clone.firstElementChild.dataset.milestoneId = project.id;
         clone.querySelector('.gantt-row__name').innerHTML = `
             ${project.project.icon_url ? `<span class="icon"><i class="size-20" style="background-image: url('${project.project.icon_url}');" title="${project.project.name}"></i></span>` : ''}
@@ -807,7 +807,7 @@ class GanttChart {
         if (overflow > 0) {
              usersTpl += `
                 <span class="userpic userpic-20 smaller flexbox align-center">+${overflow}</span>
-            `; 
+            `;
         }
 
         clone.querySelector('.gantt-row__users').innerHTML = usersTpl;
@@ -817,7 +817,7 @@ class GanttChart {
                 content: (element) => element.getAttribute('data-tooltip')
             });
         });
-        
+
 
         return clone;
     }
