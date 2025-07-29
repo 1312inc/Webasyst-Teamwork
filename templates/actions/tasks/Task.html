@@ -817,11 +817,21 @@
                                     if ($('.t-watchers-thumbs li[data-id='+userId+']')[0]) {
                                         return;
                                     }
-                                    $.post('?module=tasks&action=favorite', {
-                                        id: {$task.id},
-                                        user_id: userId,
-                                        value: 1
-                                    }, function (data) {
+
+                                    const data = new FormData();
+                                    data.append('id', {$task.id});
+                                    data.append('user_id', userId);
+                                    data.append('value', 1);
+
+                                    fetch('?module=tasks&action=favorite', {
+                                        method: 'POST',
+                                        body: data
+                                    })
+                                    .then(response => {
+                                        if (!response.ok) throw new Error('Response error');
+                                        return response.json();
+                                    })
+                                    .then(data => {
                                         if (data.status !== 'ok') return;
                                         const user = users.find(u => u.id == userId);
                                         if (!user) return;
@@ -836,7 +846,8 @@
                                         $(".t-watchers-add-icon").before(tpl);
                                         updateCounter(1);
                                         addEvents();
-                                    });
+                                    })
+                                    .catch(() => {});
                                 }
                             });
                         });
@@ -855,7 +866,6 @@
 
                         function updateCounter (num) {
                             const currentNum = parseInt($(".t-watchers-counter").text(), 10) || 0;
-                            console.log(currentNum);
                             const nextNum = (currentNum + num) || '';
                             $(".t-watchers-counter").text(nextNum);
                         };
