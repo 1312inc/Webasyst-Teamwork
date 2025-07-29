@@ -3,9 +3,7 @@ class GanttChart {
         this.initOptions(options);
         this.handleQueryParams();
         this.initEvents();
-        this.setActiveMilestone().then(() => {
-            this.render();
-        })
+        this.render();
     }
 
     initOptions (options) {
@@ -17,8 +15,6 @@ class GanttChart {
         this.selFrom = -1;
         this.selTo = 12;
         this.zoomSlider = document.getElementById(options.zoomSliderId);
-        this.selectedMilestone = 0;
-        this.selectedMilestoneTasks = [];
         this.rowsCount = 0;
         this.dayWidthBase = 0;
         this.zoomWidth = 0;
@@ -38,20 +34,6 @@ class GanttChart {
     addControlEvents () {
         this.initZoomControl();
         this.initSelectsControl();
-    }
-
-    async setActiveMilestone () {
-        if (!this.selectedMilestone) return;
-
-        const data = await fetch(`?module=milestones&action=milestoneInfo&milestone_id=${this.selectedMilestone}`)
-            .then(response => response.json())
-            .then(data => data.data)
-            .catch((e) => {});
-
-        if (!Array.isArray(data)) return;
-
-        this.selectedMilestoneTasks = data;
-        this.rowsCount += this.selectedMilestoneTasks.length;
     }
 
     addTimelineToolbar () {
@@ -301,10 +283,9 @@ class GanttChart {
         }
 
         if (milestone.start_date === newStartDate && milestone.end_date === newEndDate && milestone.due_date === newDueDate) {
-            this.setQueryParams('milestone', milestoneId === this.selectedMilestone ? null : milestoneId);
             return;
         }
-
+        
         milestone.start_date = newStartDate;
         milestone.end_date = newEndDate;
         milestone.due_date = newDueDate;
@@ -583,73 +564,6 @@ class GanttChart {
 
             this.timeline.appendChild(bar);
 
-            if (project.id === this.selectedMilestone) {
-                this.selectedMilestoneTasks.forEach(task => {
-                    rowIndex++;
-
-                    rows[rowIndex].innerHTML = `<a href="#/task/${task.project_id}.${task.number}/" class="hint">${task.project_id}.${task.number} ${task.name}</a>`;
-
-                    const dates = new Set();
-
-                    task.log.forEach(log => {
-                        let pointerDate = null;
-                        let actionName = '';
-                        let iconClass = '';
-                        if (log.action === 'add') {
-                            pointerDate = new Date(log.create_datetime);
-                            actionName = 'Add';
-                            iconClass = 'fas fa-plus';
-                        } else if (log.after_status_id === '-1') {
-                            pointerDate = new Date(log.create_datetime);
-                            actionName = 'Close';
-                            iconClass = 'fas fa-check';
-                        } else if (log.action === 'return') {
-                            pointerDate = new Date(log.create_datetime);
-                            actionName = 'Return';
-                            iconClass = 'fas fa-arrow-left';
-                        } else if (log.action === 'forward') {
-                            pointerDate = new Date(log.create_datetime);
-                            actionName = 'Forward';
-                            iconClass = 'fas fa-arrow-right';
-                        } else if (log.action === 'edit') {
-                            pointerDate = new Date(log.create_datetime);
-                            actionName = 'Edit';
-                            iconClass = 'fas fa-pen';
-                        } else if (log.action === 'comment') {
-                            pointerDate = new Date(log.create_datetime);
-                            actionName = 'Comment';
-                            iconClass = 'fas fa-comment';
-                        } else if (log.action === 'commit') {
-                            pointerDate = new Date(log.create_datetime);
-                            actionName = 'Commit';
-                            iconClass = 'fab fa-github';
-                        }
-
-                        if (!pointerDate || pointerDate < timelineStart) return;
-
-                        if (dates.has(pointerDate.toISOString().split('T')[0])) return;
-                        dates.add(pointerDate.toISOString().split('T')[0]);
-
-                        const offsetDays = Math.floor((pointerDate - timelineStart) / dayMs);
-                        const left = offsetDays * (this.dayWidthBase + this.zoomWidth) + (this.dayWidthBase + this.zoomWidth) / 2;
-                        const pointer = document.createElement('div');
-                        pointer.className = 'gantt-task-pointer text-gray';
-                        pointer.style.top = `${40 * rowIndex + 5}px`;
-                        pointer.style.width = `${this.dayWidthBase + this.zoomWidth}px`;
-                        pointer.style.left = `${left}px`;
-                        pointer.innerHTML = `<i class="icon size-12 ${iconClass}"></i>`;
-                        this.timeline.appendChild(pointer);
-
-                        this.waitForTippy().then(() => {
-                            tippy(pointer, {
-                                content: `${actionName}: ${pointerDate.toLocaleDateString('ru-RU')}`,
-                                placement: 'top-start'
-                            });
-                        });
-                    });
-                })
-            }
-
             rowIndex++;
         });
     }
@@ -667,7 +581,7 @@ class GanttChart {
             params.delete(name);
         }
 
-        const allowed = ['from', 'to', 'project', 'zoom', 'error', 'milestone'];
+        const allowed = ['from', 'to', 'project', 'zoom', 'error'];
         const newParams = new URLSearchParams();
         allowed.forEach(key => {
             if (params.has(key)) {
@@ -696,7 +610,6 @@ class GanttChart {
         const to = queryParams.get('to');
         const project = queryParams.get('project');
         const zoom = queryParams.get('zoom');
-        const milestone = queryParams.get('milestone');
 
         if (['-1', '-3', '-12'].includes(from)) {
             this.selFrom = from;
@@ -706,9 +619,6 @@ class GanttChart {
         }
         if (zoom) {
             this.zoomWidth = parseInt(zoom, 10);
-        }
-        if (milestone) {
-            this.selectedMilestone = milestone;
         }
 
         const fromOffset = parseInt(this.selFrom, 10);
