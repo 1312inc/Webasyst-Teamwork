@@ -441,8 +441,18 @@
         spellcheckInProcess = true;
         $spellcheckBtn.find('.icon').addClass('shimmer');
         window.spellCheck(text).then((correctedText) => {
-            $el.val(correctedText).trigger('input').trigger('change');
-            waRedactorTaskInit();
+            textReplaceConfirm({
+                title: "[`Confirm text replacement`]",
+                text: correctedText,
+                success_button_title: '[`Replace`]',
+                success_button_class: 'blue',
+                cancel_button_title: '[`Cancel`]',
+                cancel_button_class: 'light-gray',
+                onSuccess: () => {
+                    $el.val(correctedText).trigger('input').trigger('change');
+                    waRedactorTaskInit();
+                }
+            });
         })
         .catch(() => {})
         .finally(() => {
@@ -468,6 +478,54 @@
     });
 
     $el.on('input', checkLength);
+
+    function textReplaceConfirm(options) {
+        {literal}
+        var deferred = $.Deferred();
+
+        var header = ( options.title ? '<h3>' + options.title + '</h3>' : null );
+        var text = ( options.text ? options.text : "" );
+        var success_button_title = ( options.success_button_title ? options.success_button_title : $.wa.translate("Confirm") );
+        var success_button_class = ( options.success_button_class ? options.success_button_class : "blue" );
+        var cancel_button_title = ( options.cancel_button_title ? options.cancel_button_title : $.wa.translate("Cancel") );
+        var cancel_button_class = ( options.cancel_button_class ? options.cancel_button_class : "light-gray" );
+
+        var success_button = `<button class="js-success-action button ${success_button_class}">${success_button_title}</button>`,
+            cancel_button = `<button class="js-dialog-close button ${cancel_button_class}">${cancel_button_title}</button>`;
+
+        var footer = success_button + cancel_button;
+
+        var is_success = false;
+
+        $.waDialog({
+            header: header,
+            content: text,
+            footer: footer,
+            onOpen: function($wrapper, dialog) {
+                $wrapper.on("click", ".js-success-action", function(event) {
+                    event.preventDefault();
+                    is_success = true;
+                    dialog.close();
+                });
+            },
+            onClose: function($wrapper) {
+                if (is_success) {
+                    if (typeof options.onSuccess === "function") {
+                        options.onSuccess($wrapper);
+                    }
+                    deferred.resolve();
+                } else {
+                    if (typeof options.onCancel === "function") {
+                        options.onCancel($wrapper);
+                    }
+                    deferred.reject();
+                }
+            }
+        });
+
+        return deferred.promise();
+        {/literal}
+    }
 
 })();
 </script>
