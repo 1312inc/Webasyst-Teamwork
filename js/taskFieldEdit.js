@@ -64,11 +64,11 @@ var TaskFieldEdit = (function ($) {
         };
 
         // init state
-        if (that.storage.get(storage_key)) {
-            expand();
-        } else {
-            collapse();
-        }
+        // if (that.storage.get(storage_key)) {
+        //     expand();
+        // } else {
+        //     collapse();
+        // }
 
         // click expand/collapse handler
         $link.on('click', function (e) {
