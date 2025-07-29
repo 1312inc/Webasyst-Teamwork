@@ -8,6 +8,8 @@
     {/strip}{/function}
 
 
+{$is_premium = $wa->tasks->isPremium()}
+
 {$empty_user_count = [
     count => 0,
     total => 0,
@@ -84,12 +86,12 @@
         </a>
         {if $is_admin}
         <a href="#/milestones/" class="brick t-mini-brick">
-            <span class="icon text-purple"><i class="fas fa-stream"></i></span>
+            <span class="icon{if $is_premium} text-purple{/if}"><i class="fas fa-stream"></i></span>
             <span>[`Gantt`]</span>
             <span class="count"></span>
         </a>
         <a href="#/cfd/" class="brick t-mini-brick">
-            <span class="icon text-orange"><i class="fas fa-chart-line"></i></span>
+            <span class="icon{if $is_premium} text-orange{/if}"><i class="fas fa-chart-line"></i></span>
             <span>[`Reports`]</span>
             <span class="count"></span>
         </a>
@@ -440,7 +442,6 @@
         </li>
 
         {if $is_admin}
-            {$is_premium = $wa->tasks->isPremium()}
             <li class="top-padded">
                 <a href="#/upgrade/">
                     <i class="fas fa-star{if !$is_premium} text-yellow{/if}"></i>

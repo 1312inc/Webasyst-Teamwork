@@ -1,7 +1,20 @@
+{$_we_are_all_in = $wa->tasks->isPremium()}
+
+{if !$_we_are_all_in}
+    <div class="box">
+        <h3>[`Premium only`]</h3>
+        <p class="small">
+          <i class="fas fa-star text-yellow"></i> [`Upgrade to premium to have the feature enabled and this message to disappear permanently.`]
+        </p>
+        <a href="{$wa_app_url}#/upgrade/" class="button yellow small">[`See what’s there in premium`]</a>
+        <hr class="custom-mt-24" />
+    </div>
+{/if}
+
 <link rel="stylesheet" href="{$wa_app_static_url}css/gantt.css?v={$wa->version()}">
 
-<div class="gantt-container">
-    <div class="gantt-controls">
+<div class="gantt-container"{if !$_we_are_all_in} style="opacity: 0.6;"{/if}>
+    <div class="gantt-controls"{if !$_we_are_all_in} style="display: none;"{/if}>
 
         <div class="small">
             <a href="#/settings/scope/add/">
