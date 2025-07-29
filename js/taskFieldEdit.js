@@ -105,8 +105,8 @@ var TaskFieldEdit = (function ($) {
             var task_type = $task.find('.js-task-type-hidden').val();
 
             if (!task_type) {
-                $task.find('.js-errors-block').html('<span style="color: red;">'+ that.locales.select_task_type +'</span>');
-                $form.data('validate', false);
+                // $task.find('.js-errors-block').html('<span style="color: red;">'+ that.locales.select_task_type +'</span>');
+                // $form.data('validate', false);
             }
 
             setTimeout( function() {
