@@ -72,7 +72,7 @@
                     };
 
                     that.$milestone.on('input', disableCheckbox);
-                    disableCheckbox();
+                    $checkboxes.filter('[value="'+ $milestone.val() +'"]').attr('disabled', true).attr('checked', true);
                 };
 
                 return TasksMilestoneEdit;
