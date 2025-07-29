@@ -1872,3 +1872,21 @@ msgstr "Дедлайн будет явно подсвечен в интерфе�
 
 msgid "Task custom fields depend on task types so make sure create at least one task type first."
 msgstr "Кастомные поля заполняются для задач в зависимости от типа."
+
+msgid "1 day"
+msgstr "1 день"
+
+msgid "3 days"
+msgstr "3 дня"
+
+msgid "1 week"
+msgstr "1 неделя"
+
+msgid "2 weeks"
+msgstr "2 недели"
+
+msgid "AI response"
+msgstr "Ответ ИИ"
+
+msgid "Get the entire text"
+msgstr "Взять весь текст"

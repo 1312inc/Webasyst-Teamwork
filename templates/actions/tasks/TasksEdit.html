@@ -442,11 +442,11 @@
         $spellcheckBtn.find('.icon').addClass('shimmer');
         window.spellCheck(text).then((correctedText) => {
             textReplaceConfirm({
-                title: "[`Confirm text replacement`]",
+                title: "[`AI response`]",
                 text: correctedText,
-                success_button_title: '[`Взять весь текст`]',
+                success_button_title: '[`Get the entire text`]',
                 success_button_class: 'blue',
-                cancel_button_title: '[`Закрыть`]',
+                cancel_button_title: '[`Close`]',
                 cancel_button_class: 'light-gray',
                 onSuccess: () => {
                     $el.val(correctedText).trigger('input').trigger('change');

@@ -1794,3 +1794,21 @@ msgstr ""
 
 msgid "All task types"
 msgstr ""
+
+msgid "1 day"
+msgstr ""
+
+msgid "3 days"
+msgstr ""
+
+msgid "1 week"
+msgstr ""
+
+msgid "2 weeks"
+msgstr ""
+
+msgid "AI response"
+msgstr ""
+
+msgid "Get the entire text"
+msgstr ""

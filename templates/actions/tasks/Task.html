@@ -91,7 +91,7 @@
                         {$_hash_type = $hash_type|default:''}
                         {if ($_hash_type == 'inbox' || $_hash_type == 'hidden') && $task.priority <= 1}
                             <span class="t-postpone-wrapper t-visible-part">
-                                {$intervals = ['1d' => '1 day', '3d' => '3 days', '1w' => '1 week', '2w' => '2 weeks']}
+                                {$intervals = ['1d' => _w('1 day'), '3d' => _w('3 days'), '1w' => _w('1 week'), '2w' => _w('2 weeks')]}
                                 <span id="js-hide-task-dropdown" class="dropdown t-custom-select" style="line-height: 1"
                                     {if $task.priority > 0}
                                         data-errormsg="[`You can't hide high priority task`]"
