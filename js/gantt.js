@@ -120,7 +120,9 @@ class GanttChart {
             }
             rafId = requestAnimationFrame(() => {
                 this.zoomWidth = parseInt(this.zoomSlider.value, 10);
+                this.updateTimelineContainer();
                 this.updateCellWidths();
+                this.renderGridSVG();
                 this.renderBars();
                 this.scrollToToday();
                 this.updateTimeline();
@@ -173,7 +175,6 @@ class GanttChart {
             header.classList.add('year');
             header.classList.remove('day', 'week', 'month');
         }
-
     }
 
     addBarEvents () {
@@ -372,7 +373,9 @@ class GanttChart {
         }
 
         // Render cells
-        this.renderTimelineRowsAsync(todayIndex);
+        this.updateTimelineContainer();
+
+        this.renderGridSVG();
 
         // Render milestones bars
         this.renderBars();
@@ -387,32 +390,101 @@ class GanttChart {
         this.dayWidthBase = this.rightWrapper.offsetWidth / this.totalDays;
     }
 
-    renderTimelineRowsAsync (todayIndex) {
-        let rowIndex = 0;
+    updateTimelineContainer () {
+        const cellWidth = this.dayWidthBase + this.zoomWidth;
+        const rowHeight = 40;
 
-        const renderRow = () => {
-            if (rowIndex >= this.rowsCount) return;
-
-            const rowDiv = document.createElement('div');
-            rowDiv.className = 'gantt-timeline-row';
-
-            for (let d = 0; d < this.totalDays; d++) {
-                const cell = document.createElement('div');
-                cell.className = 'gantt-cell';
-                if (d === todayIndex) {
-                    cell.classList.add('today-cell');
-                }
-                rowDiv.appendChild(cell);
-            }
-
-            this.timeline.appendChild(rowDiv);
-            rowIndex++;
-
-            requestAnimationFrame(renderRow);
-        };
-
-        renderRow();
+        this.timeline.style.width = `${this.totalDays * cellWidth}px`;
+        this.timeline.style.height = `${this.rowsCount * rowHeight}px`;
     }
+
+    renderGridSVG () {
+        const old = document.getElementById('gantt-grid-svg');
+        if (old) old.remove();
+
+        const cellWidth = this.dayWidthBase + this.zoomWidth;
+        const rowHeight = 40;
+
+        const width = this.totalDays * cellWidth;
+        const height = this.rowsCount * rowHeight;
+
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('id', 'gantt-grid-svg');
+        svg.setAttribute('width', width);
+        svg.setAttribute('height', height);
+        svg.style.position = 'absolute';
+        svg.style.top = 0;
+        svg.style.left = 0;
+        svg.style.pointerEvents = 'none';
+        svg.style.zIndex = 0;
+
+        for (let i = 0; i <= this.rowsCount; i++) {
+            const y = i * rowHeight;
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line.setAttribute('x1', '0');
+            line.setAttribute('y1', y);
+            line.setAttribute('x2', width);
+            line.setAttribute('y2', y);
+            line.setAttribute('stroke', '#e0e0e0');
+            svg.appendChild(line);
+        }
+
+        for (let d = 1; d <= this.totalDays; d++) {
+            const x = d * cellWidth;
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line.setAttribute('x1', x);
+            line.setAttribute('y1', '0');
+            line.setAttribute('x2', x);
+            line.setAttribute('y2', height);
+            line.setAttribute('stroke', d % 7 === 0 ? '#c0c0c0' : '#f0f0f0');
+            svg.appendChild(line);
+        }
+
+        const timelineStart = this.getStartDate(Math.abs(parseInt(this.selFrom, 10)));
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const todayIndex = Math.floor((today - timelineStart) / (1000 * 60 * 60 * 24));
+        const todayX = todayIndex * cellWidth + cellWidth / 2;
+
+        const todayLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        todayLine.setAttribute('x1', todayX);
+        todayLine.setAttribute('y1', '0');
+        todayLine.setAttribute('x2', todayX);
+        todayLine.setAttribute('y2', height);
+        todayLine.setAttribute('stroke', 'red');
+        todayLine.setAttribute('stroke-width', '1.5');
+        todayLine.setAttribute('stroke-dasharray', '4,2');
+        svg.appendChild(todayLine);
+
+        this.timeline.appendChild(svg);
+    }
+
+    // renderTimelineRowsAsync (todayIndex) {
+    //     let rowIndex = 0;
+
+    //     const renderRow = () => {
+    //         if (rowIndex >= this.rowsCount) return;
+
+    //         const rowDiv = document.createElement('div');
+    //         rowDiv.className = 'gantt-timeline-row';
+
+    //         for (let d = 0; d < this.totalDays; d++) {
+    //             const cell = document.createElement('div');
+    //             cell.className = 'gantt-cell';
+    //             if (d === todayIndex) {
+    //                 cell.classList.add('today-cell');
+    //             }
+    //             rowDiv.appendChild(cell);
+    //         }
+
+    //         this.timeline.appendChild(rowDiv);
+    //         rowIndex++;
+
+    //         requestAnimationFrame(renderRow);
+    //     };
+
+    //     renderRow();
+    // }
 
     getStartDate (monthsBefore) {
         const today = new Date();

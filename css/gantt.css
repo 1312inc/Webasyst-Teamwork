@@ -91,7 +91,7 @@
 }
 
 .gantt-left-column {
-    padding-top: 12px;
+    padding-top: 16px;
     width: 300px;
     overflow-y: auto;
     border-right: 1px solid var(--border-color-hard);
@@ -159,7 +159,7 @@
 }
 
 .gantt-header {
-    height: 12px;
+    height: 16px;
     display: grid;
     grid-template-columns: repeat(var(--days-count), var(--cell-width));
     position: sticky;
@@ -172,7 +172,7 @@
 
 .gantt-header-cell {
     height: 100%;
-    border-right: 1px solid transparent;
+    /* border-right: 1px solid transparent; */
 }
 .gantt-header-cell:not(.today-cell):hover {
     position: relative;
@@ -190,12 +190,12 @@
     z-index: 999;
 }
 
-.gantt-header.year .gantt-header-cell:nth-child(360n),
+/* .gantt-header.year .gantt-header-cell:nth-child(360n),
 .gantt-header.month:not(.year) .gantt-header-cell:nth-child(30n),
 .gantt-header.week:not(.month) .gantt-header-cell:nth-child(7n),
 .gantt-header.day:not(.week) .gantt-header-cell {
     border-color: var(--border-color-soft);
-}
+} */
 
 .gantt-header-date {
     display: none;
@@ -239,7 +239,7 @@
     pointer-events: none;
 }
 
-.today-cell {
+/* .today-cell {
     position: relative;
 }
 .today-cell:after {
@@ -252,7 +252,7 @@
     display: block;
     width: 2px;
     z-index: 999;
-}
+} */
 
 .gantt-bar {
   position: absolute;
