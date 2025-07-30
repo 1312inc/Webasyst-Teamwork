@@ -16,7 +16,8 @@ class tasksTasksAiController extends waJsonController
         try {
             $content = (new waServicesApi())->serviceCall('AI', [
                 'facility' => 'spellcheck',
-                'content'  => $text
+                'content'  => $text,
+                'locale'   => wa()->getLocale()
             ], 'POST');
             $this->response = $content['response'];
             if ($err = ifset($this->response, 'error', null)) {
