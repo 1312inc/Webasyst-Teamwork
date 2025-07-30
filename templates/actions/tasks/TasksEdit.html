@@ -31,6 +31,7 @@
         projects_users: {json_encode($projects_users)},
         projects_priority_users: {json_encode($projects_priority_users)},
         files_hash: {$_files_hash|json_encode},
+        milestones: {$milestones|json_encode},
         messages: {
             date_invalid: {_w('Invalid date.')|json_encode}
         }

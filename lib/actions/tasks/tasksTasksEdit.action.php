@@ -33,8 +33,7 @@ class tasksTasksEditAction extends waViewAction
             $this->project = $projects[$task['project_id']];
         }
 
-        $milestone_model = new tasksMilestoneModel();
-        $this->milestones = $milestone_model->getMilestonesWithOrder(false);
+        $this->milestones = tasksHelper::getMilestones();
 
         $this->users = (new tasksApiTeamGetTopAssigneesHandler())
             ->getUsers(
