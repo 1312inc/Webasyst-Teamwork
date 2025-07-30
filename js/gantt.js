@@ -45,7 +45,7 @@ class GanttChart {
         this.addScrollEvents();
         this.addResizeEvent();
         this.addBarEvents();
-        this.addTimelineToolbar();
+        // this.addTimelineToolbar();
     }
 
     addControlEvents () {
@@ -269,6 +269,37 @@ class GanttChart {
             document.addEventListener('mousemove', onMouseMove);
             document.addEventListener('mouseup', onMouseUp);
         });
+
+        this.timeline.addEventListener('mousemove', (e) => {
+            const bounds = this.timeline.getBoundingClientRect();
+            const x = e.clientX - bounds.left + this.timeline.scrollLeft;
+
+            const cellWidth = this.dayWidthBase + this.zoomWidth;
+            const dateIndex = Math.floor(x / cellWidth);
+
+            const date = new Date(this.getStartDate(Math.abs(parseInt(this.selFrom, 10))));
+            date.setDate(date.getDate() + dateIndex);
+            const dateStr = date.toLocaleDateString(this.locale, { day: '2-digit', month: 'short' });
+
+            const cursorLine = this.timeline.querySelector('#cursor-line');
+            const dateText = this.timeline.querySelector('#cursor-date');
+
+            const xPos = dateIndex * cellWidth + cellWidth / 2;
+            cursorLine.setAttribute('x1', xPos);
+            cursorLine.setAttribute('x2', xPos);
+            cursorLine.style.display = 'block';
+
+            dateText.setAttribute('x', xPos + 4);
+            dateText.textContent = dateStr;
+            dateText.style.display = 'block';
+        });
+
+        this.timeline.addEventListener('mouseleave', () => {
+            const cursorLine = this.timeline.querySelector('#cursor-line');
+            const dateText = this.timeline.querySelector('#cursor-date');
+            cursorLine.style.display = 'none';
+            dateText.style.display = 'none';
+        });
     }
 
     updateMilestoneDates (bar, dayPx) {
@@ -456,6 +487,26 @@ class GanttChart {
         todayLine.setAttribute('stroke-width', '1.5');
         todayLine.setAttribute('stroke-dasharray', '4,2');
         svg.appendChild(todayLine);
+
+        const cursorLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        cursorLine.setAttribute('id', 'cursor-line');
+        cursorLine.setAttribute('x1', 0);
+        cursorLine.setAttribute('x2', 0);
+        cursorLine.setAttribute('y1', 0);
+        cursorLine.setAttribute('y2', height);
+        cursorLine.setAttribute('stroke', 'var(--gray)');
+        cursorLine.setAttribute('stroke-width', '1');
+        cursorLine.style.display = 'none';
+        svg.appendChild(cursorLine);
+
+        const dateText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        dateText.setAttribute('id', 'cursor-date');
+        dateText.setAttribute('y', 20);
+        dateText.setAttribute('fill', 'var(--gray)');
+        dateText.setAttribute('font-size', '12px');
+        dateText.style.pointerEvents = 'none';
+        dateText.style.display = 'none';
+        svg.appendChild(dateText);
 
         this.timeline.appendChild(svg);
     }
