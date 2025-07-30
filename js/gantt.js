@@ -90,6 +90,16 @@ class GanttChart {
             zoomSlider.value = queryParams.get('zoom') || 0;
         }
 
+        const hideClosedLink = document.getElementById('dropdown-hide-closed');
+        if (hideClosedLink) {
+            const currentState = queryParams.get('hide_closed');
+            hideClosedLink.textContent = currentState ? hideClosedLink.dataset.labelHide : hideClosedLink.dataset.labelShow;
+            hideClosedLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.setQueryParams('hide_closed', queryParams.get('hide_closed') ? null : '1');
+            });
+        }
+
         // Initialize dropdowns for project, from, and to filters. It uses jQuery or $ if available. (waDropdown)
         if (!window.$) return;
 
@@ -722,7 +732,7 @@ class GanttChart {
             params.delete(name);
         }
 
-        const allowed = ['from', 'to', 'project', 'zoom', 'error'];
+        const allowed = ['from', 'to', 'project', 'zoom', 'error', 'hide_closed'];
         const newParams = new URLSearchParams();
         allowed.forEach(key => {
             if (params.has(key)) {
@@ -751,6 +761,7 @@ class GanttChart {
         const to = queryParams.get('to');
         const project = queryParams.get('project');
         const zoom = queryParams.get('zoom');
+        const hideClosed =  queryParams.get('hide_closed');
 
         if (['-1', '-3', '-12'].includes(from)) {
             this.selFrom = from;
@@ -761,6 +772,7 @@ class GanttChart {
         if (zoom) {
             this.zoomWidth = parseInt(zoom, 10);
         }
+
 
         const fromOffset = parseInt(this.selFrom, 10);
         const toOffset = parseInt(this.selTo, 10);
@@ -799,6 +811,10 @@ class GanttChart {
 
         if (project) {
             filtered = filtered.filter(m => m.project_id === project);
+        }
+
+        if (hideClosed) {
+            filtered = filtered.filter(m => m.closed !== '1');
         }
 
         this.data = filtered;
