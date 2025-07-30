@@ -289,7 +289,7 @@ class GanttChart {
 
             const date = new Date(this.getStartDate(Math.abs(parseInt(this.selFrom, 10))));
             date.setDate(date.getDate() + dateIndex);
-            const dateStr = date.toLocaleDateString(this.locale, { day: '2-digit', month: 'short' });
+            const dateStr = date.toLocaleDateString(this.locale);
 
             const cursorLine = this.timeline.querySelector('#cursor-line');
             const dateText = this.timeline.querySelector('#cursor-date');
@@ -300,6 +300,7 @@ class GanttChart {
             cursorLine.style.display = 'block';
 
             dateText.setAttribute('x', xPos + 4);
+            dateText.setAttribute('y', 20 + this.timeline.scrollTop);
             dateText.textContent = dateStr;
             dateText.style.display = 'block';
         });
