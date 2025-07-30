@@ -19,13 +19,17 @@ class tasksTasksAiController extends waJsonController
                 'content'  => $text
             ], 'POST');
             $this->response = $content['response'];
-            if (ifset($this->response, 'error', null) === 'payment_required') {
-                $result = (new waServicesApi)->getBalanceCreditUrl('AI');
-                if (ifset($result, 'response', 'url', false)) {
-                    $this->response['error_description'] = str_replace('%s', 'href="'.$result['response']['url'].'"', $this->response['error_description']);
+            if ($err = ifset($this->response, 'error', null)) {
+                if ($err === 'payment_required') {
+                    $result = (new waServicesApi)->getBalanceCreditUrl('AI');
+                    if (ifset($result, 'response', 'url', false)) {
+                        $this->response['error_description'] = str_replace('%s', 'href="'.$result['response']['url'].'"', $this->response['error_description']);
+                    }
                 }
                 $this->errors = $this->response;
                 $this->response = null;
+            } elseif (isset($this->response['content']) && is_string($this->response['content'])) {
+                $this->response['format_content'] = tasksTask::formatText($this->response['content']);
             }
         } catch (Exception $exception) {
             $this->errors = [
