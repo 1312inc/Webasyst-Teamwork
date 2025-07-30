@@ -152,6 +152,7 @@ class GanttChart {
             rafId = requestAnimationFrame(() => {
                 this.changeDayWidthBase();
                 this.updateCellWidths();
+                this.renderGridSVG();
                 this.renderBars();
                 rafId;
             });
@@ -425,7 +426,7 @@ class GanttChart {
             line.setAttribute('y1', y);
             line.setAttribute('x2', width);
             line.setAttribute('y2', y);
-            line.setAttribute('stroke', '#e0e0e0');
+            line.setAttribute('stroke', 'var(--border-color-soft)');
             svg.appendChild(line);
         }
 
@@ -436,7 +437,7 @@ class GanttChart {
             line.setAttribute('y1', '0');
             line.setAttribute('x2', x);
             line.setAttribute('y2', height);
-            line.setAttribute('stroke', d % 7 === 0 ? '#c0c0c0' : '#f0f0f0');
+            line.setAttribute('stroke', d % 7 === 0 ? 'var(--border-color-hard)' : 'var(--border-color-soft)');
             svg.appendChild(line);
         }
 

@@ -99,6 +99,7 @@
 
 .gantt-left-column .gantt-row {
     padding-right: 8px;
+    box-sizing: border-box;
 }
 
 .gantt-right-timeline-wrapper {
@@ -134,6 +135,10 @@
     height: 40px;
     padding-left: 8px;
     border-bottom: 1px solid var(--border-color-hard);
+    
+}
+
+.gantt-row a {
     box-sizing: border-box;
     text-overflow: ellipsis;
     overflow: hidden;
