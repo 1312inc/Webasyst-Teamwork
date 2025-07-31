@@ -788,7 +788,7 @@
                         /*
                             Add / Remove watchers
                         */
-                        $.get('?module=tasks&action=getUsersForProject&project_id={$task.project_id}', function (data) {
+                        $.get('?module=tasks&action=getUsersForProject&project_id={$task.project_id}&task_id={$task.id}', function (data) {
 
                             if (data.status !== 'ok') return;
 
@@ -800,6 +800,9 @@
 
                             users.forEach(user => {
                                 const item = li.clone();
+                                if (!user.rights_info.can_view) {
+                                    item.addClass('disabled');
+                                }
                                 item.find('a').attr('data-id', user.id);
                                 item.find('span').text(user.name);
                                 item.find('.icon i').css('background-image', 'url('+user.photo_url+')');
