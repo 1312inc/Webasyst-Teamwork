@@ -784,10 +784,10 @@ class tasksHelper
      * @return array
      * @throws waException
      */
-    public static function getMilestones()
+    public static function getMilestones($withClosed = false)
     {
         $milestone_model = new tasksMilestoneModel();
-        $milestones = $milestone_model->where('closed = 0')->order('due_date')->fetchAll('id');
+        $milestones = $milestone_model->getMilestonesWithOrder($withClosed);
         $relation_model = new tasksMilestoneProjectsModel();
         $related_projects = $relation_model->getRelatedProjectIds(array_keys($milestones));
         foreach ($milestones as &$milestone) {

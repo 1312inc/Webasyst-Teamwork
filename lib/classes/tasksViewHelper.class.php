@@ -11,7 +11,7 @@ class tasksViewHelper extends waAppViewHelper
 
     public static function isPremium()
     {
-        return tasksLicensing::isPremium();
+        return tasksLicensing::check('tasks')->isPremium();
     }
 
     /**

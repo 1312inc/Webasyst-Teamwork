@@ -66,9 +66,9 @@ class tasksTasksInfoAction extends waViewAction
 
         }
 
-        $this->milestones = (new tasksMilestoneModel())->getMilestonesWithOrder(false);
+        $this->milestones = tasksHelper::getMilestones();
         foreach ($this->milestones as $id => $milestone) {
-            if ($milestone['project_id'] != $task->project_id) {
+            if (!in_array($task->project_id, $milestone['related_projects'])) {
                 unset($this->milestones[$id]);
             }
         }

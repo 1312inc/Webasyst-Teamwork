@@ -38,6 +38,7 @@ var TaskEdit = ( function($) { "use strict";
         that.animationTime = 333;
         that.files_hash = options['files_hash'] || that.generateHash();
         that.messages = options.messages || {};
+        that.milestones = options.milestones || {};
 
         // Dynamic Vars
         that.files_count = 0;
@@ -170,15 +171,19 @@ var TaskEdit = ( function($) { "use strict";
         var that = this,
             $selector = that.$milestoneSelector,
             selector = $selector.data('dropDownMenu'),
-            project_id = that.project_id,
+            project_id = parseInt(that.project_id, 10),
+            milestones = that.milestones,
             enabled_options_count = 0;
+
         selector.eachOption(function (id, data) {
             // empty option
             if (!id) {
                 return;
             }
             var item_project_id = data.projectId;
-            if (item_project_id == project_id) {
+            var milestone = milestones[id];
+            var related_projects = milestone ? (milestone.related_projects || []) : [];
+            if (item_project_id == project_id || related_projects.indexOf(project_id) >= 0) {
                 enabled_options_count++;
                 selector.enableItem(id);
             } else {
@@ -364,7 +369,7 @@ var TaskEdit = ( function($) { "use strict";
             that.onSubmit($form, !!e.shiftKey);
             return false;
         });
-        
+
         $form.on("submit", function(e) {
             e.preventDefault();
             if (e.originalEvent.submitter.matches('.t-save-task-link')) {
@@ -900,7 +905,7 @@ var TaskEdit = ( function($) { "use strict";
     };
 
     // Submit
-    TaskEdit.prototype.onSubmit = function($form, return_to_new) { 
+    TaskEdit.prototype.onSubmit = function($form, return_to_new) {
         var that = this,
             $submitButton = $form.find('[type="submit"]');
 
@@ -929,7 +934,7 @@ var TaskEdit = ( function($) { "use strict";
         that.clearFileErrors();
 
         $.tasks.showLoadingButton($submitButton);
-        
+
         that.uploadFiles({
             onAllDone: function () {
                 $form.showLoading();

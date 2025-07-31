@@ -31,6 +31,7 @@
         projects_users: {json_encode($projects_users)},
         projects_priority_users: {json_encode($projects_priority_users)},
         files_hash: {$_files_hash|json_encode},
+        milestones: {$milestones|json_encode},
         messages: {
             date_invalid: {_w('Invalid date.')|json_encode}
         }
@@ -441,15 +442,16 @@
         spellcheckInProcess = true;
         $spellcheckBtn.find('.icon').addClass('shimmer');
         window.spellCheck(text).then((correctedText) => {
+            const { restored, formated } = correctedText;
             textReplaceConfirm({
                 title: "[`AI response`]",
-                text: correctedText,
+                text: formated,
                 success_button_title: '[`Get the entire text`]',
                 success_button_class: 'blue',
                 cancel_button_title: '[`Close`]',
                 cancel_button_class: 'light-gray',
                 onSuccess: () => {
-                    $el.val(correctedText).trigger('input').trigger('change');
+                    $el.val(restored).trigger('input').trigger('change');
                     waRedactorTaskInit();
                 }
             });

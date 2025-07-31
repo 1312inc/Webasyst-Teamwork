@@ -45,7 +45,7 @@ class GanttChart {
         this.addScrollEvents();
         this.addResizeEvent();
         this.addBarEvents();
-        this.addTimelineToolbar();
+        // this.addTimelineToolbar();
     }
 
     addControlEvents () {
@@ -90,6 +90,16 @@ class GanttChart {
             zoomSlider.value = queryParams.get('zoom') || 0;
         }
 
+        const hideClosedLink = document.getElementById('dropdown-hide-closed');
+        if (hideClosedLink) {
+            const currentState = queryParams.get('hide_closed');
+            hideClosedLink.textContent = currentState ? hideClosedLink.dataset.labelHide : hideClosedLink.dataset.labelShow;
+            hideClosedLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.setQueryParams('hide_closed', queryParams.get('hide_closed') ? null : '1');
+            });
+        }
+
         // Initialize dropdowns for project, from, and to filters. It uses jQuery or $ if available. (waDropdown)
         if (!window.$) return;
 
@@ -120,7 +130,9 @@ class GanttChart {
             }
             rafId = requestAnimationFrame(() => {
                 this.zoomWidth = parseInt(this.zoomSlider.value, 10);
+                this.updateTimelineContainer();
                 this.updateCellWidths();
+                this.renderGridSVG();
                 this.renderBars();
                 this.scrollToToday();
                 this.updateTimeline();
@@ -150,6 +162,7 @@ class GanttChart {
             rafId = requestAnimationFrame(() => {
                 this.changeDayWidthBase();
                 this.updateCellWidths();
+                this.renderGridSVG();
                 this.renderBars();
                 rafId;
             });
@@ -173,7 +186,6 @@ class GanttChart {
             header.classList.add('year');
             header.classList.remove('day', 'week', 'month');
         }
-
     }
 
     addBarEvents () {
@@ -266,6 +278,38 @@ class GanttChart {
             };
             document.addEventListener('mousemove', onMouseMove);
             document.addEventListener('mouseup', onMouseUp);
+        });
+
+        this.timeline.addEventListener('mousemove', (e) => {
+            const bounds = this.timeline.getBoundingClientRect();
+            const x = e.clientX - bounds.left + this.timeline.scrollLeft;
+
+            const cellWidth = this.dayWidthBase + this.zoomWidth;
+            const dateIndex = Math.floor(x / cellWidth);
+
+            const date = new Date(this.getStartDate(Math.abs(parseInt(this.selFrom, 10))));
+            date.setDate(date.getDate() + dateIndex);
+            const dateStr = date.toLocaleDateString(this.locale);
+
+            const cursorLine = this.timeline.querySelector('#cursor-line');
+            const dateText = this.timeline.querySelector('#cursor-date');
+
+            const xPos = dateIndex * cellWidth + cellWidth / 2;
+            cursorLine.setAttribute('x1', xPos);
+            cursorLine.setAttribute('x2', xPos);
+            cursorLine.style.display = 'block';
+
+            dateText.setAttribute('x', xPos + 4);
+            dateText.setAttribute('y', 20 + this.timeline.scrollTop);
+            dateText.textContent = dateStr;
+            dateText.style.display = 'block';
+        });
+
+        this.timeline.addEventListener('mouseleave', () => {
+            const cursorLine = this.timeline.querySelector('#cursor-line');
+            const dateText = this.timeline.querySelector('#cursor-date');
+            cursorLine.style.display = 'none';
+            dateText.style.display = 'none';
         });
     }
 
@@ -372,7 +416,9 @@ class GanttChart {
         }
 
         // Render cells
-        this.renderTimelineRowsAsync(todayIndex);
+        this.updateTimelineContainer();
+
+        this.renderGridSVG();
 
         // Render milestones bars
         this.renderBars();
@@ -387,32 +433,121 @@ class GanttChart {
         this.dayWidthBase = this.rightWrapper.offsetWidth / this.totalDays;
     }
 
-    renderTimelineRowsAsync (todayIndex) {
-        let rowIndex = 0;
+    updateTimelineContainer () {
+        const cellWidth = this.dayWidthBase + this.zoomWidth;
+        const rowHeight = 40;
 
-        const renderRow = () => {
-            if (rowIndex >= this.rowsCount) return;
-
-            const rowDiv = document.createElement('div');
-            rowDiv.className = 'gantt-timeline-row';
-
-            for (let d = 0; d < this.totalDays; d++) {
-                const cell = document.createElement('div');
-                cell.className = 'gantt-cell';
-                if (d === todayIndex) {
-                    cell.classList.add('today-cell');
-                }
-                rowDiv.appendChild(cell);
-            }
-
-            this.timeline.appendChild(rowDiv);
-            rowIndex++;
-
-            requestAnimationFrame(renderRow);
-        };
-
-        renderRow();
+        this.timeline.style.width = `${this.totalDays * cellWidth}px`;
+        this.timeline.style.height = `${this.rowsCount * rowHeight}px`;
     }
+
+    renderGridSVG () {
+        const old = document.getElementById('gantt-grid-svg');
+        if (old) old.remove();
+
+        const cellWidth = this.dayWidthBase + this.zoomWidth;
+        const rowHeight = 40;
+
+        const width = this.totalDays * cellWidth;
+        const height = this.rowsCount * rowHeight;
+
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('id', 'gantt-grid-svg');
+        svg.setAttribute('width', width);
+        svg.setAttribute('height', height);
+        svg.style.position = 'absolute';
+        svg.style.top = 0;
+        svg.style.left = 0;
+        svg.style.pointerEvents = 'none';
+        svg.style.zIndex = 0;
+
+        for (let i = 0; i <= this.rowsCount; i++) {
+            const y = i * rowHeight;
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line.setAttribute('x1', '0');
+            line.setAttribute('y1', y);
+            line.setAttribute('x2', width);
+            line.setAttribute('y2', y);
+            line.setAttribute('stroke', 'var(--border-color-soft)');
+            svg.appendChild(line);
+        }
+
+        for (let d = 1; d <= this.totalDays; d++) {
+            const x = d * cellWidth;
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line.setAttribute('x1', x);
+            line.setAttribute('y1', '0');
+            line.setAttribute('x2', x);
+            line.setAttribute('y2', height);
+            line.setAttribute('stroke', d % 7 === 0 ? 'var(--border-color-hard)' : 'var(--border-color-soft)');
+            svg.appendChild(line);
+        }
+
+        const timelineStart = this.getStartDate(Math.abs(parseInt(this.selFrom, 10)));
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const todayIndex = Math.floor((today - timelineStart) / (1000 * 60 * 60 * 24));
+        const todayX = todayIndex * cellWidth + cellWidth / 2;
+
+        const todayLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        todayLine.setAttribute('x1', todayX);
+        todayLine.setAttribute('y1', '0');
+        todayLine.setAttribute('x2', todayX);
+        todayLine.setAttribute('y2', height);
+        todayLine.setAttribute('stroke', 'red');
+        todayLine.setAttribute('stroke-width', '1.5');
+        todayLine.setAttribute('stroke-dasharray', '4,2');
+        svg.appendChild(todayLine);
+
+        const cursorLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        cursorLine.setAttribute('id', 'cursor-line');
+        cursorLine.setAttribute('x1', 0);
+        cursorLine.setAttribute('x2', 0);
+        cursorLine.setAttribute('y1', 0);
+        cursorLine.setAttribute('y2', height);
+        cursorLine.setAttribute('stroke', 'var(--gray)');
+        cursorLine.setAttribute('stroke-width', '1');
+        cursorLine.style.display = 'none';
+        svg.appendChild(cursorLine);
+
+        const dateText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        dateText.setAttribute('id', 'cursor-date');
+        dateText.setAttribute('y', 20);
+        dateText.setAttribute('fill', 'var(--gray)');
+        dateText.setAttribute('font-size', '12px');
+        dateText.style.pointerEvents = 'none';
+        dateText.style.display = 'none';
+        svg.appendChild(dateText);
+
+        this.timeline.appendChild(svg);
+    }
+
+    // renderTimelineRowsAsync (todayIndex) {
+    //     let rowIndex = 0;
+
+    //     const renderRow = () => {
+    //         if (rowIndex >= this.rowsCount) return;
+
+    //         const rowDiv = document.createElement('div');
+    //         rowDiv.className = 'gantt-timeline-row';
+
+    //         for (let d = 0; d < this.totalDays; d++) {
+    //             const cell = document.createElement('div');
+    //             cell.className = 'gantt-cell';
+    //             if (d === todayIndex) {
+    //                 cell.classList.add('today-cell');
+    //             }
+    //             rowDiv.appendChild(cell);
+    //         }
+
+    //         this.timeline.appendChild(rowDiv);
+    //         rowIndex++;
+
+    //         requestAnimationFrame(renderRow);
+    //     };
+
+    //     renderRow();
+    // }
 
     getStartDate (monthsBefore) {
         const today = new Date();
@@ -598,7 +733,7 @@ class GanttChart {
             params.delete(name);
         }
 
-        const allowed = ['from', 'to', 'project', 'zoom', 'error'];
+        const allowed = ['from', 'to', 'project', 'zoom', 'error', 'hide_closed'];
         const newParams = new URLSearchParams();
         allowed.forEach(key => {
             if (params.has(key)) {
@@ -627,6 +762,7 @@ class GanttChart {
         const to = queryParams.get('to');
         const project = queryParams.get('project');
         const zoom = queryParams.get('zoom');
+        const hideClosed =  queryParams.get('hide_closed');
 
         if (['-1', '-3', '-12'].includes(from)) {
             this.selFrom = from;
@@ -637,6 +773,7 @@ class GanttChart {
         if (zoom) {
             this.zoomWidth = parseInt(zoom, 10);
         }
+
 
         const fromOffset = parseInt(this.selFrom, 10);
         const toOffset = parseInt(this.selTo, 10);
@@ -675,6 +812,10 @@ class GanttChart {
 
         if (project) {
             filtered = filtered.filter(m => m.project_id === project);
+        }
+
+        if (hideClosed) {
+            filtered = filtered.filter(m => m.closed !== '1');
         }
 
         this.data = filtered;
