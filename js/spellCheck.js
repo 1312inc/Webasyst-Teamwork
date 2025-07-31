@@ -31,7 +31,8 @@ const spellCheck = async (inputMd) => {
 
         if (data?.status === 'ok' && data.data?.content) {
             const restored = restoreCodeBlocks(data.data.content, placeholders);
-            return restored;
+            const formated = data.data.format_content;
+            return { restored, formated };
         }
 
         if (data.errors?.error_description) {

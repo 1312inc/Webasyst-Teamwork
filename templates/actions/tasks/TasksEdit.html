@@ -442,15 +442,16 @@
         spellcheckInProcess = true;
         $spellcheckBtn.find('.icon').addClass('shimmer');
         window.spellCheck(text).then((correctedText) => {
+            const { restored, formated } = correctedText;
             textReplaceConfirm({
                 title: "[`AI response`]",
-                text: correctedText,
+                text: formated,
                 success_button_title: '[`Get the entire text`]',
                 success_button_class: 'blue',
                 cancel_button_title: '[`Close`]',
                 cancel_button_class: 'light-gray',
                 onSuccess: () => {
-                    $el.val(correctedText).trigger('input').trigger('change');
+                    $el.val(restored).trigger('input').trigger('change');
                     waRedactorTaskInit();
                 }
             });
