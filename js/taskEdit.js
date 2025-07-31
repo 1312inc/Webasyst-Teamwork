@@ -369,7 +369,7 @@ var TaskEdit = ( function($) { "use strict";
             that.onSubmit($form, !!e.shiftKey);
             return false;
         });
-        
+
         $form.on("submit", function(e) {
             e.preventDefault();
             if (e.originalEvent.submitter.matches('.t-save-task-link')) {
@@ -905,7 +905,7 @@ var TaskEdit = ( function($) { "use strict";
     };
 
     // Submit
-    TaskEdit.prototype.onSubmit = function($form, return_to_new) { 
+    TaskEdit.prototype.onSubmit = function($form, return_to_new) {
         var that = this,
             $submitButton = $form.find('[type="submit"]');
 
@@ -934,7 +934,7 @@ var TaskEdit = ( function($) { "use strict";
         that.clearFileErrors();
 
         $.tasks.showLoadingButton($submitButton);
-        
+
         that.uploadFiles({
             onAllDone: function () {
                 $form.showLoading();
