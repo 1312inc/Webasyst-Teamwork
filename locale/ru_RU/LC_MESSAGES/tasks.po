@@ -1890,3 +1890,9 @@ msgstr "Ответ ИИ"
 
 msgid "Get the entire text"
 msgstr "Взять весь текст"
+
+msgid "Hide completed scopes"
+msgstr "Скрыть выполненные работы"
+
+msgid "Show completed scopes"
+msgstr "Показать выполненные работы"
