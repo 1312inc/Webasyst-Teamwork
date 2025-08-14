@@ -18,6 +18,7 @@ class GanttChart {
         this.handleQueryParams();
         this.initEvents();
         this.render();
+        this.hideLoading();
     }
 
     initOptions (options) {
@@ -749,6 +750,11 @@ class GanttChart {
         localStorage.setItem('tasks/gantt-hash', hash);
         if (name === 'zoom') return;
         window.location.hash = hashWithoutZoom;
+
+        // Show loading if query changed
+        if (hash.split('?')[1] !== query) {
+            this.showLoading();
+        }
     }
 
     handleQueryParams () {
@@ -909,6 +915,25 @@ class GanttChart {
                 reject(new Error('Tippy.js не загрузилась'));
             }, 5000);
         });
+    }
+
+    showLoading () {
+        if (window.ganttLoading) {
+            window.ganttLoading.show(); 
+            window.ganttLoading.set(100);
+            return;
+        }
+        if ($.waLoading) {
+            window.ganttLoading = $.waLoading();
+            this.showLoading();
+        }
+    }
+
+    hideLoading () {
+        if (window.ganttLoading) {
+            window.ganttLoading.abort(); 
+            window.ganttLoading.hide(); 
+        }
     }
 }
 
