@@ -4,7 +4,7 @@
     {$f_name = "fields[$tt][{$f.id}]"}
     {$value = ifset($d, $f.id, '')}
 
-    <div class="field">
+    <div class="field align-left">
         <div class="name">
             {$f.name|escape}
         </div>
@@ -24,13 +24,15 @@
             {elseif $f.control == 'radio'}
                 {if ifset($f, 'data', 'values', [])}
                     {foreach $f.data.values as $_value}
-                        <label>
-                            <span class="wa-radio">
-                                <input type="{$f.control}" name="{$f_name}" value="{$_value|escape}"{if $_value == $value} checked="checked"{/if} disabled>
-                                <span></span>
-                            </span>
-                            {$_value|escape}
-                        </label>
+                        <div class="custom-mb-12">
+                            <label>
+                                <span class="wa-radio">
+                                    <input type="{$f.control}" name="{$f_name}" value="{$_value|escape}"{if $_value == $value} checked="checked"{/if} disabled>
+                                    <span></span>
+                                </span>
+                                {$_value|escape}
+                            </label>
+                        </div>
                     {/foreach}
                 {/if}
             {elseif $f.control == 'checkbox'}
@@ -52,7 +54,7 @@
     </div>
 {/function}
 
-<div id="{$wrapper_id}">
+<div id="{$wrapper_id}" class="custom-mb-12">
     {foreach $fields as $task_type => $_fields}
     <div class="fields" data-task-type="{$task_type}" style="display: none;">
         {foreach $_fields as $_field}

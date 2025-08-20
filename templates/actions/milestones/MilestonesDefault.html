@@ -1,7 +1,28 @@
+{$_we_are_all_in = $wa->tasks->isPremium()}
+
+{if !$_we_are_all_in}
+    <div class="box">
+        <h3>[`Premium only`]</h3>
+        <p class="small">
+          <i class="fas fa-star text-yellow"></i> [`Upgrade to premium to have the feature enabled and this message to disappear permanently.`]
+        </p>
+        <a href="{$wa_app_url}#/upgrade/" class="button yellow small">[`See what’s there in premium`]</a>
+        <hr class="custom-mt-24" />
+    </div>
+{/if}
+
 <link rel="stylesheet" href="{$wa_app_static_url}css/gantt.css?v={$wa->version()}">
 
-<div class="gantt-container">
-    <div class="gantt-controls">
+<div class="gantt-container"{if !$_we_are_all_in} style="opacity: 0.6;"{/if}>
+    <div class="gantt-controls"{if !$_we_are_all_in} style="display: none;"{/if}>
+
+        <div class="small">
+            <a href="#/settings/scope/add/">
+                <i class="fas fa-plus-circle text-green"></i>
+                [`Add scope`]
+            </a>
+        </div>
+
         <div class="dropdown small" id="dropdown-project" style="z-index: 9999;">
             <button class="dropdown-toggle button light-gray" type="button">[`All projects`]</button>
             <div class="dropdown-body">
@@ -84,10 +105,18 @@
 
         </div>
         <label class="flexbox space-8"><small>[`Zoom`]:</small> <input type="range" id="zoom-slider" min="0" max="80" step="1" value="0"></label>
+        <div class="small">
+            <a
+                href="#"
+                id="dropdown-hide-closed"
+                data-label-show="[`Hide completed scopes`]"
+                data-label-hide="[`Show completed scopes`]"
+            ></a>
+        </div>
     </div>
 
     <div class="gantt-table">
-        <div class="gantt-left-column" id="left-col"></div>
+        <div class="gantt-left-column hide-scrollbar" id="left-col"></div>
         <div class="gantt-right-timeline-wrapper" id="right-wrapper">
             <div class="gantt-header" id="timeline-header"></div>
             <div class="gantt-right-timeline" id="timeline"></div>
@@ -96,8 +125,8 @@
 </div>
 
 <template id="milestone-row">
-  <div class="flexbox">
-    <div class="gantt-row__name wide"></div>
+  <div class="flexbox width-100">
+    <div class="gantt-row__name wide flexbox middle space-4"></div>
     <div class="gantt-row__users flexbox middle"></div>
   </div>
 </template>
@@ -112,9 +141,8 @@
             timelineId: 'timeline',
             rightWrapperId: 'right-wrapper',
             timelineHeaderId: 'timeline-header',
-            zoomSliderId: 'zoom-slider'
+            zoomSliderId: 'zoom-slider',
+            locale: '{$wa->locale()}'
         });
     })();
 </script>
-
-

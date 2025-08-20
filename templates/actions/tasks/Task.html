@@ -91,7 +91,7 @@
                         {$_hash_type = $hash_type|default:''}
                         {if ($_hash_type == 'inbox' || $_hash_type == 'hidden') && $task.priority <= 1}
                             <span class="t-postpone-wrapper t-visible-part">
-                                {$intervals = ['1d' => '1 day', '3d' => '3 days', '1w' => '1 week', '2w' => '2 weeks']}
+                                {$intervals = ['1d' => _w('1 day'), '3d' => _w('3 days'), '1w' => _w('1 week'), '2w' => _w('2 weeks')]}
                                 <span id="js-hide-task-dropdown" class="dropdown t-custom-select" style="line-height: 1"
                                     {if $task.priority > 0}
                                         data-errormsg="[`You can't hide high priority task`]"
@@ -582,7 +582,7 @@
                     </div>
                     {if isset($task.next_status.id) && $task.next_status.id != -1 && (($task.contact_id == $wa->user('id') && $task.assigned_contact_id == $task.contact_id) || $task->hasFullAccess())}
                         {* action buttons *}
-                        <div class="t-task-button t-task-action wide">
+                        <div class="t-task-button t-task-action{if $task.status.id == -1} wide{/if}">
                             {$task->buttonHtml()}
                         </div>
                     {/if}
@@ -738,7 +738,7 @@
 
             {/if}
 
-                        
+
                 <style>
                     .t-watchers-remove-icon {
                         display: none !important;
@@ -783,13 +783,13 @@
                 </ul>
 
                 <script>
-                    
+
                     (() => {
                         /*
                             Add / Remove watchers
                         */
-                        $.get('?module=tasks&action=getUsersForProject&project_id={$task.project_id}', function (data) {
-                            
+                        $.get('?module=tasks&action=getUsersForProject&project_id={$task.project_id}&task_id={$task.id}', function (data) {
+
                             if (data.status !== 'ok') return;
 
                             const users = data.data;
@@ -800,11 +800,14 @@
 
                             users.forEach(user => {
                                 const item = li.clone();
+                                if (!user.rights_info.can_view) {
+                                    item.addClass('disabled');
+                                }
                                 item.find('a').attr('data-id', user.id);
                                 item.find('span').text(user.name);
                                 item.find('.icon i').css('background-image', 'url('+user.photo_url+')');
                                 item.appendTo(menu);
-                            });       
+                            });
 
                             li.remove();
 
@@ -817,11 +820,21 @@
                                     if ($('.t-watchers-thumbs li[data-id='+userId+']')[0]) {
                                         return;
                                     }
-                                    $.post('?module=tasks&action=favorite', {
-                                        id: {$task.id},
-                                        user_id: userId,
-                                        value: 1
-                                    }, function (data) {
+
+                                    const data = new FormData();
+                                    data.append('id', {$task.id});
+                                    data.append('user_id', userId);
+                                    data.append('value', 1);
+
+                                    fetch('?module=tasks&action=favorite', {
+                                        method: 'POST',
+                                        body: data
+                                    })
+                                    .then(response => {
+                                        if (!response.ok) throw new Error('Response error');
+                                        return response.json();
+                                    })
+                                    .then(data => {
                                         if (data.status !== 'ok') return;
                                         const user = users.find(u => u.id == userId);
                                         if (!user) return;
@@ -832,11 +845,12 @@
                                                 </a>
                                             </li>
                                         `;
-                                        
+
                                         $(".t-watchers-add-icon").before(tpl);
                                         updateCounter(1);
                                         addEvents();
-                                    });
+                                    })
+                                    .catch(() => {});
                                 }
                             });
                         });
@@ -855,7 +869,6 @@
 
                         function updateCounter (num) {
                             const currentNum = parseInt($(".t-watchers-counter").text(), 10) || 0;
-                            console.log(currentNum);
                             const nextNum = (currentNum + num) || '';
                             $(".t-watchers-counter").text(nextNum);
                         };
@@ -872,10 +885,10 @@
                         };
 
                         addEvents();
-                
+
                     })();
                 </script>
-            
+
 
             <h3 class="t-comments-h3 custom-mt-32">[`History &amp; Comments`] <span class="hint">{count($task.log)}</span></h3>
 

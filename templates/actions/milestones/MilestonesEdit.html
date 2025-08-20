@@ -21,7 +21,7 @@
                             {if $milestone.closed}<i class="fas fa-check fa-xs" title="[`Archived`]"></i>{/if}
                         </h1>
                     {else}
-                        <h1 class="custom-mb-0 wide">[`New milestone`]</h1>
+                        <h1 class="custom-mb-0 wide">[`New scope`]</h1>
                     {/if}
 
                     {if $milestone.id}
@@ -53,30 +53,27 @@
                                 <div class="name for-input">[`Name`]</div>
                                 <div class="value"><input type="text" name="milestone[name]" class="bold long large" value="{$milestone.name|escape}"></div>
                             </div>
+
+                            <div class="field">
+                                <div class="name for-input">[`Plan`]</div>
+                                <div class="value">
+                                    <input type="text" class="datepicker-start-date shorter bold" placeholder="[`Start`]">
+                                    <input type="hidden" name="milestone[start_date]" value="{$milestone.start_date|escape}">
+                                    —&nbsp;
+                                    <input type="text" class="datepicker-end-date shorter bold" placeholder="[`End`]">
+                                    <input type="hidden" name="milestone[end_date]" value="{$milestone.end_date|escape}">
+                                    <i class="fas fa-calendar-alt text-gray"></i>
+                                    <p class="hint">[`Planned dates identify this scope on a Gantt chart.`]</p>
+                                </div>
+                            </div>
+
                             <div class="field">
                                 <div class="name for-input">[`Due date`]</div>
                                 <div class="value">
                                     <input type="text" class="datepicker-due-date bold" placeholder="[`Date`]">
                                     <input type="hidden" name="milestone[due_date]" value="{$milestone.due_date|escape}">
                                     <i class="fas fa-flag-checkered "></i>
-                                </div>
-                            </div>
-
-                            <div class="field">
-                                <div class="name for-input">[`Start date`]</div>
-                                <div class="value">
-                                    <input type="text" class="datepicker-start-date bold" placeholder="[`Date`]">
-                                    <input type="hidden" name="milestone[start_date]" value="{$milestone.start_date|escape}">
-                                    <i class="fas fa-flag-checkered"></i>
-                                </div>
-                            </div>
-
-                            <div class="field">
-                                <div class="name for-input">[`End date`]</div>
-                                <div class="value">
-                                    <input type="text" class="datepicker-end-date bold" placeholder="[`Date`]">
-                                    <input type="hidden" name="milestone[end_date]" value="{$milestone.end_date|escape}">
-                                    <i class="fas fa-flag-checkered"></i>
+                                    <p class="hint">[`Due date is a milestone when all scope tasks are supposed to be completed.`]</p>
                                 </div>
                             </div>
 
@@ -87,7 +84,7 @@
                                 </div>
                             </div>
 
-                            <div class="field">
+                            <div class="field" style="display: none;"> {* todo *}
                                 <div class="name for-input">[`Parent scope`]</div>
                                 <div class="value no-shift">
                                     <div class="dropdown" id="parent-scope-id">

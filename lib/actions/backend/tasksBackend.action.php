@@ -39,7 +39,7 @@ class tasksBackendAction extends waViewAction
             'users'                   => $users,
             'text_editor'             => wa()->getUser()->getSettings('tasks', 'text_editor', 'wysiwyg'),
             'user_has_minimum_access' => $accessedProjects === true || !empty($accessedProjects[tasksRights::PROJECT_ANY_ACCESS]),
-            'is_premium'              => tasksLicensing::isPremium()
+            'is_premium'              => tasksLicensing::check('tasks')->hasPremiumLicense()
         ]);
 
         /**

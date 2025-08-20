@@ -104,11 +104,13 @@ msgid "Last %d day"
 msgid_plural "Last %d days"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
 
 msgid "%d record"
 msgid_plural "%d records"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
 
 msgid "Due"
 msgstr ""
@@ -246,6 +248,7 @@ msgid "Show %d archived project"
 msgid_plural "Show %d archived projects"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
 
 msgid "Show %d archived projects"
 msgstr ""
@@ -257,6 +260,7 @@ msgid "[`Show %d archived project`]"
 msgid_plural "[`Show %d archived projects`]"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
 
 msgid "Create a project first"
 msgstr ""
@@ -298,6 +302,7 @@ msgid "%d task"
 msgid_plural "%d tasks"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
 
 msgid "no tasks"
 msgstr ""
@@ -399,6 +404,7 @@ msgid "%d task has been assigned to you"
 msgid_plural "%d tasks has been assigned to you"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
 
 msgid "A task you created has been marked as done."
 msgstr ""
@@ -485,21 +491,25 @@ msgid "%d min"
 msgid_plural "%d mins"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
 
 msgid "%d hr"
 msgid_plural "%d hrs"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
 
 msgid "%d mo"
 msgid_plural "%d mo"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
 
 msgid "%d yr"
 msgid_plural "%d yrs"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
 
 msgid "New"
 msgstr ""
@@ -517,6 +527,7 @@ msgid "%d task has been completed"
 msgid_plural "%d tasks has been completed"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
 
 msgid "A task has been assigned to you"
 msgstr ""
@@ -639,6 +650,7 @@ msgid "<a href=\"%s\">%d new task</a> from %s"
 msgid_plural "<a href=\"%s\">%d new tasks</a> from %s"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
 
 msgid "User %s edited a task you are assigned to:"
 msgstr "%s edited the task you are assigned to:"
@@ -671,11 +683,13 @@ msgid "ASSIGNED: %d task was assigned to you"
 msgid_plural "ASSIGNED: %d tasks were assigned to you"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
 
 msgid "DONE: %d task was completed"
 msgid_plural "DONE: %d tasks were completed"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
 
 msgid "ASSIGNED: %s %s"
 msgstr ""
@@ -729,11 +743,13 @@ msgid "In %d day"
 msgid_plural "In %d days"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
 
 msgid "%d day ago"
 msgid_plural "%d days ago"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
 
 msgid "Unhide"
 msgstr ""
@@ -754,6 +770,7 @@ msgid "%d new task"
 msgid_plural "%d new tasks"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
 
 msgid "<a href=\"%s\">%s</a> from %s"
 msgstr ""
@@ -798,16 +815,19 @@ msgid "Hide archived project"
 msgid_plural "Hide archived projects"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
 
 msgid "Show %d archived scope"
 msgid_plural "Show %d archived scopes"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
 
 msgid "Hide archived scope"
 msgid_plural "Hide archived scopes"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
 
 msgid "My preferences"
 msgstr ""
@@ -1023,11 +1043,13 @@ msgid "Show %d completed milestone"
 msgid_plural "Show %d completed milestones"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
 
 msgid "Hide completed milestone"
 msgid_plural "Hide completed milestones"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
 
 msgid "My notification preferences"
 msgstr ""
@@ -1333,6 +1355,7 @@ msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
 
 msgid "Email not send"
 msgstr "Email not sent"
@@ -1446,4 +1469,376 @@ msgid "Task fields"
 msgstr ""
 
 msgid "Please select task type"
+msgstr ""
+
+msgid "404"
+msgstr ""
+
+msgid "Install Webasyst Teamwork mobile app on your phone today:"
+msgstr ""
+
+msgid "Task types"
+msgstr ""
+
+msgid "App icon badge"
+msgstr ""
+
+msgid "Urgent open tasks assigned to me"
+msgstr ""
+
+msgid "Unread @mentions"
+msgstr ""
+
+msgid "Both settings are force-set to on for every user on your team."
+msgstr ""
+
+msgid "Push & Email"
+msgstr ""
+
+msgid "To receive push notifications, make sure the <a href=\"https://www.webasyst.com/mobile/\" target=\"_blank\">%s Webasyst Teamwork mobile app</a> is installed on your device with push notifications enabled/allowed."
+msgstr ""
+
+msgid "New @mentions"
+msgstr ""
+
+msgid "Notifications on new mentions are always on for every user on your team."
+msgstr ""
+
+msgid "https://www.webasyst.com/my/buy/upgrade-to-premium/tasks/"
+msgstr ""
+
+msgid "Upgrade to premium"
+msgstr ""
+
+msgid "lifetime"
+msgstr ""
+
+msgid "%s limited offer for upgrading existing app license to the premium version"
+msgstr ""
+
+msgid "special offer!"
+msgstr ""
+
+msgid "Enabled"
+msgstr ""
+
+msgid "Available now"
+msgstr ""
+
+msgid "You are all set!"
+msgstr ""
+
+msgid "Thank you for being a premium user and for supporting the project."
+msgstr ""
+
+msgid "With premium, you are among the first to have access to all features."
+msgstr ""
+
+msgid "Advanced features for efficient teamwork and productive teams"
+msgstr ""
+
+msgid "All scheduled features will be delivered as free updates via Installer."
+msgstr ""
+
+msgid "See the roadmap below for the planned feature delivery timeline."
+msgstr ""
+
+msgid "Gantt chart"
+msgstr ""
+
+msgid "Visualize working progress based on scopes/milestones."
+msgstr ""
+
+msgid "Specify any custom task type list: dev, bug, feature, story, epic, lead, whatever."
+msgstr ""
+
+msgid "Custom fields"
+msgstr ""
+
+msgid "Configure custom task fields based on a task type."
+msgstr ""
+
+msgid "AI assistant"
+msgstr ""
+
+msgid "Spellcheck & improve your texts in the task editor with a click. Powered by Webasyst AI."
+msgstr ""
+
+msgid "Reports & visuals"
+msgstr ""
+
+msgid "Track  working progress with CFD and LTDC charts, task completion tables, more."
+msgstr ""
+
+msgid "Project summary private links"
+msgstr ""
+
+msgid "Soon"
+msgstr ""
+
+msgid "Showcase project & its tasks current status to your client via a private link (Teamwork app frontend). View only access with no need to sign up and get extra access to your Webasyst backend."
+msgstr ""
+
+msgid "In-project limited access for clients"
+msgstr ""
+
+msgid "With the basic version, you can invite your clients to your Webasyst backend using the free Team app and grant full access to a specific project. With premium, more sophisticated in-project access rights option will be available, such as view, comment, and follow specific tasks only."
+msgstr ""
+
+msgid "Project templates"
+msgstr ""
+
+msgid "Later"
+msgstr ""
+
+msgid "Quickly start new projects with a pre-defined set of template-based tasks & workflows."
+msgstr ""
+
+msgid "Per-task time tracking"
+msgstr ""
+
+msgid "Track working time within an individual task (in integration with the Status app)."
+msgstr ""
+
+msgid "Suggest a feature"
+msgstr ""
+
+msgid "Share your feedback and suggestions, <a href=\"https://support.webasyst.com/forum/ideas/\" target=\"_blank\">post your ideas on the foum &rsaquo;</a>"
+msgstr ""
+
+msgid "Premium"
+msgstr ""
+
+msgid "No milestones available."
+msgstr ""
+
+msgid "Teamwork"
+msgstr ""
+
+msgid "Install Webasyst Teamwork mobile app on your phone."
+msgstr ""
+
+msgid "%d day"
+msgid_plural "%d days"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+msgid "Any type"
+msgstr ""
+
+msgid "Types"
+msgstr ""
+
+msgid "Please select a task type"
+msgstr ""
+
+msgid "Type"
+msgstr ""
+
+msgid "Watchers"
+msgstr ""
+
+msgid "Tags and links"
+msgstr ""
+
+msgid "Checklist"
+msgstr ""
+
+msgid "Check spelling"
+msgstr ""
+
+msgid "More options"
+msgstr ""
+
+msgid "Premium only"
+msgstr ""
+
+msgid "Upgrade to premium to have the feature enabled and this message to disappear permanently."
+msgstr ""
+
+msgid "See what’s there in premium"
+msgstr ""
+
+msgid "Task types enable custom fields functionality and additional task filters. Task type examples: <em>story, bug, issue, feedback, memo, etc.</em>"
+msgstr ""
+
+msgid "New type"
+msgstr ""
+
+msgid "Delete logo"
+msgstr ""
+
+msgid "Save project to commit logo deletion."
+msgstr ""
+
+msgid "Gantt"
+msgstr ""
+
+msgid "Reports"
+msgstr ""
+
+msgid "%d%% completed: %d open / %d closed"
+msgstr ""
+
+msgid "Color settings"
+msgstr ""
+
+msgid "Or enter a color value"
+msgstr ""
+
+msgid "Open settings"
+msgstr ""
+
+msgid "Number of days in this status"
+msgstr ""
+
+msgid "Hide new & completed"
+msgstr ""
+
+msgid "Add scope"
+msgstr ""
+
+msgid "Zoom"
+msgstr ""
+
+msgid "%s mo."
+msgstr ""
+
+msgid "Plan"
+msgstr ""
+
+msgid "Start"
+msgstr ""
+
+msgid "End"
+msgstr ""
+
+msgid "Planned dates identify this scope on a Gantt chart."
+msgstr ""
+
+msgid "Due date is a milestone when all scope tasks are supposed to be completed."
+msgstr ""
+
+msgid "Parent scope"
+msgstr ""
+
+msgid "Not specified"
+msgstr ""
+
+msgid "Value"
+msgstr ""
+
+msgid "Field name"
+msgstr ""
+
+msgid "Task custom fields depend on task types so make sure create at least one task type first."
+msgstr ""
+
+msgid "New field"
+msgstr ""
+
+msgid "CFD"
+msgstr ""
+
+msgid "LTDC"
+msgstr ""
+
+msgid "Cumulative flow diagram"
+msgstr ""
+
+msgid "Dates"
+msgstr ""
+
+msgid "Number of tasks"
+msgstr ""
+
+msgid "Initial status"
+msgstr ""
+
+msgid "Target status"
+msgstr ""
+
+msgid "Lead time distribution chart"
+msgstr ""
+
+msgid "Total tasks"
+msgstr ""
+
+msgid "Production time (calendar days from obligation to delivery)"
+msgstr ""
+
+msgid "Number of items with specified production time"
+msgstr ""
+
+msgid "Hello, World!"
+msgstr ""
+
+msgid "This is a demo task. Go ahead and click “Doing” or just close it. #webasyst #demo"
+msgstr ""
+
+msgid "@ %s %s"
+msgstr ""
+
+msgid "%d.%d %s"
+msgstr ""
+
+msgid "User %s mentioned you in a task."
+msgstr ""
+
+msgid "Promocode"
+msgstr ""
+
+msgid "Webasyst ID auth is required to be enabled to send an invitation"
+msgstr ""
+
+msgid "Gravity"
+msgstr ""
+
+msgid "Planned time costs"
+msgstr ""
+
+msgid "Actual time costs"
+msgstr ""
+
+msgid "Affected version"
+msgstr ""
+
+msgid "Result"
+msgstr ""
+
+msgid "Unable to process image file"
+msgstr ""
+
+msgid "Reports are available in the Webasyst 2 interface only."
+msgstr ""
+
+msgid "Bad parameters"
+msgstr ""
+
+msgid "All task types"
+msgstr ""
+
+msgid "1 day"
+msgstr ""
+
+msgid "3 days"
+msgstr ""
+
+msgid "1 week"
+msgstr ""
+
+msgid "2 weeks"
+msgstr ""
+
+msgid "AI response"
+msgstr ""
+
+msgid "Get the entire text"
+msgstr ""
+
+msgid "Hide completed scopes"
+msgstr ""
+
+msgid "Show completed scopes"
 msgstr ""

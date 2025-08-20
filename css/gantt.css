@@ -4,32 +4,66 @@
 }
 
 .t-white {
-    background: var(--white-color-strong);
-    border-color: var(--white-color-strongest)
+    background: var(--gray);
+    background: color-mix(in srgb, var(--gray) 80%, transparent);
+}
+
+.t-white .gantt-bar__progressbar {
+    background: var(--gray);
 }
 
 .t-gray {
-    background: var(--gray-color-strong)
+    background: var(--gray);
+    background: color-mix(in srgb, var(--gray) 80%, transparent);
+}
+
+.t-gray .gantt-bar__progressbar {
+    background: var(--gray);
 }
 
 .t-yellow {
-    background: var(--yellow-color-strong)
+    background: var(--yellow);
+    background: color-mix(in srgb, var(--yellow) 80%, transparent);
+}
+
+.t-yellow .gantt-bar__progressbar {
+    background: var(--yellow);
 }
 
 .t-green {
-    background: var(--green-color-strong)
+    background: var(--green);
+    background: color-mix(in srgb, var(--green) 80%, transparent);
+}
+
+.t-green .gantt-bar__progressbar {
+    background: var(--green);
 }
 
 .t-blue {
-    background: var(--blue-color-strong);
+    background: var(--blue);
+    background: color-mix(in srgb, var(--blue) 80%, transparent);
+}
+
+.t-blue .gantt-bar__progressbar {
+    background: var(--blue);
 }
 
 .t-red {
-    background: var(--red-color-strong)
+    background: var(--red);
+    background: color-mix(in srgb, var(--red) 80%, transparent);
+}
+
+.t-red .gantt-bar__progressbar {
+    background: var(--red);
 }
 
 .t-purple {
-    background: var(--purple-color-strong)
+    background: var(--purple);
+    background: color-mix(in srgb, var(--purple) 80%, transparent);
+}
+
+.t-purple .gantt-bar__progressbar {
+    background: var(--purple);
 }
 
 .t-content-wrapper {
@@ -44,7 +78,7 @@
 
 .gantt-controls {
     padding: 10px;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid var(--border-color-hard);
     display: flex;
     gap: 8px;
     align-items: center;
@@ -57,14 +91,15 @@
 }
 
 .gantt-left-column {
-    padding-top: 12px;
+    padding-top: 16px;
     width: 300px;
     overflow-y: auto;
-    border-right: 1px solid #ccc;
+    border-right: 1px solid var(--border-color-hard);
 }
 
 .gantt-left-column .gantt-row {
     padding-right: 8px;
+    box-sizing: border-box;
 }
 
 .gantt-right-timeline-wrapper {
@@ -88,16 +123,22 @@
 }
 
 .gantt-cell {
-    border-bottom: 1px solid #eee;
-    border-right: 1px solid #fafafa;
+    border-bottom: 1px solid var(--border-color-hard);
+    border-right: 1px solid var(--border-color-soft);
+    border-right: 1px solid color-mix(in srgb, var(--border-color-soft) 50%, transparent);
     box-sizing: border-box;
 }
 
 .gantt-row {
-    align-content: center;
+    display: flex;
+    align-items: center;
     height: 40px;
     padding-left: 8px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--border-color-hard);
+    
+}
+
+.gantt-row a {
     box-sizing: border-box;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -106,12 +147,16 @@
 
 .gantt-row .userpic {
     background-color: var(--background-color);
-    border: 1px solid #fff;
 }
 
 .gantt-row__name {
     overflow: hidden;
     text-overflow: ellipsis;
+    font-size: 0.875rem;
+}
+.gantt-row__name .icon {
+    font-size: 1.25rem;
+    margin-right: 2px;
 }
 
 .gantt-row__users .userpic:not(:first-child) {
@@ -119,26 +164,22 @@
 }
 
 .gantt-header {
-    height: 12px;
+    height: 16px;
     display: grid;
     grid-template-columns: repeat(var(--days-count), var(--cell-width));
     position: sticky;
     top: 0;
-    /* background: #f8f8f8;
-    border-bottom: 1px solid #ccc; */
     z-index: 999;
     font-size: 10px;
     text-align: center;
     align-items: center;
-    /* box-sizing: border-box; */
 }
 
 .gantt-header-cell {
-    height: 100%;
-    /* padding: 0 4px; */
-    border-right: 1px solid transparent;
+    /* height: 100%; */
+    /* border-right: 1px solid transparent; */
 }
-.gantt-header-cell:not(.today-cell):hover {
+/* .gantt-header-cell:not(.today-cell):hover {
     position: relative;
     cursor: default;
 }
@@ -152,20 +193,19 @@
     display: block;
     width: 1px;
     z-index: 999;
-}
+} */
 
-.gantt-header.year .gantt-header-cell:nth-child(360n),
+/* .gantt-header.year .gantt-header-cell:nth-child(360n),
 .gantt-header.month:not(.year) .gantt-header-cell:nth-child(30n),
 .gantt-header.week:not(.month) .gantt-header-cell:nth-child(7n),
 .gantt-header.day:not(.week) .gantt-header-cell {
-    border-color: #e0e0e0;
-}
+    border-color: var(--border-color-soft);
+} */
 
 .gantt-header-date {
     display: none;
     width: 100%;
     text-align: center;
-    color: #666;
 }
 
 .gantt-header-date__withYear {
@@ -188,8 +228,8 @@
     transform: translateX(4px);
 }
 
-.gantt-header.year .gantt-header-cell:nth-child(360n + 1) .gantt-header-date, 
-.gantt-header.month:not(.year) .gantt-header-cell:nth-child(30n + 1) .gantt-header-date, 
+.gantt-header.year .gantt-header-cell:nth-child(360n + 1) .gantt-header-date,
+.gantt-header.month:not(.year) .gantt-header-cell:nth-child(30n + 1) .gantt-header-date,
 .gantt-header.week:not(.month) .gantt-header-cell:nth-child(7n + 1) .gantt-header-date,
 .gantt-header.day:not(.week) .gantt-header-date {
     display: inline-block;
@@ -204,7 +244,7 @@
     pointer-events: none;
 }
 
-.today-cell {
+/* .today-cell {
     position: relative;
 }
 .today-cell:after {
@@ -217,27 +257,26 @@
     display: block;
     width: 2px;
     z-index: 999;
-}
+} */
 
 .gantt-bar {
   position: absolute;
-  height: 30px;
-  border-radius: 4px;
+  height: 20px;
+  border-radius: 5px;
   color: white;
   font-size: 12px;
   padding: 2px 4px;
   white-space: nowrap;
-  /* overflow: hidden; */
   text-overflow: ellipsis;
   z-index: 99;
-    box-sizing: border-box;
+  box-sizing: border-box;
+  margin-top: 5px;
 }
 
 .gantt-bar-pointer {
     position: absolute;
-    top: 0px;
-    bottom: 0px;
-    /* background-color: red; */
+    top: -3px;
+    bottom: -3px;
     transform: translateX(-50%);
     cursor: ew-resize;
 }
@@ -260,14 +299,15 @@
     height: 30px;
     display: flex;
     align-items: center;
-    z-index: 99999;
+    z-index: 999;
 }
 
 .gantt-bar__progressbar {
     position: absolute;
-    height: 3px;
+    height: 100%;
     left: 0;
     bottom: 0;
+    border-radius: 5px;
 }
 
 .gantt-bar__icon {
@@ -295,4 +335,3 @@
 .gantt-bar:not(.closed):hover .resize-handle {
   display: block;
 }
-

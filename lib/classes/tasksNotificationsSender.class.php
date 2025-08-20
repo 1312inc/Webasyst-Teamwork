@@ -63,6 +63,9 @@ class tasksNotificationsSender
             } else {
                 if ($this->log_item['text'] && false !== strpos($this->log_item['text'], '@')) {
                     $this->contacts_mentioned += tasksTask::extractMentions($this->log_item['text']);
+                } elseif ($mention_contact = ifset($this->options, 'mention_contact', null)) {
+                    /** $mention_contact waContact */
+                    $this->contacts_mentioned += [$mention_contact->getId() => $mention_contact];
                 }
             }
         }

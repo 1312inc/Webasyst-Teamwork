@@ -8,7 +8,7 @@ class tasksFieldModel extends waModel
         'checkbox',
         'color',
         'date',
-        'range',
+        //'range',
         'time',
         'select',
         'textarea'

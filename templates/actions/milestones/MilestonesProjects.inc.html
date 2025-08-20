@@ -67,12 +67,12 @@
 
                     var disableCheckbox = function () {
                         var milestone_id = $milestone.val() || '';
-                        $checkboxes.attr('disabled', false);
+                        $checkboxes.attr('disabled', false).attr('checked', false);
                         $checkboxes.filter('[value="' + milestone_id + '"]').attr('disabled', true).attr('checked', true);
                     };
 
                     that.$milestone.on('input', disableCheckbox);
-                    disableCheckbox();
+                    $checkboxes.filter('[value="'+ $milestone.val() +'"]').attr('disabled', true).attr('checked', true);
                 };
 
                 return TasksMilestoneEdit;

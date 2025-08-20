@@ -1,4 +1,4 @@
-var TasksTaskField = (function ($) { 
+var TasksTaskField = (function ($) {
     'use strict';
 
     TasksTaskField = function (options) {
@@ -71,11 +71,15 @@ var TasksTaskField = (function ($) {
             $inputs.each(function (index) {
                 $(this).attr('name', $(this).attr('name').replace('_template_', id_counter));
             });
-            id_counter--;
-
+            
             $item.data('id', id_counter).attr('data-id', id_counter);
             $item.removeClass('is-template');
             $item.appendTo($list);
+
+            id_counter--;
+            
+            // Trigger initSelectElement method to hide options
+            $item.find('select').trigger('change');
         });
     };
 
@@ -84,7 +88,8 @@ var TasksTaskField = (function ($) {
         that.$list.on('click', '.js-add-option', function (e) {
             e.preventDefault();
 
-            var field_id = $(this).closest('.item').find('input:hidden').val();
+            var $item_block = $(this).closest('.t-fields-list-item');
+            var field_id = $item_block.data('id');
             let clone_dom = that.$list.find('.is-template .js-option-values').html();
             $(this).closest('.t-fields-list-item').find('.js-option-values').append(clone_dom.replace(/_template_/, field_id));
             $('form.t-save-settings-form').trigger('change');
@@ -112,7 +117,7 @@ var TasksTaskField = (function ($) {
                 return;
             }
 
-            if (confirm('Are you sure?')) {
+            if (confirm('Delete?')) {
                 $item.hide();
                 $.post('?module=fields&action=delete', {id: id})
                     .done(function () {

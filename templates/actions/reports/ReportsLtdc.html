@@ -1,11 +1,19 @@
+{$_we_are_all_in = $wa->tasks->isPremium()}
+
 <script src="{$wa_app_static_url}js/chart.min.js?v={$wa->version()}"></script>
 
 <div class="t-main-wrapper t-log-page">
     <header class="t-header-wrapper">
         <div class="t-general-menu is-shown flexbox space-20">
 
+            <div class="toggle smaller custom-mr-8">
+                <a href="#/cfd/" class="semibold">[`CFD`]</a>
+                <a href="#/ltdc/" class="semibold selected">[`LTDC`]</a>
+            </div>
+
             {** FILTERS BY PROJECT, MILESTONE AND USER **}
-            <div class="wide t-menu-wrapper flexbox wrap middle space-12">
+            {if $_we_are_all_in}
+            <div class="wide t-menu-wrapper small flexbox wrap middle space-12">
                 {foreach $filter_types as $ft_id => $options}
                     <div class="dropdown t-menu-item" id="{$ft_id}" data-filter-id="{$ft_id}">
                         <button class="dropdown-toggle button t-selected-item light-gray"></button>
@@ -49,9 +57,11 @@
                     </div>
                 {/if}
             </div>
+            {/if}
 
             {** CHART PERIOD SELECTOR **}
-            <div class="t-right-column flexbox middle space-16">
+            {if $_we_are_all_in}
+            <div class="t-right-column small flexbox middle space-16">
 
                 {$statuses = tasksHelper::getStatuses(null, false)}
                 <div class="dropdown t-menu-item" id="start-status" title="[`Initial status`]">
@@ -133,11 +143,23 @@
                     </script>
                 </div>
             </div>
+            {/if}
         </div>
     </header>
 
-    <div class="ltdc-chart-wrapper">
-        <h1 class="align-center">[`Lead time distribution chart`]</h1>
+    {if !$_we_are_all_in}
+        <div class="box">
+            <h3>[`Premium only`]</h3>
+            <p class="small">
+              <i class="fas fa-star text-yellow"></i> [`Upgrade to premium to have the feature enabled and this message to disappear permanently.`]
+            </p>
+            <a href="{$wa_app_url}#/upgrade/" class="button yellow small">[`See what’s there in premium`]</a>
+            <hr class="custom-mt-24" />
+        </div>
+    {/if}
+
+    <div class="ltdc-chart-wrapper"{if !$_we_are_all_in} style="opacity: 0.2;"{/if}>
+        <h3 class="align-center custom-mt-24">[`Lead time distribution chart`] ([`LTDC`])</h3>
         <div class="align-center">[`Total tasks`]: <span id="quantity-tasks"></span></div>
         <div class="ltdc-chart-canvas" style="position: relative; margin: 0 auto; height:80vh; width:80vw">
             <canvas id="ltdc-chart"></canvas>
@@ -370,7 +392,7 @@
                     $li = $wrapper.find('ul li[data-default-choice]').first();
                 }
                 if (!$li.length) {
-                    throw new Error("Something's badly wrong with the status selector.");
+                    // throw new Error("Something's badly wrong with the status selector.");
                 }
             }
 
@@ -465,7 +487,7 @@
                     $li = $wrapper.find('ul li[data-default-choice]').first();
                 }
                 if (!$li.length) {
-                    throw new Error("Something's badly wrong with the timeframe selector.");
+                    // throw new Error("Something's badly wrong with the timeframe selector.");
                 }
             }
 
