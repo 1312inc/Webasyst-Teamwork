@@ -427,7 +427,7 @@
             imageUploadUrl: '?module=attachments&action=imageUpload',
             imageUploadTaskUuid: '{$task_uuid}',
             controls: document.querySelector('.editor-wrapper-{$task_uuid}'),
-            mentions: {},
+            mentions: window.taskLinks || {},
             mentionsFetchUrlWA: true,
             lang: '{$loc[0]}'
         });
