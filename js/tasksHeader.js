@@ -21,8 +21,8 @@ var TasksHeader = ( function($) {
         that.$header = that.$wrapper.find(".t-header-wrapper");
         that.$mainMenu = that.$header.find(".t-general-menu");
         that.$selectedMenu = that.$wrapper.find(".t-selection-menu");
-        that.$filters = that.$mainMenu.find(".t-tasks-filter"),
-        that.$order_selector = that.$mainMenu.find(".t-order-selector"),
+        that.$filters = that.$mainMenu.find(".t-tasks-filter");
+        that.$order_selector = that.$mainMenu.find(".t-order-selector");
         that.$hash_filter = that.$mainMenu.find('.t-tasks-hash-type-filter');
         that.$tag_cloud_filter = that.$mainMenu.find('.t-tasks-tag-cloud-filter');
 
@@ -31,6 +31,8 @@ var TasksHeader = ( function($) {
 
         // CONST
         that.messages = options.messages || {};
+        that.hash_type = options.hash_type || null;
+        that.entity_id = options.entity_id || null;
         that.total_count = options.total_count;
         that.is_single_page = that.$wrapper.find(".t-single-task-wrapper").length;
         that.is_in_my_list = options.is_in_my_list || false;
@@ -72,6 +74,8 @@ var TasksHeader = ( function($) {
         that.initDetachMilestoneTasks();
 
         that.initMultiDeadlineSetter();
+
+        that.initPublicLinks();
 
         that.fixOutboxFilter();
 
@@ -999,6 +1003,89 @@ var TasksHeader = ( function($) {
             });
         });
 
+    };
+
+    Header.initPublicLinks = function () {
+        let that = this;
+        let $dropdown = $('.js-public-link-scope');
+        let $dropdown_toggler = $dropdown.find('.dropdown-toggle');
+        let $create_link_button = $dropdown.find('.js-public-link-button-create');
+        let $delLink_button = $dropdown.find('.t-public-link-button-del');
+        let $dropdown_menu = $dropdown.find('.menu');
+        let $existion_block = $dropdown.find('.t-public-link-block');
+
+        $dropdown.waDropdown();
+
+        function addRow(link) {
+            $dropdown_menu.prepend(`
+                <li class="custom-mb-4">
+                    <div class="flexbox middle space-4">
+                        <div class="wide">
+                            <a href="${link}" class="small bold" target="_blank">${link}</a>
+                        </div>
+                        <button class="copy-to-clipboard button small nobutton"><i class="fas fa-copy"></i></button>
+                    </div>
+                </li>
+            `);
+        }
+
+        function initCopy2Clipboard() {
+            if (!navigator.clipboard) {
+                $('.copy-to-clipboard').hide();
+            } else {
+                $('.copy-to-clipboard').on('click', function () {
+                    var $link = $(this).prev('div').find('a');
+                    var val = $link.text();
+                    navigator.clipboard.writeText(val).then(() => {
+                        $link.text($.wa.locale.copied);
+                        setTimeout(() => {
+                            $link.text(val);
+                        }, 1000);
+                    }, (err) => {
+
+                    });
+                });
+            }
+        }
+
+        function fetchPublicLink(id, type, is_published) {
+            let url = '?module='+ (type === 'project' ? 'projects' : 'milestones') +'&action=publicLink';
+
+            return $.ajax({
+                url: url,
+                type: 'POST',
+                data: { id: id, publish: is_published }
+            })
+            .done(({ data }) => {
+                if (is_published === 1) {
+                    $dropdown_menu.find('li').remove();
+                    for (link of data) {
+                        addRow(link);
+                    }
+                    initCopy2Clipboard();
+                }
+                $existion_block.toggleClass('hidden');
+                $dropdown_toggler.toggleClass('text-light-gray');
+            })
+            .fail((e) => {
+                if (e.status === 400) {
+                    alert($.wa.locale.publicLinksError400);
+                }
+                throw new Error('Something wrong with publicLink action');
+            });
+        }
+
+        $delLink_button.on('click', (e) => {
+            e.preventDefault();
+            fetchPublicLink(that.entity_id, that.hash_type, 0);
+        });
+
+        $create_link_button.on('click', (e) => {
+            e.preventDefault();
+            fetchPublicLink(that.entity_id, that.hash_type, 1);
+        });
+
+        initCopy2Clipboard();
     };
 
     Header.initMultiPriorityChanger = function() {

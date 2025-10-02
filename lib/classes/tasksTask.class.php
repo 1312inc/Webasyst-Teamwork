@@ -574,17 +574,7 @@ class tasksTask implements ArrayAccess
 
     public function getPublicLinks(): array
     {
-        return !empty($this->data['public_hash'])
-            ? array_reduce(
-                wa()->getRouting()->getDomains(),
-                function ($carry, $domain) {
-                    $carry[] = wa()
-                        ->getRouting()
-                        ->getUrl('/frontend', ['public_hash' => $this->data['public_hash']], true, $domain);
-
-                    return $carry;
-                }, [])
-            : [];
+        return tasksHelper::getPublicLinks($this->data['public_hash']);
     }
 
     /**

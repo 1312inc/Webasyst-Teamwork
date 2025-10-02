@@ -22,12 +22,7 @@ final class tasksApiTasksPublicLinkHandler
                 tsks()->getPersister()->save($task2);
             }
 
-            $urls = [];
-            foreach (wa()->getRouting()->getDomains() as $domain) {
-                $urls[] = wa()->getRouting()->getUrl('/frontend', ['public_hash' => $task2->getPublicHash()], true, $domain);
-            }
-
-            $urls = array_filter($urls);
+            $urls = tasksHelper::getPublicLinks($task2->getPublicHash());
             if (empty($urls)) {
                 throw new tasksException('No routing', 400);
             }

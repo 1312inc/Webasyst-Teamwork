@@ -69,9 +69,49 @@
             <!-- plugin hook: 'backend_tasks.%plugin_id%.header.toolbar' -->
             {* @event backend_tasks.%plugin_id%.header.toolbar *}
             {foreach $_backend_header_hooks as $_}<div>{$_.toolbar|default:''}</div>{/foreach}
+
             {if $show_settings}
+            {$hint = ''}
+            {if $hash_type == 'project' && $project}
+                {$hint = '[`Ссылка для просмотра текущего проекта без доступа к Webasyst.`]'}
+                {$public_links = $project->getPublicLinks()}
+            {elseif $hash_type == 'scope' && $milestone}
+                {$hint = '[`Ссылка для просмотра текущей работы без доступа к Webasyst.`]'}
+                {$public_links = $milestone->getPublicLinks()}
+            {/if}
+            {$is_public_link_exists = !!count($public_links)}
+            <div class="dropdown custom-mr-8 js-public-link-scope">
+                <button class="dropdown-toggle without-arrow nowrap button light-gray rounded{if $is_public_link_exists} text-blue{else} text-light-gray{/if}"><i class="fas fa-external-link-alt"></i></button>
+                <div class="dropdown-body right custom-p-8" style="width: auto;min-width: 300px;">
+                    <div class="t-public-link-block{if $is_public_link_exists} hidden{/if}">
+                        <p class="hint align-center custom-mb-0">
+                            {$hint}
+                        </p>
+                        <div class="align-center box">
+                            <button href="#" class="js-public-link-button-create smaller light-gray text-blue">[`Enable public link`]</button>
+                        </div>
+                    </div>
+                    <div class="t-public-link-block{if !$is_public_link_exists} hidden{/if}">
+                        <ul class="menu custom-m-0">
+                            {foreach $public_links as $link}
+                            <li class="custom-mb-4">
+                                <div class="flexbox middle space-4">
+                                    <div class="wide">
+                                        <a href="{$link}" class="small bold" target="_blank">{$link}</a>
+                                    </div>
+                                    <button class="copy-to-clipboard button small nobutton"><i class="fas fa-copy"></i></button>
+                                </div>
+                            </li>
+                            {/foreach}
+                        </ul>
+                        <div class="align-center box">
+                            <button href="#" class="t-public-link-button-del smaller light-gray text-red">[`Disable public link`]</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div>
-                <a class="circle button light-gray custom-mr-8" href="#/settings/{$settings_url}">
+                <a class="circle button light-gray custom-mr-8" href="#/settings/{if $hash_type == 'project'}project/{$entity_id}/{elseif $hash_type == 'scope'}scope/{$entity_id}/{/if}">
                     <i class="fas fa-cog"></i>
                 </a>
             </div>

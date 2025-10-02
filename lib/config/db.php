@@ -68,8 +68,10 @@ return array(
         'start_date' => array('date'),
         'end_date' => array('date'),
         'closed' => array('int', 1, 'null' => 0, 'default' => '0'),
+        'public_hash' => array('varchar', 36),
         ':keys' => array(
             'PRIMARY' => 'id',
+            'tasks_milestone_public_hash_uindex' => array('public_hash', 'unique' => 1),
         ),
         ':options' => array('charset' => 'utf8mb4'),
     ),
@@ -98,8 +100,10 @@ return array(
         'color' => array('varchar', 50, 'null' => 0, 'default' => ''),
         'archive_datetime' => array('datetime'),
         'sort' => array('int', 11, 'null' => 0, 'default' => '0'),
+        'public_hash' => array('varchar', 36),
         ':keys' => array(
             'PRIMARY' => 'id',
+            'tasks_project_public_hash_uindex' => array('public_hash', 'unique' => 1),
         ),
         ':options' => array('charset' => 'utf8mb4'),
     ),
