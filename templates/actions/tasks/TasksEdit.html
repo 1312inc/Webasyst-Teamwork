@@ -272,6 +272,13 @@
                             </div>
                             {/if}
 
+                            <div class="t-chip">
+                                <a class="t-form-line-write-ai-chip">
+                                    <span class="icon webasyst-magic-wand-ai custom-mr-4"></span>
+                                    [`Написать с ИИ`]
+                                </a>
+                            </div>
+
                             <div class="t-chip" style="display: none;">
                                 <a class="t-form-line-spellcheck-chip">
                                     <span class="icon webasyst-magic-wand-ai custom-mr-4"></span>
@@ -412,6 +419,7 @@
 
     const $el = $('#redactor-task-{$task_uuid}');
     const $spellcheckBtn = $('.t-form-line-spellcheck-chip');
+    const $writeAiBtn = $('.t-form-line-write-ai-chip');
     const $spellcheckBtnParent = $spellcheckBtn.parent();
     let spellcheckInProcess = false;
 
@@ -477,6 +485,97 @@
     $spellcheckBtn.on('click', function (e) {
         e.preventDefault();
         runSpellCheck();
+    });
+
+    $writeAiBtn.on('click', function (e) {
+        e.preventDefault();
+
+        let footer = '<button class="js-write-ai-action button">'+'[`Написать с ИИ`]'+'</button>';
+        footer += '<button class="js-dialog-close button light-gray">'+'[`Close`]'+'</button>';
+
+        function getFieldHtml(field) {
+            let html = '';
+            if (field.hasOwnProperty('type') && field.hasOwnProperty('id')) {
+                let example = field.example || '';
+                let description = field.description || '';
+                html += '<div class="field"><div class="name"><b>'+ (field.title || '') +'</b></div><div class="value">';
+                switch (field.type) {
+                    case 'radio':
+                        if (field.hasOwnProperty('items')) {
+                            for (let item_key in field.items) {
+                                html += '<div><label><span class="wa-radio">';
+                                html += '<input type="radio" name="'+ field.id +'" value="'+ item_key +'">';
+                                html += '<span></span></span> '+ field.items[item_key] +'</label></div>';
+                            }
+                        }
+                        break;
+                    case 'textarea':
+                        html += '<textarea name="'+ field.id +'" placeholder="'+ example +'" class="smallest"></textarea>';
+                        html += '<div class="hint">'+ description +'</div>';
+                        break;
+                    case 'input':
+                        html += '<input type="text" class="long" name="'+ field.id +'" placeholder="'+ example +'">';
+                        html += '<div class="hint">'+ description +'</div>';
+                        break;
+                }
+                html += '</div></div>';
+            }
+
+            return html;
+        }
+
+        $.get('?module=tasks&action=ai&type=taskfields', function (data) {
+            let html = '';
+            if (data?.status === 'ok' && data.data?.fields && data.data?.sections) {
+                let fields = data.data.fields;
+                let sections = data.data?.sections;
+                for (let key in sections) {
+                    if (sections.hasOwnProperty(key)) {
+                        if (sections[key].hasOwnProperty('title')) {
+                            html += '<h5>'+ sections[key]['title'] +'</h5>';
+                        }
+
+                        html += '<div class="fields">';
+                        if (sections[key].hasOwnProperty('fields')) {
+                            for (let s_field of sections[key]['fields']) {
+                                for (let f of fields) {
+                                    if (f.hasOwnProperty('id') && f.id === s_field) {
+                                        html += getFieldHtml(f);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        html += '</div>';
+                    }
+                }
+            }
+            html += '<div class="custom-mt-24 js-task-write-ai-content"></div>';
+
+            $.waDialog({
+                header: "<h3>[`Написать с ИИ`]</h3>",
+                content: html,
+                footer: footer,
+                onOpen: function ($wrapper, dialog) {
+                    $('.js-write-ai-action').on('click', function (e) {
+                        $wrapper.find('.js-task-write-ai-content').html('');
+                        $wrapper.find('.js-write-ai-action').prop('disabled', true);
+                        $.post('?module=tasks&action=ai&type=writetask', $wrapper.find(':input').serializeArray(), function (data) {
+                            $wrapper.find('.js-write-ai-action').prop('disabled', false);
+                            if (data?.status === 'ok' && data.data?.format_content) {
+                                $wrapper.find('.js-task-write-ai-content').html(data.data.format_content);
+                            }
+                        });
+                    });
+                    $('.js-dialog-close').on('click', function (e) {
+                        dialog.close();
+                    });
+                },
+                onClose: function ($wrapper) {
+
+                }
+            });
+        });
     });
 
     $el.on('input', checkLength);

@@ -4,6 +4,29 @@ class tasksTasksAiController extends waJsonController
 {
     public function execute()
     {
+        $type = waRequest::get('type', 'spellcheck', waRequest::TYPE_STRING_TRIM);
+
+        $method = strtolower($type);
+        switch ($method) {
+            case 'spellcheck':
+                $this->spellcheck();
+                break;
+            case 'taskfields':
+                $this->taskfields();
+                break;
+            case 'writetask':
+                $this->writetask();
+                break;
+            default:
+                $this->errors = [
+                    'error' => 'error_type',
+                    'error_description' => 'Unknown parameter type'
+                ];
+        }
+    }
+
+    private function spellcheck()
+    {
         $text = waRequest::post('text');
         if (!$text || !is_string($text)) {
             $this->errors = [
@@ -19,6 +42,75 @@ class tasksTasksAiController extends waJsonController
                 'content'  => $text,
                 'locale'   => wa()->getLocale()
             ], 'POST');
+            $this->response = $content['response'];
+            if ($err = ifset($this->response, 'error', null)) {
+                if ($err === 'payment_required') {
+                    $result = (new waServicesApi)->getBalanceCreditUrl('AI');
+                    if (ifset($result, 'response', 'url', false)) {
+                        $this->response['error_description'] = str_replace('%s', 'href="'.$result['response']['url'].'"', $this->response['error_description']);
+                    }
+                }
+                $this->errors = $this->response;
+                $this->response = null;
+            } elseif (isset($this->response['content']) && is_string($this->response['content'])) {
+                $this->response['format_content'] = tasksTask::formatText($this->response['content']);
+            }
+        } catch (Exception $exception) {
+            $this->errors = [
+                'error' => 'exception_'.$exception->getCode(),
+                'error_description' => $exception->getMessage()
+            ];
+        }
+    }
+
+    private function taskfields()
+    {
+        try {
+            $cache_fields = new waVarExportCache('ab-1', 3600, 'tasks');
+            $task_fields = $cache_fields->get();
+
+            if ($task_fields === null) {
+                $content = (new waServicesApi())->serviceCall('AI_OVERVIEW', ['facility' => 'task'], 'POST');
+                $this->response = $content['response'];
+                if (ifset($this->response, 'error', null)) {
+                    $this->errors = $this->response;
+                    $this->response = null;
+                } else {
+                    $cache_fields->set($this->response);
+                }
+            } else {
+                $this->response = $task_fields;
+            }
+        } catch (Exception $exception) {
+            $this->errors = [
+                'error' => 'exception_'.$exception->getCode(),
+                'error_description' => $exception->getMessage()
+            ];
+        }
+    }
+
+    private function writetask()
+    {
+        $objective = waRequest::post('objective', null, waRequest::TYPE_STRING_TRIM);
+        $context = waRequest::post('context', null, waRequest::TYPE_STRING_TRIM);
+        $deadline = waRequest::post('deadline', null, waRequest::TYPE_STRING_TRIM);
+        $priority = waRequest::post('priority', null, waRequest::TYPE_STRING_TRIM);
+        $text_length = waRequest::post('text_length', null, waRequest::TYPE_STRING_TRIM);
+        $locale = waRequest::post('locale', null, waRequest::TYPE_STRING_TRIM);
+        $style = waRequest::post('style', null, waRequest::TYPE_STRING_TRIM);
+
+        try {
+            $content = (new waServicesApi())->serviceCall('AI', [
+                'facility' => 'task',
+                'objective' => $objective,
+                'context' => $context,
+                'deadline' => $deadline,
+                'priority' => $priority,
+                'text_length' => $text_length,
+                'style' => $style,
+                'locale' => $locale
+            ], 'POST');
+
             $this->response = $content['response'];
             if ($err = ifset($this->response, 'error', null)) {
                 if ($err === 'payment_required') {
