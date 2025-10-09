@@ -1896,3 +1896,6 @@ msgstr "Скрыть выполненные работы"
 
 msgid "Show completed scopes"
 msgstr "Показать выполненные работы"
+
+msgid "Link to more projects"
+msgstr "Также связать с проектами"

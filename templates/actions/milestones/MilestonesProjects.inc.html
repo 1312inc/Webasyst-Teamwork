@@ -5,7 +5,7 @@
 
     <div class="field">
         <div class="value js-type-wrapper">
-            <ul class="menu with-icons">
+            <ul class="menu custom-mt-4">
                 {$_checked_map = array_fill_keys($related_projects, true)}
                 {foreach $projects as $_project}
                     {$_checked = $_checked_map[$_project.id]|default:false}
