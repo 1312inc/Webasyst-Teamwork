@@ -1642,6 +1642,9 @@ msgstr "Лето 2025"
 msgid "Spellcheck & improve your texts in the task editor with a click. Powered by Webasyst AI."
 msgstr "Пишите правильно и красиво, проверяйте орфографию и стилизуйте текст на основе Webasyst AI."
 
+msgid "Write and spellcheck task content with just few clicks. Powered by Webasyst AI."
+msgstr "Пишите тексты задач с помощью ИИ, проверяйте орфографию и стилизуйте текст. Работает на основе Webasyst AI."
+
 msgid "Project summary private links"
 msgstr "Приватные ссылки на статус проекта"
 
@@ -1650,6 +1653,9 @@ msgstr "Показывайте текущий статус работы над �
 
 msgid "In-project limited access for clients"
 msgstr "Ограниченный доступ к проекту для клиентов"
+
+msgid "Limited access & user roles"
+msgstr "Ограниченный доступ и роли в задачах"
 
 msgid "With the basic version, you can invite your clients to your Webasyst backend using the free Team app and grant full access to a specific project. With premium, more sophisticated in-project access rights option will be available, such as view, comment, and follow specific tasks only."
 msgstr "В базовой версии вы можете пригласить клиента в бекенд Webasyst с помощью бесплатного приложения «Команда» и представить полный доступ к проекту. В премиум-версии будет больше настроек доступа, в том числе только для просмотра, комментирования, наблюдения за избранными задачами."
@@ -1899,3 +1905,24 @@ msgstr "Показать выполненные работы"
 
 msgid "Link to more projects"
 msgstr "Также связать с проектами"
+
+msgid "Better tools for better results"
+msgstr "Лучше инструменты —<br> лучше и результат"
+
+msgid "%d features available now, +%d more to come shortly."
+msgstr "%d премиум-функций доступно сейчас, еще %s на подходе."
+
+msgid "All inclusive in the cloud"
+msgstr "В облаке все включено"
+
+msgid "In Webasyst Cloud, simply upgrade to the <b>Premium</b> plan and get all premium features at once with no extra purchase required."
+msgstr "Просто смените тариф на <b>Премиум</b> и пользуйтесь всеми премиум-функциями без покупки лицензий и апгрейдов."
+
+msgid "Early launch offer gets you the best premium upgrade conditions possible."
+msgstr "Премиум-версия открывает ранний доступ ко всем новым функциям и обновлениям."
+
+msgid "Per-server license for the entire company. Unlimited users, all premium features, free updates forever."
+msgstr "Лицензия на один сервер и всю компанию. Сколько угодно пользователей, все функции, бесплатные обновления."
+
+msgid "upgrade to premium"
+msgstr "апгрейд до премиум"

@@ -12,6 +12,7 @@
 </style>
 
 {$_is_premium = $wa->tasks->isPremium()}
+{$_is_cloud = $wa->tasks->isCloud()}
 {$_premium_pricing = $wa->tasks->getPremiumPricing()}
 {$_upgrade_url = '[`https://www.webasyst.com/my/buy/upgrade-to-premium/tasks/`]'|cat:'?domain='|cat:str_replace('http://','',str_replace('https://','',$wa->domainUrl()))}
 
@@ -21,13 +22,18 @@
     <a href="{$_upgrade_url}" class="button rounded {$_premium_pricing.special_color|default:'green'} largest" target="_blank">[`Upgrade to premium`]</a>
     <h4>
         {if !empty($_premium_pricing.compare_price)}<strike class="gray">{$_premium_pricing.compare_price}</strike>{/if}
-        {$_premium_pricing.price}
-        / [`lifetime`]
+        {if $_is_cloud}[`All inclusive in the cloud`]{else}{$_premium_pricing.price} / [`upgrade to premium`]{/if}
     </h4>
     <p class="width-60 width-100-mobile custom-mx-auto small">
-        {if !empty($_premium_pricing.special)}
-            {sprintf('[`%s limited offer for upgrading existing app license to the premium version`]', sprintf('<span class="badge %s">%s</span>', $_premium_pricing.special_color, $_premium_pricing.special))}<br>
-            <b>{date('Y.m')}</b> [`special offer!`]
+        {if $_is_cloud}
+            [`In Webasyst Cloud, simply upgrade to the <b>Premium</b> plan and get all premium features at once with no extra purchase required.`]
+        {else}
+            {if !empty($_premium_pricing.special)}
+                {sprintf('[`%s limited offer for upgrading existing app license to the premium version`]', sprintf('<span class="badge %s">%s</span>', $_premium_pricing.special_color, $_premium_pricing.special))}<br>
+                <b>{date('Y.m')}</b> [`special offer!`]
+            {else}
+                [`Per-server license for the entire company. Unlimited users, all premium features, free updates forever.`]
+            {/if}
         {/if}
     </p>
 </figure>
@@ -63,34 +69,6 @@
 
             <div class="t-premium-appicon"></div>
 
-            {if $_is_premium}
-
-                <h1 class="top-padded align-center">[`You are all set!`]</h1>
-                <p class="small align-center">
-                    [`Thank you for being a premium user and for supporting the project.`]<br>
-                    [`With premium, you are among the first to have access to all features.`]<br>
-                    <a class="bold" href="[`https://www.webasyst.com/store/app/tasks/`]" target="_blank">[`https://www.webasyst.com/store/app/tasks/`]</a>
-                </p>
-
-                {if method_exists($wa->installer, 'reviewWidget')}
-                    <div style="max-width: 300px;" class="custom-my-24 custom-mx-auto">
-                        {$wa->installer->reviewWidget('app/tasks', ['is_inline' => true])}
-                    </div>
-                {/if}
-
-            {else}
-
-                <h1 class="top-padded align-center width-70 custom-mx-auto custom-mb-24 width-100-mobile">
-                    [`Advanced features for efficient teamwork and productive teams`]
-                </h1>
-
-                <p class="small align-center custom-mb-24">
-                     [`All scheduled features will be delivered as free updates via Installer.`]
-                     [`See the roadmap below for the planned feature delivery timeline.`]
-                </p>
-
-            {/if}
-
             {$_premium_stuff = []}
 
             {$_premium_stuff[] = [
@@ -110,7 +88,7 @@
 
             {$_premium_stuff[] = [
               'title' => '[`AI assistant`]',
-              'body' => '[`Spellcheck & improve your texts in the task editor with a click. Powered by Webasyst AI.`]'
+              'body' => '[`Write and spellcheck task content with just few clicks. Powered by Webasyst AI.`]'
             ]}
 
             {$_premium_stuff[] = [
@@ -119,17 +97,13 @@
             ]}
 
             {$_premium_stuff[] = [
-              'title' => '[`Project summary private links`]',
-              'eta' => '[`Soon`]',
-              'eta_class' => 'yellow',
-              'body' => '[`Showcase project & its tasks current status to your client via a private link (Teamwork app frontend). View only access with no need to sign up and get extra access to your Webasyst backend.`]'
+              'title' => '[`Limited access & user roles`]',
+              'body' => '[`With the basic version, you can invite your clients to your Webasyst backend using the free Team app and grant full access to a specific project. With premium, more sophisticated in-project access rights option will be available, such as view, comment, and follow specific tasks only.`]'
             ]}
 
             {$_premium_stuff[] = [
-              'title' => '[`In-project limited access for clients`]',
-              'eta' => '[`Soon`]',
-              'eta_class' => 'yellow',
-              'body' => '[`With the basic version, you can invite your clients to your Webasyst backend using the free Team app and grant full access to a specific project. With premium, more sophisticated in-project access rights option will be available, such as view, comment, and follow specific tasks only.`]'
+              'title' => '[`Project summary private links`]',
+              'body' => '[`Showcase project & its tasks current status to your client via a private link (Teamwork app frontend). View only access with no need to sign up and get extra access to your Webasyst backend.`]'
             ]}
 
             {$_premium_stuff[] = [
@@ -142,11 +116,47 @@
               'eta' => '[`Later`]',
               'body' => '[`Track working time within an individual task (in integration with the Status app).`]'
             ]}
-            {$_premium_stuff[] = [
-              'title' => '[`Suggest a feature`]',
-              'eta' => ' ',
-              'body' => '[`Share your feedback and suggestions, <a href="https://support.webasyst.com/forum/ideas/" target="_blank">post your ideas on the foum &rsaquo;</a>`]'
-            ]}
+
+            {$_features_delivered = 0}
+            {$_features_pending = 0}
+            {foreach $_premium_stuff as $_p}
+                {if empty($_p.eta)}
+                    {$_features_delivered = $_features_delivered + 1}
+                {else}
+                    {$_features_pending = $_features_pending + 1}
+                {/if}
+            {/foreach}
+
+
+            {if $_is_premium}
+
+                <h1 class="top-padded align-center">[`You are all set!`]</h1>
+                <p class="small align-center">
+                    [`Thank you for being a premium user and for supporting the project.`]<br>
+                    [`With premium, you are among the first to have access to all features.`]<br>
+                    <a class="bold" href="[`https://www.webasyst.com/store/app/tasks/`]" target="_blank">[`https://www.webasyst.com/store/app/tasks/`]</a>
+                </p>
+
+                {if method_exists($wa->installer, 'reviewWidget')}
+                    <div style="max-width: 300px;" class="custom-my-24 custom-mx-auto">
+                        {$wa->installer->reviewWidget('app/tasks', ['is_inline' => true])}
+                    </div>
+                {/if}
+
+            {else}
+
+                <h1 class="top-padded align-center width-70 custom-mx-auto custom-mb-24 width-100-mobile">
+                    [`Better tools for better results`]
+                </h1>
+
+                <p class="small align-center custom-mb-24">
+                    [`Early launch offer gets you the best premium upgrade conditions possible.`]
+                    <br>
+                    <b>{sprintf('[`%d features available now, +%d more to come shortly.`]', $_features_delivered, $_features_pending)}</b>
+                </p>
+
+            {/if}
+
 
             {$smarty.capture.getpremiumbutton}
 
