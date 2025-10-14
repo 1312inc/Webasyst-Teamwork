@@ -1,0 +1,86 @@
+{$wrapper_id = uniqid('t-settings-task-roles-wrapper')}
+
+<div class="flexbox t-settings-task-roles-wrapper" id="{$wrapper_id}">
+    {$sidebar_html|default:''}
+
+    <div class="content">
+        <div class="article">
+            <div class="article-body">
+
+                <div>
+                    <h1>[`Роли пользователей`]</h1>
+                    <p class="small">[`Описание функциональности`]</p>
+
+                    <div class="hidden alert success t-saved bordered-bottom">
+                        <i class="fas fa-check-circle"></i>
+                        <span>[`Settings successfully updated`]</span>
+                    </div>
+
+                    <a href="javascript:void(0)" class="button light-gray small t-add-new-role-link rounded">
+                        <i class="fas fa-plus text-blue"></i>
+                        <span>[`Новая роль`]</span>
+                    </a>
+
+                    <form method="post" class="t-save-settings-form">
+                        <div class="t-settings-wrapper">
+                            <div class="t-roles-list-wrapper">
+                                <ul class="menu t-roles-list" style="position: relative;">
+
+                                    {$_roles = $roles}
+                                    {$_empty = $empty}
+                                    {$_empty.id = '_template_'}
+                                    {$_roles[$_empty.id] = $_empty}
+
+                                    {foreach $_roles as $_role}
+                                        {$_is_template = $_role.id == '_template_'}
+                                        <li data-id="{$_role.id}" class="t-roles-list-item{if $_is_template} is-template{/if}">
+                                            <span class="item">
+                                                <i class="fas fa-bars t-sort-handler"></i>
+
+                                                <span>
+                                                    <span class="t-role-name-text semibold" style="font-size: 1rem;{if $_role.color} color:#{$_role.color|escape}{/if}">{$_role.name|escape}</span>
+                                                    <input type="text" class="t-role-name-input semibold"
+                                                           name="data[role][{$_role.id}][name]" value="{$_role.name|escape}"
+                                                           style="display: none;" placeholder="[`Название роли`]">
+                                                </span>
+                                                <div class="t-role-color-wrapper" style="display: none;">
+                                                    <label class="t-role-label-color" style="color: #a29d9d;">[`Color`]</label>
+                                                    # <input type="text" class="short js-colorpicker t-role-color-input shortest"
+                                                             name="data[role][{$_role.id}][color]" value="{$_role.color|escape}" autocomplete="off">
+                                                    <i class="icon rounded" style="background:#{ifset($_role.color, 'f0f0f0')|escape};"></i>
+                                                </div>
+
+                                                <a class="t-edit-role-link" title="[`Edit`]">
+                                                    <i class="fas fa-edit t-edit text-blue"></i>
+                                                </a>
+
+                                                <a class="t-delete-role-link custom-ml-12" title="[`Delete`]">
+                                                    <i class="fas fa-trash-alt t-delete text-red"></i>
+                                                </a>
+                                            </span>
+                                        </li>
+                                    {/foreach}
+
+                                </ul>
+                            </div>
+                            <div class="t-save-settings-wrapper">
+                                <input type="submit" class="t-save-button button green" value="[`Save`]">
+                                <i class="icon16 loading t-loading" style="display: none;"></i>
+                            </div>
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script>
+        (function ($) {
+            new TasksUserRole({
+                $wrapper: $('#{$wrapper_id}')
+            });
+        })(jQuery);
+    </script>
+</div>

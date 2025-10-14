@@ -58,7 +58,7 @@ final class tasksApiTeamGetTopAssigneesHandler
                 }
             }
 
-            if ($i < 4) {
+            if ($i < 4 && isset($sorted[$userId])) {
                 $users[$userId] = $sorted[$userId];
             }
 

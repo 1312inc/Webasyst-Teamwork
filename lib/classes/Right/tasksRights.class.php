@@ -30,6 +30,12 @@ final class tasksRights
 
         // First of all extend by raw access value each
         $tasks_access = $this->getTasksAccess($tasks, $contact_ids);
+
+        $task_ids = array_unique(array_map(function ($_t) {
+            return $_t['id'];
+        }, $tasks));
+        $role_users = (new tasksTaskUsersModel())->getUsersRoleByTasks($task_ids);
+
         foreach ($tasks as &$task) {
             $collected_rights_info = array_fill_keys($contact_ids, $empty_rights);
             foreach ($contact_ids as $contact_id) {
@@ -86,7 +92,6 @@ final class tasksRights
                 }
 
                 if ($rights_info['access'] == self::PROJECT_ACCESS_VIEW_ASSIGNED_TASKS) {
-
                     $is_assigned = $task['assigned_contact_id'] == $contact_id;
                     $is_author = $task['create_contact_id'] == $contact_id;
 
@@ -106,10 +111,9 @@ final class tasksRights
 
                     // establish 'can_edit'
                     $rights_info['can_edit'] = $is_author;
-
-                    continue;
+                } elseif (ifset($role_users, $task['id'], $contact_id, null)) {
+                    $rights_info['can_view'] = true;
                 }
-
             }
 
             $task['rights_info'] = $collected_rights_info;
@@ -580,5 +584,27 @@ final class tasksRights
         }
 
         return $counters;
+    }
+
+    public function getUsersAccessTask($value = self::PROJECT_ACCESS_NONE)
+    {
+        $users = [];
+        $right_levels = [
+            self::PROJECT_ACCESS_NONE,
+            self::PROJECT_ACCESS_VIEW_ASSIGNED_TASKS,
+            self::PROJECT_ACCESS_FULL,
+            self::PROJECT_ANY_ACCESS
+        ];
+
+        if (in_array($value, $right_levels)) {
+            $right_model = new waContactRightsModel();
+            $users = $right_model->query("
+                SELECT wc.* FROM wa_contact_rights wcr
+                LEFT JOIN wa_contact wc ON wc.id = -wcr.group_id
+                WHERE wcr.group_id < 0 AND wcr.app_id = 'tasks' AND wcr.name = 'backend' AND wcr.value = i:value
+            ", ['value' => $value])->fetchAll('id');
+        }
+
+        return $users;
     }
 }

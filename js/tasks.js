@@ -852,6 +852,12 @@
             });
         },
 
+        userRolesAction: function () {
+            this.load('?module=roles', function () {
+
+            });
+        },
+
         personalSettingsAction: function () {
             this.load('?module=settingsPersonal', function () {
 
