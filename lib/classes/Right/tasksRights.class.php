@@ -108,11 +108,12 @@ final class tasksRights
 
                     // establish 'can_view'
                     $rights_info['can_view'] = $is_assigned || $is_author;
+                    if (ifset($role_users, $task['id'], $contact_id, null)) {
+                        $rights_info['can_view'] = true;
+                    }
 
                     // establish 'can_edit'
                     $rights_info['can_edit'] = $is_author;
-                } elseif (ifset($role_users, $task['id'], $contact_id, null)) {
-                    $rights_info['can_view'] = true;
                 }
             }
 
