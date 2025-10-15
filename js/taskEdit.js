@@ -423,7 +423,7 @@ var TaskEdit = ( function($) { "use strict";
             }
         });
 
-        var closeOnEsc = function(event) {
+        /*var closeOnEsc = function(event) {
             var is_escape = ( event.keyCode == "27" );
             if (is_escape) {
                 var $closeLink = $task.find(".t-close-link"),
@@ -436,7 +436,7 @@ var TaskEdit = ( function($) { "use strict";
                 }
             }
         };
-        $(document).on("keydown", closeOnEsc);
+        $(document).on("keydown", closeOnEsc);*/
 
         if (window.FileReader == null) {
             alert($_('Your browser does not support File API!'));
