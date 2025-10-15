@@ -233,6 +233,13 @@
                       <div class="t-attach-droparea" id="t-attach-droparea">
                         <div class="t-chips">
 
+                            <div class="t-chip">
+                                <a class="t-form-line-write-ai-chip">
+                                    <span class="icon webasyst-magic-wand-ai custom-mr-4"></span>
+                                    [`Write with AI`]
+                                </a>
+                            </div>
+
                             <div class="t-chip t-due-date-wrapper">
                                 <i class="fas fa-flag-checkered"></i>
                                 <span>
@@ -271,13 +278,6 @@
                                 </a>
                             </div>
                             {/if}
-
-                            <div class="t-chip">
-                                <a class="t-form-line-write-ai-chip">
-                                    <span class="icon webasyst-magic-wand-ai custom-mr-4"></span>
-                                    [`Написать с ИИ`]
-                                </a>
-                            </div>
 
                             <div class="t-chip" style="display: none;">
                                 <a class="t-form-line-spellcheck-chip">
@@ -490,7 +490,7 @@
     $writeAiBtn.on('click', function (e) {
         e.preventDefault();
 
-        let footer = '<button class="js-write-ai-action button">'+'[`Написать с ИИ`]'+'</button>';
+        let footer = '<button class="js-write-ai-action button">'+'[`Write with AI`]'+'</button>';
         footer += '<button class="js-dialog-close button light-gray">'+'[`Close`]'+'</button>';
 
         function getFieldHtml(field) {
@@ -553,7 +553,7 @@
             html += '<div class="custom-mt-24 js-task-write-ai-content"></div>';
 
             $.waDialog({
-                header: "<h3>[`Написать с ИИ`]</h3>",
+                header: "<h3>[`Write with AI`]</h3>",
                 content: html,
                 footer: footer,
                 onOpen: function ($wrapper, dialog) {
