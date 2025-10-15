@@ -1,5 +1,5 @@
+{$_no_brainer_here = $wa->tasks->isPremium()}
 {$wrapper_id = uniqid('t-settings-task-roles-wrapper')}
-
 <div class="flexbox t-settings-task-roles-wrapper" id="{$wrapper_id}">
     {$sidebar_html|default:''}
 
@@ -7,9 +7,21 @@
         <div class="article">
             <div class="article-body">
 
-                <div>
-                    <h1>[`Роли пользователей`]</h1>
-                    <p class="small">[`Описание функциональности`]</p>
+                {if !$_no_brainer_here}
+
+                    <h3>[`Premium only`]</h3>
+                    <p class="small">
+                      <i class="fas fa-star text-yellow"></i> [`Upgrade to premium to have the feature enabled and this message to disappear permanently.`]
+                    </p>
+                    <a href="{$wa_app_url}#/upgrade/" class="button yellow small">[`See what’s there in premium`]</a>
+                    <hr class="custom-mt-24" />
+
+                {/if}
+
+                <div{if !$_we_are_all_in} style="opacity: 0.4;{/if}">
+
+                    <h1>[`User roles`]</h1>
+                    <p class="small">[`Better describe specific user roles within tasks and projects.`]</p>
 
                     <div class="hidden alert success t-saved bordered-bottom">
                         <i class="fas fa-check-circle"></i>
@@ -18,7 +30,7 @@
 
                     <a href="javascript:void(0)" class="button light-gray small t-add-new-role-link rounded">
                         <i class="fas fa-plus text-blue"></i>
-                        <span>[`Новая роль`]</span>
+                        <span>[`New role`]</span>
                     </a>
 
                     <form method="post" class="t-save-settings-form">
@@ -41,7 +53,7 @@
                                                     <span class="t-role-name-text semibold" style="font-size: 1rem;{if $_role.color} color:#{$_role.color|escape}{/if}">{$_role.name|escape}</span>
                                                     <input type="text" class="t-role-name-input semibold"
                                                            name="data[role][{$_role.id}][name]" value="{$_role.name|escape}"
-                                                           style="display: none;" placeholder="[`Название роли`]">
+                                                           style="display: none;" placeholder="[`Role name`]">
                                                 </span>
                                                 <div class="t-role-color-wrapper" style="display: none;">
                                                     <label class="t-role-label-color" style="color: #a29d9d;">[`Color`]</label>

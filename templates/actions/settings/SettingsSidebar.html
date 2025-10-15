@@ -23,25 +23,34 @@
         <li>
             <a href="#/types-settings/" class="{if !$_is_premium}opacity-50{/if}" data-item-type="task_types">
                 <span class="icon">
-                    <i class="fas fa-{if $_is_premium}shapes{else}star{/if}"></i>
+                    <i class="fas fa-shapes"></i>
                 </span>
                 <span>[`Task types`]</span>
+                {if !$_is_premium}
+                    <span class="count small"><i class="fas fa-star text-yellow"></i></span>
+                {/if}
             </a>
         </li>
         <li>
             <a href="#/fields-settings/" class="{if !$_is_premium}opacity-50{/if}" data-item-type="task_fields">
                 <span class="icon">
-                    <i class="fas fa-{if $_is_premium}list{else}star{/if}"></i>
+                    <i class="fas fa-list"></i>
                 </span>
                 <span>[`Task fields`]</span>
+                {if !$_is_premium}
+                    <span class="count small"><i class="fas fa-star text-yellow"></i></span>
+                {/if}
             </a>
         </li>
         <li>
-            <a href="#/user-roles/" data-item-type="user_roles">
+            <a href="#/user-roles/" class="{if !$_is_premium}opacity-50{/if}" data-item-type="user_roles">
                 <span class="icon">
-                    <i class="fas fa-star"></i>
+                    <i class="fas fa-users"></i>
                 </span>
-                <span>[`Роли пользователей`]</span>
+                <span>[`User roles`]</span>
+                {if !$_is_premium}
+                    <span class="count small"><i class="fas fa-star text-yellow"></i></span>
+                {/if}
             </a>
         </li>
         <!-- plugin hook: 'backend_settings_sidebar.top_li' -->
