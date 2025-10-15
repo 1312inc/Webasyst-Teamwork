@@ -13,7 +13,7 @@ function initTasks()
         return;
     }
 
-// Setup auto thumbnail generation for task image attachments
+    // Setup auto thumbnail generation for task image attachments
     $path = wa()->getDataPath('tasks', true, 'tasks');
     $thumbsPath = $path . '/thumb.php';
     waFiles::write($thumbsPath, '<?php
@@ -37,6 +37,7 @@ if (file_exists($file)) {
                             tasks_task WRITE,
                             tasks_tag WRITE,
                             tasks_task_tags WRITE,
+                            tasks_user_role WRITE,
                             wa_app_settings WRITE');
         waLog::log('Lock tables ok', 'tasks/install.log');
     } catch (waDbException $e) {
@@ -47,6 +48,7 @@ if (file_exists($file)) {
     try {
         $project_model = new tasksProjectModel();
         $status_model = new tasksStatusModel();
+        $user_role_model = new tasksTasksUserRoleModel();
 
         if (!$project_model->countAll() && !$status_model->countAll()) {
             $statusDoingId = $status_model->insert([
@@ -113,6 +115,17 @@ if (file_exists($file)) {
                 }
             }
         }
+
+        $data = array_map(function ($_dr) {
+            return array_combine(['id', 'name', 'color', 'sort'], $_dr);
+        }, [
+            ['client', 'Заказчик', '777', 0],
+            ['assistant', 'Соисполнитель', '777', 1],
+            ['decision_maker', 'ЛПР', '777', 2],
+            ['supervisor', 'Супервайзер', '777', 3]
+        ]);
+        $user_role_model->multipleInsert($data);
+
     } catch (Exception $e) {
         waLog::log($e->getMessage()."\n".$e->getTraceAsString(), 'tasks/install.log');
     }
