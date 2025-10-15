@@ -57,13 +57,23 @@ var TasksUserRole = (function ($) {
         $add_link.click(function (e) {
             e.preventDefault();
             var $item = $list.find('.t-roles-list-item.is-template').clone();
-            var $input_name = $item.find('.t-role-name-input');
-            var $input_color = $item.find('.t-role-color-input');
-            var id = '_template_' + id_counter;
+            var id = '_template_'+ id_counter;
+            var names = [
+                'name',
+                'can_edit',
+                'can_action',
+                'can_comment',
+                'can_delete',
+                'show_inbox',
+                'send_notifications',
+                'color'
+            ];
 
             id_counter++;
-            $input_name.attr('name', $input_name.attr('name').replace('_template_', id));
-            $input_color.attr('name', $input_color.attr('name').replace('_template_', id));
+            for (let _name of names) {
+                let $input_name = $item.find('.t-role-'+ _name +'-input');
+                $input_name.attr('name', $input_name.attr('name').replace('_template_', id));
+            }
 
             $item.data('id', id).attr('data-id', id);
             $item.removeClass('is-template');

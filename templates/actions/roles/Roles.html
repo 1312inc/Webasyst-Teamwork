@@ -42,6 +42,7 @@
                                     {$_empty = $empty}
                                     {$_empty.id = '_template_'}
                                     {$_roles[$_empty.id] = $_empty}
+                                    {$permits = ['can_edit', 'can_action', 'can_comment', 'can_delete', 'show_inbox', 'send_notifications']}
 
                                     {foreach $_roles as $_role}
                                         {$_is_template = $_role.id == '_template_'}
@@ -55,6 +56,21 @@
                                                            name="data[role][{$_role.id}][name]" value="{$_role.name|escape}"
                                                            style="display: none;" placeholder="[`Role name`]">
                                                 </span>
+
+                                                {foreach $permits as $_permit}
+                                                <label>
+                                                    <span class="wa-checkbox">
+                                                        <input type="checkbox" name="data[role][{$_role.id}][{$_permit}]" class="t-role-{$_permit}-input" value="1"{if !empty($_role[$_permit])} checked{/if}>
+                                                        <span>
+                                                            <span class="icon">
+                                                                <i class="fas fa-check"></i>
+                                                            </span>
+                                                        </span>
+                                                    </span>
+                                                    {$_permit}
+                                                </label>
+                                                {/foreach}
+
                                                 <div class="t-role-color-wrapper" style="display: none;">
                                                     <label class="t-role-label-color" style="color: #a29d9d;">[`Color`]</label>
                                                     # <input type="text" class="short js-colorpicker t-role-color-input shortest"
