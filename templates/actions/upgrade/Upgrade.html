@@ -19,7 +19,7 @@
 {capture "getpremiumbutton"}
 {if !$_is_premium}
 <figure class="box align-center t-upgrade-ad">
-    <a href="{$_upgrade_url}" class="button rounded {$_premium_pricing.special_color|default:'green'} largest" target="_blank">[`Upgrade to premium`]</a>
+    <a href="{$_upgrade_url}" class="button rounded {if !$_is_cloud}{$_premium_pricing.special_color|default:'green'}{else}green{/if} largest" target="_blank">[`Upgrade to premium`]</a>
     <h4>
         {if !empty($_premium_pricing.compare_price)}<strike class="gray">{$_premium_pricing.compare_price}</strike>{/if}
         {if $_is_cloud}[`All inclusive in the cloud`]{else}{$_premium_pricing.price} / [`upgrade to premium`]{/if}

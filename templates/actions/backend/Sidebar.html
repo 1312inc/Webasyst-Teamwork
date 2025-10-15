@@ -446,7 +446,7 @@
                 <a href="#/upgrade/">
                     <i class="fas fa-star{if !$is_premium} text-yellow{/if}"></i>
                     <span>[`Premium`]</span>
-                    {if !$is_premium}
+                    {if !$is_premium && !$wa->tasks->isCloud()}
                         {$p = $wa->tasks->getPremiumPricing()}
                         {if !empty($p.special_short)}<span class="count"><span class="badge small {$p.special_color}">{$p.special_short}</span></span>{/if}
                     {/if}
