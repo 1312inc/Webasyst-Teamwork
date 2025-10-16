@@ -441,7 +441,7 @@
             </a>
         </li>
 
-        {if $is_admin}
+        {if $is_admin && !$is_premium}
             <li class="top-padded">
                 <a href="#/upgrade/">
                     <i class="fas fa-star{if !$is_premium} text-yellow{/if}"></i>
