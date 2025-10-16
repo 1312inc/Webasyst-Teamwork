@@ -1953,3 +1953,15 @@ msgstr "Сохраните задачу для отправки инвайта."
 
 msgid "To invite someone, 1) Click (+) to create a new task, 2) Select ‘Invite’, 3) Enter an email address and save. Or use the Webasyst Teamwork mobile app to invite with a 8-digit code."
 msgstr "Чтобы добавить пользователя в команду, 1) Нажмите (+) для создания задачи, 2) Выберите «Пригласить», 3) Введите email и сохраните. Или используйте мобильное приложение Webasyst Задачи, чтобы пригласить с помощью 8-значного инвайт-кода."
+
+msgid "Client"
+msgstr "Заказчик"
+
+msgid "Assistant"
+msgstr "Соисполнитель"
+
+msgid "Decision maker"
+msgstr "ЛПР"
+
+msgid "Supervisor"
+msgstr "Супервайзер"

@@ -51,9 +51,9 @@
                                                 <i class="fas fa-bars t-sort-handler"></i>
 
                                                 <span>
-                                                    <span class="t-role-name-text semibold" style="font-size: 1rem;{if $_role.color} color:#{$_role.color|escape}{/if}">{$_role.name|escape}</span>
+                                                    <span class="t-role-name-text semibold" style="font-size: 1rem;{if $_role.color} color:#{$_role.color|escape}{/if}">{_w($_role.name)|escape}</span>
                                                     <input type="text" class="t-role-name-input semibold"
-                                                           name="data[role][{$_role.id}][name]" value="{$_role.name|escape}"
+                                                           name="data[role][{$_role.id}][name]" value="{_w($_role.name)|escape}"
                                                            style="display: none;" placeholder="[`Role name`]">
                                                 </span>
 

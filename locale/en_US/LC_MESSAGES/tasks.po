@@ -1842,3 +1842,15 @@ msgstr ""
 
 msgid "Show completed scopes"
 msgstr ""
+
+msgid "Client"
+msgstr ""
+
+msgid "Assistant"
+msgstr ""
+
+msgid "Decision maker"
+msgstr ""
+
+msgid "Supervisor"
+msgstr ""
