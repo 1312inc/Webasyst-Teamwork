@@ -12,7 +12,7 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=((((n%10)==1)&&((n%100)!=11))?(0):(((((n%10)>=2)&&((n%10)<=4))&&(((n%100)<10)||((n%100)>=20)))?(1):2));\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Basepath: .\n"
-"X-Generator: Poedit 3.3.2\n"
+"X-Generator: Poedit 3.7\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPath-1: .\n"
 
@@ -1498,6 +1498,12 @@ msgstr "Создать ссылку"
 msgid "Get a public link for tracking task status and updates with no access to Webasyst backend."
 msgstr "Ссылка для просмотра текущего статуса и истории выполнения задачи без доступа к Webasyst."
 
+msgid "Get a public link for tracking entire milestone status and updates with no access to Webasyst backend."
+msgstr "Ссылка для просмотра текущего статуса и истории выполнения всей работы без доступа к Webasyst."
+
+msgid "Get a public link for tracking entire project status and updates with no access to Webasyst backend."
+msgstr "Ссылка для просмотра текущего статуса и истории выполнения всего проекта без доступа к Webasyst."
+
 msgid "copied"
 msgstr "Скопировано!"
 
@@ -1926,3 +1932,6 @@ msgstr "Лицензия на один сервер и всю компанию. 
 
 msgid "upgrade to premium"
 msgstr "апгрейд до премиум"
+
+msgid "Private link is a premium feature"
+msgstr "Приватная ссылка доступна только в премиум"

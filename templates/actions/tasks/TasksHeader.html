@@ -72,42 +72,53 @@
 
             {if $show_settings}
             {$hint = ''}
+            {$is_premium = $wa->tasks->isPremium()}
             {if $hash_type == 'project' && $project}
-                {$hint = '[`Ссылка для просмотра текущего проекта без доступа к Webasyst.`]'}
+                {$hint = '[`Get a public link for tracking entire project status and updates with no access to Webasyst backend.`]'}
                 {$public_links = $project->getPublicLinks()}
             {elseif $hash_type == 'scope' && $milestone}
-                {$hint = '[`Ссылка для просмотра текущей работы без доступа к Webasyst.`]'}
+                {$hint = '[`Get a public link for tracking entire milestone status and updates with no access to Webasyst backend.`]'}
                 {$public_links = $milestone->getPublicLinks()}
             {/if}
             {$is_public_link_exists = !!count($public_links)}
             <div class="dropdown custom-mr-8 js-public-link-scope">
                 <button class="dropdown-toggle without-arrow nowrap button light-gray rounded{if $is_public_link_exists} text-blue{else} text-light-gray{/if}"><i class="fas fa-external-link-alt"></i></button>
-                <div class="dropdown-body right custom-p-8" style="width: auto;min-width: 300px;">
-                    <div class="t-public-link-block{if $is_public_link_exists} hidden{/if}">
-                        <p class="hint align-center custom-mb-0">
-                            {$hint}
-                        </p>
-                        <div class="align-center box">
-                            <button href="#" class="js-public-link-button-create smaller light-gray text-blue">[`Enable public link`]</button>
+                <div class="dropdown-body custom-p-8" style="width: auto;min-width: 300px; left:0; right: 0;">
+                    {if $is_premium}
+                        <div class="t-public-link-block{if $is_public_link_exists} hidden{/if}">
+                            <p class="hint align-center custom-mb-0">
+                                {$hint}
+                            </p>
+                            <div class="align-center box">
+                                <button href="#" class="js-public-link-button-create smaller light-gray text-blue">[`Enable public link`]</button>
+                            </div>
                         </div>
-                    </div>
-                    <div class="t-public-link-block{if !$is_public_link_exists} hidden{/if}">
-                        <ul class="menu custom-m-0">
-                            {foreach $public_links as $link}
-                            <li class="custom-mb-4">
-                                <div class="flexbox middle space-4">
-                                    <div class="wide">
-                                        <a href="{$link}" class="small bold" target="_blank">{$link}</a>
+                        <div class="t-public-link-block{if !$is_public_link_exists} hidden{/if}">
+                            <ul class="menu custom-m-0">
+                                {foreach $public_links as $link}
+                                <li class="custom-mb-4">
+                                    <div class="flexbox middle space-4">
+                                        <div class="wide">
+                                            <a href="{$link}" class="small bold" target="_blank">{$link}</a>
+                                        </div>
+                                        <button class="copy-to-clipboard button small nobutton"><i class="fas fa-copy"></i></button>
                                     </div>
-                                    <button class="copy-to-clipboard button small nobutton"><i class="fas fa-copy"></i></button>
-                                </div>
-                            </li>
-                            {/foreach}
-                        </ul>
-                        <div class="align-center box">
-                            <button href="#" class="t-public-link-button-del smaller light-gray text-red">[`Disable public link`]</button>
+                                </li>
+                                {/foreach}
+                            </ul>
+                            <div class="align-center box">
+                                <button href="#" class="t-public-link-button-del smaller light-gray text-red">[`Disable public link`]</button>
+                            </div>
                         </div>
-                    </div>
+                    {else}
+                        <div class="box align-center">
+                            <h6>[`Private link is a premium feature`]</h6>
+                            <p class="hint">
+                              <i class="fas fa-star text-yellow"></i> [`Upgrade to premium to have the feature enabled and this message to disappear permanently.`]
+                            </p>
+                            <a href="{$wa_app_url}#/upgrade/" class="button yellow smaller">[`See what’s there in premium`]</a>
+                        </div>
+                    {/if}
                 </div>
             </div>
             <div>
