@@ -157,6 +157,22 @@
 
             {/if}
 
+            <div class="flexbox wrap-mobile middle space-12" style="justify-content: center;">
+
+                <a href="https://apps.apple.com/{if $wa->locale() == 'ru_RU'}ru{else}us{/if}/app/webasyst-teamwork/id1610735751" target="_blank">
+                    <img src="{$wa_app_static_url}img/badge-appstore{if $wa->locale() == 'ru_RU'}-ru{/if}.png" class="t-app-inline-badge" alt="App Store">
+                </a>
+                <a href="https://play.google.com/store/apps/details?id=com.webasyst.teamwork" target="_blank">
+                    <img src="{$wa_app_static_url}img/badge-googleplay{if $wa->locale() == 'ru_RU'}-ru{/if}.png" class="t-app-inline-badge" alt="Google Play">
+                </a>
+                {if $wa->locale() == 'ru_RU'}
+                    <a href="https://apps.rustore.ru/app/com.webasyst.teamwork" target="_blank">
+                        <img src="{$wa_app_static_url}img/badge-rustore.svg" class="t-app-inline-badge" alt="RuStore">
+                    </a>
+                {/if}
+
+            </div>
+
 
             {$smarty.capture.getpremiumbutton}
 
