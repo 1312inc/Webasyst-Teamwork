@@ -1935,3 +1935,18 @@ msgstr "апгрейд до премиум"
 
 msgid "Private link is a premium feature"
 msgstr "Приватная ссылка доступна только в премиум"
+
+msgid "Access:"
+msgstr "Доступ:"
+
+msgid "This task only"
+msgstr "Только эта задача"
+
+msgid "All tasks in this project"
+msgstr "Все задачи в этом проекте"
+
+msgid "Full access to all projects"
+msgstr "Полный доступ ко всем проектам"
+
+msgid "Save the task to invite."
+msgstr "Сохраните задачу для отправки инвайта."

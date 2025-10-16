@@ -1,17 +1,18 @@
 <div class="t-team-invite custom-my-16" style="display: none;">
-    <div class="flexbox space-16 custom-mb-8">
-        <div style="width: 200px;">
-            <input type="text" class="t-team-invite__email long small custom-mb-4" value="" placeholder="[`Email`]" />
+    <div class="flexbox space-16 custom-mb-8 wrap">
+        <div style="min-width: 250px;">
+            <input type="text" class="t-team-invite__email long bold small custom-mb-4" value="" placeholder="[`Email`]" />
         </div>
-        <div>
+        <div class="flexbox middle space-4">
+            <div>[`Access:`]</div>
             <div class="wa-select small solid">
                 <select class="t-team-invite__access" name="">
-                    <option value="0">[`Minimal access`]</option>
-                    <option value="1">[`Access to all projects`]</option>
-                    <option value="2">[`Full access to all projects &amp; settings`]</option>
+                    <option value="0">[`This task only`]</option>
+                    <option value="1">[`All tasks in this project`]</option>
+                    <option value="2" selected="selected">[`Full access to all projects`]</option>
                 </select>
             </div>
         </div>
     </div>
-    <div class="hint">[`The user will get an invitation to join your team on Webasyst and to start working on this task.`]</div>
+    <div class="hint"><b>[`Save the task to invite.`]</b> [`The user will get an invitation to join your team on Webasyst and to start working on this task.`]</div>
 </div>
