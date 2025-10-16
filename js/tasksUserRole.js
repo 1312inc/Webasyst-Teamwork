@@ -56,7 +56,7 @@ var TasksUserRole = (function ($) {
 
         $add_link.click(function (e) {
             e.preventDefault();
-            var $item = $list.find('.t-roles-list-item.is-template').clone();
+            var $item = $list.find('.t-settings-item.is-template').clone();
             var id = '_template_'+ id_counter;
             var names = [
                 'name',
@@ -77,6 +77,7 @@ var TasksUserRole = (function ($) {
 
             $item.data('id', id).attr('data-id', id);
             $item.removeClass('is-template');
+            $item.attr('style', '');
             $item.appendTo($list);
 
             editor.makeEditable($item);
@@ -110,7 +111,7 @@ var TasksUserRole = (function ($) {
 
         $list.on('click', '.t-delete-role-link', function (e) {
             e.preventDefault();
-            var $item = $(this).closest('.t-roles-list-item');
+            var $item = $(this).closest('.t-settings-item');
             deleteRole($item);
         });
     };
@@ -167,9 +168,7 @@ var TasksUserRole = (function ($) {
                 $input = $item.find('.t-role-name-input'),
                 $color = $item.find('.t-role-color-wrapper');
 
-            $input.show();
-            $color.show();
-            $text.hide();
+            $text.closest('.t-settings-item').toggleClass('is-closed is-opened');
             $input.focus().select();
             return {
                 $text: $text,
@@ -251,19 +250,13 @@ var TasksUserRole = (function ($) {
         $list.on('click', '.t-edit-role-link', function (e) {
             e.preventDefault();
             var $link = $(this);
-            var $item = $link.closest('.t-roles-list-item');
+            var $item = $link.closest('.t-settings-item');
             var id = $item.data('id');
+
             if (contexts[id]) {
-                var $text = $item.find('.t-role-name-text');
-                var $input = $item.find('.t-role-name-input');
-                var $color = $item.find('.t-role-color-wrapper');
-
                 //hide edit
-                $input.hide();
-                $color.hide();
-                $text.show();
                 $link.find('.t-edit').removeClass('edit-bw').addClass('edit');
-
+                $item.toggleClass('is-closed is-opened');
                 delete contexts[id];
                 return;
             } else {
@@ -307,7 +300,7 @@ var TasksUserRole = (function ($) {
 
         $list.sortable({
             axis: 'y',
-            items: '.t-roles-list-item:not(.clone)',
+            items: '.t-settings-item:not(.clone)',
             distance: 5,
             containment: 'parent',
             tolerance: 'pointer',
