@@ -174,7 +174,7 @@
                     [`Scopes`]
                 </span>
                 {if $is_admin}
-                    <a class="add-scope count action" href="#/webasyst/tasks/#/settings/scope/add/"><i class="fas fa-plus-circle"></i></a>
+                    <a class="add-scope count action" href="#/webasyst/tasks/#/settings/scope/add/"><i class="fas fa-plus-circle text-green"></i></a>
                 {/if}
             </h5>
             <div class="collapsible__content">
@@ -245,6 +245,8 @@
                 <span class="caret"><i class="fas fa-caret-down"></i></span>
                 [`Team`]
             </span>
+            <a href="javascript:alert('[`To invite someone, 1) Click (+) to create a new task, 2) Select ‘Invite’, 3) Enter an email address and save. Or use the Webasyst Teamwork mobile app to invite with a 8-digit code.`]');" class="count small action"><i class="fas fa-user-plus opacity-40" style="font-size: 0.8125rem;"></i></a>
+
         </h5>
         <div class="collapsible__content">
             {if !empty($users)}
@@ -331,7 +333,7 @@
                     [`Projects`]
                 </span>
                 {if $is_admin}
-                    <a class="add-project count action" href="#/settings/project/add/"><i class="fas fa-plus-circle"></i></a>
+                    <a class="add-project count action" href="#/settings/project/add/"><i class="fas fa-plus-circle text-green"></i></a>
                 {/if}
             </h5>
             <div class="collapsible__content">
