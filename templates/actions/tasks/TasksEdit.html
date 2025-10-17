@@ -150,8 +150,8 @@
                                 {foreach $task.role_users as $role_user}
                                     <li data-role-id="{$role_user.role.role_id}" data-user-id="{$role_user.id}" style="--chips-outline-border-color: #{$role_user.role.color}; --menu-link-color: #fff; --menu-link-color-hover: #fff; --chips-background-color: #{$role_user.role.color}; --chips-background-color-hover: #{$role_user.role.color};">
                                         <a href="javascript:void(0);">
-                                            <img src="{$role_user.photo_url}" alt="{$role_user.name}" class="userpic">
-                                            {$role_user.name} <span class="custom-ml-4 smaller">{_w($role_user.role.name|escape)}</span>
+                                            <img src="{$role_user.photo_url}" alt="{$role_user.name|escape}" class="userpic">
+                                            {$role_user.name|escape} <span class="custom-ml-4 smaller">{_w($role_user.role.name|escape)}</span>
                                             <i class="fas fa-times-circle custom-ml-16 text-white js-remove-user"></i>
                                         </a>
                                     </li>
@@ -186,57 +186,151 @@
 
                             {if $wa->user()->isAdmin('tasks')}
                                 if (teamList.length > 0) {
-                                    let userList = '';
-                                    $(".js-role-dropdown").waDropdown();
+                                    const RoleManager = {
+                                        $chipsWrapper: $(".t-team-roles-list-wrapper .chips"),
+                                        isTaskUpdate: {if !empty($task.id)}true{else}false{/if},
 
-                                    teamList.forEach(user => {
-                                        userList +=`
-                                            <li data-user-id="${ user.id }" data-user-photo-url="${ user.photo_url }" data-user-name="${ user.name }">
-                                                <span class="item">
-                                                    <span class="icon userpic userpic20" style="background-image: url('${ user.photo_url }');"></span>
-                                                    <span>${ user.name }</span>
-                                                </span>
-                                            </li>`;
+                                        /**
+                                         * Экранирует HTML
+                                         */
+                                        escapeHtml: function(text) {
+                                            const div = document.createElement('div');
+                                            div.textContent = text;
+                                            return div.innerHTML;
+                                        },
+
+                                        /**
+                                         * Проверяет, добавлен ли пользователь к роли
+                                         */
+                                        isUserInRole: function(roleId, userId) {
+                                            return this.$chipsWrapper.find(`li[data-role-id="${ roleId }"][data-user-id="${ userId }"]`).length > 0;
+                                        },
+
+                                        /**
+                                         * Создает HTML для chip элемента пользователя с ролью
+                                         */
+                                        createUserChip: function(roleId, roleColor, userId, userPhotoUrl, userName, roleName) {
+                                            const safeUserName = this.escapeHtml(userName);
+                                            const safeRoleName = this.escapeHtml(roleName);
+                                            const safePhotoUrl = this.escapeHtml(userPhotoUrl);
+
+                                            const $li = $('<li>', {
+                                                'data-role-id': roleId,
+                                                'data-user-id': userId,
+                                                'style': `
+                                                    --chips-outline-border-color: ${ roleColor };
+                                                    --menu-link-color: #fff;
+                                                    --menu-link-color-hover: #fff;
+                                                    --chips-background-color: ${ roleColor };
+                                                    --chips-background-color-hover: ${ roleColor };
+                                                `
+                                            });
+
+                                            const $link = $('<a>', { href: 'javascript:void(0);' });
+                                            $link.append($('<img>', { src: userPhotoUrl, alt: safeUserName, class: 'userpic' }));
+                                            $link.append(document.createTextNode(' ' + safeUserName + ' '));
+                                            $link.append($('<span>', { class: 'custom-ml-4 smaller', text: safeRoleName }));
+                                            $link.append($('<i>', { class: 'fas fa-times-circle custom-ml-16 text-white js-remove-user' }));
+
+                                            const $input = $('<input>', {
+                                                type: 'hidden',
+                                                name: `data[roles_user][add][${ roleId }][]`,
+                                                value: userId
+                                            });
+
+                                            $li.append($link).append($input);
+                                            return $li;
+                                        },
+
+                                        /**
+                                         * Добавляет пользователя к роли
+                                         */
+                                        addUserToRole: function(roleId, roleColor, userId, userPhotoUrl, userName, roleName) {
+                                            if (this.isUserInRole(roleId, userId)) {
+                                                return false;
+                                            }
+
+                                            const $chip = this.createUserChip(roleId, roleColor, userId, userPhotoUrl, userName, roleName);
+                                            this.$chipsWrapper.prepend($chip);
+                                            return true;
+                                        },
+
+                                        /**
+                                         * снимает роль с пользователя
+                                         */
+                                        removeUserFromRole: function($chip) {
+                                            const roleId = $chip.data('role-id');
+                                            const userId = $chip.data('user-id');
+                                            
+                                            $chip.remove();
+
+                                            if (this.isTaskUpdate) {
+                                                const $removeInput = $('<input>', {
+                                                    type: 'hidden',
+                                                    name: `data[roles_user][remove][${ roleId }][]`,
+                                                    value: userId
+                                                });
+                                                this.$chipsWrapper.prepend($removeInput);
+                                            }
+                                        },
+
+                                        init: function() {
+                                            const self = this;
+
+                                            this.$chipsWrapper.on('click', '.js-remove-user', function (event) {
+                                                event.preventDefault();
+                                                event.stopPropagation();
+                                                const $chip = $(this).closest('li');
+                                                self.removeUserFromRole($chip);
+                                            });
+                                        }
+                                    };
+
+                                    RoleManager.init();
+
+                                    const $roleDropdowns = RoleManager.$chipsWrapper.find('.js-role-dropdown');
+                                    $roleDropdowns.waDropdown({
+                                        hover: false,
+                                        items: '.menu > li > span',
+                                        update_title: false
                                     });
-                                    $(".js-role-dropdown .menu").append(userList);
 
-                                    const $chips_wrapper = $(".t-team-roles-list-wrapper .chips");
+                                    const userListFragment = document.createDocumentFragment();
+                                    teamList.forEach(user => {
+                                        const $li = $('<li>', {
+                                            'data-user-id': user.id,
+                                            'data-user-photo-url': user.photo_url,
+                                            'data-user-name': user.name
+                                        });
 
-                                    $(".js-role-dropdown .menu li").off('click.role').on('click.role', function (event) {
+                                        const $span = $('<span>', { class: 'item' });
+                                        $span.append($('<span>', { 
+                                            class: 'icon userpic userpic20',
+                                            css: { 'background-image': `url('${ user.photo_url }')` }
+                                        }));
+                                        $span.append($('<span>', { text: user.name }));
+                                        
+                                        $li.append($span);
+                                        userListFragment.appendChild($li[0]);
+                                    });
+
+                                    $roleDropdowns.find('.menu').append(userListFragment);
+
+                                    $roleDropdowns.on('click', '.menu li', function (event) {
                                         event.preventDefault();
                                         event.stopPropagation();
-                                        const $parent = $(this).closest('.js-role-dropdown');
-                                        const roleId = $parent.data('role-id');
-                                        const roleColor = $parent.data('role-color');
-                                        const userId = $(this).data('user-id');
-                                        const userPhotoUrl = $(this).data('user-photo-url');
-                                        const userName = $(this).data('user-name');
-                                        const roleName = $parent.data('role-name');
-
-
-                                        $chips_wrapper.prepend(`
-                                                <li style="--chips-outline-border-color: ${ roleColor }; --menu-link-color: #fff; --menu-link-color-hover: #fff; --chips-background-color: ${ roleColor }; --chips-background-color-hover: ${ roleColor };">
-                                                    <a href="javascript:void(0);">
-                                                        <img src="${ userPhotoUrl }" alt="${ userName }" class="userpic">
-                                                        ${ userName } <span class="custom-ml-4 smaller">${ roleName }</span>
-                                                        <i class="fas fa-times-circle custom-ml-16 text-white js-remove-user"></i>
-                                                    </a>
-                                                    <input type="hidden" name="data[roles_user][add][${ roleId }][]" value="${ userId }">
-                                                </li>
-                                            `);
-
-                                    });
-
-                                    $chips_wrapper.off('click.remove-user').on('click.remove-user', '.js-remove-user', function (event) {
-                                    event.preventDefault();
-                                        event.stopPropagation();
-                                        const $parent = $(this).closest('li');
-                                        const roleId = $parent.data('role-id');
-                                        const userId = $parent.data('user-id');
-                                        $parent.remove();
-                                        {if !empty($task.id)}
-                                            $chips_wrapper.prepend(`<input type="hidden" name="data[roles_user][remove][${ roleId }][]" value="${ userId }">`);
-                                        {/if}
+                                        
+                                        const $this = $(this);
+                                        const $dropdown = $this.closest('.js-role-dropdown');
+                                        
+                                        RoleManager.addUserToRole(
+                                            $dropdown.data('role-id'),
+                                            $dropdown.data('role-color'),
+                                            $this.data('user-id'),
+                                            $this.data('user-photo-url'),
+                                            $this.data('user-name'),
+                                            $dropdown.data('role-name')
+                                        );
                                     });
                                 }
                             {/if}

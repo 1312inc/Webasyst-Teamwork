@@ -892,141 +892,221 @@
                 </script>
 
                 {if $wa->user()->isAdmin('tasks')}
-                <h3><span class="gray">&</span> [`Пользователи с ролями`] <span class="gray t-role-user-counter">{if count($task.role_users) > 0}{count($task.role_users)}{/if}</span></h3>
-                <ul class="thumbs t-role-user-thumbs">
-                    {foreach $task.role_users as $ru}
-                    <li data-id="{$ru.id}" data-role-id="{$ru.role.role_id}">
-                        <a class="userpic userpic48" href="#/tasks/assigned/{$ru.id|escape}/" style="background-image: url('{$ru.photo_url}');" title="{$ru.name|escape}{if $ru.calendar_status} - {$ru.calendar_status->getName()|escape}{/if}">
-                            {if $ru.calendar_status}
-                            <span class="userstatus" style="background-color: {$ru.calendar_status->getBgColor()};color: {$ru.calendar_status->getFontColor()};" title="{$ru.calendar_status->getName()|escape}"><i class="{$ru.calendar_status->getIcon()|escape|default:'fas fa-calendar-alt'}"></i></span>
-                            {/if}
-                            <span class="userstatus t-role-user-remove-icon bg-red"><i class="fas fa-times"></i></span>
-                        </a>
-                    </li>
-                    {/foreach}
-                    <li class="t-role-user-add-icon">
-                        <div class="dropdown" id="add-role-user-select" style="border: #0bcc9f 1px solid">
-                            <div class="wa-select">
-                                <select class="js-user-role">
-                                    {foreach $user_roles as $role}
-                                    <option value="{$role.id}">{$role.name}</option>
-                                    {/foreach}
-                                </select>
-                            </div>
-                            <a href="#" style="width: 48px; height: 48px;" class="dropdown-toggle without-arrow flexbox middle">
-                                <span class="icon text-light-gray size-24"><i class="fas fa-plus"></i></span>
-                            </a>
-                            <div class="dropdown-body">
-                                <ul class="menu">
-                                    <li>
-                                        <a href="javascript:void(0);" data-id="">
-                                            <div class="icon">
-                                                <i class="userpic size-20"></i>
-                                            </div>
-                                            <span></span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </li>
-                </ul>
-                <script>
-                    (() => {
-                        /* Add / Remove user role */
-                        $.get('?module=tasks&action=usersRole', function (data) {
-                            if (data.status !== 'ok') return;
+                    <h3><span class="gray">&</span> [`Пользователи с ролями`] <span class="gray t-role-user-counter">{if count($task.role_users) > 0}{count($task.role_users)}{/if}</span></h3>
+                    <div class="t-team-roles-wrapper flexbox space-8">
+                        <ul class="chips outlined custom-mt-0">
+                            {foreach $task.role_users as $role_user}
+                                <li data-role-id="{$role_user.role.role_id}" data-user-id="{$role_user.id}" style="--chips-outline-border-color: #{$role_user.role.color}; --menu-link-color: #fff; --menu-link-color-hover: #fff; --chips-background-color: #{$role_user.role.color}; --chips-background-color-hover: #{$role_user.role.color};">
+                                    <a href="javascript:void(0);">
+                                        <img src="{$role_user.photo_url}" alt="{$role_user.name|escape}" class="userpic">
+                                        {$role_user.name|escape} <span class="custom-ml-4 smaller">{_w($role_user.role.name|escape)}</span>
+                                        <i class="fas fa-times-circle custom-ml-16 text-white js-remove-user"></i>
+                                    </a>
+                                </li>
+                            {/foreach}
+                            {foreach $user_roles as $role}
+                                <li class="dropdown js-role-dropdown" data-role-id="{$role.id}" data-role-name="{_w($role.name|escape)}" data-role-color="#{$role.color}" style="--chips-outline-border-color: #{$role.color}; --menu-link-color: #{$role.color}; --menu-link-color-hover: #{$role.color}; --chips-background-color: transparent; --chips-background-color-hover: transparent;">
+                                    <a href="javascript:void(0);" class="dropdown-toggle without-arrow">
+                                        <i class="fas fa-plus custom-mr-4" style="color: #{$role.color};"></i>{_w($role.name|escape)}
+                                    </a>
+                                    <div class="dropdown-body">
+                                        <ul class="menu"></ul>
+                                    </div>
+                                </li>
+                            {/foreach}
+                        </ul>
+                    </div>
 
-                            const users = data.data;
-                            const add_role_user_select = $('#add-role-user-select');
-                            const menu = add_role_user_select.find('.dropdown-body .menu');
-                            const li = menu.find('li');
+                    <script>
+                        (() => {
+                            const RoleManager = {
+                                $chipsWrapper: $('.t-team-roles-wrapper .chips'),
+                                $counter: $('.t-role-user-counter'),
 
-                            users.forEach(user => {
-                                const item = li.clone();
-                                item.find('a').attr('data-id', user.id);
-                                item.find('span').text(user.name);
-                                item.find('.icon i').css('background-image', 'url('+user.photo_url+')');
-                                item.appendTo(menu);
-                            });
+                                /**
+                                 * Экранирует HTML
+                                 */
+                                escapeHtml: function(text) {
+                                    const div = document.createElement('div');
+                                    div.textContent = text;
+                                    return div.innerHTML;
+                                },
 
-                            li.remove();
+                                /**
+                                 * Проверяет, назначена ли пользователю роль
+                                 */
+                                isUserInRole: function(roleId, userId) {
+                                    return this.$chipsWrapper.find(`li[data-role-id="${ roleId }"][data-user-id="${ userId }"]`).length > 0;
+                                },
 
-                            add_role_user_select.waDropdown({
-                                hover: false,
-                                items: '.menu > li > a',
-                                update_title: false,
-                                change: (_event, target) => {
-                                    const userId = $(target).data('id');
-                                    const role_id = $('.js-user-role').val();
-                                    if ($('.t-role-user-thumbs li[data-id='+ userId +']')[0]) {
-                                        return;
+                                /**
+                                 * Создает HTML для элемента пользователя с ролью
+                                 */
+                                createUserChip: function(roleId, roleColor, userId, userPhotoUrl, userName, roleName) {
+                                    const safeUserName = this.escapeHtml(userName);
+                                    const safeRoleName = this.escapeHtml(roleName);
+
+                                    const $li = $('<li>', {
+                                        'data-role-id': roleId,
+                                        'data-user-id': userId,
+                                        'style': `
+                                            --chips-outline-border-color: ${ roleColor };
+                                            --menu-link-color: #fff;
+                                            --menu-link-color-hover: #fff;
+                                            --chips-background-color: ${ roleColor };
+                                            --chips-background-color-hover: ${ roleColor };
+                                        `
+                                    });
+
+                                    const $link = $('<a>', { href: 'javascript:void(0);' });
+                                    $link.append($('<img>', { src: userPhotoUrl, alt: safeUserName, class: 'userpic' }));
+                                    $link.append(document.createTextNode(' ' + safeUserName + ' '));
+                                    $link.append($('<span>', { class: 'custom-ml-4 smaller', text: safeRoleName }));
+                                    $link.append($('<i>', { class: 'fas fa-times-circle custom-ml-16 text-white js-remove-user' }));
+
+                                    $li.append($link);
+                                    return $li;
+                                },
+
+                                /**
+                                 * Назначает пользователю роль
+                                 */
+                                addUserToRole: function(roleId, roleColor, userId, userPhotoUrl, userName, roleName) {
+                                    if (this.isUserInRole(roleId, userId)) {
+                                        return false;
                                     }
 
-                                    const data = new FormData();
-                                    data.append('task_id', {$task.id});
-                                    data.append('user_id', userId);
-                                    data.append('role_id', role_id);
+                                    const formData = new FormData();
+                                    formData.append('task_id', {$task.id});
+                                    formData.append('user_id', userId);
+                                    formData.append('role_id', roleId);
 
-                                    fetch('?module=tasks&action=usersRole&act=add', { method: 'POST', body: data })
+                                    const self = this;
+
+                                    fetch('?module=tasks&action=usersRole&act=add', { method: 'POST', body: formData })
                                         .then(response => {
                                             if (!response.ok) throw new Error('Response error');
                                             return response.json();
                                         })
                                         .then(data => {
                                             if (data.status !== 'ok') return;
-                                            const user = users.find(u => u.id == userId);
-                                            if (!user) return;
-                                            const tpl = `
-                                                    <li data-id="`+user.id+`">
-                                                        <a class="userpic userpic48" href="#/tasks/assigned/`+ user.id +`/" style="background-image: url('`+ user.photo_url +`');">
-                                                            <span class="userstatus t-role-user-remove-icon bg-red"><i class="fas fa-times"></i></span>
-                                                        </a>
-                                                    </li>
-                                                `;
 
-                                            $('.t-role-user-add-icon').before(tpl);
-                                            updateCounter(1);
-                                            addEvents();
+                                            const $chip = self.createUserChip(roleId, roleColor, userId, userPhotoUrl, userName, roleName);
+                                            
+                                            const $addButtons = self.$chipsWrapper.find('.js-role-dropdown');
+                                            if ($addButtons.length > 0) {
+                                                $addButtons.first().before($chip);
+                                            } else {
+                                                self.$chipsWrapper.append($chip);
+                                            }
+
+                                            self.updateCounter(1);
                                         })
-                                        .catch(() => {});
+                                        .catch(error => {
+                                            console.error(error);
+                                        });
+
+                                    return true;
+                                },
+
+                                /**
+                                 * Снимает роль с пользователя
+                                 */
+                                removeUserFromRole: function($chip) {
+                                    const roleId = $chip.data('role-id');
+                                    const userId = $chip.data('user-id');
+
+                                    $.post('?module=tasks&action=usersRole&act=remove', {
+                                        task_id: {$task.id},
+                                        user_id: userId,
+                                        role_id: roleId
+                                    }, (data) => {
+                                        if (data.status !== 'ok') return;
+                                        $chip.remove();
+                                        this.updateCounter(-1);
+                                    });
+                                },
+
+                                /**
+                                 * Обновляет счетчик назначенных пользователей с ролями
+                                 */
+                                updateCounter: function(delta) {
+                                    const currentNum = parseInt(this.$counter.text(), 10) || 0;
+                                    const nextNum = (currentNum + delta) || '';
+                                    this.$counter.text(nextNum);
+                                },
+
+                                init: function() {
+                                    const self = this;
+
+                                    this.$chipsWrapper.on('click', '.js-remove-user', function (event) {
+                                        event.preventDefault();
+                                        event.stopPropagation();
+                                        const $chip = $(this).closest('li[data-role-id][data-user-id]');
+                                        self.removeUserFromRole($chip);
+                                    });
                                 }
-                            });
-                        });
+                            };
 
-                        function removeRole (user_id, role_id) {
-                            $.post('?module=tasks&action=usersRole&act=remove', {
-                                task_id: {$task.id},
-                                user_id: user_id,
-                                role_id: role_id
-                            }, function (data) {
+                            RoleManager.init();
+
+                            $.get('?module=tasks&action=usersRole', function (data) {
                                 if (data.status !== 'ok') return;
-                                $('.t-role-user-thumbs li[data-id='+ user_id +']').remove();
-                                updateCounter(-1);
-                            });
-                        }
 
-                        function updateCounter (num) {
-                            const currentNum = parseInt($('.t-role-user-counter').text(), 10) || 0;
-                            const nextNum = (currentNum + num) || '';
-                            $('.t-role-user-counter').text(nextNum);
-                        }
+                                const users = data.data;
+                                const $roleDropdowns = RoleManager.$chipsWrapper.find('.js-role-dropdown');
+                                
+                                $roleDropdowns.each(function() {
+                                    const $dropdown = $(this);
+                                    const $menu = $dropdown.find('.dropdown-body .menu');
+                                    
+                                    const userListFragment = document.createDocumentFragment();
+                                    users.forEach(user => {
+                                        const $li = $('<li>', {
+                                            'data-user-id': user.id,
+                                            'data-user-photo-url': user.photo_url,
+                                            'data-user-name': user.name
+                                        });
 
-                        function addEvents () {
-                            $('.t-role-user-thumbs li[data-id]').each(function () {
-                                const user_id = $(this).data('id');
-                                const role_id = $(this).data('role-id');
-                                $(this).find('.t-role-user-remove-icon').off('click.role_user').on('click.role_user', function (event) {
+                                        const $userpicIcon = $('<span>', { class: 'icon userpic userpic20' });
+                                        $userpicIcon.css('background-image', `url('${ user.photo_url }')`);
+
+                                        const $span = $('<span>', { class: 'item' });
+                                        $span.append($userpicIcon);
+                                        $span.append($('<span>', { text: user.name }));
+                                        
+                                        $li.append($span);
+                                        userListFragment.appendChild($li[0]);
+                                    });
+
+                                    $menu.append(userListFragment);
+                                });
+
+                                $roleDropdowns.waDropdown({
+                                    hover: false,
+                                    items: '.menu > li > span',
+                                    update_title: false
+                                });
+
+                                $roleDropdowns.on('click', '.menu li', function (event) {
                                     event.preventDefault();
                                     event.stopPropagation();
-                                    removeRole(user_id, role_id);
+                                    
+                                    const $this = $(this);
+                                    const $dropdown = $this.closest('.js-role-dropdown');
+                                    
+                                    RoleManager.addUserToRole(
+                                        $dropdown.data('role-id'),
+                                        $dropdown.data('role-color'),
+                                        $this.data('user-id'),
+                                        $this.data('user-photo-url'),
+                                        $this.data('user-name'),
+                                        $dropdown.data('role-name')
+                                    );
                                 });
                             });
-                        }
-
-                        addEvents();
-                    })();
-                </script>
+                        })();
+                    </script>
                 {/if}
 
             <h3 class="t-comments-h3 custom-mt-32">[`History &amp; Comments`] <span class="hint">{count($task.log)}</span></h3>
