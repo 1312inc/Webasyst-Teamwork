@@ -30,6 +30,26 @@ class tasksTasksSaveController extends waJsonController
             }
         }
 
+        if(!empty($data['roles_user'])) {
+            try {
+                $_POST['task_id'] = $task_id;
+                $controller = new tasksTasksUsersRoleController();
+
+                foreach ($data['roles_user'] as $act => $roles) {
+                    $_GET['act'] = $act;
+                    foreach ($roles as $role_id => $user_ids) {
+                        foreach ($user_ids as $user_id) {
+                            $_POST['user_id'] = $user_id;
+                            $_POST['role_id'] = $role_id;
+
+                            $controller->execute();
+                        }
+                    }
+                }
+            } catch (waRightsException $e) {
+            }
+        }
+
         $this->response = array(
             'url' => $task['project_id'].'.'.$task['number'],
             'id'  => $task['id'],

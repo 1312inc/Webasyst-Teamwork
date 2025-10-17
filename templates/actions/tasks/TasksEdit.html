@@ -144,20 +144,103 @@
                   <div>
                       <input type="hidden" name="data[assigned_contact_id]" value="{$task.assigned_contact_id}">
                       <div class="t-team-list-wrapper"></div>
+                      {if $wa->user()->isAdmin('tasks')}
+                        <div class="t-team-roles-list-wrapper flexbox space-8">
+                            <ul class="chips outlined custom-mt-0">
+                                {foreach $task.role_users as $role_user}
+                                    <li data-role-id="{$role_user.role.role_id}" data-user-id="{$role_user.id}" style="--chips-outline-border-color: #{$role_user.role.color}; --menu-link-color: #fff; --menu-link-color-hover: #fff; --chips-background-color: #{$role_user.role.color}; --chips-background-color-hover: #{$role_user.role.color};">
+                                        <a href="javascript:void(0);">
+                                            <img src="{$role_user.photo_url}" alt="{$role_user.name}" class="userpic">
+                                            {$role_user.name} <span class="custom-ml-4 smaller">{_w($role_user.role.name|escape)}</span>
+                                            <i class="fas fa-times-circle custom-ml-16 text-white js-remove-user"></i>
+                                        </a>
+                                    </li>
+                                {/foreach}
+                                {foreach $user_roles as $role}
+                                    <li class="dropdown js-role-dropdown" data-role-id="{$role.id}" data-role-name="{_w($role.name|escape)}" data-role-color="#{$role.color}" style="--chips-outline-border-color: #{$role.color}; --menu-link-color: #{$role.color}; --menu-link-color-hover: #{$role.color}; --chips-background-color: transparent; --chips-background-color-hover: transparent;">
+                                        <a href="javascript:void(0);" class="dropdown-toggle without-arrow">
+                                            <i class="fas fa-plus custom-mr-4" style="color: #{$role.color};"></i>{_w($role.name|escape)}
+                                        </a>
+                                        <div class="dropdown-body">
+                                            <ul class="menu"></ul>
+                                        </div>
+                                    </li>
+                                {/foreach}
+                            </ul>
+                        </div>
+                      {/if}
 
                       {include file="./includes/TasksEditInviteForm.inc.html" inline}
 
                       <script>
-                          (function ($) {
-                              var initialProjectID = $("#projectSelect").find("li:first a").data('value');
-                              $.tasks.teamList({
-                                  container: $('#t-edit-task-form .t-team-list-wrapper'),
-                                  targetField: $('#t-edit-task-form [name="data[assigned_contact_id]"]'),
-                                  inviteField: $('#t-edit-task-form .t-team-invite'),
-                                  projectId: {if !empty($task.id)}{$task.project_id}{else}initialProjectID{/if},
-                                  assignedContactId: {if !empty($task.id)}{$task.assigned_contact_id|default:"\"\""}{else}""{/if},
-                                  updateMode: {if !empty($task.id)}true{else}false{/if}
-                              });
+                          (async function ($) {
+                            var initialProjectID = $("#projectSelect").find("li:first a").data('value');
+                            const teamList = await $.tasks.teamList({
+                                container: $('#t-edit-task-form .t-team-list-wrapper'),
+                                targetField: $('#t-edit-task-form [name="data[assigned_contact_id]"]'),
+                                inviteField: $('#t-edit-task-form .t-team-invite'),
+                                projectId: {if !empty($task.id)}{$task.project_id}{else}initialProjectID{/if},
+                                assignedContactId: {if !empty($task.id)}{$task.assigned_contact_id|default:"\"\""}{else}""{/if},
+                                updateMode: {if !empty($task.id)}true{else}false{/if}
+                            });
+
+                            {if $wa->user()->isAdmin('tasks')}
+                                if (teamList.length > 0) {
+                                    let userList = '';
+                                    $(".js-role-dropdown").waDropdown();
+
+                                    teamList.forEach(user => {
+                                        userList +=`
+                                            <li data-user-id="${ user.id }" data-user-photo-url="${ user.photo_url }" data-user-name="${ user.name }">
+                                                <span class="item">
+                                                    <span class="icon userpic userpic20" style="background-image: url('${ user.photo_url }');"></span>
+                                                    <span>${ user.name }</span>
+                                                </span>
+                                            </li>`;
+                                    });
+                                    $(".js-role-dropdown .menu").append(userList);
+
+                                    const $chips_wrapper = $(".t-team-roles-list-wrapper .chips");
+
+                                    $(".js-role-dropdown .menu li").off('click.role').on('click.role', function (event) {
+                                        event.preventDefault();
+                                        event.stopPropagation();
+                                        const $parent = $(this).closest('.js-role-dropdown');
+                                        const roleId = $parent.data('role-id');
+                                        const roleColor = $parent.data('role-color');
+                                        const userId = $(this).data('user-id');
+                                        const userPhotoUrl = $(this).data('user-photo-url');
+                                        const userName = $(this).data('user-name');
+                                        const roleName = $parent.data('role-name');
+
+
+                                        $chips_wrapper.prepend(`
+                                                <li style="--chips-outline-border-color: ${ roleColor }; --menu-link-color: #fff; --menu-link-color-hover: #fff; --chips-background-color: ${ roleColor }; --chips-background-color-hover: ${ roleColor };">
+                                                    <a href="javascript:void(0);">
+                                                        <img src="${ userPhotoUrl }" alt="${ userName }" class="userpic">
+                                                        ${ userName } <span class="custom-ml-4 smaller">${ roleName }</span>
+                                                        <i class="fas fa-times-circle custom-ml-16 text-white js-remove-user"></i>
+                                                    </a>
+                                                    <input type="hidden" name="data[roles_user][add][${ roleId }][]" value="${ userId }">
+                                                </li>
+                                            `);
+
+                                    });
+
+                                    $chips_wrapper.off('click.remove-user').on('click.remove-user', '.js-remove-user', function (event) {
+                                    event.preventDefault();
+                                        event.stopPropagation();
+                                        const $parent = $(this).closest('li');
+                                        const roleId = $parent.data('role-id');
+                                        const userId = $parent.data('user-id');
+                                        $parent.remove();
+                                        {if !empty($task.id)}
+                                            $chips_wrapper.prepend(`<input type="hidden" name="data[roles_user][remove][${ roleId }][]" value="${ userId }">`);
+                                        {/if}
+                                    });
+                                }
+                            {/if}
+
                           })(jQuery);
                       </script>
                   </div>

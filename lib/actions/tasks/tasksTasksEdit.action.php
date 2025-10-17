@@ -58,7 +58,8 @@ class tasksTasksEditAction extends waViewAction
             'backend_task_edit'       => ifempty($backend_task_edit, []),
             'links_data'              => $links_data,
             'type_selector_html'      => $this->getTypeSelectorHtml($ext_info),
-            'task_field_html'         => $this->getFieldEditHtml()
+            'task_field_html'         => $this->getFieldEditHtml(),
+            'user_roles'              => (new tasksTasksUserRoleModel())->getRoles(),
         ]);
     }
 
