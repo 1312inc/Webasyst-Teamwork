@@ -992,7 +992,7 @@
                                             if (data.status !== 'ok') return;
 
                                             const $chip = self.createUserChip(roleId, roleColor, userId, userPhotoUrl, userName, roleName);
-                                            
+
                                             const $addButtons = self.$chipsWrapper.find('.js-role-dropdown');
                                             if ($addButtons.length > 0) {
                                                 $addButtons.first().before($chip);
@@ -1055,11 +1055,11 @@
 
                                 const users = data.data;
                                 const $roleDropdowns = RoleManager.$chipsWrapper.find('.js-role-dropdown');
-                                
+
                                 $roleDropdowns.each(function() {
                                     const $dropdown = $(this);
                                     const $menu = $dropdown.find('.dropdown-body .menu');
-                                    
+
                                     const userListFragment = document.createDocumentFragment();
                                     users.forEach(user => {
                                         const $li = $('<li>', {
@@ -1074,7 +1074,7 @@
                                         const $span = $('<span>', { class: 'item' });
                                         $span.append($userpicIcon);
                                         $span.append($('<span>', { text: user.name }));
-                                        
+
                                         $li.append($span);
                                         userListFragment.appendChild($li[0]);
                                     });
@@ -1091,10 +1091,10 @@
                                 $roleDropdowns.on('click', '.menu li', function (event) {
                                     event.preventDefault();
                                     event.stopPropagation();
-                                    
+
                                     const $this = $(this);
                                     const $dropdown = $this.closest('.js-role-dropdown');
-                                    
+
                                     RoleManager.addUserToRole(
                                         $dropdown.data('role-id'),
                                         $dropdown.data('role-color'),

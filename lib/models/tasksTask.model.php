@@ -214,13 +214,30 @@ class tasksTaskModel extends waModel
         // between urgent=2 and onfire=3 and everything else being normal=0.
         $priority_field = "IF(t.priority>=2, 2, 0)";
 
-        $sql = "SELECT t.assigned_contact_id, {$priority_field} AS priority, count(*) AS `count`, t.project_id
-                FROM {$this->table} t JOIN tasks_project p ON t.project_id = p.id
-                WHERE t.status_id > -1 AND p.archive_datetime IS NULL
-                GROUP BY t.assigned_contact_id, {$priority_field}, t.project_id
-                ORDER BY t.assigned_contact_id, {$priority_field}";
+        $data_1 = $this->query("
+            SELECT t.assigned_contact_id, $priority_field AS priority, count(*) AS `count`, t.project_id
+            FROM {$this->table} t 
+            JOIN tasks_project p ON t.project_id = p.id
+            WHERE t.status_id > -1 AND p.archive_datetime IS NULL
+            GROUP BY t.assigned_contact_id, $priority_field, t.project_id
+            ORDER BY t.assigned_contact_id, $priority_field
+        ")->fetchAll();
 
-        return $this->query($sql)->fetchAll();
+        // For role users
+        $data_2 = $this->query("
+            SELECT tu.contact_id AS assigned_contact_id, $priority_field AS priority, count(*) AS `count`, t.project_id
+            FROM tasks_task_users tu
+            LEFT JOIN tasks_user_role ur ON ur.id = tu.role_id AND ur.show_inbox <> 0
+            LEFT JOIN tasks_task t ON t.id = tu.task_id
+            JOIN tasks_project p ON t.project_id = p.id
+            WHERE t.status_id > -1 AND p.archive_datetime IS NULL
+            GROUP BY tu.contact_id, $priority_field, t.project_id
+            ORDER BY tu.contact_id, $priority_field
+        ")->fetchAll();
+
+
+
+        return array_merge($data_1, $data_2);
     }
 
     /**
