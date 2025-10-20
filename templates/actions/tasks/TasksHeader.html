@@ -81,7 +81,7 @@
                 {$public_links = $milestone->getPublicLinks()}
             {/if}
             {$is_public_link_exists = !!count($public_links)}
-            <div class="dropdown custom-mr-8 js-public-link-scope">
+            <div class="dropdown custom-mr-8 js-public-link-scope" style="position: static;">
                 <button class="dropdown-toggle without-arrow nowrap button light-gray rounded{if $is_public_link_exists} text-blue{else} text-light-gray{/if}"><i class="fas fa-external-link-alt"></i></button>
                 <div class="dropdown-body custom-p-8" style="width: auto;min-width: 300px; left:0; right: 0;">
                     {if $is_premium}
