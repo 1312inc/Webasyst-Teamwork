@@ -63,15 +63,42 @@ class tasksTasksAiController extends waJsonController
         }
     }
 
+    /**
+     * available model
+     * https://yandex.cloud/ru/docs/ai-studio/pricing
+     * https://yandex.cloud/ru/docs/ai-studio/concepts/generation/models
+     *
+     * @return void
+     */
+    private function setModel()
+    {
+        $this->response['fields'][] = [
+            'id' => 'model',
+            'type' => 'radio',
+            'title' => 'Модель',
+            'items' => [
+                'yandexgpt-lite'      => '(0,20 ₽) yandexgpt-lite',
+                'yandexgpt'           => '(1,20 ₽) yandexgpt',
+                'yandexgpt/RC'        => '(0,40 ₽) yandexgpt/RC',
+                'qwen3-235b-a22b-fp8' => '(0,50 ₽) qwen3-235b-a22b-fp8',
+                'gpt-oss-120b'        => '(0,30 ₽) gpt-oss-120b',
+                'gpt-oss-20b'         => '(0,10 ₽) gpt-oss-20b',
+                'gemma-3-27b-it'      => '(0,40 ₽) gemma-3-27b-it',
+            ]
+        ];
+        $this->response['sections'][1]['fields'][] = 'model';
+    }
+
     private function taskfields()
     {
         try {
-            $cache_fields = new waVarExportCache('ab-1', 3600, 'tasks');
+            $cache_fields = new waVarExportCache('tasks_fields_ai', 3600, 'tasks');
             $task_fields = $cache_fields->get();
 
             if ($task_fields === null) {
                 $content = (new waServicesApi())->serviceCall('AI_OVERVIEW', ['facility' => 'task'], 'POST');
                 $this->response = $content['response'];
+                $this->setModel();
                 if (ifset($this->response, 'error', null)) {
                     $this->errors = $this->response;
                     $this->response = null;
@@ -98,6 +125,7 @@ class tasksTasksAiController extends waJsonController
         $text_length = waRequest::post('text_length', null, waRequest::TYPE_STRING_TRIM);
         $locale = waRequest::post('locale', null, waRequest::TYPE_STRING_TRIM);
         $style = waRequest::post('style', null, waRequest::TYPE_STRING_TRIM);
+        $model = waRequest::post('model', null, waRequest::TYPE_STRING_TRIM);
 
         try {
             $content = (new waServicesApi())->serviceCall('AI', [
@@ -108,6 +136,7 @@ class tasksTasksAiController extends waJsonController
                 'priority' => $priority,
                 'text_length' => $text_length,
                 'style' => $style,
+                'model' => $model,
                 'locale' => $locale
             ], 'POST');
 
