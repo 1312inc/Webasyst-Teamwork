@@ -52,6 +52,10 @@ class tasksTasksUsersRoleController extends waJsonController
             throw new tasksResourceNotFoundException(_w('Contact not found'));
         }
 
+        if ($contact->getRights('tasks', 'project.'.$task['project_id']) != tasksRights::PROJECT_ACCESS_VIEW_ASSIGNED_TASKS) {
+            throw new tasksResourceNotFoundException(_w('Пользватель не может быть назначен на роль'));
+        }
+
         $role = (new tasksTasksUserRoleModel())->getById($role_id);
         if (!$role) {
             throw new tasksAccessException(_w('Unknown role'));
