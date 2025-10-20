@@ -75,11 +75,12 @@
         {else}
             {$_title = $title}
         {/if}
-        <button class="dropdown-toggle button light-gray t-selected-item js-title" data-default-title="{$_title}">{$_title}</button>
-
+        <a class="dropdown-toggle t-selected-item js-title" data-default-title="{$_title}" href="javascript:void(0);">
+            {$_title}
+        </a>
         <div class="dropdown-body" style="min-width: 320px;">
             <div class="custom-p-8">
-                <ul class="menu t-tags-cloud">
+                <ul class="menu t-tags-cloud custom-mt-0">
                     <li class="js-show-all" style="display: none;">
                         <a href="javascript:void(0);" class="js-tag-link" data-id="" data-value="">
                             <span>[`Show all tags`]</span>

@@ -1,13 +1,13 @@
-<span class="js-resolution-filter" style="display: none;">
 {include file="./Filter.inc.html"
     default_title = '[`Resolutions`]'
     filter_id = 'plugin.releases.resolution'
+    class = 'js-resolution-filter'
+    style = 'display: none;'
     items = array_merge(
         ['' => '[`Any resolution`]'],
         $resolutions
     )
 inline}
-</span>
 <script>
     $(function () {
         TasksReleasesPlugin.initTaskListPageHeaderFilter();
