@@ -70,7 +70,10 @@ class tasksNotificationsSender
             }
         }
         $role_users = (new tasksTaskUsersModel())->getUsersRoleByTasks($this->task['id']);
-        $this->task['contacts_role'] = array_unique(array_column(ifset($role_users, $this->task['id'], []), 'contact_id'));
+        $role_users = array_filter(ifset($role_users, $this->task['id'], []), function ($user) {
+            return $user['send_notifications'] > 0;
+        });
+        $this->task['contacts_role'] = array_unique(array_column($role_users, 'contact_id'));
 
         $this->pushSender = new tasksPushSenderService();
     }
