@@ -173,9 +173,9 @@
                       {include file="./includes/TasksEditInviteForm.inc.html" inline}
 
                       <script>
-                          (function ($) {
+                          ( async function ($) {
                             var initialProjectID = $("#projectSelect").find("li:first a").data('value');
-                            $.tasks.teamList({
+                            const teamList = await $.tasks.teamList({
                                 container: $('#t-edit-task-form .t-team-list-wrapper'),
                                 targetField: $('#t-edit-task-form [name="data[assigned_contact_id]"]'),
                                 inviteField: $('#t-edit-task-form .t-team-invite'),
@@ -183,162 +183,155 @@
                                 assignedContactId: {if !empty($task.id)}{$task.assigned_contact_id|default:"\"\""}{else}""{/if},
                                 updateMode: {if !empty($task.id)}true{else}false{/if}
                             });
-
                             {if $wa->user()->isAdmin('tasks')}
-                                $.get('?module=tasks&action=usersRole', function (data) {
-                                    if (data.status !== 'ok') return;
+                                if (teamList.length) {
+                                    const RoleManager = {
+                                        $chipsWrapper: $(".t-team-roles-list-wrapper .chips"),
+                                        isTaskUpdate: {if !empty($task.id)}true{else}false{/if},
 
-                                    const teamList = data.data;
+                                        /**
+                                         * Экранирует HTML
+                                         */
+                                        escapeHtml: function(text) {
+                                            const div = document.createElement('div');
+                                            div.textContent = text;
+                                            return div.innerHTML;
+                                        },
 
-                                    if (teamList.length) {
-                                        const RoleManager = {
-                                            $chipsWrapper: $(".t-team-roles-list-wrapper .chips"),
-                                            isTaskUpdate: {if !empty($task.id)}true{else}false{/if},
+                                        /**
+                                         * Проверяет, добавлен ли пользователь к роли
+                                         */
+                                        isUserInRole: function(roleId, userId) {
+                                            return this.$chipsWrapper.find(`li[data-role-id="${ roleId }"][data-user-id="${ userId }"]`).length > 0;
+                                        },
 
-                                            /**
-                                             * Экранирует HTML
-                                             */
-                                            escapeHtml: function(text) {
-                                                const div = document.createElement('div');
-                                                div.textContent = text;
-                                                return div.innerHTML;
-                                            },
+                                        /**
+                                         * Создает HTML для chip элемента пользователя с ролью
+                                         */
+                                        createUserChip: function(roleId, roleColor, userId, userPhotoUrl, userName, roleName) {
+                                            const safeUserName = this.escapeHtml(userName);
+                                            const safeRoleName = this.escapeHtml(roleName);
+                                            const safePhotoUrl = this.escapeHtml(userPhotoUrl);
 
-                                            /**
-                                             * Проверяет, добавлен ли пользователь к роли
-                                             */
-                                            isUserInRole: function(roleId, userId) {
-                                                return this.$chipsWrapper.find(`li[data-role-id="${ roleId }"][data-user-id="${ userId }"]`).length > 0;
-                                            },
-
-                                            /**
-                                             * Создает HTML для chip элемента пользователя с ролью
-                                             */
-                                            createUserChip: function(roleId, roleColor, userId, userPhotoUrl, userName, roleName) {
-                                                const safeUserName = this.escapeHtml(userName);
-                                                const safeRoleName = this.escapeHtml(roleName);
-                                                const safePhotoUrl = this.escapeHtml(userPhotoUrl);
-
-                                                const $li = $('<li>', {
-                                                    'data-role-id': roleId,
-                                                    'data-user-id': userId,
-                                                    'style': `
-                                                        --chips-outline-border-color: ${ roleColor };
-                                                        --menu-link-color: #fff;
-                                                        --menu-link-color-hover: #fff;
-                                                        --chips-background-color: ${ roleColor };
-                                                        --chips-background-color-hover: ${ roleColor };
-                                                    `
-                                                });
-
-                                                const $link = $('<a>', { href: 'javascript:void(0);' });
-                                                $link.append($('<img>', { src: userPhotoUrl, alt: safeUserName, class: 'userpic' }));
-                                                $link.append(document.createTextNode(' ' + safeUserName + ' '));
-                                                $link.append($('<span>', { class: 'custom-ml-4 smaller', text: safeRoleName }));
-                                                $link.append($('<i>', { class: 'fas fa-times-circle custom-ml-16 text-white js-remove-user' }));
-
-                                                const $input = $('<input>', {
-                                                    type: 'hidden',
-                                                    name: `data[roles_user][add][${ roleId }][]`,
-                                                    value: userId
-                                                });
-
-                                                $li.append($link).append($input);
-                                                return $li;
-                                            },
-
-                                            /**
-                                             * Добавляет пользователя к роли
-                                             */
-                                            addUserToRole: function(roleId, roleColor, userId, userPhotoUrl, userName, roleName) {
-                                                if (this.isUserInRole(roleId, userId)) {
-                                                    return false;
-                                                }
-
-                                                const $chip = this.createUserChip(roleId, roleColor, userId, userPhotoUrl, userName, roleName);
-                                                this.$chipsWrapper.prepend($chip);
-                                                return true;
-                                            },
-
-                                            /**
-                                             * снимает роль с пользователя
-                                             */
-                                            removeUserFromRole: function($chip) {
-                                                const roleId = $chip.data('role-id');
-                                                const userId = $chip.data('user-id');
-
-                                                $chip.remove();
-
-                                                if (this.isTaskUpdate) {
-                                                    const $removeInput = $('<input>', {
-                                                        type: 'hidden',
-                                                        name: `data[roles_user][remove][${ roleId }][]`,
-                                                        value: userId
-                                                    });
-                                                    this.$chipsWrapper.prepend($removeInput);
-                                                }
-                                            },
-
-                                            init: function() {
-                                                const self = this;
-
-                                                this.$chipsWrapper.on('click', '.js-remove-user', function (event) {
-                                                    event.preventDefault();
-                                                    event.stopPropagation();
-                                                    const $chip = $(this).closest('li');
-                                                    self.removeUserFromRole($chip);
-                                                });
-                                            }
-                                        };
-
-                                        RoleManager.init();
-
-                                        const $roleDropdowns = RoleManager.$chipsWrapper.find('.js-role-dropdown');
-                                        $roleDropdowns.waDropdown({
-                                            hover: true,
-                                            items: '.menu > li > span',
-                                            update_title: false
-                                        });
-
-                                        const userListFragment = document.createDocumentFragment();
-                                        teamList.forEach(user => {
                                             const $li = $('<li>', {
-                                                'data-user-id': user.id,
-                                                'data-user-photo-url': user.photo_url,
-                                                'data-user-name': user.name
+                                                'data-role-id': roleId,
+                                                'data-user-id': userId,
+                                                'style': `
+                                                    --chips-outline-border-color: ${ roleColor };
+                                                    --menu-link-color: #fff;
+                                                    --menu-link-color-hover: #fff;
+                                                    --chips-background-color: ${ roleColor };
+                                                    --chips-background-color-hover: ${ roleColor };
+                                                `
                                             });
 
-                                            const $span = $('<span>', { class: 'item' });
-                                            $span.append($('<span>', {
-                                                class: 'icon userpic userpic20',
-                                                css: { 'background-image': `url('${ user.photo_url }')` }
-                                            }));
-                                            $span.append($('<span>', { text: user.name }));
+                                            const $link = $('<a>', { href: 'javascript:void(0);' });
+                                            $link.append($('<img>', { src: userPhotoUrl, alt: safeUserName, class: 'userpic' }));
+                                            $link.append(document.createTextNode(' ' + safeUserName + ' '));
+                                            $link.append($('<span>', { class: 'custom-ml-4 smaller', text: safeRoleName }));
+                                            $link.append($('<i>', { class: 'fas fa-times-circle custom-ml-16 text-white js-remove-user' }));
 
-                                            $li.append($span);
-                                            userListFragment.appendChild($li[0]);
+                                            const $input = $('<input>', {
+                                                type: 'hidden',
+                                                name: `data[roles_user][add][${ roleId }][]`,
+                                                value: userId
+                                            });
+
+                                            $li.append($link).append($input);
+                                            return $li;
+                                        },
+
+                                        /**
+                                         * Добавляет пользователя к роли
+                                         */
+                                        addUserToRole: function(roleId, roleColor, userId, userPhotoUrl, userName, roleName) {
+                                            if (this.isUserInRole(roleId, userId)) {
+                                                return false;
+                                            }
+
+                                            const $chip = this.createUserChip(roleId, roleColor, userId, userPhotoUrl, userName, roleName);
+                                            this.$chipsWrapper.prepend($chip);
+                                            return true;
+                                        },
+
+                                        /**
+                                         * снимает роль с пользователя
+                                         */
+                                        removeUserFromRole: function($chip) {
+                                            const roleId = $chip.data('role-id');
+                                            const userId = $chip.data('user-id');
+
+                                            $chip.remove();
+
+                                            if (this.isTaskUpdate) {
+                                                const $removeInput = $('<input>', {
+                                                    type: 'hidden',
+                                                    name: `data[roles_user][remove][${ roleId }][]`,
+                                                    value: userId
+                                                });
+                                                this.$chipsWrapper.prepend($removeInput);
+                                            }
+                                        },
+
+                                        init: function() {
+                                            const self = this;
+
+                                            this.$chipsWrapper.on('click', '.js-remove-user', function (event) {
+                                                event.preventDefault();
+                                                event.stopPropagation();
+                                                const $chip = $(this).closest('li');
+                                                self.removeUserFromRole($chip);
+                                            });
+                                        }
+                                    };
+
+                                    RoleManager.init();
+
+                                    const $roleDropdowns = RoleManager.$chipsWrapper.find('.js-role-dropdown');
+                                    $roleDropdowns.waDropdown({
+                                        hover: true,
+                                        items: '.menu > li > span',
+                                        update_title: false
+                                    });
+
+                                    const userListFragment = document.createDocumentFragment();
+                                    teamList.forEach(user => {
+                                        const $li = $('<li>', {
+                                            'data-user-id': user.id,
+                                            'data-user-photo-url': user.photo_url,
+                                            'data-user-name': user.name
                                         });
 
-                                        $roleDropdowns.find('.menu').append(userListFragment);
+                                        const $span = $('<span>', { class: 'item' });
+                                        $span.append($('<span>', {
+                                            class: 'icon userpic userpic20',
+                                            css: { 'background-image': `url('${ user.photo_url }')` }
+                                        }));
+                                        $span.append($('<span>', { text: user.name }));
 
-                                        $roleDropdowns.on('click', '.menu li', function (event) {
-                                            event.preventDefault();
-                                            event.stopPropagation();
+                                        $li.append($span);
+                                        userListFragment.appendChild($li[0]);
+                                    });
 
-                                            const $this = $(this);
-                                            const $dropdown = $this.closest('.js-role-dropdown');
+                                    $roleDropdowns.find('.menu').append(userListFragment);
 
-                                            RoleManager.addUserToRole(
-                                                $dropdown.data('role-id'),
-                                                $dropdown.data('role-color'),
-                                                $this.data('user-id'),
-                                                $this.data('user-photo-url'),
-                                                $this.data('user-name'),
-                                                $dropdown.data('role-name')
-                                            );
-                                        });
-                                    }
-                                })
+                                    $roleDropdowns.on('click', '.menu li', function (event) {
+                                        event.preventDefault();
+                                        event.stopPropagation();
+
+                                        const $this = $(this);
+                                        const $dropdown = $this.closest('.js-role-dropdown');
+
+                                        RoleManager.addUserToRole(
+                                            $dropdown.data('role-id'),
+                                            $dropdown.data('role-color'),
+                                            $this.data('user-id'),
+                                            $this.data('user-photo-url'),
+                                            $this.data('user-name'),
+                                            $dropdown.data('role-name')
+                                        );
+                                    });
+                                }
                             {/if}
 
                           })(jQuery);
