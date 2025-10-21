@@ -3,28 +3,28 @@
 class tasksTasksUsersRoleController extends waJsonController
 {
     /**
-     * @throws \waRightsException
-     * @throws \tasksResourceNotFoundException
-     * @throws \waException
-     * @throws \tasksAccessException
      */
     public function execute()
     {
-        if (!wa()->getUser()->isAdmin('tasks')) {
-            throw new waRightsException(_w('Access denied'));
-        }
+        try {
+            if (!wa()->getUser()->isAdmin('tasks')) {
+                throw new waRightsException(_w('Access denied'));
+            }
 
-        $action = $this->getRequest()->get('act', '', waRequest::TYPE_STRING_TRIM);
+            $action = $this->getRequest()->get('act', '', waRequest::TYPE_STRING_TRIM);
 
-        switch ($action) {
-            case 'add':
-                $this->addUserRole();
-                break;
-            case 'remove':
-                $this->deleteUserRole();
-                break;
-            default:
-                $this->getUserRoles();
+            switch ($action) {
+                case 'add':
+                    $this->addUserRole();
+                    break;
+                case 'remove':
+                    $this->deleteUserRole();
+                    break;
+                default:
+                    $this->getUserRoles();
+            }
+        } catch (Exception $e) {
+            $this->errors = $e->getMessage();
         }
     }
 
@@ -43,48 +43,53 @@ class tasksTasksUsersRoleController extends waJsonController
     }
 
     /**
-     * @throws \tasksResourceNotFoundException
-     * @throws \tasksAccessException
-     * @throws \waException
      */
     private function addUserRole()
     {
-        $task_id = $this->getRequest()->post('task_id', null, waRequest::TYPE_INT);
-        $user_id = $this->getRequest()->post('user_id', null, waRequest::TYPE_INT);
-        $role_id = $this->getRequest()->post('role_id', null, waRequest::TYPE_STRING_TRIM);
+        try {
+            $task_id = $this->getRequest()->post('task_id', null, waRequest::TYPE_INT);
+            $user_id = $this->getRequest()->post('user_id', null, waRequest::TYPE_INT);
+            $role_id = $this->getRequest()->post('role_id', null, waRequest::TYPE_STRING_TRIM);
 
-        $task = tsks()->getModel(tasksTask::class)->getById($task_id);
-        if (!$task) {
-            throw new tasksResourceNotFoundException(_w('Task not found'));
+            $task = tsks()->getModel(tasksTask::class)->getById($task_id);
+            if (!$task) {
+                throw new tasksResourceNotFoundException(_w('Task not found'));
+            }
+
+            $contact = new waContact($user_id);
+            if (!$contact->exists()) {
+                throw new tasksResourceNotFoundException(_w('Contact not found'));
+            }
+
+            if (empty($task['project_id']) || $contact->getRights('tasks', 'project.'.$task['project_id']) != tasksRights::PROJECT_ACCESS_VIEW_ASSIGNED_TASKS) {
+                throw new tasksAccessException(sprintf(_w('Пользователь %s не может быть назначен на роль'), $contact->getName()));
+            }
+
+            $role = (new tasksTasksUserRoleModel())->getById($role_id);
+            if (!$role) {
+                throw new tasksAccessException(_w('Unknown role'));
+            }
+
+            $this->response = (bool) (new tasksTaskUsersModel())->addUserRole($task_id, $user_id, $role_id);
+        } catch (Exception $e) {
+            $this->errors = $e->getMessage();
         }
-
-        $contact = new waContact($user_id);
-        if (!$contact->exists()) {
-            throw new tasksResourceNotFoundException(_w('Contact not found'));
-        }
-
-        if (empty($task['project_id']) || $contact->getRights('tasks', 'project.'.$task['project_id']) != tasksRights::PROJECT_ACCESS_VIEW_ASSIGNED_TASKS) {
-            throw new tasksAccessException(sprintf(_w('Пользователь %s не может быть назначен на роль'), $contact->getName()));
-        }
-
-        $role = (new tasksTasksUserRoleModel())->getById($role_id);
-        if (!$role) {
-            throw new tasksAccessException(_w('Unknown role'));
-        }
-
-        $this->response = (bool) (new tasksTaskUsersModel())->addUserRole($task_id, $user_id, $role_id);
     }
 
     private function deleteUserRole()
     {
-        $task_id = $this->getRequest()->post('task_id', null, waRequest::TYPE_INT);
-        $user_id = $this->getRequest()->post('user_id', null, waRequest::TYPE_INT);
-        $role_id = $this->getRequest()->post('role_id', null, waRequest::TYPE_STRING_TRIM);
+        try {
+            $task_id = $this->getRequest()->post('task_id', null, waRequest::TYPE_INT);
+            $user_id = $this->getRequest()->post('user_id', null, waRequest::TYPE_INT);
+            $role_id = $this->getRequest()->post('role_id', null, waRequest::TYPE_STRING_TRIM);
 
-        $this->response = (bool) (new tasksTaskUsersModel())->deleteByField([
-            'task_id' => $task_id,
-            'contact_id' => $user_id,
-            'role_id' => $role_id
-        ]);
+            $this->response = (bool) (new tasksTaskUsersModel())->deleteByField([
+                'task_id' => $task_id,
+                'contact_id' => $user_id,
+                'role_id' => $role_id
+            ]);
+        } catch (Exception $e) {
+            $this->errors = $e->getMessage();
+        }
     }
 }

@@ -31,24 +31,25 @@ class tasksTasksSaveController extends waJsonController
         }
 
         if(!empty($data['roles_user'])) {
-            try {
-                $_POST['task_id'] = $task_id;
-                $controller = new tasksTasksUsersRoleController();
+            $_POST['task_id'] = $task_id;
+            $controller = new tasksTasksUsersRoleController();
 
-                foreach ($data['roles_user'] as $act => $roles) {
-                    $_GET['act'] = $act;
-                    foreach ($roles as $role_id => $user_ids) {
-                        foreach ($user_ids as $user_id) {
-                            $_POST['user_id'] = $user_id;
-                            $_POST['role_id'] = $role_id;
+            foreach ($data['roles_user'] as $act => $roles) {
+                $_GET['act'] = $act;
+                foreach ($roles as $role_id => $user_ids) {
+                    foreach ($user_ids as $user_id) {
+                        $_POST['user_id'] = $user_id;
+                        $_POST['role_id'] = $role_id;
 
-                            $controller->execute();
+                        $controller->execute();
+
+                        // Проверяем результат выполнения
+                        if ($controller->errors) {
+                            $this->setError($controller->errors);
+                            return;
                         }
                     }
                 }
-            } catch (waRightsException|tasksAccessException|tasksResourceNotFoundException|waException $e) {
-                $this->setError($e->getMessage());
-                return;
             }
         }
 

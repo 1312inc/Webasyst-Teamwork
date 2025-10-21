@@ -916,6 +916,7 @@
                             {/foreach}
                         </ul>
                     </div>
+                    <div class="t-errors-block js-role-errors-block"></div>
 
                     <script>
                         (() => {
@@ -971,7 +972,7 @@
                                 /**
                                  * Назначает пользователю роль
                                  */
-                                addUserToRole: function(roleId, roleColor, userId, userPhotoUrl, userName, roleName) {
+                                addUserToRole: async function(roleId, roleColor, userId, userPhotoUrl, userName, roleName) {
                                     if (this.isUserInRole(roleId, userId)) {
                                         return false;
                                     }
@@ -981,15 +982,15 @@
                                     formData.append('user_id', userId);
                                     formData.append('role_id', roleId);
 
-                                    const self = this;
-
+                                    const self = this;                                    
+                                    
                                     fetch('?module=tasks&action=usersRole&act=add', { method: 'POST', body: formData })
-                                        .then(response => {
-                                            if (!response.ok) throw new Error('Response error');
-                                            return response.json();
-                                        })
+                                        .then(response => response.json())
                                         .then(data => {
-                                            if (data.status !== 'ok') return;
+                                            if (data.status !== 'ok') {
+                                                const errorMessage = data.errors || data.message || 'Неизвестная ошибка';
+                                                throw new Error(errorMessage);
+                                            }
 
                                             const $chip = self.createUserChip(roleId, roleColor, userId, userPhotoUrl, userName, roleName);
 
@@ -1003,7 +1004,15 @@
                                             self.updateCounter(1);
                                         })
                                         .catch(error => {
-                                            console.error(error);
+                                            if(error.message){
+                                                const $error_block = $('.js-role-errors-block');
+                                                const $error = $('<span style="color: red;"></span>').text(error.message);
+                                                $error_block.append($error);
+
+                                                setTimeout(() => {
+                                                    $error_block.empty();
+                                                }, 3000);
+                                            }
                                         });
 
                                     return true;
@@ -1021,7 +1030,19 @@
                                         user_id: userId,
                                         role_id: roleId
                                     }, (data) => {
-                                        if (data.status !== 'ok') return;
+                                        if (data.status !== 'ok') {
+                                            const errorMessage = data.errors || data.message || 'Неизвестная ошибка';
+                                            const $error_block = $('.js-role-errors-block');
+                                            const $error = $('<span style="color: red;"></span>').text(errorMessage);
+                                            
+                                            $error_block.append($error);
+
+                                            setTimeout(() => {
+                                                $error_block.empty();
+                                            }, 3000);
+
+                                            return;
+                                        }
                                         $chip.remove();
                                         this.updateCounter(-1);
                                     });
@@ -1050,7 +1071,7 @@
 
                             RoleManager.init();
 
-                            $.get('?module=tasks&action=usersRole', function (data) {
+                            $.get('?module=tasks&action=getUsersForProject&project_id={$task.project_id}&task_id={$task.id}', function (data) {
                                 if (data.status !== 'ok') return;
 
                                 const users = data.data;
