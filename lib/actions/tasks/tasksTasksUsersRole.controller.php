@@ -30,7 +30,9 @@ class tasksTasksUsersRoleController extends waJsonController
 
     private function getUserRoles()
     {
-        $role_users = (new tasksRights())->getUsersAccessTask(tasksRights::PROJECT_ACCESS_VIEW_ASSIGNED_TASKS);
+        $project_id = $this->getRequest()->get('project_id', null, waRequest::TYPE_INT);
+
+        $role_users = (new tasksRights())->getUsersAccessProject($project_id);
         foreach ($role_users as &$_user) {
             foreach (['name', 'firstname', 'middlename', 'title', 'company', 'jobtitle', 'about', 'login'] as $to_escape) {
                 $_user[$to_escape] = htmlspecialchars((string) $_user[$to_escape]);
@@ -61,7 +63,11 @@ class tasksTasksUsersRoleController extends waJsonController
                 throw new tasksResourceNotFoundException(_w('Contact not found'));
             }
 
-            if (empty($task['project_id']) || $contact->getRights('tasks', 'project.'.$task['project_id']) != tasksRights::PROJECT_ACCESS_VIEW_ASSIGNED_TASKS) {
+            $user_rights = $contact->getRights('tasks');
+            if (!(
+                ifset($user_rights, 'backend', tasksRights::PROJECT_ACCESS_NONE) > tasksRights::PROJECT_ACCESS_NONE
+                || (!empty($task['project_id']) && ifset($user_rights, 'project.'.$task['project_id'], tasksRights::PROJECT_ACCESS_NONE) > tasksRights::PROJECT_ACCESS_NONE)
+            )) {
                 throw new tasksAccessException(sprintf(_w('Пользователь %s не может быть назначен на роль'), $contact->getName()));
             }
 

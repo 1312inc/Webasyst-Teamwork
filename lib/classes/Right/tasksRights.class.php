@@ -587,23 +587,26 @@ final class tasksRights
         return $counters;
     }
 
-    public function getUsersAccessTask($value = self::PROJECT_ACCESS_NONE)
+    /**
+     * @param $project_id
+     * @return array
+     * @throws waDbException
+     */
+    public function getUsersAccessProject($project_id)
     {
         $users = [];
-        $right_levels = [
-            self::PROJECT_ACCESS_NONE,
-            self::PROJECT_ACCESS_VIEW_ASSIGNED_TASKS,
-            self::PROJECT_ACCESS_FULL,
-            self::PROJECT_ANY_ACCESS
-        ];
-
-        if (in_array($value, $right_levels)) {
+        if ($project_id) {
             $right_model = new waContactRightsModel();
             $users = $right_model->query("
                 SELECT wc.* FROM wa_contact_rights wcr
                 LEFT JOIN wa_contact wc ON wc.id = -wcr.group_id
-                WHERE wcr.group_id < 0 AND wcr.app_id = 'tasks' AND wcr.name = 'backend' AND wcr.value = i:value
-            ", ['value' => $value])->fetchAll('id');
+                WHERE wcr.group_id < 0
+                AND (
+                    (wcr.app_id = 'webasyst' AND wcr.name = 'backend' AND wcr.value > 0)
+                    OR (wcr.app_id = 'tasks' AND wcr.name = 'backend' AND wcr.value > 1)
+                    OR (wcr.app_id = 'tasks' AND wcr.name = s:project_id AND wcr.value >= 1)
+                )
+            ", ['project_id' => "project.$project_id"])->fetchAll('id');
         }
 
         return $users;

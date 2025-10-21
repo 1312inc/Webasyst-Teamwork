@@ -982,8 +982,8 @@
                                     formData.append('user_id', userId);
                                     formData.append('role_id', roleId);
 
-                                    const self = this;                                    
-                                    
+                                    const self = this;
+
                                     fetch('?module=tasks&action=usersRole&act=add', { method: 'POST', body: formData })
                                         .then(response => response.json())
                                         .then(data => {
@@ -1034,7 +1034,7 @@
                                             const errorMessage = data.errors || data.message || 'Неизвестная ошибка';
                                             const $error_block = $('.js-role-errors-block');
                                             const $error = $('<span style="color: red;"></span>').text(errorMessage);
-                                            
+
                                             $error_block.append($error);
 
                                             setTimeout(() => {
@@ -1071,7 +1071,7 @@
 
                             RoleManager.init();
 
-                            $.get('?module=tasks&action=getUsersForProject&project_id={$task.project_id}&task_id={$task.id}', function (data) {
+                            $.get('?module=tasks&action=usersRole&project_id={$task.project_id}', function (data) {
                                 if (data.status !== 'ok') return;
 
                                 const users = data.data;
