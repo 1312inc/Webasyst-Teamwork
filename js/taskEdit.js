@@ -961,6 +961,16 @@ var TaskEdit = ( function($) { "use strict";
                                     localStorage.removeItem('task_title');
                                     localStorage.removeItem(TasksController.getDraftKeyTaskText());
                                 }
+                            }else{
+                                $.tasks.hideLoadingButton($submitButton);
+                                if(response.errors.length){
+                                    const $error_block = that.$task.find('.js-errors-block');
+                                    $.each(response.errors, function (i, error) {
+                                        const $error = $('<span style="color: red;"></span>').text(error[0] || error);
+                                        $error_block.append($error);
+                                    });
+                                    $error_block[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                }
                             }
                         }
                     )

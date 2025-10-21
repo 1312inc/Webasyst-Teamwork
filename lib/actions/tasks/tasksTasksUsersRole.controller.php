@@ -2,6 +2,12 @@
 
 class tasksTasksUsersRoleController extends waJsonController
 {
+    /**
+     * @throws \waRightsException
+     * @throws \tasksResourceNotFoundException
+     * @throws \waException
+     * @throws \tasksAccessException
+     */
     public function execute()
     {
         if (!wa()->getUser()->isAdmin('tasks')) {
@@ -36,6 +42,11 @@ class tasksTasksUsersRoleController extends waJsonController
         $this->response = array_values($role_users);
     }
 
+    /**
+     * @throws \tasksResourceNotFoundException
+     * @throws \tasksAccessException
+     * @throws \waException
+     */
     private function addUserRole()
     {
         $task_id = $this->getRequest()->post('task_id', null, waRequest::TYPE_INT);

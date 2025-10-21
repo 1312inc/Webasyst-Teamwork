@@ -46,7 +46,9 @@ class tasksTasksSaveController extends waJsonController
                         }
                     }
                 }
-            } catch (waRightsException $e) {
+            } catch (waRightsException|tasksAccessException|tasksResourceNotFoundException|waException $e) {
+                $this->setError($e->getMessage());
+                return;
             }
         }
 
