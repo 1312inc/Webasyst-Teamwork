@@ -1065,7 +1065,7 @@ var TasksHeader = ( function($) {
                     initCopy2Clipboard();
                 }
                 $existion_block.toggleClass('hidden');
-                $dropdown_toggler.toggleClass('text-light-gray');
+                $dropdown_toggler.toggleClass('text-light-gray text-blue');
             })
             .fail((e) => {
                 if (e.status === 400) {

@@ -1896,7 +1896,7 @@ var Task = ( function($) {
                         initCopy2Clipboard();
                     }
                     $existionBlock.toggleClass('hidden');
-                    $dropdownToggler.toggleClass('text-light-gray');
+                    $dropdownToggler.toggleClass('text-light-gray text-blue');
                 })
                 .fail((e) => {
                     if (e.status === 400) {
