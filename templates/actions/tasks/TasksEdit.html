@@ -146,7 +146,7 @@
                       <div class="t-team-list-wrapper"></div>
                       {if $wa->user()->isAdmin('tasks')}
                         <div class="t-team-roles-list-wrapper flexbox space-8">
-                            <ul class="chips outlined custom-mt-0">
+                            <ul class="chips small custom-mt-0">
                                 {foreach $task.role_users as $role_user}
                                     <li data-role-id="{$role_user.role.role_id}" data-user-id="{$role_user.id}" style="--chips-outline-border-color: #{$role_user.role.color}; --menu-link-color: #fff; --menu-link-color-hover: #fff; --chips-background-color: #{$role_user.role.color}; --chips-background-color-hover: #{$role_user.role.color};">
                                         <a href="javascript:void(0);">
@@ -157,7 +157,7 @@
                                     </li>
                                 {/foreach}
                                 {foreach $user_roles as $role}
-                                    <li class="dropdown js-role-dropdown" data-role-id="{$role.id}" data-role-name="{_w($role.name|escape)}" data-role-color="#{$role.color}" style="--chips-outline-border-color: #{$role.color}; --menu-link-color: #{$role.color}; --menu-link-color-hover: #{$role.color}; --chips-background-color: transparent; --chips-background-color-hover: transparent;">
+                                    <li class="dropdown js-role-dropdown" data-role-id="{$role.id}" data-role-name="{_w($role.name|escape)}" data-role-color="#{$role.color}" style="--menu-link-color: #{$role.color}; --menu-link-color-hover: #{$role.color}; --chips-background-color: var(--background-color-blank); --chips-background-color-hover: transparent;">
                                         <a href="javascript:void(0);" class="dropdown-toggle without-arrow">
                                             <i class="fas fa-plus custom-mr-4" style="color: #{$role.color};"></i>{_w($role.name|escape)}
                                         </a>
@@ -295,7 +295,7 @@
 
                                         const $roleDropdowns = RoleManager.$chipsWrapper.find('.js-role-dropdown');
                                         $roleDropdowns.waDropdown({
-                                            hover: false,
+                                            hover: true,
                                             items: '.menu > li > span',
                                             update_title: false
                                         });

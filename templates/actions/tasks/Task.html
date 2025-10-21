@@ -894,7 +894,7 @@
                 {if $wa->user()->isAdmin('tasks')}
                     <h3><span class="gray">&</span> [`Пользователи с ролями`] <span class="gray t-role-user-counter">{if count($task.role_users) > 0}{count($task.role_users)}{/if}</span></h3>
                     <div class="t-team-roles-wrapper flexbox space-8">
-                        <ul class="chips outlined custom-mt-0">
+                        <ul class="chips small custom-mt-0">
                             {foreach $task.role_users as $role_user}
                                 <li data-role-id="{$role_user.role.role_id}" data-user-id="{$role_user.id}" style="--chips-outline-border-color: #{$role_user.role.color}; --menu-link-color: #fff; --menu-link-color-hover: #fff; --chips-background-color: #{$role_user.role.color}; --chips-background-color-hover: #{$role_user.role.color};">
                                     <a href="javascript:void(0);">
@@ -1083,7 +1083,7 @@
                                 });
 
                                 $roleDropdowns.waDropdown({
-                                    hover: false,
+                                    hover: true,
                                     items: '.menu > li > span',
                                     update_title: false
                                 });
