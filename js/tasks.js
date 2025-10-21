@@ -1660,7 +1660,7 @@
 
             $container.css('pointer-events', 'none').fadeTo("fast", 0.33);
 
-            return $.get('?module=tasks&action=getUsersForProject&project_id=' + projectId, function (data) {
+            $.get('?module=tasks&action=getUsersForProject&project_id=' + projectId, function (data) {
                 var assignees = data.data,
                     maxVisible = 8,
                     wa_url = window.wa_url || '/';
@@ -1764,8 +1764,6 @@
                 }
             }).always(function () {
                 $container.css('pointer-events', 'auto').fadeTo("fast", 1);
-            }).then(function(data) {
-                return data.data;
             });
         },
 
