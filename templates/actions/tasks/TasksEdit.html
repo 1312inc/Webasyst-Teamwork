@@ -566,7 +566,7 @@
                 {* @event backend_task_edit.%plugin_id%.before_buttons *}
                 {foreach $backend_task_edit as $_}{ifset($_.before_buttons)}{/foreach}
 
-                <div class="t-errors-block js-errors-block"></div>
+                <p class="t-errors-block js-errors-block small"></p>
                 <div class="t-form-line t-buttons-block flexbox middle space-8">
                     <button class="button green large t-save-task-link" type="submit">{if !empty($task.id)}[`Save task`]{else}[`Create task`]{/if}</button>
                     <a class="t-close-link button large light-gray" href="javascript:void(0);">[`Cancel`]</a>
