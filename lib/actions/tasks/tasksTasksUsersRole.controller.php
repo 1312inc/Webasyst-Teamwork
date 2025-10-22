@@ -68,7 +68,7 @@ class tasksTasksUsersRoleController extends waJsonController
                 ifset($user_rights, 'backend', tasksRights::PROJECT_ACCESS_NONE) > tasksRights::PROJECT_ACCESS_NONE
                 || (!empty($task['project_id']) && ifset($user_rights, 'project.'.$task['project_id'], tasksRights::PROJECT_ACCESS_NONE) > tasksRights::PROJECT_ACCESS_NONE)
             )) {
-                throw new tasksAccessException(sprintf(_w('Пользователь %s не может быть назначен на роль'), $contact->getName()));
+                throw new tasksAccessException(sprintf(_w('User %s is not eligible for the specified role in this task'), $contact->getName()));
             }
 
             $role = (new tasksTasksUserRoleModel())->getById($role_id);

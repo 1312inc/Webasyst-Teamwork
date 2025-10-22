@@ -33,7 +33,7 @@
 
         <div class="t-hidden-block status-editor-wrapper">
             <div class="fields form">
-                <div class="field-group custom-mb-20 custom-mt-0 custom-pt-0">
+                <div class="field-group custom-mt-0 custom-pt-0">
                     <div class="field">
                         <div class="name">[`Color`]</div>
                         <div class="value colorpicker t-role-color-wrapper">
@@ -41,23 +41,21 @@
                             <span class="icon"><i class="rounded color" style="background-color:#{$_role.color|default:'cccccc'|escape};"></i></span>
                         </div>
                     </div>
-                </div>
-
-                <div class="field-group">
                     <div class="field">
-                        <div class="name">[`Разрешения`]</div>
+                        <div class="name">[`Permissions`]</div>
                         <div class="value no-shift">
-                            {foreach $permits as $_permit}
+                            <p class="small custom-mb-8">[`Specify what a user in this role can do with a task:`]
+                            {foreach $permits as $_permit => $_permit_name}
                                 <div class="field-group__item">
-                                    <label>
-                                <span class="wa-checkbox">
-                                    <input type="checkbox" name="data[role][{$_role.id}][{$_permit}]" class="t-role-{$_permit}-input" value="1"{if !empty($_role[$_permit])} checked{/if}>
-                                    <span>
-                                        <span class="icon">
-                                            <i class="fas fa-check"></i>
-                                        </span>
-                                    </span>
-                                </span>&nbsp;{$_permit}
+                                    <label class="small">
+                                        <span class="wa-checkbox">
+                                            <input type="checkbox" name="data[role][{$_role.id}][{$_permit}]" class="t-role-{$_permit}-input" value="1"{if !empty($_role[$_permit])} checked{/if}>
+                                            <span>
+                                                <span class="icon">
+                                                    <i class="fas fa-check"></i>
+                                                </span>
+                                            </span>
+                                        </span>&nbsp;{$_permit_name}
                                     </label>
                                 </div>
                             {/foreach}
@@ -91,7 +89,7 @@
                 <div{if !$_no_brainer_here} style="opacity: 0.4;{/if}">
 
                     <h1>[`User roles`]</h1>
-                    <p class="small">[`Better describe specific user roles within tasks and projects.`]</p>
+                    <p class="small">[`Custom user roles allow adding individual users with limited access to specific tasks and to better describe specific user roles within tasks and projects.`]</p>
 
                     <div class="hidden alert success t-saved bordered-bottom">
                         <i class="fas fa-check-circle"></i>
@@ -109,7 +107,16 @@
                             {$_empty = $empty}
                             {$_empty.id = '_template_'}
                             {$_roles[$_empty.id] = $_empty}
-                            {$permits = ['can_edit', 'can_action', 'can_comment', 'can_delete', 'show_inbox', 'send_notifications']}
+                            {$permits = [
+                                'show_inbox' => _w('Will see tasks in personal inbox'),
+                                'send_notifications' => _w('Will receive notifications on task updates (unless unsubscribed intentionally)')
+                            ]}
+                            {* TODO add this
+                                'can_edit' => _w('Can edit'),
+                                'can_action' => _w('Can process & forward'),
+                                'can_comment' => _w('Can comment'),
+                                'can_delete' => _w('Can delete')
+                            *}
 
                             <div class="table t-settings-list t-roles-list">
                                 {foreach $_roles as $_role}
