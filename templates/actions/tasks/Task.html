@@ -492,7 +492,7 @@
                     </div>
                 </div>
 
-                {if !empty($user_roles) && count($user_roles) > 0 && $wa->tasks->isPremium()}
+                {if $wa->user()->isAdmin('tasks') && !empty($user_roles) && count($user_roles) > 0 && $wa->tasks->isPremium()}
                     <div class="t-team-roles-wrapper flexbox space-8">
                         <ul class="chips smaller t-user-roles custom-mt-0">
                             {foreach $task.role_users as $role_user}

@@ -145,7 +145,7 @@
                   <div>
                       <input type="hidden" name="data[assigned_contact_id]" value="{$task.assigned_contact_id}">
                       <div class="t-team-list-wrapper"></div>
-                      {if !empty($user_roles) && count($user_roles) > 0 && $wa->tasks->isPremium()}
+                      {if $wa->user()->isAdmin('tasks') && !empty($user_roles) && count($user_roles) > 0 && $wa->tasks->isPremium()}
                         <div class="t-team-roles-list-wrapper flexbox space-8">
                             <ul class="chips small custom-mt-0 t-user-roles">
                                 {foreach $task.role_users as $role_user}
