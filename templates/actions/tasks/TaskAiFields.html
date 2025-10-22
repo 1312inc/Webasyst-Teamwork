@@ -12,7 +12,9 @@
                     </div>
 
                     <div class="dialog-ai-field-items">
-                        <button class="close-btn nobutton circle">✕</button>
+                        <button class="close-btn nobutton circle">
+                            <i class="fas fa-exchange-alt fa-rotate-90 text-gray"></i>
+                        </button>
                         <div class="fields">
                         {foreach $params.fields as $field}
                             {if $field.id == 'objective' || $field.id == 'context'}
