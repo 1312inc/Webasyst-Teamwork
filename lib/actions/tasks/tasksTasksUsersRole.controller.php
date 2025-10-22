@@ -44,8 +44,6 @@ class tasksTasksUsersRoleController extends waJsonController
         $this->response = array_values($role_users);
     }
 
-    /**
-     */
     private function addUserRole()
     {
         try {
@@ -64,11 +62,10 @@ class tasksTasksUsersRoleController extends waJsonController
             }
 
             $user_rights = $contact->getRights('tasks');
-            if (!(
-                ifset($user_rights, 'backend', tasksRights::PROJECT_ACCESS_NONE) > tasksRights::PROJECT_ACCESS_NONE
-                || (!empty($task['project_id']) && ifset($user_rights, 'project.'.$task['project_id'], tasksRights::PROJECT_ACCESS_NONE) > tasksRights::PROJECT_ACCESS_NONE)
-            )) {
-                throw new tasksAccessException(sprintf(_w('User %s is not eligible for the specified role in this task'), $contact->getName()));
+            if (ifset($user_rights, 'backend', tasksRights::PROJECT_ACCESS_NONE) < tasksRights::PROJECT_ACCESS_FULL) {
+                if (ifset($user_rights, 'project.'.$task['project_id'], tasksRights::PROJECT_ACCESS_NONE) < tasksRights::PROJECT_ACCESS_VIEW_ASSIGNED_TASKS) {
+                    throw new tasksAccessException(sprintf(_w('User %s is not eligible for the specified role in this task'), $contact->getName()));
+                }
             }
 
             $role = (new tasksTasksUserRoleModel())->getById($role_id);
