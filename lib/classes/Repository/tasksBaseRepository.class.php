@@ -129,9 +129,9 @@ class tasksBaseRepository implements tasksEntityRepositoryInterface
     public function findByFields($field, $value = null, $all = false, $limit = false)
     {
         if (is_array($field)) {
-            $data = $this->getModel()->getByField($field, $all, $limit);
+            $data = (array) $this->getModel()->getByField($field, $all, $limit);
         } else {
-            $data = $this->getModel()->getByField($field, $value, $all, $limit);
+            $data = (array) $this->getModel()->getByField($field, $value, $all, $limit);
         }
 
         $objs = $this->generateWithData($data, $all);

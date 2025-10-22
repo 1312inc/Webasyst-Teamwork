@@ -20,6 +20,13 @@ class tasksFrontendProjectPublicAction extends waViewAction
         $collection = new tasksCollection(sprintf('%s/%s', tasksCollection::HASH_PROJECT, $project->getId()), ['check_rights' => false]);
         $tasks = $collection->getTasks(tasksCollection::FIELDS_TO_GET);
 
+        foreach ($tasks as &$_task) {
+            $_task = new tasksTask($_task['id']);
+        }
+        unset($_task);
+
+        tasksHelper::workupTasksForView($tasks);
+
         $this->setTemplate(wa()->getAppPath('templates/frontend/public_project.html'));
         $this->view->assign([
             'project' => $project,

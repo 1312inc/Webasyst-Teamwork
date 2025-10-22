@@ -20,6 +20,11 @@ class tasksFrontendMilestonePublicAction extends waViewAction
         $collection = new tasksCollection(sprintf('%s/%s', tasksCollection::HASH_SCOPE, $milestone->getId()), ['check_rights' => false]);
         $tasks = $collection->getTasks(tasksCollection::FIELDS_TO_GET);
 
+        foreach ($tasks as &$_task) {
+            $_task = new tasksTask($_task['id']);
+        }
+        unset($_task);
+
         $this->setTemplate(wa()->getAppPath('templates/frontend/public_milestone.html'));
         $this->view->assign([
             'milestone' => $milestone,
