@@ -676,7 +676,10 @@
         e.preventDefault();
 
         let footer = '<button class="js-write-ai-action button">'+'[`Write with AI`]'+'</button>';
-        footer += '<button class="js-dialog-close button light-gray">'+'[`Close`]'+'</button>';
+
+        const $form = $(this).closest('form');
+        const task_title = $form.find('[name="data[name]"]').val();
+        const task_content = $form.find('[name="data[text]"]').val();
 
         function getFieldHtml(field) {
             let html = '';
@@ -709,11 +712,11 @@
             return html;
         }
 
-        $.get('?module=tasks&action=ai&type=taskfields', function (data) {
+        $.get('?module=tasks&action=ai&type=taskfields&html=1', function (response) {
             let html = '';
-            if (data?.status === 'ok' && data.data?.fields && data.data?.sections) {
-                let fields = data.data.fields;
-                let sections = data.data?.sections;
+            if (response?.status === 'ok' && response.data?.fields && response.data?.sections) {
+                let fields = response.data.fields;
+                let sections = response.data?.sections;
                 for (let key in sections) {
                     if (sections.hasOwnProperty(key)) {
                         if (sections[key].hasOwnProperty('title')) {
@@ -738,26 +741,20 @@
             html += '<div class="custom-mt-24 js-task-write-ai-content"></div>';
 
             $.waDialog({
-                header: "<h3>[`Write with AI`]</h3>",
-                content: html,
-                footer: footer,
+                html: response.data.html,
                 onOpen: function ($wrapper, dialog) {
+                    $wrapper.find('[name="objective"]').val(task_title + '\n' + task_content);
+
                     $('.js-write-ai-action').on('click', function (e) {
                         $wrapper.find('.js-task-write-ai-content').html('');
                         $wrapper.find('.js-write-ai-action').prop('disabled', true);
                         $.post('?module=tasks&action=ai&type=writetask', $wrapper.find(':input').serializeArray(), function (data) {
                             $wrapper.find('.js-write-ai-action').prop('disabled', false);
-                            if (data?.status === 'ok' && data.data?.format_content) {
-                                $wrapper.find('.js-task-write-ai-content').html(data.data.format_content);
+                            if (response?.status === 'ok' && response.data?.format_content) {
+                                $wrapper.find('.js-task-write-ai-content').html(response.data.format_content);
                             }
                         });
                     });
-                    $('.js-dialog-close').on('click', function (e) {
-                        dialog.close();
-                    });
-                },
-                onClose: function ($wrapper) {
-
                 }
             });
         });
