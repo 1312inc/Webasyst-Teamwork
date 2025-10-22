@@ -10,6 +10,21 @@ class tasksTasksSaveController extends waJsonController
         $task_id = $this->getId();
         $data = $this->getData();
 
+        if (isset($data['roles_user']['add'])) {
+            $role_users = (new tasksRights())->getUsersAccessProject($data['project_id']);
+            foreach ($data['roles_user']['add'] as $user_ids) {
+                foreach ($user_ids as $user_id) {
+                    if (!key_exists($user_id, $role_users)) {
+                        $contact = new waContact($user_id);
+                        $this->setError(sprintf(_w('User %s is not eligible for the specified role in this task'), $contact->getName()));
+                    }
+                }
+            }
+            if ($this->errors) {
+                return;
+            }
+        }
+
         if ($task_id > 0) {
             $task = $this->update($task_id, $data);
         } else {
@@ -42,12 +57,6 @@ class tasksTasksSaveController extends waJsonController
                         $_POST['role_id'] = $role_id;
 
                         $controller->execute();
-
-                        // Проверяем результат выполнения
-                        if ($controller->errors) {
-                            $this->setError($controller->errors);
-                            return;
-                        }
                     }
                 }
             }
