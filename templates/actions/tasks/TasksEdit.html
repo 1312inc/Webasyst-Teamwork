@@ -145,7 +145,7 @@
                   <div>
                       <input type="hidden" name="data[assigned_contact_id]" value="{$task.assigned_contact_id}">
                       <div class="t-team-list-wrapper"></div>
-                      {if $wa->user()->isAdmin('tasks') && !empty($user_roles) && count($user_roles) > 0 && $wa->tasks->isPremium()}
+                      {if !empty($user_roles) && count($user_roles) > 0 && $wa->tasks->isPremium()}
                         <div class="t-team-roles-list-wrapper flexbox space-8">
                             <ul class="chips small custom-mt-0 t-user-roles">
                                 {foreach $task.role_users as $role_user}
@@ -443,28 +443,26 @@
                                 </a>
                             </div>
 
-                            <div class="t-chip t-form-line-autocomplete-chip" data-type="hashtag">
-                                <a href="javascript:void(0);">
-                                    <i class="fas fa-hashtag"></i>
-                                    [`Tags and links`]
-                                </a>
-                            </div>
-
-                            <div class="t-chip t-form-line-autocomplete-chip" data-type="at">
-                                <a href="javascript:void(0);">
-                                    <i class="fas fa-at"></i>
-                                    [`Watchers`]
-                                </a>
-                            </div>
-
                             {if $wa->pocketlists}
                             <div class="t-chip">
                                 <a class="t-form-line-checklist-chip">
-                                    <i class="fas fa-list"></i>
+                                    <i style="background-image: url('{$wa_url}wa-apps/pocketlists/img/pl2webasyst48.png') !important; background-size: 16px 16px !important; display: inline-block; width: 16px; height: 16px; position: relative; top: 2px; margin-right: 4px;"></i>
                                     [`Checklist`]
                                 </a>
                             </div>
                             {/if}
+
+                            <div class="t-chip t-form-line-autocomplete-chip" data-type="hashtag">
+                                <a href="javascript:void(0);" title="[`Tags and links`]">
+                                    <i class="fas fa-hashtag custom-pl-2 custom-mr-0"></i>
+                                </a>
+                            </div>
+
+                            <div class="t-chip t-form-line-autocomplete-chip" data-type="at">
+                                <a href="javascript:void(0);" title="[`Mention`]">
+                                    <i class="fas fa-at custom-pl-2 custom-mr-0"></i>
+                                </a>
+                            </div>
 
                             <div class="t-chip" style="display: none;">
                                 <a class="t-form-line-spellcheck-chip">

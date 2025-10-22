@@ -5,7 +5,7 @@ return array(
         'version' => '>=7.4',
     ),
     'app.installer' => array(
-        'version' => '>=3.5.0', //don't use 'latest' as it may block installer.product.install API flow
+        'version' => '>=3.8.0', //don't use 'latest' as it may block installer.product.install API flow
         'strict' => true,
     ),
 );
