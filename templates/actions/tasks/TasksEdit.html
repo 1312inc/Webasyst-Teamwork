@@ -103,11 +103,11 @@
                                     $dropdown.waDropdown({
                                         hover: true,
                                         items: ".menu > li > a",
-                                        change: function(event, target, dropdown) {
+                                        change: async function(event, target, dropdown) {
                                             $("[name=\"data[project_id]\"]").val( $(target).data("value") );
                                             taskEdit.onProjectChange();
 
-                                            $.tasks.teamList({
+                                            const teamList = await $.tasks.teamList({
                                                 container: $('#t-edit-task-form .t-team-list-wrapper'),
                                                 targetField: $('#t-edit-task-form [name="data[assigned_contact_id]"]'),
                                                 inviteField: $('#t-edit-task-form .t-team-invite'),
@@ -116,6 +116,7 @@
                                                 updateMode: {if !empty($task.id)}true{else}false{/if}
                                             });
 
+                                            $(document).trigger('tasks:projectUsersChanged', [teamList]);
                                         }
                                     });
                                 })(jQuery);
@@ -294,26 +295,36 @@
                                         update_title: false
                                     });
 
-                                    const userListFragment = document.createDocumentFragment();
-                                    teamList.forEach(user => {
-                                        const $li = $('<li>', {
-                                            'data-user-id': user.id,
-                                            'data-user-photo-url': user.photo_url,
-                                            'data-user-name': user.name
+                                    function updateUserListFragment(users) {
+                                        const userListFragment = document.createDocumentFragment();
+                                        $roleDropdowns.find('.menu').empty();
+
+                                        users.forEach(user => {
+                                            const $li = $('<li>', {
+                                                'data-user-id': user.id,
+                                                'data-user-photo-url': user.photo_url,
+                                                'data-user-name': user.name
+                                            });
+
+                                            const $span = $('<span>', { class: 'item' });
+                                            $span.append($('<span>', {
+                                                class: 'icon userpic userpic20',
+                                                css: { 'background-image': `url('${ user.photo_url }')` }
+                                            }));
+                                            $span.append($('<span>', { text: user.name }));
+
+                                            $li.append($span);
+                                            userListFragment.appendChild($li[0]);
                                         });
 
-                                        const $span = $('<span>', { class: 'item' });
-                                        $span.append($('<span>', {
-                                            class: 'icon userpic userpic20',
-                                            css: { 'background-image': `url('${ user.photo_url }')` }
-                                        }));
-                                        $span.append($('<span>', { text: user.name }));
+                                        $roleDropdowns.find('.menu').append(userListFragment);
+                                    }
 
-                                        $li.append($span);
-                                        userListFragment.appendChild($li[0]);
+                                    $(document).on('tasks:projectUsersChanged', function(event, users) {
+                                        updateUserListFragment(users);
                                     });
 
-                                    $roleDropdowns.find('.menu').append(userListFragment);
+                                    updateUserListFragment(teamList);
 
                                     $roleDropdowns.on('click', '.menu li', function (event) {
                                         event.preventDefault();
