@@ -72,7 +72,9 @@ var TasksUserRole = (function ($) {
             id_counter++;
             for (let _name of names) {
                 let $input_name = $item.find('.t-role-'+ _name +'-input');
-                $input_name.attr('name', $input_name.attr('name').replace('_template_', id));
+                if($input_name.length) {
+                    $input_name.attr('name', $input_name.attr('name')?.replace('_template_', id));
+                }
             }
 
             $item.data('id', id).attr('data-id', id);
