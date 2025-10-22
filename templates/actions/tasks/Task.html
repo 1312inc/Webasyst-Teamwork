@@ -891,8 +891,7 @@
                     })();
                 </script>
 
-                {if $wa->user()->isAdmin('tasks')}
-                    <h3><span class="gray">&</span> [`Пользователи с ролями`] <span class="gray t-role-user-counter">{if count($task.role_users) > 0}{count($task.role_users)}{/if}</span></h3>
+                {if $wa->user()->isAdmin('tasks') && !empty($user_roles) && count($user_roles) > 0 && $wa->tasks->isPremium()}
                     <div class="t-team-roles-wrapper flexbox space-8">
                         <ul class="chips small t-user-roles custom-mt-0">
                             {foreach $task.role_users as $role_user}
