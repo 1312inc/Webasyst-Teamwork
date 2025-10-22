@@ -76,6 +76,12 @@
             const dialog = $('.dialog').data('dialog');
 
             $(".chips li").on("click", function () {
+
+                if ($(this).hasClass("selected")) {
+                    $(".dialog-ai-field-items .close-btn").trigger("click");
+                    return;
+                }
+
                 const paramId = $(this).data("param-id");
                 const $container = $(".dialog-ai-fields-container");
                 $(this).addClass("selected").siblings("li").removeClass("selected");
