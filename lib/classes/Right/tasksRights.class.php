@@ -588,6 +588,43 @@ final class tasksRights
     }
 
     /**
+     * @see waContactRightsModel::getUsers()
+     * @param $app_id
+     * @param $name
+     * @param $value
+     * @return array
+     * @throws waDbException
+     */
+    public function getUsers($app_id, $name = 'backend', $value = 1)
+    {
+        $conditions = [
+            "(r.app_id = s:app_id AND r.name = s:name AND r.value >= i:value)",
+            "(r.app_id = 'webasyst' AND r.name = 'backend' AND r.value > 0)",
+        ];
+        if ($name != 'backend') {
+            $conditions[] = "(r.app_id = s:app_id AND r.name = 'backend' AND r.value > 1)";
+        }
+        $right_model = new waContactRightsModel();
+        $contact_ids = $right_model->query("
+            SELECT DISTINCT IF(r.group_id < 0, -r.group_id, g.contact_id) AS cid FROM wa_contact_rights r
+            LEFT JOIN wa_user_groups g ON r.group_id = g.group_id
+            WHERE (r.group_id < 0 OR g.contact_id IS NOT NULL)
+            AND (".join(' OR ', $conditions).")
+        ", [
+            'app_id' => $app_id,
+            'name' => $name,
+            'value' => $value,
+        ])->fetchAll(null, true);
+
+        if (!$contact_ids) {
+            return [];
+        }
+
+        return $right_model->query("SELECT * FROM wa_contact WHERE id IN(:ids) AND is_user >= 0", ['ids' => $contact_ids])->fetchAll('id');
+
+    }
+
+    /**
      * @param $project_id
      * @return array
      * @throws waDbException
@@ -596,17 +633,7 @@ final class tasksRights
     {
         $users = [];
         if ($project_id) {
-            $right_model = new waContactRightsModel();
-            $users = $right_model->query("
-                SELECT wc.* FROM wa_contact_rights wcr
-                LEFT JOIN wa_contact wc ON wc.id = -wcr.group_id
-                WHERE wcr.group_id < 0
-                AND (
-                    (wcr.app_id = 'webasyst' AND wcr.name = 'backend' AND wcr.value > 0)
-                    OR (wcr.app_id = 'tasks' AND wcr.name = 'backend' AND wcr.value > 1)
-                    OR (wcr.app_id = 'tasks' AND wcr.name = s:project_id AND wcr.value >= 1)
-                )
-            ", ['project_id' => "project.$project_id"])->fetchAll('id');
+            $users = $this->getUsers('tasks', "project.$project_id");
         }
 
         return $users;
