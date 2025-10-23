@@ -78,13 +78,13 @@
 
             </span>
 
-            {if $task.current_user_role}
+            {if $task.current_user_role && $hash_type == tasksCollection::HASH_INBOX}
             <span class="align-left">
                 <span class="badge" style="background-color: #{$task.current_user_role.color|default:'777777'|escape}">{$task.current_user_role.name|escape}</span>
             </span>
             {/if}
 
-            {if $task.assigned_contact.role}
+            {if $task.assigned_contact.role && $hash_type == tasksCollection::HASH_ASSIGNED}
             <span class="align-left">
                 <span class="badge" style="background-color: #{$task.assigned_contact.role.color|default:'777777'|escape}">{$task.assigned_contact.role.name|escape}</span>
             </span>
