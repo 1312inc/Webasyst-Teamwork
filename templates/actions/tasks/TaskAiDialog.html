@@ -4,11 +4,11 @@
         <a href="#" class="dialog-close js-close-dialog"><i class="fas fa-times"></i></a>
         <h3 class="dialog-header">[`Write task with AI`]</h3>
         <div class="dialog-content js-task-write-ai-content">
-            <p class="small custom-mt-0">[`Briefly describe the task goal. Webasyst AI will continue writing and suggest you the complete task text template.`]</p>
+            <p class="hint">[`Кратко сформулируйте суть и цель задачи. ИИ напишет текст задачи или продолжит написанный вами текст.`]</p>
             <div class="dialog-ai-fields-container">
                 <div class="flip-container">
                     <div class="dialog-ai-field-textarea">
-                        <textarea name="objective" class="width-100" placeholder="[`Write a task about...`]"></textarea>
+                        <textarea name="objective" class="width-100"></textarea>
                     </div>
 
                     <div class="dialog-ai-field-items">
@@ -25,23 +25,25 @@
 
                                 <div class="field">
                                     <div class="value">
-                                    <ul>
-                                        {foreach $field.items|default:[] as $id => $val}
-                                            <li>
-                                            {if $field.type == 'radio'}
-                                                <label>
-                                                    <span class="wa-radio">
-                                                        <input type="radio" name="{$field.id}" value="{$id}">
-                                                        <span></span>
-                                                    </span>
-                                                    <span>{$val|escape}</span>
-                                                </label>
-                                            {/if}
-                                            </li>
-                                        {/foreach}
-                                        </ul>
+                                        {if !empty($field.items)}
+                                            <ul>
+                                                {foreach $field.items as $id => $val}
+                                                    <li>
+                                                        {if $field.type == 'radio'}
+                                                            <label>
+                                                                <span class="wa-radio">
+                                                                    <input type="radio" name="{$field.id}" value="{$id}">
+                                                                    <span></span>
+                                                                </span>
+                                                                <span>{$val|escape}</span>
+                                                            </label>
+                                                        {/if}
+                                                    </li>
+                                                {/foreach}
+                                            </ul>
+                                        {/if}
                                         {if $field.type == 'input'}
-                                            <input type="text" name="{$id}" placeholder="{$field.example|escape}" value="{$val|escape}">
+                                            <input type="text" class="width-90" name="{$id}" placeholder="{$field.example|escape}" value="">
                                         {/if}
                                     </div>
                                 </div>
@@ -53,7 +55,7 @@
                 </div>
             </div>
 
-            <ul class="chips small">
+            <ul class="chips">
                 {foreach $params.fields as $field}
                     {if $field.id == 'objective' || $field.id == 'context'}
                         {continue}
@@ -62,6 +64,7 @@
                     <li data-param-id="{$field.id}">
                         <a href="javascript:void(0);">
                             {$field.title|escape}
+                            <span class="count"></span>
                         </a>
                     </li>
                 {/foreach}
@@ -70,6 +73,7 @@
         <footer class="dialog-footer">
             <button class="js-write-ai-action button">[`Write with AI`]</button>
         </footer>
+        <div class="dialog-ai-answer custom-p-24 not-blank hidden" style="border-radius: 0 0 0.75rem 0.75rem;"></div>
     </div>
     <script>
         $(document).ready(function() {
@@ -96,6 +100,28 @@
                     $targetContent.addClass("active");
                 }
             });
+
+
+            function updateChipsValue(paramId, value) {
+                const $chip = $(`.chips li[data-param-id="${ paramId }"] .count`);
+                if (value && value.trim()) {
+                    $chip.text(value);
+                } else {
+                    $chip.text('');
+                }
+            }
+
+            $(".dialog-ai-field-items input[type='radio']").on("change", function () {
+                const paramId = $(this).attr("name");
+                const selectedValue = $(this).closest("li").find("span:last").text();
+                updateChipsValue(paramId, selectedValue);
+            });
+
+            /* $(".dialog-ai-field-items input[type='text']").on("input", function () {
+                const paramId = $(this).closest(".content").attr("id");
+                const value = $(this).val();
+                updateChipsValue(paramId, value);
+            }); */
 
             $(".dialog-ai-field-items .close-btn").on("click", function () {
                 const $container = $(".dialog-ai-fields-container");
@@ -146,8 +172,8 @@
 
                     .close-btn {
                         position: absolute;
-                        top: 0.5em;
-                        right: 0.5em;
+                        top: 5px;
+                        right: 0;
                         z-index: 1;
                     }
 

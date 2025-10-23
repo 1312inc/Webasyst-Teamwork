@@ -745,14 +745,22 @@
                     $wrapper.find('[name="objective"]').val(task_title + '\n' + task_content);
 
                     $('.js-write-ai-action').on('click', function (e) {
-                        $wrapper.find('.js-task-write-ai-content').html('');
                         $wrapper.find('.js-write-ai-action').prop('disabled', true);
-                        $.post('?module=tasks&action=ai&type=writetask', $wrapper.find(':input').serializeArray(), function (data) {
+
+
+
+setTimeout(() => {
+    $wrapper.find('.dialog-ai-answer').html(`response\ndatan\nformat\ncontent`).removeClass('hidden');
+    dialog.resize();
+    $wrapper.find('.js-write-ai-action').prop('disabled', false);
+}, 2000);
+
+/*                         $.post('?module=tasks&action=ai&type=writetask', $wrapper.find(':input').serializeArray(), function (data) {
                             $wrapper.find('.js-write-ai-action').prop('disabled', false);
                             if (response?.status === 'ok' && response.data?.format_content) {
                                 $wrapper.find('.js-task-write-ai-content').html(response.data.format_content);
                             }
-                        });
+                        }); */
                     });
                 }
             });

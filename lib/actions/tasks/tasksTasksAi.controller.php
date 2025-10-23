@@ -111,7 +111,7 @@ class tasksTasksAiController extends waJsonController
                 if (waRequest::get('html')) {
                     $view = wa()->getView();
                     $view->assign('params', $task_fields);
-                    $this->response['html'] = $view->fetch(wa()->getAppPath() . '/templates/actions/tasks/TaskAiFields.html');
+                    $this->response['html'] = $view->fetch(wa()->getAppPath() . '/templates/actions/tasks/TaskAiDialog.html');
                 }
             }
         } catch (Exception $exception) {
