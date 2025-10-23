@@ -2021,13 +2021,13 @@ msgid "Unknown role"
 msgstr "Непонятная роль"
 
 msgid "Following task updates"
-msgstr "Подписаны на обновления"
+msgstr "Подписаны на новости задачи"
 
 msgid "Follow"
 msgstr "Подписаться"
 
 msgid "I’m following"
-msgstr "Наблюдаю"
+msgstr "Подписан"
 
 msgid "Mention"
 msgstr "Тегнуть пользователя"
