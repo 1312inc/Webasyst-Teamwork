@@ -1094,6 +1094,18 @@
                                         $(".t-watchers-add-icon").before(tpl);
                                         updateCounter(1);
                                         addEvents();
+                                        $.tasks.reloadSidebar();
+                                        if(user.id == {$wa->user()->getId()}) {
+                                            const $link = $('.t-set-favorite');
+                                            const $i = $link.find('.fa-at').get(0);
+                                            const value = $i.classList.contains('text-light-gray') ? 1 : 0;
+                                            const $spans = $link.find('span');
+                                            $spans.hide();
+                                            $spans.eq(1).show();
+                                            $i.classList.remove('text-light-gray');
+                                            $i.classList.add('text-orange');   
+                                        }  
+                                                
                                     })
                                     .catch(() => {});
                                 }
@@ -1109,6 +1121,17 @@
                                 if (data.status !== 'ok') return;
                                 $(".t-watchers-thumbs li[data-id="+userId+"]").remove();
                                 updateCounter(-1);
+                                $.tasks.reloadSidebar();
+                                if(userId == {$wa->user()->getId()}) {
+                                    const $link = $('.t-set-favorite');
+                                    const $i = $link.find('.fa-at').get(0);
+                                    const value = $i.classList.contains('text-light-gray') ? 1 : 0;
+                                    const $spans = $link.find('span');                           
+                                    $spans.hide();
+                                    $spans.eq(0).show();
+                                    $i.classList.add('text-light-gray');
+                                    $i.classList.remove('text-orange');
+                                }
                             });
                         };
 

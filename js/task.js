@@ -1799,14 +1799,19 @@ var Task = ( function($) {
             if (response.status == 'ok') {
                 $.tasks.reloadSidebar();
                 $spans.hide();
+                const $t_watchers = that.$content.find('.t-watchers-thumbs');
                 if (value) {
                     $spans.eq(1).show();
                     $i.classList.remove('text-light-gray');
                     $i.classList.add('text-orange');
+
+                    $t_watchers.find('.dropdown-body a[data-id="' + that.user_id + '"]').trigger('click');
                 } else {
                     $spans.eq(0).show();
                     $i.classList.add('text-light-gray');
                     $i.classList.remove('text-orange');
+
+                    $t_watchers.find('li[data-id="' + that.user_id + '"] .t-watchers-remove-icon').trigger('click');
                 }
             }
         });
