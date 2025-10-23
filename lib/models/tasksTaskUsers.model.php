@@ -49,6 +49,6 @@ class tasksTaskUsersModel extends waModel
             'contact_id' => $contact_id,
             'role_id' => $role_id,
             'create_datetime' => date('Y-m-d H:i:s'),
-        ], self::INSERT_ON_DUPLICATE_KEY_UPDATE);
+        ]);
     }
 }

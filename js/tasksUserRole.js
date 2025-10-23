@@ -60,10 +60,6 @@ var TasksUserRole = (function ($) {
             var id = '_template_'+ id_counter;
             var names = [
                 'name',
-                'can_edit',
-                'can_action',
-                'can_comment',
-                'can_delete',
                 'show_inbox',
                 'send_notifications',
                 'color'

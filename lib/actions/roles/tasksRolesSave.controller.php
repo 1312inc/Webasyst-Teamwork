@@ -32,10 +32,6 @@ class tasksRolesSaveController extends waJsonController
             $role['name'] = $name;
             $role['sort'] = $sort++;
             $role = [
-                'can_edit' => (int) ifset($role, 'can_edit', 0),
-                'can_action' => (int) ifset($role, 'can_action', 0),
-                'can_comment' => (int) ifset($role, 'can_comment', 0),
-                'can_delete' => (int) ifset($role, 'can_delete', 0),
                 'show_inbox' => (int) ifset($role, 'show_inbox', 0),
                 'send_notifications' => (int) ifset($role, 'send_notifications', 0)
             ] + $role;

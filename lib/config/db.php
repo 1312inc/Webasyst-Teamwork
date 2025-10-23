@@ -272,9 +272,6 @@ return array(
         'contact_id' => array('int', 11, 'null' => 0),
         'role_id' => array('varchar', 255, 'null' => 0),
         'create_datetime' => array('datetime', 'null' => 0),
-        ':keys' => array(
-            'contact_role' => array('contact_id', 'role_id', 'unique' => 1),
-        )
     ),
     'tasks_type_fields' => array(
         'type_id' => array('varchar', 32, 'null' => 0),
@@ -285,10 +282,6 @@ return array(
         'name' => array('varchar', 255, 'null' => 0),
         'color' => array('varchar', 64),
         'sort' => array('int', 11, 'null' => 0, 'default' => '0'),
-        'can_edit' => array('tinyint', 1, 'null' => 0, 'default' => '0'),
-        'can_action' => array('tinyint', 1, 'null' => 0, 'default' => '0'),
-        'can_comment' => array('tinyint', 1, 'null' => 0, 'default' => '0'),
-        'can_delete' => array('tinyint', 1, 'null' => 0, 'default' => '0'),
         'show_inbox' => array('tinyint', 1, 'null' => 0, 'default' => '0'),
         'send_notifications' => array('tinyint', 1, 'null' => 0, 'default' => '0'),
         ':keys' => array(

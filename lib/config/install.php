@@ -117,12 +117,12 @@ if (file_exists($file)) {
         }
 
         $data = array_map(function ($_dr) {
-            return array_combine(['id', 'name', 'color', 'sort', 'can_edit', 'can_action', 'can_comment', 'can_delete', 'show_inbox', 'send_notifications'], $_dr);
+            return array_combine(['id', 'name', 'color', 'sort', 'show_inbox', 'send_notifications'], $_dr);
         }, [
-            ['client', 'Заказчик', '777777', 0, 1, 1, 1, 1, 1, 1],
-            ['assistant', 'Соисполнитель', '777777', 1, 1, 1, 1, 1, 1, 1],
-            ['decision_maker', 'ЛПР', '777777', 2, 1, 1, 1, 1, 1, 1],
-            ['supervisor', 'Супервайзер', '777777', 3, 1, 1, 1, 1, 1, 1]
+            ['client', 'Заказчик', '777777', 0, 1, 1],
+            ['assistant', 'Соисполнитель', '777777', 1, 1, 1],
+            ['decision_maker', 'ЛПР', '777777', 2, 1, 1],
+            ['supervisor', 'Супервайзер', '777777', 3, 1, 1]
         ]);
         $user_role_model->multipleInsert($data);
 

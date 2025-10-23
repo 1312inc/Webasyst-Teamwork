@@ -19,10 +19,6 @@ foreach ($default_roles as $id => $role) {
         'name'  => $role,
         'color' => '777777',
         'sort'  => $sort++,
-        'can_edit' => 1,
-        'can_action' => 1,
-        'can_comment' => 1,
-        'can_delete' => 1,
         'show_inbox' => 1,
         'send_notifications' => 1
     ];
