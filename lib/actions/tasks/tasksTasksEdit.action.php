@@ -60,6 +60,8 @@ class tasksTasksEditAction extends waViewAction
             'type_selector_html'      => $this->getTypeSelectorHtml($ext_info),
             'task_field_html'         => $this->getFieldEditHtml(),
             'user_roles'              => (new tasksTasksUserRoleModel())->getRoles(),
+            'is_premium'              => waLicensing::check('tasks')->isPremium(),
+            'tasks_try_free_count'    => (new waAppSettingsModel())->get('tasks', 'tasks_try_free_count', 0),
         ]);
     }
 

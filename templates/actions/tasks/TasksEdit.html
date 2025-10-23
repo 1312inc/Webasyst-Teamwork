@@ -674,93 +674,66 @@
     $writeAiBtn.on('click', function (e) {
         e.preventDefault();
 
-        let footer = '<button class="js-write-ai-action button">'+'[`Write with AI`]'+'</button>';
-
         const $form = $(this).closest('form');
         const task_title = $form.find('[name="data[name]"]').val();
         const task_content = $form.find('[name="data[text]"]').val();
 
-        function getFieldHtml(field) {
-            let html = '';
-            if (field.hasOwnProperty('type') && field.hasOwnProperty('id')) {
-                let example = field.example || '';
-                let description = field.description || '';
-                html += '<div class="field"><div class="name"><b>'+ (field.title || '') +'</b></div><div class="value">';
-                switch (field.type) {
-                    case 'radio':
-                        if (field.hasOwnProperty('items')) {
-                            for (let item_key in field.items) {
-                                html += '<div><label><span class="wa-radio">';
-                                html += '<input type="radio" name="'+ field.id +'" value="'+ item_key +'">';
-                                html += '<span></span></span> '+ field.items[item_key] +'</label></div>';
-                            }
-                        }
-                        break;
-                    case 'textarea':
-                        html += '<textarea name="'+ field.id +'" placeholder="'+ example +'" class="smallest"></textarea>';
-                        html += '<div class="hint">'+ description +'</div>';
-                        break;
-                    case 'input':
-                        html += '<input type="text" class="long" name="'+ field.id +'" placeholder="'+ example +'">';
-                        html += '<div class="hint">'+ description +'</div>';
-                        break;
-                }
-                html += '</div></div>';
-            }
-
-            return html;
-        }
-
         $.get('?module=tasks&action=ai&type=taskfields&html=1', function (response) {
-            let html = '';
-            if (response?.status === 'ok' && response.data?.fields && response.data?.sections) {
-                let fields = response.data.fields;
-                let sections = response.data?.sections;
-                for (let key in sections) {
-                    if (sections.hasOwnProperty(key)) {
-                        if (sections[key].hasOwnProperty('title')) {
-                            html += '<h5>'+ sections[key]['title'] +'</h5>';
-                        }
-
-                        html += '<div class="fields">';
-                        if (sections[key].hasOwnProperty('fields')) {
-                            for (let s_field of sections[key]['fields']) {
-                                for (let f of fields) {
-                                    if (f.hasOwnProperty('id') && f.id === s_field) {
-                                        html += getFieldHtml(f);
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                        html += '</div>';
-                    }
-                }
-            }
-            html += '<div class="custom-mt-24 js-task-write-ai-content"></div>';
 
             $.waDialog({
                 html: response.data.html,
                 onOpen: function ($wrapper, dialog) {
+                    let try_free = !$wrapper.find('.js-premium-wrapper').length;
+
+                    if (!try_free) {
+                        $wrapper.find('.js-premium-wrapper').show();
+                        $wrapper.find('.dialog-ai-fields-container-wrapper').addClass('hidden');
+                        $wrapper.find('.dialog-footer').addClass('hidden');
+                        $wrapper.find('.dialog-header').addClass('hidden');
+                        dialog.resize();
+                    }
+
                     $wrapper.find('[name="objective"]').val(task_title + '\n' + task_content);
 
+                    $wrapper.find('.js-try-free-ai').on('click', function() {
+                        const $self = $(this);
+
+                         $.post('?module=tasks&action=ai&type=tryFree', (r) => {
+                            if (r.status === 'ok') {
+                                if (r.data.is_max_count) {
+                                    $wrapper.find('.js-after-try-free-ai').show();
+                                    $self.remove();
+                                }
+
+                                $wrapper.find('.js-premium-wrapper').hide();
+                                $wrapper.find('.dialog-ai-fields-container-wrapper').removeClass('hidden');
+                                $wrapper.find('.dialog-footer').removeClass('hidden');
+                                $wrapper.find('.dialog-header').removeClass('hidden');
+                                try_free = true;
+                                dialog.resize();
+                            }
+                        });
+                    });
+
                     $('.js-write-ai-action').on('click', function (e) {
+
+                        if (!try_free) {
+                            return false;
+                        }
+
                         $wrapper.find('.js-write-ai-action').prop('disabled', true);
 
-
-
-setTimeout(() => {
-    $wrapper.find('.dialog-ai-answer').html(`response\ndatan\nformat\ncontent`).removeClass('hidden');
-    dialog.resize();
-    $wrapper.find('.js-write-ai-action').prop('disabled', false);
-}, 2000);
-
-/*                         $.post('?module=tasks&action=ai&type=writetask', $wrapper.find(':input').serializeArray(), function (data) {
+                        $.post('?module=tasks&action=ai&type=writetask', $wrapper.find(':input').serializeArray(), function (data) {
                             $wrapper.find('.js-write-ai-action').prop('disabled', false);
                             if (response?.status === 'ok' && response.data?.format_content) {
-                                $wrapper.find('.js-task-write-ai-content').html(response.data.format_content);
+                                $wrapper.find('.dialog-ai-answer').html(response.data.format_content).removeClass('hidden');
+                                dialog.resize();
+                                if (!$wrapper.find('.js-premium-wrapper').length) {
+                                    $wrapper.find('.js-write-ai-action').prop('disabled', false);
+                                    try_free = false;
+                                }
                             }
-                        }); */
+                        });
                     });
                 }
             });

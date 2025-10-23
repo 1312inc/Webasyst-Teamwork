@@ -17,6 +17,9 @@ class tasksTasksAiController extends waJsonController
             case 'writetask':
                 $this->writetask();
                 break;
+            case 'tryfree':
+                $this->tryFree();
+                break;
             default:
                 $this->errors = [
                     'error' => 'error_type',
@@ -111,6 +114,9 @@ class tasksTasksAiController extends waJsonController
                 if (waRequest::get('html')) {
                     $view = wa()->getView();
                     $view->assign('params', $task_fields);
+                    $view->assign('is_premium', waLicensing::check('tasks')->isPremium());
+                    $view->assign('tasks_try_free_count', (new waAppSettingsModel())->get('tasks', 'tasks_try_free_count', 0));
+
                     $this->response['html'] = $view->fetch(wa()->getAppPath() . '/templates/actions/tasks/TaskAiDialog.html');
                 }
             }
@@ -165,5 +171,12 @@ class tasksTasksAiController extends waJsonController
                 'error_description' => $exception->getMessage()
             ];
         }
+    }
+
+    private function tryFree() {
+        $app_settings_model = new waAppSettingsModel();
+        $prev_count = $app_settings_model->get('tasks', 'tasks_try_free_count', 0) + 1;
+        $app_settings_model->set('tasks', 'tasks_try_free_count', $prev_count);
+        $this->response['is_max_count'] = $prev_count >= 10;
     }
 }
