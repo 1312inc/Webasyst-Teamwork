@@ -111,13 +111,7 @@
                                 'show_inbox' => _w('Will see tasks in personal inbox'),
                                 'send_notifications' => _w('Will receive notifications on task updates (unless unsubscribed intentionally)')
                             ]}
-                            {* TODO add this
-                                'can_edit' => _w('Can edit'),
-                                'can_action' => _w('Can process & forward'),
-                                'can_comment' => _w('Can comment'),
-                                'can_delete' => _w('Can delete')
-                            *}
-
+                            
                             <div class="table t-settings-list t-roles-list">
                                 {foreach $_roles as $_role}
                                     {render_row role=$_role}
