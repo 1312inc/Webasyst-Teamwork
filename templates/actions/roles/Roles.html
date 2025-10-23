@@ -44,7 +44,7 @@
                     <div class="field">
                         <div class="name">[`Permissions`]</div>
                         <div class="value no-shift">
-                            <p class="small custom-mb-8">[`Specify what a user in this role can do with a task:`]
+                            <p class="small custom-mb-8">[`Specify how users in this role will interact with tasks in addition to being able to just view & comment on them:`]
                             {foreach $permits as $_permit => $_permit_name}
                                 <div class="field-group__item">
                                     <label class="small">
@@ -111,7 +111,7 @@
                                 'show_inbox' => _w('Will see tasks in personal inbox'),
                                 'send_notifications' => _w('Will receive notifications on task updates (unless unsubscribed intentionally)')
                             ]}
-                            
+
                             <div class="table t-settings-list t-roles-list">
                                 {foreach $_roles as $_role}
                                     {render_row role=$_role}

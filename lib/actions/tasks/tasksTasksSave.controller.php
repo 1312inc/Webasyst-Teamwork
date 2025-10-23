@@ -16,7 +16,7 @@ class tasksTasksSaveController extends waJsonController
                 foreach ($user_ids as $user_id) {
                     if (!key_exists($user_id, $role_users)) {
                         $contact = new waContact($user_id);
-                        $this->setError(sprintf(_w('User %s is not eligible for the specified role in this task'), $contact->getName()));
+                        $this->setError(sprintf(_w('No access: user %s is not eligible for the specified role in this task').' ', $contact->getName()));
                     }
                 }
             }
@@ -294,4 +294,3 @@ class tasksTasksSaveController extends waJsonController
         wa()->event('task_save', $params);
     }
 }
-

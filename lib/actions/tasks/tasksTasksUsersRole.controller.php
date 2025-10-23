@@ -64,7 +64,7 @@ class tasksTasksUsersRoleController extends waJsonController
             $user_rights = $contact->getRights('tasks');
             if (ifset($user_rights, 'backend', tasksRights::PROJECT_ACCESS_NONE) < tasksRights::PROJECT_ACCESS_FULL) {
                 if (ifset($user_rights, 'project.'.$task['project_id'], tasksRights::PROJECT_ACCESS_NONE) < tasksRights::PROJECT_ACCESS_VIEW_ASSIGNED_TASKS) {
-                    throw new tasksAccessException(sprintf(_w('User %s is not eligible for the specified role in this task'), $contact->getName()));
+                    throw new tasksAccessException(sprintf(_w('No access: user %s is not eligible for the specified role in this task').' ', $contact->getName()));
                 }
             }
 

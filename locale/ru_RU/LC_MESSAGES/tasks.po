@@ -1987,8 +1987,8 @@ msgstr "Название роли"
 msgid "Permissions"
 msgstr "Разрешения"
 
-msgid "Specify what a user in this role can do with a task:"
-msgstr "Что пользователь в этой роли может делать с задачами:"
+msgid "Specify how users in this role will interact with tasks in addition to being able to just view & comment on them:"
+msgstr "Как пользователи в этой роли будут работать с задачами в дополнение к возможности просмотра и добавления комментариев:"
 
 msgid "Custom user roles allow adding individual users with limited access to specific tasks and to better describe specific user roles within tasks and projects."
 msgstr "Кастомные роли позволяют открывать индивидуальный доступ к задачам пользователям с ограниченным уровнем доступа и лучше описывать, что пользователь делает в рамках задач и проектов."
@@ -2014,8 +2014,8 @@ msgstr "Может комментировать"
 msgid "Can delete"
 msgstr "Может удалять"
 
-msgid "User %s is not eligible for the specified role in this task"
-msgstr "Пользователь %s не может быть назначен на эту роль в данной задаче"
+msgid "No access: user %s is not eligible for the specified role in this task"
+msgstr "Нет доступа: пользователь %s не может быть назначен на эту роль в данной задаче"
 
 msgid "Unknown role"
 msgstr "Непонятная роль"
