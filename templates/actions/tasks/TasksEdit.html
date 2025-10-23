@@ -158,8 +158,8 @@
                                     </li>
                                 {/foreach}
                                 {foreach $user_roles as $role}
-                                    <li class="dropdown js-role-dropdown" data-role-id="{$role.id}" data-role-name="{_w($role.name|escape)}" data-role-color="#{$role.color}" style="--chips-background-color: var(--background-color-blank); --chips-background-color-hover: transparent;">
-                                        <a href="javascript:void(0);" class="dropdown-toggle without-arrow">
+                                    <li class="dropdown js-role-dropdown" data-role-id="{$role.id}" data-role-name="{_w($role.name|escape)}" data-role-color="#{$role.color}" style="--chips-background-color: var(--background-color-blank); --chips-background-color-hover: var(--background-color-blank);">
+                                        <a href="javascript:void(0);" class="dropdown-toggle">
                                             <i class="fas fa-user-plus custom-mr-4" style="color: #{$role.color};"></i>{_w($role.name|escape)}
                                         </a>
                                         <div class="dropdown-body">
@@ -218,19 +218,18 @@
                                                 'data-role-id': roleId,
                                                 'data-user-id': userId,
                                                 'style': `
-                                                    --chips-outline-border-color: ${ roleColor };
-                                                    --menu-link-color: #fff;
-                                                    --menu-link-color-hover: #fff;
-                                                    --chips-background-color: ${ roleColor };
-                                                    --chips-background-color-hover: ${ roleColor };
+                                                    --menu-link-color: ${ roleColor };
+                                                    --menu-link-color-hover: ${ roleColor };
+                                                    --chips-background-color: var(--background-color-blank);
+                                                    --chips-background-color-hover: var(--background-color-blank);
                                                 `
                                             });
 
                                             const $link = $('<a>', { href: 'javascript:void(0);' });
                                             $link.append($('<img>', { src: userPhotoUrl, alt: safeUserName, class: 'userpic' }));
-                                            $link.append(document.createTextNode(' ' + safeUserName + ' '));
-                                            $link.append($('<span>', { class: 'custom-ml-4 smaller', text: safeRoleName }));
-                                            $link.append($('<i>', { class: 'fas fa-times custom-ml-16 custom-mr-4 text-white js-remove-user' }));
+                                            $link.append($('<strong>', { text: safeUserName }));
+                                            $link.append($('<span>', { class: 'custom-ml-4 hint', text: safeRoleName }));
+                                            $link.append($('<i>', { class: 'fas fa-times custom-ml-16 custom-mr-4 js-remove-user' }));
 
                                             const $input = $('<input>', {
                                                 type: 'hidden',
