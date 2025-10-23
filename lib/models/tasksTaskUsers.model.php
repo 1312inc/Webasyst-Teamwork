@@ -23,6 +23,25 @@ class tasksTaskUsersModel extends waModel
         return $result;
     }
 
+    public function getRolesByContacts($contact_ids = [])
+    {
+        $result = [];
+        $contact_ids = waUtils::toIntArray($contact_ids);
+        $data = $this->query("
+            SELECT * FROM tasks_task_users ttu
+            LEFT JOIN tasks_user_role tur ON tur.id = ttu.role_id
+            WHERE ttu.contact_id IN (i:contact_ids)
+            ORDER BY ttu.contact_id, tur.sort, ttu.create_datetime DESC
+        ", ['contact_ids' => $contact_ids])->fetchAll();
+
+        foreach ($data as $_data) {
+            unset($_data['id']);
+            $result[$_data['task_id']][$_data['contact_id']] = $_data;
+        }
+
+        return $result;
+    }
+
     public function addUserRole($task_id, $contact_id, $role_id)
     {
         return $this->insert([
