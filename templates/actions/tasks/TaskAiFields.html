@@ -4,11 +4,11 @@
         <a href="#" class="dialog-close js-close-dialog"><i class="fas fa-times"></i></a>
         <h3 class="dialog-header">[`Write task with AI`]</h3>
         <div class="dialog-content js-task-write-ai-content">
-            <p class="hint">[`Кратко сформулируйте суть и цель задачи. ИИ напишет текст задачи или продолжит написанный вами текст.`]</p>
+            <p class="small custom-mt-0">[`Briefly describe the task goal. Webasyst AI will continue writing and suggest you the complete task text template.`]</p>
             <div class="dialog-ai-fields-container">
                 <div class="flip-container">
                     <div class="dialog-ai-field-textarea">
-                        <textarea name="objective" class="width-100"></textarea>
+                        <textarea name="objective" class="width-100" placeholder="[`Write a task about...`]"></textarea>
                     </div>
 
                     <div class="dialog-ai-field-items">
@@ -53,7 +53,7 @@
                 </div>
             </div>
 
-            <ul class="chips">
+            <ul class="chips small">
                 {foreach $params.fields as $field}
                     {if $field.id == 'objective' || $field.id == 'context'}
                         {continue}

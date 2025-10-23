@@ -2034,3 +2034,12 @@ msgstr "Тегнуть пользователя"
 
 msgid "Following"
 msgstr "Наблюдаю"
+
+msgid "Write task with AI"
+msgstr "Написать задачу с ИИ"
+
+msgid "Briefly describe the task goal. Webasyst AI will continue writing and suggest you the complete task text template."
+msgstr "Кратко сформулируйте суть и цель задачи. ИИ напишет текст задачи или продолжит написанный вами текст."
+
+msgid "Write a task about..."
+msgstr "Написать задачу про то как..."
