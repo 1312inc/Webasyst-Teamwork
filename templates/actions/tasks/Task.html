@@ -790,12 +790,14 @@
             {$task_ext_info_html}
 
             {* Show review widget if new task or completed *}
-            {$is_just_created_task = strtotime($task.create_datetime) - strtotime(date('Y-m-d H:i:s')) >= -1 }
-            {$logs = array_values($task.log)}
-            {$last_log = end($logs)}
-            {$cond = $is_just_created_task || (isset($last_log) && $last_log.after_status_id == -1)}
-            {if $cond && $wa->installer && method_exists($wa->installer, 'reviewWidget')}
-                {$wa->installer->reviewWidget('app/tasks')}
+            {if !empty($task.log)}
+                {$is_just_created_task = strtotime($task.create_datetime) - strtotime(date('Y-m-d H:i:s')) >= -1 }
+                {$logs = array_values($task.log)}
+                {$last_log = end($logs)}
+                {$cond = $is_just_created_task || (isset($last_log) && $last_log.after_status_id == -1)}
+                {if $cond && $wa->installer && method_exists($wa->installer, 'reviewWidget')}
+                    {$wa->installer->reviewWidget('app/tasks')}
+                {/if}
             {/if}
 
             <!-- plugin hook: 'backend_task.%plugin_id%.before_buttons' -->
