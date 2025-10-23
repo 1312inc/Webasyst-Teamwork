@@ -429,6 +429,7 @@ class tasksCollection
                 }
                 if (!empty($other_fields['assigned_contact']) && isset($contacts[$t['assigned_contact_id']])) {
                     $t['assigned_contact'] = $contacts[$t['assigned_contact_id']];
+                    $t['assigned_contact']['role'] = ifset($role_users, $_task_id, $t['assigned_contact_id'], []);
                 }
                 if (!empty($other_fields['contact']) && isset($contacts[$t['contact_id']])) {
                     $t['contact'] = $contacts[$t['contact_id']];
