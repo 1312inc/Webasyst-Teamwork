@@ -420,7 +420,7 @@
                         <div class="t-chips">
 
                             <div class="t-chip">
-                                <a class="t-form-line-write-ai-chip">
+                                <a href="javascript:void(0);" class="t-form-line-write-ai-chip">
                                     <span class="icon webasyst-magic-wand-ai custom-mr-4"></span>
                                     [`Write with AI`]
                                 </a>
@@ -731,6 +731,24 @@
                                 if (!$wrapper.find('.js-premium-wrapper').length) {
                                     $wrapper.find('.js-write-ai-action').prop('disabled', false);
                                     try_free = false;
+                                }
+                            }
+
+                            if(response?.status === 'fail') {
+                                const $error_block = $('.js-errors-block');
+                                $error_block.empty();
+
+                                if(response?.errors?.error_description) {
+                                    $error_block.append($('<span style="color: red;"></span>').text(response.errors.error_description));
+                                    $error_block[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                }
+
+                                if(response?.errors?.length){
+                                    $.each(response.errors, function (i, error) {
+                                        const $error = $('<span style="color: red;"></span>').text(error[0] || error);
+                                        $error_block.append($error);
+                                    });
+                                    $error_block[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
                                 }
                             }
                         });
