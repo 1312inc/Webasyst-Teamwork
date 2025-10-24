@@ -681,7 +681,7 @@
         $.get('?module=tasks&action=ai&type=taskfields&html=1', function (response) {
 
             $.waDialog({
-                html: response.data.html,
+                html: response.data?.html,
                 onOpen: function ($wrapper, dialog) {
                     let try_free = !$wrapper.find('.js-premium-wrapper').length;
 

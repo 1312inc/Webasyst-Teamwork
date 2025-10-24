@@ -107,7 +107,8 @@ class tasksTasksAiController extends waJsonController
                     $this->errors = $this->response;
                     $this->response = null;
                 } else {
-                    $cache_fields->set($this->response);
+                    $task_fields = $this->response;
+                    $cache_fields->set($task_fields);
                     $send_html = true;
                 }
             } else {
