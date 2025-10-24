@@ -166,18 +166,20 @@
 
         {if $hash_type == tasksCollection::HASH_INBOX && !empty($task.roles[$wa->userId()])}
             {$user_roles = $task.roles[$wa->userId()]}
-            {$user_role = reset($user_roles)}
+            {foreach $user_roles as $user_role}
             <p class="small custom-mt-4 custom-mb-0">
                 <strong class="small" style="color: #{$user_role.color|default:'777777'|escape}"><i class="fas fa-user"></i> {$user_role.name|escape}</strong>
             </p>
+            {/foreach}
         {/if}
 
         {if $hash_type == tasksCollection::HASH_ASSIGNED && !empty($parsed_hash[1]) && !empty($task.roles[$parsed_hash[1]])}
             {$user_roles = $task.roles[$parsed_hash[1]]}
-            {$user_role = reset($user_roles)}
+            {foreach $user_roles as $user_role}
             <p class="small custom-mt-4 custom-mb-0">
                 <strong class="small" style="color: #{$user_role.color|default:'777777'|escape}"><i class="fas fa-user"></i> {$user_role.name|escape}</strong>
             </p>
+            {/foreach}
         {/if}
 
         {* PINNED COMMENTS *}
