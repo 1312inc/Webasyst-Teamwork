@@ -78,18 +78,6 @@
 
             </span>
 
-            {if $task.current_user_role && $hash_type == tasksCollection::HASH_INBOX}
-            <span class="align-left">
-                <span class="badge" style="background-color: #{$task.current_user_role.color|default:'777777'|escape}">{$task.current_user_role.name|escape}</span>
-            </span>
-            {/if}
-
-            {if $task.assigned_contact.role && $hash_type == tasksCollection::HASH_ASSIGNED}
-            <span class="align-left">
-                <span class="badge" style="background-color: #{$task.assigned_contact.role.color|default:'777777'|escape}">{$task.assigned_contact.role.name|escape}</span>
-            </span>
-            {/if}
-
             <span class="count align-right">
 
                 {* This vars will be mutated by tasksHelper::getDatetime, must be inited first because of Smary & PHP 7.4 cause the warnings otherwise *}
@@ -173,6 +161,18 @@
                     {wa_date('humandate', $task.milestone.due_date, waDateTime::getDefaultTimezone())|escape}
                 </span>
                 <span class="hint semibold">{$task.milestone.name|escape|truncate:32}</span>
+            </p>
+        {/if}
+
+        {if $task.current_user_role && $hash_type == tasksCollection::HASH_INBOX}
+            <p class="small custom-mt-4 custom-mb-0">
+                <strong class="small" style="color: #{$task.current_user_role.color|default:'777777'|escape}"><i class="fas fa-user"></i> {$task.current_user_role.name|escape}</strong>
+            </p>
+        {/if}
+
+        {if $task.assigned_contact.role && $hash_type == tasksCollection::HASH_ASSIGNED}
+            <p class="small custom-mt-4 custom-mb-0">
+                <strong class="small" style="color: #{$task.assigned_contact.role.color|default:'777777'|escape}"><i class="fas fa-user"></i> {$task.assigned_contact.role.name|escape}</strong>
             </p>
         {/if}
 
