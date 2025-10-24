@@ -97,6 +97,7 @@ class tasksTasksAiController extends waJsonController
         try {
             $cache_fields = new waVarExportCache('tasks_fields_ai', 3600, 'tasks');
             $task_fields = $cache_fields->get();
+            $send_html = false;
 
             if ($task_fields === null) {
                 $content = (new waServicesApi())->serviceCall('AI_OVERVIEW', ['facility' => 'task'], 'POST');
@@ -107,21 +108,23 @@ class tasksTasksAiController extends waJsonController
                     $this->response = null;
                 } else {
                     $cache_fields->set($this->response);
+                    $send_html = true;
                 }
             } else {
                 $this->response = $task_fields;
+                $send_html = true;
+            }
 
-                if (waRequest::get('html')) {
-                    $tasks_try_free_count = (new waAppSettingsModel())->get('tasks', 'tasks_try_free_count', 0);
-                    $tasks_free_try_count_max = 10;
-                    $view = wa()->getView();
-                    $view->assign('params', $task_fields);
-                    $view->assign('is_premium', waLicensing::check('tasks')->hasPremiumLicense());
-                    $view->assign('tasks_try_free_count', $tasks_try_free_count);
-                    $view->assign('tasks_try_free_left', $tasks_free_try_count_max - (int)$tasks_try_free_count);
+            if (waRequest::get('html') && $send_html) {
+                $tasks_try_free_count = (new waAppSettingsModel())->get('tasks', 'tasks_try_free_count', 0);
+                $tasks_free_try_count_max = 10;
+                $view = wa()->getView();
+                $view->assign('params', $task_fields);
+                $view->assign('is_premium', waLicensing::check('tasks')->hasPremiumLicense());
+                $view->assign('tasks_try_free_count', $tasks_try_free_count);
+                $view->assign('tasks_try_free_left', $tasks_free_try_count_max - (int)$tasks_try_free_count);
 
-                    $this->response['html'] = $view->fetch(wa()->getAppPath() . '/templates/actions/tasks/TaskAiDialog.html');
-                }
+                $this->response['html'] = $view->fetch(wa()->getAppPath() . '/templates/actions/tasks/TaskAiDialog.html');
             }
         } catch (Exception $exception) {
             $this->errors = [
