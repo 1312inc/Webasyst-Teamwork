@@ -723,7 +723,7 @@
 
                         $wrapper.find('.js-write-ai-action').prop('disabled', true);
 
-                        $.post('?module=tasks&action=ai&type=writetask', $wrapper.find(':input').serializeArray(), function (data) {
+                        $.post('?module=tasks&action=ai&type=writetask', $wrapper.find(':input').serializeArray(), function (response) {
                             $wrapper.find('.js-write-ai-action').prop('disabled', false);
                             if (response?.status === 'ok' && response.data?.format_content) {
                                 $wrapper.find('.dialog-ai-answer').html(response.data.format_content).removeClass('hidden');

@@ -2,7 +2,7 @@
     <div class="dialog-background"></div>
     <div class="dialog-body">
         <a href="#" class="dialog-close js-close-dialog"><i class="fas fa-times"></i></a>
-        <h3 class="dialog-header{if !$is_premium} hidden{/if}">[`Write task with AI`]</h3>
+        <h3 class="dialog-header{if !$is_premium} hidden{/if}">[`Write task with AI`]{if !$is_premium} <span class="small text-gray">({sprintf('[`%d left for free`]', $tasks_try_free_left)})</span>{/if}</h3>
         <div class="dialog-content js-task-write-ai-content">
         {if !$is_premium}
             <div class="js-premium-wrapper custom-mt-24">
@@ -16,10 +16,10 @@
                     <a href="{$wa_backend_url}installer/store/app/tasks/" class="button rounded yellow large">
                         [`Upgrade to premium`]
                     </a>
-                    {if $tasks_try_free_count < 10}
+                    {if $tasks_try_free_left}
                         <button type="button" class="js-try-free-ai button nobutton rounded large">[`Try for free`]</button>
                     {/if}
-                    <p class="js-after-try-free-ai bold small align-center custom-mt-4"{if $tasks_try_free_count < 10} style="display: none;"{/if}>[`Bonus: +500 free AI prompts`]</p>
+                    <p class="js-after-try-free-ai bold small align-center custom-mt-4"{if $tasks_try_free_left} style="display: none;"{/if}>[`Bonus: +500 free AI prompts`]</p>
                 </div>
             </div>
             {/if}

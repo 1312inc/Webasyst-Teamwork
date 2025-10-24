@@ -112,10 +112,13 @@ class tasksTasksAiController extends waJsonController
                 $this->response = $task_fields;
 
                 if (waRequest::get('html')) {
+                    $tasks_try_free_count = (new waAppSettingsModel())->get('tasks', 'tasks_try_free_count', 0);
+                    $tasks_free_try_count_max = 10;
                     $view = wa()->getView();
                     $view->assign('params', $task_fields);
-                    $view->assign('is_premium', waLicensing::check('tasks')->isPremium());
-                    $view->assign('tasks_try_free_count', (new waAppSettingsModel())->get('tasks', 'tasks_try_free_count', 0));
+                    $view->assign('is_premium', tasksLicensing::check('tasks')->hasPremiumLicense());
+                    $view->assign('tasks_try_free_count', $tasks_try_free_count);
+                    $view->assign('tasks_try_free_left', $tasks_free_try_count_max - (int)$tasks_try_free_count);
 
                     $this->response['html'] = $view->fetch(wa()->getAppPath() . '/templates/actions/tasks/TaskAiDialog.html');
                 }
