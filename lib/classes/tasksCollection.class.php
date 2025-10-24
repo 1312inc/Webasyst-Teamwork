@@ -2,7 +2,7 @@
 
 class tasksCollection
 {
-    public const FIELDS_TO_GET = '*,log,create_contact,assigned_contact,attachments,tags,project,favorite,relations';
+    public const FIELDS_TO_GET = '*,log,create_contact,assigned_contact,attachments,tags,project,roles,favorite,relations';
 
     public const HASH_SEARCH = 'search';
     public const HASH_UNASSIGNED = 'unassigned';
@@ -409,13 +409,14 @@ class tasksCollection
                 $contact_ids[$contact_id] = $contact_id;
             }
         }
+        if (!empty($other_fields['roles'])) {
+            $task_user_model = new tasksTaskUsersModel();
+            $user_by_role = $task_user_model->getUsersRoleByTasks($ids);
+        }
 
         if ($contact_ids) {
             $contact_model = new waContactModel();
             $contacts = $contact_model->getById($contact_ids);
-            $current_user_id = wa()->getUser()->getId();
-            $role_users = (new tasksTaskUsersModel)->getRolesByContacts($contact_ids);
-
             foreach($contacts as &$c) {
                 $c['name'] = waContactNameField::formatName($c);
                 $c['photo_url'] = waContact::getPhotoUrl($c['id'], $c['photo'], null, null, ($c['is_company'] ? 'company' : 'person'));
@@ -423,13 +424,11 @@ class tasksCollection
             unset($c);
 
             foreach ($data as $_task_id => &$t) {
-                $t['current_user_role'] = ifset($role_users, $_task_id, $current_user_id, []);
                 if (!empty($other_fields['create_contact']) && isset($contacts[$t['create_contact_id']])) {
                     $t['create_contact'] = $contacts[$t['create_contact_id']];
                 }
                 if (!empty($other_fields['assigned_contact']) && isset($contacts[$t['assigned_contact_id']])) {
                     $t['assigned_contact'] = $contacts[$t['assigned_contact_id']];
-                    $t['assigned_contact']['role'] = ifset($role_users, $_task_id, $t['assigned_contact_id'], []);
                 }
                 if (!empty($other_fields['contact']) && isset($contacts[$t['contact_id']])) {
                     $t['contact'] = $contacts[$t['contact_id']];
@@ -517,6 +516,9 @@ class tasksCollection
                         $t['favorite_tags'][$tag['id']] = $tag['name'];
                     }
                 }
+            }
+            if (!empty($other_fields['roles'])) {
+                $t['roles'] = ifset($user_by_role, $t['id'], []);
             }
         }
         unset($t);

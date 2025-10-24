@@ -17,7 +17,7 @@ class tasksTaskUsersModel extends waModel
 
         foreach ($data as $_data) {
             unset($_data['id']);
-            $result[$_data['task_id']][$_data['contact_id']] = $_data;
+            $result[$_data['task_id']][$_data['contact_id']][$_data['role_id']] = $_data;
         }
 
         return $result;

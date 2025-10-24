@@ -639,7 +639,7 @@ class tasksTask implements ArrayAccess
             $c['name'] = waContactNameField::formatName($c);
             $c['photo_url'] = waContact::getPhotoUrl($c['id'], $c['photo'], null, null, ($c['is_company'] ? 'company' : 'person'));
             $c['calendar_status'] = $status_service->getForContactId($c['id'], new DateTimeImmutable());
-            $c['role'] = ifset($user_by_role, $c['id'], []);
+            $c['roles'] = ifset($user_by_role, $c['id'], []);
             $result[$c['id']] = $c;
         }
 
