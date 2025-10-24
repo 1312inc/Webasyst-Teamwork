@@ -116,7 +116,7 @@ class tasksTasksAiController extends waJsonController
                     $tasks_free_try_count_max = 10;
                     $view = wa()->getView();
                     $view->assign('params', $task_fields);
-                    $view->assign('is_premium', tasksLicensing::check('tasks')->hasPremiumLicense());
+                    $view->assign('is_premium', waLicensing::check('tasks')->hasPremiumLicense());
                     $view->assign('tasks_try_free_count', $tasks_try_free_count);
                     $view->assign('tasks_try_free_left', $tasks_free_try_count_max - (int)$tasks_try_free_count);
 
