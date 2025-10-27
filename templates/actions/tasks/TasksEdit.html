@@ -722,7 +722,9 @@
                             return false;
                         }
 
-                        $wrapper.find('.js-write-ai-action').prop('disabled', true);
+                        const $btn = $wrapper.find('.js-write-ai-action');
+                        $btn.prop('disabled', true);
+                        $btn.find('.fa-spinner').show();
 
                         $.post('?module=tasks&action=ai&type=writetask', $wrapper.find(':input').serializeArray(), function (response) {
                             $wrapper.find('.js-write-ai-action').prop('disabled', false);
@@ -760,6 +762,9 @@
                             $error_block.append($('<span style="color: red;"></span>').text(error.responseText || error.statusText || 'Error'));
                             $error_block[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
                             dialog.close();
+                        }).always(function() {
+                            $btn.prop('disabled', false);
+                            $btn.find('.fa-spinner').hide();
                         });
                     });
                 }
