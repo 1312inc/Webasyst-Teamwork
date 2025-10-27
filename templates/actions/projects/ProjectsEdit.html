@@ -4,7 +4,7 @@
 
     {$sidebar_html|default:''}
 
-    <div class="t-project-page content custom-p-20 not-blank" id="t-project-page">
+    <div class="t-project-page content not-blank" id="t-project-page">
 
         <div class="article">
             <div class="article-body">
@@ -13,7 +13,7 @@
                     <span class="alert success"><i class="fas fa-check-circle"></i> [`Settings successfully updated`]</span>
                 </div>
 
-                <div class="flexbox space-20 custom-mb-40">
+                <div class="flexbox space-20 custom-mb-24">
                     <h1 class="custom-mb-0 wide{if $project.archive_datetime} gray{/if}">
                         {if !$project.id}[`New project`]{else}{$project.name|default:'[`(no name)`]'|escape}{/if}
                     </h1>

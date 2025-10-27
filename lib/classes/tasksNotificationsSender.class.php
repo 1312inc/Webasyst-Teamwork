@@ -69,6 +69,12 @@ class tasksNotificationsSender
                 }
             }
         }
+        $role_users = (new tasksTaskUsersModel())->getUsersRoleByTasks($this->task['id']);
+        $role_users = array_filter(ifset($role_users, $this->task['id'], []), function ($roles) {
+            $send_notifications = array_column($roles, 'send_notifications');
+            return in_array(1, $send_notifications);
+        });
+        $this->task['contacts_role'] = array_unique(array_keys($role_users));
 
         $this->pushSender = new tasksPushSenderService();
     }
@@ -154,10 +160,10 @@ class tasksNotificationsSender
      */
     protected function prepareSendMap()
     {
-        $settings = $this->getContactsNotificationSettings('all', [
-            $this->task['create_contact_id'],
-            $this->task['assigned_contact_id'],
-        ]);
+        $settings = $this->getContactsNotificationSettings(
+            'all',
+            array_merge([$this->task['create_contact_id'], $this->task['assigned_contact_id']], $this->task['contacts_role'])
+        );
 
         $send_map = [];
         $send_to_mentioned = $this->contacts_mentioned;
@@ -288,6 +294,9 @@ class tasksNotificationsSender
 
         if (!empty($task_map['assigned_to_me'])) {
             if ($this->task['assigned_contact_id'] == $contact_id) {
+                return true;
+            }
+            if (in_array($contact_id, $this->task['contacts_role'])) {
                 return true;
             }
         }

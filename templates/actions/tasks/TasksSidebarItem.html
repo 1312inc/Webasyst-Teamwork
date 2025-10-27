@@ -164,6 +164,25 @@
             </p>
         {/if}
 
+        {if $wa->tasks->isPremium()}
+            {if !empty($hash_type) && $hash_type == tasksCollection::HASH_INBOX && !empty($task.roles[$wa->userId()])}
+                {$user_roles = $task.roles[$wa->userId()]}
+                {foreach $user_roles as $user_role}
+                <p class="small custom-mt-4 custom-mb-0">
+                    <strong class="small" style="color: #{$user_role.color|default:'777777'|escape}"><i class="fas fa-user"></i> {$user_role.name|escape}</strong>
+                </p>
+                {/foreach}
+            {/if}
+            {if !empty($hash_type) && $hash_type == tasksCollection::HASH_ASSIGNED && !empty($parsed_hash[1]) && !empty($task.roles[$parsed_hash[1]])}
+                {$user_roles = $task.roles[$parsed_hash[1]]}
+                {foreach $user_roles as $user_role}
+                <p class="small custom-mt-4 custom-mb-0">
+                    <strong class="small" style="color: #{$user_role.color|default:'777777'|escape}"><i class="fas fa-user"></i> {$user_role.name|escape}</strong>
+                </p>
+                {/foreach}
+            {/if}
+        {/if}
+
         {* PINNED COMMENTS *}
         {$log_header_ids = array_unique([$task.assign_log_id, $task.comment_log_id])}
         {$_sort = sort($log_header_ids)}

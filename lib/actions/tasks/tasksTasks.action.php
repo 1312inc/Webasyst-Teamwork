@@ -86,19 +86,17 @@ class tasksTasksAction extends waViewAction
         );
 
         $project_id = null;
+        $scope_id = null;
         if ($c->getType() === tasksCollection::HASH_PROJECT && !empty($collection_info['id'])) {
             $project_id = $collection_info['id'];
-        }
-
-        $scopeId = null;
-        if ($c->getType() === tasksCollection::HASH_SCOPE && !empty($collection_info['id'])) {
-            $scopeId = $collection_info['id'];
-
-            $milestone = tsks()->getEntityRepository(tasksMilestone::class)
-                ->findById($scopeId);
+            $project = tsks()->getEntityRepository(tasksProject::class)->findById($project_id);
+        } elseif ($c->getType() === tasksCollection::HASH_SCOPE && !empty($collection_info['id'])) {
+            $scope_id = $collection_info['id'];
+            $milestone = tsks()->getEntityRepository(tasksMilestone::class)->findById($scope_id);
         }
 
         $this->view->assign([
+            'entity_id'           => ($project_id ?: ($scope_id ?: '')),
             'hash_type'           => $c->getType(),
             'count'               => $count,
             'offset'              => $offset,
@@ -122,8 +120,8 @@ class tasksTasksAction extends waViewAction
             'statuses'            => self::getStatusFilterType(),
             'tiny_ad'             => (new tasksTinyAddService())->getAd(wa()->getUser()),
             'show_settings'       => wa()->getUser()->isAdmin('tasks') && in_array($c->getType(), [tasksCollection::HASH_PROJECT, tasksCollection::HASH_SCOPE], true),
-            'settings_url'        => ($project_id ? "project/$project_id/" : ($scopeId ? "scope/$scopeId/" : '')),
             'milestone'           => $milestone ?? null,
+            'project'             => $project ?? null,
             'unread_tasks'        => $unread_tasks,
             'types'               => $this->getTypes(),
             'milestones'          => tasksHelper::getMilestones(),

@@ -160,6 +160,8 @@
                 window.tasksHeader = new TasksHeader({
                     total_count: {$total_count|json_encode},
                     is_in_my_list: {$is_in_my_list|json_encode},
+                    hash_type: '{$hash_type}',
+                    entity_id: '{$entity_id}',
                     messages: {
                         cant_create_list: "[`Cannot create a list from another list.`]",
                         tasks_count: {_w('%d task','%d tasks', $total_count)|json_encode},

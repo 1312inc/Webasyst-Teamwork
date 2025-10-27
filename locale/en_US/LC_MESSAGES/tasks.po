@@ -12,7 +12,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Basepath: .\n"
-"X-Generator: Poedit 3.3.2\n"
+"X-Generator: Poedit 3.8\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPath-1: .\n"
 
@@ -104,13 +104,11 @@ msgid "Last %d day"
 msgid_plural "Last %d days"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 msgid "%d record"
 msgid_plural "%d records"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 msgid "Due"
 msgstr ""
@@ -248,7 +246,6 @@ msgid "Show %d archived project"
 msgid_plural "Show %d archived projects"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 msgid "Show %d archived projects"
 msgstr ""
@@ -260,7 +257,6 @@ msgid "[`Show %d archived project`]"
 msgid_plural "[`Show %d archived projects`]"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 msgid "Create a project first"
 msgstr ""
@@ -302,7 +298,6 @@ msgid "%d task"
 msgid_plural "%d tasks"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 msgid "no tasks"
 msgstr ""
@@ -404,7 +399,6 @@ msgid "%d task has been assigned to you"
 msgid_plural "%d tasks has been assigned to you"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 msgid "A task you created has been marked as done."
 msgstr ""
@@ -491,25 +485,21 @@ msgid "%d min"
 msgid_plural "%d mins"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 msgid "%d hr"
 msgid_plural "%d hrs"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 msgid "%d mo"
 msgid_plural "%d mo"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 msgid "%d yr"
 msgid_plural "%d yrs"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 msgid "New"
 msgstr ""
@@ -527,7 +517,6 @@ msgid "%d task has been completed"
 msgid_plural "%d tasks has been completed"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 msgid "A task has been assigned to you"
 msgstr ""
@@ -650,7 +639,6 @@ msgid "<a href=\"%s\">%d new task</a> from %s"
 msgid_plural "<a href=\"%s\">%d new tasks</a> from %s"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 msgid "User %s edited a task you are assigned to:"
 msgstr "%s edited the task you are assigned to:"
@@ -683,13 +671,11 @@ msgid "ASSIGNED: %d task was assigned to you"
 msgid_plural "ASSIGNED: %d tasks were assigned to you"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 msgid "DONE: %d task was completed"
 msgid_plural "DONE: %d tasks were completed"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 msgid "ASSIGNED: %s %s"
 msgstr ""
@@ -743,13 +729,11 @@ msgid "In %d day"
 msgid_plural "In %d days"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 msgid "%d day ago"
 msgid_plural "%d days ago"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 msgid "Unhide"
 msgstr ""
@@ -770,7 +754,6 @@ msgid "%d new task"
 msgid_plural "%d new tasks"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 msgid "<a href=\"%s\">%s</a> from %s"
 msgstr ""
@@ -815,19 +798,16 @@ msgid "Hide archived project"
 msgid_plural "Hide archived projects"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 msgid "Show %d archived scope"
 msgid_plural "Show %d archived scopes"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 msgid "Hide archived scope"
 msgid_plural "Hide archived scopes"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 msgid "My preferences"
 msgstr ""
@@ -1043,13 +1023,11 @@ msgid "Show %d completed milestone"
 msgid_plural "Show %d completed milestones"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 msgid "Hide completed milestone"
 msgid_plural "Hide completed milestones"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 msgid "My notification preferences"
 msgstr ""
@@ -1355,7 +1333,6 @@ msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 msgid "Email not send"
 msgstr "Email not sent"
@@ -1622,7 +1599,6 @@ msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
 
 msgid "Any type"
 msgstr ""
@@ -1841,4 +1817,139 @@ msgid "Hide completed scopes"
 msgstr ""
 
 msgid "Show completed scopes"
+msgstr ""
+
+msgid "Client"
+msgstr ""
+
+msgid "Assistant"
+msgstr ""
+
+msgid "Decision maker"
+msgstr ""
+
+msgid "Supervisor"
+msgstr ""
+
+msgid "Progress"
+msgstr ""
+
+msgid "Roles"
+msgstr ""
+
+msgid "All inclusive in the cloud"
+msgstr ""
+
+msgid "upgrade to premium"
+msgstr ""
+
+msgid "In Webasyst Cloud, simply upgrade to the <b>Premium</b> plan and get all premium features at once with no extra purchase required."
+msgstr ""
+
+msgid "Per-server license for the entire company. Unlimited users, all premium features, free updates forever."
+msgstr ""
+
+msgid "Write and spellcheck task content with just few clicks. Powered by Webasyst AI."
+msgstr ""
+
+msgid "Limited access & user roles"
+msgstr ""
+
+msgid "Better tools for better results"
+msgstr ""
+
+msgid "Early launch offer gets you the best premium upgrade conditions possible."
+msgstr ""
+
+msgid "%d features available now, +%d more to come shortly."
+msgstr ""
+
+msgid "Write task with AI"
+msgstr ""
+
+msgid "Briefly describe the task goal. Webasyst AI will continue writing and suggest you the complete task text template."
+msgstr ""
+
+msgid "Write a task about..."
+msgstr ""
+
+msgid "Write with AI"
+msgstr ""
+
+msgid "Get a public link for tracking entire project status and updates with no access to Webasyst backend."
+msgstr ""
+
+msgid "Get a public link for tracking entire milestone status and updates with no access to Webasyst backend."
+msgstr ""
+
+msgid "Private link is a premium feature"
+msgstr ""
+
+msgid "Access:"
+msgstr ""
+
+msgid "This task only"
+msgstr ""
+
+msgid "All tasks in this project"
+msgstr ""
+
+msgid "Full access to all projects"
+msgstr ""
+
+msgid "Save the task to invite."
+msgstr ""
+
+msgid "Following"
+msgstr ""
+
+msgid "Following task updates"
+msgstr ""
+
+msgid "Follow"
+msgstr ""
+
+msgid "I’m following"
+msgstr ""
+
+msgid "Mention"
+msgstr ""
+
+msgid "Role name"
+msgstr ""
+
+msgid "Permissions"
+msgstr ""
+
+msgid "Specify how users in this role will interact with tasks in addition to being able to just view & comment on them:"
+msgstr ""
+
+msgid "User roles"
+msgstr ""
+
+msgid "Custom user roles allow adding individual users with limited access to specific tasks and to better describe specific user roles within tasks and projects."
+msgstr ""
+
+msgid "New role"
+msgstr ""
+
+msgid "Will see tasks in personal inbox"
+msgstr ""
+
+msgid "Will receive notifications on task updates (unless unsubscribed intentionally)"
+msgstr ""
+
+msgid "To invite someone, click (+) to create a new task > select ‘Invite’ > enter an email address and save. Or use the Webasyst Teamwork mobile app to invite with a 8-digit code."
+msgstr ""
+
+msgid "Link to more projects"
+msgstr ""
+
+msgid "Self & assigned tasks only"
+msgstr ""
+
+msgid "No access: user %s is not eligible for the specified role in this task"
+msgstr ""
+
+msgid "Unknown role"
 msgstr ""

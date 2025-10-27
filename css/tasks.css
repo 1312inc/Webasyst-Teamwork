@@ -288,3 +288,16 @@
 }
 
 .t-settings-task-fields-wrapper .t-fields-list-item.is-template { display: none; }
+
+.t-settings-task-roles-wrapper .t-sort-handler { cursor: move; margin: 4px 7px 3px; }
+.t-settings-task-roles-wrapper .t-loading { margin-top: 6px; }
+.t-settings-task-roles-wrapper .t-role-color-wrapper { display: inline-block; }
+.t-settings-task-roles-wrapper .t-role-color-wrapper .color { vertical-align: sub; }
+.t-settings-task-roles-wrapper .t-delete-role-link { display: inline-block; float: right; }
+.t-settings-task-roles-wrapper .t-edit-role-link { display: inline-block; float: right; margin-right: 6px; }
+.t-settings-task-roles-wrapper .t-close-link { display: inline-block; margin-left: 6px; }
+.t-settings-task-roles-wrapper .t-delete-role-link i { margin-top: 3px; margin-right: 8px; }
+.t-settings-task-roles-wrapper .t-edit-role-link i { margin-top: 3px; }
+.t-settings-task-roles-wrapper .t-roles-list-item.is-template { display: none; }
+.t-settings-task-roles-wrapper .t-roles-list-item { width: 100%; margin-bottom: 0; line-height: 25px; }
+.t-settings-task-roles-wrapper .t-roles-list-item:nth-child(odd) { background: #f2f7ff; }

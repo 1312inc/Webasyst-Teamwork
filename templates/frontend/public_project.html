@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="robots" content="noindex" />
+    <title>{$project->getName()|escape} — {$wa->accountName()}</title>
+    <script src="{$wa_url}wa-content/js/jquery-wa/wa.switch-mode.js?v{$wa->version(true)}"></script>
+    <script defer src="{$wa_url}wa-content/js/fontawesome/fontawesome-all.min.js?v=513"></script>
+    <link href="{$wa_url}wa-content/css/wa/wa-2.0.css?v{$wa->version(true)}" rel="stylesheet" type="text/css">
+    <link href="{$wa_app_static_url}css/tasks.min.css?v={$wa->version()}" rel="stylesheet" type="text/css" />
+    <style>
+        .container {
+            word-break: break-word;
+            max-width: 1024px;
+            padding: 0 2rem;
+            margin-left: auto;
+            margin-right: auto;
+
+            @media screen and (max-width: 900px) {
+                padding: 0 1rem;
+            }
+
+            &.rounded {
+                padding: 3rem;
+                border-radius: 1.5rem;
+                margin-top: 1.5rem;
+                margin-bottom: 2rem;
+
+                @media screen and (max-width: 900px) {
+                    padding: 1rem;
+                    margin-top: 1rem;
+                    margin-bottom: 1rem;
+                    border-radius: 0;
+                }
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="wa">
+
+        <div class="container custom-mt-24">
+            <div class="flexbox full-width">
+                <div class="nowrap">
+                    <img src="{$wa->url(true)}wa-apps/tasks/img/tasks.png" width="28" height="28" style="vertical-align: middle;" class="custom-mr-4" />
+                    <strong>Webasyst {$wa->appName()}</strong>
+                </div>
+                <div>{$wa->accountName()|truncate:64}</div>
+            </div>
+        </div>
+
+        <div class="container custom-mt-24">
+            <div class="flexbox full-width">
+                <div class="wide">
+                    <h1 class="h1">{$project->getName()|escape}</h1>
+                </div>
+                <div></div>
+            </div>
+        </div>
+
+        {foreach $tasks as $task}
+            <div class="container blank rounded">
+
+                <div class="flexbox middle space-8">
+                    {if !empty($task.project.icon_html)}
+                        {$task.project.icon_html}
+                    {/if}
+                    <span class="semibold">{$task.project.name|escape|truncate:42}</span>
+                </div>
+
+                <div class="flexbox space-16 custom-mb-8 custom-mt-16 wrap-mobile">
+
+                    <div class="wide">
+
+                        {* AUTHOR OF THE LAST ASSIGNMENT *}
+                        {$_assignment_creator = $task.assignment_creator}
+
+                        {* CURRENT ASSIGNED CONTACT *}
+                        {$_assigned_contact = $task.assigned_contact}
+
+                        <div class="flexbox space-12">
+                            <div>
+                                <img class="userpic userpic48" src="{waContact::getPhotoUrl($_assignment_creator.id, $_assignment_creator.photo, 96)}" alt="{$_assignment_creator.name|escape}">
+                            </div>
+                            <div>
+                                <i class="fas fa-arrow-right text-light-gray custom-mt-16"></i>
+                            </div>
+                            <div class="flexbox space-8">
+                                {if $task.status_id == -1}
+                                    <span class="icon size-48">
+                                        <i class="fas fa-check-circle text-light-gray"></i>
+                                    </span>
+                                    <div class="wide">
+                                        <p class="small custom-mb-4 semibold text-gray">
+                                            [`Closed`]
+                                        </p>
+                                        <p class="hint nowrap custom-mt-0">{$task.update_datetime|wa_datetime:'humandatetime'}</p>
+                                    </div>
+                                {else}
+                                <img class="userpic userpic48" src="{waContact::getPhotoUrl($_assigned_contact.id, $_assigned_contact.photo, 96)}" alt="{$_assigned_contact.name|escape}">
+                                    <div class="wide">
+                                        <p class="small custom-mb-4">
+                                            {$_assigned_contact.name|escape}
+                                        </p>
+                                        <p class="hint nowrap custom-mt-0">{$task.update_datetime|wa_datetime:'humandatetime'}</p>
+                                    </div>
+                                {/if}
+                            </div>
+                        </div>
+
+                    </div>
+
+                    {* MILESTONE & DEADLINE *}
+                    <div class="">
+
+                        <div class="flexbox space-8 t-task-flag-box-content">
+                            {$_milestone = ''}
+                            {$_due_date = ''}
+                            {$_due_hint = ''}
+                            {$_due_class = ''}
+                            {if $task.milestone}
+                                {$_milestone = $task.milestone.name|escape}
+                                {if $task.milestone.due_date}
+                                    {$_due_date = wa_date('humandate', $task.milestone.due_date, waDateTime::getDefaultTimezone())|escape}
+                                {/if}
+                                {$_due_hint = $task.milestone.view.due_text}
+                                {$_due_class = $task.milestone.view.due_color_class}
+                            {/if}
+                            {if $task.due_date}
+                                {* manually set due date overrides milestone general due date *}
+                                {$_due_date = wa_date('humandate', $task.due_date, waDateTime::getDefaultTimezone())|escape}
+                                {$_due_hint = $task.view.due_text}
+                                {$_due_class = $task.view.due_color_class}
+                            {/if}
+                            <span class="custom-mr-16{if !$task.milestone && !$task.due_date} text-light-gray{else} black{/if}">
+                                <span class="icon size-32">
+                                    <i class="fas fa-flag-checkered"></i>
+                                </span>
+                            </span>
+                            <div class="wide middle">
+
+                                <p class="small custom-mb-4">
+                                    {if $_milestone}
+                                        <strong>{$_milestone|truncate:32}</strong>
+                                    {elseif $_due_date}
+                                        <span class="badge nowrap squared {$_due_class} custom-mr-4">{$_due_date}</span>
+                                    {else}
+                                        <span class="gray nowrap">[`No due date`]</span>
+                                    {/if}
+                                </p>
+
+                                {if $_due_date}
+                                    <p class="hint custom-mt-0">
+                                        {if $_milestone}
+                                            <span class="t-due-date-bl badge nowrap squared {$_due_class} custom-mr-4">{$_due_date}</span>
+                                        {/if}
+                                        <strong class="small nowrap">{$_due_hint}</strong>
+                                    </p>
+                                {/if}
+                                {if $_milestone && !$_due_date}
+                                    <p class="hint custom-mt-0">
+                                        <span class="gray nowrap">[`No due date`]</span>
+                                    </p>
+                                {/if}
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <hr class="custom-mt-16" />
+
+                <div class="flexbox space-8 custom-mb-24">
+                    <div class="custom-mt-12">
+                        {* STATUS *}
+                        {if !empty($task.status.name)}
+                            {if $task.project.archive_datetime}
+                                <span class="badge t-status-wrapper is-archived"><i class="fas fa-archive fa-xs"></i> [`Archived`]</span>
+                            {else}
+                                <span class="large" style="position: relative; top: -0.25rem;">{tasksHelper::statusNameHTML($task.status.id)}</span>
+                            {/if}
+                        {/if}
+                    </div>
+                    <h1 class="custom-m-0">{$task['name']|escape}</h1>
+                </div>
+
+                <div>
+                    {tasksTask::formatText($task.text)}
+                </div>
+
+                {* ATTACHMENTS *}
+                {if $task.images || $task.files}
+                    <div class="t-attach-wrapper custom-mt-32">
+                        {if $task.images}
+                            <div class="t-attached-files-wrapper">
+                                <div class="t-attach-list-block">
+                                    <div class="t-images-list">
+                                        {foreach $task.images as $image}
+                                            <div class="t-image-item">
+                                                <a class="t-image-link wa-gallery-image" href="{$wa_backend_url}tasks/?module=attachments&action=download&id={$image.id}" target="_blank" title="{$image.name|escape}">
+                                                    <img src="{tasksHelper::getAttachPreviewUrl($image)}" alt="{$image.name|escape}">
+                                                </a>
+                                                <div class="t-file-name" title="{$image.name|escape}">{$image.name|escape}</div>
+                                            </div>
+                                        {/foreach}
+                                    </div>
+                                </div>
+                            </div>
+                        {/if}
+                        {if $task.files}
+                            <div class="t-attached-files-wrapper">
+                                <div class="t-attach-list-block">
+                                    <div class="t-files-list">
+                                        {foreach $task.files as $file}
+                                            <div class="t-file-item">
+                                                <a class="t-file-link" href="{$wa_backend_url}tasks/?module=attachments&action=download&id={$file.id}" target="_blank" title="{$file.name|escape}">
+                                                    <i class="fas fa-cloud-download-alt custom-mr-4"></i>
+                                                    <span class="t-file-name">{$file.name|escape}</span>
+                                                    <span class="t-file-size">{$file.size|wa_format_file_size}</span>
+                                                </a>
+                                            </div>
+                                        {/foreach}
+                                    </div>
+                                </div>
+                            </div>
+                        {/if}
+                    </div>
+                {/if}
+
+                <div class="custom-mt-32">
+
+                    <h3>[`History &amp; Comments`] <span class="hint">{count($task.log)}</span></h3>
+
+                    <div class="">
+                        {foreach $task.log as $l}
+                            <div class="t-comment-item-wrapper">
+
+                                {*$log_attachments = $task->getLogAttachments($l.id)*}
+                                {$log_attachments = ['files' => [], 'images' => []]}
+                                {$log_attachments_count = count($log_attachments.files) + count($log_attachments.images)}
+
+                                <div class="t-comment-item flexbox space-12">
+                                    <div>
+                                        {if !empty({$l.contact.photo_url})}
+                                            <img class="userpic userpic-32" src="{$l.contact.photo_url}" alt="{$l.contact.name|escape}">
+                                        {else}
+                                            <img class="userpic userpic-32" src="/wa-content/img/userpic96@2x.jpg">
+                                        {/if}
+                                    </div>
+                                    <div class="wide">
+                                        <div class="custom-mb-8">
+
+                                            <div class="nowrap hint">{$l.create_datetime|wa_datetime:"humandatetime"}</div>
+
+                                                <span class="small">
+                                                    {if $l.status_changed}
+                                                            {if isset($l.before_status_id) && $l.before_status_id != $l.after_status_id}
+                                                                {tasksHelper::statusNameHTML($l.before_status_id)}
+                                                                &nbsp;→&nbsp;
+                                                            {/if}
+                                                            {tasksHelper::statusNameHTML($l.after_status_id)}
+                                                    {/if}
+                                                </span>
+
+                                                <span class="small bold">
+                                                    {$l.contact.name|escape|default:_w('(no name)')}
+                                                </span>
+
+                                                {if $l.action == 'edit' || $l.action == 'comment' || $l.action == 'forward'|| $l.action == 'return'}
+                                                    <span class="small">{$l.action_name}</span>
+                                                {/if}
+
+                                                {if $l.assignment_changed}
+                                                    <span class="small">
+                                                        {if $l.assigned_contact_id}
+                                                            {if !empty($l.assigned_contact.name)}<span class="gray custom-mx-4">→</span>{/if}
+                                                            <span class="bold">{$l.assigned_contact.name|escape}</span>
+                                                        {else}
+                                                            <span>→</span>
+                                                            <span>[`Assignment removed`]</span>
+                                                        {/if}
+                                                    </span>
+                                                {/if}
+
+                                        </div>
+
+                                        {if !empty($l.text)}
+                                            <div>{tasksTask::formatText($l.text)}</div>
+                                        {/if}
+
+                                        {if $log_attachments.files || $log_attachments.images}
+                                            <div class="t-attach-wrapper">
+                                                <div class="t-attached-files-wrapper">
+                                                    {if $log_attachments.images}
+                                                        <div class="t-images-list">
+                                                            {foreach $log_attachments.images as $image}
+                                                                <div class="t-image-item">
+                                                                    <a class="t-image-link wa-gallery-image" href="{$wa_backend_url}tasks/?module=attachments&action=download&id={$image.id}" title="{$image.name|escape}">
+                                                                        <img src="{tasksHelper::getAttachPreviewUrl($image)}" alt="{$image.name|escape}">
+                                                                    </a>
+                                                                    <div class="t-file-name" title="{$image.name|escape}">{$image.name|escape}</div>
+                                                                </div>
+                                                            {/foreach}
+                                                        </div>
+                                                    {/if}
+                                                    {if $log_attachments.files}
+                                                        <div class="t-files-list">
+                                                            {foreach $log_attachments.files as $file}
+                                                                <div class="t-file-item" data-file-ident="{$file.id}">
+                                                                    <a class="t-file-link" href="{$wa_backend_url}tasks/?module=attachments&action=download&id={$file.id}" title="{$file.name|escape}">
+                                                                        <i class="fas fa-cloud-download-alt custom-mr-4"></i>
+                                                                        <span class="t-file-name">{$file.name|escape}</span>
+                                                                        <span class="t-file-size">{$file.size|wa_format_file_size}</span>
+                                                                    </a>
+                                                                </div>
+                                                            {/foreach}
+                                                        </div>
+                                                    {/if}
+                                                </div>
+                                            </div>
+                                        {/if}
+                                    </div>
+                                </div>
+
+                            </div>
+                        {foreachelse}
+                            {* <p class="hint">[`There are no comments for this task yet.`]</p> *}
+                        {/foreach}
+                    </div>
+
+                </div>
+            </div>
+        {/foreach}
+        <div class="align-center custom-mb-24">
+            <a href="[`https://www.webasyst.com/store/app/tasks/`]">
+                <img width="100" src="{$wa->url(true)}wa-content/img/webasyst-logo.svg" alt="Webasyst" />
+            </a>
+        </div>
+
+    </div>
+
+    <script>
+        [...document.querySelectorAll(".t-tag-link")].forEach((e) =>
+            e.addEventListener("click", (e) => e.preventDefault())
+        );
+    </script>
+</body>
+</html>

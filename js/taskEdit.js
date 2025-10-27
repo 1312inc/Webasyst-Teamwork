@@ -423,7 +423,7 @@ var TaskEdit = ( function($) { "use strict";
             }
         });
 
-        var closeOnEsc = function(event) {
+        /*var closeOnEsc = function(event) {
             var is_escape = ( event.keyCode == "27" );
             if (is_escape) {
                 var $closeLink = $task.find(".t-close-link"),
@@ -436,7 +436,7 @@ var TaskEdit = ( function($) { "use strict";
                 }
             }
         };
-        $(document).on("keydown", closeOnEsc);
+        $(document).on("keydown", closeOnEsc);*/
 
         if (window.FileReader == null) {
             alert($_('Your browser does not support File API!'));
@@ -960,6 +960,16 @@ var TaskEdit = ( function($) { "use strict";
                                     // Clear localStorage Task draft
                                     localStorage.removeItem('task_title');
                                     localStorage.removeItem(TasksController.getDraftKeyTaskText());
+                                }
+                            }else{
+                                $.tasks.hideLoadingButton($submitButton);
+                                if(response.errors.length){
+                                    const $error_block = that.$task.find('.js-errors-block');
+                                    $.each(response.errors, function (i, error) {
+                                        const $error = $('<span style="color: red;"></span>').text(error[0] || error);
+                                        $error_block.append($error);
+                                    });
+                                    $error_block[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
                                 }
                             }
                         }

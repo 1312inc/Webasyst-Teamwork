@@ -13,7 +13,7 @@
                     <span class="alert success"><i class="fas fa-check-circle"></i> [`Scope successfully saved`]</span>
                 </div>
 
-                <div class="flexbox space-20 custom-mb-40">
+                <div class="flexbox space-20 custom-mb-24">
 
                     {if $milestone.id}
                         <h1 class="custom-mb-0 wide{if $milestone.closed} gray{/if}">
@@ -50,21 +50,50 @@
                             <input type="hidden" name="id" value="{ifempty($milestone.id, 'new')}">
 
                             <div class="field custom-mt-0">
-                                <div class="name for-input">[`Name`]</div>
-                                <div class="value"><input type="text" name="milestone[name]" class="bold long large" value="{$milestone.name|escape}"></div>
+                                <div class="name for-input">[`Project`]</div>
+                                <div class="value no-shift">
+                                    <div class="dropdown" id="project-id">
+                                        <button class="dropdown-toggle button light-gray" type="button">[`Project`]</button>
+                                        <div class="dropdown-body">
+                                            <ul class="menu">
+                                                {foreach $projects as $p}
+                                                <li>
+                                                    <a href="javascript:void(0);" data-id="{$p.id}">
+                                                        {if $p.icon_url}
+                                                        <span class="icon">
+                                                            <i class="size-20 t-project-icon-rounded" style="background-image: url({$p.icon_url});"></i>
+                                                        </span>
+                                                        {/if}
+                                                        <span>{$p.name|escape|truncate:42}</span>
+                                                    </a>
+                                                </li>
+                                                {/foreach}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <input id="input" name="milestone[project_id]" type="hidden" value="{$milestone.project_id}">
+                                    <script>
+                                        ( function($) {
+                                            $("#project-id").waDropdown({
+                                                hover: false,
+                                                items: ".menu > li > a",
+                                                ready: (dropdown) => {
+                                                    const active = dropdown.$menu.find('[data-id="{$milestone.project_id}"]');
+                                                    if(!active[0]) return;
+                                                    dropdown.$button.text(active.text());
+                                                },
+                                                change: (event, target, dropdown) => {
+                                                    $('[name="milestone[project_id]"]').val( $(target).data("id") ).trigger('input');
+                                                }
+                                            });
+                                        })(jQuery);
+                                    </script>
+                                </div>
                             </div>
 
                             <div class="field">
-                                <div class="name for-input">[`Plan`]</div>
-                                <div class="value">
-                                    <input type="text" class="datepicker-start-date shorter bold" placeholder="[`Start`]">
-                                    <input type="hidden" name="milestone[start_date]" value="{$milestone.start_date|escape}">
-                                    —&nbsp;
-                                    <input type="text" class="datepicker-end-date shorter bold" placeholder="[`End`]">
-                                    <input type="hidden" name="milestone[end_date]" value="{$milestone.end_date|escape}">
-                                    <i class="fas fa-calendar-alt text-gray"></i>
-                                    <p class="hint">[`Planned dates identify this scope on a Gantt chart.`]</p>
-                                </div>
+                                <div class="name for-input">[`Name`]</div>
+                                <div class="value"><input type="text" name="milestone[name]" class="bold long large" value="{$milestone.name|escape}"></div>
                             </div>
 
                             <div class="field">
@@ -77,9 +106,24 @@
                                 </div>
                             </div>
 
+                            <hr class="custom-mt-12 custom-mb-24" />
+
+                            <div class="field">
+                                <div class="name for-input">[`Plan`]</div>
+                                <div class="value">
+                                    <input type="text" class="datepicker-start-date shorter semibold" placeholder="[`Start`]">
+                                    <input type="hidden" name="milestone[start_date]" value="{$milestone.start_date|escape}">
+                                    —&nbsp;
+                                    <input type="text" class="datepicker-end-date shorter semibold" placeholder="[`End`]">
+                                    <input type="hidden" name="milestone[end_date]" value="{$milestone.end_date|escape}">
+                                    <i class="fas fa-calendar-alt text-gray"></i>
+                                    <p class="hint custom-mb-0">[`Planned dates identify this scope on a Gantt chart.`]</p>
+                                </div>
+                            </div>
+
                             <div class="field">
                                 <div class="name">[`Description`]</div>
-                                <div class="value"><textarea name="milestone[description]" style="max-width:24rem;" class="small">{$milestone.description|escape}</textarea>
+                                <div class="value"><textarea name="milestone[description]" style="width: 100%; min-height: 12rem;" class="small">{$milestone.description|escape}</textarea>
                                     <span class="hint">[`A tiny hint describing your teammates what this milestone is all about.`]</span>
                                 </div>
                             </div>
@@ -131,48 +175,11 @@
                                 </div>
                             </div>
 
-
-                            <div class="field t-milestone-project-field">
-                                <div class="name for-input">[`Project`]</div>
-                                <div class="value no-shift">
-                                    <div class="dropdown" id="project-id">
-                                        <button class="dropdown-toggle button light-gray" type="button">[`Project`]</button>
-                                        <div class="dropdown-body">
-                                            <ul class="menu">
-                                                {foreach $projects as $p}
-                                                <li>
-                                                    <a href="javascript:void(0);" data-id="{$p.id}">
-                                                        {if $p.icon_url}
-                                                        <span class="icon">
-                                                            <i class="size-20 t-project-icon-rounded" style="background-image: url({$p.icon_url});"></i>
-                                                        </span>
-                                                        {/if}
-                                                        <span>{$p.name|escape|truncate:42}</span>
-                                                    </a>
-                                                </li>
-                                                {/foreach}
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <input id="input" name="milestone[project_id]" type="hidden" value="{$milestone.project_id}">
-                                    <script>
-                                        ( function($) {
-                                            $("#project-id").waDropdown({
-                                                hover: false,
-                                                items: ".menu > li > a",
-                                                ready: (dropdown) => {
-                                                    const active = dropdown.$menu.find('[data-id="{$milestone.project_id}"]');
-                                                    if(!active[0]) return;
-                                                    dropdown.$button.text(active.text());
-                                                },
-                                                change: (event, target, dropdown) => {
-                                                    $('[name="milestone[project_id]"]').val( $(target).data("id") ).trigger('input');
-                                                }
-                                            });
-                                        })(jQuery);
-                                    </script>
+                            {if !empty($projects) && count($projects) >= 2}
+                                <div class="field">
+                                    <div class="name for-checkbox t-milestone-project-field">[`Link to more projects`]</div>
                                 </div>
-                            </div>
+                            {/if}
 
                             <div class="t-more-fields">
                                 {$projects_html}

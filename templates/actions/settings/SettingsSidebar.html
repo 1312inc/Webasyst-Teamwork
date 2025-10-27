@@ -23,19 +23,44 @@
         <li>
             <a href="#/types-settings/" class="{if !$_is_premium}opacity-50{/if}" data-item-type="task_types">
                 <span class="icon">
-                    <i class="fas fa-{if $_is_premium}shapes{else}star{/if}"></i>
+                    <i class="fas fa-shapes"></i>
                 </span>
                 <span>[`Task types`]</span>
+                {if !$_is_premium}
+                    <span class="count small"><i class="fas fa-star text-yellow"></i></span>
+                {/if}
             </a>
         </li>
         <li>
             <a href="#/fields-settings/" class="{if !$_is_premium}opacity-50{/if}" data-item-type="task_fields">
                 <span class="icon">
-                    <i class="fas fa-{if $_is_premium}list{else}star{/if}"></i>
+                    <i class="fas fa-list"></i>
                 </span>
                 <span>[`Task fields`]</span>
+                {if !$_is_premium}
+                    <span class="count small"><i class="fas fa-star text-yellow"></i></span>
+                {/if}
             </a>
         </li>
+        <li>
+            <a href="#/user-roles/" class="{if !$_is_premium}opacity-50{/if}" data-item-type="user_roles">
+                <span class="icon">
+                    <i class="fas fa-user-plus"></i>
+                </span>
+                <span>[`Roles`]</span>
+                {if !$_is_premium}
+                    <span class="count small"><i class="fas fa-star text-yellow"></i></span>
+                {/if}
+            </a>
+        </li>
+        {if $_is_premium}
+            <li class="top-padded">
+                <a href="#/upgrade/">
+                    <i class="fas fa-star"></i>
+                    <span>[`Premium`]</span>
+                </a>
+            </li>
+        {/if}
         <!-- plugin hook: 'backend_settings_sidebar.top_li' -->
         {* @event backend_settings_sidebar.%plugin_id%.top_li *}
         {if !empty($_backend_sidebar) && count($_backend_sidebar) > 0}
@@ -43,18 +68,17 @@
         {/if}
     </ul>
 
-    <!-- SCOPES -->
-    <h5 class="heading">
-        <a href="#/settings/scope/add/" class="count"><i class="fas fa-plus-circle"></i></a>
-        [`Scopes`]
-    </h5>
+    <!-- MILESTONES -->
+    <div class="box flexbox space-4">
+        <h5 class="wide custom-my-4">[`Scopes`]</h5>
+        <a href="#/settings/scope/add/" class="count large"><i class="fas fa-plus-circle text-green"></i></a>
+    </div>
     {if !$scopes}
-        <div class="box align-center custom-my-16">
+        <div class="box align-center custom-mt-0 custom-mb-16">
             <p class="hint">[`Add a milestone to group tasks into time-based activities such as sprints, releases, or subprojects.`]</p>
         </div>
     {/if}
-    <ul class="menu t-scopes-list-wrapper custom-mb-0">
-
+    <ul class="menu t-scopes-list-wrapper custom-my-0">
         {foreach $scopes as $_scope}
             <li data-id="{$_scope.id}" data-item-type="scope">
                 <a href="#/settings/scope/{$_scope.id}/">{strip}
@@ -99,11 +123,11 @@
     {/if}
 
     <!-- PROJECTS -->
-    <h5 class="heading">
-        <a href="#/settings/project/add/" class="count"><i class="fas fa-plus-circle"></i></a>
-        [`Projects`]
-    </h5>
-    <ul class="menu custom-mb-0" id="t-projects-list-settings">
+    <div class="box flexbox space-4">
+        <h5 class="wide custom-my-4">[`Projects`]</h5>
+        <a href="#/settings/project/add/" class="count large"><i class="fas fa-plus-circle text-green"></i></a>
+    </div>
+    <ul class="menu custom-my-0" id="t-projects-list-settings">
         {foreach $projects as $p}
             <li data-id="{$p.id}" data-item-type="project">
                 <a href="#/settings/project/{$p.id}/">{strip}

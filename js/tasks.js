@@ -852,6 +852,12 @@
             });
         },
 
+        userRolesAction: function () {
+            this.load('?module=roles', function () {
+
+            });
+        },
+
         personalSettingsAction: function () {
             this.load('?module=settingsPersonal', function () {
 
@@ -1654,7 +1660,7 @@
 
             $container.css('pointer-events', 'none').fadeTo("fast", 0.33);
 
-            $.get('?module=tasks&action=getUsersForProject&project_id=' + projectId, function (data) {
+            return $.get('?module=tasks&action=getUsersForProject&project_id=' + projectId, function (data) {
                 var assignees = data.data,
                     maxVisible = 8,
                     wa_url = window.wa_url || '/';
@@ -1758,6 +1764,8 @@
                 }
             }).always(function () {
                 $container.css('pointer-events', 'auto').fadeTo("fast", 1);
+            }).then(function(data) {
+                return data.data;
             });
         },
 

@@ -12,7 +12,7 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=((((n%10)==1)&&((n%100)!=11))?(0):(((((n%10)>=2)&&((n%10)<=4))&&(((n%100)<10)||((n%100)>=20)))?(1):2));\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Basepath: .\n"
-"X-Generator: Poedit 3.3.2\n"
+"X-Generator: Poedit 3.8\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPath-1: .\n"
 
@@ -588,6 +588,9 @@ msgstr "Все <strong>%s</strong>, принадлежащие проекту, �
 
 msgid "Self tasks only"
 msgstr "Только назначенные задачи"
+
+msgid "Self & assigned tasks only"
+msgstr "Только свои и назначенные задачи"
 
 msgid "Full access"
 msgstr "Полный доступ"
@@ -1498,6 +1501,12 @@ msgstr "Создать ссылку"
 msgid "Get a public link for tracking task status and updates with no access to Webasyst backend."
 msgstr "Ссылка для просмотра текущего статуса и истории выполнения задачи без доступа к Webasyst."
 
+msgid "Get a public link for tracking entire milestone status and updates with no access to Webasyst backend."
+msgstr "Ссылка для просмотра текущего статуса и истории выполнения всей работы без доступа к Webasyst."
+
+msgid "Get a public link for tracking entire project status and updates with no access to Webasyst backend."
+msgstr "Ссылка для просмотра текущего статуса и истории выполнения всего проекта без доступа к Webasyst."
+
 msgid "copied"
 msgstr "Скопировано!"
 
@@ -1642,6 +1651,9 @@ msgstr "Лето 2025"
 msgid "Spellcheck & improve your texts in the task editor with a click. Powered by Webasyst AI."
 msgstr "Пишите правильно и красиво, проверяйте орфографию и стилизуйте текст на основе Webasyst AI."
 
+msgid "Write and spellcheck task content with just few clicks. Powered by Webasyst AI."
+msgstr "Пишите тексты задач с помощью ИИ, проверяйте орфографию и стилизуйте текст. Работает на основе Webasyst AI."
+
 msgid "Project summary private links"
 msgstr "Приватные ссылки на статус проекта"
 
@@ -1650,6 +1662,9 @@ msgstr "Показывайте текущий статус работы над �
 
 msgid "In-project limited access for clients"
 msgstr "Ограниченный доступ к проекту для клиентов"
+
+msgid "Limited access & user roles"
+msgstr "Ограниченный доступ и роли в задачах"
 
 msgid "With the basic version, you can invite your clients to your Webasyst backend using the free Team app and grant full access to a specific project. With premium, more sophisticated in-project access rights option will be available, such as view, comment, and follow specific tasks only."
 msgstr "В базовой версии вы можете пригласить клиента в бекенд Webasyst с помощью бесплатного приложения «Команда» и представить полный доступ к проекту. В премиум-версии будет больше настроек доступа, в том числе только для просмотра, комментирования, наблюдения за избранными задачами."
@@ -1896,3 +1911,144 @@ msgstr "Скрыть выполненные работы"
 
 msgid "Show completed scopes"
 msgstr "Показать выполненные работы"
+
+msgid "Link to more projects"
+msgstr "Также связать с проектами"
+
+msgid "Better tools for better results"
+msgstr "Лучше инструменты —<br> лучше и результат"
+
+msgid "%d features available now, +%d more to come shortly."
+msgstr "%d премиум-функций доступно сейчас, еще %s на подходе."
+
+msgid "All inclusive in the cloud"
+msgstr "В облаке все включено"
+
+msgid "In Webasyst Cloud, simply upgrade to the <b>Premium</b> plan and get all premium features at once with no extra purchase required."
+msgstr "Просто смените тариф на <b>Премиум</b> и пользуйтесь всеми премиум-функциями без покупки лицензий и апгрейдов."
+
+msgid "Early launch offer gets you the best premium upgrade conditions possible."
+msgstr "Премиум-версия открывает ранний доступ ко всем новым функциям и обновлениям."
+
+msgid "Per-server license for the entire company. Unlimited users, all premium features, free updates forever."
+msgstr "Лицензия на один сервер и всю компанию. Сколько угодно пользователей, все функции, бесплатные обновления."
+
+msgid "upgrade to premium"
+msgstr "апгрейд до премиум"
+
+msgid "Private link is a premium feature"
+msgstr "Приватная ссылка доступна только в премиум"
+
+msgid "Access:"
+msgstr "Доступ:"
+
+msgid "This task only"
+msgstr "Только эта задача"
+
+msgid "All tasks in this project"
+msgstr "Все задачи в этом проекте"
+
+msgid "Full access to all projects"
+msgstr "Полный доступ ко всем проектам"
+
+msgid "Save the task to invite."
+msgstr "Сохраните задачу для отправки инвайта."
+
+msgid "To invite someone, click (+) to create a new task > select ‘Invite’ > enter an email address and save. Or use the Webasyst Teamwork mobile app to invite with a 8-digit code."
+msgstr "Чтобы добавить пользователя в команду, нажмите (+) для создания задачи, выберите «Пригласить», введите email и сохраните. Или используйте мобильное приложение Webasyst Задачи, чтобы пригласить с помощью 8-значного инвайт-кода."
+
+msgid "Client"
+msgstr "Заказчик"
+
+msgid "Assistant"
+msgstr "Соисполнитель"
+
+msgid "Decision maker"
+msgstr "ЛПР"
+
+msgid "Supervisor"
+msgstr "Супервайзер"
+
+msgid "Progress"
+msgstr "Прогресс"
+
+msgid "Roles"
+msgstr "Роли"
+
+msgid "User roles"
+msgstr "Роли пользователей"
+
+msgid "Write with AI"
+msgstr "Написать с ИИ"
+
+msgid "Role name"
+msgstr "Название роли"
+
+msgid "Permissions"
+msgstr "Разрешения"
+
+msgid "Specify how users in this role will interact with tasks in addition to being able to just view & comment on them:"
+msgstr "Как пользователи в этой роли будут работать с задачами в дополнение к возможности просмотра и добавления комментариев:"
+
+msgid "Custom user roles allow adding individual users with limited access to specific tasks and to better describe specific user roles within tasks and projects."
+msgstr "Кастомные роли позволяют открывать индивидуальный доступ к задачам пользователям с ограниченным уровнем доступа и лучше описывать, что пользователь делает в рамках задач и проектов."
+
+msgid "New role"
+msgstr "Новая роль"
+
+msgid "Will see tasks in personal inbox"
+msgstr "Увидит задачи в своих «Входящих»"
+
+msgid "Will receive notifications on task updates (unless unsubscribed intentionally)"
+msgstr "Будет получать уведомления об обновлениях задач (если только не отпишется явно)"
+
+msgid "Can edit"
+msgstr "Может редактировать"
+
+msgid "Can process & forward"
+msgstr "Может выполнять и передавать"
+
+msgid "Can comment"
+msgstr "Может комментировать"
+
+msgid "Can delete"
+msgstr "Может удалять"
+
+msgid "No access: user %s is not eligible for the specified role in this task"
+msgstr "Нет доступа: пользователь %s не может быть назначен на эту роль в данной задаче"
+
+msgid "Unknown role"
+msgstr "Непонятная роль"
+
+msgid "Following task updates"
+msgstr "Подписаны на новости задачи"
+
+msgid "Follow"
+msgstr "Подписаться"
+
+msgid "I’m following"
+msgstr "Подписан"
+
+msgid "Mention"
+msgstr "Тегнуть пользователя"
+
+msgid "Following"
+msgstr "Наблюдаю"
+
+msgid "Write task with AI"
+msgstr "Написать задачу с ИИ"
+
+msgid "Briefly describe the task goal. Webasyst AI will continue writing and suggest you the complete task text template."
+msgstr "Кратко сформулируйте суть и цель задачи. ИИ напишет текст задачи или продолжит написанный вами текст."
+
+msgid "Write a task about..."
+msgstr "Написать задачу про то как..."
+
+msgid "%d trials left"
+msgstr "осталось %d бесплатно"
+
+msgid "Try AI free"
+msgstr "Попробовать ИИ бесплатно"
+
+msgid "Use this text"
+msgstr "Использовать этот текст"

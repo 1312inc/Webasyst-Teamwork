@@ -10,9 +10,26 @@ class tasksTasksSaveController extends waJsonController
         $task_id = $this->getId();
         $data = $this->getData();
 
+        if (isset($data['roles_user']['add'])) {
+            $role_users = (new tasksRights())->getUsersAccessProject($data['project_id']);
+            foreach ($data['roles_user']['add'] as $user_ids) {
+                foreach ($user_ids as $user_id) {
+                    if (!key_exists($user_id, $role_users)) {
+                        $contact = new waContact($user_id);
+                        $this->setError(sprintf(_w('No access: user %s is not eligible for the specified role in this task').' ', $contact->getName()));
+                    }
+                }
+            }
+            if ($this->errors) {
+                return;
+            }
+        }
+
+        $is_new = false;
         if ($task_id > 0) {
             $task = $this->update($task_id, $data);
         } else {
+            $is_new = true;
             $task = $this->add($data);
         }
 
@@ -29,6 +46,30 @@ class tasksTasksSaveController extends waJsonController
                 (new tasksFieldDataModel())->save($task_id, $fields_data);
             }
         }
+
+        if (!empty($data['roles_user'])) {
+            $_POST['task_id'] = $task_id;
+            $controller = new tasksTasksUsersRoleController();
+
+            foreach ($data['roles_user'] as $act => $roles) {
+                $_GET['act'] = $act;
+                foreach ($roles as $role_id => $user_ids) {
+                    foreach ($user_ids as $user_id) {
+                        $_POST['user_id'] = $user_id;
+                        $_POST['role_id'] = $role_id;
+
+                        $controller->execute();
+                    }
+                }
+            }
+        }
+
+        if ($is_new) {
+            $sender = new tasksNotificationsSender($task, ['new', 'mention']);
+        } else {
+            $sender = new tasksNotificationsSender($task, ['edit', 'mention']);
+        }
+        $sender->send();
 
         $this->response = array(
             'url' => $task['project_id'].'.'.$task['number'],
@@ -196,9 +237,6 @@ class tasksTasksSaveController extends waJsonController
             'prev_task' => $prev_task
         ));
 
-        $sender = new tasksNotificationsSender($task, ['edit', 'mention']);
-        $sender->send();
-
         return $task;
     }
 
@@ -226,11 +264,6 @@ class tasksTasksSaveController extends waJsonController
         $this->triggerEvent($task, array(
             'type' => 'add'
         ));
-
-        if ($task['assigned_contact_id']) {
-            $sender = new tasksNotificationsSender($task, ['new', 'mention']);
-            $sender->send();
-        }
 
         return $task;
     }
@@ -262,4 +295,3 @@ class tasksTasksSaveController extends waJsonController
         wa()->event('task_save', $params);
     }
 }
-

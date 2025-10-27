@@ -1,0 +1,138 @@
+{$_no_brainer_here = $wa->tasks->isPremium()}
+{$wrapper_id = uniqid('t-settings-task-roles-wrapper')}
+
+
+{function render_row role=[]}{strip}
+
+    {$_is_template = $_role.id == '_template_'}
+    <div class="t-settings-item is-closed{if $_is_template} is-template{/if}" data-id="{$_role.id}"{if $_is_template} style="display: none;"{/if}>
+        <header class="t-settings-header">
+            <div class="t-item-icon">
+                <i class="fas fa-bars text-light-gray t-sort-handler"></i>
+            </div>
+            <div class="t-item-name">
+            <span class="hide-when-opened">
+                <span class="t-role-name-text semibold" style="font-size: 1rem;{if $_role.color} color:#{$_role.color|escape}{/if}">{_w($_role.name)|escape}</span>
+            </span>
+
+                <span class="hide-when-closed">
+                <input type="text" class="t-role-name-input semibold" name="data[role][{$_role.id}][name]" value="{_w($_role.name)|escape}" placeholder="[`Role name`]">
+            </span>
+            </div>
+            <div class="t-buttons-block">
+                <div class="flexbox middle space-12">
+                    <a href="javascript:void(0)" class="t-button-item t-edit-role-link" title="[`Edit`]">
+                        <i class="fas fa-edit t-edit text-blue"></i>
+                    </a>
+                    <a href="javascript:void(0)" class="t-button-item t-delete-role-link" title="[`Delete`]">
+                        <i class="fas fa-trash-alt t-delete text-red"></i>
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <div class="t-hidden-block status-editor-wrapper">
+            <div class="fields form">
+                <div class="field-group custom-mt-0 custom-pt-0">
+                    <div class="field">
+                        <div class="name">[`Color`]</div>
+                        <div class="value colorpicker t-role-color-wrapper">
+                            # <input type="text" class="shortest js-colorpicker t-role-color-input" placeholder="777777" name="data[role][{$_role.id}][color]" value="{$_role.color|default:'777777'|escape}">
+                            <span class="icon" style="opacity: 1;"><i class="rounded color" style="background-color:#{$_role.color|default:'777777'|escape};"></i></span>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="name">[`Permissions`]</div>
+                        <div class="value no-shift">
+                            <p class="small custom-mb-8">[`Specify how users in this role will interact with tasks in addition to being able to just view & comment on them:`]
+                            {foreach $permits as $_permit => $_permit_name}
+                                <div class="field-group__item">
+                                    <label class="small">
+                                        <span class="wa-checkbox">
+                                            <input type="checkbox" name="data[role][{$_role.id}][{$_permit}]" class="t-role-{$_permit}-input" value="1"{if !empty($_role[$_permit]) || $_is_template} checked{/if}>
+                                            <span>
+                                                <span class="icon">
+                                                    <i class="fas fa-check"></i>
+                                                </span>
+                                            </span>
+                                        </span>&nbsp;{$_permit_name}
+                                    </label>
+                                </div>
+                            {/foreach}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{/strip}{/function}
+
+
+<div class="flexbox t-settings-task-roles-wrapper" id="{$wrapper_id}">
+    {$sidebar_html|default:''}
+
+    <div class="content">
+        <div class="article">
+            <div class="article-body">
+
+                {if !$_no_brainer_here}
+
+                    <h3>[`Premium only`]</h3>
+                    <p class="small">
+                        <i class="fas fa-star text-yellow"></i> [`Upgrade to premium to have the feature enabled and this message to disappear permanently.`]
+                    </p>
+                    <a href="{$wa_app_url}#/upgrade/" class="button yellow small">[`See what’s there in premium`]</a>
+                    <hr class="custom-mt-24" />
+
+                {/if}
+
+                <div{if !$_no_brainer_here} style="opacity: 0.4;{/if}">
+
+                    <h1>[`User roles`]</h1>
+                    <p class="small">[`Custom user roles allow adding individual users with limited access to specific tasks and to better describe specific user roles within tasks and projects.`]</p>
+
+                    <div class="hidden alert success t-saved bordered-bottom">
+                        <i class="fas fa-check-circle"></i>
+                        <span>[`Settings successfully updated`]</span>
+                    </div>
+
+                    <a href="javascript:void(0)" class="button light-gray small t-add-new-role-link rounded custom-mb-16">
+                        <i class="fas fa-plus text-blue"></i>
+                        <span>[`New role`]</span>
+                    </a>
+
+                    <form method="post" class="t-save-settings-form">
+                        <div class="t-settings-wrapper">
+                            {$_roles = $roles}
+                            {$_empty = $empty}
+                            {$_empty.id = '_template_'}
+                            {$_roles[$_empty.id] = $_empty}
+                            {$permits = [
+                                'show_inbox' => _w('Will see tasks in personal inbox'),
+                                'send_notifications' => _w('Will receive notifications on task updates (unless unsubscribed intentionally)')
+                            ]}
+
+                            <div class="table t-settings-list t-roles-list">
+                                {foreach $_roles as $_role}
+                                    {render_row role=$_role}
+                                {/foreach}
+                            </div>
+
+                            <div class="t-save-settings-wrapper">
+                                <input type="submit" class="t-save-button button green" value="[`Save`]">
+                                <i class="icon16 loading t-loading" style="display: none;"></i>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        (function ($) {
+            new TasksUserRole({
+                $wrapper: $('#{$wrapper_id}')
+            });
+        })(jQuery);
+    </script>
+</div>

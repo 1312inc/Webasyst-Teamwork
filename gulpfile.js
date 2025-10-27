@@ -42,7 +42,7 @@ function amcharts () {
         .pipe(dest('./js/amcharts'));
 }
 
-// JS function 
+// JS function
 
 function js () {
     const source = [
@@ -62,6 +62,7 @@ function js () {
         'js/taskField.js',
         'js/taskFieldEdit.js',
         'js/tasksPageFilters.js',
+        'js/tasksUserRole.js',
         'js/dropDownMenu.js',
         'js/tasksHeader.js',
         'js/dialog.js',

@@ -2,7 +2,7 @@
 
 class tasksCollection
 {
-    public const FIELDS_TO_GET = '*,log,create_contact,assigned_contact,attachments,tags,project,favorite,relations';
+    public const FIELDS_TO_GET = '*,log,create_contact,assigned_contact,attachments,tags,project,roles,favorite,relations';
 
     public const HASH_SEARCH = 'search';
     public const HASH_UNASSIGNED = 'unassigned';
@@ -114,8 +114,10 @@ class tasksCollection
                 }
                 if ($limited_access_projects) {
                     $current_contact_id = wa()->getUser()->getId();
+                    $this->addJoinRole($current_contact_id);
+                    $tu_alias = $this->getJoinedAlias('tasks_task_users');
                     $cond = "t.project_id IN (" . implode(",", $limited_access_projects) . ") AND
-                        (t.assigned_contact_id={$current_contact_id} OR t.create_contact_id={$current_contact_id})";
+                        (t.assigned_contact_id = $current_contact_id OR t.create_contact_id = $current_contact_id OR $tu_alias.contact_id = $current_contact_id)";
                     $condition[] = $cond;
                 }
                 if (!$condition) {
@@ -164,7 +166,7 @@ class tasksCollection
     {
         $alias = $this->getTableAlias($table);
 
-        return $alias . $this->join_index[$alias];
+        return empty($this->join_index[$alias]) ? null : $alias.$this->join_index[$alias];
     }
 
     protected function getTableAlias($table)
@@ -407,6 +409,10 @@ class tasksCollection
                 $contact_ids[$contact_id] = $contact_id;
             }
         }
+        if (!empty($other_fields['roles'])) {
+            $task_user_model = new tasksTaskUsersModel();
+            $user_by_role = $task_user_model->getUsersRoleByTasks($ids);
+        }
 
         if ($contact_ids) {
             $contact_model = new waContactModel();
@@ -417,7 +423,7 @@ class tasksCollection
             }
             unset($c);
 
-            foreach ($data as &$t) {
+            foreach ($data as $_task_id => &$t) {
                 if (!empty($other_fields['create_contact']) && isset($contacts[$t['create_contact_id']])) {
                     $t['create_contact'] = $contacts[$t['create_contact_id']];
                 }
@@ -510,6 +516,9 @@ class tasksCollection
                         $t['favorite_tags'][$tag['id']] = $tag['name'];
                     }
                 }
+            }
+            if (!empty($other_fields['roles'])) {
+                $t['roles'] = ifset($user_by_role, $t['id'], []);
             }
         }
         unset($t);
@@ -883,6 +892,7 @@ class tasksCollection
 
     protected function assignedPrepare($contact_id)
     {
+        $this->addJoinRole($contact_id);
         $this->prepareContactByField($contact_id, 'assigned_contact_id');
     }
 
@@ -893,17 +903,23 @@ class tasksCollection
 
     protected function prepareContactByField($contact_id, $field)
     {
-        if ($this->getModel()->fieldExists($field)) {
-            $contact_model = new waContactModel();
-            $contact = $contact_model->getById($contact_id);
-            if ($contact) {
-                $this->info = $contact;
-                $contact_id = (int) $contact_id;
-                $this->where[] = "t.{$field} = {$contact_id}";
-                $this->addJoin('tasks_project', ':table.id = t.project_id', ':table.archive_datetime IS NULL');
-
-                return;
+        $contact_model = new waContactModel();
+        $contact = $contact_model->getById($contact_id);
+        if ($contact) {
+            $this->info = $contact;
+            $contact_id = (int) $contact_id;
+            if ($this->getModel()->fieldExists($field)) {
+                $condition = '';
+                $tu_alias = $this->getJoinedAlias('tasks_task_users');
+                $ur_alias = $this->getJoinedAlias('tasks_user_role');
+                if (isset($tu_alias, $ur_alias) && in_array($this->getType(), [self::HASH_INBOX, self::HASH_OUTBOX, self::HASH_ASSIGNED])) {
+                    $condition = " OR ($tu_alias.contact_id = $contact_id AND $ur_alias.show_inbox <> 0)";
+                }
+                $this->where[] = "(t.$field = $contact_id$condition)";
             }
+            $this->addJoin('tasks_project', ':table.id = t.project_id', ':table.archive_datetime IS NULL');
+
+            return;
         }
         $this->where[] = '0';
     }
@@ -1112,5 +1128,11 @@ class tasksCollection
             "t.id",
         ];
         $this->orderBy(implode(',', $order), '', false);
+    }
+
+    private function addJoinRole($contact_id)
+    {
+        $tu_alias = $this->addJoin(['table' => 'tasks_task_users', 'type' => 'LEFT', 'on' => ":table.task_id = t.id AND :table.contact_id = $contact_id"]);
+        $this->addJoin(['table' => 'tasks_user_role', 'type' => 'LEFT', 'on' => ":table.id = $tu_alias.role_id"]);
     }
 }

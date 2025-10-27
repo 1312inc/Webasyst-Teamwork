@@ -103,11 +103,11 @@
                                     $dropdown.waDropdown({
                                         hover: true,
                                         items: ".menu > li > a",
-                                        change: function(event, target, dropdown) {
+                                        change: async function(event, target, dropdown) {
                                             $("[name=\"data[project_id]\"]").val( $(target).data("value") );
                                             taskEdit.onProjectChange();
 
-                                            $.tasks.teamList({
+                                            const teamList = await $.tasks.teamList({
                                                 container: $('#t-edit-task-form .t-team-list-wrapper'),
                                                 targetField: $('#t-edit-task-form [name="data[assigned_contact_id]"]'),
                                                 inviteField: $('#t-edit-task-form .t-team-invite'),
@@ -116,6 +116,7 @@
                                                 updateMode: {if !empty($task.id)}true{else}false{/if}
                                             });
 
+                                            $(document).trigger('tasks:projectUsersChanged', [teamList]);
                                         }
                                     });
                                 })(jQuery);
@@ -144,20 +145,206 @@
                   <div>
                       <input type="hidden" name="data[assigned_contact_id]" value="{$task.assigned_contact_id}">
                       <div class="t-team-list-wrapper"></div>
+                      {if $wa->user()->isAdmin('tasks') && !empty($user_roles) && count($user_roles) > 0 && $wa->tasks->isPremium()}
+                        <div class="t-team-roles-list-wrapper flexbox space-8">
+                            <ul class="chips small custom-mt-0 t-user-roles">
+                                {foreach $task.role_users as $role_user}
+                                    {if empty($role_user.role)}{continue}{/if}
+                                    <li data-role-id="{$role_user.role.role_id}" data-user-id="{$role_user.id}" style="--chips-outline-border-color: #{$role_user.role.color}; --menu-link-color: #fff; --menu-link-color-hover: #fff; --chips-background-color: #{$role_user.role.color}; --chips-background-color-hover: #{$role_user.role.color};">
+                                        <a href="javascript:void(0);">
+                                            <img src="{$role_user.photo_url}" alt="{$role_user.name|escape}" class="userpic">
+                                            <strong>{$role_user.name|escape}</strong> <span class="custom-ml-4 small">{_w($role_user.role.name|escape)}</span>
+                                            <i class="fas fa-times custom-ml-16 custom-mr-4 text-white js-remove-user"></i>
+                                        </a>
+                                    </li>
+                                {/foreach}
+                                {foreach $user_roles as $role}
+                                    <li class="dropdown js-role-dropdown" data-role-id="{$role.id}" data-role-name="{_w($role.name|escape)}" data-role-color="#{$role.color}" style="--chips-background-color: var(--background-color-blank); --chips-background-color-hover: var(--background-color-blank);">
+                                        <a href="javascript:void(0);" class="dropdown-toggle">
+                                            <i class="fas fa-user-plus custom-mr-4" style="color: #{$role.color};"></i>{_w($role.name|escape)}
+                                        </a>
+                                        <div class="dropdown-body">
+                                            <ul class="menu"></ul>
+                                        </div>
+                                    </li>
+                                {/foreach}
+                            </ul>
+                        </div>
+                      {/if}
 
                       {include file="./includes/TasksEditInviteForm.inc.html" inline}
 
                       <script>
-                          (function ($) {
-                              var initialProjectID = $("#projectSelect").find("li:first a").data('value');
-                              $.tasks.teamList({
-                                  container: $('#t-edit-task-form .t-team-list-wrapper'),
-                                  targetField: $('#t-edit-task-form [name="data[assigned_contact_id]"]'),
-                                  inviteField: $('#t-edit-task-form .t-team-invite'),
-                                  projectId: {if !empty($task.id)}{$task.project_id}{else}initialProjectID{/if},
-                                  assignedContactId: {if !empty($task.id)}{$task.assigned_contact_id|default:"\"\""}{else}""{/if},
-                                  updateMode: {if !empty($task.id)}true{else}false{/if}
-                              });
+                          ( async function ($) {
+                            var initialProjectID = $("#projectSelect").find("li:first a").data('value');
+                            const teamList = await $.tasks.teamList({
+                                container: $('#t-edit-task-form .t-team-list-wrapper'),
+                                targetField: $('#t-edit-task-form [name="data[assigned_contact_id]"]'),
+                                inviteField: $('#t-edit-task-form .t-team-invite'),
+                                projectId: {if !empty($task.id)}{$task.project_id}{else}initialProjectID{/if},
+                                assignedContactId: {if !empty($task.id)}{$task.assigned_contact_id|default:"\"\""}{else}""{/if},
+                                updateMode: {if !empty($task.id)}true{else}false{/if}
+                            });
+                            {if $wa->user()->isAdmin('tasks')}
+                                if (teamList.length) {
+                                    const RoleManager = {
+                                        $chipsWrapper: $(".t-team-roles-list-wrapper .chips"),
+                                        isTaskUpdate: {if !empty($task.id)}true{else}false{/if},
+
+                                        /**
+                                         * Экранирует HTML
+                                         */
+                                        escapeHtml: function(text) {
+                                            const div = document.createElement('div');
+                                            div.textContent = text;
+                                            return div.innerHTML;
+                                        },
+
+                                        /**
+                                         * Проверяет, добавлен ли пользователь к роли
+                                         */
+                                        isUserInRole: function(roleId, userId) {
+                                            return this.$chipsWrapper.find(`li[data-role-id="${ roleId }"][data-user-id="${ userId }"]`).length > 0;
+                                        },
+
+                                        /**
+                                         * Создает HTML для chip элемента пользователя с ролью
+                                         */
+                                        createUserChip: function(roleId, roleColor, userId, userPhotoUrl, userName, roleName) {
+                                            const safeUserName = this.escapeHtml(userName);
+                                            const safeRoleName = this.escapeHtml(roleName);
+                                            const safePhotoUrl = this.escapeHtml(userPhotoUrl);
+
+                                            const $li = $('<li>', {
+                                                'data-role-id': roleId,
+                                                'data-user-id': userId,
+                                                'style': `
+                                                    --menu-link-color: ${ roleColor };
+                                                    --menu-link-color-hover: ${ roleColor };
+                                                    --chips-background-color: var(--background-color-blank);
+                                                    --chips-background-color-hover: var(--background-color-blank);
+                                                `
+                                            });
+
+                                            const $link = $('<a>', { href: 'javascript:void(0);' });
+                                            $link.append($('<img>', { src: userPhotoUrl, alt: safeUserName, class: 'userpic' }));
+                                            $link.append($('<strong>', { text: safeUserName }));
+                                            $link.append($('<span>', { class: 'custom-ml-4 hint', text: safeRoleName }));
+                                            $link.append($('<i>', { class: 'fas fa-times custom-ml-16 custom-mr-4 js-remove-user' }));
+
+                                            const $input = $('<input>', {
+                                                type: 'hidden',
+                                                name: `data[roles_user][add][${ roleId }][]`,
+                                                value: userId
+                                            });
+
+                                            $li.append($link).append($input);
+                                            return $li;
+                                        },
+
+                                        /**
+                                         * Добавляет пользователя к роли
+                                         */
+                                        addUserToRole: function(roleId, roleColor, userId, userPhotoUrl, userName, roleName) {
+                                            if (this.isUserInRole(roleId, userId)) {
+                                                return false;
+                                            }
+
+                                            const $chip = this.createUserChip(roleId, roleColor, userId, userPhotoUrl, userName, roleName);
+                                            this.$chipsWrapper.prepend($chip);
+                                            return true;
+                                        },
+
+                                        /**
+                                         * снимает роль с пользователя
+                                         */
+                                        removeUserFromRole: function($chip) {
+                                            const roleId = $chip.data('role-id');
+                                            const userId = $chip.data('user-id');
+
+                                            $chip.remove();
+
+                                            if (this.isTaskUpdate) {
+                                                const $removeInput = $('<input>', {
+                                                    type: 'hidden',
+                                                    name: `data[roles_user][remove][${ roleId }][]`,
+                                                    value: userId
+                                                });
+                                                this.$chipsWrapper.prepend($removeInput);
+                                            }
+                                        },
+
+                                        init: function() {
+                                            const self = this;
+
+                                            this.$chipsWrapper.on('click', '.js-remove-user', function (event) {
+                                                event.preventDefault();
+                                                event.stopPropagation();
+                                                const $chip = $(this).closest('li');
+                                                self.removeUserFromRole($chip);
+                                            });
+                                        }
+                                    };
+
+                                    RoleManager.init();
+
+                                    const $roleDropdowns = RoleManager.$chipsWrapper.find('.js-role-dropdown');
+                                    $roleDropdowns.waDropdown({
+                                        hover: true,
+                                        items: '.menu > li > span',
+                                        update_title: false
+                                    });
+
+                                    function updateUserListFragment(users) {
+                                        const userListFragment = document.createDocumentFragment();
+                                        $roleDropdowns.find('.menu').empty();
+
+                                        users.forEach(user => {
+                                            const $li = $('<li>', {
+                                                'data-user-id': user.id,
+                                                'data-user-photo-url': user.photo_url,
+                                                'data-user-name': user.name
+                                            });
+
+                                            const $span = $('<span>', { class: 'item' });
+                                            $span.append($('<span>', {
+                                                class: 'icon userpic userpic20',
+                                                css: { 'background-image': `url('${ user.photo_url }')` }
+                                            }));
+                                            $span.append($('<span>', { text: user.name }));
+
+                                            $li.append($span);
+                                            userListFragment.appendChild($li[0]);
+                                        });
+
+                                        $roleDropdowns.find('.menu').append(userListFragment);
+                                    }
+
+                                    $(document).on('tasks:projectUsersChanged', function(event, users) {
+                                        updateUserListFragment(users);
+                                    });
+
+                                    updateUserListFragment(teamList);
+
+                                    $roleDropdowns.on('click', '.menu li', function (event) {
+                                        event.preventDefault();
+                                        event.stopPropagation();
+
+                                        const $this = $(this);
+                                        const $dropdown = $this.closest('.js-role-dropdown');
+
+                                        RoleManager.addUserToRole(
+                                            $dropdown.data('role-id'),
+                                            $dropdown.data('role-color'),
+                                            $this.data('user-id'),
+                                            $this.data('user-photo-url'),
+                                            $this.data('user-name'),
+                                            $dropdown.data('role-name')
+                                        );
+                                    });
+                                }
+                            {/if}
+
                           })(jQuery);
                       </script>
                   </div>
@@ -233,6 +420,13 @@
                       <div class="t-attach-droparea" id="t-attach-droparea">
                         <div class="t-chips">
 
+                            <div class="t-chip">
+                                <a href="javascript:void(0);" class="t-form-line-write-ai-chip">
+                                    <span class="icon webasyst-magic-wand-ai custom-mr-4"></span>
+                                    [`Write with AI`]
+                                </a>
+                            </div>
+
                             <div class="t-chip t-due-date-wrapper">
                                 <i class="fas fa-flag-checkered"></i>
                                 <span>
@@ -249,28 +443,26 @@
                                 </a>
                             </div>
 
-                            <div class="t-chip t-form-line-autocomplete-chip" data-type="hashtag">
-                                <a href="javascript:void(0);">
-                                    <i class="fas fa-hashtag"></i>
-                                    [`Tags and links`]
-                                </a>
-                            </div>
-
-                            <div class="t-chip t-form-line-autocomplete-chip" data-type="at">
-                                <a href="javascript:void(0);">
-                                    <i class="fas fa-at"></i>
-                                    [`Watchers`]
-                                </a>
-                            </div>
-
                             {if $wa->pocketlists}
                             <div class="t-chip">
                                 <a class="t-form-line-checklist-chip">
-                                    <i class="fas fa-list"></i>
+                                    <i style="background-image: url('{$wa_url}wa-apps/pocketlists/img/pl2webasyst48.png') !important; background-size: 16px 16px !important; display: inline-block; width: 16px; height: 16px; position: relative; top: 2px; margin-right: 4px;"></i>
                                     [`Checklist`]
                                 </a>
                             </div>
                             {/if}
+
+                            <div class="t-chip t-form-line-autocomplete-chip" data-type="hashtag">
+                                <a href="javascript:void(0);" title="[`Tags and links`]">
+                                    <i class="fas fa-hashtag custom-pl-2 custom-mr-0"></i>
+                                </a>
+                            </div>
+
+                            <div class="t-chip t-form-line-autocomplete-chip" data-type="at">
+                                <a href="javascript:void(0);" title="[`Mention`]">
+                                    <i class="fas fa-at custom-pl-2 custom-mr-0"></i>
+                                </a>
+                            </div>
 
                             <div class="t-chip" style="display: none;">
                                 <a class="t-form-line-spellcheck-chip">
@@ -374,7 +566,7 @@
                 {* @event backend_task_edit.%plugin_id%.before_buttons *}
                 {foreach $backend_task_edit as $_}{ifset($_.before_buttons)}{/foreach}
 
-                <div class="t-errors-block js-errors-block"></div>
+                <p class="t-errors-block js-errors-block small"></p>
                 <div class="t-form-line t-buttons-block flexbox middle space-8">
                     <button class="button green large t-save-task-link" type="submit">{if !empty($task.id)}[`Save task`]{else}[`Create task`]{/if}</button>
                     <a class="t-close-link button large light-gray" href="javascript:void(0);">[`Cancel`]</a>
@@ -412,6 +604,7 @@
 
     const $el = $('#redactor-task-{$task_uuid}');
     const $spellcheckBtn = $('.t-form-line-spellcheck-chip');
+    const $writeAiBtn = $('.t-form-line-write-ai-chip');
     const $spellcheckBtnParent = $spellcheckBtn.parent();
     let spellcheckInProcess = false;
 
@@ -427,7 +620,7 @@
             imageUploadUrl: '?module=attachments&action=imageUpload',
             imageUploadTaskUuid: '{$task_uuid}',
             controls: document.querySelector('.editor-wrapper-{$task_uuid}'),
-            mentions: {},
+            mentions: window.taskLinks || {},
             mentionsFetchUrlWA: true,
             lang: '{$loc[0]}'
         });
@@ -477,6 +670,113 @@
     $spellcheckBtn.on('click', function (e) {
         e.preventDefault();
         runSpellCheck();
+    });
+
+    $writeAiBtn.on('click', function (e) {
+        e.preventDefault();
+
+        const $form = $(this).closest('form');
+        const task_title = $form.find('[name="data[name]"]').val();
+        const task_content = $form.find('[name="data[text]"]').val();
+
+        $.get('?module=tasks&action=ai&type=taskfields&html=1', function (response) {
+
+            $.waDialog({
+                html: response.data?.html,
+                onOpen: function ($wrapper, dialog) {
+                    let try_free = !$wrapper.find('.js-premium-wrapper').length;
+
+                    if (!try_free) {
+                        $wrapper.find('.js-premium-wrapper').show();
+                        $wrapper.find('.dialog-ai-fields-container-wrapper').addClass('hidden');
+                        $wrapper.find('.dialog-footer').addClass('hidden');
+                        $wrapper.find('.dialog-header').addClass('hidden');
+                        dialog.resize();
+                    }
+
+                    $wrapper.find('[name="objective"]').val(task_title + '\n' + task_content);
+
+                    $wrapper.find('.js-try-free-ai').on('click', function() {
+                        const $self = $(this);
+
+                         $.post('?module=tasks&action=ai&type=tryFree', (r) => {
+                            if (r.status === 'ok') {
+                                if (r.data.is_max_count) {
+                                    $wrapper.find('.js-after-try-free-ai').show();
+                                    $self.remove();
+                                }
+
+                                $wrapper.find('.js-premium-wrapper').hide();
+                                $wrapper.find('.dialog-ai-fields-container-wrapper').removeClass('hidden');
+                                $wrapper.find('.dialog-footer').removeClass('hidden');
+                                $wrapper.find('.dialog-header').removeClass('hidden');
+                                try_free = true;
+                                dialog.resize();
+                            }
+                        });
+                    });
+
+                    $('.js-write-ai-action').on('click', function (e) {
+
+                        if (!try_free) {
+                            return false;
+                        }
+
+                        const $error_block = $('.js-errors-block');
+                        $error_block.empty();
+
+                        const $btn = $wrapper.find('.js-write-ai-action');
+                        $btn.prop('disabled', true);
+                        $btn.find('.fa-spinner').show();
+
+                        $.post('?module=tasks&action=ai&type=writetask', $wrapper.find(':input').serializeArray(), function (response) {
+                            $wrapper.find('.js-write-ai-action').prop('disabled', false);
+                            if (response?.status === 'ok' && response.data?.format_content) {
+                                $wrapper.find('.dialog-ai-answer .js-ai-answer-result').html(response.data.format_content);
+                                $wrapper.find('.dialog-ai-answer').removeClass('hidden');
+                                $wrapper.find('.js-paste-ai-answer-result').on('click', function(e) {
+                                    e.preventDefault();
+                                    window.lexicalEditor.updateContent('redactor-task-{$task_uuid}', response.data.content, { 
+                                        isMarkdown: true,
+                                    });
+                                    dialog.close();
+                                });
+                                dialog.resize();
+                                if (!$wrapper.find('.js-premium-wrapper').length) {
+                                    $wrapper.find('.js-write-ai-action').prop('disabled', false);
+                                    try_free = false;
+                                }
+                            }
+
+                            if(response?.status === 'fail') {
+
+                                if(response?.errors?.error_description) {
+                                    $error_block.append($('<span style="color: red;"></span>').text(response.errors.error_description));
+                                    $error_block[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                }
+
+                                if(response?.errors?.length){
+                                    $.each(response.errors, function (i, error) {
+                                        const $error = $('<span style="color: red;"></span>').text(error[0] || error);
+                                        $error_block.append($error);
+                                    });
+                                    $error_block[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                }
+
+                                dialog.close();
+                            }
+                        }).error(function(error) {
+                            $error_block.append($('<span style="color: red;"></span>').text(error.responseText || error.statusText || 'Error'));
+                            $error_block[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            dialog.close();
+                        }).always(function() {
+                            $btn.prop('disabled', false);
+                            $btn.find('.fa-spinner').hide();
+                        });
+                    });
+                }
+            });
+        });
     });
 
     $el.on('input', checkLength);

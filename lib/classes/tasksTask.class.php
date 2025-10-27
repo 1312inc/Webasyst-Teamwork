@@ -574,17 +574,7 @@ class tasksTask implements ArrayAccess
 
     public function getPublicLinks(): array
     {
-        return !empty($this->data['public_hash'])
-            ? array_reduce(
-                wa()->getRouting()->getDomains(),
-                function ($carry, $domain) {
-                    $carry[] = wa()
-                        ->getRouting()
-                        ->getUrl('/frontend', ['public_hash' => $this->data['public_hash']], true, $domain);
-
-                    return $carry;
-                }, [])
-            : [];
+        return tasksHelper::getPublicLinks($this->data['public_hash']);
     }
 
     /**
@@ -627,6 +617,32 @@ class tasksTask implements ArrayAccess
             $c['calendar_status'] = $statusService->getForContactId($c['id'], new DateTimeImmutable());
             $result[$c['id']] = $c;
         }
+        return $result;
+    }
+
+    public function getRoleUsers()
+    {
+        $result = [];
+        $task_user_model = new tasksTaskUsersModel();
+        $user_by_role = $task_user_model->getUsersRoleByTasks($this['id']);
+        $user_by_role = reset($user_by_role);
+
+        if (empty($user_by_role)) {
+            return $result;
+        }
+
+        $user_ids = array_keys($user_by_role);
+        $contact_model = new waContactModel();
+        $contacts = $contact_model->getById($user_ids);
+        $status_service = new tasksTeammateStatusService();
+        foreach($contacts as $c) {
+            $c['name'] = waContactNameField::formatName($c);
+            $c['photo_url'] = waContact::getPhotoUrl($c['id'], $c['photo'], null, null, ($c['is_company'] ? 'company' : 'person'));
+            $c['calendar_status'] = $status_service->getForContactId($c['id'], new DateTimeImmutable());
+            $c['roles'] = ifset($user_by_role, $c['id'], []);
+            $result[$c['id']] = $c;
+        }
+
         return $result;
     }
 

@@ -103,7 +103,7 @@
         <li>
             <a href="#/tasks/favorites/">
                 <i class="fas fa-at"></i>
-                <span>[`Watching`]</span>
+                <span>[`Following`]</span>
                 <span class="count">{tasksUserTasksCounterService::getPairs($favorites_counts.total, $favorites_counts.count, $favorites_counts.bg_color, $favorites_counts.text_color)}</span>
             </a>
         </li>
@@ -174,7 +174,7 @@
                     [`Scopes`]
                 </span>
                 {if $is_admin}
-                    <a class="add-scope count action" href="#/webasyst/tasks/#/settings/scope/add/"><i class="fas fa-plus-circle"></i></a>
+                    <a class="add-scope count action" href="#/webasyst/tasks/#/settings/scope/add/"><i class="fas fa-plus-circle text-green"></i></a>
                 {/if}
             </h5>
             <div class="collapsible__content">
@@ -245,6 +245,8 @@
                 <span class="caret"><i class="fas fa-caret-down"></i></span>
                 [`Team`]
             </span>
+            <a href="javascript:alert('[`To invite someone, click (+) to create a new task > select ‘Invite’ > enter an email address and save. Or use the Webasyst Teamwork mobile app to invite with a 8-digit code.`]');" class="count small action"><i class="fas fa-user-plus opacity-40" style="font-size: 0.8125rem;"></i></a>
+
         </h5>
         <div class="collapsible__content">
             {if !empty($users)}
@@ -284,7 +286,7 @@
                 [`Status`]
             </span>
             {if $is_admin}
-                <a class="count action" href="#/settings/"><i class="fas fa-cog"></i></a>
+                <a class="count action" href="#/settings/"><i class="fas fa-cog opacity-40"></i></a>
             {/if}
         </h5>
         <div class="collapsible__content">
@@ -331,7 +333,7 @@
                     [`Projects`]
                 </span>
                 {if $is_admin}
-                    <a class="add-project count action" href="#/settings/project/add/"><i class="fas fa-plus-circle"></i></a>
+                    <a class="add-project count action" href="#/settings/project/add/"><i class="fas fa-plus-circle text-green"></i></a>
                 {/if}
             </h5>
             <div class="collapsible__content">
@@ -441,12 +443,12 @@
             </a>
         </li>
 
-        {if $is_admin}
+        {if $is_admin && !$is_premium}
             <li class="top-padded">
                 <a href="#/upgrade/">
                     <i class="fas fa-star{if !$is_premium} text-yellow{/if}"></i>
                     <span>[`Premium`]</span>
-                    {if !$is_premium}
+                    {if !$is_premium && !$wa->tasks->isCloud()}
                         {$p = $wa->tasks->getPremiumPricing()}
                         {if !empty($p.special_short)}<span class="count"><span class="badge small {$p.special_color}">{$p.special_short}</span></span>{/if}
                     {/if}

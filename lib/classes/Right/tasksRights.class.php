@@ -30,6 +30,12 @@ final class tasksRights
 
         // First of all extend by raw access value each
         $tasks_access = $this->getTasksAccess($tasks, $contact_ids);
+
+        $task_ids = array_unique(array_map(function ($_t) {
+            return $_t['id'];
+        }, $tasks));
+        $role_users = (new tasksTaskUsersModel())->getUsersRoleByTasks($task_ids);
+
         foreach ($tasks as &$task) {
             $collected_rights_info = array_fill_keys($contact_ids, $empty_rights);
             foreach ($contact_ids as $contact_id) {
@@ -86,7 +92,6 @@ final class tasksRights
                 }
 
                 if ($rights_info['access'] == self::PROJECT_ACCESS_VIEW_ASSIGNED_TASKS) {
-
                     $is_assigned = $task['assigned_contact_id'] == $contact_id;
                     $is_author = $task['create_contact_id'] == $contact_id;
 
@@ -103,13 +108,13 @@ final class tasksRights
 
                     // establish 'can_view'
                     $rights_info['can_view'] = $is_assigned || $is_author;
+                    if (ifset($role_users, $task['id'], $contact_id, null)) {
+                        $rights_info['can_view'] = true;
+                    }
 
                     // establish 'can_edit'
                     $rights_info['can_edit'] = $is_author;
-
-                    continue;
                 }
-
             }
 
             $task['rights_info'] = $collected_rights_info;
@@ -580,5 +585,57 @@ final class tasksRights
         }
 
         return $counters;
+    }
+
+    /**
+     * @see waContactRightsModel::getUsers()
+     * @param $app_id
+     * @param $name
+     * @param $value
+     * @return array
+     * @throws waDbException
+     */
+    public function getUsers($app_id, $name = 'backend', $value = 1)
+    {
+        $conditions = [
+            "(r.app_id = s:app_id AND r.name = s:name AND r.value >= i:value)",
+            "(r.app_id = 'webasyst' AND r.name = 'backend' AND r.value > 0)",
+        ];
+        if ($name != 'backend') {
+            $conditions[] = "(r.app_id = s:app_id AND r.name = 'backend' AND r.value > 1)";
+        }
+        $right_model = new waContactRightsModel();
+        $contact_ids = $right_model->query("
+            SELECT DISTINCT IF(r.group_id < 0, -r.group_id, g.contact_id) AS cid FROM wa_contact_rights r
+            LEFT JOIN wa_user_groups g ON r.group_id = g.group_id
+            WHERE (r.group_id < 0 OR g.contact_id IS NOT NULL)
+            AND (".join(' OR ', $conditions).")
+        ", [
+            'app_id' => $app_id,
+            'name' => $name,
+            'value' => $value,
+        ])->fetchAll(null, true);
+
+        if (!$contact_ids) {
+            return [];
+        }
+
+        return $right_model->query("SELECT * FROM wa_contact WHERE id IN(:ids) AND is_user >= 0", ['ids' => $contact_ids])->fetchAll('id');
+
+    }
+
+    /**
+     * @param $project_id
+     * @return array
+     * @throws waDbException
+     */
+    public function getUsersAccessProject($project_id)
+    {
+        $users = [];
+        if ($project_id) {
+            $users = $this->getUsers('tasks', "project.$project_id");
+        }
+
+        return $users;
     }
 }

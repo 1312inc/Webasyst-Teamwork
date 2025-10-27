@@ -53,6 +53,11 @@ class tasksMilestone implements tasksPersistableInterface
     private $closed_percent = 0.;
 
     /**
+     * @var string|null
+     */
+    private $public_hash = null;
+
+    /**
      * @return int|null
      */
     public function getId()
@@ -208,6 +213,31 @@ class tasksMilestone implements tasksPersistableInterface
         $this->closed = $closed;
 
         return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPublicHash(): ?string
+    {
+        return $this->public_hash;
+    }
+
+    /**
+     * @param $public_hash
+     *
+     * @return tasksMilestone
+     */
+    public function setPublicHash($public_hash): tasksMilestone
+    {
+        $this->public_hash = $public_hash;
+
+        return $this;
+    }
+
+    public function getPublicLinks()
+    {
+        return tasksHelper::getPublicLinks($this->public_hash, 'milestone');
     }
 
     public function convertToSqlValues(array $fields): array

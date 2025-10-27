@@ -1,5 +1,8 @@
 <?php
 
 return array (
-    'task/<public_hash>' => 'frontend/',
+    '' => 'frontend/',
+    'task/<public_hash>/?' => 'frontend/taskPublic',
+    'milestone/<public_hash>/?' => 'frontend/milestonePublic',
+    'project/<public_hash>/?' => 'frontend/projectPublic',
 );

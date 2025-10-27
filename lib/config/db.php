@@ -68,8 +68,10 @@ return array(
         'start_date' => array('date'),
         'end_date' => array('date'),
         'closed' => array('int', 1, 'null' => 0, 'default' => '0'),
+        'public_hash' => array('varchar', 36),
         ':keys' => array(
             'PRIMARY' => 'id',
+            'tasks_milestone_public_hash_uindex' => array('public_hash', 'unique' => 1),
         ),
         ':options' => array('charset' => 'utf8mb4'),
     ),
@@ -98,8 +100,10 @@ return array(
         'color' => array('varchar', 50, 'null' => 0, 'default' => ''),
         'archive_datetime' => array('datetime'),
         'sort' => array('int', 11, 'null' => 0, 'default' => '0'),
+        'public_hash' => array('varchar', 36),
         ':keys' => array(
             'PRIMARY' => 'id',
+            'tasks_project_public_hash_uindex' => array('public_hash', 'unique' => 1),
         ),
         ':options' => array('charset' => 'utf8mb4'),
     ),
@@ -263,8 +267,29 @@ return array(
             'PRIMARY' => 'id'
         )
     ),
+    'tasks_task_users' => array(
+        'task_id' => array('int', 11, 'null' => 0),
+        'contact_id' => array('int', 11, 'null' => 0),
+        'role_id' => array('varchar', 255, 'null' => 0),
+        'create_datetime' => array('datetime', 'null' => 0),
+        ':keys' => array(
+        )
+    ),
     'tasks_type_fields' => array(
         'type_id' => array('varchar', 32, 'null' => 0),
         'field_id' => array('int', 11, 'null' => 0),
+        ':keys' => array(
+        )
+    ),
+    'tasks_user_role' => array(
+        'id' => array('varchar', 255, 'null' => 0),
+        'name' => array('varchar', 255, 'null' => 0),
+        'color' => array('varchar', 64),
+        'sort' => array('int', 11, 'null' => 0, 'default' => '0'),
+        'show_inbox' => array('tinyint', 1, 'null' => 0, 'default' => '0'),
+        'send_notifications' => array('tinyint', 1, 'null' => 0, 'default' => '0'),
+        ':keys' => array(
+            'PRIMARY' => 'id',
+        )
     ),
 );

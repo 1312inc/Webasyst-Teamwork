@@ -87,7 +87,8 @@ class tasksTasksInfoAction extends waViewAction
             'taskAssignedContactStatus' => (new tasksTeammateStatusService())->getForContactId($task->assigned_contact_id, new DateTimeImmutable()),
             'hash_type'                 => waRequest::get('from_hash_type', '', waRequest::TYPE_STRING_TRIM),
             'milestones'                => $this->milestones,
-            'links_data'                => $links_prettifier->getData()
+            'links_data'                => $links_prettifier->getData(),
+            'user_roles'                => (new tasksTasksUserRoleModel())->getRoles(),
         ]);
     }
 

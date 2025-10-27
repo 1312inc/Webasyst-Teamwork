@@ -53,6 +53,11 @@ class tasksProject implements tasksPersistableInterface
     private $contact;
 
     /**
+     * @var string|null
+     */
+    private $public_hash = null;
+
+    /**
      * tasksProject constructor.
      */
     public function __construct()
@@ -106,6 +111,16 @@ class tasksProject implements tasksPersistableInterface
     public function getSort(): int
     {
         return $this->sort;
+    }
+
+    public function getPublicHash(): ?string
+    {
+        return $this->public_hash;
+    }
+
+    public function getPublicLinks()
+    {
+        return tasksHelper::getPublicLinks($this->public_hash, 'project');
     }
 
     public function getContact(): waContact
@@ -177,6 +192,13 @@ class tasksProject implements tasksPersistableInterface
     public function setSort(int $sort): tasksProject
     {
         $this->sort = $sort;
+
+        return $this;
+    }
+
+    public function setPublicHash($public_hash): tasksProject
+    {
+        $this->public_hash = $public_hash;
 
         return $this;
     }

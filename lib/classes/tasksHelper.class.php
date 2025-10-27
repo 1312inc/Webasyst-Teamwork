@@ -801,4 +801,25 @@ class tasksHelper
 
         return $milestones;
     }
+
+    /**
+     * @param $public_hash
+     * @param $entity_type
+     * @return array
+     * @throws waException
+     */
+    public static function getPublicLinks($public_hash, $entity_type = 'task')
+    {
+        $urls = [];
+        $entity_type = $entity_type ?: 'task';
+        if (empty($public_hash)) {
+            return $urls;
+        }
+
+        foreach (wa()->getRouting()->getDomains() as $domain) {
+            $urls[] = wa()->getRouting()->getUrl("/frontend/{$entity_type}Public", ['public_hash' => $public_hash], true, $domain);
+        }
+
+        return array_filter($urls);
+    }
 }
