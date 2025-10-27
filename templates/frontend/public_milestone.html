@@ -46,7 +46,7 @@
             <div class="flexbox full-width">
                 <div class="nowrap">
                     <img src="{$wa->url(true)}wa-apps/tasks/img/tasks.png" width="28" height="28" style="vertical-align: middle;" class="custom-mr-4" />
-                    <strong>{$wa->appName()}</strong>
+                    <strong>Webasyst {$wa->appName()}</strong>
                 </div>
                 <div>{$wa->accountName()|truncate:64}</div>
             </div>
@@ -55,12 +55,12 @@
         <div class="container custom-mt-24">
             <div class="flexbox full-width">
                 <div class="wide">
-                    <h1 class="h3">{$milestone->getName()|escape}</h1>
-                    <p class="custom-m-0 text-gray">{$milestone->getDescription()|escape}</p>
+                    <h1 class="h1">{$milestone->getName()|escape}</h1>
+                    <p class="custom-m-0 text-gray small">{$milestone->getDescription()|escape}</p>
                 </div>
                 <div></div>
             </div>
-            <div class="progressbar custom-mt-16">
+            {* TODO: fix getClosedPercent() == 0 issue <div class="progressbar custom-mt-16">
                 <div class="progressbar-line-wrapper text-inside">
                     <div class="progressbar-outer">
                         <div class="progressbar-inner" style="width: {$milestone->getClosedPercent()}%;">
@@ -68,7 +68,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> *}
         </div>
         {foreach $tasks as $task}
             <div class="container blank rounded">
