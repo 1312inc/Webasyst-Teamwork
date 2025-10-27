@@ -149,6 +149,7 @@
                         <div class="t-team-roles-list-wrapper flexbox space-8">
                             <ul class="chips small custom-mt-0 t-user-roles">
                                 {foreach $task.role_users as $role_user}
+                                    {if empty($role_user.role)}{continue}{/if}
                                     <li data-role-id="{$role_user.role.role_id}" data-user-id="{$role_user.id}" style="--chips-outline-border-color: #{$role_user.role.color}; --menu-link-color: #fff; --menu-link-color-hover: #fff; --chips-background-color: #{$role_user.role.color}; --chips-background-color-hover: #{$role_user.role.color};">
                                         <a href="javascript:void(0);">
                                             <img src="{$role_user.photo_url}" alt="{$role_user.name|escape}" class="userpic">
