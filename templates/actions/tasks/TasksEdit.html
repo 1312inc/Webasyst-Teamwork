@@ -722,6 +722,9 @@
                             return false;
                         }
 
+                        const $error_block = $('.js-errors-block');
+                        $error_block.empty();
+
                         const $btn = $wrapper.find('.js-write-ai-action');
                         $btn.prop('disabled', true);
                         $btn.find('.fa-spinner').show();
@@ -729,7 +732,15 @@
                         $.post('?module=tasks&action=ai&type=writetask', $wrapper.find(':input').serializeArray(), function (response) {
                             $wrapper.find('.js-write-ai-action').prop('disabled', false);
                             if (response?.status === 'ok' && response.data?.format_content) {
-                                $wrapper.find('.dialog-ai-answer').html(response.data.format_content).removeClass('hidden');
+                                $wrapper.find('.dialog-ai-answer .js-ai-answer-result').html(response.data.format_content);
+                                $wrapper.find('.dialog-ai-answer').removeClass('hidden');
+                                $wrapper.find('.js-paste-ai-answer-result').on('click', function(e) {
+                                    e.preventDefault();
+                                    window.lexicalEditor.updateContent('redactor-task-{$task_uuid}', response.data.content, { 
+                                        isMarkdown: true,
+                                    });
+                                    dialog.close();
+                                });
                                 dialog.resize();
                                 if (!$wrapper.find('.js-premium-wrapper').length) {
                                     $wrapper.find('.js-write-ai-action').prop('disabled', false);
@@ -738,8 +749,6 @@
                             }
 
                             if(response?.status === 'fail') {
-                                const $error_block = $('.js-errors-block');
-                                $error_block.empty();
 
                                 if(response?.errors?.error_description) {
                                     $error_block.append($('<span style="color: red;"></span>').text(response.errors.error_description));
@@ -757,8 +766,6 @@
                                 dialog.close();
                             }
                         }).error(function(error) {
-                            const $error_block = $('.js-errors-block');
-                            $error_block.empty();
                             $error_block.append($('<span style="color: red;"></span>').text(error.responseText || error.statusText || 'Error'));
                             $error_block[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
                             dialog.close();

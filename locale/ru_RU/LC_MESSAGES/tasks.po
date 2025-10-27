@@ -2049,3 +2049,6 @@ msgstr "осталось %d бесплатно"
 
 msgid "Try AI free"
 msgstr "Попробовать ИИ бесплатно"
+
+msgid "Use this text"
+msgstr "Использовать этот текст"
