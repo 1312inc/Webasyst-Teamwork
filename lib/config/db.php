@@ -272,10 +272,14 @@ return array(
         'contact_id' => array('int', 11, 'null' => 0),
         'role_id' => array('varchar', 255, 'null' => 0),
         'create_datetime' => array('datetime', 'null' => 0),
+        ':keys' => array(
+        )
     ),
     'tasks_type_fields' => array(
         'type_id' => array('varchar', 32, 'null' => 0),
         'field_id' => array('int', 11, 'null' => 0),
+        ':keys' => array(
+        )
     ),
     'tasks_user_role' => array(
         'id' => array('varchar', 255, 'null' => 0),

@@ -68,17 +68,12 @@ final class tasksUtf8mb4Converter
                 continue;
             }
 
-            $isMb4 = (bool) preg_match('~^(utf8mb4_)~ui', $table['Collation']);
             $columns = $this->getModel()->query('SHOW FULL COLUMNS FROM `'.$table['Name'].'`')->fetchAll('Field');
             $indexes = $this->getModel()->query('SHOW INDEX FROM `'.$table['Name'].'`')->fetchAll('Column_name');
 
             $toConvert[$table['Name']] = $toConvert[$table['Name']] ?? [];
 
             foreach ($columns as $column) {
-                $isMb4 = (bool) preg_match('~^(utf8mb4_)~ui', $column['Collation']);
-//                if ($isMb4) {
-//                    continue;
-//                }
                 $isIndex = isset($indexes[$column['Field']]);
                 $isConvertable = !empty($column['Collation']);
                 if (!$isConvertable || $isIndex) {
