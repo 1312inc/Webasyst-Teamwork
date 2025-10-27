@@ -25,9 +25,11 @@ class tasksTasksSaveController extends waJsonController
             }
         }
 
+        $is_new = false;
         if ($task_id > 0) {
             $task = $this->update($task_id, $data);
         } else {
+            $is_new = true;
             $task = $this->add($data);
         }
 
@@ -45,7 +47,7 @@ class tasksTasksSaveController extends waJsonController
             }
         }
 
-        if(!empty($data['roles_user'])) {
+        if (!empty($data['roles_user'])) {
             $_POST['task_id'] = $task_id;
             $controller = new tasksTasksUsersRoleController();
 
@@ -61,6 +63,13 @@ class tasksTasksSaveController extends waJsonController
                 }
             }
         }
+
+        if ($is_new) {
+            $sender = new tasksNotificationsSender($task, ['new', 'mention']);
+        } else {
+            $sender = new tasksNotificationsSender($task, ['edit', 'mention']);
+        }
+        $sender->send();
 
         $this->response = array(
             'url' => $task['project_id'].'.'.$task['number'],
@@ -228,9 +237,6 @@ class tasksTasksSaveController extends waJsonController
             'prev_task' => $prev_task
         ));
 
-        $sender = new tasksNotificationsSender($task, ['edit', 'mention']);
-        $sender->send();
-
         return $task;
     }
 
@@ -258,11 +264,6 @@ class tasksTasksSaveController extends waJsonController
         $this->triggerEvent($task, array(
             'type' => 'add'
         ));
-
-        if ($task['assigned_contact_id']) {
-            $sender = new tasksNotificationsSender($task, ['new', 'mention']);
-            $sender->send();
-        }
 
         return $task;
     }

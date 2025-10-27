@@ -74,7 +74,7 @@ class tasksNotificationsSender
             $send_notifications = array_column($roles, 'send_notifications');
             return in_array(1, $send_notifications);
         });
-        $this->task['contacts_role'] = array_unique(array_column($role_users, 'contact_id'));
+        $this->task['contacts_role'] = array_unique(array_keys($role_users));
 
         $this->pushSender = new tasksPushSenderService();
     }
