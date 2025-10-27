@@ -750,7 +750,15 @@
                                     });
                                     $error_block[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
                                 }
+
+                                dialog.close();
                             }
+                        }).error(function(error) {
+                            const $error_block = $('.js-errors-block');
+                            $error_block.empty();
+                            $error_block.append($('<span style="color: red;"></span>').text(error.responseText || error.statusText || 'Error'));
+                            $error_block[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            dialog.close();
                         });
                     });
                 }
