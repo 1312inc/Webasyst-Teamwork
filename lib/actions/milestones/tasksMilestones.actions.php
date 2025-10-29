@@ -189,6 +189,7 @@ class tasksMilestonesActions extends waViewActions
         }
 
         $data['due_date'] = ifempty($data['due_date'], null);
+        $data['public_hash'] = ifempty($data['public_hash'], null);
         if ($data['due_date']) {
             $ts = @strtotime($data['due_date']);
             if ($ts) {
