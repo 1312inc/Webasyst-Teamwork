@@ -88,7 +88,7 @@ class tasksTasksInfoAction extends waViewAction
             'hash_type'                 => waRequest::get('from_hash_type', '', waRequest::TYPE_STRING_TRIM),
             'milestones'                => $this->milestones,
             'links_data'                => $links_prettifier->getData(),
-            'user_roles'                => (new tasksTasksUserRoleModel())->getRoles(),
+            'user_roles'                => ($task->canEdit() ? (new tasksTasksUserRoleModel())->getRoles() : []),
         ]);
     }
 

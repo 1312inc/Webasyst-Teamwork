@@ -2,15 +2,9 @@
 
 class tasksTasksUsersRoleController extends waJsonController
 {
-    /**
-     */
     public function execute()
     {
         try {
-            if (!wa()->getUser()->isAdmin('tasks')) {
-                throw new waRightsException(_w('Access denied'));
-            }
-
             $action = $this->getRequest()->get('act', '', waRequest::TYPE_STRING_TRIM);
 
             switch ($action) {
@@ -51,8 +45,8 @@ class tasksTasksUsersRoleController extends waJsonController
             $user_id = $this->getRequest()->post('user_id', null, waRequest::TYPE_INT);
             $role_id = $this->getRequest()->post('role_id', null, waRequest::TYPE_STRING_TRIM);
 
-            $task = tsks()->getModel(tasksTask::class)->getById($task_id);
-            if (!$task) {
+            $task = new tasksTask($task_id);
+            if (!$task->exists()) {
                 throw new tasksResourceNotFoundException(_w('Task not found'));
             }
 
@@ -63,7 +57,7 @@ class tasksTasksUsersRoleController extends waJsonController
 
             $user_rights = $contact->getRights('tasks');
             if (ifset($user_rights, 'backend', tasksRights::PROJECT_ACCESS_NONE) < tasksRights::PROJECT_ACCESS_FULL) {
-                if (ifset($user_rights, 'project.'.$task['project_id'], tasksRights::PROJECT_ACCESS_NONE) < tasksRights::PROJECT_ACCESS_VIEW_ASSIGNED_TASKS) {
+                if (ifset($user_rights, 'project.'.$task->project_id, tasksRights::PROJECT_ACCESS_NONE) < tasksRights::PROJECT_ACCESS_VIEW_ASSIGNED_TASKS) {
                     throw new tasksAccessException(sprintf(_w('No access: user %s is not eligible for the specified role in this task').' ', $contact->getName()));
                 }
             }
@@ -86,11 +80,20 @@ class tasksTasksUsersRoleController extends waJsonController
             $user_id = $this->getRequest()->post('user_id', null, waRequest::TYPE_INT);
             $role_id = $this->getRequest()->post('role_id', null, waRequest::TYPE_STRING_TRIM);
 
-            $this->response = (bool) (new tasksTaskUsersModel())->deleteByField([
-                'task_id' => $task_id,
-                'contact_id' => $user_id,
-                'role_id' => $role_id
-            ]);
+            $task = new tasksTask($task_id);
+            if ($task->exists()) {
+                if ($task->canEdit()) {
+                    $this->response = (bool) (new tasksTaskUsersModel())->deleteByField([
+                        'task_id' => $task_id,
+                        'contact_id' => $user_id,
+                        'role_id' => $role_id
+                    ]);
+                } else {
+                    $this->errors = _w('Access denied');
+                }
+            } else {
+                $this->errors = _w('Task not found');
+            }
         } catch (Exception $e) {
             $this->errors = $e->getMessage();
         }

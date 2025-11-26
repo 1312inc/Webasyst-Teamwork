@@ -501,12 +501,12 @@
                                     <a href="#/tasks/assigned/{$role_user.id}/">
                                         <img src="{$role_user.photo_url}" alt="{$role_user.name|escape}" class="userpic">
                                         <strong>{$role_user.name|escape}</strong> <span class="custom-ml-4 hint">{_w($role.name|escape)}</span>
-                                        {if $wa->user()->isAdmin('tasks')}<i class="fas fa-times custom-ml-16 custom-mr-4 js-remove-user"></i>{/if}
+                                        {if $task.rights_info.can_edit|default:false}<i class="fas fa-times custom-ml-16 custom-mr-4 js-remove-user"></i>{/if}
                                     </a>
                                 </li>
                                 {/foreach}
                             {/foreach}
-                            {if $wa->user()->isAdmin('tasks')}
+                            {if $task.rights_info.can_edit|default:false}
                                 {foreach $user_roles as $role}
                                     <li class="dropdown js-role-dropdown" data-role-id="{$role.id}" data-role-name="{_w($role.name|escape)}" data-role-color="#{$role.color}" style="--chips-background-color: transparent; --chips-background-color-hover: transparent;">
                                         <a href="javascript:void(0);" class="dropdown-toggle">

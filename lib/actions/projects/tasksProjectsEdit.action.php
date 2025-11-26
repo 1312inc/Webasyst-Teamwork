@@ -37,6 +37,7 @@ class tasksProjectsEditAction extends waViewAction
                 'create_datetime' => '',
                 'task_nmber' => '',
             ));
+            $data['public_hash'] = ifempty($data['public_hash'], null);
             if (empty($data['name'])) {
                 $errors['project[name]'] = _ws('This field is required.');
             }
