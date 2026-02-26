@@ -103,6 +103,9 @@ class tasksMilestonesActions extends waViewActions
             if ($result) {
                 $saved = true;
                 $milestone = $result;
+            }else{
+                $milestone = $post;
+                $milestone['id'] = null;
             }
         }
 

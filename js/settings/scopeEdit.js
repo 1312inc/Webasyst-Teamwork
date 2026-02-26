@@ -2,7 +2,7 @@ var TasksScopeEdit = (function ($) {
 
     TasksScopeEdit = function(options) {
         var that = this;
-
+console.log(options);
         // DOM
         that.$wrapper = options["$wrapper"];
         that.$form = that.$wrapper.find('form');
@@ -173,19 +173,22 @@ var TasksScopeEdit = (function ($) {
             $form = that.$form,
             errors = that.errors;
         $.each(errors, function(field_name, error) {
-            var $field = $form.find('[name="'+field_name+'"]:visible:first').addClass('error');
+            var $field = $form.find('[name="'+field_name+'"]:visible:first').addClass('state-error');
             if (!$field.length) {
-                $field = $form.find('[name="'+field_name+'"]:first').siblings(':visible:input:first').addClass('error');
+                $field = $form.find('[name="'+field_name+'"]:first').siblings(':visible:input:first').addClass('state-error');
+            }
+            if (!$field.length) {
+                $field = $form.find('[name="'+field_name+'"]:first').siblings('.dropdown').addClass('state-error');
             }
             if (!$field.length) {
                 $field = $form.find(':submit:first');
             }
-            $field.after($('<em class="errormsg"></em>').text(error));
+            $field.after($('<em class="state-error-hint"></em>').text(error));
         });
 
         // Clear validation errors when user changes the field
-        that.$form.on('change keyup', '.error', function() {
-            $(this).removeClass('error').siblings('.errormsg').remove();
+        that.$form.on('change keyup', '.state-error', function() {
+            $(this).removeClass('state-error').siblings('.state-error-hint').remove();
         });
     };
 
