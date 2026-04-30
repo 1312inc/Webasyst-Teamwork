@@ -814,7 +814,7 @@
                     <div class="t-task-button t-task-return">
                         <a href="javascript:void(0);" class="t-control-link button light-gray t-return-link" title="[`Return`]"> <span class="icon"><i class="fas fa-arrow-left"></i></span> <span class="t-button-label">[`Return`]</span></a>
                     </div>
-                    {if isset($task.next_status.id) && $task.next_status.id != -1 && (($task.contact_id == $wa->user('id') && $task.assigned_contact_id == $task.contact_id) || $task->hasFullAccess())}
+                    {if isset($task.next_status.id) && $task.next_status.id != -1 && (($task.contact_id == $wa->user('id') || $task.assigned_contact_id == $wa->user('id')) || $task->hasFullAccess())}
                         {* action buttons *}
                         <div class="t-task-button t-task-action{if $task.status.id == -1} wide{/if}">
                             {$task->buttonHtml()}
