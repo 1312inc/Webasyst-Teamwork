@@ -1,15 +1,15 @@
-# Webasyst Teamwork web app #
+# Webasyst Teamwork #
 
 Webasyst Teamwork is a task tracking app for teams. Set tasks for employees, manage projects, control the deadlines, keep work productive. No task will get lost!
 
 https://www.webasyst.com/store/app/tasks/
 
-## System Requirements ##
+## Server Requirements ##
 
 	* Web Server
 		* e.g. Apache or IIS
 
-	* PHP 7.2+
+	* PHP 8.2+
 		* spl extension
 		* mbstring
 		* iconv
