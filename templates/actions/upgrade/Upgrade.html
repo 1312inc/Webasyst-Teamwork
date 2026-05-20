@@ -137,7 +137,7 @@
                     <a class="bold" href="[`https://www.webasyst.com/store/app/tasks/`]" target="_blank">[`https://www.webasyst.com/store/app/tasks/`]</a>
                 </p>
 
-                {if method_exists($wa->installer, 'reviewWidget')}
+                {if $wa->installer && method_exists($wa->installer, 'reviewWidget')}
                     <div style="max-width: 300px;" class="custom-my-24 custom-mx-auto">
                         {$wa->installer->reviewWidget('app/tasks', ['is_inline' => true])}
                     </div>
