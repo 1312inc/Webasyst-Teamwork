@@ -622,13 +622,66 @@ class tasksHelper
         $mm = new tasksMilestoneModel();
         $milestones = $mm->getById($milestone_ids);
         tasksMilestoneModel::workup($milestones);
+        $types = self::getTaskTypesForView($tasks);
         foreach ($tasks as &$task) {
             $task['milestone'] = null;
             if (isset($milestones[$task['milestone_id']])) {
                 $task['milestone'] = $milestones[$task['milestone_id']];
             }
+            $task['type'] = ifset($types, $task['id'], null);
         }
         unset($task);
+    }
+
+    /**
+     * @param array[]|tasksTask[] $tasks
+     *
+     * @return array
+     */
+    protected static function getTaskTypesForView(array $tasks): array
+    {
+        if (!$tasks) {
+            return [];
+        }
+
+        $task_ids = [];
+        foreach ($tasks as $task) {
+            if (!empty($task['id'])) {
+                $task_ids[] = (int) $task['id'];
+            }
+        }
+
+        $task_ids = array_values(array_unique(array_filter($task_ids)));
+        if (!$task_ids) {
+            return [];
+        }
+
+        $sql = "
+            SELECT
+                tte.task_id,
+                ttt.id,
+                ttt.name,
+                COALESCE(ttt.color, s:default_color) AS color
+            FROM tasks_task_ext tte
+            INNER JOIN tasks_task_types ttt ON ttt.id = tte.type
+            WHERE tte.task_id IN (i:task_ids)
+        ";
+
+        $rows = (new waModel())->query($sql, [
+            'task_ids' => $task_ids,
+            'default_color' => tasksTaskTypesModel::DEFAULT_COLOR,
+        ])->fetchAll();
+
+        $result = [];
+        foreach ($rows as $row) {
+            $result[(int) $row['task_id']] = [
+                'id' => $row['id'],
+                'name' => $row['name'],
+                'color' => $row['color'],
+            ];
+        }
+
+        return $result;
     }
 
     /**
