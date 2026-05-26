@@ -82,7 +82,7 @@ class tasksTasksInfoAction extends waViewAction
             'tags_cloud'                => $this->tags_cloud,
             'statuses'                  => $this->statuses,
             'task'                      => $task,
-            'task_type'                 => $this->getTaskType($task),
+            'task_type'                 => ifset($task, 'type', null),
             'task_ext_info_html'        => $this->getTaskExtInfo($task),
             'taskAssignedContactStatus' => (new tasksTeammateStatusService())->getForContactId($task->assigned_contact_id, new DateTimeImmutable()),
             'hash_type'                 => waRequest::get('from_hash_type', '', waRequest::TYPE_STRING_TRIM),
@@ -165,21 +165,6 @@ class tasksTasksInfoAction extends waViewAction
         ]));
     }
 
-    /**
-     * @param tasksTask $task
-     * @return array|null
-     * @throws waDbException
-     */
-    private function getTaskType(tasksTask $task)
-    {
-        $model = new waModel();
-
-        return $model->query("
-            SELECT tte.*, ttt.name, ttt.color FROM tasks_task_ext tte 
-            LEFT JOIN tasks_task_types ttt ON ttt.id = tte.type
-            WHERE tte.task_id = i:task_id
-        ", ['task_id' => $task['id']])->fetchAssoc();
-    }
 
     /**
      * @param tasksTask $task
