@@ -513,6 +513,25 @@
                                 </div>
                             {/foreach}
 
+                            {foreach $task.files as $file}
+                                {if !tasksTask::isVideoAttachment($file)}{continue}{/if}
+                                <div class="t-image-item" data-file-ident="{$file.id}">
+                                    <div class="t-image-link" title="{$file.name|escape}">
+                                        <video controls preload="metadata" style="max-width: 100%; max-height: 180px; vertical-align: middle;">
+                                            <source src="?module=attachments&action=download&id={$file.id}">
+                                        </video>
+                                    </div>
+                                    <div class="t-file-name">{$file.name|escape}</div>
+                                    <div class="t-file-size">{$file.size|wa_format_file_size}</div>
+                                    <a class="button small light-gray" href="?module=attachments&action=download&id={$file.id}" target="_blank" download>
+                                    <div class="custom-mt-4">
+                                            <i class="fas fa-cloud-download-alt custom-mr-4"></i>[`Download`]
+                                        </a>
+                                    </div>
+                                    <a class="t-file-delete" href="javascript:void(0);"></a>
+                                </div>
+                            {/foreach}
+
                             <div class="t-image-item is-template">
                                 <div class="t-image-link">
                                     <img src="" alt="">
@@ -525,6 +544,7 @@
                         </div>
                         <div class="t-files-list">
                             {foreach $task.files as $file}
+                                {if tasksTask::isVideoAttachment($file)}{continue}{/if}
                                 <div class="t-file-item" data-file-ident="{$file.id}">
                                     <a class="t-file-link" href="?module=attachments&action=download&id={$file.id}" title="{$file.name|escape}">
                                         <i class="fas fa-paperclip custom-mr-4"></i>

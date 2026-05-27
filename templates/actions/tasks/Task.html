@@ -920,7 +920,14 @@
                 {foreach $_backend_task_hook as $_}{$_.before_attachments|default:''}{/foreach}
 
                 <div class="t-attach-wrapper">
-                    {if $task.images}
+                    {$_has_videos = false}
+                    {foreach $task.files as $file}
+                        {if tasksTask::isVideoAttachment($file)}
+                            {$_has_videos = true}
+                            {break}
+                        {/if}
+                    {/foreach}
+                    {if $task.images || $_has_videos}
                         <div class="t-attached-files-wrapper">
                             <div class="t-attach-list-block">
                                 <div class="t-images-list">
@@ -932,15 +939,39 @@
                                             <div class="t-file-name" title="{$image.name|escape}">{$image.name|escape}</div>
                                         </div>
                                     {/foreach}
+                                    {foreach $task.files as $file}
+                                        {if !tasksTask::isVideoAttachment($file)}{continue}{/if}
+                                        <div class="t-image-item">
+                                            <div class="t-image-link" title="{$file.name|escape}">
+                                                <video controls preload="metadata" style="max-width: 100%; max-height: 180px; vertical-align: middle;">
+                                                    <source src="?module=attachments&action=download&id={$file.id}">
+                                                </video>
+                                            </div>
+                                            <div class="t-file-name" title="{$file.name|escape}">{$file.name|escape}</div>
+                                            <div class="custom-mt-4">
+                                                <a class="button small light-gray" href="?module=attachments&action=download&id={$file.id}" target="_blank" download>
+                                                    <i class="fas fa-cloud-download-alt custom-mr-4"></i>[`Download`]
+                                                </a>
+                                            </div>
+                                        </div>
+                                    {/foreach}
                                 </div>
                             </div>
                         </div>
                     {/if}
-                    {if $task.files}
+                    {$_has_regular_files = false}
+                    {foreach $task.files as $file}
+                        {if !tasksTask::isVideoAttachment($file)}
+                            {$_has_regular_files = true}
+                            {break}
+                        {/if}
+                    {/foreach}
+                    {if $_has_regular_files}
                         <div class="t-attached-files-wrapper">
                             <div class="t-attach-list-block">
                                 <div class="t-files-list">
                                     {foreach $task.files as $file}
+                                        {if tasksTask::isVideoAttachment($file)}{continue}{/if}
                                         <div class="t-file-item">
                                             <a class="t-file-link" href="?module=attachments&action=download&id={$file.id}" target="_blank" title="{$file.name|escape}">
                                                 <i class="fas fa-cloud-download-alt custom-mr-4"></i>

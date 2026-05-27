@@ -246,6 +246,10 @@ class tasksHelper
 
     public static function getAttachPreviewUrl($attach, $absolute = false)
     {
+        if (tasksTask::isSvgAttachment($attach)) {
+            return self::getAttachDownloadUrl($attach, $absolute);
+        }
+
         $str = str_pad($attach['task_id'], 4, '0', STR_PAD_LEFT);
 
         $path = sprintf(
@@ -259,6 +263,19 @@ class tasksHelper
         );
 
         return wa()->getDataUrl($path, true, 'tasks', $absolute);
+    }
+
+    public static function getAttachDownloadUrl($attach, $absolute = false)
+    {
+        $url = '?module=attachments&action=download&id=' . (int) $attach['id'];
+        if (!$absolute) {
+            return $url;
+        }
+
+        $root_url = rtrim(wa()->getRootUrl(true), '/');
+        $backend_url = trim(wa()->getConfig()->getBackendUrl(false), '/');
+
+        return sprintf('%s/%s/tasks/%s', $root_url, $backend_url, $url);
     }
 
     public static function getAttachPath($attach)

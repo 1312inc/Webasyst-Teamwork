@@ -156,7 +156,7 @@ class tasksTask implements ArrayAccess
     {
         $files = array();
         foreach($this['all_attachments'] as $a) {
-            if(empty($a['log_id']) && !self::isImageAttachment($a)) {
+            if (empty($a['log_id']) && !self::isImageAttachment($a)) {
                 $files[] = $a;
             }
         }
@@ -202,7 +202,31 @@ class tasksTask implements ArrayAccess
         } else {
             $ext = '';
         }
-        return in_array(strtolower($ext), array('jpg', 'png', 'gif', 'jpeg', 'webp'));
+        return in_array(strtolower($ext), array('jpg', 'png', 'gif', 'jpeg', 'webp', 'svg'));
+    }
+
+    public static function isSvgAttachment($attachment)
+    {
+        if (is_scalar($attachment)) {
+            $ext = (string)$attachment;
+        } elseif (is_array($attachment) && isset($attachment['ext'])) {
+            $ext = (string)$attachment['ext'];
+        } else {
+            $ext = '';
+        }
+        return strtolower($ext) === 'svg';
+    }
+
+    public static function isVideoAttachment($attachment)
+    {
+        if (is_scalar($attachment)) {
+            $ext = (string)$attachment;
+        } elseif (is_array($attachment) && isset($attachment['ext'])) {
+            $ext = (string)$attachment['ext'];
+        } else {
+            $ext = '';
+        }
+        return in_array(strtolower($ext), array('mp4', 'webm'));
     }
 
     /**
