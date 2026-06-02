@@ -1303,7 +1303,14 @@
                                     {if $log_attachments.files || $log_attachments.images}
                                         <div class="t-attach-wrapper">
                                             <div class="t-attached-files-wrapper">
-                                                {if $log_attachments.images}
+                                                {$_log_has_videos = false}
+                                                {foreach $log_attachments.files as $file}
+                                                    {if tasksTask::isVideoAttachment($file)}
+                                                        {$_log_has_videos = true}
+                                                        {break}
+                                                    {/if}
+                                                {/foreach}
+                                                {if $log_attachments.images || $_log_has_videos}
                                                     <div class="t-images-list">
                                                         {foreach $log_attachments.images as $image}
                                                             <div class="t-image-item">
@@ -1313,11 +1320,35 @@
                                                                 <div class="t-file-name" title="{$image.name|escape}">{$image.name|escape}</div>
                                                             </div>
                                                         {/foreach}
+                                                        {foreach $log_attachments.files as $file}
+                                                            {if !tasksTask::isVideoAttachment($file)}{continue}{/if}
+                                                            <div class="t-image-item">
+                                                                <div class="t-image-link" title="{$file.name|escape}">
+                                                                    <video controls preload="metadata" style="max-width: 100%; max-height: 180px; vertical-align: middle;">
+                                                                        <source src="?module=attachments&action=download&id={$file.id}">
+                                                                    </video>
+                                                                </div>
+                                                                <div class="t-file-name" title="{$file.name|escape}">{$file.name|escape}</div>
+                                                                <div class="custom-mt-4">
+                                                                    <a class="button small light-gray" href="?module=attachments&action=download&id={$file.id}" target="_blank" download>
+                                                                        <i class="fas fa-cloud-download-alt custom-mr-4"></i>[`Download`]
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                        {/foreach}
                                                     </div>
                                                 {/if}
-                                                {if $log_attachments.files}
+                                                {$_log_has_regular_files = false}
+                                                {foreach $log_attachments.files as $file}
+                                                    {if !tasksTask::isVideoAttachment($file)}
+                                                        {$_log_has_regular_files = true}
+                                                        {break}
+                                                    {/if}
+                                                {/foreach}
+                                                {if $_log_has_regular_files}
                                                     <div class="t-files-list">
                                                         {foreach $log_attachments.files as $file}
+                                                            {if tasksTask::isVideoAttachment($file)}{continue}{/if}
                                                             <div class="t-file-item" data-file-ident="{$file.id}">
                                                                 <a class="t-file-link" href="?module=attachments&action=download&id={$file.id}" title="{$file.name|escape}">
                                                                     <i class="fas fa-cloud-download-alt custom-mr-4"></i>

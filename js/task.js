@@ -2183,16 +2183,47 @@ var TaskCommentFilesUploader = ( function($) {
         })
     };
 
+    TaskCommentFilesUploader.prototype.getFileExtension = function(fileName) {
+        var parts = (fileName || '').split('.');
+        return parts.length > 1 ? parts.pop().toLowerCase() : '';
+    };
+
+    TaskCommentFilesUploader.prototype.getPreviewType = function(file) {
+        var image_mime_type = /^image\/(png|jpe?g|gif|webp|svg\+xml)$/i,
+            video_mime_type = /^video\/(mp4|webm)$/i,
+            image_ext = ['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg'],
+            video_ext = ['mp4', 'webm'],
+            file_type = (file.type || '').toLowerCase(),
+            file_ext = this.getFileExtension(file.name);
+
+        if (file_type.match(image_mime_type) || $.inArray(file_ext, image_ext) >= 0) {
+            return 'image';
+        }
+
+        if (file_type.match(video_mime_type) || $.inArray(file_ext, video_ext) >= 0) {
+            return 'video';
+        }
+
+        return 'file';
+    };
+
+    TaskCommentFilesUploader.prototype.isJpegFile = function(file) {
+        var file_type = (file.type || '').toLowerCase(),
+            file_ext = this.getFileExtension(file.name);
+
+        return file_type === 'image/jpeg' || $.inArray(file_ext, ['jpg', 'jpeg']) >= 0;
+    };
+
     TaskCommentFilesUploader.prototype.renderFile = function(file, callback) {
         var that = this,
             $wrapper = that.$wrapper,
-            image_type = /^image\/(png|jpe?g|gif)$/,
             current_index,
             $template,
             $newFile,
             file_name,
             file_size,
-            is_image;
+            preview_type,
+            preview_url;
 
         var getImageHTML = function() {
             return $wrapper.find(".t-image-item.is-template");
@@ -2205,8 +2236,8 @@ var TaskCommentFilesUploader = ( function($) {
         current_index = that.files_count++;
         that.attachedFiles[current_index] = file;
 
-        is_image = (file.type.match(image_type));
-        $template = (is_image) ? getImageHTML() : getFileHTML();
+        preview_type = that.getPreviewType(file);
+        $template = (preview_type !== 'file') ? getImageHTML() : getFileHTML();
         file_name = file.name;
         file_size = Math.round( file.size / 1024 ) + " Kb";
         $newFile = $template.clone().removeClass("is-template");
@@ -2218,14 +2249,20 @@ var TaskCommentFilesUploader = ( function($) {
 
         $newFile.data("file-id", current_index);
 
-        if (is_image) {
+        if (preview_type === 'image') {
             var $image = $newFile.find(".t-image-link img"),
                 reader = new FileReader();
 
+            $newFile.find('.t-image-link video').remove();
+            $image.show();
+
             reader.onload = ( function($image) {
                 return function(event) {
+                    if (that.isJpegFile(file)) {
+                        setOrientation(file, $image);
+                    }
+
                     $image.attr("src", event.target.result);
-                    // Render
                     $template.before($newFile);
 
                     if (callback && typeof callback == "function") {
@@ -2235,19 +2272,69 @@ var TaskCommentFilesUploader = ( function($) {
             })($image);
 
             reader.readAsDataURL(file);
+        } else if (preview_type === 'video') {
+            var $link = $newFile.find('.t-image-link'),
+                $videoImage = $link.find('img'),
+                $video = $('<video controls preload="metadata" style="max-width: 100%; max-height: 180px; vertical-align: middle;"></video>');
+
+            preview_url = (window.URL || window.webkitURL).createObjectURL(file);
+
+            $videoImage.hide().attr('src', '');
+            $video.attr('src', preview_url);
+            $link.append($video);
+            $newFile.data('preview-url', preview_url);
+            $template.before($newFile);
+
+            if (callback && typeof callback == "function") {
+                callback();
+            }
         } else {
-            // Render
             $template.before($newFile);
             if (callback && typeof callback == "function") {
                 callback();
             }
         }
+
+        var setOrientation = function(file, $image) {
+            EXIF.getData(file, function() {
+                var orientation = ( file.exifdata['Orientation'] || false );
+                if (orientation) {
+                    if (orientation == 1) {
+                        return false;
+                    }
+
+                    var value = "rotate(0)";
+
+                    if (orientation == 6) {
+                        value = "rotate(90deg)";
+                    }
+
+                    if (orientation == 8) {
+                        value = "rotate(-90deg)";
+                    }
+
+                    if (orientation == 3) {
+                        value = "rotate(180deg)";
+                    }
+
+                    $image.css({
+                        "-webkit-transform": value,
+                        "transform": value
+                    })
+                }
+            });
+        };
     };
 
     TaskCommentFilesUploader.prototype.deleteFile = function($file) {
         var that = this,
             file_id = $file.data("file-id"),
-            is_new_file = !!that.attachedFiles[file_id];
+            is_new_file = !!that.attachedFiles[file_id],
+            preview_url = $file.data('preview-url');
+
+        if (preview_url && (window.URL || window.webkitURL)) {
+            (window.URL || window.webkitURL).revokeObjectURL(preview_url);
+        }
 
         if (is_new_file) {
             // Delete from storage

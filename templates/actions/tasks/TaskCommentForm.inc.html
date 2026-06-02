@@ -83,10 +83,29 @@
                                 </div>
                             {/foreach}
 
+                            {foreach $_files as $_file}
+                                {if !tasksTask::isVideoAttachment($_file)}{continue}{/if}
+                                <div class="t-image-item" data-file-ident="{$_file.id}">
+                                    <div class="t-image-link" title="{$_file.name|escape}">
+                                        <video controls preload="metadata" style="max-width: 100%; max-height: 180px; vertical-align: middle;">
+                                            <source src="?module=attachments&action=download&id={$_file.id}">
+                                        </video>
+                                    </div>
+                                    <div class="t-file-name">{$_file.name|escape}</div>
+                                    <div class="t-file-size">{$_file.size|wa_format_file_size}</div>
+                                    <div class="custom-mt-4">
+                                        <a class="button small light-gray" href="?module=attachments&action=download&id={$_file.id}" target="_blank" download>
+                                            <i class="fas fa-cloud-download-alt custom-mr-4"></i>[`Download`]
+                                        </a>
+                                    </div>
+                                    <a class="t-file-delete" href="javascript:void(0);"></a>
+                                </div>
+                            {/foreach}
+
                             <div class="t-image-item is-template">
-                                <a class="t-image-link" href="javascript:void(0);">
+                                <div class="t-image-link">
                                     <img src="" alt="">
-                                </a>
+                                </div>
                                 <div class="t-file-name"></div>
                                 <div class="t-file-size"></div>
                                 <a class="t-file-delete" href="javascript:void(0);"></a>
@@ -97,6 +116,7 @@
                         <div class="t-files-list">
 
                             {foreach $_files as $_file}
+                                {if tasksTask::isVideoAttachment($_file)}{continue}{/if}
                                 <div class="t-file-item" data-file-ident="{$_file.id}">
                                     <a class="t-file-link" href="?module=attachments&action=download&id={$_file.id}" title="{$_file.name|escape}">
                                         <i class="fas fa-cloud-download-alt custom-mr-4"></i>
