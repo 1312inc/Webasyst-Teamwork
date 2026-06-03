@@ -616,6 +616,99 @@
     </div>
 </div>
 
+<style>
+    .t-spellcheck-compare-dialog .dialog-body {
+        width: min(1100px, calc(100vw - 2rem));
+        max-width: calc(100vw - 2rem);
+    }
+
+    .t-spellcheck-compare {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1rem;
+    }
+
+    .t-spellcheck-compare__column {
+        min-width: 0;
+    }
+
+    .t-spellcheck-compare__title {
+        margin: 0 0 0.75rem;
+        font-size: 1rem;
+        line-height: 1.25;
+    }
+
+    .t-spellcheck-compare__panel {
+        min-height: 18rem;
+        max-height: min(60vh, 42rem);
+        overflow: auto;
+        padding: 1rem;
+        border: 1px solid var(--border-color-soft, #d9d9d9);
+        border-radius: 0.5rem;
+        background: var(--background-color-blank, #fff);
+        line-height: 1.5;
+        word-break: break-word;
+    }
+
+    .t-spellcheck-compare__panel > :first-child {
+        margin-top: 0;
+    }
+
+    .t-spellcheck-compare__panel > :last-child {
+        margin-bottom: 0;
+    }
+
+    .t-spellcheck-compare__panel p,
+    .t-spellcheck-compare__panel ul,
+    .t-spellcheck-compare__panel ol,
+    .t-spellcheck-compare__panel blockquote,
+    .t-spellcheck-compare__panel pre {
+        margin: 0 0 1rem;
+    }
+
+    .t-spellcheck-compare__panel ul,
+    .t-spellcheck-compare__panel ol {
+        padding-left: 1.5rem;
+    }
+
+    .t-spellcheck-compare__panel blockquote {
+        padding-left: 1rem;
+        border-left: 3px solid var(--border-color-soft, #d9d9d9);
+        color: var(--text-color-hint, #666);
+    }
+
+    .t-spellcheck-compare__panel pre,
+    .t-spellcheck-compare__panel code {
+        font-family: monospace;
+    }
+
+    .t-spellcheck-compare__panel pre {
+        padding: 0.75rem;
+        border-radius: 0.375rem;
+        background: var(--background-color-input-solid, #f5f5f5);
+        overflow: auto;
+    }
+
+    .t-spellcheck-compare__panel code {
+        white-space: pre-wrap;
+    }
+
+    .t-spellcheck-compare__panel img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    @media (max-width: 760px) {
+        .t-spellcheck-compare {
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+        .t-spellcheck-compare__panel {
+            max-height: 24rem;
+        }
+    }
+</style>
+
 <script>
 (function () {
     if (!lexicalEditor) return;
@@ -646,9 +739,32 @@
         TasksController.storageDataInMdMode($el[0], 'getDraftKeyTaskText');
     };
 
+    function escapeHtml (value) {
+        return String(value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
+    function getSpellcheckSourceHtml () {
+        const $editorInput = $el.parent().find('.lexical-editor .editor-input').first();
+        const sourceHtml = $editorInput.length ? $editorInput.html().trim() : '';
+
+        if (sourceHtml) {
+            return sourceHtml;
+        }
+
+        const escapedHtml = escapeHtml($el.val()).replace(/\r?\n/g, '<br>');
+
+        return '<div>' + escapedHtml + '</div>';
+    }
+
     function runSpellCheck () {
         if (!window.spellCheck || spellcheckInProcess) return;
         const text = $el.val();
+        const sourceHtml = getSpellcheckSourceHtml();
 
         spellcheckInProcess = true;
         $spellcheckBtn.find('.icon').addClass('shimmer');
@@ -656,7 +772,11 @@
             const { restored, formated } = correctedText;
             textReplaceConfirm({
                 title: "[`AI response`]",
-                text: formated,
+                left_title: '[`Original text`]',
+                left_html: sourceHtml,
+                right_title: '[`Corrected text`]',
+                right_html: formated,
+                dialog_class: 't-spellcheck-compare-dialog',
                 success_button_title: '[`Get the entire text`]',
                 success_button_class: 'blue',
                 cancel_button_title: '[`Close`]',
@@ -798,13 +918,29 @@
     });
 
     $el.on('input', checkLength);
-
+{literal}
+    function dialogTemplate(header, content, footer, className) {
+        return `<div class="dialog  ${className ? className : ''}">
+            <div class="dialog-background"></div>
+            <div class="dialog-body">
+                <div class="dialog-header">${header}</div>
+                <div class="dialog-content">${content}</div>
+                <div class="dialog-footer">${footer}</div>
+            </div>
+        </div>`
+    }
+{/literal}
     function textReplaceConfirm(options) {
         {literal}
         var deferred = $.Deferred();
 
         var header = ( options.title ? '<h3>' + options.title + '</h3>' : null );
         var text = ( options.text ? options.text : "" );
+        var left_title = ( options.left_title ? options.left_title : "" );
+        var left_html = ( options.left_html ? options.left_html : "" );
+        var right_title = ( options.right_title ? options.right_title : "" );
+        var right_html = ( options.right_html ? options.right_html : "" );
+        var dialog_class = ( options.dialog_class ? options.dialog_class : "" );
         var success_button_title = ( options.success_button_title ? options.success_button_title : $.wa.translate("Confirm") );
         var success_button_class = ( options.success_button_class ? options.success_button_class : "blue" );
         var cancel_button_title = ( options.cancel_button_title ? options.cancel_button_title : $.wa.translate("Cancel") );
@@ -816,11 +952,25 @@
         var footer = success_button + cancel_button;
 
         var is_success = false;
+        var content = text;
+
+        if (left_html && right_html) {
+            content = `
+                <div class="t-spellcheck-compare">
+                    <div class="t-spellcheck-compare__column">
+                        <h4 class="t-spellcheck-compare__title">${left_title}</h4>
+                        <div class="t-spellcheck-compare__panel">${left_html}</div>
+                    </div>
+                    <div class="t-spellcheck-compare__column">
+                        <h4 class="t-spellcheck-compare__title">${right_title}</h4>
+                        <div class="t-spellcheck-compare__panel">${right_html}</div>
+                    </div>
+                </div>
+            `;
+        }
 
         $.waDialog({
-            header: header,
-            content: text,
-            footer: footer,
+            html: dialogTemplate(header, content, footer, dialog_class),
             onOpen: function($wrapper, dialog) {
                 $wrapper.on("click", ".js-success-action", function(event) {
                     event.preventDefault();
