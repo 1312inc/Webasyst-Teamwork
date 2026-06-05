@@ -37,6 +37,7 @@ var Task = ( function($) {
         that.$taskContent = that.$task.find(".t-task-wrapper");
         that.$tags = that.$task.find(".t-tags-wrapper");
         that.$selectInput = that.$task.find(".t-checkbox-item");
+        that.$scrollToLastCommentButton = that.$task.find(".js-scroll-to-last-comment");
 
         // VARS
 
@@ -199,6 +200,8 @@ var Task = ( function($) {
             that.initTaskUpdateListener();
             //
             that.initCommentsPrettyPrint();
+            //
+            that.initScrollToLastComment();
         }
     };
 
@@ -212,6 +215,110 @@ var Task = ( function($) {
 
             (n || c || d) && prettyPrint()
         }
+    };
+
+    Task.prototype.initScrollToLastComment = function () {
+        var that = this,
+            $button = that.$scrollToLastCommentButton,
+            $commentsWrapper = that.$task.find(".js-comments-list-wrapper");
+
+        if (!that.is_single || !$button.length || !$commentsWrapper.length) {
+            return;
+        }
+
+        that.destroyScrollToLastComment();
+
+        that.scrollToLastCommentNamespace = ".scroll-to-last-comment-" + that.task_id;
+        that.setScrollToLastCommentVisibility = function (isVisible) {
+            $button.toggleClass("is-shown", !!isVisible);
+        };
+
+        that.updateScrollToLastCommentVisibility = function (entry) {
+            var isBelowViewport;
+
+            if (!entry) {
+                that.setScrollToLastCommentVisibility(false);
+                return;
+            }
+
+            isBelowViewport = entry.boundingClientRect.top >= (window.innerHeight || document.documentElement.clientHeight);
+            that.setScrollToLastCommentVisibility(isBelowViewport);
+        };
+
+        that.scrollToLastCommentObserver = new IntersectionObserver(function (entries) {
+            if (entries.length) {
+                that.updateScrollToLastCommentVisibility(entries[0]);
+            }
+        }, {
+            root: null,
+            threshold: [0, 1]
+        });
+
+        that.refreshScrollToLastCommentObserver = function () {
+            var $lastItem = that.getLastCommentItem();
+
+            that.scrollToLastCommentObserver.disconnect();
+
+            if (!$lastItem.length) {
+                that.updateScrollToLastCommentVisibility();
+                return;
+            }
+
+            that.scrollToLastCommentObserver.observe($lastItem[0]);
+            that.updateScrollToLastCommentVisibility({
+                boundingClientRect: $lastItem[0].getBoundingClientRect()
+            });
+        };
+
+        $button.on("click" + that.scrollToLastCommentNamespace, function (event) {
+            event.preventDefault();
+
+            var $lastItem = that.getLastCommentItem();
+            if (!$lastItem.length) {
+                return;
+            }
+
+            $lastItem[0].scrollIntoView({
+                behavior: "smooth",
+                block: "end"
+            });
+
+            window.setTimeout(function () {
+                that.refreshScrollToLastCommentObserver && that.refreshScrollToLastCommentObserver();
+            }, 350);
+        });
+
+        that.refreshScrollToLastCommentObserver();
+    };
+
+    Task.prototype.getLastCommentItem = function () {
+        var $commentsWrapper = this.$task.find(".js-comments-list-wrapper");
+
+        if (!$commentsWrapper.length) {
+            return $();
+        }
+
+        return $commentsWrapper.children(".t-comment-item-wrapper:visible").last();
+    };
+
+    Task.prototype.destroyScrollToLastComment = function () {
+        var that = this,
+            namespace = that.scrollToLastCommentNamespace;
+
+        if (that.scrollToLastCommentObserver) {
+            that.scrollToLastCommentObserver.disconnect();
+            that.scrollToLastCommentObserver = null;
+        }
+
+        if (namespace) {
+            that.$scrollToLastCommentButton.off(namespace);
+        }
+
+        that.$scrollToLastCommentButton.removeClass("is-shown");
+        that.scrollToLastCommentNamespace = null;
+        that.setScrollToLastCommentVisibility = null;
+        that.updateScrollToLastCommentVisibility = null;
+        that.refreshScrollToLastCommentObserver = null;
     };
 
     Task.prototype.generateHash = function (length, init_hash) {
@@ -1282,6 +1389,7 @@ var Task = ( function($) {
 
                     $comment_item.hide();
                     $comment_form_wrapper.show().html(html);
+                    that.refreshScrollToLastCommentObserver && that.refreshScrollToLastCommentObserver();
 
                     var $form = $comment_form_wrapper.find('form');
                     that.initCommentForm($form, {
@@ -1299,6 +1407,7 @@ var Task = ( function($) {
                         e.preventDefault();
                         $comment_item.show();
                         $comment_form_wrapper.hide().html('');
+                        that.refreshScrollToLastCommentObserver && that.refreshScrollToLastCommentObserver();
                     });
 
                 });
@@ -1327,6 +1436,7 @@ var Task = ( function($) {
                 .done(function (r) {
                     if (r.status == 'ok') {
                         $comment_wrapper.remove();
+                        that.refreshScrollToLastCommentObserver && that.refreshScrollToLastCommentObserver();
                     } else {
                         alert('Error');
                     }
@@ -1576,6 +1686,8 @@ var Task = ( function($) {
             $task = that.$task,
             time = that.animationTime;
 
+        that.destroyScrollToLastComment();
+
         // Check Empty List
         var checkTasksCount = function(tasks) {
             var count = 0;
@@ -1700,6 +1812,7 @@ var Task = ( function($) {
 
             var replace = function () {
                 var $task = that.$task;
+                that.destroyScrollToLastComment();
                 delete Tasks[that.task_id];
                 $task.replaceWith($updatedTask);
                 var reloadedTask = Tasks[that.task_id];

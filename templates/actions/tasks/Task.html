@@ -1375,6 +1375,10 @@
                     {/foreach}
                 </div>
 
+                <button type="button" class="t-scroll-to-last-comment js-scroll-to-last-comment circle button largest light-gray desktop-and-tablet-only" title="[`Scroll to the latest comment`]">
+                    <i class="fas fa-arrow-down"></i>
+                </button>
+
                 {* ADD COMMENT FORM *}
                 {include file="./TaskCommentForm.inc.html"
                     post_action_url="?module=tasksComments&action=add&task_id={$task.id}"
