@@ -56,7 +56,8 @@ var TasksTaskTypes = (function ($) {
 
         $add_link.click(function (e) {
             e.preventDefault();
-            var $item = $list.find('.t-types-list-item.is-template').clone();
+            var $item_template = $list.find('.t-types-list-item.is-template');
+            var $item = $item_template.clone();
             var $input_name = $item.find('.t-type-name-input');
             var $input_color = $item.find('.t-type-color-input');
             var id = '_template_' + id_counter;
@@ -67,7 +68,7 @@ var TasksTaskTypes = (function ($) {
 
             $item.data('id', id).attr('data-id', id);
             $item.removeClass('is-template');
-            $item.appendTo($list);
+            $item_template.before($item);
 
             editor.makeEditable($item);
         });
