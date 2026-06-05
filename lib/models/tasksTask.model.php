@@ -143,9 +143,33 @@ class tasksTaskModel extends waModel
             }
         }
 
+        if (array_key_exists('status_id', $data) || array_key_exists('due_date', $data)) {
+            $this->updateTaskRepeat($id, ifset($data, 'status_id', null), ifset($data, 'due_date', null));
+        }
+
         return parent::updateById($id, $data, $options, $return_object);
     }
 
+    protected function updateTaskRepeat($task_id, $status_id, $due_date)
+    {
+        $task_repeat_model = new tasksTaskRepeatModel();
+        $repeat = $task_repeat_model->getById($task_id);
+        if (!$repeat) {
+            return;
+        }
+
+        if ($repeat['mode'] === 'on_due') {
+            // Task just changed its due_date, update repeat_date for on_due
+            unset($repeat['repeat_date']);
+            $task_repeat_model->saveRepeat($task_id, $repeat, $due_date);
+        } else if ($repeat['mode'] === 'on_complete') {
+            // Task just changed its status to closed, update repeat_date for on_complete
+            if ($status_id !== null && $status_id < 0 && empty($repeat['repeat_date'])) {
+                unset($repeat['repeat_date']);
+                $task_repeat_model->saveRepeat($task_id, $repeat, date('Y-m-d H:i:s'));
+            }
+        }
+    }
 
     public function delete($ids)
     {

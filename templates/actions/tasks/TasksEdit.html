@@ -433,6 +433,14 @@
                                 </span>
                             </div>
 
+                            {if $task.rights_info.can_repeat|default:false}
+                                <div class="t-chip t-repeat-wrapper">
+                                    <a title="[`Repeat task`]">
+                                        <i class="fas fa-sync-alt custom-pl-2 custom-mr-0"></i>
+                                    </a>
+                                </div>
+                            {/if}
+
                             <div class="t-chip">
                                 <a>
                                     <i class="fas fa-paperclip"></i>
@@ -480,6 +488,42 @@
                         </div>
                       </div>
 
+                    </div>
+
+                    {* 
+                     * Content for repeating task dialog @ .t-repeat-wrapper
+                     *}
+                    <div class="hidden js-repeat-task-form">
+                        <div class="fields">
+                            <div class="field">
+                                <div class="name">[`Repeat mode`]</div>
+                                <div class="value">
+                                    <select name="data[repeat][mode]">
+                                        {html_options options=[
+                                            '' => _w('Do not repeat'),
+                                            'on_due' => _w('Repeat based on due date'),
+                                            'on_complete' => _w('Repeat based on completion')
+                                        ] selected=$task.repeat.mode}
+                                    </select>
+                                </div>
+                                
+                                
+                            </div>
+                            <div class="field">
+                                <div class="name">[`Repeat frequency`]</div>
+                                <div class="value">
+                                    <input type="number" min="1" step="1" name="data[repeat][frequency]" value="{$task.repeat.frequency|escape}">
+                                    <select name="data[repeat][interval]">
+                                        {html_options options=[
+                                            'day' => _w('days'),
+                                            'week' => _w('weeks'),
+                                            'month' => _w('months'),
+                                            'year' => _w('years')
+                                        ] selected=$task.repeat.interval}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- plugin hook: 'backend_task_edit.%plugin_id.after_fields' -->
@@ -717,6 +761,7 @@
     const $spellcheckBtn = $('.t-form-line-spellcheck-chip');
     const $writeAiBtn = $('.t-form-line-write-ai-chip');
     const $spellcheckBtnParent = $spellcheckBtn.parent();
+    const $repeatBtn = $('#t-edit-task-form .t-repeat-wrapper');
     let spellcheckInProcess = false;
 
     window.waRedactorTaskInit = () => {
@@ -1139,6 +1184,29 @@
     });
 
     $el.on('input', checkLength);
+
+    $repeatBtn.on('click', function() {
+
+        let $repeat_fields_wrapper = $('#t-edit-task-form .js-repeat-task-form');
+        let $repeat_fields = $repeat_fields_wrapper.children().detach();
+
+        $.waDialog({
+            header: $('<h1></h1>').text({_w("Repeating task")|json_encode}),
+            content: '<div class="js-dialog-form-wrapper"></div>',
+            footer: $('<button class="button gray js-success-action"></button>').text({_w("Close")|json_encode}),
+            onOpen: function($wrapper, dialog) {
+                $wrapper.find('.js-dialog-form-wrapper').append($repeat_fields);
+                $wrapper.on("click", ".js-success-action", function(event) {
+                    event.preventDefault();
+                    dialog.close();
+                });
+            },
+            onClose: function($wrapper) {
+                $repeat_fields_wrapper.append($repeat_fields);
+            }
+        });
+    });
+
 {literal}
     function dialogTemplate(header, content, footer, className) {
         return `<div class="dialog  ${className ? className : ''}">

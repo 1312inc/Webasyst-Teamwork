@@ -2,7 +2,7 @@
 
 class tasksCollection
 {
-    public const FIELDS_TO_GET = '*,log,create_contact,assigned_contact,attachments,tags,project,roles,favorite,relations';
+    public const FIELDS_TO_GET = '*,log,create_contact,assigned_contact,attachments,tags,project,roles,favorite,relations,repeat';
 
     public const HASH_SEARCH = 'search';
     public const HASH_UNASSIGNED = 'unassigned';
@@ -525,6 +525,18 @@ class tasksCollection
 
         if (!empty($other_fields['relations'])) {
             $data = $this->addRelationsToTasks($data);
+        }
+
+        if (!empty($other_fields['repeat'])) {
+            $task_repeat_model = new tasksTaskRepeatModel();
+            $repeat = $task_repeat_model->getById($ids);
+            $empty = $task_repeat_model->getEmptyRow();
+            $empty['mode'] = '';
+            foreach ($data as &$t) {
+                $t['repeat'] = ifset($repeat, $t['id'], $empty);
+                unset($t['repeat']['task_id']);
+            }
+            unset($t);
         }
 
         return $data;

@@ -214,6 +214,36 @@ class tasksTasksSaveController extends waJsonController
         return $result;
     }
 
+    protected function saveRepeating(&$task, $data)
+    {
+        $task_repeat_model = new tasksTaskRepeatModel();
+        $repeat = ifset($data, 'repeat', []);
+        $repeat_date_base = null;
+        switch (ifset($repeat, 'mode', '')) {
+            case 'on_due':
+                $repeat_date_base = $task['due_date'];
+                if (!$repeat_date_base) {
+                    $task['due_date'] = $repeat_date_base = date('Y-m-d');
+                    (new tasksTaskModel())->updateById($task['id'], [
+                        'due_date' => $repeat_date_base,
+                    ]);
+                }
+                break;
+            case 'on_complete':
+                if ($task['status_id'] < 0) {
+                    $prev_row = $task_repeat_model->getById($task['id']);
+                    if ($prev_row && $prev_row['repeat_date']) {
+                        $repeat['repeat_date'] = $prev_row['repeat_date'];
+                    } else {
+                        $repeat_date_base = date('Y-m-d');
+                    }
+                    $repeat_date_base = null;
+                }
+                break;
+        }
+
+        $task_repeat_model->saveRepeat((int)$task['id'], (array)$repeat, $repeat_date_base);
+    }
 
     protected function parseTaskNumberAndGetTaskId($tasks_number = array(), $fetch = 'id')
     {
@@ -259,6 +289,9 @@ class tasksTasksSaveController extends waJsonController
         $this->saveAttachments($task['id'], $data);
         $this->saveTags($task, $prev_task);
         $this->saveTaskRelations($task, $prev_task);
+        if ($rights->canRepeatTask($prev_task)) {
+            $this->saveRepeating($task, $data);
+        }
 
         $log_item = $this->addLogItem($task, $prev_task['status_id'], 'edit');
 
@@ -298,8 +331,8 @@ class tasksTasksSaveController extends waJsonController
 
         $this->saveAttachments($task['id'], $data);
         $this->saveTags($task);
-
         $this->saveTaskRelations($task);
+        $this->saveRepeating($task, $data);
 
         $this->addLogItem($task, null, tasksTaskLogModel::ACTION_TYPE_ADD);
 

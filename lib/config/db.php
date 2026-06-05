@@ -183,6 +183,8 @@ return array(
         'contact_id' => array('int', 11),
         'hidden_timestamp' => array('bigint', 20, 'null' => 0, 'default' => '0'),
         'due_date' => array('date'),
+        'repeat_task_id' => array('int', 11),
+        'repeat_occurrence' => array('int', 11, 'null' => 0, 'default' => '0'),
         'comment_log_id' => array('int', 11),
         'uuid' => array('varchar', 36),
         'public_hash' => array('varchar', 36),
@@ -193,6 +195,7 @@ return array(
             'milestone_id' => 'milestone_id',
             'status_id' => 'status_id',
             'assigned_contact_id' => 'assigned_contact_id',
+            'repeat_task' => array('repeat_task_id', 'repeat_occurrence'),
             'name_text' => array('name', 'text', 'fulltext' => 1),
         ),
         ':options' => array('charset' => 'utf8mb4'),
@@ -248,6 +251,17 @@ return array(
         'child_id' => array('int', 11, 'null' => 0),
         ':keys' => array(
             'PRIMARY' => array('parent_id', 'child_id'),
+        ),
+    ),
+    'tasks_task_repeat' => array(
+        'task_id' => array('int', 11, 'null' => 0),
+        'frequency' => array('int', 11, 'null' => 0, 'default' => '1'),
+        'measure' => array('enum', "'day','week','month','year'", 'null' => 0, 'default' => 'day'),
+        'mode' => array('enum', "'on_due','on_complete'", 'null' => 0, 'default' => 'on_complete'),
+        'repeat_date' => array('date', 'null' => 1, 'default' => null),
+        ':keys' => array(
+            'PRIMARY' => 'task_id',
+            'repeat_date' => 'repeat_date',
         ),
     ),
     'tasks_task_tags' => array(
