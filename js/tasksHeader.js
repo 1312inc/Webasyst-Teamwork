@@ -1174,6 +1174,7 @@ var TasksHeader = ( function($) {
             }, function (r) {
                 dialog_instance.close();
                 $.tasks.redispatch();
+                $.tasks.reloadSidebar();
             }, 'json');
 
             return false;
@@ -1190,6 +1191,7 @@ var TasksHeader = ( function($) {
                 ids: that.getSelectedTaskIds()
             }, function () {
                 $.tasks.redispatch();
+                $.tasks.reloadSidebar();
             }, 'json');
         });
     };
