@@ -258,7 +258,7 @@ return array(
         'frequency' => array('int', 11, 'null' => 0, 'default' => '1'),
         'measure' => array('enum', "'day','week','month','year'", 'null' => 0, 'default' => 'day'),
         'mode' => array('enum', "'on_due','on_complete'", 'null' => 0, 'default' => 'on_complete'),
-        'repeat_date' => array('date', 'null' => 0),
+        'repeat_date' => array('date', 'null' => 1, 'default' => null),
         ':keys' => array(
             'PRIMARY' => 'task_id',
             'repeat_date' => 'repeat_date',

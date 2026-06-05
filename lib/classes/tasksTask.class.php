@@ -710,6 +710,19 @@ class tasksTask implements ArrayAccess
         return $favorite_model->getByField(array('contact_id' => wa()->getUser()->getId(), 'task_id' => $this->id)) ?? false;
     }
 
+    public function getRepeat()
+    {
+        $task_repeat_model = new tasksTaskRepeatModel();
+        if ($this->id) {
+            $result = $task_repeat_model->getById($this->id);
+        }
+        if (empty($result)) {
+            $result = $task_repeat_model->getEmptyRow();
+            $result['mode'] = '';
+        }
+        return $result;
+    }
+
     public function getFavoriteUnread()
     {
         if (!isset($this->data['favorite']) || !is_array($this->data['favorite'])) {
@@ -806,6 +819,11 @@ class tasksTask implements ArrayAccess
     public function canView($contact = null, $clarify = false)
     {
         return $this->getRights()->canViewTask($this, $contact, $clarify);
+    }
+
+    public function canRepeat($contact = null)
+    {
+        return $this->getRights()->canRepeatTask($this, $contact);
     }
 
     public function hasFullAccess($contact = null)
