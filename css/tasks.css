@@ -66,7 +66,7 @@
 .t-settings-task-types-wrapper .t-edit-type-link i { margin-top: 3px; }
 .t-settings-task-types-wrapper .t-types-list-item.is-template { display: none; }
 .t-settings-task-types-wrapper .t-types-list-item { width: 100%; margin-bottom: 0; line-height: 25px; }
-.t-settings-task-types-wrapper .t-types-list-item:nth-child(odd) { background: #f2f7ff; }
+.t-settings-task-types-wrapper .t-types-list-item:nth-child(odd) { background: var(--background-color-zebra-row-odd); }
 
 /* Stats Graph */
 .t-tasks-scope-tags .t-graph-wrapper {
