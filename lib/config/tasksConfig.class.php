@@ -392,6 +392,8 @@ class tasksConfig extends waAppConfig
      */
     public function onCount()
     {
+        (new tasksRepeatTaskService())->worker();
+
         try {
             $m = new tasksTaskModel();
             foreach ($m->getWithoutUuid() as $task) {
