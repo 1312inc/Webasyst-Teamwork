@@ -124,7 +124,8 @@ class tasksTaskRelationsModel extends waModel
                     'project'   => ifset($child_task, 'project_id', null),
                     'number'    => ifset($child_task, 'number', null),
                     'name'      => ifset($child_task, 'name', null),
-                    'status_id' => ifset($child_task, 'status_id', null)
+                    'status_id' => ifset($child_task, 'status_id', null),
+                    'priority'  => ifset($child_task, 'priority', null)
                 );
 
                 //Attach parent id in child
@@ -132,7 +133,8 @@ class tasksTaskRelationsModel extends waModel
                     'project'   => ifset($parent_task, 'project_id', null),
                     'number'    => ifset($parent_task, 'number', null),
                     'name'      => ifset($parent_task, 'name', null),
-                    'status_id' => ifset($parent_task, 'status_id', null)
+                    'status_id' => ifset($parent_task, 'status_id', null),
+                    'priority'  => ifset($parent_task, 'priority', null)
                 );
 
             }

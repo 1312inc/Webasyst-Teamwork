@@ -867,7 +867,21 @@
                                             {if !empty($statuses[$item['status_id']])}
                                                 <span class="custom-mx-4">{tasksHelper::statusNameHTML($item['status_id'])}</span>
                                             {/if}
-                                            <strong class="custom-mr-4">{$item['project']|escape}.{$item['number']|escape}</strong>
+                                            {if !empty($item.priority)}
+                                                {if $item.priority == '1'}
+                                                    <span class="custom-mr-4"><i class="fas fa-exclamation-triangle" style="color: orange;"></i></span>
+                                                    <strong class="custom-mr-4">{$item['project']|escape}.{$item['number']|escape}</strong>
+                                                {/if}
+                                                {if $item.priority == '2'}
+                                                    <span class="custom-mr-4"><i class="fas fa-exclamation-triangle" style="color: red;"></i></span>
+                                                    <strong class="custom-mr-4">{$item['project']|escape}.{$item['number']|escape}</strong>
+                                                {/if}
+                                                {if $item.priority == '3'}
+                                                    <strong class="custom-mr-4 t-priority-wrapper is-onfire">{$item['project']|escape}.{$item['number']|escape}</strong>
+                                                {/if}                                            
+                                            {else}
+                                                <strong class="custom-mr-4">{$item['project']|escape}.{$item['number']|escape}</strong>
+                                            {/if}
                                             <span>{$item['name']|escape}</span>
                                         </a>
                                     </span>
