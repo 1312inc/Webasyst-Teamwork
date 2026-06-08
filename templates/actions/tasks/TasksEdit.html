@@ -433,7 +433,7 @@
                                 </span>
                             </div>
 
-                            {if $task.rights_info.can_repeat|default:false}
+                            {if $wa->tasks->isPremium() && $task.rights_info.can_repeat|default:false}
                                 <div class="t-chip t-repeat-wrapper">
                                     <a title="[`Repeat task`]">
                                         <i class="fas fa-sync-alt custom-pl-2 custom-mr-0"></i>

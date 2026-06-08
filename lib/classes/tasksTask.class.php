@@ -974,9 +974,6 @@ class tasksTask implements ArrayAccess
         }
         $row['uuid'] = tasksUuid4::generate();
         $row['create_datetime'] = $row['update_datetime'] = date('Y-m-d H:i:s');
-        if ($row['repeat_task_id']) {
-            $row['repeat_occurrence']++;
-        }
         
         unset(
             $row['id'],
@@ -1042,7 +1039,7 @@ class tasksTask implements ArrayAccess
             waFiles::delete($temp_path);
         }
 
-        $duplicate = new self($duplicate_id);
+        $duplicate = new self($duplicate_row);
 
         /** @wa-event task_duplicate */
         wa('shop')->event('task_duplicate', ref([
@@ -1050,7 +1047,7 @@ class tasksTask implements ArrayAccess
             'duplicate' => &$duplicate,
         ]));
 
-        return $duplicate;
+        return new self($duplicate_id);
     }
 
     /**

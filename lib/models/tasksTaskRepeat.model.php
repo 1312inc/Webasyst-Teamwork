@@ -5,6 +5,15 @@ class tasksTaskRepeatModel extends waModel
     protected $table = 'tasks_task_repeat';
     protected $id = 'task_id';
 
+    public function getTasksReadyToRepeat()
+    {
+        return $this->query("
+            SELECT *
+            FROM {$this->table} 
+            WHERE repeat_date <= ?
+        ", [date('Y-m-d')])->fetchAll('task_id');
+    }
+
     public function saveRepeat(int $task_id, array $repeat, ?string $repeat_date_base)
     {
         $mode = ifset($repeat, 'mode', '');
@@ -33,8 +42,14 @@ class tasksTaskRepeatModel extends waModel
         }
 
         if (!$row['repeat_date'] && $repeat_date_base) {
+            $now = new DateTime();
             $date = new DateTime($repeat_date_base);
-            $date->add(new DateInterval('P'.$row['frequency'].$intervals[$row['interval']]));
+            while (true) {
+                $date->add(new DateInterval('P'.$row['frequency'].$intervals[$row['interval']]));
+                if ($date >= $now) {
+                    break; // calculated repeat_date can not be in the past
+                }
+            }
             $row['repeat_date'] = $date->format('Y-m-d');
         }
 
