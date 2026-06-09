@@ -490,7 +490,7 @@
 
                     </div>
 
-                    {* 
+                    {*
                      * Content for repeating task dialog @ .t-repeat-wrapper
                      *}
                     <div class="hidden js-repeat-task-form">
@@ -506,8 +506,8 @@
                                         ] selected=$task.repeat.mode}
                                     </select>
                                 </div>
-                                
-                                
+
+
                             </div>
                             <div class="field">
                                 <div class="name">[`Repeat frequency`]</div>
@@ -567,7 +567,7 @@
                                     </div>
                                     <div class="t-file-name">{$file.name|escape}</div>
                                     <div class="t-file-size">{$file.size|wa_format_file_size}</div>
-                                    <a class="button small light-gray" href="?module=attachments&action=download&id={$file.id}" target="_blank" download>
+                                    <a class="button smaller light-gray" href="?module=attachments&action=download&id={$file.id}" target="_blank" download>
                                     <div class="custom-mt-4">
                                             <i class="fas fa-cloud-download-alt custom-mr-4"></i>[`Download`]
                                         </a>
@@ -1140,7 +1140,7 @@
                                 $wrapper.find('.dialog-ai-answer').removeClass('hidden');
                                 $wrapper.find('.js-paste-ai-answer-result').on('click', function(e) {
                                     e.preventDefault();
-                                    window.lexicalEditor.updateContent('redactor-task-{$task_uuid}', response.data.content, { 
+                                    window.lexicalEditor.updateContent('redactor-task-{$task_uuid}', response.data.content, {
                                         isMarkdown: true,
                                     });
                                     dialog.close();
