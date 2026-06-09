@@ -1838,7 +1838,7 @@ msgid "Cumulative flow diagram"
 msgstr "Накопительная диаграмма потока"
 
 msgid "Upgrade to premium"
-msgstr "Подключить премиум"
+msgstr "Хочу премиум!"
 
 msgid "special offer!"
 msgstr "спецпредложение!"

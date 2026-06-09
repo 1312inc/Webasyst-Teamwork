@@ -802,6 +802,8 @@
                             {/if}
                     {/if}
 
+                    {if !empty($task.repeat.mode)} /// every {$task.repeat.frequency} &times; {$task.repeat.measure} @ {$task.repeat.mode}{/if}
+
                 </h2>
 
                 {* ON-CLICK PRIORITY CHANGER *}
