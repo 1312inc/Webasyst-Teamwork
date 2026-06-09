@@ -1,7 +1,15 @@
 {$is_in_my_list = $list && $list.is_own && $list.found_by_id}
 
 <div class="flexbox">
-    <div class="sidebar blank t-task-list-sidebar bordered-right{if $total_count < 1} overflow-visible{/if}">
+    <div class="sidebar blank t-task-list-sidebar bordered-right{if $total_count < 1} overflow-visible{/if}"
+         data-total-count="{$total_count|escape}"
+         data-is-in-my-list="{if $is_in_my_list}1{else}0{/if}"
+         data-hash-type="{$hash_type|escape}"
+         data-entity-id="{$entity_id|escape}"
+         data-updater-url="{if !empty($updater_url)}{$updater_url|escape}{/if}"
+         data-message-cant-create-list="[`Cannot create a list from another list.`]"
+         data-message-tasks-count="{_w('%d task','%d tasks', $total_count)|escape}"
+         data-message-no-tasks="{_w('no tasks')|escape}">
 
         <div class="sidebar-body t-main-wrapper">
 
@@ -186,7 +194,9 @@
                         {/strip}{/foreach}
                     </ul>
 
-                    <div id="end-of-tasks" class="box small gray align-center">
+                    <div id="end-of-tasks" class="box small gray align-center"
+                         data-next-page-url="{$next_page_url|escape}"
+                         data-is-lazy="{if $click_to_load_more}0{else}1{/if}">
                         <span class="hidden loading-indicator">
                             <div class="skeleton">
                             {for $i=1 to 4}

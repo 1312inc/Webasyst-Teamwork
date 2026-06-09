@@ -430,12 +430,19 @@
                                                         items: ".menu > li > a",
                                                         update_title: false,
                                                         change: function (event, target, dropdown) {
+                                                            var taskId = {$task.id|json_encode};
                                                             var formData = new FormData();
                                                             formData.append("data[milestone_id]", $(target).data("id"));
 
                                                             var waLoading = $.waLoading();
 
                                                             waLoading.animate(6000, 99, true);
+
+                                                            var fallbackRedispatch = function () {
+                                                                $.tasks.redispatch(function () {
+                                                                    waLoading.hide();
+                                                                });
+                                                            };
 
                                                             $.ajax({
                                                                 url: "?module=tasks&action=save&id={$task.id}",
@@ -445,10 +452,32 @@
                                                                 processData: false,
                                                                 type: 'POST',
                                                                 success: function () {
-                                                                    $.tasks.redispatch(function () {
-                                                                        waLoading.hide();
-                                                                    });
                                                                     $.tasks.reloadSidebar();
+
+                                                                    if (!window.Tasks || !Tasks[taskId] || typeof Tasks[taskId].reloadTask !== "function") {
+                                                                        fallbackRedispatch();
+                                                                        return;
+                                                                    }
+
+                                                                    Tasks[taskId].reloadTask({
+                                                                        afterReplace: function () {
+                                                                            if (!$.tasks || typeof $.tasks.reloadTaskListSidebar !== "function") {
+                                                                                fallbackRedispatch();
+                                                                                return;
+                                                                            }
+
+                                                                            $.tasks.reloadTaskListSidebar(function (success) {
+                                                                                if (success) {
+                                                                                    waLoading.hide();
+                                                                                } else {
+                                                                                    fallbackRedispatch();
+                                                                                }
+                                                                            });
+                                                                        }
+                                                                    });
+                                                                },
+                                                                error: function () {
+                                                                    waLoading.hide();
                                                                 }
                                                             });
                                                         }

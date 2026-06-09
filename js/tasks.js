@@ -25,6 +25,7 @@
     // js controller
     var $, self = window.TasksController = {
         customSelectInited: false,
+        last_tasks_list_params: null,
 
         options: { // see Backend.html for init options
             contact_id: 0,
@@ -631,6 +632,13 @@
                             self.forceHash('#/tasks/'+new_hash);
                         }, 0);
                     }
+                }
+            }
+
+            self.last_tasks_list_params = {};
+            for (var params_key in params) {
+                if (params.hasOwnProperty(params_key)) {
+                    self.last_tasks_list_params[params_key] = params[params_key];
                 }
             }
 
@@ -1319,6 +1327,275 @@
 
                 $(window).trigger("scroll");
 
+            });
+        },
+
+        reloadTaskListSidebar: function(callback) {
+            callback = typeof callback === 'function' ? callback : $.noop;
+
+            var $sidebar = $('.t-content-wrapper .t-task-list-sidebar').first();
+            if (!$sidebar.length) {
+                callback(true);
+                return;
+            }
+
+            if (!self.last_tasks_list_params) {
+                callback(false);
+                return;
+            }
+
+            var params = $.extend({}, self.last_tasks_list_params),
+                params_str = [];
+
+            for (var k in params) {
+                if (params.hasOwnProperty(k)) {
+                    params_str.push(k + '=' + encodeURIComponent(params[k] || ''));
+                }
+            }
+
+            $.get('?module=tasks&' + params_str.join('&'))
+                .done(function(response) {
+                    var $response = $('<div></div>').append($.parseHTML(response, document, false)),
+                        $new_sidebar = $response.find('.t-task-list-sidebar').first();
+
+                    if (!$new_sidebar.length) {
+                        callback(false);
+                        return;
+                    }
+
+                    if (window.tasksHeader && typeof window.tasksHeader.destroy === 'function') {
+                        window.tasksHeader.destroy();
+                    }
+
+                    $sidebar.replaceWith($new_sidebar);
+
+                    self.reinitTaskListSidebar($new_sidebar);
+
+                    self.highlightSidebar();
+
+                    var $inner_sidebar = $('#content .sidebar');
+                    if ($inner_sidebar.length) {
+                        self.highlightSidebar($inner_sidebar);
+                    }
+
+                    $(window).trigger('scroll');
+                    callback(true);
+                })
+                .fail(function() {
+                    callback(false);
+                });
+        },
+
+        reinitTaskListSidebar: function($sidebar) {
+            $sidebar = ($sidebar && $sidebar.length) ? $sidebar : $('.t-content-wrapper .t-task-list-sidebar').first();
+            if (!$sidebar.length) {
+                return;
+            }
+
+            var $selectionDropdown = $sidebar.find('#t-selection-menu .dropdown');
+            if ($selectionDropdown.length) {
+                $selectionDropdown.waDropdown({
+                    hover: false,
+                    hide: false
+                });
+            }
+
+            window.Tasks = window.Tasks || {};
+
+            window.tasksHeader = new TasksHeader({
+                total_count: parseInt($sidebar.data('totalCount'), 10) || 0,
+                is_in_my_list: parseInt($sidebar.data('isInMyList'), 10) === 1,
+                hash_type: $sidebar.data('hashType') || null,
+                entity_id: $sidebar.data('entityId') || null,
+                messages: {
+                    cant_create_list: $sidebar.data('messageCantCreateList') || '',
+                    tasks_count: $sidebar.data('messageTasksCount') || '',
+                    no_tasks: $sidebar.data('messageNoTasks') || ''
+                }
+            });
+
+            $.tasks.initTaskListHeaderUi($sidebar);
+
+            if (window.tasksHeader && window.tasksHeader.is_single_page && typeof window.tasksHeader.initAllFilters === 'function') {
+                window.tasksHeader.initAllFilters();
+            }
+
+            $.tasks.updateTaskListPreviewHeader($sidebar);
+
+            var $lazyloadingWrapper = $sidebar.find('#end-of-tasks');
+            if ($lazyloadingWrapper.length) {
+                $.tasks.initLazyloader({
+                    lazyloading_wrapper: $lazyloadingWrapper,
+                    next_page_url: $lazyloadingWrapper.data('nextPageUrl') || '',
+                    is_lazy: parseInt($lazyloadingWrapper.data('isLazy'), 10) === 1,
+                    list_selector: '#t-tasks-wrapper',
+                    item_id_data_attr: 'task-id'
+                });
+            }
+
+            $.tasks.initTaskListPreview($sidebar);
+
+            var updaterUrl = $sidebar.data('updaterUrl') || '';
+            if (updaterUrl) {
+                var $updaterMarker = $('#task-list-updater-script');
+                if (!$updaterMarker.length) {
+                    $updaterMarker = $('<script>', {
+                        id: 'task-list-updater-script',
+                        type: 'text/plain'
+                    }).appendTo('#content');
+                }
+                $updaterMarker.attr('data-updater-url', updaterUrl);
+                $.tasks.initTasksUpdater(updaterUrl);
+            }
+
+            $.tasks.initTaskListTinyAd($sidebar);
+
+            $.tasks.initPrettyPrint();
+        },
+
+        initTaskListHeaderUi: function($sidebar) {
+            $sidebar = ($sidebar && $sidebar.length) ? $sidebar : $('.t-content-wrapper .t-task-list-sidebar').first();
+            if (!$sidebar.length) {
+                return;
+            }
+
+            var $orderDropdown = $sidebar.find('#t-menu-dropdown-order');
+            if ($orderDropdown.length && !$orderDropdown.data('dropdown')) {
+                $orderDropdown.waDropdown({
+                    hover: false
+                });
+            }
+
+            $sidebar.find('.t-filters-wrapper .js-dropdown-menu').each(function () {
+                var $dropdown = $(this);
+                if (!$dropdown.data('dropdown')) {
+                    $dropdown.waDropdown({
+                        hover: false
+                    });
+                }
+            });
+
+            var $tagDropdown = $sidebar.find('#t-menu-dropdown-tag');
+            if ($tagDropdown.length && !$tagDropdown.data('dropdown')) {
+                $tagDropdown.waDropdown({
+                    hover: false,
+                    hide: false
+                });
+            }
+
+            $sidebar.find('.js-tags-show-all-link').off('click.task-tags').on('click.task-tags', function (e) {
+                e.preventDefault();
+                $(this).closest('.tags').find('.js-tags-hidden-tag').show();
+                $(this).hide();
+            });
+
+            $sidebar.find('#t-filters-toggle').off('click.task-filters-toggle').on('click.task-filters-toggle', function () {
+                var $toggle = $(this),
+                    $wrapper = $toggle.closest('.t-main-wrapper');
+
+                if ($wrapper.find('#t-my-lists-box').is(":hidden")) {
+                    $wrapper.find('#t-filters-menu').slideDown(100);
+                    $wrapper.find('#t-selection-menu').slideDown(100);
+                    $wrapper.find('#t-my-lists-box').slideDown(100);
+                    $('.t-preview-description-content').slideUp(100);
+                } else {
+                    $wrapper.find('#t-filters-menu').slideUp(100);
+                    $wrapper.find('#t-selection-menu').slideUp(100);
+                    $wrapper.find('#t-my-lists-box').slideUp(100);
+                    $('.t-preview-description-content').slideDown(100);
+                }
+
+                $wrapper.find('#t-tasks-wrapper').toggleClass('t-selection-checkboxes-visible');
+                $toggle.toggleClass('upsidedown');
+                return false;
+            });
+        },
+
+        updateTaskListPreviewHeader: function($sidebar) {
+            $sidebar = ($sidebar && $sidebar.length) ? $sidebar : $('.t-content-wrapper .t-task-list-sidebar').first();
+            if (
+                !$sidebar.length ||
+                !window.tasksHeader ||
+                window.tasksHeader.is_in_my_list ||
+                typeof window.tasksHeader.buildTitle !== 'function' ||
+                typeof window.tasksHeader.buildDesc !== 'function'
+            ) {
+                return;
+            }
+
+            var title = window.tasksHeader.buildTitle() || '',
+                description = window.tasksHeader.buildDesc() || '',
+                $name = $sidebar.find('.t-preview-name'),
+                $description = $sidebar.find('.t-preview-description');
+
+            $name.text(title);
+
+            if (description.length > 0) {
+                $description.html('<p class="t-preview-description-content"></p>');
+                $description.find('.t-preview-description-content').text(description);
+            } else {
+                $description.empty();
+            }
+        },
+
+        initTaskListPreview: function($sidebar) {
+            $sidebar = ($sidebar && $sidebar.length) ? $sidebar : $('.t-content-wrapper .t-task-list-sidebar').first();
+            if (!$sidebar.length) {
+                return;
+            }
+
+            var $tasksWrapper = $sidebar.find('.t-tasks-wrapper');
+            $tasksWrapper.off('click.task-preview', '.item[data-task-number] a');
+            $tasksWrapper.on('click.task-preview', '.item[data-task-number] a', function (e) {
+                e.preventDefault();
+
+                var $link = $(this).parent(),
+                    number = $link.data('task-number'),
+                    $taskWrapper = $('#task-preview-wrapper'),
+                    $taskSkeletonContainer = $('#taskSkeleton'),
+                    waLoading = $.waLoading();
+
+                $taskWrapper.html($taskSkeletonContainer.html());
+
+                waLoading.animate(4000, 99, true);
+
+                $.get('?module=tasks&action=info&n=' + number + '&from_hash_type=' + $('#t-tasks-wrapper').data('tasks-hash-type'), function (html) {
+                    waLoading.hide();
+
+                    if ($link.find('.t-task-item-unread-mention').remove().length) {
+                        var countUnread = +($('.count-unread').text());
+                        if (countUnread > 1) {
+                            $('.count-unread').text(countUnread - 1);
+                        } else {
+                            $('.count-unread').parent().remove();
+                        }
+                    }
+
+                    $link.addClass('selected').siblings('.selected').removeClass('selected');
+                    $link.parent().siblings('ul').find('.selected').removeClass('selected');
+
+                    $taskWrapper.html(html);
+                    window.TasksController.skipDispatch = 1;
+                    window.TasksController.setHash('/task/' + number + '/');
+
+                    $taskWrapper.find('.t-description-wrapper, .t-comment-content').find('a').each(function () {
+                        $(this).attr('target', '_blank');
+                    });
+                });
+            });
+        },
+
+        initTaskListTinyAd: function($sidebar) {
+            $sidebar = ($sidebar && $sidebar.length) ? $sidebar : $('.t-content-wrapper .t-task-list-sidebar').first();
+            if (!$sidebar.length) {
+                return;
+            }
+
+            $sidebar.find('.t-tiny-ad-close').off('click.task-tiny-ad').on('click.task-tiny-ad', function (e) {
+                e.preventDefault();
+
+                $(this).closest('.t-tiny-ad').hide();
+                $.post('?module=backend&action=hideTinyAd');
             });
         },
 
