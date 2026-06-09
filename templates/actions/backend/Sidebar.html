@@ -86,12 +86,22 @@
         </a>
         {if $is_admin}
         <a href="#/milestones/" class="brick t-mini-brick">
-            <span class="icon{if $is_premium} text-purple{/if}"><i class="fas fa-stream"></i></span>
+            <span class="t-icon-with-badge">
+                <span class="icon{if $is_premium} text-purple{/if}"><i class="fas fa-stream"></i></span>
+                {if !$is_premium}
+                    <span class="t-icon-badge"><i class="fas fa-star text-yellow"></i></span>
+                {/if}
+            </span>
             <span>[`Gantt`]</span>
             <span class="count"></span>
         </a>
         <a href="#/cfd/" class="brick t-mini-brick">
-            <span class="icon{if $is_premium} text-orange{/if}"><i class="fas fa-chart-line"></i></span>
+            <span class="t-icon-with-badge">
+                <span class="icon{if $is_premium} text-orange{/if}"><i class="fas fa-chart-line"></i></span>
+                {if !$is_premium}
+                    <span class="t-icon-badge"><i class="fas fa-star text-yellow"></i></span>
+                {/if}
+            </span>
             <span>[`Reports`]</span>
             <span class="count"></span>
         </a>
@@ -444,7 +454,7 @@
         </li>
 
         {if $is_admin && !$is_premium}
-            <li class="top-padded">
+            <li>
                 <a href="#/upgrade/">
                     <i class="fas fa-star{if !$is_premium} text-yellow{/if}"></i>
                     <span>[`Premium`]</span>

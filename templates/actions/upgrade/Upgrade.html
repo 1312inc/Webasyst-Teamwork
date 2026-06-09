@@ -4,6 +4,8 @@
     .t-premium-feature { border-radius: 0.75rem; background: var(--background-color-blank); margin-bottom: 1.5rem; padding: 1.5rem 2rem; }
     .t-premium-feature.halfwidth { width: 40%; margin-bottom: 0; padding-bottom: 0.5rem; }
     .t-premium-feature.halfwidth h3 { font-size: 1.25rem; }
+    .t-premium-feature img,
+    .t-premium-feature video { max-width: 100%; }
 
     @media screen and (max-width: 760px) {
         .t-premium-feature.halfwidth { width: 100%; }
@@ -19,10 +21,11 @@
 {capture "getpremiumbutton"}
 {if !$_is_premium}
 <figure class="box align-center t-upgrade-ad">
-    <a href="{$_upgrade_url}" class="button rounded {if !$_is_cloud}{$_premium_pricing.special_color|default:'green'}{else}green{/if} largest" target="_blank">[`Upgrade to premium`]</a>
+    <a href="{$_upgrade_url}" class="button rounded {if !$_is_cloud}{$_premium_pricing.special_color|default:'purple'}{else}purple{/if} largest t-upgrade-button" target="_blank">[`Upgrade to premium`]</a>
     <h4>
-        {if !empty($_premium_pricing.compare_price)}<strike class="gray">{$_premium_pricing.compare_price}</strike>{/if}
-        {if $_is_cloud}[`All inclusive in the cloud`]{else}{$_premium_pricing.price} / [`upgrade to premium`]{/if}
+        {if $_is_cloud}
+            [`All inclusive in the cloud`]
+        {/if}
     </h4>
     <p class="width-60 width-100-mobile custom-mx-auto small">
         {if $_is_cloud}
@@ -72,6 +75,16 @@
             {$_premium_stuff = []}
 
             {$_premium_stuff[] = [
+              'title' => '[`Write with AI`]',
+              'body' => '[`Write and spellcheck task content with just few clicks. Powered by Webasyst AI.`]'|cat:'<br> <video loop="" muted="" autoplay="" playsinline=""><source src="https://www.webasyst.ru/wa-data/public/updates/products/landing/01/1/7341.webasyst-ai-tri-kp.mp4" type="video/mp4"></video>'
+            ]}
+
+            {$_premium_stuff[] = [
+              'title' => '[`Repeating tasks`]',
+              'body' => '[`Re-occuring tasks on completion and on each due date occurance.`]'
+            ]}
+
+            {$_premium_stuff[] = [
               'title' => '[`Gantt chart`]',
               'body' => '[`Visualize working progress based on scopes/milestones.`]'
             ]}
@@ -84,11 +97,6 @@
             {$_premium_stuff[] = [
               'title' => '[`Custom fields`]',
               'body' => '[`Configure custom task fields based on a task type.`]'
-            ]}
-
-            {$_premium_stuff[] = [
-              'title' => '[`AI assistant`]',
-              'body' => '[`Write and spellcheck task content with just few clicks. Powered by Webasyst AI.`]'
             ]}
 
             {$_premium_stuff[] = [

@@ -418,9 +418,14 @@
                       <div class="t-attach-droparea" id="t-attach-droparea">
                         <div class="t-chips">
 
-                            <div class="t-chip">
+                            <div class="t-chip t-ai-button">
                                 <a href="javascript:void(0);" class="t-form-line-write-ai-chip">
-                                    <span class="icon webasyst-magic-wand-ai custom-mr-4"></span>
+                                    <span class="t-icon-with-badge">
+                                        <span class="icon webasyst-magic-wand-ai custom-mr-8"></span>
+                                        {if !$wa->tasks->isPremium()}
+                                            <span class="t-icon-badge"><i class="fas fa-star text-yellow"></i></span>
+                                        {/if}
+                                    </span>
                                     [`Write with AI`]
                                 </a>
                             </div>
@@ -433,18 +438,24 @@
                                 </span>
                             </div>
 
-                            {if $wa->tasks->isPremium() && $task.rights_info.can_repeat|default:false}
+                            {* if $task.rights_info.can_repeat|default:false *}
                                 <div class="t-chip t-repeat-wrapper">
                                     <a title="[`Repeat task`]">
-                                        <i class="fas fa-sync-alt custom-pl-2 custom-mr-0"></i>
+                                        <span class="t-icon-with-badge">
+                                            <span class="icon custom-mr-8"><i class="fas fa-sync-alt custom-pl-2 custom-mr-0"></i></span>
+                                            {if !$wa->tasks->isPremium()}
+                                                <span class="t-icon-badge"><i class="fas fa-star text-yellow"></i></span>
+                                            {/if}
+                                        </span>
+                                        [`Repeat`]
                                     </a>
                                 </div>
-                            {/if}
+                            {* /if *}
 
                             <div class="t-chip">
                                 <a>
                                     <i class="fas fa-paperclip"></i>
-                                    [`Attach files`]
+                                    [`Attach`]
                                     <input type="file" name="files[]" multiple="true" />
                                 </a>
                             </div>
@@ -496,31 +507,42 @@
                     <div class="hidden js-repeat-task-form">
                         <div class="fields">
                             <div class="field">
-                                <div class="name">[`Repeat mode`]</div>
+                                <div class="name for-input">[`Repeat mode`]</div>
                                 <div class="value">
-                                    <select name="data[repeat][mode]">
-                                        {html_options options=[
-                                            '' => _w('Do not repeat'),
-                                            'on_due' => _w('Repeat based on due date'),
-                                            'on_complete' => _w('Repeat based on completion')
-                                        ] selected=$task.repeat.mode}
-                                    </select>
+                                    <div class="wa-select small">
+                                        <select name="data[repeat][mode]">
+                                            {html_options options=[
+                                                '' => _w('Do not repeat'),
+                                                'on_complete' => _w('On close'),
+                                                'on_due' => _w('On due date')
+                                            ] selected=$task.repeat.mode}
+                                        </select>
+                                    </div>
+                                    <p class="hint">
+                                        DYNAMIC HINT HERE
+                                        '' => just hide
+                                        'on_complete' => _w('Every time this task is closed, its new copy will be re-created with a new due date specified below.'),
+                                        'on_due' => _w('This task will re-create itself every time its due date passes, even if its closed. (Delete the task to cancel the repeat.)').' '.'<span class="state-caution-hint">Cron setup is required!</span> <a href="#">More here --></a>'
+                                    </p>
                                 </div>
 
 
                             </div>
                             <div class="field">
-                                <div class="name">[`Repeat frequency`]</div>
+                                <div class="name for-input">[`How often`]</div>
                                 <div class="value">
-                                    <input type="number" min="1" step="1" name="data[repeat][frequency]" value="{$task.repeat.frequency|escape}">
-                                    <select name="data[repeat][interval]">
-                                        {html_options options=[
-                                            'day' => _w('days'),
-                                            'week' => _w('weeks'),
-                                            'month' => _w('months'),
-                                            'year' => _w('years')
-                                        ] selected=$task.repeat.interval}
-                                    </select>
+                                    <span class="small custom-mr-4">[`Every`]</span>
+                                    <input type="number" min="1" step="1" class="small number shortest custom-mr-4" name="data[repeat][frequency]" value="{$task.repeat.frequency|escape}">
+                                    <div class="wa-select small">
+                                        <select name="data[repeat][interval]">
+                                            {html_options options=[
+                                                'day' => _w('days'),
+                                                'week' => _w('weeks'),
+                                                'month' => _w('months'),
+                                                'year' => _w('years')
+                                            ] selected=$task.repeat.interval}
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1191,9 +1213,9 @@
         let $repeat_fields = $repeat_fields_wrapper.children().detach();
 
         $.waDialog({
-            header: $('<h1></h1>').text({_w("Repeating task")|json_encode}),
+            header: $('<h1></h1>').text({_w("Repeat")|json_encode}),
             content: '<div class="js-dialog-form-wrapper"></div>',
-            footer: $('<button class="button gray js-success-action"></button>').text({_w("Close")|json_encode}),
+            footer: $('<button class="button green outlined js-success-action"></button>').text({_w("Set the repeat")|json_encode}),
             onOpen: function($wrapper, dialog) {
                 $wrapper.find('.js-dialog-form-wrapper').append($repeat_fields);
                 $wrapper.on("click", ".js-success-action", function(event) {
