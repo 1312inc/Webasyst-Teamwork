@@ -102,61 +102,215 @@
     </div>
     <script>
         $(document).ready(function() {
+            const STORAGE_KEY = 'tasks/task-ai-dialog-state';
+            const $dialog = $(".js-task-write-ai-content").closest(".dialog").last();
+            const $chips = $dialog.find(".chips li");
+            const $container = $dialog.find(".dialog-ai-fields-container");
+            const $contents = $dialog.find(".dialog-ai-field-items .content");
 
-            $(".chips li").on("click", function () {
+            function getStorageKey() {
+                return STORAGE_KEY;
+            }
 
-                if ($(this).hasClass("selected")) {
-                    $(".dialog-ai-field-items .close-btn").trigger("click");
-                    return;
+            function readState() {
+                try {
+                    const rawState = localStorage.getItem(getStorageKey());
+                    if (!rawState) {
+                        return null;
+                    }
+
+                    return JSON.parse(rawState);
+                } catch (e) {
+                    return null;
+                }
+            }
+
+            function saveState(state) {
+                try {
+                    localStorage.setItem(getStorageKey(), JSON.stringify(state));
+                } catch (e) {
+                }
+            }
+
+            function hasParamId(paramId) {
+                return !!paramId && $chips.filter(function () {
+                    return $(this).data("param-id") === paramId;
+                }).length && $contents.filter(function () {
+                    return this.id === paramId;
+                }).length;
+            }
+
+            function selectChip(paramId) {
+                if (!hasParamId(paramId)) {
+                    return false;
                 }
 
-                const paramId = $(this).data("param-id");
-                const $container = $(".dialog-ai-fields-container");
-                $(this).addClass("selected").siblings("li").removeClass("selected");
+                const $chip = $chips.filter(function () {
+                    return $(this).data("param-id") === paramId;
+                });
+                const $targetContent = $contents.filter(function () {
+                    return this.id === paramId;
+                });
 
-
+                $chip.addClass("selected").siblings("li").removeClass("selected");
                 $container.addClass("flipped");
+                $contents.removeClass("active");
+                $targetContent.addClass("active");
 
-                $(".dialog-ai-field-items .content").removeClass("active");
+                return true;
+            }
 
-                const $targetContent = $("#" + paramId);
-                if ($targetContent.length) {
-                    $targetContent.addClass("active");
-                }
-            });
+            function closeChipPanel() {
+                $container.off("transitionend.taskAiDialog").one("transitionend.taskAiDialog", function () {
+                    $contents.removeClass("active");
+                });
 
+                $container.removeClass("flipped");
+                $chips.removeClass("selected");
+            }
 
             function updateChipsValue(paramId, value) {
-                const $chip = $(`.chips li[data-param-id="${ paramId }"] .count`);
-                if (value && value.trim()) {
-                    $chip.text(value);
+                const $chip = $chips.filter(function () {
+                    return $(this).data("param-id") === paramId;
+                }).find(".count");
+                const normalizedValue = typeof value === "string" ? value : "";
+
+                if (normalizedValue && normalizedValue.trim()) {
+                    $chip.text(normalizedValue);
                 } else {
                     $chip.text('');
                 }
             }
 
-            $(".dialog-ai-field-items input[type='radio']").on("change", function () {
-                const paramId = $(this).attr("name");
-                const selectedValue = $(this).closest("li").find("span:last").text();
-                updateChipsValue(paramId, selectedValue);
-            });
+            function getRadioLabelValue($input) {
+                return $.trim($input.closest("label").find("span:last").text());
+            }
 
-            /* $(".dialog-ai-field-items input[type='text']").on("input", function () {
-                const paramId = $(this).closest(".content").attr("id");
-                const value = $(this).val();
-                updateChipsValue(paramId, value);
-            }); */
+            function collectState(selectedParamId) {
+                const state = {
+                    selectedParamId: typeof selectedParamId === "undefined" ? ($chips.filter(".selected").data("param-id") || null) : selectedParamId,
+                    values: {}
+                };
 
-            $(".dialog-ai-field-items .close-btn").on("click", function () {
-                const $container = $(".dialog-ai-fields-container");
+                $contents.each(function () {
+                    const $content = $(this);
+                    const paramId = $content.attr("id");
 
-                $container.one("transitionend", function () {
-                    $(".dialog-ai-field-items .content").removeClass("active");
+                    if (!paramId) {
+                        return;
+                    }
+
+                    const $checkedRadio = $content.find("input[type='radio']:checked").first();
+                    if ($checkedRadio.length) {
+                        state.values[paramId] = {
+                            type: "radio",
+                            value: $checkedRadio.val()
+                        };
+                        return;
+                    }
+
+                    const $textInput = $content.find("input[type='text']").first();
+                    if ($textInput.length && $.trim($textInput.val())) {
+                        state.values[paramId] = {
+                            type: "text",
+                            value: $textInput.val()
+                        };
+                    }
                 });
 
-                $container.removeClass("flipped");
-                $(".chips li").removeClass("selected");
+                return state;
+            }
+
+            function saveCurrentState(selectedParamId) {
+                saveState(collectState(selectedParamId));
+            }
+
+            function restoreState(state) {
+                if (!state || typeof state !== "object") {
+                    saveCurrentState();
+                    return;
+                }
+
+                if (state.values && typeof state.values === "object") {
+                    Object.keys(state.values).forEach(function(paramId) {
+                        const fieldState = state.values[paramId];
+                        const $content = $contents.filter(function () {
+                            return this.id === paramId;
+                        });
+
+                        if (!$content.length || !fieldState || typeof fieldState !== "object") {
+                            return;
+                        }
+
+                        if (fieldState.type === "radio") {
+                            const $radio = $content.find("input[type='radio']").filter(function () {
+                                return $(this).val() === fieldState.value;
+                            }).first();
+                            if ($radio.length) {
+                                $radio.prop("checked", true);
+                                updateChipsValue(paramId, getRadioLabelValue($radio));
+                            }
+                        } else if (fieldState.type === "text") {
+                            if (typeof fieldState.value !== "string") {
+                                return;
+                            }
+
+                            const $textInput = $content.find("input[type='text']").first();
+                            if ($textInput.length) {
+                                $textInput.val(fieldState.value);
+                                updateChipsValue(paramId, fieldState.value);
+                            }
+                        }
+                    });
+                }
+
+                if (state.selectedParamId && hasParamId(state.selectedParamId)) {
+                    selectChip(state.selectedParamId);
+                }
+
+                saveCurrentState();
+            }
+
+            $chips.on("click", function () {
+                const $chip = $(this);
+                const paramId = $chip.data("param-id");
+
+                if ($chip.hasClass("selected")) {
+                    const selectedParamId = $chip.data("param-id") || null;
+                    closeChipPanel();
+                    saveCurrentState(selectedParamId);
+                    return;
+                }
+
+                if (selectChip(paramId)) {
+                    saveCurrentState();
+                }
             });
+
+            $dialog.find(".dialog-ai-field-items input[type='radio']").on("change", function () {
+                const $input = $(this);
+                const paramId = $input.attr("name");
+
+                updateChipsValue(paramId, getRadioLabelValue($input));
+                saveCurrentState();
+            });
+
+            $dialog.find(".dialog-ai-field-items input[type='text']").on("input", function () {
+                const $input = $(this);
+                const paramId = $input.closest(".content").attr("id");
+                const value = $input.val();
+
+                updateChipsValue(paramId, value);
+                saveCurrentState();
+            });
+
+            $dialog.find(".dialog-ai-field-items .close-btn").on("click", function () {
+                const selectedParamId = $chips.filter(".selected").data("param-id") || null;
+                closeChipPanel();
+                saveCurrentState(selectedParamId);
+            });
+
+            restoreState(readState());
 
         });
     </script>
