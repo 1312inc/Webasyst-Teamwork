@@ -426,7 +426,7 @@
                                             <span class="t-icon-badge"><i class="fas fa-star text-yellow"></i></span>
                                         {/if}
                                     </span>
-                                    [`Write with AI`]
+                                    <span class="js-write-ai-label">[`Write with AI`]</span>
                                 </a>
                             </div>
 
@@ -784,10 +784,14 @@
     const $el = $('#redactor-task-{$task_uuid}');
     const $spellcheckBtn = $('.t-form-line-spellcheck-chip');
     const $writeAiBtn = $('.t-form-line-write-ai-chip');
+    const $writeAiBtnLabel = $writeAiBtn.find('.js-write-ai-label');
     const $spellcheckBtnParent = $spellcheckBtn.parent();
     const $repeatBtn = $('#t-edit-task-form .t-repeat-wrapper');
     const repeatDefaultTitle = {_w("Repeat")|json_encode};
     const repeatEveryPattern = {_w("Every %d %s")|json_encode};
+    const writeAiDefaultLabel = {_w("Write with AI")|json_encode};
+    const writeAiContinueLabel = {_w("Continue with AI")|json_encode};
+    const writeAiContinueThreshold = 100;
     let spellcheckInProcess = false;
 
     window.waRedactorTaskInit = () => {
@@ -808,7 +812,36 @@
         });
 
         TasksController.storageDataInMdMode($el[0], 'getDraftKeyTaskText');
+        updateWriteAiLabel();
     };
+
+    function normalizeWriteAiText (value) {
+        return String(value || '')
+            .replace(/\s+/g, ' ')
+            .trim();
+    }
+
+    function getWriteAiComparableText () {
+        const $editorInput = $el.parent().find('.lexical-editor .editor-input').first();
+
+        if ($editorInput.length) {
+            return normalizeWriteAiText($editorInput.text());
+        }
+
+        return normalizeWriteAiText($el.val());
+    }
+
+    function updateWriteAiLabel () {
+        const nextLabel = getWriteAiComparableText().length >= writeAiContinueThreshold
+            ? writeAiContinueLabel
+            : writeAiDefaultLabel;
+
+        $writeAiBtnLabel.text(nextLabel);
+    }
+
+    updateWriteAiLabel();
+    $el.off('.writeAiLabel');
+    $el.on('input.writeAiLabel change.writeAiLabel', updateWriteAiLabel);
 
     function escapeHtml (value) {
         return String(value)
