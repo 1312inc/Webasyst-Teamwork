@@ -1981,6 +1981,9 @@ msgstr "Роли пользователей"
 msgid "Write with AI"
 msgstr "Написать с ИИ"
 
+msgid "Continue with AI"
+msgstr "Дописать с ИИ"
+
 msgid "Role name"
 msgstr "Название роли"
 
@@ -2064,4 +2067,3 @@ msgstr "Исправленный текст"
 
 msgid "Repeating task created: %s"
 msgstr "Создана новая копия задачи: %s"
-
