@@ -48,13 +48,13 @@
     <div class="flexbox space-12 wrap-mobile">
         <div class="wide">
             <h3>
-                {if !$_is_free_feature}<i class="fas fa-star text-yellow custom-mr-4"></i>{/if}
+                {if !$_is_free_feature}<i class="fas fa-star {if empty($_p.eta)}text-yellow{else}text-light-gray{/if} custom-mr-4"></i>{/if}
                 {$_p.title}
             </h3>
         </div>
         <div>
             {if empty($_p.eta)}
-                <span class="nowrap badge green"><i class="fas fa-check"></i> {if !$_is_free_feature}{if $_is_premium_license}[`Enabled`]{else}[`Available now`]{/if}{/if}</span>
+                <span class="nowrap badge {if $_is_premium_license}green{else}purple{/if}"><i class="fas fa-check"></i> {if !$_is_free_feature}{if $_is_premium_license}[`Enabled`]{else}[`Only in premium`]{/if}{/if}</span>
             {elseif trim($_p.eta)}
                 <span class="nowrap badge {$_p.eta_class|default:'light-gray'}"><i class="fas fa-clock"></i> {$_p.eta}</span>
             {/if}
@@ -75,13 +75,13 @@
             {$_premium_stuff = []}
 
             {$_premium_stuff[] = [
-              'title' => '[`Write with AI`]',
-              'body' => '[`Write and spellcheck task content with just few clicks. Powered by Webasyst AI.`]'|cat:'<br> <video loop="" muted="" autoplay="" playsinline=""><source src="https://www.webasyst.ru/wa-data/public/updates/products/landing/01/1/7341.webasyst-ai-tri-kp.mp4" type="video/mp4"></video>'
+              'title' => '[`Repeating tasks`]',
+              'body' => '[`Re-occuring tasks on completion and on each due date occurance.`]'
             ]}
 
             {$_premium_stuff[] = [
-              'title' => '[`Repeating tasks`]',
-              'body' => '[`Re-occuring tasks on completion and on each due date occurance.`]'
+              'title' => '[`Write with AI`]'|cat:' <i class="icon webasyst-magic-wand-ai"></i>',
+              'body' => '[`Write and spellcheck task content with just few clicks. Powered by Webasyst AI.`]'|cat:'<br> <video loop="" muted="" autoplay="" playsinline=""><source src="https://www.webasyst.ru/wa-data/public/updates/products/landing/01/1/7341.webasyst-ai-tri-kp.mp4" type="video/mp4"></video>'
             ]}
 
             {$_premium_stuff[] = [
@@ -164,23 +164,6 @@
                 </p>
 
             {/if}
-
-            <div class="flexbox wrap-mobile middle space-12" style="justify-content: center;">
-
-                <a href="https://apps.apple.com/{if $wa->locale() == 'ru_RU'}ru{else}us{/if}/app/webasyst-teamwork/id1610735751" target="_blank">
-                    <img src="{$wa_app_static_url}img/badge-appstore{if $wa->locale() == 'ru_RU'}-ru{/if}.png" class="t-app-inline-badge" alt="App Store">
-                </a>
-                <a href="https://play.google.com/store/apps/details?id=com.webasyst.teamwork" target="_blank">
-                    <img src="{$wa_app_static_url}img/badge-googleplay{if $wa->locale() == 'ru_RU'}-ru{/if}.png" class="t-app-inline-badge" alt="Google Play">
-                </a>
-                {if $wa->locale() == 'ru_RU'}
-                    <a href="https://apps.rustore.ru/app/com.webasyst.teamwork" target="_blank">
-                        <img src="{$wa_app_static_url}img/badge-rustore.svg" class="t-app-inline-badge" alt="RuStore">
-                    </a>
-                {/if}
-
-            </div>
-
 
             {$smarty.capture.getpremiumbutton}
 
