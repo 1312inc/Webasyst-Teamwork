@@ -806,6 +806,11 @@ class tasksTask implements ArrayAccess
         }
     }
 
+    public function getRightsInfo()
+    {
+        return $this->getRights()->getTaskRightsInfo($this);
+    }
+
     public function canEdit($contact = null)
     {
         return $this->getRights()->canEditTask($this, $contact);

@@ -438,7 +438,7 @@
                                 </span>
                             </div>
 
-                            {* if $task.rights_info.can_repeat|default:false *}
+                            {if $task.rights_info.can_repeat|default:false}
                                 <div class="t-chip t-repeat-wrapper">
                                     <a title="[`Repeat task`]">
                                         <span class="t-icon-with-badge">
@@ -450,7 +450,7 @@
                                         [`Repeat`]
                                     </a>
                                 </div>
-                            {* /if *}
+                            {/if}
 
                             <div class="t-chip">
                                 <a>
