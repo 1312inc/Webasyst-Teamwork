@@ -26,26 +26,26 @@ class tasksTaskRepeatModel extends waModel
             'task_id' => $task_id,
             'mode' => $mode,
             'frequency' => max(1, (int) ifset($repeat, 'frequency', 1)),
-            'interval' => ifset($repeat, 'interval', 'day'),
+            'measure' => ifset($repeat, 'measure', 'day'),
             'repeat_date' => ifset($repeat, 'repeat_date', null),
         ];
 
-        $intervals = [
+        $measures = [
             'day' => 'D',
             'week' => 'W',
             'month' => 'M',
             'year' => 'Y',
         ];
 
-        if (!isset($intervals[$row['interval']])) {
-            $row['interval'] = 'day';
+        if (!isset($measures[$row['measure']])) {
+            $row['measure'] = 'day';
         }
 
         if (!$row['repeat_date'] && $repeat_date_base) {
             $now = new DateTime();
             $date = new DateTime($repeat_date_base);
             while (true) {
-                $date->add(new DateInterval('P'.$row['frequency'].$intervals[$row['interval']]));
+                $date->add(new DateInterval('P'.$row['frequency'].$measures[$row['measure']]));
                 if ($date >= $now) {
                     break; // calculated repeat_date can not be in the past
                 }

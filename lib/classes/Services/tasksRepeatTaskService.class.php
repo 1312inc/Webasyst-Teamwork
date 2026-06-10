@@ -3,6 +3,7 @@
 class tasksRepeatTaskService
 {
     protected $app_settings_model = null;
+    protected $repeat_model = null;
 
     /** Safe to run as often as needed (e.g. from onCount) and will skip heavy duty if called too early. */
     public function worker()
@@ -12,12 +13,27 @@ class tasksRepeatTaskService
         }
         
         try {
-            $this->duplicateAllRepeatingTasks();
+            $this->duplicateRepeatingTasks($this->getRepeatModel()->getTasksReadyToRepeat());
             $this->markSuccessfullRun();
         } catch (Throwable $e) { 
-            // failed to duplicate: do not try again
             waLog::log([
                 'Error during task duplicate',
+                $e->getMessage(),
+                $e instanceof waException ? $e->getFullTraceAsString() : $e->getTraceAsString(),
+            ], 'tasks/duplicate.log');
+        }
+    }
+
+    public function duplicateOneRepeatingTask(int $task_id)
+    {
+        try {
+            $row = $this->getRepeatModel()->getById($task_id);
+            if (!empty($row['repeat_date']) && strtotime($row['repeat_date']) <= time()) {
+                $this->duplicateRepeatingTasks([$row['task_id'] => $row]);
+            }
+        } catch (Throwable $e) { 
+            waLog::log([
+                'Error during single task duplicate',
                 $e->getMessage(),
                 $e instanceof waException ? $e->getFullTraceAsString() : $e->getTraceAsString(),
             ], 'tasks/duplicate.log');
@@ -43,21 +59,30 @@ class tasksRepeatTaskService
         $this->getAppSettingsModel()->set('tasks', 'repeating_done', time());
     }
 
-    protected function duplicateAllRepeatingTasks()
+    protected function duplicateRepeatingTasks(array $rows)
     {
         $task_model = new tasksTaskModel();
-        $repeat_model = new tasksTaskRepeatModel();
+        $repeat_model = $this->getRepeatModel();
 
-        foreach ($repeat_model->getTasksReadyToRepeat() as $r) {
+        foreach ($rows as $r) {
             try {
                 // Duplicate task
                 $original = new tasksTask($r['task_id']);
                 $duplicate = $original->duplicate();
 
+                $due_date = null;
+                if ($r['mode'] == 'on_due') {
+                    $due_date = date('Y-m-d');
+                } else if ($r['mode'] == 'on_complete') {
+                    $date = new DateTime();
+                    $date->add(new DateInterval('P'.$r['frequency'].strtoupper($r['measure'][0])));
+                    $due_date = $date->format('Y-m-d');
+                }
+
                 // Update duplicate
                 $task_model->updateById($duplicate->id, [
                     'status_id' => 0, // new
-                    'due_date' => $r['mode'] == 'on_due' ? date('Y-m-d', time() + 3600*24) : null,
+                    'due_date' => $due_date,
                     'repeat_task_id' => ifempty($duplicate, 'repeat_task_id', $original->id),
                     'repeat_occurrence' => 1 + ifempty($duplicate, 'repeat_occurrence', 0),
                 ]);
@@ -93,5 +118,13 @@ class tasksRepeatTaskService
             $this->app_settings_model = new waAppSettingsModel();
         }
         return $this->app_settings_model;
+    }
+
+    protected function getRepeatModel(): tasksTaskRepeatModel
+    {
+        if (!$this->repeat_model) {
+            $this->repeat_model = new tasksTaskRepeatModel();
+        }
+        return $this->repeat_model;
     }
 }

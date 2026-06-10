@@ -214,7 +214,7 @@ class tasksTasksSaveController extends waJsonController
         return $result;
     }
 
-    protected function saveRepeating(&$task, $data)
+    protected function saveRepeating(&$task, &$data)
     {
         $task_repeat_model = new tasksTaskRepeatModel();
         $repeat = ifset($data, 'repeat', []);
@@ -223,21 +223,24 @@ class tasksTasksSaveController extends waJsonController
             case 'on_due':
                 $repeat_date_base = $task['due_date'];
                 if (!$repeat_date_base) {
-                    $task['due_date'] = $repeat_date_base = date('Y-m-d');
-                    (new tasksTaskModel())->updateById($task['id'], [
-                        'due_date' => $repeat_date_base,
-                    ]);
+                    $repeat_date_base = date('Y-m-d');
+                    if (!empty($task['is_existing'])) {
+                        $data['due_date'] = $repeat_date_base;
+                    } else {
+                        $task['due_date'] = $repeat_date_base;
+                        (new tasksTaskModel())->updateById($task['id'], [
+                            'due_date' => $repeat_date_base,
+                        ]);
+                    }
                 }
                 break;
             case 'on_complete':
                 if ($task['status_id'] < 0) {
-                    $prev_row = $task_repeat_model->getById($task['id']);
-                    if ($prev_row && $prev_row['repeat_date']) {
-                        $repeat['repeat_date'] = $prev_row['repeat_date'];
-                    } else {
-                        $repeat_date_base = date('Y-m-d');
-                    }
+                    $repeat['repeat_date'] = date('Y-m-d');
                     $repeat_date_base = null;
+
+                    // this forces call to duplicate repeating task in tasksTaskModel->updateById()
+                    $data['status_id'] = $task['status_id'];
                 }
                 break;
         }
@@ -283,15 +286,18 @@ class tasksTasksSaveController extends waJsonController
             throw new waRightsException(_w('Access denied'));
         }
 
+        if ($rights->canRepeatTask($prev_task)) {
+            $prev_task += ['is_existing' => true];
+            $this->saveRepeating($prev_task, $data);
+            unset($prev_task['is_existing']);
+        }
+
         $task_model->update($id, $data);
         $task = $task_model->getById($id);
 
         $this->saveAttachments($task['id'], $data);
         $this->saveTags($task, $prev_task);
         $this->saveTaskRelations($task, $prev_task);
-        if ($rights->canRepeatTask($prev_task)) {
-            $this->saveRepeating($task, $data);
-        }
 
         $log_item = $this->addLogItem($task, $prev_task['status_id'], 'edit');
 

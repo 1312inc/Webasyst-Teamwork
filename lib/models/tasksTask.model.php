@@ -164,9 +164,12 @@ class tasksTaskModel extends waModel
             $task_repeat_model->saveRepeat($task_id, $repeat, $due_date);
         } else if ($repeat['mode'] === 'on_complete') {
             // Task just changed its status to closed, update repeat_date for on_complete
-            if ($status_id !== null && $status_id < 0 && empty($repeat['repeat_date'])) {
-                unset($repeat['repeat_date']);
-                $task_repeat_model->saveRepeat($task_id, $repeat, date('Y-m-d H:i:s'));
+            if ($status_id !== null && $status_id < 0) {
+                if (empty($repeat['repeat_date'])) {
+                    $repeat['repeat_date'] = date('Y-m-d');
+                    $task_repeat_model->saveRepeat($task_id, $repeat, null);
+                }
+                (new tasksRepeatTaskService())->duplicateOneRepeatingTask((int)$task_id);
             }
         }
     }
