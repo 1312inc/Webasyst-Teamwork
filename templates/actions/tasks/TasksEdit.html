@@ -440,14 +440,18 @@
 
                             {if $task.rights_info.can_repeat|default:false}
                                 <div class="t-chip t-repeat-wrapper">
-                                    <a title="[`Repeat task`]">
+                                    {$_title  = '[`Repeat`]'}
+                                    {if !empty($task.repeat.mode)}
+                                        {$_title = sprintf(_w('Every %d %s'), $task.repeat.frequency, $task.repeat.measure)}
+                                    {/if}
+                                    <a title="{$_title}">
                                         <span class="t-icon-with-badge">
                                             <span class="icon custom-mr-8"><i class="fas fa-sync-alt custom-pl-2 custom-mr-0"></i></span>
                                             {if !$wa->tasks->isPremium()}
                                                 <span class="t-icon-badge"><i class="fas fa-star text-yellow"></i></span>
                                             {/if}
                                         </span>
-                                        [`Repeat`]
+                                        <span>{$_title}</span>
                                     </a>
                                 </div>
                             {/if}
@@ -782,6 +786,8 @@
     const $writeAiBtn = $('.t-form-line-write-ai-chip');
     const $spellcheckBtnParent = $spellcheckBtn.parent();
     const $repeatBtn = $('#t-edit-task-form .t-repeat-wrapper');
+    const repeatDefaultTitle = {_w("Repeat")|json_encode};
+    const repeatEveryPattern = {_w("Every %d %s")|json_encode};
     let spellcheckInProcess = false;
 
     window.waRedactorTaskInit = () => {
@@ -1205,6 +1211,28 @@
 
     $el.on('input', checkLength);
 
+    function syncRepeatChipTitle($scope) {
+        const $mode = $scope.find('select[name="data[repeat][mode]"]');
+        const $frequency = $scope.find('input[name="data[repeat][frequency]"]');
+        const $interval = $scope.find('select[name="data[repeat][interval]"]');
+        const $link = $repeatBtn.find('a');
+        const $text = $link.find('> span').last();
+
+        let title = repeatDefaultTitle;
+
+        if ($mode.val()) {
+            const frequency = Math.max(1, parseInt($frequency.val(), 10) || 1);
+            const measure = $.trim($interval.find('option:selected').text());
+
+            title = repeatEveryPattern
+                .replace('%d', frequency)
+                .replace('%s', measure);
+        }
+
+        $link.attr('title', title);
+        $text.text(title);
+    }
+
     $repeatBtn.on('click', function() {
 
         let $repeat_fields_wrapper = $('#t-edit-task-form .js-repeat-task-form');
@@ -1219,6 +1247,7 @@
                 $wrapper.find('.js-dialog-form-wrapper').append($repeat_fields);
                 $wrapper.on("click", ".js-success-action", function(event) {
                     event.preventDefault();
+                    syncRepeatChipTitle($wrapper);
                     dialog.close();
                 });
 
