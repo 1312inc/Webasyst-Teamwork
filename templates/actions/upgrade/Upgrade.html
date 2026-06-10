@@ -16,7 +16,11 @@
 {$_is_premium = $wa->tasks->isPremium()}
 {$_is_cloud = $wa->tasks->isCloud()}
 {$_premium_pricing = $wa->tasks->getPremiumPricing()}
-{$_upgrade_url = '[`https://www.webasyst.com/my/buy/upgrade-to-premium/tasks/`]'|cat:'?domain='|cat:str_replace('http://','',str_replace('https://','',$wa->domainUrl()))}
+{if $_is_cloud}
+    {$_upgrade_url = '[`https://www.webasyst.com/my/hosting/`]'}
+{else}
+    {$_upgrade_url = '[`https://www.webasyst.com/my/buy/upgrade-to-premium/tasks/`]'|cat:'?domain='|cat:str_replace('http://','',str_replace('https://','',$wa->domainUrl()))}
+{/if}
 
 {capture "getpremiumbutton"}
 {if !$_is_premium}
@@ -76,17 +80,17 @@
 
             {$_premium_stuff[] = [
               'title' => '[`Repeating tasks`]',
-              'body' => '[`Re-occuring tasks on completion and on each due date occurance.`]'
+              'body' => '[`Automate your workflow with re-occuring tasks that resume either on completion instantly or on each due date in the background. Set up once, and track the progress in a long term with no hassle.`]'
             ]}
 
             {$_premium_stuff[] = [
-              'title' => '[`Write with AI`]'|cat:' <i class="icon webasyst-magic-wand-ai"></i>',
-              'body' => '[`Write and spellcheck task content with just few clicks. Powered by Webasyst AI.`]'|cat:'<br> <video loop="" muted="" autoplay="" playsinline=""><source src="https://www.webasyst.ru/wa-data/public/updates/products/landing/01/1/7341.webasyst-ai-tri-kp.mp4" type="video/mp4"></video>'
+              'title' => '[`Write with AI`]'|cat:' <i class="icon webasyst-magic-wand-ai custom-ml-4"></i>',
+              'body' => '[`Boost your performance and save significant amounts of time.`]'|cat:' [`Write and spellcheck task content with just few clicks. Powered by Webasyst AI.`]'|cat:'<br> <video loop="" muted="" autoplay="" playsinline=""><source src="https://www.webasyst.ru/wa-data/public/updates/products/landing/01/1/7341.webasyst-ai-tri-kp.mp4" type="video/mp4"></video>'
             ]}
 
             {$_premium_stuff[] = [
               'title' => '[`Gantt chart`]',
-              'body' => '[`Visualize working progress based on scopes/milestones.`]'
+              'body' => '[`Visualize working progress based on scopes/milestones.`]'|cat:' [`When multiple scopes and projects are in the works at the same time, the right way to keep them on track becomes a necessity.`]'
             ]}
 
             {$_premium_stuff[] = [
