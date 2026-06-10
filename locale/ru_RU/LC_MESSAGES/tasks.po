@@ -2061,3 +2061,7 @@ msgstr "Исходный текст"
 
 msgid "Corrected text"
 msgstr "Исправленный текст"
+
+msgid "Repeating task created: %s"
+msgstr "Создана новая копия задачи: %s"
+

@@ -579,7 +579,7 @@ class tasksHelper
 
         // update contact_id
         $contact_id = wa()->getUser()->getId();
-        if ((!$log['action'] || $log['action'] == 'forward' || $log['action'] == 'return') && $task['contact_id'] != $contact_id) {
+        if ($update && (!$log['action'] || $log['action'] == 'forward' || $log['action'] == 'return') && $task['contact_id'] != $contact_id) {
             $update['contact_id'] = $contact_id;
         }
 

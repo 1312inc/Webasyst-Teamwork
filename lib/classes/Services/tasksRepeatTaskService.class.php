@@ -67,6 +67,13 @@ class tasksRepeatTaskService
                 $repeat_date_base = $r['mode'] == 'on_due' ? $r['repeat_date'] : null;
                 unset($r['task_id'], $r['repeat_date']);
                 $repeat_model->saveRepeat($duplicate->id, $r, $repeat_date_base);
+
+                // Add log item to original task
+                tasksHelper::addLog($original, [
+                    'action' => '',
+                    'text' => sprintf_wp('Repeating task created: %s', '#'.$duplicate['project_id'].'.'.$duplicate['number']),
+                    'do_not_update_datetime' => true,
+                ]);
             } catch (waException $e) {
                 // failed to duplicate: do not try again
                 waLog::log([
