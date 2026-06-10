@@ -1,8 +1,9 @@
+{$is_premium = $wa->tasks->isPremium()}
 <div class="dialog">
     <div class="dialog-background"></div>
     <div class="dialog-body">
-        <a href="#" class="dialog-close js-close-dialog"><i class="fas fa-times"></i></a>
-        <h3 class="dialog-header{if !$is_premium} hidden{/if}">[`Write task with AI`]{if !$is_premium} <span class="small text-gray">({sprintf('[`%d trials left`]', $tasks_try_free_left)})</span>{/if}</h3>
+        <a href="#" class="dialog-close js-close-dialog custom-p-8"><i class="fas fa-times"></i></a>
+        <h3 class="dialog-header{if !$is_premium} hidden{/if} custom-pb-16"><i class="icon webasyst-magic-wand-ai"></i> [`Write task with AI`]{if !$is_premium} <span class="small text-gray">({sprintf('[`%d trials left`]', $tasks_try_free_left)})</span>{/if}</h3>
         <div class="dialog-content js-task-write-ai-content">
             {if !$is_premium}
                 <div class="js-premium-wrapper custom-mt-24">
@@ -24,7 +25,7 @@
             {/if}
 
             <div class="dialog-ai-fields-container-wrapper{if !$is_premium} hidden{/if}">
-                <p class="hint">[`Briefly describe the task goal. Webasyst AI will continue writing and suggest you the complete task text template.`]</p>
+                <p class="small">[`Briefly describe the task goal. Webasyst AI will continue writing and suggest you the complete task text template.`]</p>
                 <div class="dialog-ai-fields-container">
                     <div class="flip-container">
                         <div class="dialog-ai-field-textarea">
@@ -92,9 +93,9 @@
             </div>
         </div>
         <footer class="dialog-footer{if !$is_premium} hidden{/if}">
-            <button class="js-write-ai-action button">[`Write with AI`] <i class="fas fa-spinner fa-spin custom-ml-4" style="display: none;"></i></button>
+            <button class="js-write-ai-action button t-ai-button">[`Write with AI`] <i class="fas fa-spinner fa-spin custom-ml-4" style="display: none;"></i></button>
         </footer>
-        <div class="dialog-ai-answer custom-p-24 not-blank hidden" style="border-radius: 0 0 0.75rem 0.75rem;">
+        <div class="dialog-ai-answer t-ai-area custom-p-24 not-blank hidden" style="border-radius: 0 0 0.75rem 0.75rem;">
             <div class="js-ai-answer-result"></div>
             <button class="js-paste-ai-answer-result button green outlined custom-mt-16">[`Use this text`]</button>
         </div>
