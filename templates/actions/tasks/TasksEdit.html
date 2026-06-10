@@ -518,15 +518,13 @@
                                             ] selected=$task.repeat.mode}
                                         </select>
                                     </div>
-                                    <p class="hint">
-                                        DYNAMIC HINT HERE
-                                        '' => just hide
-                                        'on_complete' => _w('Every time this task is closed, its new copy will be re-created with a new due date specified below.'),
-                                        'on_due' => _w('This task will re-create itself every time its due date passes, even if its closed. (Delete the task to cancel the repeat.)').' '.'<span class="state-caution-hint">Cron setup is required!</span> <a href="#">More here --></a>'
+                                    <p class="hint{if !empty($task.repeat.mode) || $task.repeat.mode != 'on_complete'} hidden{/if}" data-mode="on_complete">
+                                        {_w('Every time this task is closed, its new copy will be re-created with a new due date specified below.')}
+                                    </p>
+                                    <p class="hint{if !empty($task.repeat.mode) || $task.repeat.mode != 'on_due'} hidden{/if}" data-mode="on_due">
+                                        {_w('This task will re-create itself every time its due date passes, even if its closed. (Delete the task to cancel the repeat.)')} <span class="state-caution-hint">Cron setup is required!</span> <a href="#">More here --></a>
                                     </p>
                                 </div>
-
-
                             </div>
                             <div class="field">
                                 <div class="name for-input">[`How often`]</div>
@@ -1211,17 +1209,31 @@
 
         let $repeat_fields_wrapper = $('#t-edit-task-form .js-repeat-task-form');
         let $repeat_fields = $repeat_fields_wrapper.children().detach();
+        const footer = `<button class="button green outlined js-success-action">{_w("Set the repeat")}</button><button class="button light-gray js-dialog-close">{_w("Close")}</button>`;
 
         $.waDialog({
             header: $('<h1></h1>').text({_w("Repeat")|json_encode}),
             content: '<div class="js-dialog-form-wrapper"></div>',
-            footer: $('<button class="button green outlined js-success-action"></button>').text({_w("Set the repeat")|json_encode}),
+            footer,
             onOpen: function($wrapper, dialog) {
                 $wrapper.find('.js-dialog-form-wrapper').append($repeat_fields);
                 $wrapper.on("click", ".js-success-action", function(event) {
                     event.preventDefault();
                     dialog.close();
                 });
+
+                const $mode_select = $wrapper.find('select[name="data[repeat][mode]"]');
+                const $mode_select_hints = $wrapper.find('[data-mode]');
+                $mode_select.on('change', function() {
+                    $mode_select_hints.addClass('hidden');
+                    if(this.value) {
+                        $mode_select_hints.each((i, item) => {
+                            if($(item).attr('data-mode') == this.value) {
+                                item.classList.remove('hidden');
+                            }
+                      })
+                    }
+                })
             },
             onClose: function($wrapper) {
                 $repeat_fields_wrapper.append($repeat_fields);
