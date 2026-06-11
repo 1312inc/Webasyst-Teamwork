@@ -102,6 +102,13 @@ class tasksRepeatTaskService
                     'text' => sprintf_wp('Repeating task created: %s', '#'.$duplicate['project_id'].'.'.$duplicate['number']),
                     'do_not_update_datetime' => true,
                 ]);
+
+                // Add log item to duplicate
+                tasksHelper::addLog($duplicate, [
+                    'action' => '',
+                    'text' => sprintf_wp('Auto-created based on the original repeating task: %s', '#'.$original['project_id'].'.'.$original['number']),
+                    'do_not_update_datetime' => true,
+                ]);
             } catch (waException $e) {
                 // failed to duplicate: do not try again
                 waLog::log([
