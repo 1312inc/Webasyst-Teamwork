@@ -524,10 +524,12 @@
                                         </select>
                                     </div>
                                     <p class="hint{if !empty($task.repeat.mode) || $task.repeat.mode != 'on_complete'} hidden{/if}" data-mode="on_complete">
-                                        {_w('Every time this task is closed, its new copy will be re-created with a new due date specified below.')}
+                                        {_w('Every time this task is closed, its new copy will be instantly re-created with a new due date as specified below.')}
                                     </p>
                                     <p class="hint{if !empty($task.repeat.mode) || $task.repeat.mode != 'on_due'} hidden{/if}" data-mode="on_due">
-                                        {_w('This task will re-create itself every time its due date passes, even if its closed. (Delete the task to cancel the repeat.)')} <span class="state-caution-hint">Cron setup is required!</span> <a href="#">More here --></a>
+                                        {_w('This task will re-create itself in the background every time its due date passes, even if the original task remains untouched.')}
+                                        <br><br>
+                                        {_w('For better background process automation, setting up cron is recommended.')} <a href="#/automation/" target="_blank">[`Automation settings`]&nbsp;&rsaquo;</a>
                                     </p>
                                 </div>
                             </div>
@@ -535,7 +537,7 @@
                                 <div class="name for-input">[`How often`]</div>
                                 <div class="value">
                                     <span class="small custom-mr-4">[`Every`]</span>
-                                    <input type="number" min="1" step="1" class="small number shortest custom-mr-4" name="data[repeat][frequency]" value="{$task.repeat.frequency|escape}">
+                                    <input type="number" min="1" step="1" class="small number shortest custom-mr-8" name="data[repeat][frequency]" value="{$task.repeat.frequency|escape}">
                                     <div class="wa-select small">
                                         <select name="data[repeat][measure]">
                                             {html_options options=[
@@ -1296,7 +1298,7 @@
         {if $wa->tasks->isPremium()}
             let $repeat_fields_wrapper = $('#t-edit-task-form .js-repeat-task-form');
             let $repeat_fields = $repeat_fields_wrapper.children().detach();
-            const footer = `<button class="button green outlined js-success-action">{_w("Set the repeat")}</button><button class="button light-gray js-dialog-close">{_w("Close")}</button>`;
+            const footer = `<button class="button green outlined js-success-action">{_w("Set the repeat")}</button><button class="button light-gray js-dialog-close custom-ml-8">{_w("Close")}</button>`;
 
             $.waDialog({
                 header: $('<h1></h1>').text({_w("Repeat")|json_encode}),
