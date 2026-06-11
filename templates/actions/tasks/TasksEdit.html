@@ -508,6 +508,7 @@
                     {*
                      * Content for repeating task dialog @ .t-repeat-wrapper
                      *}
+                    {if $wa->tasks->isPremium()}
                     <div class="hidden js-repeat-task-form">
                         <div class="fields">
                             <div class="field">
@@ -530,7 +531,7 @@
                                     </p>
                                 </div>
                             </div>
-                            <div class="field">
+                            <div class="field js-how-often-field{if empty($task.repeat.mode)} hidden{/if}">
                                 <div class="name for-input">[`How often`]</div>
                                 <div class="value">
                                     <span class="small custom-mr-4">[`Every`]</span>
@@ -549,6 +550,31 @@
                             </div>
                         </div>
                     </div>
+                    {else}
+                        <template id="repeat-task-form-no-premium">
+                            <div class="dialog">
+                                <div class="dialog-background"></div>
+                                <div class="dialog-body">
+                                    <a href="#" class="dialog-close js-close-dialog custom-p-8"><i class="fas fa-times"></i></a>
+                                    <div class="dialog-content">
+                                        <div class="custom-mt-24">
+                                            <div class="align-center">
+                                                <img src="{$wa_app_static_url}img/tasks.svg" alt="" class="align-center" style="width: 96px;height: 96px;">
+                                                <h3 class="wide align-center">[`Premium only`]</h3>
+                                            </div>
+
+                                            <div class="flexbox vertical middle space-16 wrap custom-mt-16">
+                                                <p class="small align-center custom-mx-48">[`Upgrade to premium to have the feature enabled and this message to disappear permanently.`]</p>
+                                                <a href="{$wa_backend_url}tasks/#/upgrade/" class="button purple">
+                                                    [`See what’s there in premium`]
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    {/if}
 
                     <!-- plugin hook: 'backend_task_edit.%plugin_id.after_fields' -->
                     {* @event backend_task_edit.%plugin_id%.after_fields *}
@@ -1267,40 +1293,48 @@
     }
 
     $repeatBtn.on('click', function() {
+        {if $wa->tasks->isPremium()}
+            let $repeat_fields_wrapper = $('#t-edit-task-form .js-repeat-task-form');
+            let $repeat_fields = $repeat_fields_wrapper.children().detach();
+            const footer = `<button class="button green outlined js-success-action">{_w("Set the repeat")}</button><button class="button light-gray js-dialog-close">{_w("Close")}</button>`;
 
-        let $repeat_fields_wrapper = $('#t-edit-task-form .js-repeat-task-form');
-        let $repeat_fields = $repeat_fields_wrapper.children().detach();
-        const footer = `<button class="button green outlined js-success-action">{_w("Set the repeat")}</button><button class="button light-gray js-dialog-close">{_w("Close")}</button>`;
+            $.waDialog({
+                header: $('<h1></h1>').text({_w("Repeat")|json_encode}),
+                content: '<div class="js-dialog-form-wrapper"></div>',
+                footer,
+                onOpen: function($wrapper, dialog) {
+                    $wrapper.find('.js-dialog-form-wrapper').append($repeat_fields);
+                    $wrapper.on("click", ".js-success-action", function(event) {
+                        event.preventDefault();
+                        syncRepeatChipTitle($wrapper);
+                        dialog.close();
+                    });
 
-        $.waDialog({
-            header: $('<h1></h1>').text({_w("Repeat")|json_encode}),
-            content: '<div class="js-dialog-form-wrapper"></div>',
-            footer,
-            onOpen: function($wrapper, dialog) {
-                $wrapper.find('.js-dialog-form-wrapper').append($repeat_fields);
-                $wrapper.on("click", ".js-success-action", function(event) {
-                    event.preventDefault();
-                    syncRepeatChipTitle($wrapper);
-                    dialog.close();
-                });
+                    const $mode_select = $wrapper.find('select[name="data[repeat][mode]"]');
+                    const $mode_select_hints = $wrapper.find('[data-mode]');
+                    const $how_often_field = $wrapper.find('.js-how-often-field');
+                    $mode_select.on('change', function() {
+                        $mode_select_hints.addClass('hidden');
+                        if(this.value) {
+                            $mode_select_hints.each((i, item) => {
+                                if($(item).attr('data-mode') == this.value) {
+                                    item.classList.remove('hidden');
+                                }
+                          })
+                        }
 
-                const $mode_select = $wrapper.find('select[name="data[repeat][mode]"]');
-                const $mode_select_hints = $wrapper.find('[data-mode]');
-                $mode_select.on('change', function() {
-                    $mode_select_hints.addClass('hidden');
-                    if(this.value) {
-                        $mode_select_hints.each((i, item) => {
-                            if($(item).attr('data-mode') == this.value) {
-                                item.classList.remove('hidden');
-                            }
-                      })
-                    }
-                })
-            },
-            onClose: function($wrapper) {
-                $repeat_fields_wrapper.append($repeat_fields);
-            }
-        });
+                        $how_often_field.toggleClass('hidden', !this.value)
+                    })
+                },
+                onClose: function($wrapper) {
+                    $repeat_fields_wrapper.append($repeat_fields);
+                }
+            });
+        {else}
+            $.waDialog({
+                html: $('#repeat-task-form-no-premium').html(),
+            });
+        {/if}
     });
 
 {literal}
