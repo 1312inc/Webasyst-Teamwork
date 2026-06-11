@@ -372,12 +372,7 @@
                                 {$_due_hint = $task.milestone.view.due_text}
                                 {$_due_class = $task.milestone.view.due_color_class}
                             {/if}
-                            {if $task.due_date}
-                                {* manually set due date overrides milestone general due date *}
-                                {$_due_date = wa_date('humandate', $task.due_date, waDateTime::getDefaultTimezone())|escape}
-                                {$_due_hint = $task.view.due_text}
-                                {$_due_class = $task.view.due_color_class}
-                            {/if}
+
                             <a href="#" class="custom-mr-16{if !$task.milestone && !$task.due_date} text-light-gray{else} black{/if}">
                                 <span class="icon size-32">
                                     <i class="fas fa-flag-checkered"></i>
@@ -393,10 +388,8 @@
                                             <p class="small custom-mb-0">
                                                 {if $_milestone}
                                                     <strong>{$_milestone|truncate:32}</strong>
-                                                {elseif $_due_date}
-                                                    <span class="badge nowrap squared {$_due_class} custom-mr-4">{$_due_date}</span>
                                                 {else}
-                                                    <span class="gray nowrap">[`No milestone`]</span>
+                                                    <span class="gray nowrap">[`Set scope`]</span>
                                                 {/if}
                                             </p>
                                         </div>
@@ -405,7 +398,7 @@
                                                 <li class="bordered-bottom">
                                                     <a href="javascript:void(0);" data-id="">
                                                         <span>
-                                                            [`No milestone`]
+                                                            [`No scope`]
                                                         </span>
                                                     </a>
                                                 </li>
@@ -493,10 +486,8 @@
                                     <p class="small custom-mb-4">
                                         {if $_milestone}
                                             <strong>{$_milestone|truncate:32}</strong>
-                                        {elseif $_due_date}
-                                            <span class="badge nowrap squared {$_due_class} custom-mr-4">{$_due_date}</span>
                                         {else}
-                                            <span class="gray nowrap">[`No due date`]</span>
+                                            <span class="gray nowrap">[`No scope`]</span>
                                         {/if}
                                     </p>
 
@@ -802,8 +793,6 @@
                             {/if}
                     {/if}
 
-                    {if !empty($task.repeat.mode)} /// every {$task.repeat.frequency} &times; {$task.repeat.measure} @ {$task.repeat.mode}{/if}
-
                 </h2>
 
                 {* ON-CLICK PRIORITY CHANGER *}
@@ -820,6 +809,38 @@
                 <span class="t-visible-block"></span>
 
             </div>
+
+            {if $task.due_date}
+                {$_due_date = wa_date('humandate', $task.due_date, waDateTime::getDefaultTimezone())|escape}
+                {$_due_hint = $task.view.due_text}
+                {$_due_class = $task.view.due_color_class}
+                <h5 class="flexbox space-4">
+                    <span>[`Due date`]:</span>
+                    <span class="badge nowrap squared {$_due_class}"><b>{$_due_date}</b></span>
+                    <span class="hint">{$_due_hint}</span>
+                    {if !empty($task.repeat.mode)}
+                        <span class="hint flexbox middle space-4 custom-ml-16">
+                            <i class="fas fa-sync-alt text-gray"></i>
+                            <span class="black">
+                                {if $task.repeat.frequency == 1}
+                                    {if $task.repeat.measure == 'day'}[`Every day`]{/if}
+                                    {if $task.repeat.measure == 'week'}[`Every week`]{/if}
+                                    {if $task.repeat.measure == 'month'}[`Every month`]{/if}
+                                    {if $task.repeat.measure == 'year'}[`Every year`]{/if}
+                                {else}
+                                    {$_measure_plural = '[interval]'}
+                                    {if $task.repeat.measure == 'day'}{$_measure_plural = _ws('day', 'days', $task.repeat.frequency)}{/if}
+                                    {if $task.repeat.measure == 'week'}{$_measure_plural = _w('week', 'weeks', $task.repeat.frequency)}{/if}
+                                    {if $task.repeat.measure == 'month'}{$_measure_plural = _ws('month', 'months', $task.repeat.frequency)}{/if}
+                                    {if $task.repeat.measure == 'year'}{$_measure_plural = _ws('year', 'years', $task.repeat.frequency)}{/if}
+                                    {sprintf('[`Every %d %s`]', $task.repeat.frequency, $_measure_plural)}
+                                {/if}
+                            </span>
+                            {if $task.repeat.mode == 'on_complete'}<i class="fas fa-check text-light-gray" title="[`Repeats on completion`]"></i>{/if}
+                        </span>
+                    {/if}
+                </h5>
+            {/if}
 
             {$task_ext_info_html}
 

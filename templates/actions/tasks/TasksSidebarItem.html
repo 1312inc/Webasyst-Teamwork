@@ -155,6 +155,11 @@
                 {if !empty($task.view.due_text)}
                     <span class="hint semibold">{$task.view.due_text}</span>
                 {/if}
+                {if !empty($task.repeat.mode)}
+                    <span class="hint semibold">
+                        <i class="fas fa-sync-alt text-gray"></i>
+                    </span>
+                {/if}
             </p>
         {else if !empty($task.milestone.due_date)}
             <p class="small custom-mt-4 custom-mb-0">
