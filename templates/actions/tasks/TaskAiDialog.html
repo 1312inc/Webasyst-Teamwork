@@ -186,9 +186,8 @@
                 return $.trim($input.closest("label").find("span:last").text());
             }
 
-            function collectState(selectedParamId) {
+            function collectState() {
                 const state = {
-                    selectedParamId: typeof selectedParamId === "undefined" ? ($chips.filter(".selected").data("param-id") || null) : selectedParamId,
                     values: {}
                 };
 
@@ -221,8 +220,8 @@
                 return state;
             }
 
-            function saveCurrentState(selectedParamId) {
-                saveState(collectState(selectedParamId));
+            function saveCurrentState() {
+                saveState(collectState());
             }
 
             function restoreState(state) {
@@ -264,10 +263,6 @@
                     });
                 }
 
-                if (state.selectedParamId && hasParamId(state.selectedParamId)) {
-                    selectChip(state.selectedParamId);
-                }
-
                 saveCurrentState();
             }
 
@@ -276,9 +271,8 @@
                 const paramId = $chip.data("param-id");
 
                 if ($chip.hasClass("selected")) {
-                    const selectedParamId = $chip.data("param-id") || null;
                     closeChipPanel();
-                    saveCurrentState(selectedParamId);
+                    saveCurrentState();
                     return;
                 }
 
@@ -305,9 +299,8 @@
             });
 
             $dialog.find(".dialog-ai-field-items .close-btn").on("click", function () {
-                const selectedParamId = $chips.filter(".selected").data("param-id") || null;
                 closeChipPanel();
-                saveCurrentState(selectedParamId);
+                saveCurrentState();
             });
 
             restoreState(readState());
