@@ -442,7 +442,19 @@
                                 <div class="t-chip t-repeat-wrapper">
                                     {$_title  = '[`Repeat`]'}
                                     {if !empty($task.repeat.mode)}
-                                        {$_title = sprintf(_w('Every %d %s'), $task.repeat.frequency, $task.repeat.measure)}
+                                        {if $task.repeat.frequency == 1}
+                                            {if $task.repeat.measure == 'day'}{$_title = '[`Every day`]'}{/if}
+                                            {if $task.repeat.measure == 'week'}{$_title = '[`Every week`]'}{/if}
+                                            {if $task.repeat.measure == 'month'}{$_title = '[`Every month`]'}{/if}
+                                            {if $task.repeat.measure == 'year'}{$_title = '[`Every year`]'}{/if}
+                                        {else}
+                                            {$_measure_plural = '[interval]'}
+                                            {if $task.repeat.measure == 'day'}{$_measure_plural = _ws('day', 'days', $task.repeat.frequency)}{/if}
+                                            {if $task.repeat.measure == 'week'}{$_measure_plural = _w('week', 'weeks', $task.repeat.frequency)}{/if}
+                                            {if $task.repeat.measure == 'month'}{$_measure_plural = _ws('month', 'months', $task.repeat.frequency)}{/if}
+                                            {if $task.repeat.measure == 'year'}{$_measure_plural = _ws('year', 'years', $task.repeat.frequency)}{/if}
+                                            {$_title = sprintf('[`Every %d %s`]', $task.repeat.frequency, $_measure_plural)}
+                                        {/if}
                                     {/if}
                                     <a title="{$_title}">
                                         <span class="t-icon-with-badge">
@@ -815,6 +827,41 @@
     const $repeatBtn = $('#t-edit-task-form .t-repeat-wrapper');
     const repeatDefaultTitle = {_w("Repeat")|json_encode};
     const repeatEveryPattern = {_w("Every %d %s")|json_encode};
+    const repeatPluralRules = typeof Intl !== 'undefined' && typeof Intl.PluralRules === 'function'
+        ? new Intl.PluralRules({$wa->locale()|replace:'_':'-'|json_encode})
+        : null;
+    const repeatSingleTitles = {
+        day: {_w("Every day")|json_encode},
+        week: {_w("Every week")|json_encode},
+        month: {_w("Every month")|json_encode},
+        year: {_w("Every year")|json_encode}
+    };
+    const repeatMeasureTitles = {
+        day: {
+            one: {_ws("day", "days", 1)|json_encode},
+            few: {_ws("day", "days", 2)|json_encode},
+            many: {_ws("day", "days", 5)|json_encode},
+            other: {_ws("day", "days", 0)|json_encode}
+        },
+        week: {
+            one: {_w("week", "weeks", 1)|json_encode},
+            few: {_w("week", "weeks", 2)|json_encode},
+            many: {_w("week", "weeks", 5)|json_encode},
+            other: {_w("week", "weeks", 0)|json_encode}
+        },
+        month: {
+            one: {_ws("month", "months", 1)|json_encode},
+            few: {_ws("month", "months", 2)|json_encode},
+            many: {_ws("month", "months", 5)|json_encode},
+            other: {_ws("month", "months", 0)|json_encode}
+        },
+        year: {
+            one: {_ws("year", "years", 1)|json_encode},
+            few: {_ws("year", "years", 2)|json_encode},
+            many: {_ws("year", "years", 5)|json_encode},
+            other: {_ws("year", "years", 0)|json_encode}
+        }
+    };
     const writeAiDefaultLabel = {_w("Write with AI")|json_encode};
     const writeAiContinueLabel = {_w("Continue with AI")|json_encode};
     const writeAiContinueThreshold = 100;
@@ -1270,6 +1317,25 @@
 
     $el.on('input', checkLength);
 
+    function getRepeatMeasureTitle(measure, frequency) {
+        const measureTitles = repeatMeasureTitles[measure];
+
+        if (!measureTitles) {
+            return '';
+        }
+
+        const pluralCategory = repeatPluralRules
+            ? repeatPluralRules.select(frequency)
+            : (frequency === 1 ? 'one' : 'other');
+
+        return measureTitles[pluralCategory]
+            || measureTitles.other
+            || measureTitles.many
+            || measureTitles.few
+            || measureTitles.one
+            || '';
+    }
+
     function syncRepeatChipTitle($scope) {
         const $mode = $scope.find('select[name="data[repeat][mode]"]');
         const $frequency = $scope.find('input[name="data[repeat][frequency]"]');
@@ -1281,11 +1347,16 @@
 
         if ($mode.val()) {
             const frequency = Math.max(1, parseInt($frequency.val(), 10) || 1);
-            const measure = $.trim($measure.find('option:selected').text());
+            const measure = $measure.val();
+            const measureTitle = getRepeatMeasureTitle(measure, frequency) || $.trim($measure.find('option:selected').text());
 
-            title = repeatEveryPattern
-                .replace('%d', frequency)
-                .replace('%s', measure);
+            if (frequency === 1 && repeatSingleTitles[measure]) {
+                title = repeatSingleTitles[measure];
+            } else {
+                title = repeatEveryPattern
+                    .replace('%d', frequency)
+                    .replace('%s', measureTitle);
+            }
         }
 
         $link.attr('title', title);
