@@ -62,7 +62,7 @@
         </div>
         <div>
             {if empty($_p.eta)}
-                <span class="nowrap badge {if $_is_premium_license}green{else}purple{/if}"><i class="fas fa-check"></i> {if !$_is_free_feature}{if $_is_premium_license}[`Enabled`]{else}[`Only in premium`]{/if}{/if}</span>
+                <span class="nowrap badge {if $_is_premium_license}green{else}purple{/if}"><i class="fas fa-check"></i> {if !$_is_free_feature}{if $_is_premium_license}[`Enabled`]{else}[`Premium only`]{/if}{/if}</span>
             {elseif trim($_p.eta)}
                 <span class="nowrap badge {$_p.eta_class|default:'light-gray'}"><i class="fas fa-clock"></i> {$_p.eta}</span>
             {/if}
