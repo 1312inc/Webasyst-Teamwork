@@ -2068,6 +2068,9 @@ msgstr "Исправленный текст"
 msgid "Repeating task created: %s"
 msgstr "Создана новая копия задачи: %s"
 
+msgid "Auto-created based on the original repeating task: %s"
+msgstr "Создано автоматически из исходной повторяющейся задачи: %s"
+
 msgid "week"
 msgid_plural "weeks"
 msgstr[0] "неделя"
