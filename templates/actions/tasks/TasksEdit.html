@@ -537,13 +537,13 @@
                                     <span class="small custom-mr-4">[`Every`]</span>
                                     <input type="number" min="1" step="1" class="small number shortest custom-mr-4" name="data[repeat][frequency]" value="{$task.repeat.frequency|escape}">
                                     <div class="wa-select small">
-                                        <select name="data[repeat][interval]">
+                                        <select name="data[repeat][measure]">
                                             {html_options options=[
                                                 'day' => _w('days'),
                                                 'week' => _w('weeks'),
                                                 'month' => _w('months'),
                                                 'year' => _w('years')
-                                            ] selected=$task.repeat.interval}
+                                            ] selected=$task.repeat.measure}
                                         </select>
                                     </div>
                                 </div>
@@ -1273,7 +1273,7 @@
     function syncRepeatChipTitle($scope) {
         const $mode = $scope.find('select[name="data[repeat][mode]"]');
         const $frequency = $scope.find('input[name="data[repeat][frequency]"]');
-        const $interval = $scope.find('select[name="data[repeat][interval]"]');
+        const $measure = $scope.find('select[name="data[repeat][measure]"]');
         const $link = $repeatBtn.find('a');
         const $text = $link.find('> span').last();
 
@@ -1281,7 +1281,7 @@
 
         if ($mode.val()) {
             const frequency = Math.max(1, parseInt($frequency.val(), 10) || 1);
-            const measure = $.trim($interval.find('option:selected').text());
+            const measure = $.trim($measure.find('option:selected').text());
 
             title = repeatEveryPattern
                 .replace('%d', frequency)
