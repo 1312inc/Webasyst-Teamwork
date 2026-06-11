@@ -1,6 +1,8 @@
 <style>
 
-    .t-premium-appicon { position: relative; z-index: 10; height: 9rem; background: url('{$wa_url}wa-apps/tasks/img/tasks.svg') no-repeat center / 8rem; }
+    .t-premium-appicon { position: relative; z-index: 10; width: 9rem; height: 9rem; margin: 0 auto; }
+    .t-premium-appicon .t-icon-tasks { display: block; width: 9rem; height: 9rem; background: url('{$wa_url}wa-apps/tasks/img/tasks.svg') no-repeat center / 8rem; }
+    .t-premium-appicon .t-icon-star { position: absolute; bottom: 1rem; right: 0.5rem; transform: translate(0, 5px); background-color: var(--background-color-blank); border-radius: 50%; padding: 0.5rem; width: 1.75rem; height: 1.75rem; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 0.125rem 0.5rem rgba(0,0,0,0.2); }
     .t-premium-feature { border-radius: 0.75rem; background: var(--background-color-blank); margin-bottom: 1.5rem; padding: 1.5rem 2rem; }
     .t-premium-feature.halfwidth { width: 40%; margin-bottom: 0; padding-bottom: 0.5rem; }
     .t-premium-feature.halfwidth h3 { font-size: 1.25rem; }
@@ -25,22 +27,24 @@
 {capture "getpremiumbutton"}
 {if !$_is_premium}
 <figure class="box align-center t-upgrade-ad">
-    <a href="{$_upgrade_url}" class="button rounded {if !$_is_cloud}{$_premium_pricing.special_color|default:'purple'}{else}purple{/if} largest t-upgrade-button" target="_blank">[`Upgrade to premium`]</a>
+    <a href="{$_upgrade_url}" class="button rounded purple largest t-upgrade-button custom-mr-0" target="_blank">[`Upgrade to premium`]</a>
     <h4>
+        {if !empty($_premium_pricing.compare_price)}<strike class="gray">{$_premium_pricing.compare_price}</strike>{/if}
         {if $_is_cloud}
             [`All inclusive in the cloud`]
+        {else}
+            {$_premium_pricing.price}
         {/if}
     </h4>
     <p class="width-60 width-100-mobile custom-mx-auto small">
         {if $_is_cloud}
             [`In Webasyst Cloud, simply upgrade to the <b>Premium</b> plan and get all premium features at once with no extra purchase required.`]
         {else}
-            {if !empty($_premium_pricing.special)}
-                {sprintf('[`%s limited offer for upgrading existing app license to the premium version`]', sprintf('<span class="badge %s">%s</span>', $_premium_pricing.special_color, $_premium_pricing.special))}<br>
-                <b>{date('Y.m')}</b> [`special offer!`]
-            {else}
-                [`Per-server license for the entire company. Unlimited users, all premium features, free updates forever.`]
-            {/if}
+            [`Per-server license for the entire company. Unlimited users, all premium features, free updates forever.`]
+        {/if}
+        {if !$_is_cloud && date('Y-m-d') <= '2026-08-31'}
+            <br><br>
+            [`Promocode`] <code><b>SUMMER26</b></code> <strong class="text-red">-15% / {date('Y.m')}</strong>
         {/if}
     </p>
 </figure>
@@ -74,7 +78,13 @@
 
         <article class="t-upgrade-content">
 
-            <div class="t-premium-appicon"></div>
+            <div class="t-premium-appicon">
+                <span class="t-icon-tasks"></span>
+                <span class="t-icon-star"><i class="fas fa-star text-yellow"></i></span>
+            </div>
+
+
+
 
             {$_premium_stuff = []}
 
@@ -85,7 +95,7 @@
 
             {$_premium_stuff[] = [
               'title' => '[`Write with AI`]'|cat:' <i class="icon webasyst-magic-wand-ai custom-ml-4"></i>',
-              'body' => '[`Boost your performance and save significant amounts of time.`]'|cat:' [`Write and spellcheck task content with just few clicks. Powered by Webasyst AI.`]'|cat:'<br> <video loop="" muted="" autoplay="" playsinline=""><source src="https://www.webasyst.ru/wa-data/public/updates/products/landing/01/1/7341.webasyst-ai-tri-kp.mp4" type="video/mp4"></video>'
+              'body' => '[`Boost your performance and save significant amounts of time.`]'|cat:' [`Write and spellcheck task content with just few clicks. Powered by Webasyst AI.`]'|cat:'<br><br> <video loop="" muted="" autoplay="" playsinline=""><source src="https://www.webasyst.ru/wa-data/public/updates/products/landing/01/1/7341.webasyst-ai-tri-kp.mp4" type="video/mp4"></video>'
             ]}
 
             {$_premium_stuff[] = [
@@ -157,15 +167,9 @@
 
             {else}
 
-                <h1 class="top-padded align-center width-70 custom-mx-auto custom-mb-24 width-100-mobile">
-                    [`Better tools for better results`]
+                <h1 class="top-padded align-center width-66 custom-mx-auto custom-mb-24 width-100-mobile">
+                    [`Automate, accelerate, customize, be more productive`]
                 </h1>
-
-                <p class="small align-center custom-mb-24">
-                    [`Early launch offer gets you the best premium upgrade conditions possible.`]
-                    <br>
-                    <b>{sprintf('[`%d features available now, +%d more to come shortly.`]', $_features_delivered, $_features_pending)}</b>
-                </p>
 
             {/if}
 
