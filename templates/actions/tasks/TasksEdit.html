@@ -923,27 +923,44 @@
         }
     }
 
-    function copyTextToClipboard(text) {
-        const normalizedText = String(text || '');
+    function copyTextToClipboard(plain, rich) {
+        const normalizedPlain = String(plain || '');
+        const normalizedRich = String(rich || normalizedPlain);
 
-        if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
-            return navigator.clipboard.writeText(normalizedText);
+        if (typeof window.ClipboardItem !== 'undefined'
+            && navigator.clipboard
+            && typeof navigator.clipboard.write === 'function'
+        ) {
+            const clipboardItem = new ClipboardItem({
+                'text/plain': new Blob([normalizedPlain], {
+                    type: 'text/plain'
+                }),
+                'text/html': new Blob([normalizedRich], {
+                    type: 'text/html'
+                })
+            });
+
+            return navigator.clipboard.write([clipboardItem]);
         }
 
         return new Promise((resolve, reject) => {
-            const $textarea = $('<textarea style="position:absolute;left:-9999px;top:0;"></textarea>').val(normalizedText).appendTo('body');
-            const textarea = $textarea[0];
-
-            textarea.focus();
-            textarea.select();
+            const callback = function (event) {
+                event.clipboardData.setData('text/plain', normalizedPlain);
+                event.clipboardData.setData('text/html', normalizedRich);
+                event.preventDefault();
+            };
 
             try {
-                document.execCommand('copy');
-                resolve();
+                document.addEventListener('copy', callback);
+                if (document.execCommand('copy')) {
+                    resolve();
+                } else {
+                    reject(new Error('Copy command failed'));
+                }
             } catch (error) {
                 reject(error);
             } finally {
-                $textarea.remove();
+                document.removeEventListener('copy', callback);
             }
         });
     }
@@ -1002,6 +1019,7 @@
     function initTaskAiDrawer($wrapper, task_title, task_content) {
         let try_free = !$wrapper.find('.js-premium-wrapper').length;
         let lastGeneratedContent = '';
+        let lastGeneratedHtml = '';
 
         bindTaskAiDrawerHideControls($wrapper);
 
@@ -1054,7 +1072,7 @@
                 return;
             }
 
-            copyTextToClipboard(lastGeneratedContent)
+            copyTextToClipboard(lastGeneratedContent, lastGeneratedHtml)
                 .then(function () {
                     showTaskAiCopyNotification({
                         className: 'success',
@@ -1084,13 +1102,14 @@
             $.post('?module=tasks&action=ai&type=writetask', $wrapper.find(':input').serializeArray(), function (response) {
                 if (response?.status === 'ok' && response.data?.format_content) {
                     lastGeneratedContent = response.data.content || '';
+                    lastGeneratedHtml = response.data.format_content || '';
                     $wrapper.find('.drawer-ai-answer .js-ai-answer-result').html(response.data.format_content);
                     $wrapper.find('.drawer-ai-answer').removeClass('hidden');
                 }
 
                 if (response?.status === 'fail') {
                     if (response?.errors?.error_description) {
-                        $error_block.append($('<span style="color: red;"></span>').text(response.errors.error_description));
+                        $error_block.append($('<span style="color: red;"></span>').html(response.errors.error_description));
                         scrollTaskAiErrorBlock($error_block);
                     }
 
