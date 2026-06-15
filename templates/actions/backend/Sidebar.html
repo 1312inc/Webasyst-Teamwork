@@ -74,16 +74,18 @@
             <span>[`Outbox`]</span>
             <span class="count">{$outbox_count}</span>
         </a>
-        <a href="#/log/" class="brick t-mini-brick">
-            <span class="icon text-yellow"><i class="fas fa-bolt"></i></span>
-            <span>[`Updates`]</span>
-            <span class="count"></span>
-        </a>
-        <a href="#/kanban/" class="brick t-mini-brick">
-            <span class="icon text-green"><i class="fas fa-table"></i></span>
-            <span>[`Kanban`]</span>
-            <span class="count"></span>
-        </a>
+        {if $wa->userRights('kanban_log')}
+            <a href="#/log/" class="brick t-mini-brick">
+                <span class="icon text-yellow"><i class="fas fa-bolt"></i></span>
+                <span>[`Updates`]</span>
+                <span class="count"></span>
+            </a>
+            <a href="#/kanban/" class="brick t-mini-brick">
+                <span class="icon text-green"><i class="fas fa-table"></i></span>
+                <span>[`Kanban`]</span>
+                <span class="count"></span>
+            </a>
+        {/if}
         {if $is_admin}
         <a href="#/milestones/" class="brick t-mini-brick">
             <span class="t-icon-with-badge">
