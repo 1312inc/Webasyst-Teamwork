@@ -117,6 +117,7 @@
             const $chips = $drawer.find(".chips li");
             const $container = $drawer.find(".dialog-ai-fields-container");
             const $contents = $drawer.find(".dialog-ai-field-items .content");
+            const ANIMATION_CLASSNAMES = "is-animating flip-to-items flip-to-textarea";
 
             function getStorageKey() {
                 return STORAGE_KEY;
@@ -150,8 +151,37 @@
                 }).length;
             }
 
+            function isAnimating() {
+                return $container.hasClass("is-animating");
+            }
+
+            function animateFlip(direction, onComplete) {
+                const animationClass = direction === "to-items" ? "flip-to-items" : "flip-to-textarea";
+
+                $container.off(".taskAiDialogAnimation");
+
+                if (direction === "to-items") {
+                    $container.addClass("flipped");
+                }
+
+                $container
+                    .removeClass(ANIMATION_CLASSNAMES)
+                    .addClass("is-animating " + animationClass)
+                    .one("animationend.taskAiDialogAnimation", ".dialog-ai-field-items", function () {
+                        $container.removeClass(ANIMATION_CLASSNAMES);
+
+                        if (direction !== "to-items") {
+                            $container.removeClass("flipped");
+                        }
+
+                        if (typeof onComplete === "function") {
+                            onComplete();
+                        }
+                    });
+            }
+
             function selectChip(paramId) {
-                if (!hasParamId(paramId)) {
+                if (!hasParamId(paramId) || isAnimating()) {
                     return false;
                 }
 
@@ -163,19 +193,21 @@
                 });
 
                 $chip.addClass("selected").siblings("li").removeClass("selected");
-                $container.addClass("flipped");
                 $contents.removeClass("active");
                 $targetContent.addClass("active");
+                animateFlip("to-items");
 
                 return true;
             }
 
             function closeChipPanel() {
-                $container.off("transitionend.taskAiDialog").one("transitionend.taskAiDialog", function () {
+                if (isAnimating()) {
+                    return;
+                }
+
+                animateFlip("to-textarea", function () {
                     $contents.removeClass("active");
                 });
-
-                $container.removeClass("flipped");
                 $chips.removeClass("selected");
             }
 
@@ -334,35 +366,95 @@
             height: 200px;
         }
 
-        .dialog-ai-fields-container.flipped .flip-container {
-            transform: rotateX(180deg);
-        }
-
         .dialog-ai-fields-container .flip-container {
             position: relative;
             width: 100%;
             height: 100%;
-            transform-style: preserve-3d;
-            transition: transform 0.6s ease-in-out;
         }
 
         .dialog-ai-fields-container .flip-container .dialog-ai-field-textarea,
         .dialog-ai-fields-container .flip-container .dialog-ai-field-items {
             position: absolute;
+            inset: 0;
             width: 100%;
             height: 100%;
-            backface-visibility: hidden;
             box-sizing: border-box;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            transform-origin: 50% 50%;
+        }
+
+        .dialog-ai-fields-container .flip-container .dialog-ai-field-textarea {
+            background-color: var(--background-color-input);
+            border: 0.125em solid var(--border-color-input);
+            border-radius: 0.5em;
+            overflow: hidden;
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .dialog-ai-fields-container .flip-container .dialog-ai-field-textarea textarea {
+            display: block;
+            width: 100%;
+            height: 100%;
+            min-height: 100%;
+            border: 0;
+            background: transparent;
+            resize: none;
+            overflow-y: auto;
+        }
+
+        .dialog-ai-fields-container.flipped .flip-container .dialog-ai-field-textarea {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
         }
 
         .dialog-ai-fields-container .flip-container .dialog-ai-field-items {
             background-color: var(--background-color-input);
             border: 0.125em solid var(--border-color-input);
             color: var(--text-color-input);
-            transform: rotateX(180deg);
             overflow: auto;
             border-radius: 0.5em;
             padding: 1em;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .dialog-ai-fields-container.flipped .flip-container .dialog-ai-field-items {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        .dialog-ai-fields-container.is-animating .flip-container .dialog-ai-field-textarea,
+        .dialog-ai-fields-container.is-animating .flip-container .dialog-ai-field-items {
+            visibility: visible;
+        }
+
+        .dialog-ai-fields-container.is-animating .flip-container .dialog-ai-field-textarea,
+        .dialog-ai-fields-container.is-animating .flip-container .dialog-ai-field-items {
+            pointer-events: none;
+        }
+
+        .dialog-ai-fields-container.is-animating.flip-to-items .flip-container .dialog-ai-field-textarea {
+            opacity: 1;
+            animation: task-ai-flip-textarea-out 0.6s ease-in-out both;
+        }
+
+        .dialog-ai-fields-container.is-animating.flip-to-items .flip-container .dialog-ai-field-items {
+            opacity: 1;
+            animation: task-ai-flip-items-in 0.6s ease-in-out both;
+        }
+
+        .dialog-ai-fields-container.flipped.is-animating.flip-to-textarea .flip-container .dialog-ai-field-textarea {
+            opacity: 1;
+            animation: task-ai-flip-textarea-in 0.6s ease-in-out both;
+        }
+
+        .dialog-ai-fields-container.flipped.is-animating.flip-to-textarea .flip-container .dialog-ai-field-items {
+            opacity: 1;
+            animation: task-ai-flip-items-out 0.6s ease-in-out both;
         }
 
         .dialog-ai-fields-container .flip-container .dialog-ai-field-items .close-btn {
@@ -378,6 +470,74 @@
 
         .dialog-ai-fields-container .flip-container .dialog-ai-field-items .content.active {
             display: block;
+        }
+
+        @keyframes task-ai-flip-textarea-out {
+            0% {
+                opacity: 1;
+                transform: rotateX(0deg);
+            }
+            49% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 0;
+                transform: rotateX(-90deg);
+            }
+        }
+
+        @keyframes task-ai-flip-items-in {
+            0% {
+                opacity: 0;
+                transform: rotateX(90deg);
+            }
+            50% {
+                opacity: 0;
+            }
+            51% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 1;
+                transform: rotateX(0deg);
+            }
+        }
+
+        @keyframes task-ai-flip-items-out {
+            0% {
+                opacity: 1;
+                transform: rotateX(0deg);
+            }
+            49% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 0;
+                transform: rotateX(90deg);
+            }
+        }
+
+        @keyframes task-ai-flip-textarea-in {
+            0% {
+                opacity: 0;
+                transform: rotateX(-90deg);
+            }
+            50% {
+                opacity: 0;
+            }
+            51% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 1;
+                transform: rotateX(0deg);
+            }
         }
     </style>
 </div>
