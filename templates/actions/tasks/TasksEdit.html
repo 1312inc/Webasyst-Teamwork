@@ -868,6 +868,9 @@
     const writeAiContinueLabel = {_w("Continue with AI")|json_encode};
     const writeAiContinueThreshold = 100;
     let spellcheckInProcess = false;
+    let taskAiDrawer = null;
+    let taskAiDrawerPromise = null;
+    let taskAiDrawerKeyupHandler = null;
 
     window.waRedactorTaskInit = () => {
         $el.parent().find('.lexical-editor').remove();
@@ -912,6 +915,234 @@
             : writeAiDefaultLabel;
 
         $writeAiBtnLabel.text(nextLabel);
+    }
+
+    function hideTaskAiDrawer() {
+        if (taskAiDrawer) {
+            taskAiDrawer.hide();
+        }
+    }
+
+    function copyTextToClipboard(text) {
+        const normalizedText = String(text || '');
+
+        if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+            return navigator.clipboard.writeText(normalizedText);
+        }
+
+        return new Promise((resolve, reject) => {
+            const $textarea = $('<textarea style="position:absolute;left:-9999px;top:0;"></textarea>').val(normalizedText).appendTo('body');
+            const textarea = $textarea[0];
+
+            textarea.focus();
+            textarea.select();
+
+            try {
+                document.execCommand('copy');
+                resolve();
+            } catch (error) {
+                reject(error);
+            } finally {
+                $textarea.remove();
+            }
+        });
+    }
+
+    function showTaskAiCopyNotification(options) {
+        const settings = $.extend({
+            className: 'success',
+            content: '',
+            timeout: 2000
+        }, options || {});
+
+        let $wrapper = $('#t-notifications');
+        if (!$wrapper.length) {
+            $wrapper = $('<div class="alert-fixed-box" id="t-notifications"></div>').appendTo('body');
+        }
+
+        const $alert = $('<div class="alert"></div>')
+            .addClass(settings.className)
+            .html(settings.content);
+
+        $wrapper.append($alert);
+
+        if (settings.timeout > 0) {
+            setTimeout(function () {
+                $alert.remove();
+            }, settings.timeout);
+        }
+    }
+
+    function scrollTaskAiErrorBlock($error_block) {
+        if ($error_block.length && $error_block[0] && typeof $error_block[0].scrollIntoView === 'function') {
+            $error_block[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }
+
+    function bindTaskAiDrawerHideControls($wrapper) {
+        if (taskAiDrawerKeyupHandler) {
+            $(document).off('keyup.taskAiDrawer', taskAiDrawerKeyupHandler);
+        }
+
+        $wrapper.off('.taskAiDrawerHide');
+        $wrapper.on('click.taskAiDrawerHide', '.js-task-ai-hide-drawer', function (event) {
+            event.preventDefault();
+            hideTaskAiDrawer();
+        });
+
+        taskAiDrawerKeyupHandler = function (event) {
+            if (event.keyCode === 27 && taskAiDrawer && taskAiDrawer.is_visible) {
+                hideTaskAiDrawer();
+            }
+        };
+
+        $(document).on('keyup.taskAiDrawer', taskAiDrawerKeyupHandler);
+    }
+
+    function initTaskAiDrawer($wrapper, task_title, task_content) {
+        let try_free = !$wrapper.find('.js-premium-wrapper').length;
+        let lastGeneratedContent = '';
+
+        bindTaskAiDrawerHideControls($wrapper);
+
+        if (!try_free) {
+            $wrapper.find('.js-premium-wrapper').show();
+            $wrapper.find('.dialog-ai-fields-container-wrapper').addClass('hidden');
+            $wrapper.find('.drawer-footer').addClass('hidden');
+            $wrapper.find('.drawer-header').addClass('hidden');
+        }
+
+        $wrapper.find('[name="objective"]').val(task_title + '\n' + task_content);
+
+        $wrapper.find('.js-try-free-ai').off('.taskAiDrawer').on('click.taskAiDrawer', function() {
+            const $self = $(this);
+
+            $.post('?module=tasks&action=ai&type=tryFree', (r) => {
+                if (r.status === 'ok') {
+                    if (r.data.is_max_count) {
+                        $wrapper.find('.js-after-try-free-ai').show();
+                        $self.remove();
+                    }
+
+                    $wrapper.find('.js-premium-wrapper').hide();
+                    $wrapper.find('.dialog-ai-fields-container-wrapper').removeClass('hidden');
+                    $wrapper.find('.drawer-footer').removeClass('hidden');
+                    $wrapper.find('.drawer-header').removeClass('hidden');
+                    try_free = true;
+                }
+            });
+        });
+
+        $wrapper.find('.js-paste-ai-answer-result').off('.taskAiDrawer').on('click.taskAiDrawer', function(event) {
+            event.preventDefault();
+
+            if (!lastGeneratedContent) {
+                return;
+            }
+
+            window.lexicalEditor.updateContent('redactor-task-{$task_uuid}', lastGeneratedContent, {
+                isMarkdown: true,
+            });
+
+            hideTaskAiDrawer();
+        });
+
+        $wrapper.find('.js-copy-ai-answer-result').off('.taskAiDrawer').on('click.taskAiDrawer', function(event) {
+            event.preventDefault();
+
+            if (!lastGeneratedContent) {
+                return;
+            }
+
+            copyTextToClipboard(lastGeneratedContent)
+                .then(function () {
+                    showTaskAiCopyNotification({
+                        className: 'success',
+                        content: '[`Copied`]'
+                    });
+                })
+                .catch(function () {
+                    showTaskAiCopyNotification({
+                        className: 'danger',
+                        content: '[`Copying error`]'
+                    });
+                });
+        });
+
+        $wrapper.find('.js-write-ai-action').off('.taskAiDrawer').on('click.taskAiDrawer', function () {
+            if (!try_free) {
+                return false;
+            }
+
+            const $error_block = $wrapper.find('.js-errors-block');
+            $error_block.empty();
+
+            const $btn = $wrapper.find('.js-write-ai-action');
+            $btn.prop('disabled', true);
+            $btn.find('.fa-spinner').show();
+
+            $.post('?module=tasks&action=ai&type=writetask', $wrapper.find(':input').serializeArray(), function (response) {
+                if (response?.status === 'ok' && response.data?.format_content) {
+                    lastGeneratedContent = response.data.content || '';
+                    $wrapper.find('.drawer-ai-answer .js-ai-answer-result').html(response.data.format_content);
+                    $wrapper.find('.drawer-ai-answer').removeClass('hidden');
+                }
+
+                if (response?.status === 'fail') {
+                    if (response?.errors?.error_description) {
+                        $error_block.append($('<span style="color: red;"></span>').text(response.errors.error_description));
+                        scrollTaskAiErrorBlock($error_block);
+                    }
+
+                    if (response?.errors?.length) {
+                        $.each(response.errors, function (i, error) {
+                            const $error = $('<span style="color: red;"></span>').text(error[0] || error);
+                            $error_block.append($error);
+                        });
+                        scrollTaskAiErrorBlock($error_block);
+                    }
+                }
+            }).error(function(error) {
+                $error_block.append($('<span style="color: red;"></span>').text(error.responseText || error.statusText || 'Error'));
+                scrollTaskAiErrorBlock($error_block);
+            }).always(function() {
+                $btn.prop('disabled', false);
+                $btn.find('.fa-spinner').hide();
+            });
+        });
+    }
+
+    function getTaskAiDrawer(task_title, task_content) {
+        if (taskAiDrawer) {
+            return $.Deferred().resolve(taskAiDrawer).promise();
+        }
+
+        if (taskAiDrawerPromise) {
+            return taskAiDrawerPromise;
+        }
+
+        taskAiDrawerPromise = $.get('?module=tasks&action=ai&type=taskfields&html=1')
+            .then(function (response) {
+                taskAiDrawer = $.waDrawer({
+                    html: response.data?.html,
+                    esc: false,
+                    onBgClick: function () {
+                        hideTaskAiDrawer();
+                    },
+                    onOpen: function ($wrapper) {
+                        console.log($wrapper);
+                        
+                        initTaskAiDrawer($wrapper, task_title, task_content);
+                    }
+                });
+
+                return taskAiDrawer;
+            })
+            .always(function () {
+                taskAiDrawerPromise = null;
+            });
+
+        return taskAiDrawerPromise;
     }
 
     updateWriteAiLabel();
@@ -1217,103 +1448,10 @@
         const task_title = $form.find('[name="data[name]"]').val();
         const task_content = $form.find('[name="data[text]"]').val();
 
-        $.get('?module=tasks&action=ai&type=taskfields&html=1', function (response) {
-
-            $.waDialog({
-                html: response.data?.html,
-                onOpen: function ($wrapper, dialog) {
-                    let try_free = !$wrapper.find('.js-premium-wrapper').length;
-
-                    if (!try_free) {
-                        $wrapper.find('.js-premium-wrapper').show();
-                        $wrapper.find('.dialog-ai-fields-container-wrapper').addClass('hidden');
-                        $wrapper.find('.dialog-footer').addClass('hidden');
-                        $wrapper.find('.dialog-header').addClass('hidden');
-                        dialog.resize();
-                    }
-
-                    $wrapper.find('[name="objective"]').val(task_title + '\n' + task_content);
-
-                    $wrapper.find('.js-try-free-ai').on('click', function() {
-                        const $self = $(this);
-
-                         $.post('?module=tasks&action=ai&type=tryFree', (r) => {
-                            if (r.status === 'ok') {
-                                if (r.data.is_max_count) {
-                                    $wrapper.find('.js-after-try-free-ai').show();
-                                    $self.remove();
-                                }
-
-                                $wrapper.find('.js-premium-wrapper').hide();
-                                $wrapper.find('.dialog-ai-fields-container-wrapper').removeClass('hidden');
-                                $wrapper.find('.dialog-footer').removeClass('hidden');
-                                $wrapper.find('.dialog-header').removeClass('hidden');
-                                try_free = true;
-                                dialog.resize();
-                            }
-                        });
-                    });
-
-                    $('.js-write-ai-action').on('click', function (e) {
-
-                        if (!try_free) {
-                            return false;
-                        }
-
-                        const $error_block = $('.js-errors-block');
-                        $error_block.empty();
-
-                        const $btn = $wrapper.find('.js-write-ai-action');
-                        $btn.prop('disabled', true);
-                        $btn.find('.fa-spinner').show();
-
-                        $.post('?module=tasks&action=ai&type=writetask', $wrapper.find(':input').serializeArray(), function (response) {
-                            $wrapper.find('.js-write-ai-action').prop('disabled', false);
-                            if (response?.status === 'ok' && response.data?.format_content) {
-                                $wrapper.find('.dialog-ai-answer .js-ai-answer-result').html(response.data.format_content);
-                                $wrapper.find('.dialog-ai-answer').removeClass('hidden');
-                                $wrapper.find('.js-paste-ai-answer-result').on('click', function(e) {
-                                    e.preventDefault();
-                                    window.lexicalEditor.updateContent('redactor-task-{$task_uuid}', response.data.content, {
-                                        isMarkdown: true,
-                                    });
-                                    dialog.close();
-                                });
-                                dialog.resize();
-                                if (!$wrapper.find('.js-premium-wrapper').length) {
-                                    $wrapper.find('.js-write-ai-action').prop('disabled', false);
-                                    try_free = false;
-                                }
-                            }
-
-                            if(response?.status === 'fail') {
-
-                                if(response?.errors?.error_description) {
-                                    $error_block.append($('<span style="color: red;"></span>').text(response.errors.error_description));
-                                    $error_block[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
-                                }
-
-                                if(response?.errors?.length){
-                                    $.each(response.errors, function (i, error) {
-                                        const $error = $('<span style="color: red;"></span>').text(error[0] || error);
-                                        $error_block.append($error);
-                                    });
-                                    $error_block[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
-                                }
-
-                                dialog.close();
-                            }
-                        }).error(function(error) {
-                            $error_block.append($('<span style="color: red;"></span>').text(error.responseText || error.statusText || 'Error'));
-                            $error_block[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
-                            dialog.close();
-                        }).always(function() {
-                            $btn.prop('disabled', false);
-                            $btn.find('.fa-spinner').hide();
-                        });
-                    });
-                }
-            });
+        getTaskAiDrawer(task_title, task_content).then(function (drawer) {
+            if (drawer && !drawer.is_visible) {
+                drawer.show();
+            }
         });
     });
 

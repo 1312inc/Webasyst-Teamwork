@@ -1,112 +1,122 @@
 {$is_premium = $wa->tasks->isPremium()}
-<div class="dialog">
-    <div class="dialog-background"></div>
-    <div class="dialog-body">
-        <a href="#" class="dialog-close js-close-dialog custom-p-8"><i class="fas fa-times"></i></a>
-        <h3 class="dialog-header{if !$is_premium} hidden{/if} custom-pb-16"><i class="icon webasyst-magic-wand-ai"></i> [`Write task with AI`]{if !$is_premium} <span class="small text-gray">({sprintf('[`%d trials left`]', $tasks_try_free_left)})</span>{/if}</h3>
-        <div class="dialog-content js-task-write-ai-content">
-            {if !$is_premium}
-                <div class="js-premium-wrapper custom-mt-24">
-                    <div class="align-center">
-                        <img src="{$wa_app_static_url}img/tasks.svg" alt="" class="align-center" style="width: 96px;height: 96px;">
-                        <h3 class="wide align-center">[`Premium only`]</h3>
-                    </div>
+<div class="drawer t-task-ai-drawer">
+    <div class="drawer-background"></div>
+    <div class="drawer-body">
+        <a href="#" class="drawer-close js-task-ai-hide-drawer custom-p-8"><i class="fas fa-times"></i></a>
+        <div class="drawer-block">
+            <header class="drawer-header{if !$is_premium} hidden{/if} custom-pb-16"><h3><i class="icon webasyst-magic-wand-ai"></i> [`Write task with AI`]{if !$is_premium} <span class="small text-gray">({sprintf('[`%d trials left`]', $tasks_try_free_left)})</span>{/if}</h3></header>
+            <div class="drawer-content">
+                <div class="js-task-write-ai-content">
+                    {if !$is_premium}
+                        <div class="js-premium-wrapper custom-mt-24">
+                            <div class="align-center">
+                                <img src="{$wa_app_static_url}img/tasks.svg" alt="" class="align-center" style="width: 96px;height: 96px;">
+                                <h3 class="wide align-center">[`Premium only`]</h3>
+                            </div>
 
-                    <div class="flexbox vertical middle space-16 wrap custom-mt-16">
-                        <p class="small align-center custom-mx-48">[`Upgrade to premium to have the feature enabled and this message to disappear permanently.`]</p>
-                        <a href="{$wa_backend_url}tasks/#/upgrade/" class="button purple">
-                            [`See what’s there in premium`]
-                        </a>
-                        {if $tasks_try_free_left}
-                            <button type="button" class="js-try-free-ai button light-gray">[`Try AI free`]</button>
-                        {/if}
-                    </div>
-                </div>
-            {/if}
+                            <div class="flexbox vertical middle space-16 wrap custom-mt-16">
+                                <p class="small align-center custom-mx-48">[`Upgrade to premium to have the feature enabled and this message to disappear permanently.`]</p>
+                                <a href="{$wa_backend_url}tasks/#/upgrade/" class="button purple">
+                                    [`See what’s there in premium`]
+                                </a>
+                                {if $tasks_try_free_left}
+                                    <button type="button" class="js-try-free-ai button light-gray">[`Try AI free`]</button>
+                                {/if}
+                            </div>
+                        </div>
+                    {/if}
 
-            <div class="dialog-ai-fields-container-wrapper{if !$is_premium} hidden{/if}">
-                <p class="small">[`Briefly describe the task goal. Webasyst AI will continue writing and suggest you the complete task text template.`]</p>
-                <div class="dialog-ai-fields-container">
-                    <div class="flip-container">
-                        <div class="dialog-ai-field-textarea">
-                            <textarea name="objective" class="width-100" placeholder="[`Write a task about...`]"></textarea>
+                    <div class="dialog-ai-fields-container-wrapper{if !$is_premium} hidden{/if}">
+                        <p class="small">[`Briefly describe the task goal. Webasyst AI will continue writing and suggest you the complete task text template.`]</p>
+                        <div class="dialog-ai-fields-container">
+                            <div class="flip-container">
+                                <div class="dialog-ai-field-textarea">
+                                    <textarea name="objective" class="width-100" placeholder="[`Write a task about...`]"></textarea>
+                                </div>
+
+                                <div class="dialog-ai-field-items">
+                                    <button class="close-btn nobutton circle">
+                                        <i class="fas fa-exchange-alt fa-rotate-90 text-gray"></i>
+                                    </button>
+                                    <div class="fields">
+                                    {foreach $params.fields as $field}
+                                        {if $field.id == 'objective' || $field.id == 'context'}
+                                            {continue}
+                                        {/if}
+
+                                        <div class="content" id="{$field.id}">
+
+                                            <div class="field">
+                                                <div class="value">
+                                                    {if !empty($field.items)}
+                                                        <ul>
+                                                            {foreach $field.items as $id => $val}
+                                                                <li>
+                                                                    {if $field.type == 'radio'}
+                                                                        <label>
+                                                                            <span class="wa-radio">
+                                                                                <input type="radio" name="{$field.id}" value="{$id}">
+                                                                                <span></span>
+                                                                            </span>
+                                                                            <span>{$val|escape}</span>
+                                                                        </label>
+                                                                    {/if}
+                                                                </li>
+                                                            {/foreach}
+                                                        </ul>
+                                                    {/if}
+                                                    {if $field.type == 'input'}
+                                                        <input type="text" class="width-90" name="{$id}" placeholder="{$field.example|escape}" value="">
+                                                    {/if}
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    {/foreach}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="dialog-ai-field-items">
-                            <button class="close-btn nobutton circle">
-                                <i class="fas fa-exchange-alt fa-rotate-90 text-gray"></i>
-                            </button>
-                            <div class="fields">
+                        <ul class="chips small">
                             {foreach $params.fields as $field}
                                 {if $field.id == 'objective' || $field.id == 'context'}
                                     {continue}
                                 {/if}
 
-                                <div class="content" id="{$field.id}">
-
-                                    <div class="field">
-                                        <div class="value">
-                                            {if !empty($field.items)}
-                                                <ul>
-                                                    {foreach $field.items as $id => $val}
-                                                        <li>
-                                                            {if $field.type == 'radio'}
-                                                                <label>
-                                                                    <span class="wa-radio">
-                                                                        <input type="radio" name="{$field.id}" value="{$id}">
-                                                                        <span></span>
-                                                                    </span>
-                                                                    <span>{$val|escape}</span>
-                                                                </label>
-                                                            {/if}
-                                                        </li>
-                                                    {/foreach}
-                                                </ul>
-                                            {/if}
-                                            {if $field.type == 'input'}
-                                                <input type="text" class="width-90" name="{$id}" placeholder="{$field.example|escape}" value="">
-                                            {/if}
-                                        </div>
-                                    </div>
-
-                                </div>
+                                <li data-param-id="{$field.id}">
+                                    <a href="javascript:void(0);">
+                                        {$field.title|escape}
+                                        <span class="count"></span>
+                                    </a>
+                                </li>
                             {/foreach}
-                            </div>
-                        </div>
+                        </ul>
                     </div>
                 </div>
-
-                <ul class="chips small">
-                    {foreach $params.fields as $field}
-                        {if $field.id == 'objective' || $field.id == 'context'}
-                            {continue}
-                        {/if}
-
-                        <li data-param-id="{$field.id}">
-                            <a href="javascript:void(0);">
-                                {$field.title|escape}
-                                <span class="count"></span>
-                            </a>
-                        </li>
-                    {/foreach}
-                </ul>
+                <p class="t-errors-block js-errors-block small"></p>
+                <div class="drawer-ai-answer t-ai-area custom-p-24 custom-my-24 box rounded hidden">
+                    <div class="js-ai-answer-result"></div>
+                </div>
             </div>
-        </div>
-        <footer class="dialog-footer{if !$is_premium} hidden{/if}">
-            <button class="js-write-ai-action button t-ai-button">[`Write with AI`] <i class="fas fa-spinner fa-spin custom-ml-4" style="display: none;"></i></button>
-        </footer>
-        <div class="dialog-ai-answer t-ai-area custom-p-24 not-blank hidden" style="border-radius: 0 0 0.75rem 0.75rem;">
-            <div class="js-ai-answer-result"></div>
-            <button class="js-paste-ai-answer-result button green outlined custom-mt-16">[`Use this text`]</button>
+            <footer class="drawer-footer flexbox middle{if !$is_premium} hidden{/if}">
+                <button class="js-write-ai-action button t-ai-button">[`Write with AI`] <i class="fas fa-spinner fa-spin custom-ml-4" style="display: none;"></i></button>
+                <div class="drawer-ai-answer inlinebox inline custom-ml-auto hidden">
+                    <div class="flexbox middle wrap space-8">
+                        <button class="js-paste-ai-answer-result button green outlined">[`Взять весь текст`]</button>
+                        <button class="js-copy-ai-answer-result button light-gray outlined">[`Скопировать`]</button>
+                    </div>
+                </div>
+            </footer>
         </div>
     </div>
     <script>
         $(document).ready(function() {
             const STORAGE_KEY = 'tasks/task-ai-dialog-state';
-            const $dialog = $(".js-task-write-ai-content").closest(".dialog").last();
-            const $chips = $dialog.find(".chips li");
-            const $container = $dialog.find(".dialog-ai-fields-container");
-            const $contents = $dialog.find(".dialog-ai-field-items .content");
+            const $drawer = $(".js-task-write-ai-content").closest(".drawer").last();
+            const $chips = $drawer.find(".chips li");
+            const $container = $drawer.find(".dialog-ai-fields-container");
+            const $contents = $drawer.find(".dialog-ai-field-items .content");
 
             function getStorageKey() {
                 return STORAGE_KEY;
@@ -281,7 +291,7 @@
                 }
             });
 
-            $dialog.find(".dialog-ai-field-items input[type='radio']").on("change", function () {
+            $drawer.find(".dialog-ai-field-items input[type='radio']").on("change", function () {
                 const $input = $(this);
                 const paramId = $input.attr("name");
 
@@ -289,7 +299,7 @@
                 saveCurrentState();
             });
 
-            $dialog.find(".dialog-ai-field-items input[type='text']").on("input", function () {
+            $drawer.find(".dialog-ai-field-items input[type='text']").on("input", function () {
                 const $input = $(this);
                 const paramId = $input.closest(".content").attr("id");
                 const value = $input.val();
@@ -298,7 +308,7 @@
                 saveCurrentState();
             });
 
-            $dialog.find(".dialog-ai-field-items .close-btn").on("click", function () {
+            $drawer.find(".dialog-ai-field-items .close-btn").on("click", function () {
                 closeChipPanel();
                 saveCurrentState();
             });
@@ -308,55 +318,66 @@
         });
     </script>
     <style>
+        .t-task-ai-drawer .drawer-content {
+            overflow-x: clip !important;
+        }
+
+        .t-task-ai-drawer .drawer-block {
+            display: flex;
+            flex-direction: column;
+            min-height: 100%;
+        }
+
         .dialog-ai-fields-container {
             perspective: 2000px;
             width: 100%;
             height: 200px;
+        }
 
-            &.flipped .flip-container {
-                transform: rotateX(180deg);
-            }
+        .dialog-ai-fields-container.flipped .flip-container {
+            transform: rotateX(180deg);
+        }
 
-            .flip-container {
-                position: relative;
-                width: 100%;
-                height: 100%;
-                transform-style: preserve-3d;
-                transition: transform 0.6s ease-in-out;
+        .dialog-ai-fields-container .flip-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.6s ease-in-out;
+        }
 
-                .dialog-ai-field-textarea, .dialog-ai-field-items {
-                    position: absolute;
-                    width: 100%;
-                    height: 100%;
-                    backface-visibility: hidden;
-                    box-sizing: border-box;
-                }
+        .dialog-ai-fields-container .flip-container .dialog-ai-field-textarea,
+        .dialog-ai-fields-container .flip-container .dialog-ai-field-items {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            box-sizing: border-box;
+        }
 
-                .dialog-ai-field-items {
-                    background-color: var(--background-color-input);
-                    border: 0.125em solid var(--border-color-input);
-                    color: var(--text-color-input);
-                    transform: rotateX(180deg);
-                    overflow: auto;
-                    border-radius: 0.5em;
-                    padding: 1em;
+        .dialog-ai-fields-container .flip-container .dialog-ai-field-items {
+            background-color: var(--background-color-input);
+            border: 0.125em solid var(--border-color-input);
+            color: var(--text-color-input);
+            transform: rotateX(180deg);
+            overflow: auto;
+            border-radius: 0.5em;
+            padding: 1em;
+        }
 
-                    .close-btn {
-                        position: absolute;
-                        top: 5px;
-                        right: 0;
-                        z-index: 1;
-                    }
+        .dialog-ai-fields-container .flip-container .dialog-ai-field-items .close-btn {
+            position: absolute;
+            top: 5px;
+            right: 0;
+            z-index: 1;
+        }
 
-                    .content {
-                        display: none;
+        .dialog-ai-fields-container .flip-container .dialog-ai-field-items .content {
+            display: none;
+        }
 
-                        &.active {
-                            display: block;
-                        }
-                    }
-                }
-            }
+        .dialog-ai-fields-container .flip-container .dialog-ai-field-items .content.active {
+            display: block;
         }
     </style>
 </div>
