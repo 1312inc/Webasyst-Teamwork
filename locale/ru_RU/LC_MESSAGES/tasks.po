@@ -2178,3 +2178,6 @@ msgstr "лет"
 
 msgid "Set the repeat"
 msgstr "Задать настройки повторения"
+
+msgid "Has access to Updates and Kanban"
+msgstr "Доступ к разделам Новости и Канбан"
