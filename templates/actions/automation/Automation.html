@@ -1,0 +1,69 @@
+<div class="flexbox">
+    {$sidebar_html}
+
+<div class="content">
+
+<div class="article">
+    <div class="article-body">
+
+        <h1>[`Automation`]</h1>
+
+        <p>
+            {$last_run_ts = $wa->setting('repeating_done', '', 'tasks')}
+            [`Команда CRON последний раз выполнялась:`]
+            <strong>{$last_run_ts|wa_date:'humandate'}</strong>
+        </p>
+        <p>
+            <pre>{$cron_job_command}</pre>
+        </p>
+
+        <table class="light">
+            {foreach $tasks as $task}
+                {$_task_number = $task.project_id|cat:'.'|cat:$task.number}
+                {$_task_link = '#/task/'|cat:$_task_number|cat:'/'}
+
+                <tr>
+                    <td>{tasksHelper::statusNameHTML($task.status.id)}</td>
+                    <td><a href="{$_task_link}">{$task.name|escape}</a></td>
+                    <td>
+                        <span class="hint flexbox middle space-4 custom-ml-16">
+                            <i class="fas fa-sync-alt text-gray"></i>
+                            <span class="black">
+                                {if $task.repeat.frequency == 1}
+                                    {if $task.repeat.measure == 'day'}[`Every day`]{/if}
+                                    {if $task.repeat.measure == 'week'}[`Every week`]{/if}
+                                    {if $task.repeat.measure == 'month'}[`Every month`]{/if}
+                                    {if $task.repeat.measure == 'year'}[`Every year`]{/if}
+                                {else}
+                                    {$_measure_plural = '[interval]'}
+                                    {if $task.repeat.measure == 'day'}{$_measure_plural = _ws('day', 'days', $task.repeat.frequency)}{/if}
+                                    {if $task.repeat.measure == 'week'}{$_measure_plural = _w('week', 'weeks', $task.repeat.frequency)}{/if}
+                                    {if $task.repeat.measure == 'month'}{$_measure_plural = _ws('month', 'months', $task.repeat.frequency)}{/if}
+                                    {if $task.repeat.measure == 'year'}{$_measure_plural = _ws('year', 'years', $task.repeat.frequency)}{/if}
+                                    {sprintf('[`Every %d %s`]', $task.repeat.frequency, $_measure_plural)}
+                                {/if}
+                            </span>
+                            {if $task.repeat.mode == 'on_complete'}<i class="fas fa-check text-light-gray" title="[`Repeats on completion`]"></i>{/if}
+                        </span>
+                    </td>
+                    <td>
+                        {if !empty($task.due_date)}
+                            <span class="small nowrap t-due-date-hint-{$task.view.due_color_class|default:'green'} custom-mr-4">
+                                <i class="fas fa-flag-checkered"></i>
+                                {wa_date('humandate', $task.due_date, waDateTime::getDefaultTimezone())|escape}
+                            </span>
+                            {if !empty($task.view.due_text)}
+                                <span class="hint semibold">{$task.view.due_text}</span>
+                            {/if}
+                        {/if}
+                    </td>
+                </tr>
+            {/foreach}
+        </table>
+
+        <p>{sprintf_wp('Показано %d повторяющихся задач из %d всего.', count($tasks), $total_count)}</p>
+    </div>
+</div>{*div.article*}
+
+</div>{*div.content*}
+</div>{*div.flexbox*}

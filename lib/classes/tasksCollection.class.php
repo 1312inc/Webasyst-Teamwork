@@ -1058,6 +1058,14 @@ class tasksCollection
         }
     }
 
+    protected function repeatingPrepare()
+    {
+        $this->addJoin(
+            'tasks_task_repeat',
+            ':table.task_id=t.id',
+        );
+    }
+
     /**
      * @return array
      */

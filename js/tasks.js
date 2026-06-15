@@ -866,6 +866,12 @@
             });
         },
 
+        automationAction: function () {
+            this.load('?module=automation', function () {
+
+            });
+        },
+
         personalSettingsAction: function () {
             this.load('?module=settingsPersonal', function () {
 

@@ -53,6 +53,17 @@
                 {/if}
             </a>
         </li>
+        <li>
+            <a href="#/automation/" class="{if !$_is_premium}opacity-50{/if}" data-item-type="automation">
+                <span class="icon">
+                    <i class="fas fa-robot"></i>
+                </span>
+                <span>[`Automation`]</span>
+                {if !$_is_premium}
+                    <span class="count small"><i class="fas fa-star text-yellow"></i></span>
+                {/if}
+            </a>
+        </li>
         {if $_is_premium}
             <li class="top-padded">
                 <a href="#/upgrade/">
