@@ -810,10 +810,18 @@ class tasksCollection
                     $this->where[] = "CONCAT(t.name, ' ', t.text) LIKE '%" . $model->escape($parts[2], 'like') . "%'";
                 } else {
                     $q = $parts[2];
+                    unset($q2);
                     if (!preg_match('![*+~()<>\-"]!', $q)) {
                         $q = '+' . preg_replace('~\s+~', '* +', trim($q)) . '*';
+                        if (strpos($q, '_') !== false) {
+                            $q2 = str_replace('_', '* +_', trim($q));
+                        }
                     }
-                    $this->where[] = "MATCH(t.name, t.text) AGAINST ('" . $model->escape($q) . "' IN BOOLEAN MODE)";
+                    $condition = "MATCH(t.name, t.text) AGAINST ('" . $model->escape($q) . "' IN BOOLEAN MODE)";
+                    if (isset($q2)) {
+                        $condition = "({$condition} OR MATCH(t.text) AGAINST ('" . $model->escape($q2) . "' IN BOOLEAN MODE))";
+                    }
+                    $this->where[] = $condition;
                 }
             } elseif ($parts[0] == 'from_contact_id') {
                 $this->where[] = 'IFNULL(t.contact_id, t.create_contact_id)' . $this->getExpression(
