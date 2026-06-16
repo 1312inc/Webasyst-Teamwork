@@ -44,10 +44,14 @@ class tasksTaskRepeatModel extends waModel
         if (!$row['repeat_date'] && $repeat_date_base) {
             $now = new DateTime();
             $date = new DateTime($repeat_date_base);
+            $interval = new DateInterval('P'.$row['frequency'].$measures[$row['measure']]);
             while (true) {
-                $date->add(new DateInterval('P'.$row['frequency'].$measures[$row['measure']]));
+                $date->add($interval);
                 if ($date >= $now) {
-                    break; // calculated repeat_date can not be in the past
+                    // repeat_date is calculated so that repeat_date+interval is in future
+                    // but repeat_date may be in the past in case $repeat_date_base is in the past
+                    $date->sub($interval);
+                    break;
                 }
             }
             $row['repeat_date'] = $date->format('Y-m-d');

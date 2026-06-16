@@ -72,15 +72,13 @@ class tasksRepeatTaskService
 
                 $due_date = null;
                 if ($r['mode'] == 'on_due') {
-                    $due_date = date('Y-m-d');
+                    $due_date = new DateTime($r['repeat_date']);
                 } else if ($r['mode'] == 'on_complete') {
-                    if ($original['due_date']) {
-                        $date = new DateTime($original['due_date']);
-                    } else {
-                        $date = new DateTime();
-                    }
-                    $date->add(new DateInterval('P'.$r['frequency'].strtoupper($r['measure'][0])));
-                    $due_date = $date->format('Y-m-d');
+                    $due_date = new DateTime(ifempty($original, 'due_date', null));
+                }
+                if ($due_date) {
+                    $due_date->add(new DateInterval('P'.$r['frequency'].strtoupper($r['measure'][0])));
+                    $due_date = $due_date->format('Y-m-d');
                 }
 
                 // Update duplicate
@@ -93,7 +91,7 @@ class tasksRepeatTaskService
 
                 // Disable repeat of original task and set up repeat of the duplicate
                 $repeat_model->deleteById($r['task_id']);
-                $repeat_date_base = $r['mode'] == 'on_due' ? $r['repeat_date'] : null;
+                $repeat_date_base = $r['mode'] == 'on_due' ? $due_date : null;
                 unset($r['task_id'], $r['repeat_date']);
                 $repeat_model->saveRepeat($duplicate->id, $r, $repeat_date_base);
 

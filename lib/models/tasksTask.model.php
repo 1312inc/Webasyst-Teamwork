@@ -189,6 +189,7 @@ class tasksTaskModel extends waModel
                      new tasksAttachmentModel(),
                      new tasksTaskLogModel(),
                      new tasksTaskLogParamsModel(),
+                     new tasksTaskRepeatModel(),
                  ] as $model) {
             /**
              * @var waModel $model
