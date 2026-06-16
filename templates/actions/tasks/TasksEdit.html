@@ -1149,7 +1149,12 @@
             return taskAiDrawerPromise;
         }
 
-        taskAiDrawerPromise = $.get('?module=tasks&action=ai&type=taskfields&html=1')
+        taskAiDrawerPromise = $.ajax({
+            url: '?module=tasks&action=ai&type=taskfields&html=1',
+            method: 'GET',
+            dataType: 'json',
+            timeout: 10000
+        })
             .then(function (response) {
                 taskAiDrawer = $.waDrawer({
                     html: response.data?.html,
@@ -1158,13 +1163,18 @@
                         hideTaskAiDrawer();
                     },
                     onOpen: function ($wrapper) {
-                        console.log($wrapper);
-                        
                         initTaskAiDrawer($wrapper, task_title, task_content);
                     }
                 });
 
                 return taskAiDrawer;
+            })
+            .fail(function (_jqXHR, textStatus) {
+                if (textStatus === 'timeout') {
+                    $.waDialog.alert({
+                        text: '[`Could not connect to Webasyst AI service. Please try again in a minute.`]'
+                    });
+                }
             })
             .always(function () {
                 taskAiDrawerPromise = null;
