@@ -814,7 +814,7 @@
                 {$_due_date = wa_date('humandate', $task.due_date, waDateTime::getDefaultTimezone())|escape}
                 {$_due_hint = $task.view.due_text}
                 {$_due_class = $task.view.due_color_class}
-                <h5 class="flexbox space-4">
+                <h5 class="flexbox space-4 custom-mt-20">
                     <span>[`Task due date`]:</span>
                     <span class="badge nowrap squared {$_due_class}"><b>{$_due_date}</b></span>
                     <span class="hint">{$_due_hint}</span>
@@ -837,6 +837,7 @@
                                 {/if}
                             </span>
                             {if $task.repeat.mode == 'on_complete'}<i class="fas fa-check text-light-gray" title="[`Repeats on completion`]"></i>{/if}
+                            {if $task.repeat.mode == 'on_due'}<i class="fas fa-clock text-light-gray" title="[`Repeats when due`]"></i>{/if}
                         </span>
                     {/if}
                 </h5>

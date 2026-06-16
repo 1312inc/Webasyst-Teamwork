@@ -21,6 +21,17 @@
             </a>
         </li>
         <li>
+            <a href="#/automation/" class="{if !$_is_premium}opacity-50{/if}" data-item-type="automation">
+                <span class="icon">
+                    <i class="fas fa-sync-alt"></i>
+                </span>
+                <span>[`Automation`]</span>
+                {if !$_is_premium}
+                    <span class="count small"><i class="fas fa-star text-yellow"></i></span>
+                {/if}
+            </a>
+        </li>
+        <li>
             <a href="#/types-settings/" class="{if !$_is_premium}opacity-50{/if}" data-item-type="task_types">
                 <span class="icon">
                     <i class="fas fa-shapes"></i>
@@ -48,17 +59,6 @@
                     <i class="fas fa-user-plus"></i>
                 </span>
                 <span>[`Roles`]</span>
-                {if !$_is_premium}
-                    <span class="count small"><i class="fas fa-star text-yellow"></i></span>
-                {/if}
-            </a>
-        </li>
-        <li>
-            <a href="#/automation/" class="{if !$_is_premium}opacity-50{/if}" data-item-type="automation">
-                <span class="icon">
-                    <i class="fas fa-robot"></i>
-                </span>
-                <span>[`Automation`]</span>
                 {if !$_is_premium}
                     <span class="count small"><i class="fas fa-star text-yellow"></i></span>
                 {/if}

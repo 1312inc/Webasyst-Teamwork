@@ -12,7 +12,7 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=((((n%10)==1)&&((n%100)!=11))?(0):(((((n%10)>=2)&&((n%10)<=4))&&(((n%100)<10)||((n%100)>=20)))?(1):2));\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Basepath: .\n"
-"X-Generator: Poedit 3.9\n"
+"X-Generator: Poedit 3.8\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPath-1: .\n"
 
@@ -2184,3 +2184,30 @@ msgstr "Доступ к разделам Новости и Канбан"
 
 msgid "Auto"
 msgstr "Автоматически"
+
+msgid "Automation"
+msgstr "Автоматизация"
+
+msgid "Repeats when due"
+msgstr "Повтор при наступлении дедлайна"
+
+msgid "Copied"
+msgstr "Скопировано"
+
+msgid "Copying error"
+msgstr "Ошибка копирования"
+
+msgid "Copy"
+msgstr "Скопировать"
+
+msgid "Repeating tasks automatically resume in the background every time its due date passes. Due date for each new occurence is set based on the repeating interval and the original task due date."
+msgstr "Повторяющиеся задачи автоматически возобновляются в фоновом режиме каждый раз, когда наступает их срок выполнения. Дедлайн для каждого нового повторения устанавливается на основе интервала повторения и дедлайна исходной задачи."
+
+msgid "To stop repeating process, simply select a task from the list below and either delete it or flush its repeating settings."
+msgstr "Чтобы остановить повтор, просто выберите задачу из списка ниже и либо удалите ее, либо отключите повтор в настройках задачи."
+
+msgid "For better background process automation, add the following cron command to launch every other hour:"
+msgstr "Для надежной автоматизации добавьте следующую крон-команду для запуска каждые несколько часов:"
+
+msgid "Last execution time:"
+msgstr "Последний запуск команды:"
