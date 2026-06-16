@@ -1017,6 +1017,7 @@
     }
 
     function initTaskAiDrawer($wrapper, task_title, task_content) {
+        const AUTO_VALUE = '__auto__';
         let try_free = !$wrapper.find('.js-premium-wrapper').length;
         let lastGeneratedContent = '';
         let lastGeneratedHtml = '';
@@ -1099,7 +1100,15 @@
             $btn.prop('disabled', true);
             $btn.find('.fa-spinner').show();
 
-            $.post('?module=tasks&action=ai&type=writetask', $wrapper.find(':input').serializeArray(), function (response) {
+            const autoRadioNames = $wrapper.find('.dialog-ai-field-items input[type="radio"]:checked').map(function () {
+                return this.value === AUTO_VALUE ? this.name : null;
+            }).get();
+
+            const requestData = $wrapper.find(':input').serializeArray().filter(function (field) {
+                return !(field.value === AUTO_VALUE && autoRadioNames.indexOf(field.name) !== -1);
+            });
+
+            $.post('?module=tasks&action=ai&type=writetask', requestData, function (response) {
                 if (response?.status === 'ok' && response.data?.format_content) {
                     lastGeneratedContent = response.data.content || '';
                     lastGeneratedHtml = response.data.format_content || '';

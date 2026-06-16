@@ -50,6 +50,17 @@
                                                 <div class="value">
                                                     {if !empty($field.items)}
                                                         <ul>
+                                                            {if $field.type == 'radio'}
+                                                                <li>
+                                                                    <label>
+                                                                        <span class="wa-radio">
+                                                                            <input type="radio" name="{$field.id}" value="__auto__" checked>
+                                                                            <span></span>
+                                                                        </span>
+                                                                        <span>[`Auto`]</span>
+                                                                    </label>
+                                                                </li>
+                                                            {/if}
                                                             {foreach $field.items as $id => $val}
                                                                 <li>
                                                                     {if $field.type == 'radio'}
@@ -113,6 +124,7 @@
     <script>
         $(document).ready(function() {
             const STORAGE_KEY = 'tasks/task-ai-dialog-state';
+            const AUTO_VALUE = '__auto__';
             const $drawer = $(".js-task-write-ai-content").closest(".drawer").last();
             const $chips = $drawer.find(".chips li");
             const $container = $drawer.find(".dialog-ai-fields-container");
@@ -228,6 +240,20 @@
                 return $.trim($input.closest("label").find("span:last").text());
             }
 
+            function getAutoRadio($content) {
+                return $content.find("input[type='radio']").filter(function () {
+                    return $(this).val() === AUTO_VALUE;
+                }).first();
+            }
+
+            function selectAutoValue($content) {
+                const $autoRadio = getAutoRadio($content);
+
+                if ($autoRadio.length) {
+                    $autoRadio.prop("checked", true);
+                }
+            }
+
             function collectState() {
                 const state = {
                     values: {}
@@ -243,10 +269,12 @@
 
                     const $checkedRadio = $content.find("input[type='radio']:checked").first();
                     if ($checkedRadio.length) {
-                        state.values[paramId] = {
-                            type: "radio",
-                            value: $checkedRadio.val()
-                        };
+                        if ($checkedRadio.val() !== AUTO_VALUE) {
+                            state.values[paramId] = {
+                                type: "radio",
+                                value: $checkedRadio.val()
+                            };
+                        }
                         return;
                     }
 
@@ -290,6 +318,9 @@
                             if ($radio.length) {
                                 $radio.prop("checked", true);
                                 updateChipsValue(paramId, getRadioLabelValue($radio));
+                            } else {
+                                selectAutoValue($content);
+                                updateChipsValue(paramId, "");
                             }
                         } else if (fieldState.type === "text") {
                             if (typeof fieldState.value !== "string") {
@@ -304,6 +335,26 @@
                         }
                     });
                 }
+
+                $contents.each(function () {
+                    const $content = $(this);
+                    const paramId = $content.attr("id");
+                    const $radioInputs = $content.find("input[type='radio']");
+
+                    if (!$radioInputs.length || !paramId) {
+                        return;
+                    }
+
+                    const isSaved = state.values
+                        && typeof state.values === "object"
+                        && state.values[paramId]
+                        && state.values[paramId].type === "radio";
+
+                    if (!isSaved) {
+                        selectAutoValue($content);
+                        updateChipsValue(paramId, "");
+                    }
+                });
 
                 saveCurrentState();
             }
@@ -327,7 +378,12 @@
                 const $input = $(this);
                 const paramId = $input.attr("name");
 
-                updateChipsValue(paramId, getRadioLabelValue($input));
+                if ($input.val() === AUTO_VALUE) {
+                    updateChipsValue(paramId, "");
+                } else {
+                    updateChipsValue(paramId, getRadioLabelValue($input));
+                }
+
                 saveCurrentState();
             });
 
