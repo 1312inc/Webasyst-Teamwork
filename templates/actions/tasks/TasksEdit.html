@@ -1234,6 +1234,10 @@
         return parent && parent.closest && parent.closest('pre, code, script, style');
     }
 
+    function isSpellcheckSkippedToken (token) {
+        return token.ranges.length && token.ranges.every((range) => range.skipHighlight);
+    }
+
     function addSpellcheckRange (token, node, start, end, skipHighlight) {
         const lastRange = token.ranges[token.ranges.length - 1];
 
@@ -1248,7 +1252,7 @@
     }
 
     function isSpellcheckTokenBoundaryElement (node) {
-        return /^(BR|P|DIV|LI|UL|OL|BLOCKQUOTE|PRE|H[1-6]|TABLE|THEAD|TBODY|TFOOT|TR|TD|TH)$/.test(node.nodeName);
+        return /^(BR|P|DIV|LI|UL|OL|BLOCKQUOTE|PRE|CODE|SCRIPT|STYLE|H[1-6]|TABLE|THEAD|TBODY|TFOOT|TR|TD|TH)$/.test(node.nodeName);
     }
 
     function collectSpellcheckDomTokens (root) {
@@ -1380,13 +1384,68 @@
         addRange(offset, text.length);
     }
 
+    function getSpellcheckComparableTokens (tokens) {
+        return tokens.map((token, index) => {
+            return {
+                index: index,
+                value: normalizeSpellcheckToken(token.text),
+                token: token
+            };
+        }).filter((item) => {
+            return item.value && !isSpellcheckSkippedToken(item.token) && !isSpellcheckPlaceholder(item.token.text);
+        });
+    }
+
+    function getSpellcheckGreedyMatchedRightTokenIndexes (sourceItems, rightItems) {
+        const rightIndexesByValue = new Map();
+        const rightCursorByValue = new Map();
+        const matchedRightIndexes = new Set();
+        let minRightIndex = -1;
+
+        rightItems.forEach((item) => {
+            if (!rightIndexesByValue.has(item.value)) {
+                rightIndexesByValue.set(item.value, []);
+            }
+
+            rightIndexesByValue.get(item.value).push(item.index);
+        });
+
+        sourceItems.forEach((sourceItem) => {
+            const rightIndexes = rightIndexesByValue.get(sourceItem.value);
+            let cursor = rightCursorByValue.get(sourceItem.value) || 0;
+
+            if (!rightIndexes) {
+                return;
+            }
+
+            while (cursor < rightIndexes.length && rightIndexes[cursor] <= minRightIndex) {
+                cursor++;
+            }
+
+            if (cursor < rightIndexes.length) {
+                minRightIndex = rightIndexes[cursor];
+                matchedRightIndexes.add(minRightIndex);
+                rightCursorByValue.set(sourceItem.value, cursor + 1);
+            }
+        });
+
+        return matchedRightIndexes;
+    }
+
     function getSpellcheckMatchedRightTokenIndexes (sourceTokens, rightTokens) {
-        const sourceValues = sourceTokens.map((token) => normalizeSpellcheckToken(token.text));
-        const rightValues = rightTokens.map((token) => normalizeSpellcheckToken(token.text));
+        const sourceItems = getSpellcheckComparableTokens(sourceTokens);
+        const rightItems = getSpellcheckComparableTokens(rightTokens);
+        const sourceValues = sourceItems.map((item) => item.value);
+        const rightValues = rightItems.map((item) => item.value);
         const rowCount = sourceValues.length + 1;
         const columnCount = rightValues.length + 1;
+        const maxLcsCells = 4000000;
         const lcs = [];
         const matchedRightIndexes = new Set();
+
+        if (rowCount * columnCount > maxLcsCells) {
+            return getSpellcheckGreedyMatchedRightTokenIndexes(sourceItems, rightItems);
+        }
 
         for (let i = 0; i < rowCount; i++) {
             lcs.push(new Uint32Array(columnCount));
@@ -1407,7 +1466,7 @@
 
         while (sourceIndex < sourceValues.length && rightIndex < rightValues.length) {
             if (sourceValues[sourceIndex] === rightValues[rightIndex]) {
-                matchedRightIndexes.add(rightIndex);
+                matchedRightIndexes.add(rightItems[rightIndex].index);
                 sourceIndex++;
                 rightIndex++;
             } else if (lcs[sourceIndex + 1][rightIndex] >= lcs[sourceIndex][rightIndex + 1]) {
@@ -1444,7 +1503,7 @@
         const matchedRightIndexes = getSpellcheckMatchedRightTokenIndexes(sourceTokens, rightTokens);
 
         rightTokens.forEach((token, index) => {
-            if (matchedRightIndexes.has(index) || isSpellcheckPlaceholder(token.text)) {
+            if (matchedRightIndexes.has(index) || isSpellcheckSkippedToken(token) || isSpellcheckPlaceholder(token.text)) {
                 return;
             }
 
