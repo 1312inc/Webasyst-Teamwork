@@ -1439,18 +1439,21 @@
         $spellcheckBtn.find('.icon').addClass('shimmer');
         window.spellCheck(text).then((correctedText) => {
             const { restored, formated } = correctedText;
+            const highlightedHtml = highlightSpellcheckChanges(text, formated);
             textReplaceConfirm({
                 title: "[`AI response`]",
                 left_title: '[`Original text`]',
                 left_html: sourceHtml,
                 right_title: '[`Corrected text`]',
-                right_html: highlightSpellcheckChanges(text, formated),
+                right_html: highlightedHtml,
+                copy_plain_text: restored,
                 dialog_class: 't-spellcheck-compare-dialog',
                 success_button_title: '[`Get the entire text`]',
                 success_button_class: 'blue',
                 cancel_button_title: '[`Close`]',
                 cancel_button_class: 'light-gray',
                 copy_button_title: '[`Copy`]',
+                copied_button_title: '[`Copied`]',
                 onSuccess: () => {
                     $el.val(restored).trigger('input').trigger('change');
                     waRedactorTaskInit();
@@ -1609,16 +1612,18 @@
         var left_html = ( options.left_html ? options.left_html : "" );
         var right_title = ( options.right_title ? options.right_title : "" );
         var right_html = ( options.right_html ? options.right_html : "" );
+        var copy_plain_text = ( typeof options.copy_plain_text !== "undefined" ? String(options.copy_plain_text) : $("<div>").html(right_html).text() );
         var dialog_class = ( options.dialog_class ? options.dialog_class : "" );
         var success_button_title = ( options.success_button_title ? options.success_button_title : $.wa.translate("Confirm") );
         var success_button_class = ( options.success_button_class ? options.success_button_class : "blue" );
         var cancel_button_title = ( options.cancel_button_title ? options.cancel_button_title : $.wa.translate("Cancel") );
         var cancel_button_class = ( options.cancel_button_class ? options.cancel_button_class : "light-gray" );
         var copy_button_title = ( options.copy_button_title ? options.copy_button_title : $.wa.translate("Copy") );
+        var copied_button_title = ( options.copied_button_title ? options.copied_button_title : $.wa.translate("Copied") );
 
         var success_button = `<button class="js-success-action button ${success_button_class}">${success_button_title}</button>`,
             cancel_button = `<button class="js-dialog-close button ${cancel_button_class}">${cancel_button_title}</button>`,
-            copy_button = `<button class="js-clipboard-copy button outlined blue"><i class="fas fa-copy"></i><span class="desktop-and-tablet-only custom-ml-4">${copy_button_title}</span></button>`;
+            copy_button = `<button class="js-clipboard-copy button outlined blue" data-copied-title="${copied_button_title}"><i class="fas fa-copy"></i><span class="desktop-and-tablet-only custom-ml-4">${copy_button_title}</span></button>`;
 
         var footer = `<div class="t-spellcheck-compare"><div>${cancel_button}</div><div>${success_button}${copy_button}</div></div>`;
 
@@ -1647,6 +1652,43 @@
                     event.preventDefault();
                     is_success = true;
                     dialog.close();
+                });
+
+                $wrapper.on("click", ".js-clipboard-copy", function(event) {
+                    event.preventDefault();
+
+                    const $button = $(this);
+                    const $buttonLabel = $button.find("span").first();
+                    const copiedTitle = String($button.data("copied-title") || "");
+                    const originalLabel = $button.data("original-label") || ($buttonLabel.length ? $buttonLabel.text() : $button.text());
+                    const activeTimerId = $button.data("restore-timer-id");
+
+                    if (activeTimerId) {
+                        clearTimeout(activeTimerId);
+                    }
+
+                    copyTextToClipboard(copy_plain_text, right_html)
+                        .then(function() {
+                            $button.data("original-label", originalLabel);
+
+                            if ($buttonLabel.length) {
+                                $buttonLabel.text(copiedTitle);
+                            } else {
+                                $button.text(copiedTitle);
+                            }
+
+                            const restoreTimerId = setTimeout(function() {
+                                if ($buttonLabel.length) {
+                                    $buttonLabel.text(originalLabel);
+                                } else {
+                                    $button.text(originalLabel);
+                                }
+                                $button.removeData("restore-timer-id");
+                            }, 3000);
+
+                            $button.data("restore-timer-id", restoreTimerId);
+                        })
+                        .catch(function() {});
                 });
             },
             onClose: function($wrapper) {
