@@ -798,9 +798,15 @@ class GanttChart {
 
         let filtered = this.originalData.filter(item => {
             const rawStart = item.start_date || item.due_date;
-            const itemStart = rawStart ? new Date(rawStart) : null;
+            let itemStart = rawStart ? new Date(rawStart) : null;
+            if (item.start_date && item.due_date) {
+                itemStart = new Date(Math.min(itemStart, new Date(item.due_date))); 
+            }
             const rawEnd = item.end_date || item.due_date;
-            const itemEnd = rawEnd ? new Date(rawEnd) : null;
+            let itemEnd = rawEnd ? new Date(rawEnd) : null;
+            if (item.end_date && item.due_date) {
+                itemEnd = new Date(Math.max(itemEnd, new Date(item.due_date))); 
+            }
 
             if (!(itemStart instanceof Date) || isNaN(itemStart)) {
                 return false;
