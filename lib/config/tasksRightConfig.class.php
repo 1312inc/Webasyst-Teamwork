@@ -2,6 +2,7 @@
 
 class tasksRightConfig extends waRightConfig
 {
+    public const RIGHT_NAME_KANBAN_LOG = 'kanban_log';
     public const RIGHT_NAME_PROJECT = 'project';
     public const RIGHT_NAME_BACKEND = 'backend';
 
@@ -10,6 +11,8 @@ class tasksRightConfig extends waRightConfig
 
     public function init()
     {
+        $this->addItem(self::RIGHT_NAME_KANBAN_LOG, _w('Has access to Updates and Kanban'));
+
         $project_model = new tasksProjectModel();
         $projects = $project_model->select('id,name')->fetchAll('id', true);
 

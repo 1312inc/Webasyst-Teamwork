@@ -29,14 +29,6 @@ class tasksApiAttachmentDtoFactory
 
     private static function isImageAttachment($attachment): bool
     {
-        if (is_scalar($attachment)) {
-            $ext = (string) $attachment;
-        } elseif (is_array($attachment) && isset($attachment['ext'])) {
-            $ext = (string) $attachment['ext'];
-        } else {
-            $ext = '';
-        }
-
-        return in_array(strtolower($ext), ['jpg', 'png', 'gif', 'jpeg', 'webp']);
+        return tasksTask::isImageAttachment($attachment);
     }
 }

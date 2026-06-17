@@ -82,9 +82,28 @@ var TaskFieldEdit = (function ($) {
 
         // show fields depending on task type
         $task.find('.js-task-type-hidden').on('change', function () {
-            var type_value = $(this).val();
-            $wrapper.find("[data-task-type]").hide();
-            $wrapper.find("[data-task-type] :input").prop('disabled', true);
+            var type_value = $(this).val(),
+                $type_blocks = $wrapper.find('[data-task-type]');
+
+            $type_blocks.hide();
+            $type_blocks.find(':input').prop('disabled', true);
+
+            if (!type_value) {
+                $type_blocks.find(':input').each(function () {
+                    var $input = $(this);
+
+                    if ($input.is(':checkbox, :radio')) {
+                        $input.prop('checked', false);
+                    } else if ($input.is('select')) {
+                        $input.prop('selectedIndex', 0);
+                    } else {
+                        $input.val('');
+                    }
+                });
+
+                return;
+            }
+
             $wrapper.find("[data-task-type='"+type_value+"']").show();
             $wrapper.find("[data-task-type='"+type_value+"'] :input").prop('disabled', false);
         });

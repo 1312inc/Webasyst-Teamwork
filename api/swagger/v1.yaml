@@ -923,6 +923,37 @@ paths:
             type: integer
             nullable: true
         - in: query
+          name: task_id
+          required: false
+          description: ID задачи, чтобы получить только её историю
+          schema:
+            type: integer
+            nullable: true
+        - in: query
+          name: action
+          required: false
+          description: |
+            Тип действия с задачей, например: add, comment, create, edit, forward, git.commit, return
+          schema:
+            type: string
+            nullable: true
+        - in: query
+          name: start_date
+          required: false
+          description: |
+            Возвращать только действия, совершённые не ранее указанного времени, например 2025-01-01 11:11:11
+          schema:
+            type: string
+            nullable: true
+        - in: query
+          name: end_date
+          required: false
+          description: |
+            Возвращать только действия, совершённые не позднее указанного времени, например 2026-01-01 11:11:11
+          schema:
+            type: string
+            nullable: true
+        - in: query
           name: limit
           description: Максимальное количество записей, которые нужно получить
           schema:

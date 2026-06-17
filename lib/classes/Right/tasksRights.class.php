@@ -25,6 +25,7 @@ final class tasksRights
             'can_view' => false,
             'can_edit' => false,
             'can_delete' => false,
+            'can_repeat' => false,
             'access' => 0  // raw access to project
         ];
 
@@ -87,6 +88,7 @@ final class tasksRights
                 if ($rights_info['access'] == self::PROJECT_ACCESS_FULL) {
                     $rights_info['can_edit'] = true;
                     $rights_info['can_delete'] = true;
+                    $rights_info['can_repeat'] = true;
                     $rights_info['can_view'] = true;
                     continue;
                 }
@@ -252,6 +254,17 @@ final class tasksRights
         $info = $this->getTaskRightsInfo($task, $contact);
 
         return $info !== false && $info['can_delete'];
+    }
+
+    /**
+     * @param array|tasksTask|int $task
+     * @param int|waContact|null  $contact
+     *
+     * @return bool
+     */
+    public function canRepeatTask($task, $contact = null)
+    {
+        return $this->hasFullAccessToTask($task, $contact);
     }
 
     /**

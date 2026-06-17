@@ -121,4 +121,6 @@ return array(
     'api_text_stripped_truncate_length' => 256,
 
     'api_large_photo_size' => 970,
+
+    'repeating_run_period' => 3599,
 );

@@ -37,6 +37,7 @@ var Task = ( function($) {
         that.$taskContent = that.$task.find(".t-task-wrapper");
         that.$tags = that.$task.find(".t-tags-wrapper");
         that.$selectInput = that.$task.find(".t-checkbox-item");
+        that.$scrollToLastCommentButton = that.$task.find(".js-scroll-to-last-comment");
 
         // VARS
 
@@ -199,6 +200,8 @@ var Task = ( function($) {
             that.initTaskUpdateListener();
             //
             that.initCommentsPrettyPrint();
+            //
+            that.initScrollToLastComment();
         }
     };
 
@@ -212,6 +215,110 @@ var Task = ( function($) {
 
             (n || c || d) && prettyPrint()
         }
+    };
+
+    Task.prototype.initScrollToLastComment = function () {
+        var that = this,
+            $button = that.$scrollToLastCommentButton,
+            $commentsWrapper = that.$task.find(".js-comments-list-wrapper");
+
+        if (!that.is_single || !$button.length || !$commentsWrapper.length) {
+            return;
+        }
+
+        that.destroyScrollToLastComment();
+
+        that.scrollToLastCommentNamespace = ".scroll-to-last-comment-" + that.task_id;
+        that.setScrollToLastCommentVisibility = function (isVisible) {
+            $button.toggleClass("is-shown", !!isVisible);
+        };
+
+        that.updateScrollToLastCommentVisibility = function (entry) {
+            var isBelowViewport;
+
+            if (!entry) {
+                that.setScrollToLastCommentVisibility(false);
+                return;
+            }
+
+            isBelowViewport = entry.boundingClientRect.top >= (window.innerHeight || document.documentElement.clientHeight);
+            that.setScrollToLastCommentVisibility(isBelowViewport);
+        };
+
+        that.scrollToLastCommentObserver = new IntersectionObserver(function (entries) {
+            if (entries.length) {
+                that.updateScrollToLastCommentVisibility(entries[0]);
+            }
+        }, {
+            root: null,
+            threshold: [0, 1]
+        });
+
+        that.refreshScrollToLastCommentObserver = function () {
+            var $lastItem = that.getLastCommentItem();
+
+            that.scrollToLastCommentObserver.disconnect();
+
+            if (!$lastItem.length) {
+                that.updateScrollToLastCommentVisibility();
+                return;
+            }
+
+            that.scrollToLastCommentObserver.observe($lastItem[0]);
+            that.updateScrollToLastCommentVisibility({
+                boundingClientRect: $lastItem[0].getBoundingClientRect()
+            });
+        };
+
+        $button.on("click" + that.scrollToLastCommentNamespace, function (event) {
+            event.preventDefault();
+
+            var $lastItem = that.getLastCommentItem();
+            if (!$lastItem.length) {
+                return;
+            }
+
+            $lastItem[0].scrollIntoView({
+                behavior: "smooth",
+                block: "end"
+            });
+
+            window.setTimeout(function () {
+                that.refreshScrollToLastCommentObserver && that.refreshScrollToLastCommentObserver();
+            }, 350);
+        });
+
+        that.refreshScrollToLastCommentObserver();
+    };
+
+    Task.prototype.getLastCommentItem = function () {
+        var $commentsWrapper = this.$task.find(".js-comments-list-wrapper");
+
+        if (!$commentsWrapper.length) {
+            return $();
+        }
+
+        return $commentsWrapper.children(".t-comment-item-wrapper:visible").last();
+    };
+
+    Task.prototype.destroyScrollToLastComment = function () {
+        var that = this,
+            namespace = that.scrollToLastCommentNamespace;
+
+        if (that.scrollToLastCommentObserver) {
+            that.scrollToLastCommentObserver.disconnect();
+            that.scrollToLastCommentObserver = null;
+        }
+
+        if (namespace) {
+            that.$scrollToLastCommentButton.off(namespace);
+        }
+
+        that.$scrollToLastCommentButton.removeClass("is-shown");
+        that.scrollToLastCommentNamespace = null;
+        that.setScrollToLastCommentVisibility = null;
+        that.updateScrollToLastCommentVisibility = null;
+        that.refreshScrollToLastCommentObserver = null;
     };
 
     Task.prototype.generateHash = function (length, init_hash) {
@@ -1282,6 +1389,7 @@ var Task = ( function($) {
 
                     $comment_item.hide();
                     $comment_form_wrapper.show().html(html);
+                    that.refreshScrollToLastCommentObserver && that.refreshScrollToLastCommentObserver();
 
                     var $form = $comment_form_wrapper.find('form');
                     that.initCommentForm($form, {
@@ -1299,6 +1407,7 @@ var Task = ( function($) {
                         e.preventDefault();
                         $comment_item.show();
                         $comment_form_wrapper.hide().html('');
+                        that.refreshScrollToLastCommentObserver && that.refreshScrollToLastCommentObserver();
                     });
 
                 });
@@ -1327,6 +1436,7 @@ var Task = ( function($) {
                 .done(function (r) {
                     if (r.status == 'ok') {
                         $comment_wrapper.remove();
+                        that.refreshScrollToLastCommentObserver && that.refreshScrollToLastCommentObserver();
                     } else {
                         alert('Error');
                     }
@@ -1576,6 +1686,8 @@ var Task = ( function($) {
             $task = that.$task,
             time = that.animationTime;
 
+        that.destroyScrollToLastComment();
+
         // Check Empty List
         var checkTasksCount = function(tasks) {
             var count = 0;
@@ -1700,6 +1812,7 @@ var Task = ( function($) {
 
             var replace = function () {
                 var $task = that.$task;
+                that.destroyScrollToLastComment();
                 delete Tasks[that.task_id];
                 $task.replaceWith($updatedTask);
                 var reloadedTask = Tasks[that.task_id];
@@ -2183,16 +2296,47 @@ var TaskCommentFilesUploader = ( function($) {
         })
     };
 
+    TaskCommentFilesUploader.prototype.getFileExtension = function(fileName) {
+        var parts = (fileName || '').split('.');
+        return parts.length > 1 ? parts.pop().toLowerCase() : '';
+    };
+
+    TaskCommentFilesUploader.prototype.getPreviewType = function(file) {
+        var image_mime_type = /^image\/(png|jpe?g|gif|webp|svg\+xml)$/i,
+            video_mime_type = /^video\/(mp4|webm)$/i,
+            image_ext = ['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg'],
+            video_ext = ['mp4', 'webm'],
+            file_type = (file.type || '').toLowerCase(),
+            file_ext = this.getFileExtension(file.name);
+
+        if (file_type.match(image_mime_type) || $.inArray(file_ext, image_ext) >= 0) {
+            return 'image';
+        }
+
+        if (file_type.match(video_mime_type) || $.inArray(file_ext, video_ext) >= 0) {
+            return 'video';
+        }
+
+        return 'file';
+    };
+
+    TaskCommentFilesUploader.prototype.isJpegFile = function(file) {
+        var file_type = (file.type || '').toLowerCase(),
+            file_ext = this.getFileExtension(file.name);
+
+        return file_type === 'image/jpeg' || $.inArray(file_ext, ['jpg', 'jpeg']) >= 0;
+    };
+
     TaskCommentFilesUploader.prototype.renderFile = function(file, callback) {
         var that = this,
             $wrapper = that.$wrapper,
-            image_type = /^image\/(png|jpe?g|gif)$/,
             current_index,
             $template,
             $newFile,
             file_name,
             file_size,
-            is_image;
+            preview_type,
+            preview_url;
 
         var getImageHTML = function() {
             return $wrapper.find(".t-image-item.is-template");
@@ -2205,8 +2349,8 @@ var TaskCommentFilesUploader = ( function($) {
         current_index = that.files_count++;
         that.attachedFiles[current_index] = file;
 
-        is_image = (file.type.match(image_type));
-        $template = (is_image) ? getImageHTML() : getFileHTML();
+        preview_type = that.getPreviewType(file);
+        $template = (preview_type !== 'file') ? getImageHTML() : getFileHTML();
         file_name = file.name;
         file_size = Math.round( file.size / 1024 ) + " Kb";
         $newFile = $template.clone().removeClass("is-template");
@@ -2218,14 +2362,20 @@ var TaskCommentFilesUploader = ( function($) {
 
         $newFile.data("file-id", current_index);
 
-        if (is_image) {
+        if (preview_type === 'image') {
             var $image = $newFile.find(".t-image-link img"),
                 reader = new FileReader();
 
+            $newFile.find('.t-image-link video').remove();
+            $image.show();
+
             reader.onload = ( function($image) {
                 return function(event) {
+                    if (that.isJpegFile(file)) {
+                        setOrientation(file, $image);
+                    }
+
                     $image.attr("src", event.target.result);
-                    // Render
                     $template.before($newFile);
 
                     if (callback && typeof callback == "function") {
@@ -2235,19 +2385,69 @@ var TaskCommentFilesUploader = ( function($) {
             })($image);
 
             reader.readAsDataURL(file);
+        } else if (preview_type === 'video') {
+            var $link = $newFile.find('.t-image-link'),
+                $videoImage = $link.find('img'),
+                $video = $('<video controls preload="metadata" style="max-width: 100%; max-height: 180px; vertical-align: middle;"></video>');
+
+            preview_url = (window.URL || window.webkitURL).createObjectURL(file);
+
+            $videoImage.hide().attr('src', '');
+            $video.attr('src', preview_url);
+            $link.append($video);
+            $newFile.data('preview-url', preview_url);
+            $template.before($newFile);
+
+            if (callback && typeof callback == "function") {
+                callback();
+            }
         } else {
-            // Render
             $template.before($newFile);
             if (callback && typeof callback == "function") {
                 callback();
             }
         }
+
+        var setOrientation = function(file, $image) {
+            EXIF.getData(file, function() {
+                var orientation = ( file.exifdata['Orientation'] || false );
+                if (orientation) {
+                    if (orientation == 1) {
+                        return false;
+                    }
+
+                    var value = "rotate(0)";
+
+                    if (orientation == 6) {
+                        value = "rotate(90deg)";
+                    }
+
+                    if (orientation == 8) {
+                        value = "rotate(-90deg)";
+                    }
+
+                    if (orientation == 3) {
+                        value = "rotate(180deg)";
+                    }
+
+                    $image.css({
+                        "-webkit-transform": value,
+                        "transform": value
+                    })
+                }
+            });
+        };
     };
 
     TaskCommentFilesUploader.prototype.deleteFile = function($file) {
         var that = this,
             file_id = $file.data("file-id"),
-            is_new_file = !!that.attachedFiles[file_id];
+            is_new_file = !!that.attachedFiles[file_id],
+            preview_url = $file.data('preview-url');
+
+        if (preview_url && (window.URL || window.webkitURL)) {
+            (window.URL || window.webkitURL).revokeObjectURL(preview_url);
+        }
 
         if (is_new_file) {
             // Delete from storage

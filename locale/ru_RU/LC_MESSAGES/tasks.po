@@ -12,7 +12,7 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=((((n%10)==1)&&((n%100)!=11))?(0):(((((n%10)>=2)&&((n%10)<=4))&&(((n%100)<10)||((n%100)>=20)))?(1):2));\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Basepath: .\n"
-"X-Generator: Poedit 3.4.2\n"
+"X-Generator: Poedit 3.9\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPath-1: .\n"
 
@@ -1838,7 +1838,7 @@ msgid "Cumulative flow diagram"
 msgstr "Накопительная диаграмма потока"
 
 msgid "Upgrade to premium"
-msgstr "Подключить премиум"
+msgstr "Хочу премиум!"
 
 msgid "special offer!"
 msgstr "спецпредложение!"
@@ -1981,6 +1981,9 @@ msgstr "Роли пользователей"
 msgid "Write with AI"
 msgstr "Написать с ИИ"
 
+msgid "Continue with AI"
+msgstr "Дописать с ИИ"
+
 msgid "Role name"
 msgstr "Название роли"
 
@@ -2055,3 +2058,159 @@ msgstr "Использовать этот текст"
 
 msgid "Type name"
 msgstr "Название типа"
+
+msgid "Original text"
+msgstr "Исходный текст"
+
+msgid "Corrected text"
+msgstr "Исправленный текст"
+
+msgid "Repeating task created: %s"
+msgstr "Создана новая копия задачи: %s"
+
+msgid "Auto-created based on the original repeating task: %s"
+msgstr "Создано автоматически из исходной повторяющейся задачи: %s"
+
+msgid "week"
+msgid_plural "weeks"
+msgstr[0] "неделя"
+msgstr[1] "недели"
+msgstr[2] "недель"
+
+msgid "Mobile apps"
+msgstr "Мобильное приложение"
+
+msgid "https://www.webasyst.com/my/hosting/"
+msgstr "https://www.webasyst.ru/my/hosting/"
+
+msgid "Repeating tasks"
+msgstr "Повторяющиеся задачи"
+
+msgid "Automate your workflow with re-occuring tasks that resume either on completion instantly or on each due date in the background. Set up once, and track the progress in a long term with no hassle."
+msgstr "Автоматизируйте рабочий процесс с помощью задач, которые автоматически повторяются либо по факту их закрытия, либо автоматически в фоне. Настройте один раз, назначьте ответственных — и следите за результатом без лишних ручных действий."
+
+msgid "Boost your performance and save significant amounts of time."
+msgstr "Ускоряйте постановку задач и экономьте драгоценное время."
+
+msgid "When multiple scopes and projects are in the works at the same time, the right way to keep them on track becomes a necessity."
+msgstr "Когда в работе параллельно сразу несколько проектов или релизов, наглядная общая картина выполнения и дедлайнов становится необходимым инструментом."
+
+msgid "Automate, accelerate, customize, be more productive"
+msgstr "Автоматизируйте, ускоряйте, работайте эффективнее"
+
+msgid "Set scope"
+msgstr "Привязать к работе"
+
+msgid "No scopes available."
+msgstr "Нет доступных работ для выбора."
+
+msgid "Task due date"
+msgstr "Дедлайн задачи"
+
+msgid "Every day"
+msgstr "Каждый день"
+
+msgid "Every week"
+msgstr "Каждую неделю"
+
+msgid "Every month"
+msgstr "Каждый месяц"
+
+msgid "Every year"
+msgstr "Каждый год"
+
+msgid "Every %d %s"
+msgstr "Каждые %d %s"
+
+msgid "Repeats on completion"
+msgstr "Повтор при закрытии"
+
+msgid "Download"
+msgstr "Скачать"
+
+msgid "Scroll to the latest comment"
+msgstr "Показать последний комментарий"
+
+msgid "Repeat"
+msgstr "Повторять"
+
+msgid "Attach"
+msgstr "Прикрепить"
+
+msgid "Repeat mode"
+msgstr "Режим повтора"
+
+msgid "Automation settings"
+msgstr "Настройки автоматизации"
+
+msgid "How often"
+msgstr "Как часто"
+
+msgid "Every"
+msgstr "Каждые"
+
+msgid "Do not repeat"
+msgstr "Не повторять"
+
+msgid "On close"
+msgstr "При закрытии"
+
+msgid "On due date"
+msgstr "При наступлении дедлайна"
+
+msgid "Every time this task is closed, its new copy will be instantly re-created with a new due date as specified below."
+msgstr "При ручном закрытии задачи сразу же будет создана ее копия с новым дедлайном."
+
+msgid "This task will re-create itself in the background every time its due date passes, even if the original task remains untouched."
+msgstr "При наступлении дедлайна задача автоматически создаст свою копию с новым сроком. Даже если оригинальная задача не закрыта."
+
+msgid "For better background process automation, setting up cron is recommended."
+msgstr "Для надежной автоматизации рекомендуем настроить крон."
+
+msgid "weeks"
+msgstr "недели"
+
+msgid "months"
+msgstr "месяцев"
+
+msgid "years"
+msgstr "лет"
+
+msgid "Set the repeat"
+msgstr "Задать настройки повторения"
+
+msgid "Has access to Updates and Kanban"
+msgstr "Доступ к разделам Новости и Канбан"
+
+msgid "Auto"
+msgstr "Автоматически"
+
+msgid "Automation"
+msgstr "Автоматизация"
+
+msgid "Repeats when due"
+msgstr "Повтор при наступлении дедлайна"
+
+msgid "Copied"
+msgstr "Скопировано"
+
+msgid "Copying error"
+msgstr "Ошибка копирования"
+
+msgid "Copy"
+msgstr "Скопировать"
+
+msgid "Repeating tasks automatically resume in the background every time its due date passes. Due date for each new occurence is set based on the repeating interval and the original task due date."
+msgstr "Повторяющиеся задачи автоматически возобновляются в фоновом режиме каждый раз, когда наступает их срок выполнения. Дедлайн для каждого нового повторения устанавливается на основе интервала повторения и дедлайна исходной задачи."
+
+msgid "To stop repeating process, simply select a task from the list below and either delete it or flush its repeating settings."
+msgstr "Чтобы остановить повтор, просто выберите задачу из списка ниже и либо удалите ее, либо отключите повтор в настройках задачи."
+
+msgid "For better background process automation, add the following cron command to launch every other hour:"
+msgstr "Для надежной автоматизации добавьте следующую крон-команду для запуска каждые несколько часов:"
+
+msgid "Last execution time:"
+msgstr "Последний запуск команды:"
+
+msgid "Could not connect to Webasyst AI service. Please try again in a minute."
+msgstr "Ошибка подключения к службе Webasyst AI. Пожалуйста, попробуйте еще раз через минуту."

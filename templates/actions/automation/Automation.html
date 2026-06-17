@@ -1,0 +1,92 @@
+{$_no_brainer_here = $wa->tasks->isPremium()}
+<div class="flexbox">
+    {$sidebar_html}
+
+<div class="content">
+
+<div class="article">
+    <div class="article-body">
+
+        {if !$_no_brainer_here}
+
+            <h3>[`Premium only`]</h3>
+            <p class="small">
+                <i class="fas fa-star text-yellow"></i> [`Upgrade to premium to have the feature enabled and this message to disappear permanently.`]
+            </p>
+            <a href="{$wa_app_url}#/upgrade/" class="button purple small">[`See what’s there in premium`]</a>
+            <hr class="custom-mt-24" />
+
+        {/if}
+
+        <div{if !$_no_brainer_here} style="opacity: 0.4;{/if}">
+
+            <h1>[`Automation`]</h1>
+
+            <p class="small">
+                [`Repeating tasks automatically resume in the background every time its due date passes. Due date for each new occurence is set based on the repeating interval and the original task due date.`]
+                {if !empty($tasks) && count($tasks)}
+                    [`To stop repeating process, simply select a task from the list below and either delete it or flush its repeating settings.`]
+                {/if}
+            </p>
+
+            <table>
+                {foreach $tasks as $task}
+                    {$_task_number = $task.project_id|cat:'.'|cat:$task.number}
+                    {$_task_link = '#/task/'|cat:$_task_number|cat:'/'}
+
+                    <tr>
+                        <td>{tasksHelper::statusNameHTML($task.status.id)}</td>
+                        <td><a href="{$_task_link}">{$task.name|escape}</a></td>
+                        <td>
+                            <span class="small flexbox middle space-4 custom-ml-16">
+                                <i class="fas fa-sync-alt text-gray"></i>
+                                <span class="black">
+                                    {if $task.repeat.frequency == 1}
+                                        {if $task.repeat.measure == 'day'}[`Every day`]{/if}
+                                        {if $task.repeat.measure == 'week'}[`Every week`]{/if}
+                                        {if $task.repeat.measure == 'month'}[`Every month`]{/if}
+                                        {if $task.repeat.measure == 'year'}[`Every year`]{/if}
+                                    {else}
+                                        {$_measure_plural = '[interval]'}
+                                        {if $task.repeat.measure == 'day'}{$_measure_plural = _ws('day', 'days', $task.repeat.frequency)}{/if}
+                                        {if $task.repeat.measure == 'week'}{$_measure_plural = _w('week', 'weeks', $task.repeat.frequency)}{/if}
+                                        {if $task.repeat.measure == 'month'}{$_measure_plural = _ws('month', 'months', $task.repeat.frequency)}{/if}
+                                        {if $task.repeat.measure == 'year'}{$_measure_plural = _ws('year', 'years', $task.repeat.frequency)}{/if}
+                                        {sprintf('[`Every %d %s`]', $task.repeat.frequency, $_measure_plural)}
+                                    {/if}
+                                </span>
+                                {if $task.repeat.mode == 'on_complete'}<i class="fas fa-check text-light-gray" title="[`Repeats on completion`]"></i>{/if}
+                                {if $task.repeat.mode == 'on_due'}<i class="fas fa-clock text-light-gray" title="[`Repeats when due`]"></i>{/if}
+                            </span>
+                        </td>
+                        <td>
+                            {if !empty($task.due_date)}
+                                <span class="small nowrap t-due-date-hint-{$task.view.due_color_class|default:'green'} custom-mr-4">
+                                    <i class="fas fa-flag-checkered"></i>
+                                    {wa_date('humandate', $task.due_date, waDateTime::getDefaultTimezone())|escape}
+                                </span>
+                                {if !empty($task.view.due_text)}
+                                    <span class="hint semibold">{$task.view.due_text}</span>
+                                {/if}
+                            {/if}
+                        </td>
+                    </tr>
+                {/foreach}
+            </table>
+
+            <p class="small">
+                [`For better background process automation, add the following cron command to launch every other hour:`]
+                <code class="nowrap">{$cron_job_command}</code>
+            </p>
+            <p class="small">
+                {$last_run_ts = $wa->setting('repeating_done', '', 'tasks')}
+                [`Last execution time:`] <strong>{$last_run_ts|wa_date:'humandatetime'|default:'&mdash;'}</strong>
+            </p>
+
+        </div>
+
+    </div>
+</div>{*div.article*}
+
+</div>{*div.content*}
+</div>{*div.flexbox*}

@@ -35,15 +35,59 @@ class tasksTasksSaveController extends waJsonController
 
         $task_id = ifset($task, 'id', null);
 
-        if ($task_type = $this->getRequest()->post('task_type', '', waRequest::TYPE_STRING_TRIM)) {
-            (new tasksTaskExtModel())->save([
-                'type'    => $task_type,
-                'task_id' => $task_id
-            ]);
+        $task_type = $this->getRequest()->post('task_type', null, waRequest::TYPE_STRING_TRIM);
+        if ($task_type !== null) {
+            $task_ext_model = new tasksTaskExtModel();
+            $field_data_model = new tasksFieldDataModel();
+            $task_fields = (new tasksTask())->getFieldsByType();
+            $current_ext = $task_ext_model->getById($task_id);
+            $current_type = ifset($current_ext, 'type', '');
 
-            $fields_data = $this->getRequest()->post('fields', [], waRequest::TYPE_ARRAY);
-            if ($fields_data = ifempty($fields_data, $task_type, [])) {
-                (new tasksFieldDataModel())->save($task_id, $fields_data);
+            if ($task_type !== '') {
+                $ext_data = $current_ext ? $current_ext : ['task_id' => $task_id];
+                $ext_data['task_id'] = $task_id;
+                $ext_data['type'] = $task_type;
+                $task_ext_model->save($ext_data);
+
+                $stored_fields = $field_data_model->getData($task_id);
+                $current_field_ids = [];
+                if ($current_type && $current_type !== $task_type) {
+                    foreach (ifset($task_fields, $current_type, []) as $_field) {
+                        $current_field_ids[] = $_field['id'];
+                    }
+
+                    foreach ($current_field_ids as $_field_id) {
+                        unset($stored_fields[$_field_id]);
+                    }
+                }
+
+                $fields_data = $this->getRequest()->post('fields', [], waRequest::TYPE_ARRAY);
+                $new_fields_data = ifempty($fields_data, $task_type, []);
+                foreach ($new_fields_data as $_field_id => $_value) {
+                    $stored_fields[$_field_id] = $_value;
+                }
+
+                if ($stored_fields) {
+                    $field_data_model->save($task_id, $stored_fields);
+                } else {
+                    $field_data_model->deleteByField('task_id', $task_id);
+                }
+            } elseif ($current_type) {
+                $ext_data = $current_ext ? $current_ext : ['task_id' => $task_id];
+                $ext_data['task_id'] = $task_id;
+                $ext_data['type'] = null;
+                $task_ext_model->save($ext_data);
+
+                $stored_fields = $field_data_model->getData($task_id);
+                foreach (ifset($task_fields, $current_type, []) as $_field) {
+                    unset($stored_fields[$_field['id']]);
+                }
+
+                if ($stored_fields) {
+                    $field_data_model->save($task_id, $stored_fields);
+                } else {
+                    $field_data_model->deleteByField('task_id', $task_id);
+                }
             }
         }
 
@@ -170,6 +214,39 @@ class tasksTasksSaveController extends waJsonController
         return $result;
     }
 
+    protected function saveRepeating(&$task, &$data)
+    {
+        $task_repeat_model = new tasksTaskRepeatModel();
+        $repeat = ifset($data, 'repeat', []);
+        $repeat_date_base = null;
+        switch (ifset($repeat, 'mode', '')) {
+            case 'on_due':
+                $repeat_date_base = $task['due_date'];
+                if (!$repeat_date_base) {
+                    $repeat_date_base = date('Y-m-d');
+                    if (!empty($task['is_existing'])) {
+                        $data['due_date'] = $repeat_date_base;
+                    } else {
+                        $task['due_date'] = $repeat_date_base;
+                        (new tasksTaskModel())->updateById($task['id'], [
+                            'due_date' => $repeat_date_base,
+                        ]);
+                    }
+                }
+                break;
+            case 'on_complete':
+                if ($task['status_id'] < 0) {
+                    $repeat['repeat_date'] = date('Y-m-d');
+                    $repeat_date_base = null;
+
+                    // this forces call to duplicate repeating task in tasksTaskModel->updateById()
+                    $data['status_id'] = $task['status_id'];
+                }
+                break;
+        }
+
+        $task_repeat_model->saveRepeat((int)$task['id'], (array)$repeat, $repeat_date_base);
+    }
 
     protected function parseTaskNumberAndGetTaskId($tasks_number = array(), $fetch = 'id')
     {
@@ -207,6 +284,12 @@ class tasksTasksSaveController extends waJsonController
         $rights = new tasksRights();
         if (!$rights->canEditTask($prev_task)) {
             throw new waRightsException(_w('Access denied'));
+        }
+
+        if ($rights->canRepeatTask($prev_task)) {
+            $prev_task += ['is_existing' => true];
+            $this->saveRepeating($prev_task, $data);
+            unset($prev_task['is_existing']);
         }
 
         $task_model->update($id, $data);
@@ -254,8 +337,8 @@ class tasksTasksSaveController extends waJsonController
 
         $this->saveAttachments($task['id'], $data);
         $this->saveTags($task);
-
         $this->saveTaskRelations($task);
+        $this->saveRepeating($task, $data);
 
         $this->addLogItem($task, null, tasksTaskLogModel::ACTION_TYPE_ADD);
 

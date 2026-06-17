@@ -2,7 +2,7 @@
 
 class tasksCollection
 {
-    public const FIELDS_TO_GET = '*,log,create_contact,assigned_contact,attachments,tags,project,roles,favorite,relations';
+    public const FIELDS_TO_GET = '*,log,create_contact,assigned_contact,attachments,tags,project,roles,favorite,relations,repeat';
 
     public const HASH_SEARCH = 'search';
     public const HASH_UNASSIGNED = 'unassigned';
@@ -527,6 +527,18 @@ class tasksCollection
             $data = $this->addRelationsToTasks($data);
         }
 
+        if (!empty($other_fields['repeat'])) {
+            $task_repeat_model = new tasksTaskRepeatModel();
+            $repeat = $task_repeat_model->getById($ids);
+            $empty = $task_repeat_model->getEmptyRow();
+            $empty['mode'] = '';
+            foreach ($data as &$t) {
+                $t['repeat'] = ifset($repeat, $t['id'], $empty);
+                unset($t['repeat']['task_id']);
+            }
+            unset($t);
+        }
+
         return $data;
     }
 
@@ -798,10 +810,18 @@ class tasksCollection
                     $this->where[] = "CONCAT(t.name, ' ', t.text) LIKE '%" . $model->escape($parts[2], 'like') . "%'";
                 } else {
                     $q = $parts[2];
+                    unset($q2);
                     if (!preg_match('![*+~()<>\-"]!', $q)) {
                         $q = '+' . preg_replace('~\s+~', '* +', trim($q)) . '*';
+                        if (strpos($q, '_') !== false) {
+                            $q2 = str_replace('_', '* +_', trim($q));
+                        }
                     }
-                    $this->where[] = "MATCH(t.name, t.text) AGAINST ('" . $model->escape($q) . "' IN BOOLEAN MODE)";
+                    $condition = "MATCH(t.name, t.text) AGAINST ('" . $model->escape($q) . "' IN BOOLEAN MODE)";
+                    if (isset($q2)) {
+                        $condition = "({$condition} OR MATCH(t.text) AGAINST ('" . $model->escape($q2) . "' IN BOOLEAN MODE))";
+                    }
+                    $this->where[] = $condition;
                 }
             } elseif ($parts[0] == 'from_contact_id') {
                 $this->where[] = 'IFNULL(t.contact_id, t.create_contact_id)' . $this->getExpression(
@@ -1044,6 +1064,14 @@ class tasksCollection
                 }
             }
         }
+    }
+
+    protected function repeatingPrepare()
+    {
+        $this->addJoin(
+            'tasks_task_repeat',
+            ':table.task_id=t.id',
+        );
     }
 
     /**

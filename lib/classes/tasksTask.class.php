@@ -156,7 +156,7 @@ class tasksTask implements ArrayAccess
     {
         $files = array();
         foreach($this['all_attachments'] as $a) {
-            if(empty($a['log_id']) && !self::isImageAttachment($a)) {
+            if (empty($a['log_id']) && !self::isImageAttachment($a)) {
                 $files[] = $a;
             }
         }
@@ -202,7 +202,31 @@ class tasksTask implements ArrayAccess
         } else {
             $ext = '';
         }
-        return in_array(strtolower($ext), array('jpg', 'png', 'gif', 'jpeg', 'webp'));
+        return in_array(strtolower($ext), array('jpg', 'png', 'gif', 'jpeg', 'webp', 'svg'));
+    }
+
+    public static function isSvgAttachment($attachment)
+    {
+        if (is_scalar($attachment)) {
+            $ext = (string)$attachment;
+        } elseif (is_array($attachment) && isset($attachment['ext'])) {
+            $ext = (string)$attachment['ext'];
+        } else {
+            $ext = '';
+        }
+        return strtolower($ext) === 'svg';
+    }
+
+    public static function isVideoAttachment($attachment)
+    {
+        if (is_scalar($attachment)) {
+            $ext = (string)$attachment;
+        } elseif (is_array($attachment) && isset($attachment['ext'])) {
+            $ext = (string)$attachment['ext'];
+        } else {
+            $ext = '';
+        }
+        return in_array(strtolower($ext), array('mp4', 'webm'));
     }
 
     /**
@@ -686,6 +710,19 @@ class tasksTask implements ArrayAccess
         return $favorite_model->getByField(array('contact_id' => wa()->getUser()->getId(), 'task_id' => $this->id)) ?? false;
     }
 
+    public function getRepeat()
+    {
+        $task_repeat_model = new tasksTaskRepeatModel();
+        if ($this->id) {
+            $result = $task_repeat_model->getById($this->id);
+        }
+        if (empty($result)) {
+            $result = $task_repeat_model->getEmptyRow();
+            $result['mode'] = '';
+        }
+        return $result;
+    }
+
     public function getFavoriteUnread()
     {
         if (!isset($this->data['favorite']) || !is_array($this->data['favorite'])) {
@@ -769,6 +806,11 @@ class tasksTask implements ArrayAccess
         }
     }
 
+    public function getRightsInfo()
+    {
+        return $this->getRights()->getTaskRightsInfo($this);
+    }
+
     public function canEdit($contact = null)
     {
         return $this->getRights()->canEditTask($this, $contact);
@@ -782,6 +824,11 @@ class tasksTask implements ArrayAccess
     public function canView($contact = null, $clarify = false)
     {
         return $this->getRights()->canViewTask($this, $contact, $clarify);
+    }
+
+    public function canRepeat($contact = null)
+    {
+        return $this->getRights()->canRepeatTask($this, $contact);
     }
 
     public function hasFullAccess($contact = null)
@@ -915,6 +962,97 @@ class tasksTask implements ArrayAccess
         }
         $this->data[$name] = $value;
         return $value;
+    }
+
+    /** @since 3.3.0 */
+    public function duplicate(): tasksTask
+    {
+        if (!$this->id) {
+            throw new waException('Unable to duplcate task that is not saved to DB');
+        }
+
+        // task
+        $task_model = new tasksTaskModel();
+        $row = $task_model->getById($this->id);
+        if (!$row) {
+            throw new waException('Task not found in DB');
+        }
+        $row['uuid'] = tasksUuid4::generate();
+        $row['create_datetime'] = $row['update_datetime'] = date('Y-m-d H:i:s');
+        
+        unset(
+            $row['id'],
+            $row['create_contact_id'],
+            $row['milestone_id'],
+            $row['number'],
+            $row['assign_log_id'],
+            $row['hidden_timestamp'],
+            $row['comment_log_id'],
+            $row['public_hash'],
+        );
+
+        $duplicate_row = $task_model->add($row);
+        if (!$duplicate_row) {
+            throw new waException('Unble to duplicate');
+        }
+        $duplicate_id = $duplicate_row['id'];
+
+        // task_ext
+        $task_ext_model = new tasksTaskExtModel();
+        $row = $task_ext_model->getById($this->id);
+        if ($row) {
+            $row['task_id'] = $duplicate_id;
+            $task_ext_model->replace($row);
+        }
+
+        // tasks field data
+        $field_data_model = new tasksFieldDataModel();
+        $field_data = $field_data_model->getData($this->id);
+        if ($field_data) {
+            $field_data_model->save($duplicate_id, $field_data);
+        }
+
+        // tags
+        $tags_model = new tasksTaskTagsModel();
+        $rows = $tags_model->getByField([
+            'task_id' => $this->id,
+        ], true);
+        if ($rows) {
+            $tags_model->multipleInsert(array_map(function($r) use ($duplicate_id) {
+                $r['task_id'] = $duplicate_id;
+                return $r;
+            }, $rows), waModel::INSERT_IGNORE);
+        }
+
+        // attachments
+        $attachment_model = new tasksAttachmentModel();
+        $rows = $attachment_model->getByField([
+            'task_id' => $this->id,
+            'log_id' => null,
+        ], true);
+        if ($rows) {
+            $temp_path = wa('tasks')->getTempPath('files/dup'.$duplicate_id.'/', 'tasks');
+            foreach ($rows as $a) {
+                $original_path = tasksHelper::getAttachPath($a);
+                $copy_path = $temp_path.$a['name'];
+                try {
+                    waFiles::copy($original_path, $copy_path);
+                    $attachment_model->addAttachment($duplicate_id, null, $copy_path);
+                } catch (Throwable $e) {
+                } // ignore
+            }
+            waFiles::delete($temp_path);
+        }
+
+        $duplicate = new self($duplicate_row);
+
+        /** @wa-event task_duplicate */
+        wa('shop')->event('task_duplicate', ref([
+            'original'   => &$this,
+            'duplicate' => &$duplicate,
+        ]));
+
+        return new self($duplicate_id);
     }
 
     /**

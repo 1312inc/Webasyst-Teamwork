@@ -100,7 +100,8 @@ var TasksHeader = ( function($) {
         }
 
         // hide/show sidebar/content if single page on phone
-        var observer = new MutationObserver(function (mutations) {
+        that.singleTaskObserver && that.singleTaskObserver.disconnect();
+        that.singleTaskObserver = new MutationObserver(function () {
             if (document.querySelector(".t-main-wrapper .t-single-task-wrapper")) {
                 that.$secondSidebar.addClass('desktop-only');
                 that.$contentContainer.removeClass('desktop-only');
@@ -110,8 +111,24 @@ var TasksHeader = ( function($) {
             }
         });
 
-        observer.observe(document, { attributes: false, childList: true, characterData: false, subtree: true });
+        that.singleTaskObserver.observe(document, { attributes: false, childList: true, characterData: false, subtree: true });
 
+    };
+
+    Header.destroy = function () {
+        if (this.singleTaskObserver) {
+            this.singleTaskObserver.disconnect();
+            this.singleTaskObserver = null;
+        }
+
+        if (storage.observer) {
+            storage.observer.disconnect();
+            storage.observer = null;
+        }
+
+        $(".sidebar-body").off('.pulsar');
+        $(window).off('.pulsar');
+        $('.pulsar.cloned').remove();
     };
 
     // Makes the header stick to the top of browser window when scrolled down,
@@ -1174,6 +1191,7 @@ var TasksHeader = ( function($) {
             }, function (r) {
                 dialog_instance.close();
                 $.tasks.redispatch();
+                $.tasks.reloadSidebar();
             }, 'json');
 
             return false;
@@ -1190,6 +1208,7 @@ var TasksHeader = ( function($) {
                 ids: that.getSelectedTaskIds()
             }, function () {
                 $.tasks.redispatch();
+                $.tasks.reloadSidebar();
             }, 'json');
         });
     };

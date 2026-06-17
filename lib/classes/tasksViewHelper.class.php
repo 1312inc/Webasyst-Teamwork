@@ -32,13 +32,17 @@ class tasksViewHelper extends waAppViewHelper
 
         if (wa()->getLocale() == 'ru_RU')
         {
-            $pricing = array( 'compare_price' => '27 999', 'price' => '11 999 <span class="ruble">₽</span>', 'special' => '' );
-            if (date('Ymd')<='20251031') $pricing = array( 'compare_price' => '11 999', 'price' => '8 999 <span class="ruble">₽</span>', 'special' => '&minus;25% до 31.10', 'special_short' => '&minus;25% / 31.10', 'special_color' => 'orange' );
+            $pricing = array(
+              'compare_price' => '27 999',
+              'price' => '7 999 <span class="ruble">₽</span>/год'
+            );
         }
         else
         {
-            $pricing = array( 'compare_price' => '$449', 'price' => '$199', 'special' => '' );
-            if (date('Ymd')<='20251031') $pricing = array( 'compare_price' => '$199', 'price' => '$149', 'special' => '&minus;25%', 'special_short' => '&minus;25% / 10.31', 'special_color' => 'orange' );
+            $pricing = array(
+              'compare_price' => '$449',
+              'price' => '$129/yr'
+            );
         }
 
         return $pricing;

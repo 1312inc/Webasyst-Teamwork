@@ -1,9 +1,13 @@
 <style>
 
-    .t-premium-appicon { position: relative; z-index: 10; height: 9rem; background: url('{$wa_url}wa-apps/tasks/img/tasks.svg') no-repeat center / 8rem; }
+    .t-premium-appicon { position: relative; z-index: 10; width: 9rem; height: 9rem; margin: 0 auto; }
+    .t-premium-appicon .t-icon-tasks { display: block; width: 9rem; height: 9rem; background: url('{$wa_url}wa-apps/tasks/img/tasks.svg') no-repeat center / 8rem; }
+    .t-premium-appicon .t-icon-star { position: absolute; bottom: 1rem; right: 0.5rem; transform: translate(0, 5px); background-color: var(--background-color-blank); border-radius: 50%; padding: 0.5rem; width: 1.75rem; height: 1.75rem; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 0.125rem 0.5rem rgba(0,0,0,0.2); }
     .t-premium-feature { border-radius: 0.75rem; background: var(--background-color-blank); margin-bottom: 1.5rem; padding: 1.5rem 2rem; }
     .t-premium-feature.halfwidth { width: 40%; margin-bottom: 0; padding-bottom: 0.5rem; }
     .t-premium-feature.halfwidth h3 { font-size: 1.25rem; }
+    .t-premium-feature img,
+    .t-premium-feature video { max-width: 100%; }
 
     @media screen and (max-width: 760px) {
         .t-premium-feature.halfwidth { width: 100%; }
@@ -14,26 +18,33 @@
 {$_is_premium = $wa->tasks->isPremium()}
 {$_is_cloud = $wa->tasks->isCloud()}
 {$_premium_pricing = $wa->tasks->getPremiumPricing()}
-{$_upgrade_url = '[`https://www.webasyst.com/my/buy/upgrade-to-premium/tasks/`]'|cat:'?domain='|cat:str_replace('http://','',str_replace('https://','',$wa->domainUrl()))}
+{if $_is_cloud}
+    {$_upgrade_url = '[`https://www.webasyst.com/my/hosting/`]'}
+{else}
+    {$_upgrade_url = '[`https://www.webasyst.com/my/buy/upgrade-to-premium/tasks/`]'|cat:'?domain='|cat:str_replace('http://','',str_replace('https://','',$wa->domainUrl()))}
+{/if}
 
 {capture "getpremiumbutton"}
 {if !$_is_premium}
 <figure class="box align-center t-upgrade-ad">
-    <a href="{$_upgrade_url}" class="button rounded {if !$_is_cloud}{$_premium_pricing.special_color|default:'green'}{else}green{/if} largest" target="_blank">[`Upgrade to premium`]</a>
+    <a href="{$_upgrade_url}" class="button rounded purple largest t-upgrade-button custom-mr-0" target="_blank">[`Upgrade to premium`]</a>
     <h4>
         {if !empty($_premium_pricing.compare_price)}<strike class="gray">{$_premium_pricing.compare_price}</strike>{/if}
-        {if $_is_cloud}[`All inclusive in the cloud`]{else}{$_premium_pricing.price} / [`upgrade to premium`]{/if}
+        {if $_is_cloud}
+            [`All inclusive in the cloud`]
+        {else}
+            {$_premium_pricing.price}
+        {/if}
     </h4>
     <p class="width-60 width-100-mobile custom-mx-auto small">
         {if $_is_cloud}
             [`In Webasyst Cloud, simply upgrade to the <b>Premium</b> plan and get all premium features at once with no extra purchase required.`]
         {else}
-            {if !empty($_premium_pricing.special)}
-                {sprintf('[`%s limited offer for upgrading existing app license to the premium version`]', sprintf('<span class="badge %s">%s</span>', $_premium_pricing.special_color, $_premium_pricing.special))}<br>
-                <b>{date('Y.m')}</b> [`special offer!`]
-            {else}
-                [`Per-server license for the entire company. Unlimited users, all premium features, free updates forever.`]
-            {/if}
+            [`Per-server license for the entire company. Unlimited users, all premium features, free updates forever.`]
+        {/if}
+        {if !$_is_cloud && date('Y-m-d') <= '2026-08-31'}
+            <br><br>
+            [`Promocode`] <code><b>SUMMER26</b></code> <strong class="text-red">-15% / {date('Y.m')}</strong>
         {/if}
     </p>
 </figure>
@@ -45,13 +56,13 @@
     <div class="flexbox space-12 wrap-mobile">
         <div class="wide">
             <h3>
-                {if !$_is_free_feature}<i class="fas fa-star text-yellow custom-mr-4"></i>{/if}
+                {if !$_is_free_feature}<i class="fas fa-star {if empty($_p.eta)}text-yellow{else}text-light-gray{/if} custom-mr-4"></i>{/if}
                 {$_p.title}
             </h3>
         </div>
         <div>
             {if empty($_p.eta)}
-                <span class="nowrap badge green"><i class="fas fa-check"></i> {if !$_is_free_feature}{if $_is_premium_license}[`Enabled`]{else}[`Available now`]{/if}{/if}</span>
+                <span class="nowrap badge {if $_is_premium_license}green{else}purple{/if}"><i class="fas fa-check"></i> {if !$_is_free_feature}{if $_is_premium_license}[`Enabled`]{else}[`Premium only`]{/if}{/if}</span>
             {elseif trim($_p.eta)}
                 <span class="nowrap badge {$_p.eta_class|default:'light-gray'}"><i class="fas fa-clock"></i> {$_p.eta}</span>
             {/if}
@@ -67,13 +78,26 @@
 
         <article class="t-upgrade-content">
 
-            <div class="t-premium-appicon"></div>
+            <div class="t-premium-appicon">
+                <span class="t-icon-tasks"></span>
+                {if !$_is_premium}<span class="t-icon-star"><i class="fas fa-star text-yellow"></i></span>{/if}
+            </div>
 
             {$_premium_stuff = []}
 
             {$_premium_stuff[] = [
+              'title' => '[`Repeating tasks`]',
+              'body' => '[`Automate your workflow with re-occuring tasks that resume either on completion instantly or on each due date in the background. Set up once, and track the progress in a long term with no hassle.`]'
+            ]}
+
+            {$_premium_stuff[] = [
+              'title' => '[`Write with AI`]'|cat:' <i class="icon webasyst-magic-wand-ai custom-ml-4"></i>',
+              'body' => '[`Boost your performance and save significant amounts of time.`]'|cat:' [`Write and spellcheck task content with just few clicks. Powered by Webasyst AI.`]'|cat:'<br><br> <video loop="" muted="" autoplay="" playsinline=""><source src="https://www.webasyst.ru/wa-data/public/updates/products/landing/01/1/7341.webasyst-ai-tri-kp.mp4" type="video/mp4"></video>'
+            ]}
+
+            {$_premium_stuff[] = [
               'title' => '[`Gantt chart`]',
-              'body' => '[`Visualize working progress based on scopes/milestones.`]'
+              'body' => '[`Visualize working progress based on scopes/milestones.`]'|cat:' [`When multiple scopes and projects are in the works at the same time, the right way to keep them on track becomes a necessity.`]'
             ]}
 
             {$_premium_stuff[] = [
@@ -84,11 +108,6 @@
             {$_premium_stuff[] = [
               'title' => '[`Custom fields`]',
               'body' => '[`Configure custom task fields based on a task type.`]'
-            ]}
-
-            {$_premium_stuff[] = [
-              'title' => '[`AI assistant`]',
-              'body' => '[`Write and spellcheck task content with just few clicks. Powered by Webasyst AI.`]'
             ]}
 
             {$_premium_stuff[] = [
@@ -137,7 +156,7 @@
                     <a class="bold" href="[`https://www.webasyst.com/store/app/tasks/`]" target="_blank">[`https://www.webasyst.com/store/app/tasks/`]</a>
                 </p>
 
-                {if method_exists($wa->installer, 'reviewWidget')}
+                {if $wa->installer && method_exists($wa->installer, 'reviewWidget')}
                     <div style="max-width: 300px;" class="custom-my-24 custom-mx-auto">
                         {$wa->installer->reviewWidget('app/tasks', ['is_inline' => true])}
                     </div>
@@ -145,34 +164,11 @@
 
             {else}
 
-                <h1 class="top-padded align-center width-70 custom-mx-auto custom-mb-24 width-100-mobile">
-                    [`Better tools for better results`]
+                <h1 class="top-padded align-center width-66 custom-mx-auto custom-mb-24 width-100-mobile">
+                    [`Automate, accelerate, customize, be more productive`]
                 </h1>
 
-                <p class="small align-center custom-mb-24">
-                    [`Early launch offer gets you the best premium upgrade conditions possible.`]
-                    <br>
-                    <b>{sprintf('[`%d features available now, +%d more to come shortly.`]', $_features_delivered, $_features_pending)}</b>
-                </p>
-
             {/if}
-
-            <div class="flexbox wrap-mobile middle space-12" style="justify-content: center;">
-
-                <a href="https://apps.apple.com/{if $wa->locale() == 'ru_RU'}ru{else}us{/if}/app/webasyst-teamwork/id1610735751" target="_blank">
-                    <img src="{$wa_app_static_url}img/badge-appstore{if $wa->locale() == 'ru_RU'}-ru{/if}.png" class="t-app-inline-badge" alt="App Store">
-                </a>
-                <a href="https://play.google.com/store/apps/details?id=com.webasyst.teamwork" target="_blank">
-                    <img src="{$wa_app_static_url}img/badge-googleplay{if $wa->locale() == 'ru_RU'}-ru{/if}.png" class="t-app-inline-badge" alt="Google Play">
-                </a>
-                {if $wa->locale() == 'ru_RU'}
-                    <a href="https://apps.rustore.ru/app/com.webasyst.teamwork" target="_blank">
-                        <img src="{$wa_app_static_url}img/badge-rustore.svg" class="t-app-inline-badge" alt="RuStore">
-                    </a>
-                {/if}
-
-            </div>
-
 
             {$smarty.capture.getpremiumbutton}
 

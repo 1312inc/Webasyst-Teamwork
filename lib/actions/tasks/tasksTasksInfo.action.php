@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Single task page.
+ * Single task page
  */
 class tasksTasksInfoAction extends waViewAction
 {

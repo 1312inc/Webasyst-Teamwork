@@ -12,6 +12,11 @@
         </button>
         <div class="dropdown-body">
             <ul class="menu js-task-types-list">
+                <li class="t-nav-item js-type-item">
+                    <a class="js-custom-select set-custom-select" href="javascript:void(0);" data-value="">
+                        [`Type`]
+                    </a>
+                </li>
                 {foreach $task_types as $_type}
                     <li class="t-nav-item js-type-item">
                         <a class="js-custom-select set-custom-select" href="javascript:void(0);" {if !empty($_type.color)}data-color="{$_type.color}"{/if} data-value="{$_type.id|escape}">
@@ -21,13 +26,22 @@
                 {/foreach}
             </ul>
         </div>
-        <input type="hidden" name="task_type" class="js-task-type-hidden" value="{$ext_info.type|escape}">
+        <input type="hidden" name="task_type" class="js-task-type-hidden" value="{$ext_info.type|default:''|escape}">
     </div>
     <script>
         (function ($) {
             $('#{$wrapper_id} .dropdown').waDropdown({
                 hover: true,
                 items: ".menu > li > a",
+                change: function(event, target, dropdown) {
+                    var $target = $(target),
+                        value = $target.data('value') || '',
+                        $button = dropdown.$button,
+                        $hidden = dropdown.$wrapper.find('.js-task-type-hidden');
+
+                    $button.html($target.html());
+                    $hidden.val(value).trigger('change');
+                }
              });
         })(jQuery);
     </script>

@@ -143,9 +143,38 @@ class tasksTaskModel extends waModel
             }
         }
 
+        if (array_key_exists('status_id', $data) || array_key_exists('due_date', $data)) {
+            $this->updateTaskRepeat($id, ifset($data, 'status_id', null), ifset($data, 'due_date', null));
+        }
+
         return parent::updateById($id, $data, $options, $return_object);
     }
 
+    protected function updateTaskRepeat($task_id, $status_id, $due_date)
+    {
+        $task_repeat_model = new tasksTaskRepeatModel();
+        $repeat = $task_repeat_model->getById($task_id);
+        if (!$repeat) {
+            return;
+        }
+
+        if ($repeat['mode'] === 'on_due') {
+            // if task due_date changed, update repeat_date for on_due
+            if ($due_date) {
+                unset($repeat['repeat_date']);
+                $task_repeat_model->saveRepeat($task_id, $repeat, $due_date);
+            }
+        } else if ($repeat['mode'] === 'on_complete') {
+            // Task just changed its status to closed, update repeat_date for on_complete
+            if ($status_id !== null && $status_id < 0) {
+                if (empty($repeat['repeat_date'])) {
+                    $repeat['repeat_date'] = date('Y-m-d');
+                    $task_repeat_model->saveRepeat($task_id, $repeat, null);
+                }
+                (new tasksRepeatTaskService())->duplicateOneRepeatingTask((int)$task_id);
+            }
+        }
+    }
 
     public function delete($ids)
     {
@@ -162,6 +191,7 @@ class tasksTaskModel extends waModel
                      new tasksAttachmentModel(),
                      new tasksTaskLogModel(),
                      new tasksTaskLogParamsModel(),
+                     new tasksTaskRepeatModel(),
                  ] as $model) {
             /**
              * @var waModel $model

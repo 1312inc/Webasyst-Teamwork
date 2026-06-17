@@ -413,9 +413,9 @@ SQL;
     }
 
     // helper for $this->getList() and $this->getPeriodByDate()
-    protected static function getWhereSQL(tasksTaskLogModelGetListOptionsDto $options)
+    protected function getWhereSQL(tasksTaskLogModelGetListOptionsDto $options)
     {
-        $sql = [];
+        $sql = ['1=1'];
         if ($options->getContactId()) {
             $sql[] = "tl.contact_id=" . $options->getContactId();
         }
@@ -432,7 +432,23 @@ SQL;
             $sql[] = "tl.project_id=" . $options->getProjectId();
         }
 
-        return 'WHERE 1=1' . ($sql ? ' AND ' . implode(' AND ', $sql) : '');
+        if ($options->getTaskId()) {
+            $sql[] = "tl.task_id=" . $options->getTaskId();
+        }
+
+        if ($options->getAction()) {
+            $sql[] = "tl.action='" . $this->escape($options->getAction())."'";
+        }
+
+        if ($options->getStartDate()) {
+            $sql[] = "tl.create_datetime >= '" . $this->escape($options->getStartDate())."'";
+        }
+
+        if ($options->getEndDate()) {
+            $sql[] = "tl.create_datetime <= '" . $this->escape($options->getEndDate())."'";
+        }
+
+        return 'WHERE ' . implode(' AND ', $sql);
     }
 
     public function getList(tasksTaskLogModelGetListOptionsDto $options, &$total_count = null): array
@@ -442,7 +458,7 @@ SQL;
             $limit_sql = "LIMIT {$options->getStart()}, {$options->getLimit()}";
         }
 
-        $whereSql = self::getWhereSQL($options);
+        $whereSql = $this->getWhereSQL($options);
         $rightJoinSql = '';
         if ($options->getForContact()) {
             $availableProjectIds = (new tasksRights())
@@ -516,14 +532,9 @@ SQL;
 
         $sql = "SELECT {$date_sql} AS `date`, after_status_id AS status_id, count(*) AS `count`
                 " . self::getFromSQL($options) . "
-                " . self::getWhereSQL($options) . "
-                    AND tl.create_datetime >= ?
-                    AND tl.create_datetime <= ?
+                " . $this->getWhereSQL($options) . "
                 GROUP BY `date`, status_id";
-        $rows = $this->query($sql, [
-            $options->getStartDate(),
-            $options->getEndDate(),
-        ]);
+        $rows = $this->query($sql);
 
         $result = [];
         foreach ($rows as $row) {

@@ -105,7 +105,7 @@ KanbanTaskColor.prototype.setColor = function () {
     }
 };
 
-$('body').on('click', '.kanban-task-link', function () {
+$('body').off().on('click', '.kanban-task-link', function () {
     var $kanban_task_link = $(this);
     var task_id = $kanban_task_link.data('kanban-task-id');
 

@@ -66,7 +66,7 @@
 .t-settings-task-types-wrapper .t-edit-type-link i { margin-top: 3px; }
 .t-settings-task-types-wrapper .t-types-list-item.is-template { display: none; }
 .t-settings-task-types-wrapper .t-types-list-item { width: 100%; margin-bottom: 0; line-height: 25px; }
-.t-settings-task-types-wrapper .t-types-list-item:nth-child(odd) { background: #f2f7ff; }
+.t-settings-task-types-wrapper .t-types-list-item:nth-child(odd) { background: var(--background-color-zebra-row-odd); }
 
 /* Stats Graph */
 .t-tasks-scope-tags .t-graph-wrapper {
@@ -301,3 +301,39 @@
 .t-settings-task-roles-wrapper .t-roles-list-item.is-template { display: none; }
 .t-settings-task-roles-wrapper .t-roles-list-item { width: 100%; margin-bottom: 0; line-height: 25px; }
 .t-settings-task-roles-wrapper .t-roles-list-item:nth-child(odd) { background: #f2f7ff; }
+
+.t-upgrade-button { overflow: hidden; position: relative; padding: 1rem 1.75rem; border: 0; }
+.t-upgrade-button::after { content: ''; position: absolute; top: 0; left: -100px; width: 80px; height: 100%; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.2),transparent); transform: skewX(-20deg); animation: sweep 4s infinite; filter: blur(1px); }
+@keyframes sweep {
+    0% { left: -100px; opacity: 0; transform: skewX(-20deg) scaleY(0.5); }
+    20% { opacity: 1; transform: skewX(-20deg) scaleY(1); }
+    80% { opacity: 1; transform: skewX(-20deg) scaleY(1); }
+    100% { left: 520px; opacity: 0; transform: skewX(-20deg) scaleY(0.5); }
+}
+
+.t-icon-with-badge {
+    position: relative;
+    top: -1px;
+}
+.t-icon-badge {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    transform: translate(0, 5px);
+    background-color: var(--background-color-blank);
+    border-radius: 50%;
+    padding: 1px;
+    width: 9px;
+    height: 9px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 7px;
+}
+.t-icon-badge svg { margin-right: 0 !important; }
+
+.t-ai-button { background-image: linear-gradient(90deg,rgba(255,0,0,0) 0%,rgba(255,0,0,0.3) 100%),linear-gradient(0deg,#5757d6,#5757d6); border: 0; padding: .6125em .875em }
+
+.t-ai-area { background-image: linear-gradient(180deg,rgba(0,21,253,0.07) 0%,rgba(205,61,215,0.07) 100%) !important; }
+.t-ai-area.bordered { border: 1px solid rgba(114,86,238,0.122) !important; }

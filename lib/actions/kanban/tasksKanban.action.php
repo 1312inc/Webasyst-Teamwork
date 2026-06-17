@@ -7,6 +7,10 @@ class tasksKanbanAction extends tasksLogAction
 {
     public function execute()
     {
+        if (!wa()->getUser()->getRights('tasks', tasksRightConfig::RIGHT_NAME_KANBAN_LOG)) {
+            throw new waRightsException(_w('Access denied'));
+        }
+
         $offset = waRequest::get('offset', 0, waRequest::TYPE_INT);
         $limit = tasksOptions::getTasksPerPage();
 

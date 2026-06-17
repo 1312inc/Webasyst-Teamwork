@@ -418,10 +418,15 @@
                       <div class="t-attach-droparea" id="t-attach-droparea">
                         <div class="t-chips">
 
-                            <div class="t-chip">
+                            <div class="t-chip t-ai-area bordered">
                                 <a href="javascript:void(0);" class="t-form-line-write-ai-chip">
-                                    <span class="icon webasyst-magic-wand-ai custom-mr-4"></span>
-                                    [`Write with AI`]
+                                    <span class="t-icon-with-badge">
+                                        <span class="icon webasyst-magic-wand-ai custom-mr-8"></span>
+                                        {if !$wa->tasks->isPremium()}
+                                            <span class="t-icon-badge"><i class="fas fa-star text-yellow"></i></span>
+                                        {/if}
+                                    </span>
+                                    <span class="js-write-ai-label">[`Write with AI`]</span>
                                 </a>
                             </div>
 
@@ -433,10 +438,40 @@
                                 </span>
                             </div>
 
+                            {if $task.rights_info.can_repeat|default:false}
+                                <div class="t-chip t-repeat-wrapper">
+                                    {$_title  = '[`Repeat`]'}
+                                    {if !empty($task.repeat.mode)}
+                                        {if $task.repeat.frequency == 1}
+                                            {if $task.repeat.measure == 'day'}{$_title = '[`Every day`]'}{/if}
+                                            {if $task.repeat.measure == 'week'}{$_title = '[`Every week`]'}{/if}
+                                            {if $task.repeat.measure == 'month'}{$_title = '[`Every month`]'}{/if}
+                                            {if $task.repeat.measure == 'year'}{$_title = '[`Every year`]'}{/if}
+                                        {else}
+                                            {$_measure_plural = '[interval]'}
+                                            {if $task.repeat.measure == 'day'}{$_measure_plural = _ws('day', 'days', $task.repeat.frequency)}{/if}
+                                            {if $task.repeat.measure == 'week'}{$_measure_plural = _w('week', 'weeks', $task.repeat.frequency)}{/if}
+                                            {if $task.repeat.measure == 'month'}{$_measure_plural = _ws('month', 'months', $task.repeat.frequency)}{/if}
+                                            {if $task.repeat.measure == 'year'}{$_measure_plural = _ws('year', 'years', $task.repeat.frequency)}{/if}
+                                            {$_title = sprintf('[`Every %d %s`]', $task.repeat.frequency, $_measure_plural)}
+                                        {/if}
+                                    {/if}
+                                    <a title="{$_title}">
+                                        <span class="t-icon-with-badge">
+                                            <span class="icon custom-mr-8"><i class="fas fa-sync-alt custom-pl-2 custom-mr-0"></i></span>
+                                            {if !$wa->tasks->isPremium()}
+                                                <span class="t-icon-badge"><i class="fas fa-star text-yellow"></i></span>
+                                            {/if}
+                                        </span>
+                                        <span>{$_title}</span>
+                                    </a>
+                                </div>
+                            {/if}
+
                             <div class="t-chip">
                                 <a>
                                     <i class="fas fa-paperclip"></i>
-                                    [`Attach files`]
+                                    [`Attach`]
                                     <input type="file" name="files[]" multiple="true" />
                                 </a>
                             </div>
@@ -482,6 +517,79 @@
 
                     </div>
 
+                    {*
+                     * Content for repeating task dialog @ .t-repeat-wrapper
+                     *}
+                    {if $wa->tasks->isPremium()}
+                    <div class="hidden js-repeat-task-form">
+                        <div class="fields">
+                            <div class="field">
+                                <div class="name for-input">[`Repeat mode`]</div>
+                                <div class="value">
+                                    <div class="wa-select small">
+                                        <select name="data[repeat][mode]">
+                                            {html_options options=[
+                                                '' => _w('Do not repeat'),
+                                                'on_complete' => _w('On close'),
+                                                'on_due' => _w('On due date')
+                                            ] selected=$task.repeat.mode}
+                                        </select>
+                                    </div>
+                                    <p class="hint{if !empty($task.repeat.mode) || $task.repeat.mode != 'on_complete'} hidden{/if}" data-mode="on_complete">
+                                        {_w('Every time this task is closed, its new copy will be instantly re-created with a new due date as specified below.')}
+                                    </p>
+                                    <p class="hint{if !empty($task.repeat.mode) || $task.repeat.mode != 'on_due'} hidden{/if}" data-mode="on_due">
+                                        {_w('This task will re-create itself in the background every time its due date passes, even if the original task remains untouched.')}
+                                        <br><br>
+                                        {_w('For better background process automation, setting up cron is recommended.')} <a href="#/automation/" target="_blank">[`Automation settings`]&nbsp;&rsaquo;</a>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="field js-how-often-field{if empty($task.repeat.mode)} hidden{/if}">
+                                <div class="name for-input">[`How often`]</div>
+                                <div class="value">
+                                    <span class="small custom-mr-4">[`Every`]</span>
+                                    <input type="number" min="1" step="1" class="small number shortest custom-mr-8" name="data[repeat][frequency]" value="{$task.repeat.frequency|escape}">
+                                    <div class="wa-select small">
+                                        <select name="data[repeat][measure]">
+                                            {html_options options=[
+                                                'day' => _w('days'),
+                                                'week' => _w('weeks'),
+                                                'month' => _w('months'),
+                                                'year' => _w('years')
+                                            ] selected=$task.repeat.measure}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {else}
+                        <template id="repeat-task-form-no-premium">
+                            <div class="dialog">
+                                <div class="dialog-background"></div>
+                                <div class="dialog-body">
+                                    <a href="#" class="dialog-close js-close-dialog custom-p-8"><i class="fas fa-times"></i></a>
+                                    <div class="dialog-content">
+                                        <div class="custom-mt-24">
+                                            <div class="align-center">
+                                                <img src="{$wa_app_static_url}img/tasks.svg" alt="" class="align-center" style="width: 96px;height: 96px;">
+                                                <h3 class="wide align-center">[`Premium only`]</h3>
+                                            </div>
+
+                                            <div class="flexbox vertical middle space-16 wrap custom-mt-16">
+                                                <p class="small align-center custom-mx-48">[`Upgrade to premium to have the feature enabled and this message to disappear permanently.`]</p>
+                                                <a href="{$wa_backend_url}tasks/#/upgrade/" class="button purple">
+                                                    [`See what’s there in premium`]
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    {/if}
+
                     <!-- plugin hook: 'backend_task_edit.%plugin_id.after_fields' -->
                     {* @event backend_task_edit.%plugin_id%.after_fields *}
                     {foreach $backend_task_edit as $_}{ifset($_.after_fields)}{/foreach}
@@ -513,6 +621,25 @@
                                 </div>
                             {/foreach}
 
+                            {foreach $task.files as $file}
+                                {if !tasksTask::isVideoAttachment($file)}{continue}{/if}
+                                <div class="t-image-item" data-file-ident="{$file.id}">
+                                    <div class="t-image-link" title="{$file.name|escape}">
+                                        <video controls preload="metadata" style="max-width: 100%; max-height: 180px; vertical-align: middle;">
+                                            <source src="?module=attachments&action=download&id={$file.id}">
+                                        </video>
+                                    </div>
+                                    <div class="t-file-name">{$file.name|escape}</div>
+                                    <div class="t-file-size">{$file.size|wa_format_file_size}</div>
+                                    <a class="button smaller light-gray" href="?module=attachments&action=download&id={$file.id}" target="_blank" download>
+                                    <div class="custom-mt-4">
+                                            <i class="fas fa-cloud-download-alt custom-mr-4"></i>[`Download`]
+                                        </a>
+                                    </div>
+                                    <a class="t-file-delete" href="javascript:void(0);"></a>
+                                </div>
+                            {/foreach}
+
                             <div class="t-image-item is-template">
                                 <div class="t-image-link">
                                     <img src="" alt="">
@@ -525,6 +652,7 @@
                         </div>
                         <div class="t-files-list">
                             {foreach $task.files as $file}
+                                {if tasksTask::isVideoAttachment($file)}{continue}{/if}
                                 <div class="t-file-item" data-file-ident="{$file.id}">
                                     <a class="t-file-link" href="?module=attachments&action=download&id={$file.id}" title="{$file.name|escape}">
                                         <i class="fas fa-paperclip custom-mr-4"></i>
@@ -596,6 +724,99 @@
     </div>
 </div>
 
+<style>
+    .t-spellcheck-compare-dialog .dialog-body {
+        width: min(1100px, calc(100vw - 2rem));
+        max-width: calc(100vw - 2rem);
+    }
+
+    .t-spellcheck-compare {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1rem;
+    }
+
+    .t-spellcheck-compare__column {
+        min-width: 0;
+    }
+
+    .t-spellcheck-compare__title {
+        margin: 0 0 0.75rem;
+        font-size: 1rem;
+        line-height: 1.25;
+    }
+
+    .t-spellcheck-compare__panel {
+        min-height: 18rem;
+        max-height: min(60vh, 42rem);
+        overflow: auto;
+        padding: 1rem;
+        border: 1px solid var(--border-color-soft, #d9d9d9);
+        border-radius: 0.5rem;
+        background: var(--background-color-blank, #fff);
+        line-height: 1.5;
+        word-break: break-word;
+    }
+
+    .t-spellcheck-compare__panel > :first-child {
+        margin-top: 0;
+    }
+
+    .t-spellcheck-compare__panel > :last-child {
+        margin-bottom: 0;
+    }
+
+    .t-spellcheck-compare__panel p,
+    .t-spellcheck-compare__panel ul,
+    .t-spellcheck-compare__panel ol,
+    .t-spellcheck-compare__panel blockquote,
+    .t-spellcheck-compare__panel pre {
+        margin: 0 0 1rem;
+    }
+
+    .t-spellcheck-compare__panel ul,
+    .t-spellcheck-compare__panel ol {
+        padding-left: 1.5rem;
+    }
+
+    .t-spellcheck-compare__panel blockquote {
+        padding-left: 1rem;
+        border-left: 3px solid var(--border-color-soft, #d9d9d9);
+        color: var(--text-color-hint, #666);
+    }
+
+    .t-spellcheck-compare__panel pre,
+    .t-spellcheck-compare__panel code {
+        font-family: monospace;
+    }
+
+    .t-spellcheck-compare__panel pre {
+        padding: 0.75rem;
+        border-radius: 0.375rem;
+        background: var(--background-color-input-solid, #f5f5f5);
+        overflow: auto;
+    }
+
+    .t-spellcheck-compare__panel code {
+        white-space: pre-wrap;
+    }
+
+    .t-spellcheck-compare__panel img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    @media (max-width: 760px) {
+        .t-spellcheck-compare {
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+        .t-spellcheck-compare__panel {
+            max-height: 24rem;
+        }
+    }
+</style>
+
 <script>
 (function () {
     if (!lexicalEditor) return;
@@ -603,8 +824,53 @@
     const $el = $('#redactor-task-{$task_uuid}');
     const $spellcheckBtn = $('.t-form-line-spellcheck-chip');
     const $writeAiBtn = $('.t-form-line-write-ai-chip');
+    const $writeAiBtnLabel = $writeAiBtn.find('.js-write-ai-label');
     const $spellcheckBtnParent = $spellcheckBtn.parent();
+    const $repeatBtn = $('#t-edit-task-form .t-repeat-wrapper');
+    const repeatDefaultTitle = {_w("Repeat")|json_encode};
+    const repeatEveryPattern = {_w("Every %d %s")|json_encode};
+    const repeatPluralRules = typeof Intl !== 'undefined' && typeof Intl.PluralRules === 'function'
+        ? new Intl.PluralRules({$wa->locale()|replace:'_':'-'|json_encode})
+        : null;
+    const repeatSingleTitles = {
+        day: {_w("Every day")|json_encode},
+        week: {_w("Every week")|json_encode},
+        month: {_w("Every month")|json_encode},
+        year: {_w("Every year")|json_encode}
+    };
+    const repeatMeasureTitles = {
+        day: {
+            one: {_ws("day", "days", 1)|json_encode},
+            few: {_ws("day", "days", 2)|json_encode},
+            many: {_ws("day", "days", 5)|json_encode},
+            other: {_ws("day", "days", 0)|json_encode}
+        },
+        week: {
+            one: {_w("week", "weeks", 1)|json_encode},
+            few: {_w("week", "weeks", 2)|json_encode},
+            many: {_w("week", "weeks", 5)|json_encode},
+            other: {_w("week", "weeks", 0)|json_encode}
+        },
+        month: {
+            one: {_ws("month", "months", 1)|json_encode},
+            few: {_ws("month", "months", 2)|json_encode},
+            many: {_ws("month", "months", 5)|json_encode},
+            other: {_ws("month", "months", 0)|json_encode}
+        },
+        year: {
+            one: {_ws("year", "years", 1)|json_encode},
+            few: {_ws("year", "years", 2)|json_encode},
+            many: {_ws("year", "years", 5)|json_encode},
+            other: {_ws("year", "years", 0)|json_encode}
+        }
+    };
+    const writeAiDefaultLabel = {_w("Write with AI")|json_encode};
+    const writeAiContinueLabel = {_w("Continue with AI")|json_encode};
+    const writeAiContinueThreshold = 100;
     let spellcheckInProcess = false;
+    let taskAiDrawer = null;
+    let taskAiDrawerPromise = null;
+    let taskAiDrawerKeyupHandler = null;
 
     window.waRedactorTaskInit = () => {
         $el.parent().find('.lexical-editor').remove();
@@ -624,23 +890,661 @@
         });
 
         TasksController.storageDataInMdMode($el[0], 'getDraftKeyTaskText');
+        updateWriteAiLabel();
     };
+
+    function normalizeWriteAiText (value) {
+        return String(value || '')
+            .replace(/\s+/g, ' ')
+            .trim();
+    }
+
+    function getWriteAiComparableText () {
+        const $editorInput = $el.parent().find('.lexical-editor .editor-input').first();
+
+        if ($editorInput.length) {
+            return normalizeWriteAiText($editorInput.text());
+        }
+
+        return normalizeWriteAiText($el.val());
+    }
+
+    function updateWriteAiLabel () {
+        const nextLabel = getWriteAiComparableText().length >= writeAiContinueThreshold
+            ? writeAiContinueLabel
+            : writeAiDefaultLabel;
+
+        $writeAiBtnLabel.text(nextLabel);
+    }
+
+    function hideTaskAiDrawer() {
+        if (taskAiDrawer) {
+            taskAiDrawer.hide();
+        }
+    }
+
+    function copyTextToClipboard(plain, rich) {
+        const normalizedPlain = String(plain || '');
+        const normalizedRich = String(rich || normalizedPlain);
+
+        if (typeof window.ClipboardItem !== 'undefined'
+            && navigator.clipboard
+            && typeof navigator.clipboard.write === 'function'
+        ) {
+            const clipboardItem = new ClipboardItem({
+                'text/plain': new Blob([normalizedPlain], {
+                    type: 'text/plain'
+                }),
+                'text/html': new Blob([normalizedRich], {
+                    type: 'text/html'
+                })
+            });
+
+            return navigator.clipboard.write([clipboardItem]);
+        }
+
+        return new Promise((resolve, reject) => {
+            const callback = function (event) {
+                event.clipboardData.setData('text/plain', normalizedPlain);
+                event.clipboardData.setData('text/html', normalizedRich);
+                event.preventDefault();
+            };
+
+            try {
+                document.addEventListener('copy', callback);
+                if (document.execCommand('copy')) {
+                    resolve();
+                } else {
+                    reject(new Error('Copy command failed'));
+                }
+            } catch (error) {
+                reject(error);
+            } finally {
+                document.removeEventListener('copy', callback);
+            }
+        });
+    }
+
+    function showTaskAiCopyNotification(options) {
+        const settings = $.extend({
+            className: 'success',
+            content: '',
+            timeout: 2000
+        }, options || {});
+
+        let $wrapper = $('#t-notifications');
+        if (!$wrapper.length) {
+            $wrapper = $('<div class="alert-fixed-box" id="t-notifications"></div>').appendTo('body');
+        }
+
+        const $alert = $('<div class="alert"></div>')
+            .addClass(settings.className)
+            .html(settings.content);
+
+        $wrapper.append($alert);
+
+        if (settings.timeout > 0) {
+            setTimeout(function () {
+                $alert.remove();
+            }, settings.timeout);
+        }
+    }
+
+    function scrollTaskAiErrorBlock($error_block) {
+        if ($error_block.length && $error_block[0] && typeof $error_block[0].scrollIntoView === 'function') {
+            $error_block[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }
+
+    function bindTaskAiDrawerHideControls($wrapper) {
+        if (taskAiDrawerKeyupHandler) {
+            $(document).off('keyup.taskAiDrawer', taskAiDrawerKeyupHandler);
+        }
+
+        $wrapper.off('.taskAiDrawerHide');
+        $wrapper.on('click.taskAiDrawerHide', '.js-task-ai-hide-drawer', function (event) {
+            event.preventDefault();
+            hideTaskAiDrawer();
+        });
+
+        taskAiDrawerKeyupHandler = function (event) {
+            if (event.keyCode === 27 && taskAiDrawer && taskAiDrawer.is_visible) {
+                hideTaskAiDrawer();
+            }
+        };
+
+        $(document).on('keyup.taskAiDrawer', taskAiDrawerKeyupHandler);
+    }
+
+    function initTaskAiDrawer($wrapper, task_title, task_content) {
+        const AUTO_VALUE = '__auto__';
+        let try_free = !$wrapper.find('.js-premium-wrapper').length;
+        let lastGeneratedContent = '';
+        let lastGeneratedHtml = '';
+
+        bindTaskAiDrawerHideControls($wrapper);
+
+        if (!try_free) {
+            $wrapper.find('.js-premium-wrapper').show();
+            $wrapper.find('.dialog-ai-fields-container-wrapper').addClass('hidden');
+            $wrapper.find('.drawer-footer').addClass('hidden');
+            $wrapper.find('.drawer-header').addClass('hidden');
+        }
+
+        $wrapper.find('[name="objective"]').val(task_title + '\n' + task_content);
+
+        $wrapper.find('.js-try-free-ai').off('.taskAiDrawer').on('click.taskAiDrawer', function() {
+            const $self = $(this);
+
+            $.post('?module=tasks&action=ai&type=tryFree', (r) => {
+                if (r.status === 'ok') {
+                    if (r.data.is_max_count) {
+                        $wrapper.find('.js-after-try-free-ai').show();
+                        $self.remove();
+                    }
+
+                    $wrapper.find('.js-premium-wrapper').hide();
+                    $wrapper.find('.dialog-ai-fields-container-wrapper').removeClass('hidden');
+                    $wrapper.find('.drawer-footer').removeClass('hidden');
+                    $wrapper.find('.drawer-header').removeClass('hidden');
+                    try_free = true;
+                }
+            });
+        });
+
+        $wrapper.find('.js-paste-ai-answer-result').off('.taskAiDrawer').on('click.taskAiDrawer', function(event) {
+            event.preventDefault();
+
+            if (!lastGeneratedContent) {
+                return;
+            }
+
+            window.lexicalEditor.updateContent('redactor-task-{$task_uuid}', lastGeneratedContent, {
+                isMarkdown: true,
+            });
+
+            hideTaskAiDrawer();
+        });
+
+        $wrapper.find('.js-copy-ai-answer-result').off('.taskAiDrawer').on('click.taskAiDrawer', function(event) {
+            event.preventDefault();
+
+            if (!lastGeneratedContent) {
+                return;
+            }
+
+            copyTextToClipboard(lastGeneratedContent, lastGeneratedHtml)
+                .then(function () {
+                    showTaskAiCopyNotification({
+                        className: 'success',
+                        content: '[`Copied`]'
+                    });
+                })
+                .catch(function () {
+                    showTaskAiCopyNotification({
+                        className: 'danger',
+                        content: '[`Copying error`]'
+                    });
+                });
+        });
+
+        $wrapper.find('.js-write-ai-action').off('.taskAiDrawer').on('click.taskAiDrawer', function () {
+            if (!try_free) {
+                return false;
+            }
+
+            const $error_block = $wrapper.find('.js-errors-block');
+            $error_block.empty();
+
+            const $btn = $wrapper.find('.js-write-ai-action');
+            $btn.prop('disabled', true);
+            $btn.find('.fa-spinner').show();
+
+            const autoRadioNames = $wrapper.find('.dialog-ai-field-items input[type="radio"]:checked').map(function () {
+                return this.value === AUTO_VALUE ? this.name : null;
+            }).get();
+
+            const requestData = $wrapper.find(':input').serializeArray().filter(function (field) {
+                return !(field.value === AUTO_VALUE && autoRadioNames.indexOf(field.name) !== -1);
+            });
+
+            $.post('?module=tasks&action=ai&type=writetask', requestData, function (response) {
+                if (response?.status === 'ok' && response.data?.format_content) {
+                    lastGeneratedContent = response.data.content || '';
+                    lastGeneratedHtml = response.data.format_content || '';
+                    $wrapper.find('.drawer-ai-answer .js-ai-answer-result').html(response.data.format_content);
+                    $wrapper.find('.drawer-ai-answer').removeClass('hidden');
+                }
+
+                if (response?.status === 'fail') {
+                    if (response?.errors?.error_description) {
+                        $error_block.append($('<span style="color: red;"></span>').html(response.errors.error_description));
+                        scrollTaskAiErrorBlock($error_block);
+                    }
+
+                    if (response?.errors?.length) {
+                        $.each(response.errors, function (i, error) {
+                            const $error = $('<span style="color: red;"></span>').text(error[0] || error);
+                            $error_block.append($error);
+                        });
+                        scrollTaskAiErrorBlock($error_block);
+                    }
+                }
+            }).error(function(error) {
+                $error_block.append($('<span style="color: red;"></span>').text(error.responseText || error.statusText || 'Error'));
+                scrollTaskAiErrorBlock($error_block);
+            }).always(function() {
+                $btn.prop('disabled', false);
+                $btn.find('.fa-spinner').hide();
+            });
+        });
+    }
+
+    function getTaskAiDrawer(task_title, task_content) {
+        if (taskAiDrawer) {
+            return $.Deferred().resolve(taskAiDrawer).promise();
+        }
+
+        if (taskAiDrawerPromise) {
+            return taskAiDrawerPromise;
+        }
+
+        taskAiDrawerPromise = $.ajax({
+            url: '?module=tasks&action=ai&type=taskfields&html=1',
+            method: 'GET',
+            dataType: 'json',
+            timeout: 10000
+        })
+            .then(function (response) {
+                taskAiDrawer = $.waDrawer({
+                    html: response.data?.html,
+                    esc: false,
+                    onBgClick: function () {
+                        hideTaskAiDrawer();
+                    },
+                    onOpen: function ($wrapper) {
+                        initTaskAiDrawer($wrapper, task_title, task_content);
+                    }
+                });
+
+                return taskAiDrawer;
+            })
+            .fail(function (_jqXHR, textStatus) {
+                if (textStatus === 'timeout') {
+                    $.waDialog.alert({
+                        text: '[`Could not connect to Webasyst AI service. Please try again in a minute.`]'
+                    });
+                }
+            })
+            .always(function () {
+                taskAiDrawerPromise = null;
+            });
+
+        return taskAiDrawerPromise;
+    }
+
+    updateWriteAiLabel();
+    $el.off('.writeAiLabel');
+    $el.on('input.writeAiLabel change.writeAiLabel', updateWriteAiLabel);
+
+    function escapeHtml (value) {
+        return String(value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
+    function getSpellcheckSourceHtml () {
+        const $editorInput = $el.parent().find('.lexical-editor .editor-input').first();
+        const sourceHtml = $editorInput.length ? $editorInput.html().trim() : '';
+
+        if (sourceHtml) {
+            return sourceHtml;
+        }
+
+        const escapedHtml = escapeHtml($el.val()).replace(/\r?\n/g, '<br>');
+
+        return '<div>' + escapedHtml + '</div>';
+    }
+
+    function isSpellcheckPlaceholder (value) {
+        if (typeof window.spellCheckIsPlaceholder === 'function') {
+            return window.spellCheckIsPlaceholder(value);
+        }
+
+        return /^(?:__)?(?:BLOCK|INLINE|QUOTE|MENTION|HASHTAG)_PLACEHOLDER_\d+(?:__)?$/.test(String(value));
+    }
+
+    function normalizeSpellcheckPlaceholders (text) {
+        return String(text).replace(/(?:__)?((?:BLOCK|INLINE|QUOTE|MENTION|HASHTAG)_PLACEHOLDER_\d+)(?:__)?/g, '$1');
+    }
+
+    function normalizeSpellcheckToken (text) {
+        return normalizeSpellcheckPlaceholders(String(text)
+            .replace(/\u00a0/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim());
+    }
+
+    function shouldSkipSpellcheckHighlightNode (node) {
+        const parent = node.parentElement || node.parentNode;
+
+        return parent && parent.closest && parent.closest('pre, code, script, style');
+    }
+
+    function isSpellcheckSkippedToken (token) {
+        return token.ranges.length && token.ranges.every((range) => range.skipHighlight);
+    }
+
+    function addSpellcheckRange (token, node, start, end, skipHighlight) {
+        const lastRange = token.ranges[token.ranges.length - 1];
+
+        token.text += node.nodeValue.slice(start, end);
+
+        if (lastRange && lastRange.node === node && lastRange.end === start && lastRange.skipHighlight === skipHighlight) {
+            lastRange.end = end;
+            return;
+        }
+
+        token.ranges.push({ node, start, end, skipHighlight });
+    }
+
+    function isSpellcheckTokenBoundaryElement (node) {
+        return /^(BR|P|DIV|LI|UL|OL|BLOCKQUOTE|PRE|CODE|SCRIPT|STYLE|H[1-6]|TABLE|THEAD|TBODY|TFOOT|TR|TD|TH)$/.test(node.nodeName);
+    }
+
+    function collectSpellcheckDomTokens (root) {
+        const tokens = [];
+        let token = null;
+
+        function flushToken () {
+            if (token) {
+                tokens.push(token);
+                token = null;
+            }
+        }
+
+        function collectTextNode (node) {
+            const value = node.nodeValue;
+            const skipHighlight = shouldSkipSpellcheckHighlightNode(node);
+            let rangeStart = null;
+
+            for (let i = 0; i < value.length; i++) {
+                if (/\s/.test(value.charAt(i))) {
+                    if (rangeStart !== null) {
+                        token = token || { text: '', ranges: [] };
+                        addSpellcheckRange(token, node, rangeStart, i, skipHighlight);
+                        rangeStart = null;
+                    }
+                    flushToken();
+                    continue;
+                }
+
+                if (rangeStart === null) {
+                    rangeStart = i;
+                }
+            }
+
+            if (rangeStart !== null) {
+                token = token || { text: '', ranges: [] };
+                addSpellcheckRange(token, node, rangeStart, value.length, skipHighlight);
+            }
+        }
+
+        function walkNode (node) {
+            if (node.nodeType === Node.TEXT_NODE) {
+                collectTextNode(node);
+                return;
+            }
+
+            if (node.nodeType !== Node.ELEMENT_NODE) {
+                return;
+            }
+
+            const isBoundary = node !== root && isSpellcheckTokenBoundaryElement(node);
+
+            if (isBoundary) {
+                flushToken();
+            }
+
+            if (node.nodeName === 'BR') {
+                return;
+            }
+
+            Array.prototype.forEach.call(node.childNodes, walkNode);
+
+            if (isBoundary) {
+                flushToken();
+            }
+        }
+
+        walkNode(root);
+
+        flushToken();
+
+        return tokens;
+    }
+
+    function highlightSpellcheckRanges (doc, rangesByNode) {
+        rangesByNode.forEach((ranges, node) => {
+            const fragment = doc.createDocumentFragment();
+            let offset = 0;
+
+            ranges.sort((left, right) => left.start - right.start);
+
+            ranges.forEach((range) => {
+                if (range.start > offset) {
+                    fragment.appendChild(doc.createTextNode(node.nodeValue.slice(offset, range.start)));
+                }
+
+                const highlighted = doc.createElement('span');
+                highlighted.className = 'highlighted';
+                highlighted.textContent = node.nodeValue.slice(range.start, range.end);
+                fragment.appendChild(highlighted);
+                offset = range.end;
+            });
+
+            if (offset < node.nodeValue.length) {
+                fragment.appendChild(doc.createTextNode(node.nodeValue.slice(offset)));
+            }
+
+            node.parentNode.replaceChild(fragment, node);
+        });
+    }
+
+    function addSpellcheckHighlightRanges (rangesByNode, range) {
+        const placeholderPattern = /(?:__)?(?:BLOCK|INLINE|QUOTE|MENTION|HASHTAG)_PLACEHOLDER_\d+(?:__)?/g;
+        const text = range.node.nodeValue.slice(range.start, range.end);
+        let offset = 0;
+        let match;
+
+        function addRange (start, end) {
+            if (start >= end) {
+                return;
+            }
+
+            if (!rangesByNode.has(range.node)) {
+                rangesByNode.set(range.node, []);
+            }
+
+            rangesByNode.get(range.node).push({
+                node: range.node,
+                start: range.start + start,
+                end: range.start + end
+            });
+        }
+
+        while ((match = placeholderPattern.exec(text)) !== null) {
+            addRange(offset, match.index);
+            offset = match.index + match[0].length;
+        }
+
+        addRange(offset, text.length);
+    }
+
+    function getSpellcheckComparableTokens (tokens) {
+        return tokens.map((token, index) => {
+            return {
+                index: index,
+                value: normalizeSpellcheckToken(token.text),
+                token: token
+            };
+        }).filter((item) => {
+            return item.value && !isSpellcheckSkippedToken(item.token) && !isSpellcheckPlaceholder(item.token.text);
+        });
+    }
+
+    function getSpellcheckGreedyMatchedRightTokenIndexes (sourceItems, rightItems) {
+        const rightIndexesByValue = new Map();
+        const rightCursorByValue = new Map();
+        const matchedRightIndexes = new Set();
+        let minRightIndex = -1;
+
+        rightItems.forEach((item) => {
+            if (!rightIndexesByValue.has(item.value)) {
+                rightIndexesByValue.set(item.value, []);
+            }
+
+            rightIndexesByValue.get(item.value).push(item.index);
+        });
+
+        sourceItems.forEach((sourceItem) => {
+            const rightIndexes = rightIndexesByValue.get(sourceItem.value);
+            let cursor = rightCursorByValue.get(sourceItem.value) || 0;
+
+            if (!rightIndexes) {
+                return;
+            }
+
+            while (cursor < rightIndexes.length && rightIndexes[cursor] <= minRightIndex) {
+                cursor++;
+            }
+
+            if (cursor < rightIndexes.length) {
+                minRightIndex = rightIndexes[cursor];
+                matchedRightIndexes.add(minRightIndex);
+                rightCursorByValue.set(sourceItem.value, cursor + 1);
+            }
+        });
+
+        return matchedRightIndexes;
+    }
+
+    function getSpellcheckMatchedRightTokenIndexes (sourceTokens, rightTokens) {
+        const sourceItems = getSpellcheckComparableTokens(sourceTokens);
+        const rightItems = getSpellcheckComparableTokens(rightTokens);
+        const sourceValues = sourceItems.map((item) => item.value);
+        const rightValues = rightItems.map((item) => item.value);
+        const rowCount = sourceValues.length + 1;
+        const columnCount = rightValues.length + 1;
+        const maxLcsCells = 4000000;
+        const lcs = [];
+        const matchedRightIndexes = new Set();
+
+        if (rowCount * columnCount > maxLcsCells) {
+            return getSpellcheckGreedyMatchedRightTokenIndexes(sourceItems, rightItems);
+        }
+
+        for (let i = 0; i < rowCount; i++) {
+            lcs.push(new Uint32Array(columnCount));
+        }
+
+        for (let i = sourceValues.length - 1; i >= 0; i--) {
+            for (let j = rightValues.length - 1; j >= 0; j--) {
+                if (sourceValues[i] === rightValues[j]) {
+                    lcs[i][j] = lcs[i + 1][j + 1] + 1;
+                } else {
+                    lcs[i][j] = Math.max(lcs[i + 1][j], lcs[i][j + 1]);
+                }
+            }
+        }
+
+        let sourceIndex = 0;
+        let rightIndex = 0;
+
+        while (sourceIndex < sourceValues.length && rightIndex < rightValues.length) {
+            if (sourceValues[sourceIndex] === rightValues[rightIndex]) {
+                matchedRightIndexes.add(rightItems[rightIndex].index);
+                sourceIndex++;
+                rightIndex++;
+            } else if (lcs[sourceIndex + 1][rightIndex] >= lcs[sourceIndex][rightIndex + 1]) {
+                sourceIndex++;
+            } else {
+                rightIndex++;
+            }
+        }
+
+        return matchedRightIndexes;
+    }
+
+    function parseSpellcheckHtml (html) {
+        return (new DOMParser()).parseFromString('<div>' + html + '</div>', 'text/html');
+    }
+
+    function highlightSpellcheckChanges (sourceHtml, rightHtml) {
+        if (!rightHtml) {
+            return rightHtml;
+        }
+
+        const sourceDoc = parseSpellcheckHtml(sourceHtml);
+        const rightDoc = parseSpellcheckHtml(rightHtml);
+        const sourceRoot = sourceDoc.body.firstChild;
+        const rightRoot = rightDoc.body.firstChild;
+        const rangesByNode = new Map();
+
+        if (!rightRoot) {
+            return rightHtml;
+        }
+
+        const sourceTokens = sourceRoot ? collectSpellcheckDomTokens(sourceRoot) : [];
+        const rightTokens = collectSpellcheckDomTokens(rightRoot);
+        const matchedRightIndexes = getSpellcheckMatchedRightTokenIndexes(sourceTokens, rightTokens);
+
+        rightTokens.forEach((token, index) => {
+            if (matchedRightIndexes.has(index) || isSpellcheckSkippedToken(token) || isSpellcheckPlaceholder(token.text)) {
+                return;
+            }
+
+            token.ranges.forEach((range) => {
+                if (range.skipHighlight) {
+                    return;
+                }
+
+                addSpellcheckHighlightRanges(rangesByNode, range);
+            });
+        });
+
+        highlightSpellcheckRanges(rightDoc, rangesByNode);
+
+        return rightRoot.innerHTML;
+    }
 
     function runSpellCheck () {
         if (!window.spellCheck || spellcheckInProcess) return;
         const text = $el.val();
+        const sourceHtml = getSpellcheckSourceHtml();
 
         spellcheckInProcess = true;
         $spellcheckBtn.find('.icon').addClass('shimmer');
         window.spellCheck(text).then((correctedText) => {
             const { restored, formated } = correctedText;
+            const highlightedHtml = highlightSpellcheckChanges(sourceHtml, formated);
             textReplaceConfirm({
                 title: "[`AI response`]",
-                text: formated,
+                left_title: '[`Original text`]',
+                left_html: sourceHtml,
+                right_title: '[`Corrected text`]',
+                right_html: highlightedHtml,
+                copy_plain_text: restored,
+                dialog_class: 't-spellcheck-compare-dialog',
                 success_button_title: '[`Get the entire text`]',
                 success_button_class: 'blue',
                 cancel_button_title: '[`Close`]',
                 cancel_button_class: 'light-gray',
+                copy_button_title: '[`Copy`]',
+                copied_button_title: '[`Copied`]',
                 onSuccess: () => {
                     $el.val(restored).trigger('input').trigger('change');
                     waRedactorTaskInit();
@@ -677,135 +1581,205 @@
         const task_title = $form.find('[name="data[name]"]').val();
         const task_content = $form.find('[name="data[text]"]').val();
 
-        $.get('?module=tasks&action=ai&type=taskfields&html=1', function (response) {
-
-            $.waDialog({
-                html: response.data?.html,
-                onOpen: function ($wrapper, dialog) {
-                    let try_free = !$wrapper.find('.js-premium-wrapper').length;
-
-                    if (!try_free) {
-                        $wrapper.find('.js-premium-wrapper').show();
-                        $wrapper.find('.dialog-ai-fields-container-wrapper').addClass('hidden');
-                        $wrapper.find('.dialog-footer').addClass('hidden');
-                        $wrapper.find('.dialog-header').addClass('hidden');
-                        dialog.resize();
-                    }
-
-                    $wrapper.find('[name="objective"]').val(task_title + '\n' + task_content);
-
-                    $wrapper.find('.js-try-free-ai').on('click', function() {
-                        const $self = $(this);
-
-                         $.post('?module=tasks&action=ai&type=tryFree', (r) => {
-                            if (r.status === 'ok') {
-                                if (r.data.is_max_count) {
-                                    $wrapper.find('.js-after-try-free-ai').show();
-                                    $self.remove();
-                                }
-
-                                $wrapper.find('.js-premium-wrapper').hide();
-                                $wrapper.find('.dialog-ai-fields-container-wrapper').removeClass('hidden');
-                                $wrapper.find('.dialog-footer').removeClass('hidden');
-                                $wrapper.find('.dialog-header').removeClass('hidden');
-                                try_free = true;
-                                dialog.resize();
-                            }
-                        });
-                    });
-
-                    $('.js-write-ai-action').on('click', function (e) {
-
-                        if (!try_free) {
-                            return false;
-                        }
-
-                        const $error_block = $('.js-errors-block');
-                        $error_block.empty();
-
-                        const $btn = $wrapper.find('.js-write-ai-action');
-                        $btn.prop('disabled', true);
-                        $btn.find('.fa-spinner').show();
-
-                        $.post('?module=tasks&action=ai&type=writetask', $wrapper.find(':input').serializeArray(), function (response) {
-                            $wrapper.find('.js-write-ai-action').prop('disabled', false);
-                            if (response?.status === 'ok' && response.data?.format_content) {
-                                $wrapper.find('.dialog-ai-answer .js-ai-answer-result').html(response.data.format_content);
-                                $wrapper.find('.dialog-ai-answer').removeClass('hidden');
-                                $wrapper.find('.js-paste-ai-answer-result').on('click', function(e) {
-                                    e.preventDefault();
-                                    window.lexicalEditor.updateContent('redactor-task-{$task_uuid}', response.data.content, { 
-                                        isMarkdown: true,
-                                    });
-                                    dialog.close();
-                                });
-                                dialog.resize();
-                                if (!$wrapper.find('.js-premium-wrapper').length) {
-                                    $wrapper.find('.js-write-ai-action').prop('disabled', false);
-                                    try_free = false;
-                                }
-                            }
-
-                            if(response?.status === 'fail') {
-
-                                if(response?.errors?.error_description) {
-                                    $error_block.append($('<span style="color: red;"></span>').text(response.errors.error_description));
-                                    $error_block[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
-                                }
-
-                                if(response?.errors?.length){
-                                    $.each(response.errors, function (i, error) {
-                                        const $error = $('<span style="color: red;"></span>').text(error[0] || error);
-                                        $error_block.append($error);
-                                    });
-                                    $error_block[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
-                                }
-
-                                dialog.close();
-                            }
-                        }).error(function(error) {
-                            $error_block.append($('<span style="color: red;"></span>').text(error.responseText || error.statusText || 'Error'));
-                            $error_block[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
-                            dialog.close();
-                        }).always(function() {
-                            $btn.prop('disabled', false);
-                            $btn.find('.fa-spinner').hide();
-                        });
-                    });
-                }
-            });
+        getTaskAiDrawer(task_title, task_content).then(function (drawer) {
+            if (drawer && !drawer.is_visible) {
+                drawer.show();
+            }
         });
     });
 
     $el.on('input', checkLength);
 
+    function getRepeatMeasureTitle(measure, frequency) {
+        const measureTitles = repeatMeasureTitles[measure];
+
+        if (!measureTitles) {
+            return '';
+        }
+
+        const pluralCategory = repeatPluralRules
+            ? repeatPluralRules.select(frequency)
+            : (frequency === 1 ? 'one' : 'other');
+
+        return measureTitles[pluralCategory]
+            || measureTitles.other
+            || measureTitles.many
+            || measureTitles.few
+            || measureTitles.one
+            || '';
+    }
+
+    function syncRepeatChipTitle($scope) {
+        const $mode = $scope.find('select[name="data[repeat][mode]"]');
+        const $frequency = $scope.find('input[name="data[repeat][frequency]"]');
+        const $measure = $scope.find('select[name="data[repeat][measure]"]');
+        const $link = $repeatBtn.find('a');
+        const $text = $link.find('> span').last();
+
+        let title = repeatDefaultTitle;
+
+        if ($mode.val()) {
+            const frequency = Math.max(1, parseInt($frequency.val(), 10) || 1);
+            const measure = $measure.val();
+            const measureTitle = getRepeatMeasureTitle(measure, frequency) || $.trim($measure.find('option:selected').text());
+
+            if (frequency === 1 && repeatSingleTitles[measure]) {
+                title = repeatSingleTitles[measure];
+            } else {
+                title = repeatEveryPattern
+                    .replace('%d', frequency)
+                    .replace('%s', measureTitle);
+            }
+        }
+
+        $link.attr('title', title);
+        $text.text(title);
+    }
+
+    $repeatBtn.on('click', function() {
+        {if $wa->tasks->isPremium()}
+            let $repeat_fields_wrapper = $('#t-edit-task-form .js-repeat-task-form');
+            let $repeat_fields = $repeat_fields_wrapper.children().detach();
+            const footer = `<button class="button green outlined js-success-action">{_w("Set the repeat")}</button><button class="button light-gray js-dialog-close custom-ml-8">{_w("Close")}</button>`;
+
+            $.waDialog({
+                header: $('<h1></h1>').text({_w("Repeat")|json_encode}),
+                content: '<div class="js-dialog-form-wrapper"></div>',
+                footer,
+                onOpen: function($wrapper, dialog) {
+                    $wrapper.find('.js-dialog-form-wrapper').append($repeat_fields);
+                    $wrapper.on("click", ".js-success-action", function(event) {
+                        event.preventDefault();
+                        syncRepeatChipTitle($wrapper);
+                        dialog.close();
+                    });
+
+                    const $mode_select = $wrapper.find('select[name="data[repeat][mode]"]');
+                    const $mode_select_hints = $wrapper.find('[data-mode]');
+                    const $how_often_field = $wrapper.find('.js-how-often-field');
+                    $mode_select.on('change', function() {
+                        $mode_select_hints.addClass('hidden');
+                        if(this.value) {
+                            $mode_select_hints.each((i, item) => {
+                                if($(item).attr('data-mode') == this.value) {
+                                    item.classList.remove('hidden');
+                                }
+                          })
+                        }
+
+                        $how_often_field.toggleClass('hidden', !this.value)
+                    })
+                },
+                onClose: function($wrapper) {
+                    $repeat_fields_wrapper.append($repeat_fields);
+                }
+            });
+        {else}
+            $.waDialog({
+                html: $('#repeat-task-form-no-premium').html(),
+            });
+        {/if}
+    });
+
+{literal}
+    function dialogTemplate(header, content, footer, className) {
+        return `<div class="dialog  ${className ? className : ''}">
+            <div class="dialog-background"></div>
+            <div class="dialog-body">
+                <div class="dialog-header">${header}</div>
+                <div class="dialog-content">${content}</div>
+                <div class="dialog-footer">${footer}</div>
+            </div>
+        </div>`
+    }
+{/literal}
     function textReplaceConfirm(options) {
         {literal}
         var deferred = $.Deferred();
 
         var header = ( options.title ? '<h3>' + options.title + '</h3>' : null );
         var text = ( options.text ? options.text : "" );
+        var left_title = ( options.left_title ? options.left_title : "" );
+        var left_html = ( options.left_html ? options.left_html : "" );
+        var right_title = ( options.right_title ? options.right_title : "" );
+        var right_html = ( options.right_html ? options.right_html : "" );
+        var copy_plain_text = ( typeof options.copy_plain_text !== "undefined" ? String(options.copy_plain_text) : $("<div>").html(right_html).text() );
+        var dialog_class = ( options.dialog_class ? options.dialog_class : "" );
         var success_button_title = ( options.success_button_title ? options.success_button_title : $.wa.translate("Confirm") );
         var success_button_class = ( options.success_button_class ? options.success_button_class : "blue" );
         var cancel_button_title = ( options.cancel_button_title ? options.cancel_button_title : $.wa.translate("Cancel") );
         var cancel_button_class = ( options.cancel_button_class ? options.cancel_button_class : "light-gray" );
+        var copy_button_title = ( options.copy_button_title ? options.copy_button_title : $.wa.translate("Copy") );
+        var copied_button_title = ( options.copied_button_title ? options.copied_button_title : $.wa.translate("Copied") );
 
         var success_button = `<button class="js-success-action button ${success_button_class}">${success_button_title}</button>`,
-            cancel_button = `<button class="js-dialog-close button ${cancel_button_class}">${cancel_button_title}</button>`;
+            cancel_button = `<button class="js-dialog-close button ${cancel_button_class}">${cancel_button_title}</button>`,
+            copy_button = `<button class="js-clipboard-copy button outlined blue" data-copied-title="${copied_button_title}"><i class="fas fa-copy"></i><span class="desktop-and-tablet-only custom-ml-4">${copy_button_title}</span></button>`;
 
-        var footer = success_button + cancel_button;
+        var footer = `<div class="t-spellcheck-compare"><div>${cancel_button}</div><div>${success_button}${copy_button}</div></div>`;
 
         var is_success = false;
+        var content = text;
+
+        if (left_html && right_html) {
+            content = `
+                <div class="t-spellcheck-compare">
+                    <div class="t-spellcheck-compare__column">
+                        <h4 class="t-spellcheck-compare__title">${left_title}</h4>
+                        <div class="t-spellcheck-compare__panel">${left_html}</div>
+                    </div>
+                    <div class="t-spellcheck-compare__column">
+                        <h4 class="t-spellcheck-compare__title">${right_title}</h4>
+                        <div class="t-spellcheck-compare__panel">${right_html}</div>
+                    </div>
+                </div>
+            `;
+        }
 
         $.waDialog({
-            header: header,
-            content: text,
-            footer: footer,
+            html: dialogTemplate(header, content, footer, dialog_class),
             onOpen: function($wrapper, dialog) {
                 $wrapper.on("click", ".js-success-action", function(event) {
                     event.preventDefault();
                     is_success = true;
                     dialog.close();
+                });
+
+                $wrapper.on("click", ".js-clipboard-copy", function(event) {
+                    event.preventDefault();
+
+                    const $button = $(this);
+                    const $buttonLabel = $button.find("span").first();
+                    const copiedTitle = String($button.data("copied-title") || "");
+                    const originalLabel = $button.data("original-label") || ($buttonLabel.length ? $buttonLabel.text() : $button.text());
+                    const activeTimerId = $button.data("restore-timer-id");
+
+                    if (activeTimerId) {
+                        clearTimeout(activeTimerId);
+                    }
+
+                    copyTextToClipboard(copy_plain_text, right_html)
+                        .then(function() {
+                            $button.data("original-label", originalLabel);
+
+                            if ($buttonLabel.length) {
+                                $buttonLabel.text(copiedTitle);
+                            } else {
+                                $button.text(copiedTitle);
+                            }
+
+                            const restoreTimerId = setTimeout(function() {
+                                if ($buttonLabel.length) {
+                                    $buttonLabel.text(originalLabel);
+                                } else {
+                                    $button.text(originalLabel);
+                                }
+                                $button.removeData("restore-timer-id");
+                            }, 3000);
+
+                            $button.data("restore-timer-id", restoreTimerId);
+                        })
+                        .catch(function() {});
                 });
             },
             onClose: function($wrapper) {

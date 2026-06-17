@@ -139,9 +139,40 @@ var TasksTagCloudFilterSelector;
         return areEquals(m1, m2);
     };
 
+    var buildContextStringFromListParams = function (params) {
+        params = params || {};
+
+        var parts = [];
+
+        if (params.view) {
+            parts.push('view=' + params.view);
+        }
+        if (params.order) {
+            parts.push('order=' + params.order);
+        }
+        if (params.list_id || params.list_id === 0) {
+            parts.push('list_id=' + params.list_id);
+        }
+        if (params.filters) {
+            parts.push.apply(parts, params.filters.split('&').filter(function (part) {
+                return !!part;
+            }));
+        }
+
+        parts.push('hash=' + (params.hash || ''));
+
+        return parts.join('&');
+    };
+
     var getPageContext = function () {
         var hash = $.tasks.cleanHash(window.location.hash) || '';
-        hash = (hash || '').replace('#/tasks/', '');
+
+        if (hash.indexOf('#/tasks/') !== 0 && $.tasks.last_tasks_list_params) {
+            hash = buildContextStringFromListParams($.tasks.last_tasks_list_params);
+        } else {
+            hash = (hash || '').replace('#/tasks/', '');
+        }
+
         hash = $.tasks.trim(hash, '/');
         if (hash.indexOf('hash=') < 0) {
             hash = 'hash=' + hash;

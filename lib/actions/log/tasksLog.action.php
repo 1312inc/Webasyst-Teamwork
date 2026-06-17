@@ -8,10 +8,18 @@ class tasksLogAction extends tasksTasksAction
 {
     public function execute()
     {
+        if (!wa()->getUser()->getRights('tasks', tasksRightConfig::RIGHT_NAME_KANBAN_LOG)) {
+            throw new waRightsException(_w('Access denied'));
+        }
+
         $request = new tasksApiLogGetListRequest(
             waRequest::request('project_id', null, 'int') ?: null,
             waRequest::request('contact_id', null, 'int') ?: null,
             waRequest::request('milestone_id', null, 'int') ?: null,
+            null,
+            null,
+            null,
+            null,
             (int) waRequest::get('offset', 0, 'int'),
             tasksOptions::getLogsPerPage()
         );
