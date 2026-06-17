@@ -122,5 +122,5 @@ return array(
 
     'api_large_photo_size' => 970,
 
-    'repeating_run_period' => 4*3600,
+    'repeating_run_period' => 3599,
 );
