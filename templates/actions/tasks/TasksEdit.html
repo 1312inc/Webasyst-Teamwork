@@ -1217,31 +1217,15 @@
         return /^(?:__)?(?:BLOCK|INLINE|QUOTE|MENTION|HASHTAG)_PLACEHOLDER_\d+(?:__)?$/.test(String(value));
     }
 
-    function getSpellcheckComparableText (text) {
-        function normalizeMarkdownLinks (value) {
-            return String(value)
-                .replace(/^[ \t]*\[[^\]\n]+\]:[^\n]*(?:\n|$)/gm, '')
-                .replace(/!\[[^\]\n]*\]\([^)]+\)/g, '')
-                .replace(/!\[[^\]\n]*\]\[[^\]\n]*\]/g, '')
-                .replace(/\[([^\]\n]+)\]\([^)]+\)/g, '$1')
-                .replace(/\[([^\]\n]+)\]\[[^\]\n]*\]/g, '$1');
-        }
-
-        if (typeof window.spellCheckExtractCodeBlocks === 'function') {
-            return normalizeMarkdownLinks(window.spellCheckExtractCodeBlocks(text).text);
-        }
-
-        return normalizeMarkdownLinks(text);
-    }
-
-    function tokenizeSpellcheckWords (text) {
-        return String(text)
-            .split(/\s+/)
-            .filter((word) => word.length);
-    }
-
     function normalizeSpellcheckPlaceholders (text) {
         return String(text).replace(/(?:__)?((?:BLOCK|INLINE|QUOTE|MENTION|HASHTAG)_PLACEHOLDER_\d+)(?:__)?/g, '$1');
+    }
+
+    function normalizeSpellcheckToken (text) {
+        return normalizeSpellcheckPlaceholders(String(text)
+            .replace(/\u00a0/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim());
     }
 
     function shouldSkipSpellcheckHighlightNode (node) {
@@ -1396,23 +1380,71 @@
         addRange(offset, text.length);
     }
 
-    function highlightSpellcheckChanges (sourceText, html) {
-        if (!html) {
-            return html;
+    function getSpellcheckMatchedRightTokenIndexes (sourceTokens, rightTokens) {
+        const sourceValues = sourceTokens.map((token) => normalizeSpellcheckToken(token.text));
+        const rightValues = rightTokens.map((token) => normalizeSpellcheckToken(token.text));
+        const rowCount = sourceValues.length + 1;
+        const columnCount = rightValues.length + 1;
+        const lcs = [];
+        const matchedRightIndexes = new Set();
+
+        for (let i = 0; i < rowCount; i++) {
+            lcs.push(new Uint32Array(columnCount));
         }
 
-        const sourceWords = tokenizeSpellcheckWords(getSpellcheckComparableText(sourceText));
-        const parser = new DOMParser();
-        const doc = parser.parseFromString('<div>' + html + '</div>', 'text/html');
-        const root = doc.body.firstChild;
+        for (let i = sourceValues.length - 1; i >= 0; i--) {
+            for (let j = rightValues.length - 1; j >= 0; j--) {
+                if (sourceValues[i] === rightValues[j]) {
+                    lcs[i][j] = lcs[i + 1][j + 1] + 1;
+                } else {
+                    lcs[i][j] = Math.max(lcs[i + 1][j], lcs[i][j + 1]);
+                }
+            }
+        }
+
+        let sourceIndex = 0;
+        let rightIndex = 0;
+
+        while (sourceIndex < sourceValues.length && rightIndex < rightValues.length) {
+            if (sourceValues[sourceIndex] === rightValues[rightIndex]) {
+                matchedRightIndexes.add(rightIndex);
+                sourceIndex++;
+                rightIndex++;
+            } else if (lcs[sourceIndex + 1][rightIndex] >= lcs[sourceIndex][rightIndex + 1]) {
+                sourceIndex++;
+            } else {
+                rightIndex++;
+            }
+        }
+
+        return matchedRightIndexes;
+    }
+
+    function parseSpellcheckHtml (html) {
+        return (new DOMParser()).parseFromString('<div>' + html + '</div>', 'text/html');
+    }
+
+    function highlightSpellcheckChanges (sourceHtml, rightHtml) {
+        if (!rightHtml) {
+            return rightHtml;
+        }
+
+        const sourceDoc = parseSpellcheckHtml(sourceHtml);
+        const rightDoc = parseSpellcheckHtml(rightHtml);
+        const sourceRoot = sourceDoc.body.firstChild;
+        const rightRoot = rightDoc.body.firstChild;
         const rangesByNode = new Map();
 
-        collectSpellcheckDomTokens(root).forEach((token, index) => {
-            const sourceWord = sourceWords[index] || '';
-            const normalizedSourceWord = normalizeSpellcheckPlaceholders(sourceWord);
-            const normalizedToken = normalizeSpellcheckPlaceholders(token.text);
+        if (!rightRoot) {
+            return rightHtml;
+        }
 
-            if (isSpellcheckPlaceholder(token.text) || normalizedSourceWord === normalizedToken) {
+        const sourceTokens = sourceRoot ? collectSpellcheckDomTokens(sourceRoot) : [];
+        const rightTokens = collectSpellcheckDomTokens(rightRoot);
+        const matchedRightIndexes = getSpellcheckMatchedRightTokenIndexes(sourceTokens, rightTokens);
+
+        rightTokens.forEach((token, index) => {
+            if (matchedRightIndexes.has(index) || isSpellcheckPlaceholder(token.text)) {
                 return;
             }
 
@@ -1425,9 +1457,9 @@
             });
         });
 
-        highlightSpellcheckRanges(doc, rangesByNode);
+        highlightSpellcheckRanges(rightDoc, rangesByNode);
 
-        return root.innerHTML;
+        return rightRoot.innerHTML;
     }
 
     function runSpellCheck () {
@@ -1439,7 +1471,7 @@
         $spellcheckBtn.find('.icon').addClass('shimmer');
         window.spellCheck(text).then((correctedText) => {
             const { restored, formated } = correctedText;
-            const highlightedHtml = highlightSpellcheckChanges(text, formated);
+            const highlightedHtml = highlightSpellcheckChanges(sourceHtml, formated);
             textReplaceConfirm({
                 title: "[`AI response`]",
                 left_title: '[`Original text`]',
