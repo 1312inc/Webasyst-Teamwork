@@ -68,6 +68,22 @@ class tasksRepeatTaskService
             try {
                 // Duplicate task
                 $original = new tasksTask($r['task_id']);
+                $change_assigned_contact_id = null;
+                if ($original['status_id'] < 0 && !$original['assigned_contact_id']) {
+                    // When original task is closed and not assigned to anyone,
+                    // assign the duplicate to the first user it was originally assigned to before completion
+                    $change_assigned_contact_id = $this->getFirstAssignedUserWithRights($original);
+                }
+                if (wa()->getEnv() === 'cli') {
+                    // Change system locale to user we're likely to notify about the task
+                    try {
+                        $assigned_contact_id = ifempty($change_assigned_contact_id, $original['assigned_contact_id']);
+                        if ($assigned_contact_id) {
+                            wa()->setLocale((new waContact($assigned_contact_id))->getLocale());
+                        }
+                    } catch (waException $e) {
+                    }
+                }
                 $duplicate = $original->duplicate();
 
                 $due_date = null;
@@ -100,14 +116,16 @@ class tasksRepeatTaskService
                     'action' => '',
                     'text' => sprintf_wp('Repeating task created: %s', '#'.$duplicate['project_id'].'.'.$duplicate['number']),
                     'do_not_update_datetime' => true,
-                ]);
+                ], false);
 
                 // Add log item to duplicate
                 tasksHelper::addLog($duplicate, [
                     'action' => '',
                     'text' => sprintf_wp('Auto-created based on the original repeating task: %s', '#'.$original['project_id'].'.'.$original['number']),
                     'do_not_update_datetime' => true,
-                ]);
+                ] + (!$change_assigned_contact_id ? [] : [
+                    'assigned_contact_id' => $change_assigned_contact_id,
+                ]));
             } catch (waException $e) {
                 // failed to duplicate: do not try again
                 waLog::log([
@@ -119,6 +137,45 @@ class tasksRepeatTaskService
                 $repeat_model->deleteById(ifset($r, 'task_id', $original->id));
             }
         }
+    }
+
+    protected function getFirstAssignedUserWithRights(tasksTask $task)
+    {
+        $nope = [];
+        $prev_assigned = null;
+        foreach(array_values($task['log']) as $i => $l) {
+            // ignore if assigned to the same contact
+            if ($prev_assigned == $l['assigned_contact_id']) {
+                continue;
+            }
+            $prev_assigned = $l['assigned_contact_id'];
+            if (empty($l['assigned_contact_id'])) {
+                continue;
+            }
+            if ($l['action'] === 'add' || ($l['action'] === 'edit' && $i === 0)) {
+                // ignore initial creation of edit if assigned to the creator
+                if ($l['assigned_contact_id'] == $task['create_contact_id']) {
+                    continue;
+                }
+            }
+            if (isset($nope[$l['assigned_contact_id']])) {
+                continue; // only ever check access rights once per contact
+            }
+
+            $nope[$l['assigned_contact_id']] = true;
+            try {
+                $contact = new waContact($l['assigned_contact_id']);
+                $access = $contact->getRights('tasks', 'project.' . $task['project_id']);
+                if ($access > 0) {
+                    return $contact['id'];
+                }
+            } catch (waException $e) {
+            }
+            
+            break; // only check first assigned contact, ignore the rest even if first failed
+        }
+
+        return null;
     }
 
     protected function getAppSettingsModel(): waAppSettingsModel
