@@ -33,6 +33,11 @@ class tasksTaskLogModelGetListOptionsDto
     private $projectId;
 
     /**
+     * @var null|int
+     */
+    private $taskId;
+
+    /**
      * @var bool
      */
     private $withTasks = false;
@@ -52,6 +57,11 @@ class tasksTaskLogModelGetListOptionsDto
      */
     private $endDate;
 
+    /**
+     * @var null|string
+     */
+    private $action;
+
     public function __construct(
         ?int $limit,
         ?int $start,
@@ -62,6 +72,8 @@ class tasksTaskLogModelGetListOptionsDto
         ?string $groupBy,
         ?string $startDate,
         ?string $endDate,
+        ?string $action,
+        ?int $taskId,
         ?waContact $forContact
     ) {
         $this->limit = $limit ?? tasksOptions::getLogsPerPage();
@@ -73,6 +85,8 @@ class tasksTaskLogModelGetListOptionsDto
         $this->groupBy = $groupBy;
         $this->startDate = $startDate;
         $this->endDate = $endDate;
+        $this->action = $action;
+        $this->taskId = $taskId;
         $this->forContact = $forContact;
     }
 
@@ -126,6 +140,16 @@ class tasksTaskLogModelGetListOptionsDto
         return $this->forContact;
     }
 
+    public function getTaskId(): ?int
+    {
+        return $this->taskId;
+    }
+
+    public function getAction(): ?string
+    {
+        return $this->action;
+    }
+
     public static function fromArray(array $data): self
     {
         return new self(
@@ -138,6 +162,8 @@ class tasksTaskLogModelGetListOptionsDto
             $data['group_by'] ?? null,
             $data['start_date'] ?? null,
             $data['end_date'] ?? null,
+            $data['action'] ?? null,
+            $data['task_id'] ?? null,
             !empty($data['for_contact'])
                 ? ($data['for_contact'] instanceOf waContact ? $data['for_contact'] : new waContact($data['for_contact']))
                 : null

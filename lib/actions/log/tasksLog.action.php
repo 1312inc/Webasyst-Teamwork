@@ -16,6 +16,10 @@ class tasksLogAction extends tasksTasksAction
             waRequest::request('project_id', null, 'int') ?: null,
             waRequest::request('contact_id', null, 'int') ?: null,
             waRequest::request('milestone_id', null, 'int') ?: null,
+            null,
+            null,
+            null,
+            null,
             (int) waRequest::get('offset', 0, 'int'),
             tasksOptions::getLogsPerPage()
         );
