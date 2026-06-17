@@ -50,8 +50,11 @@ final class tasksApiTaskDeleteHandler
         tsks()->getModel('tasksTaskTags')
             ->deleteByField(['task_id' => $taskIds]);
 
-        tsks()->getModel('tasksTag')
-            ->deleteUnusedTags();
+        if (tsks()->getModel('tasksTag')->deleteUnusedTags()) {
+            $null = null;
+            $cache = new waVarExportCache("tasks_tag_/$null/$null", -1, 'tasks');
+            $cache->delete();
+        }
 
         (new tasksWaLogManager())->logDelete(count($taskIds));
 

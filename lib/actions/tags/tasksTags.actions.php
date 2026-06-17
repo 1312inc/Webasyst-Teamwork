@@ -124,5 +124,12 @@ class tasksTagsActions extends waActions
 
         return $text;
     }
+
+    public function __destruct()
+    {
+        $null = null;
+        $cache = new waVarExportCache("tasks_tag_/$null/$null", -1, 'tasks');
+        $cache->delete();
+    }
 }
 
