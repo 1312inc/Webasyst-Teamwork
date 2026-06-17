@@ -1450,6 +1450,7 @@
                 success_button_class: 'blue',
                 cancel_button_title: '[`Close`]',
                 cancel_button_class: 'light-gray',
+                copy_button_title: '[`Copy`]',
                 onSuccess: () => {
                     $el.val(restored).trigger('input').trigger('change');
                     waRedactorTaskInit();
@@ -1613,11 +1614,13 @@
         var success_button_class = ( options.success_button_class ? options.success_button_class : "blue" );
         var cancel_button_title = ( options.cancel_button_title ? options.cancel_button_title : $.wa.translate("Cancel") );
         var cancel_button_class = ( options.cancel_button_class ? options.cancel_button_class : "light-gray" );
+        var copy_button_title = ( options.copy_button_title ? options.copy_button_title : $.wa.translate("Copy") );
 
         var success_button = `<button class="js-success-action button ${success_button_class}">${success_button_title}</button>`,
-            cancel_button = `<button class="js-dialog-close button ${cancel_button_class}">${cancel_button_title}</button>`;
+            cancel_button = `<button class="js-dialog-close button ${cancel_button_class}">${cancel_button_title}</button>`,
+            copy_button = `<button class="js-clipboard-copy button outlined blue"><i class="fas fa-copy"></i><span class="desktop-and-tablet-only custom-ml-4">${copy_button_title}</span></button>`;
 
-        var footer = success_button + cancel_button;
+        var footer = `<div class="t-spellcheck-compare"><div>${cancel_button}</div><div>${success_button}${copy_button}</div></div>`;
 
         var is_success = false;
         var content = text;
