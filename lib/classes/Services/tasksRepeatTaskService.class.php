@@ -90,7 +90,7 @@ class tasksRepeatTaskService
                 if ($r['mode'] == 'on_due') {
                     $due_date = new DateTime($r['repeat_date']);
                 } else if ($r['mode'] == 'on_complete') {
-                    $due_date = new DateTime(ifempty($original, 'due_date', null));
+                    $due_date = new DateTime(ifempty($original, 'due_date', date('Y-m-d')));
                 }
                 if ($due_date) {
                     $due_date->add(new DateInterval('P'.$r['frequency'].strtoupper($r['measure'][0])));
