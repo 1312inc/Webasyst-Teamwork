@@ -25,7 +25,7 @@ class tasksAutomationActions extends waActions
             'sidebar_html'     => (new tasksSettingsSidebarAction())->display(),
             'total_count' => $total_count,
             'tasks' => $tasks,
-            'cron_job_command' => 'php cli.php tasks worker',
+            'cron_job_command' => 'php '.wa()->getConfig()->getRootPath().'/cli.php tasks worker',
         ], 'templates/actions/automation/Automation.html');
     }
 }
