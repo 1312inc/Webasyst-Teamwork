@@ -28,12 +28,15 @@ body.wa-gallery-is-shown
         position absolute
         top: 0
         left: 0
-        display block
+        display flex
+        align-items center
+        justify-content center
         width: 100%
         height: 100%
         background var(--background-color) 50% no-repeat
         background-size: contain
         border-radius 0.5rem
+        overflow hidden
         cursor pointer
         opacity 0
 
@@ -44,6 +47,25 @@ body.wa-gallery-is-shown
             width: 100%
             height: 100%
             opacity 0
+
+        .full-image
+            position relative
+            top auto
+            left auto
+            width auto
+            height auto
+            max-width 100%
+            max-height 100%
+            opacity 1
+            cursor default
+            user-select none
+            transform-origin 50% 50%
+
+            &.is-zoomed
+                cursor grab
+
+            &.is-dragging
+                cursor grabbing
 
         &.is-active
             z-index 1
@@ -71,13 +93,19 @@ body.wa-gallery-is-shown
 
         .wa-gallery-close
         .wa-gallery-download
+        .wa-gallery-zoom-in
+        .wa-gallery-zoom-out
         .wa-gallery-arrow
-            display inline-block
+            display inline-flex
+            align-items center
+            justify-content center
             vertical-align top
             width: 56px
             height: 56px
             background transparent 50% no-repeat
             background-size auto 28px
+            color #fff
+            text-decoration none
             opacity .33
             transition all 333ms linear
 
@@ -85,11 +113,22 @@ body.wa-gallery-is-shown
                 background-color rgba(0,0,0,.1)
                 opacity: .66
 
+            .fas
+                font-size 1.6rem
+                line-height 1
+
         .wa-gallery-close
             background-image url("close-button.svg")
 
         .wa-gallery-download
             background-image url("download-button.svg")
+
+        .wa-gallery-zoom-in
+        .wa-gallery-zoom-out
+            background-image none
+            svg
+                font-size 1.75rem
+                color #000
 
         .wa-gallery-arrow
             &.right
