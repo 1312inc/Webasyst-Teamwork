@@ -716,7 +716,7 @@ class tasksCollection
         }
 
         if ($ids) {
-            $this->where[] = sprintf("t.public_hash IN ('%s')", implode("','", $ids));
+            $this->where[] = sprintf("t.public_hash IN ('%s')", implode("','", array_map([$this->getModel(), 'escape'], $ids)));
             $this->default_order_by = 't.id';
         } else {
             $this->where[] = '0';
