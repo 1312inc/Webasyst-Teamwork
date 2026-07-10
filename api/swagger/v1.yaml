@@ -933,7 +933,7 @@ paths:
           name: action
           required: false
           description: |
-            Тип действия с задачей, например: add, comment, create, edit, forward, git.commit, return
+            Тип действия с задачей, например: `add`, `comment`, `create`, `edit`, `forward`, `git.commit`, `return`
           schema:
             type: string
             nullable: true
@@ -941,7 +941,7 @@ paths:
           name: start_date
           required: false
           description: |
-            Возвращать только действия, совершённые не ранее указанного времени, например 2025-01-01 11:11:11
+            Возвращать только действия, совершенные не ранее указанного времени, например, `2025-01-01 11:11:11`
           schema:
             type: string
             nullable: true
@@ -949,7 +949,7 @@ paths:
           name: end_date
           required: false
           description: |
-            Возвращать только действия, совершённые не позднее указанного времени, например 2026-01-01 11:11:11
+            Возвращать только действия, совершенные не позднее указанного времени, например, `2026-01-01 11:11:11`
           schema:
             type: string
             nullable: true
