@@ -2,7 +2,7 @@
 
 return array (
     '' => 'frontend/',
-    'task/<public_hash>/?' => 'frontend/taskPublic',
-    'milestone/<public_hash>/?' => 'frontend/milestonePublic',
-    'project/<public_hash>/?' => 'frontend/projectPublic',
+    'task/<public_hash:[a-zA-Z0-9_-]+>/?' => 'frontend/taskPublic',
+    'milestone/<public_hash:[a-zA-Z0-9_-]+>/?' => 'frontend/milestonePublic',
+    'project/<public_hash:[a-zA-Z0-9_-]+>/?' => 'frontend/projectPublic',
 );

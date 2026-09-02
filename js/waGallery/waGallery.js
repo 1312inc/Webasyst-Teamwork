@@ -19,7 +19,9 @@ var waGallery = ( function($) {
             animate_time: 0,
             close_time: 0,
             zoom: 0,
-            width: 600
+            width: 600,
+            max_scale: 5,
+            wheel_scale_step: 0.1
         }, options);
 
         // DOM
@@ -40,6 +42,12 @@ var waGallery = ( function($) {
         that.active_link_index = false;
         that.slider = {};
         that.$close = false;
+        that.$activeImage = $();
+        that.transformation = that.getDefaultTransformation();
+        that.prev_position = {
+            x: null,
+            y: null
+        };
 
         // INIT
         that.initGallery();
@@ -228,6 +236,10 @@ var waGallery = ( function($) {
         }
 
         if ($preview.length) {
+            that.destroyImageInteraction();
+            $(document).off(".waGalleryFullPreview");
+            that.$body.removeClass(that.storage.body_active_class);
+
             $preview
                 .css({
                     width: linkArea.width,
@@ -338,11 +350,15 @@ var waGallery = ( function($) {
         // Render close button
         var $topControlWrapper = $('<div class="wa-gallery-controls top"></div>'),
             $bottomControlWrapper = $('<div class="wa-gallery-controls bottom"></div>'),
+            $zoomIn = $('<a href="javascript:void(0);" class="wa-gallery-zoom-in"><i class="fas fa-search-plus"></i></a>'),
+            $zoomOut = $('<a href="javascript:void(0);" class="wa-gallery-zoom-out"><i class="fas fa-search-minus"></i></a>'),
             $close = $('<a href="javascript:void(0);" class="wa-gallery-close"></a>'),
             $download = $('<a href="javascript:void(0);" class="wa-gallery-download"></a>'),
             $rightArrow = $('<a href="javascript:void(0);" class="wa-gallery-arrow right"></a>'),
             $leftArrow = $('<a href="javascript:void(0);" class="wa-gallery-arrow left"></a>');
 
+        $topControlWrapper.append($zoomOut);
+        $topControlWrapper.append($zoomIn);
         $topControlWrapper.append($download);
         $topControlWrapper.append($close);
         $preview.append($topControlWrapper);
@@ -370,6 +386,41 @@ var waGallery = ( function($) {
             }
         });
 
+        $zoomIn.on("click", function(event) {
+            event.preventDefault();
+
+            if (!that.$activeImage.length) {
+                return;
+            }
+
+            that.startZoom();
+
+            var prev_scale = that.transformation.scale,
+                rect = that.$activeImage[0].getBoundingClientRect();
+
+            that.transformation.scale += 1;
+            that.transformation.scale = Math.min(that.transformation.scale, that.settings.max_scale);
+
+            that.updateTransformWithOrigin({
+                x: (rect.left + rect.right) / 2,
+                y: (rect.top + rect.bottom) / 2,
+                prev_scale: prev_scale
+            });
+        });
+
+        $zoomOut.on("click", function(event) {
+            event.preventDefault();
+
+            if (!that.$activeImage.length) {
+                return;
+            }
+
+            that.startZoom();
+            that.transformation.scale -= 1;
+            that.transformation.scale = Math.max(that.transformation.scale, 1);
+            that.updateTransform();
+        });
+
         if (show_slider) {
             $leftArrow.on("click", function() {
                 that.changeSlide( false );
@@ -388,7 +439,6 @@ var waGallery = ( function($) {
 
             if (is_escape) {
                 $close.trigger("click");
-                $(document).off("keyup", initKeyBinds);
             }
 
             if (show_slider) {
@@ -401,23 +451,17 @@ var waGallery = ( function($) {
             }
         };
 
-        var closeFullPreview = function() {
-            $close.trigger("click");
-            $(document).off("mousewheel DOMMouseScroll", closeFullPreview);
-        };
-
         var onDrop = function(event) {
             var files = event.originalEvent.dataTransfer.files;
             if (files.length) {
                 $close.trigger("click");
-                $(document).off("drop", onDrop);
             }
         };
 
         $(document)
-            .on("keyup", initKeyBinds)
-            .on("drop", onDrop)
-            .on("mousewheel DOMMouseScroll", closeFullPreview);
+            .off(".waGalleryFullPreview")
+            .on("keyup.waGalleryFullPreview", initKeyBinds)
+            .on("drop.waGalleryFullPreview", onDrop);
 
         // Save data
         that.$close = $close;
@@ -523,6 +567,239 @@ var waGallery = ( function($) {
         return previewArea;
     };
 
+    waGallery.prototype.getDefaultTransformation = function() {
+        return {
+            originX: 0,
+            originY: 0,
+            translateX: 0,
+            translateY: 0,
+            scale: 1
+        };
+    };
+
+    waGallery.prototype.setActiveImage = function($image) {
+        var that = this;
+
+        that.destroyImageInteraction();
+        that.$activeImage = $image;
+        that.clearPosition();
+        that.resizeActiveImage();
+        that.initImageInteraction();
+    };
+
+    waGallery.prototype.destroyImageInteraction = function() {
+        var that = this,
+            active_index = that.active_link_index,
+            active_link = (active_index || active_index === 0) ? that.links[active_index] : null;
+
+        if (active_link && active_link.$preview) {
+            active_link.$preview.off(".waGalleryZoom");
+        }
+
+        $(document).off(".waGalleryZoom");
+
+        if (that.$activeImage.length) {
+            that.$activeImage
+                .off(".waGalleryZoom");
+            that.clearPosition();
+        }
+
+        that.$activeImage = $();
+    };
+
+    waGallery.prototype.initImageInteraction = function() {
+        var that = this,
+            active_index = that.active_link_index,
+            active_link = (active_index || active_index === 0) ? that.links[active_index] : null;
+
+        if (!active_link || !active_link.$preview || !that.$activeImage.length) {
+            return;
+        }
+
+        active_link.$preview.on("wheel.waGalleryZoom", function(event) {
+            if (!event.ctrlKey) {
+                return;
+            }
+
+            event.preventDefault();
+            that.startZoom();
+
+            var prev_scale = that.transformation.scale,
+                delta = event.originalEvent.deltaY;
+
+            if (delta < 0) {
+                that.transformation.scale += that.settings.wheel_scale_step;
+                that.transformation.scale = Math.min(that.transformation.scale, that.settings.max_scale);
+            } else {
+                that.transformation.scale -= that.settings.wheel_scale_step;
+                that.transformation.scale = Math.max(that.transformation.scale, 1);
+            }
+
+            that.updateTransformWithOrigin($.extend({}, that.getCoords(event), {
+                prev_scale: prev_scale
+            }));
+        });
+
+        that.$activeImage
+            .on("dragstart.waGalleryZoom", function() {
+                return false;
+            })
+            .on("mousedown.waGalleryZoom touchstart.waGalleryZoom", function(event) {
+                if (that.transformation.scale === 1) {
+                    return false;
+                }
+
+                event.preventDefault();
+                that.prev_position = {
+                    x: null,
+                    y: null
+                };
+
+                var previous_position = that.getCoords(event);
+
+                that.$activeImage.addClass("is-dragging");
+
+                $(document)
+                    .on("mousemove.waGalleryZoom touchmove.waGalleryZoom", function(move_event) {
+                        var coords = that.getCoords(move_event),
+                            originX = (that.prev_position.x === null) ? previous_position.x - coords.x : coords.x - that.prev_position.x,
+                            originY = (that.prev_position.y === null) ? previous_position.y - coords.y : coords.y - that.prev_position.y;
+
+                        that.transformation.translateX += originX;
+                        that.transformation.translateY += originY;
+                        that.updateTransform();
+
+                        that.prev_position.x = coords.x;
+                        that.prev_position.y = coords.y;
+                    })
+                    .one("mouseup.waGalleryZoom touchend.waGalleryZoom touchcancel.waGalleryZoom", function(end_event) {
+                        if (end_event) {
+                            end_event.preventDefault();
+                        }
+
+                        that.$activeImage.removeClass("is-dragging");
+                        $(document).off("mousemove.waGalleryZoom touchmove.waGalleryZoom");
+                    });
+            });
+    };
+
+    waGallery.prototype.resizeActiveImage = function() {
+        if (!this.$activeImage.length) {
+            return;
+        }
+
+        this.$activeImage.css({
+            maxHeight: ($(window).height() - 74) + "px",
+            maxWidth: "100vw"
+        });
+    };
+
+    waGallery.prototype.updateTransform = function() {
+        if (!this.$activeImage.length) {
+            return;
+        }
+
+        if (this.transformation.scale === 1) {
+            this.finishZoom();
+            this.clearPosition();
+        } else {
+            this.$activeImage.addClass("is-zoomed");
+        }
+
+        var transformation = this.transformation;
+        this.$activeImage[0].style.transform = "matrix(" + transformation.scale + ", 0, 0, " + transformation.scale + ", " + transformation.translateX + ", " + transformation.translateY + ")";
+    };
+
+    waGallery.prototype.updateTransformWithOrigin = function(data) {
+        if (!this.$activeImage.length) {
+            return;
+        }
+
+        var image = this.$activeImage[0],
+            rect = image.getBoundingClientRect(),
+            originX = data.x - rect.left,
+            originY = data.y - rect.top,
+            newOriginX = originX / data.prev_scale,
+            newOriginY = originY / data.prev_scale,
+            translate = this.getTranslate(data.prev_scale);
+
+        image.style.transformOrigin = newOriginX + "px " + newOriginY + "px";
+
+        this.transformation.translateX = translate({
+            pos: originX,
+            prevPos: this.transformation.originX,
+            translate: this.transformation.translateX
+        });
+        this.transformation.translateY = translate({
+            pos: originY,
+            prevPos: this.transformation.originY,
+            translate: this.transformation.translateY
+        });
+
+        this.transformation.originX = newOriginX;
+        this.transformation.originY = newOriginY;
+
+        this.updateTransform();
+    };
+
+    waGallery.prototype.getTranslate = function(scale) {
+        var that = this,
+            value_in_range = function(value) {
+                return value <= that.settings.max_scale && value >= 1;
+            };
+
+        return function(data) {
+            return (value_in_range(scale) && data.pos !== data.prevPos) ?
+                data.translate + (data.pos - data.prevPos * scale) * (1 - 1 / scale) :
+                data.translate;
+        };
+    };
+
+    waGallery.prototype.clearPosition = function() {
+        this.transformation = this.getDefaultTransformation();
+        this.prev_position = {
+            x: null,
+            y: null
+        };
+
+        if (this.$activeImage.length) {
+            this.$activeImage[0].style.transformOrigin = "50% 50%";
+            this.$activeImage[0].style.transform = "";
+            this.$activeImage.removeClass("is-zoomed is-dragging");
+        }
+    };
+
+    waGallery.prototype.getCoords = function(event) {
+        var original_event = event.originalEvent || event;
+
+        if (original_event.touches && original_event.touches.length) {
+            original_event = original_event.touches[0];
+        }
+
+        return {
+            x: original_event.clientX,
+            y: original_event.clientY
+        };
+    };
+
+    waGallery.prototype.startZoom = function() {
+        if (this.$activeImage.length) {
+            this.$activeImage.addClass("is-zoomed");
+        }
+    };
+
+    waGallery.prototype.finishZoom = function() {
+        var that = this;
+
+        if (!that.$activeImage.length) {
+            return;
+        }
+
+        setTimeout(function() {
+            that.$activeImage.removeClass("is-zoomed is-dragging");
+        });
+    };
+
     waGallery.prototype.addImage = function() {
         var that = this,
             $fullImage = $("<img class=\"full-image\" />"),
@@ -530,22 +807,36 @@ var waGallery = ( function($) {
             full_image_src = $activeSlide.data("href");
 
         if ($activeSlide.find("img.full-image").length) {
+            that.setActiveImage($activeSlide.find("img.full-image"));
             return false;
         }
 
+        $activeSlide.css({
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center"
+        });
+
         $activeSlide.html("").append($fullImage);
+        that.setActiveImage($fullImage);
+
+        $fullImage.css({
+            position: "relative",
+            top: "auto",
+            left: "auto",
+            width: "auto",
+            height: "auto",
+            maxWidth: "100%",
+            maxHeight: "100%",
+            opacity: 1,
+            userSelect: "none",
+            transformOrigin: "50% 50%"
+        });
 
         $fullImage
             .one("load", function() {
                 if ($(document).find($activeSlide).length) {
-                    $activeSlide
-                        .css("background-image", "url(" + full_image_src + ")");
-                }
-            })
-            .on("click", function() {
-                var $closeButton = that.$close;
-                if ($closeButton.length) {
-                    $closeButton.trigger("click");
+                    $activeSlide.css("background-image", "none");
                 }
             })
             .attr("src", full_image_src);
@@ -554,6 +845,10 @@ var waGallery = ( function($) {
     waGallery.prototype.destroy = function() {
         var that = this;
 
+
+        that.destroyImageInteraction();
+        $(document).off(".waGalleryFullPreview");
+        that.$body.removeClass(that.storage.body_active_class);
         $.each(that.links, function(i, link) {
             if (link.is_active) {
                 that.hidePreview( link );
