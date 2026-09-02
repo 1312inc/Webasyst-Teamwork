@@ -633,8 +633,12 @@ final class tasksRights
             return [];
         }
 
-        return $right_model->query("SELECT * FROM wa_contact WHERE id IN(:ids) AND is_user >= 0", ['ids' => $contact_ids])->fetchAll('id');
-
+        $result = [];
+        $rows = $right_model->query("SELECT * FROM wa_contact WHERE id IN(:ids) AND is_user >= 0", ['ids' => $contact_ids]);
+        foreach ($rows as $row) {
+            $result[$row['id']] = array_diff_key($row, ['password' => 1]);
+        }
+        return $result;
     }
 
     /**

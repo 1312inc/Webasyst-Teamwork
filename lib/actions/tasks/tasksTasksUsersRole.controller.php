@@ -32,6 +32,27 @@ class tasksTasksUsersRoleController extends waJsonController
                 $_user[$to_escape] = htmlspecialchars((string) $_user[$to_escape]);
             }
             $_user['photo_url'] = waContact::getPhotoUrl($_user['id'] ?? 0, $_user['photo'] ?: null, 96, 96, 'person', true);
+            $_user = array_intersect_key($_user, [
+                "id" => 1,
+                "name" => 1,
+                "firstname" => 1,
+                "middlename" => 1,
+                "lastname" => 1,
+                "title" => 1,
+                "company" => 1,
+                "jobtitle" => 1,
+                //"company_contact_id" => 1,
+                "is_company" => 1,
+                "is_user" => 1,
+                "is_staff" => 1,
+                "login" => 1,
+                "photo_url" => 1,
+                "sex" => 1,
+                "birth_day" => 1,
+                "birth_month" => 1,
+                "birth_year" => 1,
+                //"about" => 1,
+            ]);
         }
         unset($_user);
 
