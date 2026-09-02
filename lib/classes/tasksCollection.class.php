@@ -1160,6 +1160,7 @@ class tasksCollection
 
     private function addJoinRole($contact_id)
     {
+        $contact_id = (int) $contact_id;
         $tu_alias = $this->addJoin(['table' => 'tasks_task_users', 'type' => 'LEFT', 'on' => ":table.task_id = t.id AND :table.contact_id = $contact_id"]);
         $this->addJoin(['table' => 'tasks_user_role', 'type' => 'LEFT', 'on' => ":table.id = $tu_alias.role_id"]);
     }
