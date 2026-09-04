@@ -17,6 +17,28 @@ class tasksTasksGetUsersForProjectController extends waJsonController
 
 
         foreach ($users as &$item) {
+            $item = array_intersect_key($item, [
+                'id' => 1,
+                'name' => 1,
+                'firstname' => 1,
+                'middlename' => 1,
+                'lastname' => 1,
+                'title' => 1,
+                'company' => 1,
+                'jobtitle' => 1,
+                'is_company' => 1,
+                'is_user' => 1,
+                'is_staff' => 1,
+                'login' => 1,
+                'photo_url' => 1,
+                'sex' => 1,
+                'birth_day' => 1,
+                'birth_month' => 1,
+                'birth_year' => 1,
+                'about' => 1,
+                'calendar_status' => 1
+            ]);
+
             foreach (['name', 'firstname', 'middlename', 'title', 'company', 'jobtitle', 'about', 'login'] as $toEscape) {
                 $item[$toEscape] = htmlspecialchars((string) $item[$toEscape]);
             }
