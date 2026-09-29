@@ -61,7 +61,7 @@ class tasksTaskLogModel extends waModel
         } elseif (isset($data['attachments']) && is_array($data['attachments'])) {
             $am = new tasksAttachmentModel();
             foreach ($data['attachments'] as $attachment) {
-                $am->addAttachment($data['task_id'], $log_id['id'], $attachment);
+                $am->addAttachment($data['task_id'], $log_id, $attachment);
             }
         }
 
