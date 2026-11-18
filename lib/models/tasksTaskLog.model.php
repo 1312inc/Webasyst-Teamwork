@@ -281,7 +281,7 @@ SQL;
         return $result;
     }
 
-    public static function workupLogs(&$logs, tasksTaskLogModelGetListOptionsDto $options = null)
+    public static function workupLogs(&$logs, ?tasksTaskLogModelGetListOptionsDto $options = null)
     {
         if (!$logs) {
             return;

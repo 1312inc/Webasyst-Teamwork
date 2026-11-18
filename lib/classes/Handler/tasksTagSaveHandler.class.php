@@ -2,7 +2,7 @@
 
 final class tasksTagSaveHandler
 {
-    public function handle(tasksTask2 $task, tasksTask2 $prevTask = null): void
+    public function handle(tasksTask2 $task, ?tasksTask2 $prevTask = null): void
     {
         $tasksTaskTagsModel = new tasksTaskTagsModel();
         $collectHeaderTags = [];
