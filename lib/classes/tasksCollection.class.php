@@ -819,7 +819,7 @@ class tasksCollection
                     }
                     $condition = "MATCH(t.name, t.text) AGAINST ('" . $model->escape($q) . "' IN BOOLEAN MODE)";
                     if (isset($q2)) {
-                        $condition = "({$condition} OR MATCH(t.text) AGAINST ('" . $model->escape($q2) . "' IN BOOLEAN MODE))";
+                        $condition = "({$condition} OR MATCH(t.name, t.text) AGAINST ('" . $model->escape($q2) . "' IN BOOLEAN MODE))";
                     }
                     $this->where[] = $condition;
                 }
