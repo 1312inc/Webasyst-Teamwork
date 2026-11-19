@@ -1047,7 +1047,7 @@ class tasksTask implements ArrayAccess
         $duplicate = new self($duplicate_row);
 
         /** @wa-event task_duplicate */
-        wa('shop')->event('task_duplicate', ref([
+        wa('tasks')->event('task_duplicate', ref([
             'original'   => &$this,
             'duplicate' => &$duplicate,
         ]));

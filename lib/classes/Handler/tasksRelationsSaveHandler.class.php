@@ -5,7 +5,7 @@ final class tasksRelationsSaveHandler
     /**
      * @see \tasksTasksSaveController::saveTaskRelations
      */
-    public function handle(tasksTask2 $task, tasksTask2 $prevTask = null): bool
+    public function handle(tasksTask2 $task, ?tasksTask2 $prevTask = null): bool
     {
         $tasksTaskRelationsModel = new tasksTaskRelationsModel();
         $tasksNumber = tasksTask::extractTaskNumbers($task->getText());

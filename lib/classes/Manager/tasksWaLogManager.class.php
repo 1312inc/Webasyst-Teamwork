@@ -48,8 +48,8 @@ class tasksWaLogManager
     public function logAction(
         string $action,
         $params = null,
-        int $subject_contact_id = null,
-        int $contact_id = null
+        ?int $subject_contact_id = null,
+        ?int $contact_id = null
     ) {
         try {
             if (!class_exists('waLogModel')) {
